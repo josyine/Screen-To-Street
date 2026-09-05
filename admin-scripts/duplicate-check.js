@@ -13,7 +13,16 @@
 //   2. Les lieux approuvés depuis via admin.html : ceux-là sont dans Firestore, collection
 //      `newLocations` (lecture publique, voir firebase-init.js), et ONT lat/lng.
 //
-//   npm install firebase
+// Deux façons de récupérer la partie "approuvés" (2) selon le SDK Firebase déjà utilisé
+// par votre script :
+//   - SDK client (pas de compte de service) : loadApprovedLocations(firebaseConfig) ou
+//     loadAllExistingLocations(scriptJsPath, firebaseConfig) font tout en un appel.
+//   - SDK Admin (compte de service, ex: un agent qui écrit aussi dans Firestore) :
+//     réutilisez votre `db` déjà initialisé — locationsFromSnapshot(await
+//     db.collection('newLocations').get()) puis combineExistingLocations(scriptJsPath,
+//     ce résultat). Voir example-ai-submission.js pour un exemple complet.
+//
+//   npm install firebase   // seulement pour loadApprovedLocations / loadAllExistingLocations
 //   node duplicate-check.js          // auto-test avec un exemple
 
 const fs = require('fs');
@@ -52,6 +61,24 @@ function loadStaticLocations(scriptJsPath) {
     if (end === -1) throw new Error('Crochet fermant introuvable (script.js a-t-il changé de structure ?)');
     const arrayLiteral = src.slice(start + marker.length - 1, end + 1);
     return (0, eval)(arrayLiteral); // eslint-disable-line no-eval
+}
+
+// Marche avec un QuerySnapshot du SDK Admin (`db.collection('x').get()`) OU du SDK
+// client (`getDocs(collection(db, 'x'))`) — les deux exposent `.forEach()` + `doc.data()`.
+// Pratique pour un script qui a déjà son propre `db` (ex: initialisé via un compte de
+// service) et ne veut pas que ce module ouvre une deuxième connexion Firebase.
+function locationsFromSnapshot(snapshot) {
+    const result = [];
+    snapshot.forEach((d) => result.push(d.data()));
+    return result;
+}
+
+// Combine les 184 lieux historiques avec une liste déjà récupérée de lieux approuvés
+// (typiquement `locationsFromSnapshot(await db.collection('newLocations').get())`).
+function combineExistingLocations(scriptJsPath, approvedLocations) {
+    return loadStaticLocations(scriptJsPath)
+        .concat(approvedLocations || [])
+        .filter((l) => typeof l.lat === 'number' && typeof l.lng === 'number');
 }
 
 async function loadApprovedLocations(firebaseConfig) {
@@ -100,6 +127,8 @@ function findNearbyDuplicate(lat, lng, existingLocations, thresholdMeters = 50) 
 module.exports = {
     haversineMeters,
     loadStaticLocations,
+    locationsFromSnapshot,
+    combineExistingLocations,
     loadApprovedLocations,
     loadAllExistingLocations,
     findNearbyDuplicate,

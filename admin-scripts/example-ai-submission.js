@@ -1,99 +1,99 @@
 // ==========================================
-// EXEMPLE — comment un agent (IA ou script) propose un nouveau lieu pour relecture.
+// Agent IA (Gemini) — propose de nouveaux lieux BTS pour relecture dans admin.html.
 // ==========================================
-// Contrairement à migrate-location-content.js, celui-ci N'A PAS besoin d'un compte de
-// service : la règle Firestore de locationSubmissions autorise `create` à tout le monde
-// (voir le commentaire au-dessus de window.submitLocationForReview dans
-// firebase-init.js) — seule la LECTURE et l'APPROBATION sont réservées aux
-// administrateurs. Un agent peut donc utiliser le SDK Firebase "client" normal (celui
-// déjà utilisé par le site), avec les mêmes identifiants publics (une clé API Firebase
-// côté client n'est pas un secret — la sécurité vient des règles, pas de la clé).
+// Utilise le SDK Admin (compte de service — voir migrate-location-content.js pour
+// comment en générer un) car ce script ne tourne que localement, jamais dans un
+// navigateur : il a donc le droit d'écrire directement dans `locationSubmissions`, alors
+// qu'un agent utilisant le SDK client public devrait passer par une écriture `create`
+// (voir window.submitLocationForReview dans firebase-init.js pour cette autre approche).
 //
-//   npm install firebase
+//   npm install firebase-admin @google/generative-ai dotenv
 //   node example-ai-submission.js
 //
-// Politique du site (rappel, IMPORTANT) : ne jamais inventer une adresse, une date ou un
-// lien — `sourceNote`/`episodeLink` doivent toujours pointer vers une vraie source
-// vérifiable. Une proposition sans source vérifiable est à rejeter en relecture, pas à
-// publier "parce que ça semble plausible".
+// Sécurité : la clé API Gemini vit uniquement dans un fichier .env local (jamais commité,
+// voir .gitignore) et est lue via process.env.GEMINI_API_KEY — ne JAMAIS l'écrire en
+// clair ici. GitHub bloque de toute façon tout push contenant une clé reconnue (secret
+// scanning) ; ce fichier reste donc identique partout (ton Mac ou GitHub), sans version
+// séparée à synchroniser à la main.
 //
-// Anti-doublon : le nom seul n'est PAS fiable pour détecter qu'un lieu existe déjà (une
-// IA peut le formuler différemment d'une génération à l'autre). Ce script vérifie donc
-// la DISTANCE entre la proposition et les lieux déjà connus (historiques + déjà
-// approuvés) avant tout envoi — voir duplicate-check.js.
+// Politique du site (rappel, IMPORTANT) : ne jamais inventer une adresse, une date ou un
+// lien — chaque proposition doit venir d'une vraie source vérifiable. Une proposition
+// sans source vérifiable est à rejeter en relecture (voir admin.html), pas à publier
+// "parce que ça semble plausible".
+//
+// Anti-doublon : comparer les NOMS n'est pas fiable (l'IA reformule différemment d'une
+// génération à l'autre) — et de toute façon, `locationContent` (la seule collection lue
+// ci-dessous dans une version antérieure de ce script) ne contient JAMAIS le nom d'un
+// lieu, seulement son texte riche : un filtre par nom basé dessus ne peut donc jamais
+// rien détecter. Un lieu physique ne bouge jamais : on compare donc la DISTANCE entre
+// chaque proposition et les lieux déjà connus (184 lieux historiques de script.js + ceux
+// déjà approuvés dans Firestore) — voir duplicate-check.js.
 
+require('dotenv').config(); // Va chercher la clé dans ton fichier .env
 const path = require('path');
-const { initializeApp } = require('firebase/app');
-const { getFirestore, doc, collection, setDoc, serverTimestamp } = require('firebase/firestore');
-const { loadAllExistingLocations, findNearbyDuplicate } = require('./duplicate-check');
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { loadStaticLocations, locationsFromSnapshot, combineExistingLocations, findNearbyDuplicate } = require('./duplicate-check');
 
 const DUPLICATE_THRESHOLD_METERS = 50;
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
-    authDomain: "screen-to-street-e29ff.firebaseapp.com",
-    projectId: "screen-to-street-e29ff",
-    storageBucket: "screen-to-street-e29ff.firebasestorage.app",
-    messagingSenderId: "48854939735",
-    appId: "1:48854939735:web:4f6264a5589ebbf5a70b12"
-};
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+const db = admin.firestore();
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// L'agent utilise la variable sécurisée, ta vraie clé n'est plus écrite ici !
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-async function submitLocationForReview(data, submittedBy) {
-    const ref = doc(collection(db, 'locationSubmissions'));
-    await setDoc(ref, Object.assign({}, data, {
-        status: 'pending',
-        submittedBy: submittedBy || 'unknown',
-        submittedAt: serverTimestamp()
-    }));
-    return ref.id;
-}
+async function runAgent() {
+    try {
+        console.log('🔍 Chargement des lieux déjà connus (historiques + approuvés)...');
+        const scriptJsPath = path.join(__dirname, '..', 'script.js');
+        const newLocationsSnapshot = await db.collection('newLocations').get();
+        const existingLocations = combineExistingLocations(scriptJsPath, locationsFromSnapshot(newLocationsSnapshot));
+        console.log(`   ${existingLocations.length} lieux existants chargés.`);
 
-// A NEW location: omit matchedLocId. To propose a CORRECTION to an existing one instead,
-// set matchedLocId to that location's numeric id (e.g. 44) — the reviewer will then see
-// it tagged "Correction to existing location #44" and approving it updates that
-// location's content instead of publishing a new pin.
-const exampleSubmission = {
-    name: 'Example Cafe (delete me, this is just a sample)',
-    group: 'BTS', member: 'All', country: 'South Korea', city: 'Seoul',
-    category: 'Cafe', year: '2024',
-    episode: 'Example context for this location',
-    episodeLink: 'https://example.com/a-real-verifiable-source',
-    sourceNote: 'Explain here where this information comes from and how it was verified.',
-    address: '1 Example-ro, Example-gu, Seoul',
-    lat: 37.5, lng: 127.0,
-    fullDescription: { en: '<p>First paragraph: the place itself.</p><p>Second paragraph: its connection to the group/artist.</p>' },
-    practicalInfo: [
-        { title: { en: 'How to get there' }, text: { en: 'Directions here.' } }
-    ],
-    tipsList: [
-        { title: { en: 'A tip title' }, text: { en: 'The tip itself.' } }
-    ]
-};
+        console.log("🤖 L'IA génère 5 propositions pour BTS...");
+        // Les champs demandés correspondent à ceux attendus par admin.html / la carte
+        // (voir window.approveLocationSubmission dans firebase-init.js) : une proposition
+        // qui utiliserait d'autres noms de champs serait acceptée dans la file d'attente,
+        // mais publierait un pin incomplet une fois approuvée (icône, adresse affichée...).
+        const prompt = `Trouve 5 lieux réels, différents et emblématiques liés à BTS.
+    Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 5 objets avec cette structure exacte :
+    [{ "name": "Nom du lieu", "group": "BTS", "member": "All (ou le nom du membre concerné)", "country": "Pays", "city": "Ville", "category": "Cafe, MV Location, Concerts, Landmarks...", "year": "Année", "address": "Adresse complète et réelle (jamais inventée)", "lat": 0.0, "lng": 0.0, "fullDescription": { "en": "<p>Description</p>" }, "episodeLink": "https://source-verifiable-reelle.com" }]`;
 
-async function main() {
-    const scriptJsPath = path.join(__dirname, '..', 'script.js');
-    const existingLocations = await loadAllExistingLocations(scriptJsPath, firebaseConfig);
-    console.log(`Vérification anti-doublon contre ${existingLocations.length} lieux existants...`);
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+        const result = await model.generateContent(prompt);
+        const text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+        const locations = JSON.parse(text);
 
-    const duplicate = findNearbyDuplicate(
-        exampleSubmission.lat,
-        exampleSubmission.lng,
-        existingLocations,
-        DUPLICATE_THRESHOLD_METERS
-    );
-    if (duplicate) {
-        console.log(
-            `Rejeté avant envoi : à ${duplicate.distanceMeters}m de "${duplicate.location.name}" ` +
-            `(id ${duplicate.location.id}), déjà dans la base. Pas de doublon envoyé.`
-        );
-        return;
+        console.log('🛡️ Vérification anti-doublon (distance GPS)...');
+        let addedCount = 0;
+
+        for (const loc of locations) {
+            if (typeof loc.lat !== 'number' || typeof loc.lng !== 'number') {
+                console.log(`🚫 Ignoré (coordonnées manquantes ou invalides) : ${loc.name}`);
+                continue;
+            }
+
+            const duplicate = findNearbyDuplicate(loc.lat, loc.lng, existingLocations, DUPLICATE_THRESHOLD_METERS);
+            if (duplicate) {
+                console.log(`🚫 Bloqué (à ${duplicate.distanceMeters}m de "${duplicate.location.name}", déjà connu) : ${loc.name}`);
+                continue;
+            }
+
+            await db.collection('locationSubmissions').add({
+                ...loc,
+                status: 'pending',
+                submittedAt: admin.firestore.FieldValue.serverTimestamp(),
+                submittedBy: 'Gemini-AI-Agent',
+            });
+            console.log(`✅ Ajouté à la file : ${loc.name}`);
+            addedCount++;
+        }
+        console.log(`🎉 Terminé ! ${addedCount} nouveaux lieux à relire sur admin.html.`);
+    } catch (error) {
+        console.error('❌ Erreur :', error);
     }
-
-    const id = await submitLocationForReview(exampleSubmission, 'example-ai-agent');
-    console.log('Submitted for review, id:', id);
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+runAgent();
