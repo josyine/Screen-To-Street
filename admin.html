@@ -10,7 +10,11 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
-body{background:#E7E9EC;padding:0;min-height:100vh;}
+/* style.css met `overflow:hidden` + `display:flex` sur body pour la mise en page
+   plein-écran de map.html — sans cette redéfinition explicite, la page ne défile pas du
+   tout (impossible de swiper vers le bas pour voir la liste des lieux en attente). Même
+   correctif que settings.html. */
+body{background:#E7E9EC;padding:0;min-height:100vh;height:auto;display:block;overflow-x:hidden;overflow-y:auto;}
 .hidden{display:none !important;}
 
 .top-bar{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e2e8f0;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
