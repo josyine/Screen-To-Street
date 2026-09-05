@@ -16,6 +16,12 @@
 // scanning) ; ce fichier reste donc identique partout (ton Mac ou GitHub), sans version
 // séparée à synchroniser à la main.
 //
+// Automatisation (voir .github/workflows/ai-agent.yml) : le compte de service ne peut
+// pas non plus être committé (voir .gitignore), donc ce script l'accepte de deux façons —
+// `serviceAccountKey.json` en local, ou la variable d'environnement
+// FIREBASE_SERVICE_ACCOUNT (son contenu JSON complet, en secret GitHub Actions) quand ce
+// fichier n'existe pas, typiquement en CI. Même code, peu importe où il tourne.
+//
 // Politique du site (rappel, IMPORTANT) : ne jamais inventer une adresse, une date ou un
 // lien — chaque proposition doit venir d'une vraie source vérifiable. Une proposition
 // sans source vérifiable est à rejeter en relecture (voir admin.html), pas à publier
@@ -29,16 +35,26 @@
 // chaque proposition et les lieux déjà connus (184 lieux historiques de script.js + ceux
 // déjà approuvés dans Firestore) — voir duplicate-check.js.
 
-require('dotenv').config(); // Va chercher la clé dans ton fichier .env
+require('dotenv').config(); // Va chercher la clé dans ton fichier .env (no-op si absent, comme en CI)
+const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { loadStaticLocations, locationsFromSnapshot, combineExistingLocations, findNearbyDuplicate } = require('./duplicate-check');
 
 const DUPLICATE_THRESHOLD_METERS = 50;
 
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+function loadServiceAccount() {
+    const localPath = path.join(__dirname, 'serviceAccountKey.json');
+    if (fs.existsSync(localPath)) return require(localPath);
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    throw new Error(
+        "Compte de service introuvable : ni serviceAccountKey.json en local, ni la variable " +
+        "d'environnement FIREBASE_SERVICE_ACCOUNT (secret GitHub Actions). Voir README.md."
+    );
+}
+
+admin.initializeApp({ credential: admin.credential.cert(loadServiceAccount()) });
 const db = admin.firestore();
 
 // L'agent utilise la variable sécurisée, ta vraie clé n'est plus écrite ici !

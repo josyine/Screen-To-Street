@@ -67,6 +67,35 @@ Review pending submissions and approve or reject them at `/admin.html` (requires
 being signed in AND having an `admins/{your-uid}` document — see the rule comment
 in `firebase-init.js` for how to add yourself as one, from the Firebase console).
 
+### Running it automatically (GitHub Actions)
+
+`.github/workflows/ai-agent.yml` runs `example-ai-submission.js` on a schedule
+(daily by default — edit the `cron` line to change that) using GitHub's own
+servers, so it works even when your Mac is off. You can also trigger it by hand
+any time from the repo's **Actions** tab → "Agent IA — propositions de lieux
+BTS" → **Run workflow**.
+
+One-time setup — the script needs the same two secrets it needs locally
+(`GEMINI_API_KEY` and your service account), but neither can be committed to the
+repo, so they're stored as encrypted GitHub secrets instead:
+
+1. Repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**.
+2. Add `GEMINI_API_KEY`: paste your Google AI Studio key (same value as in your local `.env`).
+3. Add `FIREBASE_SERVICE_ACCOUNT`: paste the **entire contents** of your
+   `serviceAccountKey.json` file (open it in a text editor, copy everything, paste
+   it as the secret's value — it's JSON, GitHub stores the whole blob as one secret).
+4. Push (or merge) the workflow file — it starts running on its schedule immediately,
+   no further action needed.
+
+`example-ai-submission.js` picks up `FIREBASE_SERVICE_ACCOUNT` automatically
+whenever `serviceAccountKey.json` isn't present on disk (see `loadServiceAccount()`
+near the top of the file), so the exact same script file runs locally and in CI.
+
+Check results under the **Actions** tab → click a run → see its logs (same
+`console.log` output you'd see running it locally). Anything the agent adds still
+needs your manual approval at `/admin.html` — this only automates the "search
+and propose" step, never publishing.
+
 Approving a submission:
 - always writes its content into `locationContent/{id}` (read by every visitor via
   `window.fetchLocationContent`, step 1 of the Firestore migration above);
