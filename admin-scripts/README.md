@@ -52,13 +52,20 @@ Safe to re-run: it writes with `{merge: true}`, so running it again after editin
 
 See the comment block above `window.submitLocationForReview` in `firebase-init.js`
 for the full review-before-publish workflow: an AI agent (or anyone else) proposes
-a location by writing a `locationSubmissions` doc — `example-ai-submission.js` is
-a runnable example of exactly that, using the regular client Firebase SDK (no
-service account needed, since `create` is public by rule; only reading and
-approving submissions requires being an admin). Review pending submissions and
-approve or reject them at `/admin.html` (requires being signed in AND having an
-`admins/{your-uid}` document — see the rule comment in `firebase-init.js` for how
-to add yourself as one, from the Firebase console).
+a location by writing a `locationSubmissions` doc. `example-ai-submission.js` is
+the actual running agent: it calls Gemini (`@google/generative-ai`) to propose 5
+new BTS locations, filters out anything too close to a known location (see
+"Anti-duplicate check" below), and writes the rest to `locationSubmissions` using
+the Admin SDK (a service account key, same as `migrate-location-content.js` —
+because this script also *reads* Firestore before it can decide what's new, and
+`locationContent`/`newLocations` reads are otherwise either restricted or would
+need a second, client-SDK connection). Writing a `locationSubmissions` doc is
+public by rule (`create: if true`) if you'd rather build a lighter agent with just
+the client SDK — only reading/approving submissions requires being an admin.
+
+Review pending submissions and approve or reject them at `/admin.html` (requires
+being signed in AND having an `admins/{your-uid}` document — see the rule comment
+in `firebase-init.js` for how to add yourself as one, from the Firebase console).
 
 Approving a submission:
 - always writes its content into `locationContent/{id}` (read by every visitor via
@@ -70,3 +77,56 @@ Approving a submission:
 - for a correction to an existing location (`matchedLocId` set to that location's
   numeric id), only `locationContent` is touched — the existing map pin, name,
   category etc. (still defined in `script.js`) are unaffected.
+
+## Anti-duplicate check (`duplicate-check.js`)
+
+Checking whether an AI-proposed location already exists **by name** is unreliable:
+the same model can phrase, translate or romanize a name differently between runs
+("Cafe Camptong" vs "카페 캠프통" vs a slightly different spelling). A physical
+location never moves, so comparing **coordinates** is the reliable check.
+
+This is trickier than it sounds because the site's two location sources aren't
+symmetric:
+- the 184 "historical" locations live **only** in `script.js`'s `celebLocations`
+  array — `locationContent/{id}` in Firestore has the rich text but never lat/lng
+  or the name;
+- locations approved since (via `admin.html`) live in Firestore's `newLocations`
+  collection, which **does** have lat/lng (public read, see `firebase-init.js`).
+
+`duplicate-check.js` combines both into one list. Two ways to fetch the "approved"
+half depending on which Firebase SDK your script already uses:
+
+```js
+// Client SDK (no service account) — one call does everything:
+const { loadAllExistingLocations, findNearbyDuplicate } = require('./duplicate-check');
+const existing = await loadAllExistingLocations(pathToScriptJs, firebaseConfig);
+
+// Admin SDK (you already have a `db` from a service account, e.g. an agent that
+// also writes to Firestore) — reuse it instead of opening a second connection:
+const { combineExistingLocations, locationsFromSnapshot, findNearbyDuplicate } = require('./duplicate-check');
+const snapshot = await db.collection('newLocations').get();
+const existing = combineExistingLocations(pathToScriptJs, locationsFromSnapshot(snapshot));
+
+// Either way:
+const dup = findNearbyDuplicate(candidateLat, candidateLng, existing); // 50m default threshold
+if (dup) {
+    console.log(`Skip — already known: "${dup.location.name}" (${dup.distanceMeters}m away)`);
+}
+```
+
+Run `node duplicate-check.js` directly for a self-test (uses the client-SDK path).
+`example-ai-submission.js` uses the Admin SDK path above before submitting each
+of the AI's 5 proposals — check for a nearby duplicate right after the AI
+proposes coordinates, and skip that one proposal (don't even bother formatting
+it further) when one is found. Comparing **names** doesn't work here, and it's
+not just an LLM-phrasing problem: `locationContent` (the collection an earlier
+version of this script read for its duplicate list) never stores a location's
+name at all, only its rich text — so a name-based filter built on it silently
+matches nothing, ever.
+
+**A note on API keys**: if your AI agent script calls an external API (Gemini,
+etc.), never hardcode that key in a file you intend to commit. Put it in a local
+`.env` file (already covered by this folder's `.gitignore`) and read it with
+`process.env.YOUR_KEY_NAME` (add `require('dotenv').config()` at the top, or pass
+it via `GEMINI_API_KEY=... node your-script.js`) — the same way `serviceAccountKey.json`
+is kept out of git.
