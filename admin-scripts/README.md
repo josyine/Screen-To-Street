@@ -70,3 +70,43 @@ Approving a submission:
 - for a correction to an existing location (`matchedLocId` set to that location's
   numeric id), only `locationContent` is touched — the existing map pin, name,
   category etc. (still defined in `script.js`) are unaffected.
+
+## Anti-duplicate check (`duplicate-check.js`)
+
+Checking whether an AI-proposed location already exists **by name** is unreliable:
+the same model can phrase, translate or romanize a name differently between runs
+("Cafe Camptong" vs "카페 캠프통" vs a slightly different spelling). A physical
+location never moves, so comparing **coordinates** is the reliable check.
+
+This is trickier than it sounds because the site's two location sources aren't
+symmetric:
+- the 184 "historical" locations live **only** in `script.js`'s `celebLocations`
+  array — `locationContent/{id}` in Firestore has the rich text but never lat/lng
+  or the name;
+- locations approved since (via `admin.html`) live in Firestore's `newLocations`
+  collection, which **does** have lat/lng (public read, see `firebase-init.js`).
+
+`duplicate-check.js` combines both into one list and exposes:
+
+```js
+const { loadAllExistingLocations, findNearbyDuplicate } = require('./duplicate-check');
+
+const existing = await loadAllExistingLocations(pathToScriptJs, firebaseConfig);
+const dup = findNearbyDuplicate(candidateLat, candidateLng, existing); // 50m default threshold
+if (dup) {
+    console.log(`Skip — already known: "${dup.location.name}" (${dup.distanceMeters}m away)`);
+}
+```
+
+Run `node duplicate-check.js` directly for a self-test. `example-ai-submission.js`
+calls this before every `submitLocationForReview` — copy that pattern into your own
+AI agent script: check for a nearby duplicate right after the AI proposes
+coordinates, and skip the submission entirely (don't even call the AI to describe
+it) when one is found.
+
+**A note on API keys**: if your AI agent script calls an external API (Gemini,
+etc.), never hardcode that key in a file you intend to commit. Put it in a local
+`.env` file (already covered by this folder's `.gitignore`) and read it with
+`process.env.YOUR_KEY_NAME` (add `require('dotenv').config()` at the top, or pass
+it via `GEMINI_API_KEY=... node your-script.js`) — the same way `serviceAccountKey.json`
+is kept out of git.

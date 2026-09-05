@@ -16,9 +16,18 @@
 // lien — `sourceNote`/`episodeLink` doivent toujours pointer vers une vraie source
 // vérifiable. Une proposition sans source vérifiable est à rejeter en relecture, pas à
 // publier "parce que ça semble plausible".
+//
+// Anti-doublon : le nom seul n'est PAS fiable pour détecter qu'un lieu existe déjà (une
+// IA peut le formuler différemment d'une génération à l'autre). Ce script vérifie donc
+// la DISTANCE entre la proposition et les lieux déjà connus (historiques + déjà
+// approuvés) avant tout envoi — voir duplicate-check.js.
 
+const path = require('path');
 const { initializeApp } = require('firebase/app');
 const { getFirestore, doc, collection, setDoc, serverTimestamp } = require('firebase/firestore');
+const { loadAllExistingLocations, findNearbyDuplicate } = require('./duplicate-check');
+
+const DUPLICATE_THRESHOLD_METERS = 50;
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -64,6 +73,27 @@ const exampleSubmission = {
     ]
 };
 
-submitLocationForReview(exampleSubmission, 'example-ai-agent')
-    .then(id => console.log('Submitted for review, id:', id))
-    .catch(err => { console.error(err); process.exit(1); });
+async function main() {
+    const scriptJsPath = path.join(__dirname, '..', 'script.js');
+    const existingLocations = await loadAllExistingLocations(scriptJsPath, firebaseConfig);
+    console.log(`Vérification anti-doublon contre ${existingLocations.length} lieux existants...`);
+
+    const duplicate = findNearbyDuplicate(
+        exampleSubmission.lat,
+        exampleSubmission.lng,
+        existingLocations,
+        DUPLICATE_THRESHOLD_METERS
+    );
+    if (duplicate) {
+        console.log(
+            `Rejeté avant envoi : à ${duplicate.distanceMeters}m de "${duplicate.location.name}" ` +
+            `(id ${duplicate.location.id}), déjà dans la base. Pas de doublon envoyé.`
+        );
+        return;
+    }
+
+    const id = await submitLocationForReview(exampleSubmission, 'example-ai-agent');
+    console.log('Submitted for review, id:', id);
+}
+
+main().catch(err => { console.error(err); process.exit(1); });
