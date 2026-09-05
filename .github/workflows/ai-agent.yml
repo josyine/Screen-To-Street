@@ -1,0 +1,37 @@
+name: Agent IA — propositions de lieux BTS
+
+# Fait tourner admin-scripts/example-ai-submission.js automatiquement, sans que ton Mac
+# ait besoin d'être allumé. Les résultats vont dans la file d'attente `locationSubmissions`
+# (Firestore) — rien n'est publié sur le site sans ta validation manuelle sur admin.html.
+#
+# Mise en place (une seule fois, voir admin-scripts/README.md pour le détail) :
+#   Réglages du dépôt GitHub > Secrets and variables > Actions > "New repository secret" :
+#     - GEMINI_API_KEY          : ta clé API Google AI Studio
+#     - FIREBASE_SERVICE_ACCOUNT: le contenu COMPLET du fichier serviceAccountKey.json
+#                                 (Firebase Console > Paramètres du projet > Comptes de
+#                                 service > Générer une nouvelle clé privée)
+on:
+  schedule:
+    - cron: '0 8 * * *'   # tous les jours à 8h UTC — ajuste selon ta préférence
+  workflow_dispatch:       # + bouton "Run workflow" manuel dans l'onglet Actions de GitHub
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Installe les dépendances
+        working-directory: admin-scripts
+        run: npm install
+
+      - name: Lance l'agent
+        working-directory: admin-scripts
+        run: node example-ai-submission.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
