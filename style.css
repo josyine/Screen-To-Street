@@ -125,6 +125,10 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 
 .wishlist-stat-box { background: #FFF0F5; border: 1px solid #FBD1DE; border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; font-size: 12.5px; font-weight: 600; color: #D42759; display: flex; align-items: center; gap: 8px; }
 .friend-visits-box { background: #F0F7FF; border: 1px solid #CFE4FB; border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; font-size: 12.5px; font-weight: 600; color: #2563eb; display: flex; align-items: center; gap: 8px; }
+.friend-visit-avatars { display: flex; align-items: center; flex-shrink: 0; }
+.friend-visit-avatar { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #F0F7FF; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 10px; margin-left: -8px; }
+.friend-visit-avatar:first-child { margin-left: 0; }
+.friend-visit-avatar-more { background: #94a3b8; }
 
 .friend-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 12.5px; color: #334155; }
 .friend-row:last-child { border-bottom: none; }

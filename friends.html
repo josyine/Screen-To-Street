@@ -336,7 +336,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             row.addEventListener('click', () => openTripConversation(row.dataset.tripId, row.dataset.tripName, !!groups.find(g => String(g.id) === row.dataset.tripId && g.isOwner)));
             row.querySelector('.convo-row-delete-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
-                confirmDeleteConversation(window.tripConversationId(row.dataset.tripId));
+                confirmDeleteConversation(window.tripConversationId(row.dataset.tripId), { kind: 'trip' });
             });
         });
     }
@@ -355,16 +355,22 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             row.querySelector('.convo-row-delete-btn').addEventListener('click', (e) => {
                 e.stopPropagation();
                 const user = window.firebaseCurrentUser;
-                if (user) confirmDeleteConversation(window.dmConversationId(user.uid, row.dataset.friendUid));
+                if (user) confirmDeleteConversation(window.dmConversationId(user.uid, row.dataset.friendUid), { kind: 'dm', friendUid: row.dataset.friendUid });
             });
         });
     }
 
-    // Confirmation avant suppression d'une conversation (DM ou groupe de voyage — demande
-    // du 06/09/2026) : supprime uniquement l'HISTORIQUE de messages (le document
-    // conversations/{id}), jamais l'amitié ni l'appartenance au voyage — rouvrir la
-    // conversation en recréera une nouvelle, vide, via ensureDmConversation()/
-    // ensureTripConversation() (firebase-init.js), déjà appelées à l'ouverture.
+    // Confirmation avant suppression d'une ligne de la sidebar (demande du 06/09/2026) :
+    // - Groupe de voyage : supprime uniquement l'HISTORIQUE de messages (le document
+    //   conversations/{id}), jamais l'appartenance au voyage (l'option "Quitter le
+    //   groupe" du menu "⋮" s'en charge séparément) — rouvrir la conversation en
+    //   recréera une nouvelle, vide, via ensureTripConversation().
+    // - DM : la ligne est pilotée par la relation d'amitié (myFriendsList), pas par
+    //   l'existence du document de conversation — supprimer seulement l'historique ne
+    //   faisait donc jamais disparaître la ligne (bug rapporté : conversations "fantômes"
+    //   avec un ancien compte supprimé). La croix retire maintenant l'ami (les deux côtés
+    //   de friendIndex, via window.removeFriend) ET l'historique, ce qui fait bien
+    //   disparaître la ligne.
     function ensureDeleteConvoModal() {
         let modal = document.getElementById('delete-convo-modal');
         if (modal) return modal;
@@ -372,33 +378,54 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         modal.id = 'delete-convo-modal';
         modal.className = 'modal hidden';
         modal.style.zIndex = '10500';
-        const isFr = currentLang === 'fr';
         modal.innerHTML = `
             <div class="modal-content" style="max-width:380px; text-align:center;">
-                <h3 style="margin-bottom:10px; color:#212832;">${isFr ? 'Supprimer cette conversation ?' : 'Delete this conversation?'}</h3>
-                <p style="font-size:13px; color:#64748b; margin-bottom:20px;">${isFr ? "L'historique des messages sera définitivement supprimé." : 'The message history will be permanently deleted.'}</p>
+                <h3 style="margin-bottom:10px; color:#212832;" id="delete-convo-title"></h3>
+                <p style="font-size:13px; color:#64748b; margin-bottom:20px;" id="delete-convo-desc"></p>
                 <div style="display:flex; gap:10px;">
-                    <button class="gen-btn ghost" style="flex:1; justify-content:center;" id="delete-convo-cancel">${isFr ? 'Annuler' : 'Cancel'}</button>
-                    <button class="gen-btn" style="background:#ef4444; border-color:#ef4444; flex:1; justify-content:center;" id="delete-convo-confirm">${isFr ? 'Supprimer' : 'Delete'}</button>
+                    <button class="gen-btn ghost" style="flex:1; justify-content:center;" id="delete-convo-cancel"></button>
+                    <button class="gen-btn" style="background:#ef4444; border-color:#ef4444; flex:1; justify-content:center;" id="delete-convo-confirm"></button>
                 </div>
             </div>`;
         document.body.appendChild(modal);
         modal.querySelector('#delete-convo-cancel').addEventListener('click', () => modal.classList.add('hidden'));
         return modal;
     }
-    function confirmDeleteConversation(convoId) {
+    function closeConvoPanelIfOpen(convoId) {
+        if (currentConvoId !== convoId) return;
+        document.getElementById('friends-shell').classList.remove('chat-open');
+        document.getElementById('convo-panel').classList.add('hidden');
+        document.getElementById('convo-panel').style.display = 'none';
+        document.getElementById('convo-empty-state').classList.remove('hidden');
+        currentConvoId = null; currentConvoTripId = null; currentConvoType = null;
+    }
+    async function refreshMyFriendsList() {
+        if (typeof window.listMyFriends !== 'function') return;
+        const friends = await window.listMyFriends();
+        const visits = typeof window.loadFriendVisits === 'function' ? await window.loadFriendVisits(friends.map(f => f.uid)) : {};
+        window.setFriendsData(friends, visits);
+    }
+    function confirmDeleteConversation(convoId, opts) {
+        const kind = (opts && opts.kind) || 'trip';
+        const isFr = currentLang === 'fr';
         const modal = ensureDeleteConvoModal();
+        modal.querySelector('#delete-convo-title').textContent = kind === 'dm'
+            ? (isFr ? 'Retirer cet ami ?' : 'Remove this friend?')
+            : (isFr ? 'Supprimer cette conversation ?' : 'Delete this conversation?');
+        modal.querySelector('#delete-convo-desc').textContent = kind === 'dm'
+            ? (isFr ? "Vous ne serez plus amis et votre historique de messages sera définitivement supprimé." : "You will no longer be friends and your message history will be permanently deleted.")
+            : (isFr ? "L'historique des messages sera définitivement supprimé." : 'The message history will be permanently deleted.');
+        modal.querySelector('#delete-convo-cancel').textContent = isFr ? 'Annuler' : 'Cancel';
+        modal.querySelector('#delete-convo-confirm').textContent = kind === 'dm' ? (isFr ? 'Retirer' : 'Remove') : (isFr ? 'Supprimer' : 'Delete');
         modal.classList.remove('hidden');
         modal.querySelector('#delete-convo-confirm').onclick = async () => {
             modal.classList.add('hidden');
-            if (typeof window.deleteConversation === 'function') await window.deleteConversation(convoId);
-            if (currentConvoId === convoId) {
-                document.getElementById('friends-shell').classList.remove('chat-open');
-                document.getElementById('convo-panel').classList.add('hidden');
-                document.getElementById('convo-panel').style.display = 'none';
-                document.getElementById('convo-empty-state').classList.remove('hidden');
-                currentConvoId = null; currentConvoTripId = null; currentConvoType = null;
+            if (kind === 'dm' && opts.friendUid && typeof window.removeFriend === 'function') {
+                await window.removeFriend(opts.friendUid);
+                await refreshMyFriendsList();
             }
+            if (typeof window.deleteConversation === 'function') await window.deleteConversation(convoId);
+            closeConvoPanelIfOpen(convoId);
             refreshTripGroupsList();
             refreshDmListUI();
         };
@@ -425,6 +452,13 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-options-btn').classList.add('hidden');
         document.getElementById('convo-options-menu').classList.add('hidden');
         currentConvoId = await window.ensureDmConversation(friendUid, friendUsername);
+        if (!currentConvoId) {
+            const isFr = currentLang === 'fr';
+            if (typeof window.showSimpleToast === 'function') {
+                window.showSimpleToast(isFr ? "Impossible d'ouvrir cette conversation." : 'Could not open this conversation.', { isError: true });
+            }
+            return;
+        }
         await openConvoPanel();
     }
 
@@ -446,6 +480,13 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-rename-option').classList.toggle('hidden', !isOwner);
         document.getElementById('convo-leave-option').classList.toggle('hidden', isOwner);
         currentConvoId = await window.ensureTripConversation(tripId, tripName);
+        if (!currentConvoId) {
+            const isFr = currentLang === 'fr';
+            if (typeof window.showSimpleToast === 'function') {
+                window.showSimpleToast(isFr ? "Impossible d'ouvrir cette conversation." : 'Could not open this conversation.', { isError: true });
+            }
+            return;
+        }
         await openConvoPanel();
     }
 
@@ -464,16 +505,20 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     // Contenu de la bulle selon le type de message (voir sendRichMessage() et les 3
     // fonctions dédiées dans firebase-init.js) — texte simple par défaut (rétrocompatible
     // avec tous les messages envoyés avant l'ajout du menu "+").
+    const chatCardLocationIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+    const chatCardTripIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`;
+    const chatCardPollIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`;
+    const msgDeleteIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg>`;
     function renderMessageContent(m, mine, myUid) {
         if (m.type === 'location') {
             return `<a class="chat-card" href="map.html?loc=${encodeURIComponent(m.locationId)}">
-                <div class="chat-card-label">📍 ${t('attachLocationOption').replace('📍 ', '')}</div>
+                <div class="chat-card-label" style="display:flex; align-items:center; gap:5px;">${chatCardLocationIcon} ${t('attachLocationOption')}</div>
                 <div class="chat-card-title">${escapeHtml(m.locationName || '')}</div>
             </a>`;
         }
         if (m.type === 'trip') {
             return `<a class="chat-card" href="trips.html?openTrip=${encodeURIComponent(m.sharedTripId)}">
-                <div class="chat-card-label">🧳 ${t('attachTripOption').replace('🧳 ', '')}</div>
+                <div class="chat-card-label" style="display:flex; align-items:center; gap:5px;">${chatCardTripIcon} ${t('attachTripOption')}</div>
                 <div class="chat-card-title">${escapeHtml(m.sharedTripName || '')}</div>
             </a>`;
         }
@@ -487,7 +532,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                     <span>${escapeHtml(opt)}</span>
                     <span class="poll-option-count">${counts[i]}${totalVotes > 0 ? ' · ' + Math.round(100 * counts[i] / totalVotes) + '%' : ''}</span>
                 </button>`).join('');
-            return `<div class="poll-card"><div class="poll-question">📊 ${escapeHtml(m.pollQuestion || '')}</div>${optsHtml}</div>`;
+            return `<div class="poll-card"><div class="poll-question" style="display:flex; align-items:center; gap:5px;">${chatCardPollIcon} ${escapeHtml(m.pollQuestion || '')}</div>${optsHtml}</div>`;
         }
         return `<div class="msg-bubble">${escapeHtml(m.text)}</div>`;
     }
@@ -503,7 +548,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             return `<div class="msg-bubble-wrap ${mine ? 'mine' : 'theirs'}">
                 ${!mine ? `<div class="msg-sender">${escapeHtml(m.fromUsername || '')}</div>` : ''}
                 <div class="msg-bubble-row">
-                    ${canDelete ? `<button class="msg-delete-btn" data-msg-id="${m.id}" title="${t('deleteMessageOption')}">🗑</button>` : ''}
+                    ${canDelete ? `<button class="msg-delete-btn" data-msg-id="${m.id}" title="${t('deleteMessageOption')}">${msgDeleteIcon}</button>` : ''}
                     ${renderMessageContent(m, mine, myUid)}
                 </div>
             </div>`;
@@ -539,8 +584,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const input = document.getElementById('convo-message-input');
         const text = input.value;
         if (!text.trim() || !currentConvoId || typeof window.sendMessage !== 'function') return;
+        const result = await window.sendMessage(currentConvoId, text);
+        if (!result || result.error) {
+            const isFr = currentLang === 'fr';
+            if (typeof window.showSimpleToast === 'function') {
+                window.showSimpleToast(isFr ? "Échec de l'envoi du message. Réessayez." : 'Failed to send the message. Please try again.', { isError: true });
+            }
+            return;
+        }
         input.value = '';
-        await window.sendMessage(currentConvoId, text);
         await loadAndRenderMessages();
         if (currentConvoType === 'trip') refreshTripGroupsList(); else refreshDmListUI();
     }

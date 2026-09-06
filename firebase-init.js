@@ -765,7 +765,7 @@ window.searchUsernamesContaining = async function (text, maxResults) {
 
 window.createSharedTrip = async function (trip) {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) return { error: 'not-signed-in' };
     try {
         await setDoc(doc(db, 'trips', trip.id), Object.assign({}, trip, {
             ownerUid: user.uid,
@@ -773,8 +773,10 @@ window.createSharedTrip = async function (trip) {
             members: {},
             memberNames: {}
         }));
+        return { success: true };
     } catch (e) {
         console.warn('Création du voyage partagé échouée :', e);
+        return { error: 'failed' };
     }
 };
 
@@ -796,11 +798,23 @@ window.loadSharedTrip = async function (tripId) {
     }
 };
 
+// Toujours appelée par le propriétaire du voyage (bouton "Inviter" — visible seulement à
+// lui). `ownerUid` est réécrit ici (valeur inchangée dans le cas normal, le document
+// existe déjà) uniquement pour auto-réparer les voyages dont le document Firestore n'a
+// jamais réellement été créé malgré `trip.isShared === true` côté client (ex : un premier
+// createSharedTrip() resté silencieusement en échec) — sans lui, ce merge sur un document
+// inexistant est classé "create" par les règles Firestore, qui exigent
+// request.resource.data.ownerUid == uid courant ; comme ce champ était absent de cet
+// appel, la création échouait avec "Failed to send the invite" malgré un pseudo valide
+// (bug rapporté le 06/09/2026).
 window.inviteTripCollaborator = async function (tripId, username, role) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
     const uid = await window.lookupUserByUsername(username);
     if (!uid) return { error: 'not-found' };
     try {
         await setDoc(doc(db, 'trips', tripId), {
+            ownerUid: user.uid,
             members: { [uid]: role },
             memberNames: { [uid]: username.trim() }
         }, { merge: true });
@@ -1170,16 +1184,28 @@ function tripConversationId(tripId) { return `trip_${tripId}`; }
 window.dmConversationId = dmConversationId;
 window.tripConversationId = tripConversationId;
 
+// N'écrit type/members/memberNames QUE si le document n'existe pas encore : un simple
+// setDoc(..., {merge:true}) sur un document déjà existant est classé "update" par les
+// règles Firestore, qui n'autorisent la modification que de lastMessageAt/lastMessageText/
+// lastMessageFromUid sur une conversation existante (voir firestore.rules) — si le
+// pseudo affiché a changé depuis la création (renommage, ancien compte recréé...),
+// re-fusionner memberNames avec la nouvelle valeur violait cette règle et faisait
+// échouer silencieusement TOUTE ouverture ultérieure de cette conversation (donc l'envoi
+// de messages) — bug confirmé le 06/09/2026.
 window.ensureDmConversation = async function (friendUid, friendUsername) {
     const user = auth.currentUser;
     if (!user) return null;
     const convoId = dmConversationId(user.uid, friendUid);
     const myUsername = (localStorage.getItem('userName') || '').trim();
     try {
-        await setDoc(doc(db, 'conversations', convoId), {
-            type: 'dm', members: [user.uid, friendUid],
-            memberNames: { [user.uid]: myUsername, [friendUid]: friendUsername },
-        }, { merge: true });
+        const ref = doc(db, 'conversations', convoId);
+        const existing = await getDoc(ref);
+        if (!existing.exists()) {
+            await setDoc(ref, {
+                type: 'dm', members: [user.uid, friendUid],
+                memberNames: { [user.uid]: myUsername, [friendUid]: friendUsername },
+            });
+        }
         return convoId;
     } catch (e) {
         console.warn('Création de la conversation échouée :', e);
@@ -1190,9 +1216,11 @@ window.ensureDmConversation = async function (friendUid, friendUsername) {
 window.ensureTripConversation = async function (tripId, tripName) {
     const convoId = tripConversationId(tripId);
     try {
-        await setDoc(doc(db, 'conversations', convoId), {
-            type: 'trip', tripId: String(tripId), tripName: tripName || '',
-        }, { merge: true });
+        const ref = doc(db, 'conversations', convoId);
+        const existing = await getDoc(ref);
+        if (!existing.exists()) {
+            await setDoc(ref, { type: 'trip', tripId: String(tripId), tripName: tripName || '' });
+        }
         return convoId;
     } catch (e) {
         console.warn('Création de la conversation de groupe échouée :', e);
@@ -1228,7 +1256,7 @@ window.sendMessage = async function (convoId, text) {
 // Version générique derrière sendMessage() (texte simple) ET le menu "+" de friends.html
 // (partager un lieu, partager un voyage, créer un sondage) : `extraFields` porte les
 // champs propres à chaque type (voir les 3 fonctions ci-dessous), `previewText` est ce
-// qui s'affiche dans la sidebar (ex: "📍 Shared a location" plutôt que le texte brut d'un
+// qui s'affiche dans la sidebar (ex: "Shared a location" plutôt que le texte brut d'un
 // sondage). Aucune restriction de champs côté règles Firestore sur la création d'un
 // message — seule la mise à jour ultérieure de `votes` (vote dans un sondage) est
 // contrainte.
@@ -1256,7 +1284,7 @@ window.sendRichMessage = async function (convoId, extraFields, previewText) {
 window.sendLocationShareMessage = async function (convoId, locationId, locationName) {
     return window.sendRichMessage(convoId,
         { type: 'location', locationId: String(locationId), locationName: locationName || '' },
-        '📍 ' + (locationName || 'Shared a location'));
+        locationName || 'Shared a location');
 };
 
 // Partager un voyage DANS une conversation (menu "+", complète shareTripWithFriend() qui
@@ -1264,7 +1292,7 @@ window.sendLocationShareMessage = async function (convoId, locationId, locationN
 window.sendTripShareMessage = async function (convoId, tripId, tripName) {
     return window.sendRichMessage(convoId,
         { type: 'trip', sharedTripId: String(tripId), sharedTripName: tripName || '' },
-        '🧳 ' + (tripName || 'Shared a trip'));
+        tripName || 'Shared a trip');
 };
 
 // Sondage simple : question + jusqu'à 4 options, votes stockés comme {uid: optionIndex}
@@ -1277,7 +1305,7 @@ window.sendPollMessage = async function (convoId, question, options) {
     if (!question || !question.trim() || cleanOptions.length < 2) return { error: 'invalid' };
     return window.sendRichMessage(convoId,
         { type: 'poll', pollQuestion: question.trim(), pollOptions: cleanOptions, votes: {} },
-        '📊 ' + question.trim());
+        question.trim());
 };
 
 // Voter (ou changer son vote) dans un sondage — un seul choix par personne, la ré-écriture
