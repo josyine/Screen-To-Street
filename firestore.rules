@@ -45,10 +45,15 @@ service cloud.firestore {
 
     // Index public pseudo -> uid, utilisé pour retrouver un compte par son pseudo
     // (partage de voyages, demandes d'ami). Un compte ne peut réserver/modifier que
-    // l'entrée qui pointe vers SON PROPRE uid.
+    // l'entrée qui pointe vers SON PROPRE uid. La suppression (libère le pseudo à la
+    // suppression du compte — voir firebaseDeleteAccount() dans firebase-init.js) est une
+    // règle SÉPARÉE de la création/modification : sur allow delete, request.resource
+    // n'existe pas (aucune nouvelle donnée envoyée), donc request.resource.data.uid
+    // échouerait toujours — c'est resource.data.uid (l'ancienne valeur) qu'il faut vérifier.
     match /usernames/{username} {
       allow read: if true;
-      allow write: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow create, update: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
     // ==========================================
@@ -115,6 +120,19 @@ service cloud.firestore {
     // Lieux nouvellement approuvés (fusionnés dans celebLocations côté client au
     // chargement de la carte) : lisibles par tous, écrits uniquement par un admin.
     match /newLocations/{locationId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Un seul document (siteConfig/hiddenLocations, { ids: [...] }) listant les lieux
+    // "supprimés" depuis l'onglet admin "Existing locations" — un vrai supprimer étant
+    // impossible pour un lieu codé en dur dans script.js sans modifier le code du site,
+    // on le masque à la place (voir adminSetLocationHidden() ci-dessus, et map.html qui
+    // filtre ces ids après avoir fusionné newLocations). Lisible par tous (une seule
+    // lecture par visite, comme newLocations juste au-dessus), écrit uniquement par un
+    // admin.
+    match /siteConfig/{configId} {
       allow read: if true;
       allow write: if request.auth != null
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
@@ -208,6 +226,10 @@ service cloud.firestore {
       allow update: if request.auth != null && isConvoMember(resource.data)
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid']);
+      // Bouton "×" de friends.html (demande du 06/09/2026) : n'importe quel membre peut
+      // effacer l'historique — n'affecte jamais l'amitié ni l'appartenance au voyage
+      // (voir deleteConversation() dans firebase-init.js).
+      allow delete: if request.auth != null && isConvoMember(resource.data);
 
       match /messages/{messageId} {
         allow read: if request.auth != null

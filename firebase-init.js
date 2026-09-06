@@ -21,7 +21,7 @@ import {
     EmailAuthProvider,
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, serverTimestamp, query, where, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -67,11 +67,52 @@ window.firebaseSignOut = () => signOut(auth);
 // dédié : reauthenticateWithPopup sera alors appelée en tout premier, directement
 // depuis le gestionnaire de clic de CE bouton (voir firebaseReauthenticateGoogleAndDelete
 // ci-dessous), ce qui reste un geste utilisateur direct aux yeux du navigateur.
+// Nettoyage Firestore avant suppression définitive du compte (voir doDelete() ci-dessous
+// et le bouton Google équivalent plus bas) : deleteUser() (Firebase Auth) ne touche JAMAIS
+// Firestore, un service complètement séparé — sans ce nettoyage explicite, l'entrée
+// usernames/{pseudo} restait bloquée à jamais sur l'ancien uid (empêchant un nouveau
+// compte de reprendre le même pseudo), et les conversations DM de ce compte restaient
+// visibles/fantômes côté amis, avec impossibilité de les supprimer (demande du
+// 06/09/2026 : "j'ai supprimé un utilisateur et la conversation existe encore"). Best-
+// effort et volontairement silencieux sur erreur : chaque étape est indépendante, une
+// erreur sur l'une ne doit jamais empêcher les autres ni bloquer la suppression du compte
+// lui-même. Doit tourner AVANT la suppression de users/{uid} (a besoin d'y lire le pseudo
+// et, via listMyFriends(), de la sous-collection friendIndex).
+async function cleanupFirestoreBeforeAccountDeletion(uid) {
+    let username = null;
+    try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (snap.exists()) username = snap.data().username || null;
+    } catch (e) { /* tant pis, on continue sans libérer le pseudo */ }
+
+    if (username) {
+        const key = username.toLowerCase().trim();
+        try {
+            const unameSnap = await getDoc(doc(db, 'usernames', key));
+            // Ne supprime que si l'entrée pointe bien vers CE compte (jamais celle d'un
+            // autre compte qui aurait par ailleurs le même pseudo affiché localement).
+            if (unameSnap.exists() && unameSnap.data().uid === uid) {
+                await deleteDoc(doc(db, 'usernames', key));
+            }
+        } catch (e) { console.warn('Libération du pseudo échouée :', e); }
+    }
+
+    try {
+        if (typeof window.listMyFriends === 'function') {
+            const friends = await window.listMyFriends();
+            await Promise.all(friends.map(f =>
+                deleteDoc(doc(db, 'conversations', dmConversationId(uid, f.uid))).catch(() => {})
+            ));
+        }
+    } catch (e) { console.warn('Suppression des conversations échouée :', e); }
+}
+
 window.firebaseDeleteAccount = async function (password) {
     const user = auth.currentUser;
     if (!user) throw Object.assign(new Error('not-authenticated'), { code: 'not-authenticated' });
 
     const doDelete = async () => {
+        await cleanupFirestoreBeforeAccountDeletion(user.uid);
         try { await deleteDoc(doc(db, 'users', user.uid)); } catch (e) { /* on continue même si le document n'existe pas/plus */ }
         await deleteUser(user);
     };
@@ -105,6 +146,7 @@ window.firebaseReauthenticateGoogleAndDelete = async function () {
     if (!user) throw Object.assign(new Error('not-authenticated'), { code: 'not-authenticated' });
 
     await reauthenticateWithPopup(user, googleProvider);
+    await cleanupFirestoreBeforeAccountDeletion(user.uid);
     try { await deleteDoc(doc(db, 'users', user.uid)); } catch (e) { /* on continue même si le document n'existe pas/plus */ }
     await deleteUser(user);
 };
@@ -525,6 +567,38 @@ window.adminUpdateLocationContent = async function (locationId, fields) {
     }
 };
 
+// "Supprimer" un lieu depuis l'onglet admin "Existing locations" (demande du 06/09/2026) :
+// pour un lieu du squelette (celebLocations, codé en dur dans script.js), une vraie
+// suppression nécessiterait de modifier ET publier le code du site — impossible depuis un
+// panneau d'administration d'un site 100% statique sans backend. On masque donc le lieu à
+// la place : un seul document public (siteConfig/hiddenLocations, { ids: [...] }) listant
+// les ids à ne jamais afficher, LU UNE SEULE FOIS par visite (voir map.html, juste après
+// la fusion de newLocations) — une seule lecture Firestore de plus par visiteur, pas une
+// par lieu masqué. Équivalent pratique d'une suppression côté visiteurs du site.
+window.fetchHiddenLocationIds = async function () {
+    try {
+        const snap = await getDoc(doc(db, 'siteConfig', 'hiddenLocations'));
+        return snap.exists() && Array.isArray(snap.data().ids) ? snap.data().ids : [];
+    } catch (e) {
+        console.warn('Lecture des lieux masqués échouée :', e);
+        return [];
+    }
+};
+window.adminSetLocationHidden = async function (locationId, hidden) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const idStr = String(locationId);
+        await setDoc(doc(db, 'siteConfig', 'hiddenLocations'), {
+            ids: hidden ? arrayUnion(idStr) : arrayRemove(idStr)
+        }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Masquage du lieu échoué :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Lu par map.html au chargement (voir firebase-ready) : les nouveaux lieux déjà approuvés
 // (voir approveLocationSubmission ci-dessus) sont fusionnés dans celebLocations à la
 // volée, jamais écrits dans script.js.
@@ -558,7 +632,8 @@ window.fetchNewLocations = async function () {
 // ajouter dans la console Firebase, onglet Firestore > Rules) :
 //   match /usernames/{username} {
 //     allow read: if true;
-//     allow write: if request.auth != null && request.resource.data.uid == request.auth.uid;
+//     allow create, update: if request.auth != null && request.resource.data.uid == request.auth.uid;
+//     allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
 //   }
 //   match /trips/{tripId} {
 //     allow read: if request.auth != null
@@ -582,7 +657,17 @@ window.claimUsername = async function (username) {
     try {
         const existing = await getDoc(doc(db, 'usernames', key));
         if (existing.exists() && existing.data().uid !== user.uid) {
-            return { success: false, code: 'taken' };
+            // Pris par un AUTRE compte — mais seulement "réellement" pris si ce compte
+            // existe encore. Un compte supprimé libère normalement son pseudo lui-même
+            // (voir cleanupFirestoreBeforeAccountDeletion ci-dessus), mais un compte
+            // supprimé par une autre voie (avant ce correctif, ou directement depuis la
+            // console Firebase) laisse une entrée usernames/ orpheline qui bloquerait ce
+            // pseudo pour toujours sans jamais pouvoir être réclamé — demande du
+            // 06/09/2026 ("j'ai recréé un compte avec le même pseudo et j'ai 2x le même
+            // pseudo"). On vérifie donc que le détenteur actuel a encore un compte avant
+            // de refuser la réclamation.
+            const holderSnap = await getDoc(doc(db, 'users', existing.data().uid));
+            if (holderSnap.exists()) return { success: false, code: 'taken' };
         }
         // `username` (en plus de `uid`) garde la casse d'affichage d'origine (ex:
         // "Perrine4058") — la clé du document, elle, reste toujours en minuscules pour
@@ -1060,6 +1145,7 @@ window.markShareSeen = async function (shareId) {
 //     allow update: if request.auth != null && isConvoMember(resource.data)
 //       && request.resource.data.diff(resource.data).affectedKeys()
 //            .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid']);
+//     allow delete: if request.auth != null && isConvoMember(resource.data);
 //     match /messages/{messageId} {
 //       allow read: if request.auth != null
 //         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
@@ -1111,6 +1197,25 @@ window.ensureTripConversation = async function (tripId, tripName) {
     } catch (e) {
         console.warn('Création de la conversation de groupe échouée :', e);
         return null;
+    }
+};
+
+// Supprime une conversation (DM ou groupe de voyage — bouton "×" de friends.html, demande
+// du 06/09/2026) : efface uniquement l'HISTORIQUE de messages (le document
+// conversations/{id} lui-même), jamais l'amitié ni l'appartenance au voyage — rouvrir la
+// conversation en recréera une nouvelle, vide, via ensureDmConversation()/
+// ensureTripConversation() ci-dessus. Ne supprime pas la sous-collection messages/ (pas de
+// Cloud Function pour le faire proprement sur un site 100% statique) : ces documents
+// orphelins restent invisibles/inaccessibles une fois le parent supprimé (la règle de
+// messages/{id} exige de résoudre isConvoMember() sur le document conversations/{id}
+// parent, qui échoue une fois celui-ci supprimé).
+window.deleteConversation = async function (convoId) {
+    try {
+        await deleteDoc(doc(db, 'conversations', convoId));
+        return { success: true };
+    } catch (e) {
+        console.warn('Suppression de la conversation échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
     }
 };
 

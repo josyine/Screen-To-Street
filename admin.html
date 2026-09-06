@@ -58,6 +58,17 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-result{font-size:12px;font-weight:600;margin-top:8px;}
 .sub-result.ok{color:#10b981;}
 .sub-result.err{color:#ef4444;}
+
+.admin-tabs{display:flex;gap:24px;margin-bottom:20px;border-bottom:1.5px solid #ECE7F3;}
+.admin-tab-btn{background:none;border:none;padding:10px 0;font-size:13.5px;font-weight:600;color:#94a3b8;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;font-family:'Poppins',sans-serif;}
+.admin-tab-btn.active{color:#D42759;border-bottom-color:#D42759;}
+.admin-tab-panel{display:none;}
+.admin-tab-panel.active{display:block;}
+.existing-loc-search{width:100%;padding:11px 14px;border-radius:100px;border:1.5px solid #cbd5e1;outline:none;font-family:'Poppins',sans-serif;font-size:13px;margin-bottom:16px;}
+.existing-loc-hidden-badge{background:#FFF1F3;color:#D42759;}
+.btn-hide{flex:1;background:#fff;color:#64748b;border:1.5px solid #e2e8f0;border-radius:100px;padding:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;}
+.btn-hide:hover{background:#f8fafc;}
+.btn-hide.is-hidden{color:#10b981;border-color:#10b981;}
 </style>
 </head>
 <body>
@@ -68,13 +79,30 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 </div>
 
 <div class="page">
-    <h1>Location submissions <span id="submissions-count" class="submissions-count hidden"></span></h1>
-    <p class="sub">New locations and corrections proposed for review — nothing here is visible on the site until approved.</p>
-
     <div id="loading-state" class="state-box">Checking access…</div>
     <div id="denied-state" class="state-box denied hidden">You don't have admin access to this page.</div>
-    <div id="empty-state" class="state-box hidden">No pending submissions right now.</div>
-    <div id="submissions-list"></div>
+
+    <div id="admin-main-content" class="hidden">
+        <div class="admin-tabs">
+            <button type="button" id="admin-tab-submissions-btn" class="admin-tab-btn active" onclick="window.switchAdminTab('submissions')">Location submissions</button>
+            <button type="button" id="admin-tab-locations-btn" class="admin-tab-btn" onclick="window.switchAdminTab('locations')">Existing locations</button>
+        </div>
+
+        <div id="admin-panel-submissions" class="admin-tab-panel active">
+            <h1>Location submissions <span id="submissions-count" class="submissions-count hidden"></span></h1>
+            <p class="sub">New locations and corrections proposed for review — nothing here is visible on the site until approved.</p>
+            <div id="empty-state" class="state-box hidden">No pending submissions right now.</div>
+            <div id="submissions-list"></div>
+        </div>
+
+        <div id="admin-panel-locations" class="admin-tab-panel">
+            <h1>Existing locations</h1>
+            <p class="sub">Edit the content of any location already live on the site (story, video, social links), or remove it from the map.</p>
+            <input type="text" id="existing-loc-search" class="existing-loc-search" oninput="window.renderExistingLocationsList()" placeholder="Search by name, city, or country…">
+            <div id="existing-loc-empty" class="state-box">Type at least 2 characters to search.</div>
+            <div id="existing-locations-list"></div>
+        </div>
+    </div>
 </div>
 
 <script type="module" src="firebase-init.js?v=20260904"></script>
@@ -340,6 +368,193 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         return card;
     }
 
+    // ==========================================
+    // ONGLET "EXISTING LOCATIONS" : édition/masquage d'un lieu déjà publié (demande du
+    // 06/09/2026) — contourne délibérément la file de soumissions ci-dessus, réservée aux
+    // NOUVELLES propositions : un admin qui corrige un lieu déjà en ligne publie
+    // directement (voir window.adminUpdateLocationContent dans firebase-init.js, réutilisé
+    // tel quel depuis l'icône crayon de map.html).
+    // ==========================================
+    window.switchAdminTab = function (tab) {
+        document.getElementById('admin-tab-submissions-btn').classList.toggle('active', tab === 'submissions');
+        document.getElementById('admin-tab-locations-btn').classList.toggle('active', tab === 'locations');
+        document.getElementById('admin-panel-submissions').classList.toggle('active', tab === 'submissions');
+        document.getElementById('admin-panel-locations').classList.toggle('active', tab === 'locations');
+    };
+
+    let allSiteLocationsCache = null;
+    let hiddenLocationIdsCache = [];
+
+    // Squelette (script.js, gratuit — voir celebLocations) + lieux approuvés via la file
+    // de soumissions (Firestore newLocations/) : mêmes deux sources que map.html, voir la
+    // stratégie hybride documentée ailleurs sur ce site. Chargé une seule fois : script.js
+    // est déjà entièrement chargé sur cette page (celebLocations est donc immédiatement
+    // disponible, sans lecture Firestore), seul newLocations nécessite un aller-retour.
+    async function loadAllSiteLocationsOnce() {
+        if (allSiteLocationsCache) return allSiteLocationsCache;
+        const skeleton = typeof celebLocations !== 'undefined' ? celebLocations.slice() : [];
+        let newLocs = [];
+        if (typeof window.fetchNewLocations === 'function') {
+            try { newLocs = await window.fetchNewLocations(); } catch (e) { newLocs = []; }
+        }
+        const existingIds = new Set(skeleton.map(l => l.id));
+        newLocs.forEach(l => { if (l && l.id && !existingIds.has(l.id)) skeleton.push(l); });
+        allSiteLocationsCache = skeleton;
+        return allSiteLocationsCache;
+    }
+
+    function renderExistingLocationCard(loc) {
+        const isHidden = hiddenLocationIdsCache.includes(String(loc.id));
+        const card = document.createElement('div');
+        card.className = 'submission-card';
+        card.innerHTML = `
+            <div class="sub-header">
+                <div>
+                    <div class="sub-name">${escapeHtml(loc.name || '(no name)')}</div>
+                    <span class="sub-badge${isHidden ? ' existing-loc-hidden-badge' : ''}">${isHidden ? 'Hidden from map' : '#' + escapeHtml(String(loc.id))}</span>
+                </div>
+            </div>
+            <div class="sub-meta">${escapeHtml(loc.group || '')} · ${escapeHtml(loc.member || '')} &middot; ${escapeHtml(loc.city || '')}, ${escapeHtml(loc.country || '')} &middot; ${escapeHtml(loc.category || '')}</div>
+
+            <textarea class="loc-story-input" rows="4" placeholder="Story (English) — one paragraph per blank line" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:10px;resize:vertical;"></textarea>
+
+            <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)">
+            <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
+            <input type="url" class="sub-social-input" data-platform="instagram" placeholder="Instagram URL (optional)">
+            <div class="sub-social-error hidden" data-platform="instagram" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like an instagram.com URL.</div>
+            <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional)">
+            <div class="sub-social-error hidden" data-platform="facebook" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a facebook.com URL.</div>
+            <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)">
+            <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
+            <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)">
+            <div class="sub-video-status" style="font-size:11px;color:#94a3b8;margin-bottom:14px;">Loading…</div>
+
+            <div class="sub-actions">
+                <button type="button" class="btn-approve loc-save-btn">Save changes</button>
+                <button type="button" class="btn-hide${isHidden ? ' is-hidden' : ''}">${isHidden ? 'Unhide (show on map)' : 'Remove from map'}</button>
+            </div>
+            <div class="sub-result hidden"></div>
+        `;
+
+        const storyInput = card.querySelector('.loc-story-input');
+        const tweetInput = card.querySelector('.sub-tweet-input');
+        const tweetError = card.querySelector('.sub-tweet-error');
+        const videoInput = card.querySelector('.sub-video-input');
+        const videoStatus = card.querySelector('.sub-video-status');
+        const saveBtn = card.querySelector('.loc-save-btn');
+        const hideBtn = card.querySelector('.btn-hide');
+        const resultEl = card.querySelector('.sub-result');
+        let mergedFullDescription = loc.fullDescription || {};
+
+        // Pré-remplit avec les données locales (immédiat), puis avec le contenu Firestore
+        // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
+        // logique qu'openLocationEditModal()/openDetailsPanel() dans script.js.
+        const fillFields = (data) => {
+            storyInput.value = typeof htmlParagraphsToPlainText === 'function' ? htmlParagraphsToPlainText(getLocText(data.fullDescription)) : (getLocText(data.fullDescription) || '');
+            tweetInput.value = data.tweetUrl || '';
+            card.querySelector('.sub-social-input[data-platform="instagram"]').value = data.instagramUrl || '';
+            card.querySelector('.sub-social-input[data-platform="facebook"]').value = data.facebookUrl || '';
+            card.querySelector('.sub-social-input[data-platform="tiktok"]').value = data.tiktokUrl || '';
+            videoInput.value = data.ytId ? 'https://www.youtube.com/watch?v=' + data.ytId : '';
+            videoStatus.textContent = data.ytId ? 'YouTube video: ' + data.ytId : 'No YouTube video';
+            mergedFullDescription = data.fullDescription || {};
+        };
+        fillFields(loc);
+        if (typeof window.fetchLocationContent === 'function') {
+            window.fetchLocationContent(loc.id).then(remote => {
+                if (remote) fillFields(Object.assign({}, loc, remote));
+            });
+        }
+
+        saveBtn.onclick = async () => {
+            saveBtn.disabled = true;
+            const tweetVal = tweetInput.value.trim();
+            const instagramVal = card.querySelector('.sub-social-input[data-platform="instagram"]').value.trim();
+            const facebookVal = card.querySelector('.sub-social-input[data-platform="facebook"]').value.trim();
+            const tiktokVal = card.querySelector('.sub-social-input[data-platform="tiktok"]').value.trim();
+            const videoVal = videoInput.value.trim();
+
+            let hasError = false;
+            const tweetUrl = tweetVal ? extractTweetUrl(tweetVal) : null;
+            tweetError.classList.toggle('hidden', !tweetVal || !!tweetUrl);
+            if (tweetVal && !tweetUrl) hasError = true;
+            const instagramUrl = instagramVal ? extractInstagramUrl(instagramVal) : null;
+            card.querySelector('.sub-social-error[data-platform="instagram"]').classList.toggle('hidden', !instagramVal || !!instagramUrl);
+            if (instagramVal && !instagramUrl) hasError = true;
+            const facebookUrl = facebookVal ? extractFacebookUrl(facebookVal) : null;
+            card.querySelector('.sub-social-error[data-platform="facebook"]').classList.toggle('hidden', !facebookVal || !!facebookUrl);
+            if (facebookVal && !facebookUrl) hasError = true;
+            const tiktokUrl = tiktokVal ? extractTikTokUrl(tiktokVal) : null;
+            card.querySelector('.sub-social-error[data-platform="tiktok"]').classList.toggle('hidden', !tiktokVal || !!tiktokUrl);
+            if (tiktokVal && !tiktokUrl) hasError = true;
+            const ytId = videoVal ? extractYouTubeId(videoVal) : null;
+            if (videoVal && !ytId) { videoStatus.textContent = "Doesn't look like a YouTube URL"; hasError = true; }
+
+            if (hasError) { saveBtn.disabled = false; return; }
+
+            const fullDescription = Object.assign({}, mergedFullDescription, {
+                en: typeof plainTextToHtmlParagraphs === 'function' ? plainTextToHtmlParagraphs(storyInput.value) : storyInput.value
+            });
+            const fields = { fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '' };
+            const res = await window.adminUpdateLocationContent(loc.id, fields);
+            resultEl.classList.remove('hidden');
+            if (res.success) {
+                resultEl.textContent = '✓ Saved.';
+                resultEl.className = 'sub-result ok';
+                mergedFullDescription = fullDescription;
+            } else {
+                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.className = 'sub-result err';
+            }
+            saveBtn.disabled = false;
+        };
+
+        hideBtn.onclick = async () => {
+            const nowHidden = !isHidden;
+            if (nowHidden && !window.confirm(`Remove "${loc.name}" from the map? Visitors will no longer see it (you can unhide it later from this same screen).`)) return;
+            hideBtn.disabled = true;
+            const res = await window.adminSetLocationHidden(loc.id, nowHidden);
+            hideBtn.disabled = false;
+            if (res.success) {
+                if (nowHidden) hiddenLocationIdsCache.push(String(loc.id));
+                else hiddenLocationIdsCache = hiddenLocationIdsCache.filter(id => id !== String(loc.id));
+                window.renderExistingLocationsList();
+            } else {
+                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.className = 'sub-result err';
+                resultEl.classList.remove('hidden');
+            }
+        };
+
+        return card;
+    }
+
+    window.renderExistingLocationsList = async function () {
+        const listEl = document.getElementById('existing-locations-list');
+        const emptyEl = document.getElementById('existing-loc-empty');
+        const query = (document.getElementById('existing-loc-search').value || '').trim().toLowerCase();
+        if (query.length < 2) {
+            listEl.innerHTML = '';
+            emptyEl.textContent = 'Type at least 2 characters to search.';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
+        const all = await loadAllSiteLocationsOnce();
+        const matches = all.filter(l =>
+            (l.name || '').toLowerCase().includes(query) ||
+            (l.city || '').toLowerCase().includes(query) ||
+            (l.country || '').toLowerCase().includes(query)
+        ).slice(0, 30);
+        listEl.innerHTML = '';
+        if (matches.length === 0) {
+            emptyEl.textContent = 'No location matches your search.';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
+        emptyEl.classList.add('hidden');
+        matches.forEach(loc => listEl.appendChild(renderExistingLocationCard(loc)));
+    };
+
     async function loadSubmissions() {
         const listEl = document.getElementById('submissions-list');
         // Pas de limite ici : window.listPendingSubmissions() (firebase-init.js) interroge
@@ -370,6 +585,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         if (!isAdmin) {
             deniedEl.classList.remove('hidden');
             return;
+        }
+        document.getElementById('admin-main-content').classList.remove('hidden');
+        if (typeof window.fetchHiddenLocationIds === 'function') {
+            hiddenLocationIdsCache = (await window.fetchHiddenLocationIds()).map(String);
         }
         await loadSubmissions();
     });

@@ -44,6 +44,8 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .convo-row { display: flex; align-items: center; gap: 10px; padding: 9px 18px; cursor: pointer; transition: .15s; }
 .convo-row:hover, .convo-row.active { background: #FFF7F8; }
 .convo-thumb-icon { width: 36px; height: 36px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.convo-row-delete-btn { margin-left: auto; background: none; border: none; color: #cbd5e1; font-size: 18px; line-height: 1; cursor: pointer; padding: 4px 6px; flex-shrink: 0; }
+.convo-row-delete-btn:hover { color: #D42759; }
 .convo-row-name { font-size: 12px; font-weight: 700; color: #212832; }
 .convo-row-meta { font-size: 9.5px; color: #94a3b8; margin-top: 1px; }
 .sidebar-empty-note { padding: 6px 18px 14px 18px; font-size: 11px; color: #94a3b8; line-height: 1.5; }
@@ -260,9 +262,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                 <div class="dropdown-container">
                     <button id="convo-attach-btn" class="attach-btn" title="Add">+</button>
                     <div id="convo-attach-menu" class="dropdown-menu hidden" style="bottom:44px; top:auto;">
-                        <a href="#" id="attach-location-option" class="dropdown-option" data-i18n="attachLocationOption">📍 Share a location</a>
-                        <a href="#" id="attach-trip-option" class="dropdown-option" data-i18n="attachTripOption">🧳 Share a trip</a>
-                        <a href="#" id="attach-poll-option" class="dropdown-option" data-i18n="attachPollOption">📊 Create a poll</a>
+                        <a href="#" id="attach-location-option" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-i18n="attachLocationOption">Share a location</span></a>
+                        <a href="#" id="attach-trip-option" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span data-i18n="attachTripOption">Share a trip</span></a>
+                        <a href="#" id="attach-poll-option" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg><span data-i18n="attachPollOption">Create a poll</span></a>
                     </div>
                 </div>
                 <input type="text" id="convo-message-input" data-i18n-placeholder="messagePlaceholder" placeholder="Message...">
@@ -315,20 +317,27 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         section.classList.toggle('hidden', incoming.length === 0);
     }
 
+    const tripThumbFallbackIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`;
+
     async function refreshTripGroupsList() {
         const groups = typeof window.listMyTripGroups === 'function' ? await window.listMyTripGroups() : [];
         const list = document.getElementById('trip-groups-list');
         const empty = document.getElementById('trip-groups-empty');
         list.innerHTML = groups.map(g => `<div class="convo-row" data-kind="trip" data-trip-id="${g.id}" data-trip-name="${escapeHtml(g.name)}">
-            <div class="convo-thumb-icon"${g.coverImage ? ` style="background-image:url('${g.coverImage}'); background-size:cover; background-position:center; font-size:0;"` : ''}>${g.coverImage ? '' : '🧳'}</div>
+            <div class="convo-thumb-icon"${g.coverImage ? ` style="background-image:url('${g.coverImage}'); background-size:cover; background-position:center;"` : ''}>${g.coverImage ? '' : tripThumbFallbackIcon}</div>
             <div>
                 <div class="convo-row-name">${escapeHtml(g.name)}</div>
                 <div class="convo-row-meta">${g.isOwner ? t('tripGroupOwner') : t('tripGroupMember')}</div>
             </div>
+            <button type="button" class="convo-row-delete-btn" data-kind="trip" data-trip-id="${g.id}" title="${t('deleteConvoBtn')}" aria-label="${t('deleteConvoBtn')}">&times;</button>
         </div>`).join('');
         empty.classList.toggle('hidden', groups.length > 0);
         list.querySelectorAll('.convo-row').forEach(row => {
             row.addEventListener('click', () => openTripConversation(row.dataset.tripId, row.dataset.tripName, !!groups.find(g => String(g.id) === row.dataset.tripId && g.isOwner)));
+            row.querySelector('.convo-row-delete-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                confirmDeleteConversation(window.tripConversationId(row.dataset.tripId));
+            });
         });
     }
 
@@ -338,11 +347,61 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         list.innerHTML = myFriendsList.map(f => `<div class="convo-row" data-kind="dm" data-friend-uid="${f.uid}" data-friend-username="${escapeHtml(f.username)}">
             <div class="convo-thumb-icon">${escapeHtml((f.username || '?').charAt(0).toUpperCase())}</div>
             <div class="convo-row-name">${escapeHtml(f.username)}</div>
+            <button type="button" class="convo-row-delete-btn" data-kind="dm" data-friend-uid="${f.uid}" title="${t('deleteConvoBtn')}" aria-label="${t('deleteConvoBtn')}">&times;</button>
         </div>`).join('');
         empty.classList.toggle('hidden', myFriendsList.length > 0);
         list.querySelectorAll('.convo-row').forEach(row => {
             row.addEventListener('click', () => openDmConversation(row.dataset.friendUid, row.dataset.friendUsername));
+            row.querySelector('.convo-row-delete-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const user = window.firebaseCurrentUser;
+                if (user) confirmDeleteConversation(window.dmConversationId(user.uid, row.dataset.friendUid));
+            });
         });
+    }
+
+    // Confirmation avant suppression d'une conversation (DM ou groupe de voyage — demande
+    // du 06/09/2026) : supprime uniquement l'HISTORIQUE de messages (le document
+    // conversations/{id}), jamais l'amitié ni l'appartenance au voyage — rouvrir la
+    // conversation en recréera une nouvelle, vide, via ensureDmConversation()/
+    // ensureTripConversation() (firebase-init.js), déjà appelées à l'ouverture.
+    function ensureDeleteConvoModal() {
+        let modal = document.getElementById('delete-convo-modal');
+        if (modal) return modal;
+        modal = document.createElement('div');
+        modal.id = 'delete-convo-modal';
+        modal.className = 'modal hidden';
+        modal.style.zIndex = '10500';
+        const isFr = currentLang === 'fr';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:380px; text-align:center;">
+                <h3 style="margin-bottom:10px; color:#212832;">${isFr ? 'Supprimer cette conversation ?' : 'Delete this conversation?'}</h3>
+                <p style="font-size:13px; color:#64748b; margin-bottom:20px;">${isFr ? "L'historique des messages sera définitivement supprimé." : 'The message history will be permanently deleted.'}</p>
+                <div style="display:flex; gap:10px;">
+                    <button class="gen-btn ghost" style="flex:1; justify-content:center;" id="delete-convo-cancel">${isFr ? 'Annuler' : 'Cancel'}</button>
+                    <button class="gen-btn" style="background:#ef4444; border-color:#ef4444; flex:1; justify-content:center;" id="delete-convo-confirm">${isFr ? 'Supprimer' : 'Delete'}</button>
+                </div>
+            </div>`;
+        document.body.appendChild(modal);
+        modal.querySelector('#delete-convo-cancel').addEventListener('click', () => modal.classList.add('hidden'));
+        return modal;
+    }
+    function confirmDeleteConversation(convoId) {
+        const modal = ensureDeleteConvoModal();
+        modal.classList.remove('hidden');
+        modal.querySelector('#delete-convo-confirm').onclick = async () => {
+            modal.classList.add('hidden');
+            if (typeof window.deleteConversation === 'function') await window.deleteConversation(convoId);
+            if (currentConvoId === convoId) {
+                document.getElementById('friends-shell').classList.remove('chat-open');
+                document.getElementById('convo-panel').classList.add('hidden');
+                document.getElementById('convo-panel').style.display = 'none';
+                document.getElementById('convo-empty-state').classList.remove('hidden');
+                currentConvoId = null; currentConvoTripId = null; currentConvoType = null;
+            }
+            refreshTripGroupsList();
+            refreshDmListUI();
+        };
     }
 
     function setActiveRow(kind, key) {

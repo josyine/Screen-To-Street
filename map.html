@@ -1188,6 +1188,20 @@
             newLocs.forEach(l => { if (l && l.id && !existingIds.has(l.id)) celebLocations.push(l); });
         }
 
+        // Lieux "supprimés" depuis l'onglet admin "Existing locations" (voir
+        // adminSetLocationHidden() dans firebase-init.js — demande du 06/09/2026) : un vrai
+        // supprimer étant impossible pour un lieu codé en dur dans script.js, on le retire
+        // ici de celebLocations avant le premier rendu, pour TOUS les visiteurs (une seule
+        // lecture Firestore de plus, jamais une par lieu masqué).
+        if (typeof window.fetchHiddenLocationIds === 'function' && typeof celebLocations !== 'undefined') {
+            const hiddenIds = new Set((await window.fetchHiddenLocationIds()).map(String));
+            if (hiddenIds.size > 0) {
+                for (let i = celebLocations.length - 1; i >= 0; i--) {
+                    if (hiddenIds.has(String(celebLocations[i].id))) celebLocations.splice(i, 1);
+                }
+            }
+        }
+
         if (window.__demoMode) {
             // Mode démo : la carte reste débloquée quel que soit l'état de connexion réel
             // (voir getUnlockedGroups() dans script.js pour les données BTS de démo).
