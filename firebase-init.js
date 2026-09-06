@@ -843,6 +843,67 @@ window.loadFriendVisits = async function (friendUids) {
     }
 };
 
+// Partage d'un lieu précis à un ami (suite du système d'amis ci-dessus) : un simple
+// document par partage, jamais modifié après coup sauf pour son champ `seen` (marqué
+// par le destinataire une fois consulté). Pas de collection à part pour "mes partages
+// envoyés" : listSharesForMe() de chacun suffit, et fromUid reste dans le document pour
+// l'affichage ("Alice a partagé...").
+//
+// IMPORTANT — nécessite cette règle Firestore (non déployable depuis ce fichier, à
+// ajouter dans la console Firebase, onglet Firestore > Rules) :
+//   match /friendShares/{shareId} {
+//     allow read: if request.auth != null
+//       && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+//     allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
+//       && exists(/databases/$(database)/documents/users/$(request.auth.uid)/friendIndex/$(request.resource.data.toUid));
+//     allow update: if request.auth != null && resource.data.toUid == request.auth.uid
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['seen']);
+//   }
+// La condition exists(...) dans allow create empêche de partager un lieu à quelqu'un
+// qui n'est pas (encore) un ami — cohérent avec le reste du système d'amis.
+
+window.shareLocationWithFriend = async function (toUid, locationId, locationName) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    const myUsername = (localStorage.getItem('userName') || '').trim();
+    try {
+        const ref = doc(collection(db, 'friendShares'));
+        await setDoc(ref, {
+            fromUid: user.uid, fromUsername: myUsername,
+            toUid, locationId, locationName: locationName || '',
+            seen: false, createdAt: serverTimestamp()
+        });
+        return { success: true };
+    } catch (e) {
+        console.warn('Partage du lieu échoué :', e);
+        return { error: 'failed' };
+    }
+};
+
+// Filtrée sur toUid==moi (même raison que listMyFriendRequests() plus haut : un
+// getDocs() sans where() sur toute la collection serait refusé par la règle ci-dessus).
+window.listSharesForMe = async function () {
+    const user = auth.currentUser;
+    if (!user) return [];
+    try {
+        const snap = await getDocs(query(collection(db, 'friendShares'), where('toUid', '==', user.uid)));
+        const result = [];
+        snap.forEach(d => result.push(Object.assign({ id: d.id }, d.data())));
+        return result;
+    } catch (e) {
+        console.warn('Lecture des lieux partagés échouée :', e);
+        return [];
+    }
+};
+
+window.markShareSeen = async function (shareId) {
+    try {
+        await setDoc(doc(db, 'friendShares', shareId), { seen: true }, { merge: true });
+    } catch (e) {
+        console.warn('Marquage du partage comme lu échoué :', e);
+    }
+};
+
 // Dès que l'état de connexion est connu (au chargement de la page, et à chaque
 // connexion/déconnexion), on prévient le reste du site via un évènement custom —
 // c'est le pont qui permet à script.js (non-module) de réagir sans avoir besoin
