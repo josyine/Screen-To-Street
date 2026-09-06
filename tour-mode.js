@@ -303,32 +303,41 @@
         }, 300);
     };
 
-    // Badge unique et fixe (voir la demande du 04/09/2026) : ne nomme plus un artiste ou
-    // une ville précise, ce qui devenait trompeur/incomplet dès que PLUSIEURS choses sont
-    // en direct en même temps (ex: la tournée du groupe ET un événement solo d'un membre
-    // se chevauchent déjà dans les données actuelles). À la place, un simple compteur —
-    // le détail complet reste à un clic (le badge ouvre le sélecteur Tour/Live, qui mène
-    // au panneau Live listant tout ce qui est en cours). getLiveTimelineEntries() (plus
-    // haut dans ce fichier) fusionne déjà tournée de groupe + événements solo et respecte
-    // le sélecteur "Switch artist" (window.selectedTourLiveGroup) : la réutiliser ici
-    // évite de dupliquer cette logique et généralise naturellement à d'autres artistes
-    // le jour où ils auront de vraies données.
+    // Badge "paquet de cartes" (demande du 06/09/2026) : quand PLUSIEURS choses sont en
+    // direct en même temps (ex: la tournée du groupe ET un événement solo d'un membre se
+    // chevauchent), le badge nomme désormais la plus pertinente pour CET utilisateur —
+    // celle dont l'artiste a le plus de lieux dans sa wishlist, voir
+    // getMostRelevantLiveEntry() dans script.js — avec un effet de cartes empilées et un
+    // badge "+N more" signalant qu'il y en a d'autres, plutôt que l'ancien compteur générique
+    // ("3 live now") qui ne nommait plus personne pour éviter d'induire en erreur. Cliquer
+    // le badge garde le même comportement (ouvre le sélecteur Tour/Live, qui mène au
+    // panneau Live listant tout ce qui est en cours). getLiveTimelineEntries() (plus haut
+    // dans ce fichier) fusionne déjà tournée de groupe + événements solo et respecte le
+    // sélecteur "Switch artist" (window.selectedTourLiveGroup) : la réutiliser ici évite de
+    // dupliquer cette logique et généralise naturellement à d'autres artistes le jour où
+    // ils auront de vraies données.
     window.initTourModeBadge = function () {
         const badge = document.getElementById('tour-mode-badge');
         const badgeMobile = document.getElementById('tour-mode-badge-mobile');
         if (!badge && !badgeMobile) return;
         const textEl = document.getElementById('tour-mode-badge-text');
+        const moreEl = document.getElementById('tour-mode-badge-more');
         const memberEvent = getCurrentMemberEvent();
         const groupStop = getCurrentTourStop();
 
-        const liveCount = typeof getLiveTimelineEntries === 'function'
-            ? getLiveTimelineEntries().filter(e => e.status === 'current').length
-            : ((memberEvent ? 1 : 0) + (groupStop ? 1 : 0));
+        const currentEntries = typeof getLiveTimelineEntries === 'function'
+            ? getLiveTimelineEntries().filter(e => e.status === 'current')
+            : [];
+        const liveCount = currentEntries.length;
+        const live = liveCount > 0;
+        const stacked = liveCount > 1;
 
         let label;
-        let live = liveCount > 0;
         if (live) {
-            label = liveCount === 1 ? t('tourModeLiveNowOne') : t('tourModeLiveNowCount').replace('{n}', liveCount);
+            const top = (typeof getMostRelevantLiveEntry === 'function' ? getMostRelevantLiveEntry(currentEntries) : currentEntries[0]) || currentEntries[0];
+            label = top.member
+                ? t('tourModeMemberLiveIn').replace('{member}', top.member).replace('{event}', top.eventName || top.title).replace('{city}', top.city)
+                : t('tourModeLiveIn').replace('{city}', top.city);
         } else {
             label = t('tourModeGenericLabel');
         }
@@ -338,8 +347,16 @@
             el.classList.remove('hidden');
             el.classList.toggle('tour-mode-badge-live', live);
         });
+        // L'effet de cartes empilées ne s'applique qu'à la pilule desktop — la version
+        // mobile est une simple icône ronde, pas de place pour cet effet visuel.
+        if (badge) badge.classList.toggle('tour-mode-badge-stacked', stacked);
         if (textEl) textEl.textContent = label;
-        if (badgeMobile) badgeMobile.title = label;
+        const moreText = stacked ? t('tourModeMoreCount').replace('{n}', liveCount - 1) : '';
+        if (moreEl) {
+            moreEl.textContent = moreText;
+            moreEl.classList.toggle('hidden', !stacked);
+        }
+        if (badgeMobile) badgeMobile.title = stacked ? `${label} ${moreText}` : label;
 
         renderLiveMapMarker(memberEvent || groupStop);
     };

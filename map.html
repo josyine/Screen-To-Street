@@ -145,6 +145,25 @@
   .tour-mode-badge.hidden { display: none; }
   .tour-mode-badge.tour-mode-badge-live { background: #211C2E; color: #fff; border-color: #211C2E; }
   .tour-mode-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s ease; }
+  /* Effet "paquet de cartes" (demande du 06/09/2026) : quand plusieurs choses sont en
+     direct en même temps, deux cartes légèrement décalées derrière la pilule principale
+     suggèrent qu'il y en a d'autres — voir initTourModeBadge() dans tour-mode.js pour la
+     logique qui choisit laquelle mettre en avant (celle la plus pertinente pour l'utilisateur,
+     selon sa wishlist) et affiche le nombre restant dans .tour-mode-badge-more. Pseudo-éléments
+     positionnés par rapport à la pilule elle-même (déjà en position:absolute, donc déjà un
+     conteneur de positionnement), z-index négatif pour rester visuellement DERRIÈRE elle. */
+  .tour-mode-badge.tour-mode-badge-stacked::before,
+  .tour-mode-badge.tour-mode-badge-stacked::after {
+      content: ''; position: absolute; left: 50%; height: 100%; border-radius: 100px;
+      background: #fff; border: 1.5px solid var(--border-color); z-index: -1;
+  }
+  .tour-mode-badge.tour-mode-badge-stacked::before { width: 90%; top: 6px; transform: translateX(-50%); opacity: .8; }
+  .tour-mode-badge.tour-mode-badge-stacked::after { width: 80%; top: 11px; transform: translateX(-50%); opacity: .55; }
+  .tour-mode-badge.tour-mode-badge-stacked.tour-mode-badge-live::before,
+  .tour-mode-badge.tour-mode-badge-stacked.tour-mode-badge-live::after { background: #211C2E; border-color: #211C2E; }
+  .tour-mode-badge-more { background: rgba(255,255,255,.18); padding: 3px 9px; border-radius: 100px; font-size: 10.5px; font-weight: 700; flex-shrink: 0; }
+  .tour-mode-badge-more.hidden { display: none; }
+  .tour-mode-badge:not(.tour-mode-badge-live) .tour-mode-badge-more { background: #f1f5f9; color: var(--text-main); }
   /* Petit menu contextuel ouvert par le badge fusionné Tour/Live (voir openLiveTourChooser
      dans script.js) : deux options qui ouvrent chacune le panneau existant correspondant,
      sans rien changer à leur contenu/comportement propre. */
@@ -342,6 +361,7 @@
   .map-hover-tip-arrow { position: absolute; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); bottom: -5px; left: 50%; margin-left: -6px; box-shadow: 3px 3px 6px rgba(0,0,0,.05); }
   .map-hover-tip-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .map-hover-tip-icon svg { width: 16px; height: 16px; }
+  .map-hover-tip-artist { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
   .map-hover-tip-title { font-size: 12.5px; font-weight: 800; color: var(--text-main); line-height: 1.3; }
   .map-hover-tip-meta { font-size: 10.5px; color: var(--muted-text); margin-top: 2px; }
 </style>
@@ -773,6 +793,7 @@
         <button id="tour-mode-badge" class="tour-mode-badge hidden" onclick="openLiveTourChooser(event)" type="button">
             <span class="tour-mode-live-dot"></span>
             <span id="tour-mode-badge-text"></span>
+            <span id="tour-mode-badge-more" class="tour-mode-badge-more hidden"></span>
         </button>
         <div id="live-tour-chooser" class="live-tour-chooser hidden">
             <div class="live-tour-chooser-option" onclick="chooseLiveTourMode('tour')">
@@ -791,6 +812,7 @@
                 <div class="map-hover-tip-arrow"></div>
                 <div class="map-hover-tip-icon" id="map-hover-tip-icon"></div>
                 <div>
+                    <div class="map-hover-tip-artist" id="map-hover-tip-artist"></div>
                     <div class="map-hover-tip-title" id="map-hover-tip-title"></div>
                     <div class="map-hover-tip-meta" id="map-hover-tip-meta"></div>
                 </div>
