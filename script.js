@@ -1003,14 +1003,17 @@ window.countUnreadFriendNotifications = async function() {
 // qu'ouvrir le voyage), s'assure que la conversation de groupe existe, puis enregistre
 // la notification de partage. `tripLocalObj` est l'entrée telle que dans getMyTripsList().
 window.shareTripFromFriendsPage = async function(tripLocalObj, friendUid, friendUsername) {
-    if (!tripLocalObj.isShared) {
-        const createResult = typeof window.createSharedTrip === 'function' ? await window.createSharedTrip(tripLocalObj) : null;
-        if (createResult && createResult.success) {
-            tripLocalObj.isShared = true;
-            const trips = getMyTripsList();
-            const idx = trips.findIndex(t => t.id === tripLocalObj.id);
-            if (idx !== -1) { trips[idx] = tripLocalObj; localStorage.setItem('myTrips', JSON.stringify(trips)); syncTrips(trips); }
-        }
+    // Toujours appelé, même si isShared est déjà à true localement (voir
+    // createSharedTrip() dans firebase-init.js, désormais idempotent) : au cas où le
+    // document trips/{id} aurait été créé de façon incomplète (auto-réparation de
+    // inviteTripCollaborator, qui ne connaît que ownerUid), ça réaffirme name/ownerName
+    // sans jamais toucher aux collaborateurs déjà présents.
+    const createResult = typeof window.createSharedTrip === 'function' ? await window.createSharedTrip(tripLocalObj) : null;
+    if (createResult && createResult.success && !tripLocalObj.isShared) {
+        tripLocalObj.isShared = true;
+        const trips = getMyTripsList();
+        const idx = trips.findIndex(t => t.id === tripLocalObj.id);
+        if (idx !== -1) { trips[idx] = tripLocalObj; localStorage.setItem('myTrips', JSON.stringify(trips)); syncTrips(trips); }
     }
     if (typeof window.inviteTripCollaborator === 'function') {
         await window.inviteTripCollaborator(tripLocalObj.id, friendUsername, 'view');
@@ -2629,7 +2632,7 @@ const translations = {
         artTitle: "Explore Artists", artSub: "Discover every group featured on Screen To Street", artGroups: "Groups", artFeatured: "Featured group",
 
         gateLoginTitle: "Log in to continue", gateLoginDesc: "Log in if you already have an account, or sign up if you don't. You can also continue without an account — 3 locations included, free.", gateContinueFreeText: "Prefer not to create an account?", gateContinueFreeLink: "Continue free — 3 locations included",
-        gateEmailLabel: "Email address", gatePasswordLabel: "Password", gateForgotPassword: "Forgot password?",
+        gateEmailLabel: "Email address", gateEmailOrUsernameLabel: "Email or username", gatePasswordLabel: "Password", gateForgotPassword: "Forgot password?",
         gateLoginBtn: "Log in", gateOrDivider: "OR", gateGoogleBtn: "Continue with Google",
         gateSignupPrompt: "Don't have an account?", gateSignupLink: "Sign up",
         gateNoGroupsTitle: "Unlock a group to see the map", gateNoGroupsDesc: "You haven't unlocked any group yet. Click below to choose a pass and start exploring.",
@@ -2693,7 +2696,7 @@ const translations = {
         artTitle: "Explorer les artistes", artSub: "Découvrez tous les groupes présents sur Screen To Street", artGroups: "Groupes", artFeatured: "Groupe à la une",
 
         gateLoginTitle: "Se connecter pour continuer", gateLoginDesc: "Connectez-vous si vous avez déjà un compte, ou créez-en un si ce n'est pas le cas. Vous pouvez aussi continuer sans compte — 3 lieux inclus, gratuitement.", gateContinueFreeText: "Vous préférez ne pas créer de compte ?", gateContinueFreeLink: "Continuer gratuitement — 3 lieux inclus",
-        gateEmailLabel: "Adresse e-mail", gatePasswordLabel: "Mot de passe", gateForgotPassword: "Mot de passe oublié ?",
+        gateEmailLabel: "Adresse e-mail", gateEmailOrUsernameLabel: "E-mail ou nom d'utilisateur", gatePasswordLabel: "Mot de passe", gateForgotPassword: "Mot de passe oublié ?",
         gateLoginBtn: "Se connecter", gateOrDivider: "OU", gateGoogleBtn: "Continuer avec Google",
         gateSignupPrompt: "Vous n'avez pas de compte ?", gateSignupLink: "S'inscrire",
         gateNoGroupsTitle: "Débloquez un groupe pour voir la carte", gateNoGroupsDesc: "Vous n'avez encore débloqué aucun groupe. Cliquez ci-dessous pour choisir un pass et commencer à explorer.",
@@ -2757,7 +2760,7 @@ const translations = {
         artTitle: "Explorar Artistas", artSub: "Descubre todos los grupos presentes en Screen To Street", artGroups: "Grupos", artFeatured: "Grupo destacado",
 
         gateLoginTitle: "Inicia sesión para continuar", gateLoginDesc: "Inicia sesión si ya tienes una cuenta, o regístrate si no la tienes. También puedes continuar sin cuenta — 3 lugares incluidos, gratis.", gateContinueFreeText: "¿Prefieres no crear una cuenta?", gateContinueFreeLink: "Continuar gratis — 3 lugares incluidos",
-        gateEmailLabel: "Correo electrónico", gatePasswordLabel: "Contraseña", gateForgotPassword: "¿Olvidaste tu contraseña?",
+        gateEmailLabel: "Correo electrónico", gateEmailOrUsernameLabel: "Correo electrónico o nombre de usuario", gatePasswordLabel: "Contraseña", gateForgotPassword: "¿Olvidaste tu contraseña?",
         gateLoginBtn: "Iniciar sesión", gateOrDivider: "O", gateGoogleBtn: "Continuar con Google",
         gateSignupPrompt: "¿No tienes cuenta?", gateSignupLink: "Regístrate",
         gateNoGroupsTitle: "Desbloquea un grupo para ver el mapa", gateNoGroupsDesc: "Aún no has desbloqueado ningún grupo. Haz clic abajo para elegir un pase y empezar a explorar.",
@@ -2820,7 +2823,7 @@ const translations = {
         artTitle: "Esplora Artisti", artSub: "Scopri tutti i gruppi presenti su Screen To Street", artGroups: "Gruppi", artFeatured: "Gruppo in evidenza",
 
         gateLoginTitle: "Accedi per continuare", gateLoginDesc: "Accedi se hai già un account, oppure registrati se non lo hai. Puoi anche continuare senza account — 3 luoghi inclusi, gratis.", gateContinueFreeText: "Preferisci non creare un account?", gateContinueFreeLink: "Continua gratis — 3 luoghi inclusi",
-        gateEmailLabel: "Indirizzo email", gatePasswordLabel: "Password", gateForgotPassword: "Password dimenticata?",
+        gateEmailLabel: "Indirizzo email", gateEmailOrUsernameLabel: "Email o nome utente", gatePasswordLabel: "Password", gateForgotPassword: "Password dimenticata?",
         gateLoginBtn: "Accedi", gateOrDivider: "OPPURE", gateGoogleBtn: "Continua con Google",
         gateSignupPrompt: "Non hai un account?", gateSignupLink: "Registrati",
         gateNoGroupsTitle: "Sblocca un gruppo per vedere la mappa", gateNoGroupsDesc: "Non hai ancora sbloccato nessun gruppo. Clicca qui sotto per scegliere un pass e iniziare a esplorare.",
@@ -2883,7 +2886,7 @@ const translations = {
         artTitle: "Explorar Artistas", artSub: "Descubra todos os grupos presentes no Screen To Street", artGroups: "Grupos", artFeatured: "Grupo em destaque",
 
         gateLoginTitle: "Entre para continuar", gateLoginDesc: "Entre se já tiver uma conta, ou cadastre-se se não tiver. Você também pode continuar sem conta — 3 locais incluídos, grátis.", gateContinueFreeText: "Prefere não criar uma conta?", gateContinueFreeLink: "Continuar grátis — 3 locais incluídos",
-        gateEmailLabel: "Endereço de e-mail", gatePasswordLabel: "Senha", gateForgotPassword: "Esqueceu a senha?",
+        gateEmailLabel: "Endereço de e-mail", gateEmailOrUsernameLabel: "E-mail ou nome de usuário", gatePasswordLabel: "Senha", gateForgotPassword: "Esqueceu a senha?",
         gateLoginBtn: "Entrar", gateOrDivider: "OU", gateGoogleBtn: "Continuar com Google",
         gateSignupPrompt: "Não tem uma conta?", gateSignupLink: "Cadastre-se",
         gateNoGroupsTitle: "Desbloqueie um grupo para ver o mapa", gateNoGroupsDesc: "Você ainda não desbloqueou nenhum grupo. Clique abaixo para escolher um passe e começar a explorar.",
@@ -2946,7 +2949,7 @@ const translations = {
         artTitle: "아티스트 둘러보기", artSub: "Screen To Street에 소개된 모든 그룹을 만나보세요", artGroups: "그룹", artFeatured: "추천 그룹",
 
         gateLoginTitle: "계속하려면 로그인하세요", gateLoginDesc: "이미 계정이 있다면 로그인하고, 없다면 가입하세요. 계정 없이도 계속할 수 있습니다 — 무료로 3곳 이용 가능.", gateContinueFreeText: "계정을 만들고 싶지 않으신가요?", gateContinueFreeLink: "무료로 계속하기 — 3곳 포함",
-        gateEmailLabel: "이메일 주소", gatePasswordLabel: "비밀번호", gateForgotPassword: "비밀번호를 잊으셨나요?",
+        gateEmailLabel: "이메일 주소", gateEmailOrUsernameLabel: "이메일 또는 아이디", gatePasswordLabel: "비밀번호", gateForgotPassword: "비밀번호를 잊으셨나요?",
         gateLoginBtn: "로그인", gateOrDivider: "또는", gateGoogleBtn: "Google로 계속하기",
         gateSignupPrompt: "계정이 없으신가요?", gateSignupLink: "회원가입",
         gateNoGroupsTitle: "지도를 보려면 그룹을 잠금 해제하세요", gateNoGroupsDesc: "아직 잠금 해제한 그룹이 없습니다. 아래를 클릭해 이용권을 선택하고 둘러보기를 시작하세요.",
@@ -3009,7 +3012,7 @@ const translations = {
         artTitle: "アーティストを探す", artSub: "Screen To Streetで紹介されているすべてのグループを見る", artGroups: "グループ", artFeatured: "注目のグループ",
 
         gateLoginTitle: "続けるにはログインしてください", gateLoginDesc: "アカウントをお持ちの場合はログイン、お持ちでない場合は新規登録してください。アカウントなしで続けることもできます — 無料で3件まで閲覧可能です。", gateContinueFreeText: "アカウントを作成したくない場合は？", gateContinueFreeLink: "無料で続ける — 3件まで閲覧可能",
-        gateEmailLabel: "メールアドレス", gatePasswordLabel: "パスワード", gateForgotPassword: "パスワードをお忘れですか？",
+        gateEmailLabel: "メールアドレス", gateEmailOrUsernameLabel: "メールアドレスまたはユーザー名", gatePasswordLabel: "パスワード", gateForgotPassword: "パスワードをお忘れですか？",
         gateLoginBtn: "ログイン", gateOrDivider: "または", gateGoogleBtn: "Googleで続ける",
         gateSignupPrompt: "アカウントをお持ちでないですか？", gateSignupLink: "新規登録",
         gateNoGroupsTitle: "地図を見るにはグループを解除してください", gateNoGroupsDesc: "まだグループを解除していません。下のボタンからパスを選んで探索を始めましょう。",
@@ -3072,7 +3075,7 @@ const translations = {
         artTitle: "探索艺人", artSub: "了解 Screen To Street 收录的所有团体", artGroups: "团体", artFeatured: "精选团体",
 
         gateLoginTitle: "登录以继续", gateLoginDesc: "如果您已有账户，请登录；如果没有，请注册。您也可以不注册账户直接继续——免费包含3个地点。", gateContinueFreeText: "不想创建账户？", gateContinueFreeLink: "免费继续 —— 包含3个地点",
-        gateEmailLabel: "电子邮箱", gatePasswordLabel: "密码", gateForgotPassword: "忘记密码？",
+        gateEmailLabel: "电子邮箱", gateEmailOrUsernameLabel: "邮箱或用户名", gatePasswordLabel: "密码", gateForgotPassword: "忘记密码？",
         gateLoginBtn: "登录", gateOrDivider: "或", gateGoogleBtn: "使用 Google 继续",
         gateSignupPrompt: "还没有账户？", gateSignupLink: "注册",
         gateNoGroupsTitle: "解锁一个团体以查看地图", gateNoGroupsDesc: "您还没有解锁任何团体。点击下方选择通行证，开始探索吧。",
@@ -6136,11 +6139,13 @@ window.openShareTripModal = async function(tripId, event) {
         if (!username) return;
         inviteBtn.disabled = true;
         // Un voyage doit exister côté Firestore partagé AVANT de pouvoir y ajouter un
-        // collaborateur (voir createSharedTrip()) — créé au tout premier partage, jamais
-        // avant, pour ne pas alourdir Firestore d'un document par voyage jamais partagé.
-        if (typeof window.createSharedTrip === 'function' && !trip.isShared) {
+        // collaborateur (voir createSharedTrip()) — appelé à chaque invitation, pas
+        // seulement la première (createSharedTrip est idempotent) pour auto-réparer un
+        // document incomplet (voir inviteTripCollaborator) sans jamais toucher aux
+        // collaborateurs déjà présents.
+        if (typeof window.createSharedTrip === 'function') {
             const createResult = await window.createSharedTrip(trip);
-            if (createResult && createResult.success) {
+            if (createResult && createResult.success && !trip.isShared) {
                 trip.isShared = true;
                 const idx = trips.findIndex(t => t.id === tripId);
                 if (idx !== -1) { trips[idx] = trip; localStorage.setItem('myTrips', JSON.stringify(trips)); syncTrips(trips); }
@@ -6528,6 +6533,14 @@ window.renderTripBuddiesAvatars = async function() {
         if (currentTrip.isShared && typeof window.loadSharedTrip === 'function') {
             const shared = await window.loadSharedTrip(currentTrip.id);
             if (shared) { members = shared.members || {}; memberNames = shared.memberNames || {}; }
+            // Auto-réparation (createSharedTrip est idempotent, voir plus haut) : si ce
+            // voyage a été partagé avant le correctif du 06/09/2026, son document
+            // Firestore peut manquer name/ownerName (affichés comme "undefined"/"ARMY"
+            // chez les personnes à qui il a été partagé) — corrigé dès que son
+            // propriétaire rouvre la fiche, sans jamais toucher aux collaborateurs.
+            if (shared && (shared.name !== currentTrip.name || !shared.ownerName) && typeof window.createSharedTrip === 'function') {
+                window.createSharedTrip(currentTrip);
+            }
         }
     } else {
         ownerName = currentTrip.ownerName || 'ARMY';
@@ -6536,10 +6549,10 @@ window.renderTripBuddiesAvatars = async function() {
     }
 
     const palette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
-    let html = `<div class="trip-buddy-avatar" style="background:${palette[0]};" title="${ownerName}">${ownerName.charAt(0).toUpperCase()}</div>`;
+    let html = `<div class="trip-buddy-avatar" style="background:${palette[0]};" title="${escapeHtml(ownerName)}">${escapeHtml(ownerName.charAt(0).toUpperCase())}</div>`;
     Object.keys(members).forEach((uid, i) => {
         const name = memberNames[uid] || uid;
-        html += `<div class="trip-buddy-avatar" style="background:${palette[(i + 1) % palette.length]};" title="${name}">${name.charAt(0).toUpperCase()}</div>`;
+        html += `<div class="trip-buddy-avatar" style="background:${palette[(i + 1) % palette.length]};" title="${escapeHtml(name)}">${escapeHtml(name.charAt(0).toUpperCase())}</div>`;
     });
     container.innerHTML = html;
     container.classList.remove('hidden');

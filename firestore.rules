@@ -56,6 +56,22 @@ service cloud.firestore {
       allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
     }
 
+    // Connexion par pseudo (demande du 06/09/2026), en plus de l'e-mail : un pseudo tapé à
+    // l'écran de connexion doit être résolu vers l'e-mail du compte (resolveLoginEmail()
+    // dans welcome-script.js) AVANT même d'être authentifié — donc forcément lisible sans
+    // connexion. Volontairement une collection À PART de `usernames` ci-dessus (déjà
+    // public en lecture pour la recherche d'amis, mais ne contient jamais d'e-mail) :
+    // `allow get` autorise à lire UN document précis quand on connaît déjà le pseudo
+    // exact, mais `allow list: if false` interdit toute requête sur la collection entière
+    // — personne ne peut donc lister/exporter les e-mails de tous les comptes, seulement
+    // retrouver celui d'un pseudo qu'on connaît déjà.
+    match /usernameLogin/{username} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if request.auth != null && request.resource.data.email == request.auth.token.email;
+      allow delete: if request.auth != null && resource.data.email == request.auth.token.email;
+    }
+
     // ==========================================
     // NOTES & STATISTIQUES COMMUNAUTAIRES (agrégats publics, jamais de note individuelle)
     // ==========================================
@@ -221,7 +237,13 @@ service cloud.firestore {
            || request.auth.uid in get(/databases/$(database)/documents/trips/$(convoData.tripId)).data.members);
     }
     match /conversations/{convoId} {
-      allow read: if request.auth != null && isConvoMember(resource.data);
+      // `resource == null` (document inexistant) doit être autorisé explicitement : sans
+      // ça, `resource.data` plante l'évaluation de la règle sur un getDoc() de
+      // vérification d'existence (ensureDmConversation/ensureTripConversation,
+      // loadConversationMeta, countUnreadConversations — firebase-init.js) et Firestore
+      // refuse la lecture avec permission-denied au lieu de simplement renvoyer "n'existe
+      // pas" — bug rapporté le 06/09/2026 : plus aucune conversation ne pouvait s'ouvrir.
+      allow read: if request.auth != null && (resource == null || isConvoMember(resource.data));
       allow create: if request.auth != null && isConvoMember(request.resource.data);
       allow update: if request.auth != null && isConvoMember(resource.data)
         && request.resource.data.diff(resource.data).affectedKeys()

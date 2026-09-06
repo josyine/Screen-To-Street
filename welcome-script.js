@@ -66,6 +66,7 @@ const dict = {
 
         loginTitle: "Log in", loginDesc: "Welcome back! Enter your email and password to continue.",
         forgotPassword: "Forgot password?", loginBtn: "Log in", orDivider: "OR",
+        emailOrUsernameLabel: "Email or username",
         
         step1Title: "Account", emailCheck: "Create your account with an email and password.",
         emailLabel: "Email address", password: "Password", btnContinue: "Continue",
@@ -120,6 +121,7 @@ const dict = {
 
         loginTitle: "Se connecter", loginDesc: "Ravis de vous revoir ! Entrez votre e-mail et votre mot de passe.",
         forgotPassword: "Mot de passe oublié ?", loginBtn: "Se connecter", orDivider: "OU",
+        emailOrUsernameLabel: "E-mail ou nom d'utilisateur",
         
         step1Title: "Compte", emailCheck: "Créez votre compte avec un e-mail et un mot de passe.",
         emailLabel: "Adresse e-mail", password: "Mot de passe", btnContinue: "Continuer",
@@ -180,6 +182,17 @@ function updateLangUI() {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.populateCountrySelect === 'function') window.populateCountrySelect('interest-country');
+
+    // Toujours en minuscules au fil de la frappe (règle du 06/09/2026, jamais de
+    // majuscule dans un pseudo) — même mécanisme que account.html.
+    const unameFieldEarly = document.getElementById('uname');
+    if (unameFieldEarly) {
+        unameFieldEarly.addEventListener('input', () => {
+            const cursor = unameFieldEarly.selectionStart;
+            unameFieldEarly.value = unameFieldEarly.value.toLowerCase();
+            unameFieldEarly.setSelectionRange(cursor, cursor);
+        });
+    }
 
     const langBtn = document.getElementById('lang-btn');
     if (langBtn) langBtn.addEventListener('click', (e) => {
@@ -335,6 +348,27 @@ async function isUsernameTakenByOther(key, uid) {
     }
 }
 
+// Se connecter par pseudo (demande du 06/09/2026), en plus de l'e-mail : Firebase Auth
+// n'accepte qu'un e-mail pour signInWithEmailAndPassword/sendPasswordResetEmail, donc un
+// pseudo tapé ici doit d'abord être résolu vers l'e-mail du compte via
+// usernameLogin/{pseudo} -> {email} — un index séparé de usernames/{pseudo} (qui reste
+// entièrement public pour la recherche d'amis) précisément pour ne JAMAIS exposer les
+// e-mails en liste : sa règle Firestore autorise la lecture d'un document précis
+// (`allow get`) mais interdit toute requête sur la collection entière (`allow list:
+// false`), donc seul quelqu'un qui connaît déjà le pseudo exact peut en retrouver l'e-mail
+// — pas de liste possible pour un tiers.
+async function resolveLoginEmail(value) {
+    const trimmed = (value || '').trim();
+    if (!trimmed) return null;
+    if (trimmed.includes('@')) return trimmed;
+    try {
+        const snap = await getDoc(doc(db, 'usernameLogin', trimmed.toLowerCase()));
+        return snap.exists() ? (snap.data().email || null) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
 // ==========================================
 // CHARGEMENT DU PROFIL D'UN UTILISATEUR EXISTANT
 // ==========================================
@@ -360,8 +394,11 @@ async function loadExistingProfileAndRedirect(user) {
                 const key = data.username.toLowerCase().trim();
                 try {
                     if (!(await isUsernameTakenByOther(key, user.uid))) {
-                        await setDoc(doc(db, 'usernames', key), { uid: user.uid, username: data.username.trim() }, { merge: true });
+                        await setDoc(doc(db, 'usernames', key), { uid: user.uid, username: key }, { merge: true });
                     }
+                    // Répare aussi l'index de connexion par pseudo (voir resolveLoginEmail
+                    // ci-dessus) — comptes créés avant l'ajout de la connexion par pseudo.
+                    await setDoc(doc(db, 'usernameLogin', key), { email: user.email }, { merge: true });
                 } catch (e) {
                     console.warn('Réparation du pseudo public échouée au login :', e);
                 }
@@ -422,7 +459,7 @@ window.openGooglePopup = async function() {
             resetFreshAccountData();
             localStorage.setItem('userEmail', user.email || '');
             const unameInput = document.getElementById('uname');
-            if (unameInput && user.displayName) unameInput.value = user.displayName.replace(/\s+/g, '');
+            if (unameInput && user.displayName) unameInput.value = user.displayName.replace(/\s+/g, '').toLowerCase();
             showStep(2);
         } else {
             // Compte Google déjà existant : on récupère son profil et on file sur la carte.
@@ -447,11 +484,19 @@ if (btnLoginSubmit) {
         if(!passInput.checkValidity()) { passInput.reportValidity(); return; }
         clearAuthError();
 
-        const emailVal = emailInput.value.trim();
+        const loginVal = emailInput.value.trim();
         const passVal = passInput.value;
         const originalLabel = btnLoginSubmit.textContent;
         btnLoginSubmit.disabled = true;
         btnLoginSubmit.textContent = '...';
+
+        const emailVal = await resolveLoginEmail(loginVal);
+        if (!emailVal) {
+            btnLoginSubmit.disabled = false;
+            btnLoginSubmit.textContent = originalLabel;
+            showAuthError(curDict().errInvalidLogin);
+            return;
+        }
 
         try {
             const cred = await signInWithEmailAndPassword(auth, emailVal, passVal);
@@ -475,10 +520,15 @@ if (forgotPasswordLink) {
         e.preventDefault();
         clearAuthError();
         const emailInput = document.getElementById('login-email');
-        const emailVal = emailInput.value.trim();
-        if (!emailVal) {
+        const loginVal = emailInput.value.trim();
+        if (!loginVal) {
             showAuthError(curDict().enterEmailFirst);
             emailInput.focus();
+            return;
+        }
+        const emailVal = await resolveLoginEmail(loginVal);
+        if (!emailVal) {
+            showAuthError(curDict().errInvalidLogin);
             return;
         }
         try {
@@ -543,7 +593,10 @@ if(btnToStep3) {
         // SEUL le nom d'utilisateur est obligatoire
         if(!uname.checkValidity()) { uname.reportValidity(); return; }
 
-        const usernameVal = uname.value.trim();
+        // Toujours en minuscules (règle du 06/09/2026, jamais de majuscule dans un
+        // pseudo) : la clé usernames/{pseudo} l'était déjà, mais le champ d'affichage
+        // (users/{uid}.username et usernames/{pseudo}.username) gardait la casse tapée.
+        const usernameVal = uname.value.trim().toLowerCase();
         const fnameVal = document.getElementById('fname').value.trim();
         const lnameVal = document.getElementById('lname').value.trim();
         const countryVal = document.getElementById('interest-country').value;
@@ -587,6 +640,10 @@ if(btnToStep3) {
                 }, { merge: true });
                 if (!taken) {
                     batch.set(doc(db, 'usernames', usernameKey), { uid: user.uid, username: usernameVal }, { merge: true });
+                    // Permet de se connecter par pseudo plus tard (voir resolveLoginEmail
+                    // ci-dessus) — collection séparée de `usernames` pour ne jamais exposer
+                    // les e-mails en liste.
+                    batch.set(doc(db, 'usernameLogin', usernameKey), { email: user.email }, { merge: true });
                 }
                 await batch.commit();
             } catch (e) {

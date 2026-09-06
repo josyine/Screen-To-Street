@@ -41,12 +41,30 @@ window.firebaseAuth = auth;
 window.firebaseDb = db;
 window.firebaseCurrentUser = null;
 
+// Se connecter par pseudo (demande du 06/09/2026), en plus de l'e-mail — mêmes
+// formulaires de connexion que map.html (popup "gate") et legal.html, qui appellent tous
+// deux firebaseSignInEmail()/firebaseSendPasswordReset() ci-dessous : un seul endroit à
+// corriger pour que la connexion par pseudo fonctionne partout. Voir resolveLoginEmail()
+// dans welcome-script.js (page d'accueil, copie séparée car ce module n'y est pas chargé)
+// pour l'explication complète de usernameLogin/{pseudo} -> {email} et pourquoi c'est une
+// collection à part de `usernames` (jamais d'e-mail exposé en liste).
+async function resolveLoginEmail(value) {
+    const trimmed = (value || '').trim();
+    if (!trimmed || trimmed.includes('@')) return trimmed;
+    try {
+        const snap = await getDoc(doc(db, 'usernameLogin', trimmed.toLowerCase()));
+        return snap.exists() ? (snap.data().email || trimmed) : trimmed;
+    } catch (e) {
+        return trimmed;
+    }
+}
+
 // Fonctions de connexion exposées globalement, pour que des pages qui n'ont pas
 // leur propre module (map.html, legal.html...) puissent proposer un formulaire de
 // connexion sans dupliquer toute la logique Firebase.
-window.firebaseSignInEmail = (email, password) => signInWithEmailAndPassword(auth, email, password);
+window.firebaseSignInEmail = async (emailOrUsername, password) => signInWithEmailAndPassword(auth, await resolveLoginEmail(emailOrUsername), password);
 window.firebaseSignInGoogle = () => signInWithPopup(auth, googleProvider);
-window.firebaseSendPasswordReset = (email) => sendPasswordResetEmail(auth, email);
+window.firebaseSendPasswordReset = async (emailOrUsername) => sendPasswordResetEmail(auth, await resolveLoginEmail(emailOrUsername));
 // Vraie déconnexion Firebase (ferme la session), pas juste un nettoyage du localStorage.
 window.firebaseSignOut = () => signOut(auth);
 
@@ -669,15 +687,42 @@ window.claimUsername = async function (username) {
             const holderSnap = await getDoc(doc(db, 'users', existing.data().uid));
             if (holderSnap.exists()) return { success: false, code: 'taken' };
         }
-        // `username` (en plus de `uid`) garde la casse d'affichage d'origine (ex:
-        // "Perrine4058") — la clé du document, elle, reste toujours en minuscules pour
-        // que la recherche par préfixe ci-dessous (searchUsernamesByPrefix) ne dépende
-        // pas de la casse tapée par la personne qui cherche.
-        await setDoc(doc(db, 'usernames', key), { uid: user.uid, username: username.trim() }, { merge: true });
+        // `username` (comme la clé du document) est toujours en minuscules — règle du
+        // 06/09/2026, jamais de majuscule dans un pseudo — peu importe la casse tapée par
+        // l'appelant.
+        await setDoc(doc(db, 'usernames', key), { uid: user.uid, username: key }, { merge: true });
+        // Index séparé pour la connexion par pseudo (voir resolveLoginEmail dans
+        // welcome-script.js) — jamais fusionné dans `usernames` (public en lecture pour la
+        // recherche d'amis) pour ne pas exposer les e-mails en liste : sa règle Firestore
+        // n'autorise que la lecture d'UN document précis, jamais une requête sur toute la
+        // collection.
+        await setDoc(doc(db, 'usernameLogin', key), { email: user.email }, { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Réservation du pseudo échouée :', e);
         return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+// Libère l'ANCIEN pseudo après un renommage réussi (account.html) : sans ça,
+// usernames/{ancien-pseudo} restait indéfiniment dans l'index public une fois le nouveau
+// pseudo réclamé, et continuait à apparaître dans les suggestions d'ajout d'ami
+// (searchUsernamesByPrefix/searchUsernamesContaining) alors que ce pseudo n'est plus
+// utilisé par personne (bug rapporté le 06/09/2026 : "Marie" renommée "mahihie"
+// continuait à s'afficher). Ne supprime que si le document appartient bien au compte
+// courant (la règle `allow delete` l'exige de toute façon).
+window.releaseUsername = async function (oldUsername) {
+    const user = auth.currentUser;
+    if (!user || !oldUsername) return;
+    const key = oldUsername.toLowerCase().trim();
+    try {
+        const snap = await getDoc(doc(db, 'usernames', key));
+        if (snap.exists() && snap.data().uid === user.uid) {
+            await deleteDoc(doc(db, 'usernames', key));
+        }
+        await deleteDoc(doc(db, 'usernameLogin', key));
+    } catch (e) {
+        console.warn('Libération de l\'ancien pseudo échouée :', e);
     }
 };
 
@@ -763,6 +808,12 @@ window.searchUsernamesContaining = async function (text, maxResults) {
     return matches.slice(0, maxResults || 8);
 };
 
+// Idempotent (merge:true, jamais members/memberNames dans le payload) : peut être
+// rappelée sans risque sur un voyage déjà partagé, ce qui sert d'auto-réparation quand le
+// document `trips/{id}` a été créé de façon incomplète — par exemple par le filet de
+// sécurité de inviteTripCollaborator() ci-dessous (qui ne connaît que ownerUid, jamais
+// name/ownerName) — sans jamais écraser les collaborateurs déjà invités (bug rapporté le
+// 06/09/2026 : un voyage partagé affichait "undefined" et "Shared by ARMY").
 window.createSharedTrip = async function (trip) {
     const user = auth.currentUser;
     if (!user) return { error: 'not-signed-in' };
@@ -770,9 +821,7 @@ window.createSharedTrip = async function (trip) {
         await setDoc(doc(db, 'trips', trip.id), Object.assign({}, trip, {
             ownerUid: user.uid,
             ownerName: (localStorage.getItem('userFirstName') || localStorage.getItem('userName') || 'ARMY').trim(),
-            members: {},
-            memberNames: {}
-        }));
+        }), { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Création du voyage partagé échouée :', e);
