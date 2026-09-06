@@ -184,9 +184,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     <div class="friends-sidebar">
         <div class="friends-sidebar-header">
             <h1 data-i18n="friendsPageTitle">Friends & Messages</h1>
-            <div class="friend-add-row">
-                <input type="text" id="friend-username-input" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">
-                <button id="friend-add-btn" data-i18n="friendsAddBtn">Add</button>
+            <div style="position:relative;">
+                <div class="friend-add-row">
+                    <input type="text" id="friend-username-input" autocomplete="off" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">
+                    <button id="friend-add-btn" data-i18n="friendsAddBtn">Add</button>
+                </div>
+                <!-- Suggestions "pseudos ressemblants" (contient le texte tapé, pas seulement en
+                     préfixe — voir window.searchUsernamesContaining() dans firebase-init.js,
+                     demande du 06/09/2026). Même style que #share-trip-suggestions (script.js). -->
+                <div id="friend-add-suggestions" class="hidden" style="position:absolute; top:calc(100% + 4px); left:0; right:0; background:#fff; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.12); max-height:200px; overflow-y:auto; z-index:20;"></div>
             </div>
         </div>
         <div id="friend-add-error" class="hidden"></div>
@@ -680,6 +686,46 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         errBox.textContent = t(errKey);
         errBox.classList.remove('hidden');
     });
+
+    // Suggestions "pseudos ressemblants" pendant la saisie (demande du 06/09/2026) : même
+    // pattern que l'auto-complétion de partage de voyage (voir openShareTripModal() dans
+    // script.js), mais via searchUsernamesContaining() (recherche "contient", pas
+    // seulement préfixe) — débounce 250ms pour ne pas interroger à chaque frappe.
+    (function wireFriendAddAutocomplete() {
+        const input = document.getElementById('friend-username-input');
+        const suggestionsBox = document.getElementById('friend-add-suggestions');
+        if (!input || !suggestionsBox) return;
+        let debounceTimer = null;
+        const hideSuggestions = () => { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; };
+        input.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            const q = input.value.trim();
+            if (!q) { hideSuggestions(); return; }
+            debounceTimer = setTimeout(async () => {
+                if (typeof window.searchUsernamesContaining !== 'function') return;
+                const myUsername = (localStorage.getItem('userName') || '').trim().toLowerCase();
+                const matches = (await window.searchUsernamesContaining(q, 8))
+                    .filter(m => m.username.toLowerCase() !== myUsername);
+                if (input.value.trim() !== q) return; // la personne a continué à taper entre-temps
+                if (matches.length === 0) { hideSuggestions(); return; }
+                suggestionsBox.innerHTML = matches.map(m => `<div class="friend-suggestion-row" data-username="${escapeHtml(m.username)}" style="padding:9px 14px; font-size:12px; font-weight:600; color:#212832; cursor:pointer;">${escapeHtml(m.username)}</div>`).join('');
+                suggestionsBox.querySelectorAll('.friend-suggestion-row').forEach(row => {
+                    row.addEventListener('mouseenter', () => row.style.background = '#FFF7F8');
+                    row.addEventListener('mouseleave', () => row.style.background = '');
+                    row.addEventListener('mousedown', (e) => e.preventDefault()); // évite le blur avant le click
+                    row.addEventListener('click', () => {
+                        input.value = row.dataset.username;
+                        hideSuggestions();
+                        input.focus();
+                    });
+                });
+                suggestionsBox.classList.remove('hidden');
+            }, 250);
+        });
+        document.addEventListener('click', (e) => {
+            if (e.target !== input && !suggestionsBox.contains(e.target)) hideSuggestions();
+        });
+    })();
     document.getElementById('friend-requests-list').addEventListener('click', async (e) => {
         const acceptBtn = e.target.closest('.friend-accept-btn');
         const declineBtn = e.target.closest('.friend-decline-btn');
