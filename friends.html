@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen To Street — Friends</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20260830">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
+a{text-decoration:none;}
+body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
+.hidden { display: none !important; }
+
+.hero-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; background: linear-gradient(135deg, #F5F3FC, #E3DEF5, #D8CFF0, #E3DEF5); background-size: 200% 200%; animation: gradientShift 10s ease infinite; }
+@keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 1000; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
+.brand-text { font-size: 19px; font-weight: 700; color: #2E3644; line-height: 1.2; }
+.universal-icons { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; gap: 9px; align-items: center; }
+.dropdown-container { position: relative; display: inline-block; }
+.header-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: #2E3644; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 14px rgba(80,60,120,.05); }
+.header-icon-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: #D42759; transform: translateY(-2px);}
+.user-avatar-btn { color: #000000 !important; overflow: hidden; padding: 0;}
+
+.dropdown-menu { position: absolute; right: 0; top: 52px; background: white; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-width: 190px; padding: 6px; display: flex; flex-direction: column; gap: 2px; z-index: 3000; }
+.dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: block; text-align: left; text-decoration: none;}
+.dropdown-option:hover { background: #f1f5f9; color: #D42759; }
+.dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
+
+.friends-page { position: relative; z-index: 2000; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 110px 20px 30px 20px; }
+.friends-shell { width: 100%; max-width: 1120px; height: 100%; background: #fff; border-radius: 20px; box-shadow: 0 15px 40px rgba(80,60,120,.08); display: flex; overflow: hidden; }
+
+.friends-sidebar { width: 290px; border-right: 1px solid #EFECF6; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+.friends-sidebar-header { padding: 20px 18px 12px 18px; }
+.friends-sidebar-header h1 { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 12px; }
+.friend-add-row { display: flex; gap: 6px; }
+.friend-add-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 8px 12px; font-size: 11.5px; font-family: 'Poppins', sans-serif; outline: none; }
+.friend-add-row button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 16px; font-size: 11.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+#friend-add-error { margin: 8px 18px 0 18px; background: #FFF1F3; border: 1px solid #FBD5DC; color: #D42759; font-size: 11px; font-weight: 600; padding: 7px 10px; border-radius: 8px; }
+
+.sidebar-section-title { font-size: 10px; font-weight: 700; letter-spacing: .6px; color: #94a3b8; text-transform: uppercase; padding: 14px 18px 6px 18px; }
+.convo-row { display: flex; align-items: center; gap: 10px; padding: 9px 18px; cursor: pointer; transition: .15s; }
+.convo-row:hover, .convo-row.active { background: #FFF7F8; }
+.convo-thumb-icon { width: 36px; height: 36px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.convo-row-name { font-size: 12px; font-weight: 700; color: #212832; }
+.convo-row-meta { font-size: 9.5px; color: #94a3b8; margin-top: 1px; }
+.sidebar-empty-note { padding: 6px 18px 14px 18px; font-size: 11px; color: #94a3b8; line-height: 1.5; }
+
+.friend-request-row { display: flex; align-items: center; gap: 8px; padding: 8px 18px; font-size: 11px; color: #334155; }
+.friend-request-row button { border: none; border-radius: 100px; padding: 5px 10px; font-size: 10px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.friend-accept-btn { background: #D42759; color: #fff; }
+.friend-decline-btn { background: #f1f5f9; color: #64748b; }
+
+.friends-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.convo-empty-state { flex: 1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 13px; text-align: center; padding: 40px; }
+.convo-header { padding: 16px 22px; border-bottom: 1px solid #EFECF6; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.convo-header-title { font-size: 13.5px; font-weight: 700; color: #212832; }
+.convo-header-sub { font-size: 10.5px; color: #94a3b8; margin-top: 2px; }
+.convo-back-btn { display: none; background: none; border: none; color: #64748b; font-size: 18px; cursor: pointer; margin-right: 4px; }
+.convo-messages { flex: 1; overflow-y: auto; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; }
+.msg-bubble-wrap { display: flex; flex-direction: column; max-width: 68%; }
+.msg-bubble-wrap.mine { align-self: flex-end; align-items: flex-end; }
+.msg-bubble-wrap.theirs { align-self: flex-start; align-items: flex-start; }
+.msg-sender { font-size: 9.5px; font-weight: 700; color: #94a3b8; margin-bottom: 3px; }
+.msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: 12.5px; line-height: 1.5; word-break: break-word; }
+.msg-bubble-wrap.mine .msg-bubble { background: #D42759; color: #fff; border-bottom-right-radius: 4px; }
+.msg-bubble-wrap.theirs .msg-bubble { background: #faf9fc; border: 1px solid #EFECF6; color: #334155; border-bottom-left-radius: 4px; }
+.convo-input-row { padding: 14px 18px; border-top: 1px solid #EFECF6; display: flex; gap: 8px; }
+.convo-input-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 10px 16px; font-size: 12.5px; font-family: 'Poppins', sans-serif; outline: none; }
+.convo-input-row button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+
+.share-trip-btn { background: transparent; border: 1.5px solid #cbd5e1; color: #64748b; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 100px; cursor: pointer; font-family: 'Poppins', sans-serif; white-space: nowrap; }
+.share-trip-picker { position: absolute; top: 56px; right: 22px; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.12); padding: 8px; min-width: 220px; z-index: 20; }
+.share-trip-picker-title { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; padding: 6px 10px; }
+.share-trip-option { padding: 9px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #212832; cursor: pointer; }
+.share-trip-option:hover { background: #FFF7F8; color: #D42759; }
+
+@media (max-width: 760px) {
+  .universal-logo { top: 14px; left: 14px; gap: 8px; }
+  .universal-logo svg { width: 32px; height: 32px; }
+  .universal-logo .tagline, .universal-logo .brand-text { display: none; }
+  .universal-icons { top: 14px; right: 14px; gap: 6px; }
+  .header-icon-btn { width: 36px; height: 36px; }
+  .friends-page { padding: 74px 0 0 0; }
+  .friends-shell { border-radius: 0; max-width: 100%; }
+  .friends-sidebar { width: 100%; border-right: none; }
+  .friends-main { display: none; }
+  .friends-shell.chat-open .friends-sidebar { display: none; }
+  .friends-shell.chat-open .friends-main { display: flex; }
+  .convo-back-btn { display: inline-block; }
+}
+</style>
+<script>
+    if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
+    document.documentElement.style.setProperty('--sync-t', ((Date.now() - parseInt(sessionStorage.getItem('bgSyncTime'))) / 1000) + 's');
+</script>
+</head>
+<body>
+
+<div class="hero-background"></div>
+
+<a href="map.html" class="universal-logo">
+    <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
+        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+        <circle cx="200" cy="150" r="26" fill="#D42759"/>
+    </svg>
+    <div><div class="brand-text">Screen To <b style="color: #D42759;">Street</b></div></div>
+</a>
+
+<div class="universal-icons">
+    <div class="dropdown-container">
+        <button id="lang-btn" class="header-icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <div id="lang-menu" class="dropdown-menu hidden">
+            <a href="#" class="dropdown-option" onclick="changeLang('en'); return false;">English</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('fr'); return false;">Français</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('es'); return false;">Español</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('it'); return false;">Italiano</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('pt'); return false;">Português</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ko'); return false;">한국어</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ja'); return false;">日本語</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
+        </div>
+    </div>
+    <div class="dropdown-container">
+        <button id="cart-btn" class="header-icon-btn" onclick="openCartModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        </button>
+    </div>
+    <div class="dropdown-container">
+        <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
+        <div id="profile-menu" class="dropdown-menu hidden">
+            <a href="map-destinations.html" class="dropdown-option" data-i18n="exploreDestOption">Explore Destinations</a>
+            <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
+            <div class="dropdown-divider"></div>
+            <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
+            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+            <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
+            <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+            <a href="friends.html" class="dropdown-option" style="color: #D42759; font-weight: bold;" data-i18n="friendsOption">Friends</a>
+            <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
+        </div>
+    </div>
+</div>
+
+<div class="friends-page">
+  <div class="friends-shell" id="friends-shell">
+    <div class="friends-sidebar">
+        <div class="friends-sidebar-header">
+            <h1 data-i18n="friendsPageTitle">Friends & Messages</h1>
+            <div class="friend-add-row">
+                <input type="text" id="friend-username-input" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">
+                <button id="friend-add-btn" data-i18n="friendsAddBtn">Add</button>
+            </div>
+        </div>
+        <div id="friend-add-error" class="hidden"></div>
+
+        <div id="friend-requests-section" class="hidden">
+            <div class="sidebar-section-title" data-i18n="friendsRequestsLabel">Friend requests</div>
+            <div id="friend-requests-list"></div>
+        </div>
+
+        <div class="sidebar-section-title" data-i18n="tripGroupsLabel">Trip groups</div>
+        <div id="trip-groups-list"></div>
+        <div id="trip-groups-empty" class="sidebar-empty-note hidden" data-i18n="noTripGroups">No shared trips yet — share one from a conversation.</div>
+
+        <div class="sidebar-section-title" data-i18n="directMessagesLabel">Direct messages</div>
+        <div id="dm-list"></div>
+        <div id="dm-empty" class="sidebar-empty-note hidden" data-i18n="noFriendsForDm">Add a friend to start messaging.</div>
+    </div>
+
+    <div class="friends-main">
+        <div id="convo-empty-state" class="convo-empty-state" data-i18n="selectConversationPrompt">Select a conversation to start chatting</div>
+        <div id="convo-panel" class="hidden" style="display:none; flex-direction:column; height:100%; position:relative;">
+            <div class="convo-header">
+                <div style="display:flex; align-items:center;">
+                    <button class="convo-back-btn" id="convo-back-btn">←</button>
+                    <div>
+                        <div class="convo-header-title" id="convo-title"></div>
+                        <div class="convo-header-sub" id="convo-subtitle"></div>
+                    </div>
+                </div>
+                <button class="share-trip-btn hidden" id="convo-share-trip-btn" data-i18n="shareTripBtn">Share a trip</button>
+            </div>
+            <div id="share-trip-picker" class="share-trip-picker hidden">
+                <div class="share-trip-picker-title" data-i18n="shareTripPickTitle">Choose a trip to share</div>
+                <div id="share-trip-options"></div>
+                <div id="share-trip-empty" class="hidden" style="padding:9px 10px; font-size:11.5px; color:#94a3b8;" data-i18n="noOwnedTrips">You don't have any trips yet.</div>
+            </div>
+            <div id="convo-messages" class="convo-messages"></div>
+            <div class="convo-input-row">
+                <input type="text" id="convo-message-input" data-i18n-placeholder="messagePlaceholder" placeholder="Message...">
+                <button id="convo-send-btn" data-i18n="sendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="firebase-init.js?v=20260830"></script>
+<script src="script.js?v=20260830"></script>
+<script>
+    const savedFirstName = (localStorage.getItem('userFirstName') || '').trim();
+    const savedName = (localStorage.getItem('userName') || 'User').trim();
+    const avatarInitial = (savedFirstName || savedName || 'U').charAt(0).toUpperCase();
+    const savedPic = localStorage.getItem('userPhoto');
+    document.querySelectorAll('.user-avatar-btn').forEach(btn => {
+        if (savedPic) { btn.innerHTML = `<img src="${savedPic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; }
+        else { btn.textContent = avatarInitial; }
+    });
+
+    // ==========================================
+    // ÉTAT DE LA CONVERSATION OUVERTE
+    // ==========================================
+    let currentConvoId = null;
+    let currentConvoType = null; // 'dm' | 'trip'
+    let currentConvoFriendUid = null;
+    let currentConvoFriendUsername = null;
+    let currentConvoTripId = null;
+    let currentConvoTripName = null;
+
+    async function refreshSidebar() {
+        await refreshFriendRequests();
+        await refreshTripGroupsList();
+        refreshDmListUI();
+    }
+
+    async function refreshFriendRequests() {
+        if (typeof window.listMyFriendRequests !== 'function') return;
+        const { incoming } = await window.listMyFriendRequests();
+        const section = document.getElementById('friend-requests-section');
+        const list = document.getElementById('friend-requests-list');
+        list.innerHTML = incoming.map(r => `<div class="friend-request-row">
+            <span style="flex:1;">${escapeHtml(t('friendsRequestFrom').replace('{username}', r.fromUsername))}</span>
+            <button class="friend-accept-btn" data-request-id="${r.id}" data-from-uid="${r.fromUid}" data-from-username="${escapeHtml(r.fromUsername)}">${t('friendsAccept')}</button>
+            <button class="friend-decline-btn" data-request-id="${r.id}">${t('friendsDecline')}</button>
+        </div>`).join('');
+        section.classList.toggle('hidden', incoming.length === 0);
+    }
+
+    async function refreshTripGroupsList() {
+        const groups = typeof window.listMyTripGroups === 'function' ? await window.listMyTripGroups() : [];
+        const list = document.getElementById('trip-groups-list');
+        const empty = document.getElementById('trip-groups-empty');
+        list.innerHTML = groups.map(g => `<div class="convo-row" data-kind="trip" data-trip-id="${g.id}" data-trip-name="${escapeHtml(g.name)}">
+            <div class="convo-thumb-icon">🧳</div>
+            <div>
+                <div class="convo-row-name">${escapeHtml(g.name)}</div>
+                <div class="convo-row-meta">${g.isOwner ? t('tripGroupOwner') : t('tripGroupMember')}</div>
+            </div>
+        </div>`).join('');
+        empty.classList.toggle('hidden', groups.length > 0);
+        list.querySelectorAll('.convo-row').forEach(row => {
+            row.addEventListener('click', () => openTripConversation(row.dataset.tripId, row.dataset.tripName, !!groups.find(g => String(g.id) === row.dataset.tripId && g.isOwner)));
+        });
+    }
+
+    function refreshDmListUI() {
+        const list = document.getElementById('dm-list');
+        const empty = document.getElementById('dm-empty');
+        list.innerHTML = myFriendsList.map(f => `<div class="convo-row" data-kind="dm" data-friend-uid="${f.uid}" data-friend-username="${escapeHtml(f.username)}">
+            <div class="convo-thumb-icon">${escapeHtml((f.username || '?').charAt(0).toUpperCase())}</div>
+            <div class="convo-row-name">${escapeHtml(f.username)}</div>
+        </div>`).join('');
+        empty.classList.toggle('hidden', myFriendsList.length > 0);
+        list.querySelectorAll('.convo-row').forEach(row => {
+            row.addEventListener('click', () => openDmConversation(row.dataset.friendUid, row.dataset.friendUsername));
+        });
+    }
+
+    function setActiveRow(kind, key) {
+        document.querySelectorAll('.convo-row').forEach(r => r.classList.remove('active'));
+        const sel = kind === 'dm' ? `.convo-row[data-kind="dm"][data-friend-uid="${key}"]` : `.convo-row[data-kind="trip"][data-trip-id="${key}"]`;
+        const el = document.querySelector(sel);
+        if (el) el.classList.add('active');
+    }
+
+    async function openDmConversation(friendUid, friendUsername) {
+        currentConvoType = 'dm';
+        currentConvoFriendUid = friendUid;
+        currentConvoFriendUsername = friendUsername;
+        currentConvoTripId = null;
+        setActiveRow('dm', friendUid);
+        document.getElementById('convo-title').textContent = friendUsername;
+        document.getElementById('convo-subtitle').textContent = '';
+        document.getElementById('convo-share-trip-btn').classList.remove('hidden');
+        document.getElementById('share-trip-picker').classList.add('hidden');
+        currentConvoId = await window.ensureDmConversation(friendUid, friendUsername);
+        await openConvoPanel();
+    }
+
+    async function openTripConversation(tripId, tripName, isOwner) {
+        currentConvoType = 'trip';
+        currentConvoTripId = tripId;
+        currentConvoTripName = tripName;
+        currentConvoFriendUid = null;
+        setActiveRow('trip', tripId);
+        document.getElementById('convo-title').textContent = tripName;
+        document.getElementById('convo-subtitle').textContent = t('chatForTripLabel');
+        document.getElementById('convo-share-trip-btn').classList.add('hidden');
+        document.getElementById('share-trip-picker').classList.add('hidden');
+        currentConvoId = await window.ensureTripConversation(tripId, tripName);
+        await openConvoPanel();
+    }
+
+    async function openConvoPanel() {
+        document.getElementById('convo-empty-state').classList.add('hidden');
+        const panel = document.getElementById('convo-panel');
+        panel.classList.remove('hidden');
+        panel.style.display = 'flex';
+        document.getElementById('friends-shell').classList.add('chat-open');
+        await loadAndRenderMessages();
+        if (typeof window.markConversationRead === 'function') await window.markConversationRead(currentConvoId);
+        if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
+    }
+
+    async function loadAndRenderMessages() {
+        const msgs = typeof window.loadMessages === 'function' ? await window.loadMessages(currentConvoId) : [];
+        const container = document.getElementById('convo-messages');
+        const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+        container.innerHTML = msgs.map(m => {
+            const mine = m.fromUid === myUid;
+            return `<div class="msg-bubble-wrap ${mine ? 'mine' : 'theirs'}">
+                ${!mine ? `<div class="msg-sender">${escapeHtml(m.fromUsername || '')}</div>` : ''}
+                <div class="msg-bubble">${escapeHtml(m.text)}</div>
+            </div>`;
+        }).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    document.getElementById('convo-back-btn').addEventListener('click', () => {
+        document.getElementById('friends-shell').classList.remove('chat-open');
+    });
+
+    document.getElementById('convo-send-btn').addEventListener('click', sendCurrentMessage);
+    document.getElementById('convo-message-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendCurrentMessage();
+    });
+    async function sendCurrentMessage() {
+        const input = document.getElementById('convo-message-input');
+        const text = input.value;
+        if (!text.trim() || !currentConvoId || typeof window.sendMessage !== 'function') return;
+        input.value = '';
+        await window.sendMessage(currentConvoId, text);
+        await loadAndRenderMessages();
+        if (currentConvoType === 'trip') refreshTripGroupsList(); else refreshDmListUI();
+    }
+
+    // --- Partager un voyage depuis une conversation DM ---
+    document.getElementById('convo-share-trip-btn').addEventListener('click', () => {
+        const picker = document.getElementById('share-trip-picker');
+        const optsEl = document.getElementById('share-trip-options');
+        const emptyEl = document.getElementById('share-trip-empty');
+        const myTrips = getMyTripsList();
+        optsEl.innerHTML = myTrips.map(trip => `<div class="share-trip-option" data-trip-id="${trip.id}">${escapeHtml(trip.name)}</div>`).join('');
+        emptyEl.classList.toggle('hidden', myTrips.length > 0);
+        optsEl.querySelectorAll('.share-trip-option').forEach(opt => {
+            opt.addEventListener('click', async () => {
+                const trip = myTrips.find(t => t.id === opt.dataset.tripId);
+                if (!trip || !currentConvoFriendUid) return;
+                await window.shareTripFromFriendsPage(trip, currentConvoFriendUid, currentConvoFriendUsername);
+                picker.classList.add('hidden');
+                await refreshTripGroupsList();
+            });
+        });
+        picker.classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+        const picker = document.getElementById('share-trip-picker');
+        const btn = document.getElementById('convo-share-trip-btn');
+        if (!picker.contains(e.target) && e.target !== btn) picker.classList.add('hidden');
+    });
+
+    // --- Ajout d'ami ---
+    document.getElementById('friend-add-btn').addEventListener('click', async () => {
+        const input = document.getElementById('friend-username-input');
+        const errBox = document.getElementById('friend-add-error');
+        errBox.classList.add('hidden');
+        const username = input.value.trim();
+        if (!username || typeof window.sendFriendRequest !== 'function') return;
+        const result = await window.sendFriendRequest(username);
+        if (result.error === 'not-found') { errBox.textContent = t('friendsErrNotFound'); errBox.classList.remove('hidden'); }
+        else if (result.error === 'self') { errBox.textContent = t('friendsErrSelf'); errBox.classList.remove('hidden'); }
+        else if (result.success) { input.value = ''; refreshSidebar(); }
+    });
+    document.getElementById('friend-requests-list').addEventListener('click', async (e) => {
+        const acceptBtn = e.target.closest('.friend-accept-btn');
+        const declineBtn = e.target.closest('.friend-decline-btn');
+        if (acceptBtn) {
+            await window.acceptFriendRequest(acceptBtn.dataset.requestId, acceptBtn.dataset.fromUid, acceptBtn.dataset.fromUsername);
+            const friends = await window.listMyFriends();
+            const visits = await window.loadFriendVisits(friends.map(f => f.uid));
+            window.setFriendsData(friends, visits);
+            refreshSidebar();
+        } else if (declineBtn) {
+            await window.declineFriendRequest(declineBtn.dataset.requestId);
+            refreshSidebar();
+        }
+    });
+
+    window.addEventListener('firebase-ready', async (e) => {
+        const user = e.detail && e.detail.user;
+        if (!user) { window.location.href = 'map.html'; return; }
+        if (typeof window.listMyFriends === 'function') {
+            const friends = await window.listMyFriends();
+            const visits = typeof window.loadFriendVisits === 'function' ? await window.loadFriendVisits(friends.map(f => f.uid)) : {};
+            window.setFriendsData(friends, visits);
+        }
+        await refreshSidebar();
+    });
+
+    const _friendsOriginalChangeLang = window.changeLang;
+    window.changeLang = function(lang) {
+        _friendsOriginalChangeLang(lang);
+        refreshSidebar();
+    };
+</script>
+</body>
+</html>

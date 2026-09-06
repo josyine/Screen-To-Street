@@ -164,23 +164,26 @@ window.loadUserCloudData = async function () {
 //     allow read: if true;
 //     allow write: if request.auth != null
 //       && request.resource.data.diff(resource.data).affectedKeys()
-//            .hasOnly(['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount']);
+//            .hasOnly(['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount',
+//                      'accessibilitySum', 'accessibilityCount', 'siteQualitySum', 'siteQualityCount']);
 //   }
-// (Si la règle précédente, sans foodSum/foodCount/valueSum/valueCount, est encore en place,
-// remplacez-la par celle-ci — sinon les notes food/valeur des lieux Cafe/Restaurants
-// échoueront silencieusement avec permission-denied.)
+// (Si la règle précédente, sans les 4 derniers champs, est encore en place, remplacez-la
+// par celle-ci — sinon les nouvelles notes accessibilité/qualité échoueront silencieusement
+// avec permission-denied.)
 // Limite connue : un client malveillant authentifié pourrait tout de même écrire un
 // incrément arbitraire (ex: +1000) puisque les règles Firestore seules ne peuvent pas
 // vérifier qu'un increment() correspond à "une vraie note entre 1 et 5" sans passer par
 // une Cloud Function — hors de portée d'un site 100% statique sans backend comme celui-ci.
 //
-// `deltas` : objet ne contenant QUE les clés à incrémenter parmi sum/count/foodSum/
-// foodCount/valueSum/valueCount (voir buildRatingDeltas()/buildRemovalDeltas() dans
-// script.js) — foodSum/valueSum n'existent que pour les lieux Cafe/Restaurants.
+// `deltas` : objet ne contenant QUE les clés à incrémenter parmi sum/count et, pour
+// chaque dimension de OPTIONAL_RATING_DIMENSIONS (script.js), <dim>Sum/<dim>Count —
+// foodSum/foodCount n'existent que pour les lieux Cafe/Restaurants, les autres
+// dimensions (value/accessibility/siteQuality) s'appliquent à tous les lieux.
 window.updateLocationRatingAggregate = async function (locationId, deltas) {
     if (!deltas) return;
     const payload = {};
-    for (const key of ['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount']) {
+    for (const key of ['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount',
+                        'accessibilitySum', 'accessibilityCount', 'siteQualitySum', 'siteQualityCount']) {
         if (deltas[key]) payload[key] = increment(deltas[key]);
     }
     if (Object.keys(payload).length === 0) return;
@@ -870,12 +873,34 @@ window.shareLocationWithFriend = async function (toUid, locationId, locationName
         const ref = doc(collection(db, 'friendShares'));
         await setDoc(ref, {
             fromUid: user.uid, fromUsername: myUsername,
-            toUid, locationId, locationName: locationName || '',
+            toUid, type: 'location', locationId, locationName: locationName || '',
             seen: false, createdAt: serverTimestamp()
         });
         return { success: true };
     } catch (e) {
         console.warn('Partage du lieu échoué :', e);
+        return { error: 'failed' };
+    }
+};
+
+// Même principe que shareLocationWithFriend() mais pour un voyage — appelée APRÈS avoir
+// invité l'ami comme collaborateur (voir window.shareTripFromFriendsPage() dans
+// script.js, qui orchestre les deux) : sans l'invitation, le lien partagé pointerait
+// vers un voyage que l'ami ne peut pas ouvrir (règle Firestore de `trips`).
+window.shareTripWithFriend = async function (toUid, tripId, tripName) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    const myUsername = (localStorage.getItem('userName') || '').trim();
+    try {
+        const ref = doc(collection(db, 'friendShares'));
+        await setDoc(ref, {
+            fromUid: user.uid, fromUsername: myUsername,
+            toUid, type: 'trip', tripId: String(tripId), tripName: tripName || '',
+            seen: false, createdAt: serverTimestamp()
+        });
+        return { success: true };
+    } catch (e) {
+        console.warn('Partage du voyage échoué :', e);
         return { error: 'failed' };
     }
 };
@@ -902,6 +927,162 @@ window.markShareSeen = async function (shareId) {
     } catch (e) {
         console.warn('Marquage du partage comme lu échoué :', e);
     }
+};
+
+// ==========================================
+// MESSAGERIE (friends.html) — messages directs entre deux amis, et discussion de
+// groupe pour chaque voyage partagé ("un groupe = un trip", voir friends.html).
+// ==========================================
+// Une conversation DM a pour id "dm_<uidA>_<uidB>" (uids triés pour être déterministe
+// des deux côtés) et porte directement members:[uidA,uidB] — jamais amené à changer.
+// Une conversation de groupe a pour id "trip_<tripId>" et NE duplique PAS la liste des
+// membres : sa règle de lecture/écriture consulte directement trips/{tripId} (déjà la
+// source de vérité pour "qui est dans ce voyage"), pour ne jamais risquer une
+// désynchronisation entre deux listes de membres qui devraient toujours être identiques.
+//
+// IMPORTANT — nécessite ces règles Firestore (non déployables depuis ce fichier, à
+// ajouter dans la console Firebase, onglet Firestore > Rules) :
+//   function isConvoMember(convoData) {
+//     return convoData.type == 'dm'
+//       ? request.auth.uid in convoData.members
+//       : (get(/databases/$(database)/documents/trips/$(convoData.tripId)).data.ownerUid == request.auth.uid
+//          || request.auth.uid in get(/databases/$(database)/documents/trips/$(convoData.tripId)).data.members);
+//   }
+//   match /conversations/{convoId} {
+//     allow read: if request.auth != null && isConvoMember(resource.data);
+//     allow create: if request.auth != null && isConvoMember(request.resource.data);
+//     allow update: if request.auth != null && isConvoMember(resource.data)
+//       && request.resource.data.diff(resource.data).affectedKeys()
+//            .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid']);
+//     match /messages/{messageId} {
+//       allow read: if request.auth != null
+//         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+//       allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
+//         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+//     }
+//     match /reads/{uid} {
+//       allow read, write: if request.auth != null && request.auth.uid == uid;
+//     }
+//   }
+// Limite connue : n'importe quel membre d'une conversation peut la lire/écrire des
+// messages en son propre nom — comme pour le reste du site, aucune Cloud Function ne
+// vérifie le CONTENU d'un message (longueur, spam...).
+
+function dmConversationId(uidA, uidB) { return uidA < uidB ? `dm_${uidA}_${uidB}` : `dm_${uidB}_${uidA}`; }
+function tripConversationId(tripId) { return `trip_${tripId}`; }
+window.dmConversationId = dmConversationId;
+window.tripConversationId = tripConversationId;
+
+window.ensureDmConversation = async function (friendUid, friendUsername) {
+    const user = auth.currentUser;
+    if (!user) return null;
+    const convoId = dmConversationId(user.uid, friendUid);
+    const myUsername = (localStorage.getItem('userName') || '').trim();
+    try {
+        await setDoc(doc(db, 'conversations', convoId), {
+            type: 'dm', members: [user.uid, friendUid],
+            memberNames: { [user.uid]: myUsername, [friendUid]: friendUsername },
+        }, { merge: true });
+        return convoId;
+    } catch (e) {
+        console.warn('Création de la conversation échouée :', e);
+        return null;
+    }
+};
+
+window.ensureTripConversation = async function (tripId, tripName) {
+    const convoId = tripConversationId(tripId);
+    try {
+        await setDoc(doc(db, 'conversations', convoId), {
+            type: 'trip', tripId: String(tripId), tripName: tripName || '',
+        }, { merge: true });
+        return convoId;
+    } catch (e) {
+        console.warn('Création de la conversation de groupe échouée :', e);
+        return null;
+    }
+};
+
+window.sendMessage = async function (convoId, text) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    const trimmed = (text || '').trim();
+    if (!trimmed) return { error: 'empty' };
+    const myUsername = (localStorage.getItem('userFirstName') || localStorage.getItem('userName') || 'ARMY').trim();
+    try {
+        const msgRef = doc(collection(db, 'conversations', convoId, 'messages'));
+        await setDoc(msgRef, { fromUid: user.uid, fromUsername: myUsername, text: trimmed, createdAt: serverTimestamp() });
+        await setDoc(doc(db, 'conversations', convoId), {
+            lastMessageAt: serverTimestamp(), lastMessageText: trimmed.slice(0, 140), lastMessageFromUid: user.uid,
+        }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Envoi du message échoué :', e);
+        return { error: 'failed' };
+    }
+};
+
+window.loadMessages = async function (convoId) {
+    try {
+        const snap = await getDocs(collection(db, 'conversations', convoId, 'messages'));
+        const msgs = [];
+        snap.forEach(d => msgs.push(d.data()));
+        msgs.sort((a, b) => ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0));
+        return msgs;
+    } catch (e) {
+        console.warn('Lecture des messages échouée :', e);
+        return [];
+    }
+};
+
+window.markConversationRead = async function (convoId) {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+        await setDoc(doc(db, 'conversations', convoId, 'reads', user.uid), { lastReadAt: serverTimestamp() }, { merge: true });
+    } catch (e) {
+        console.warn('Marquage de la conversation comme lue échoué :', e);
+    }
+};
+
+// Utilisé pour l'aperçu (nom du voyage, dernier message...) dans la sidebar de
+// friends.html avant même d'avoir ouvert la conversation.
+window.loadConversationMeta = async function (convoId) {
+    try {
+        const snap = await getDoc(doc(db, 'conversations', convoId));
+        return snap.exists() ? snap.data() : null;
+    } catch (e) {
+        return null;
+    }
+};
+
+// Compte les CONVERSATIONS ayant au moins un message non lu (pas le nombre total de
+// messages non lus) parmi la liste d'ids donnée — convoIds construite côté script.js à
+// partir de myFriendsList (une conversation DM potentielle par ami) et des voyages
+// partagés (une conversation de groupe potentielle par voyage), plutôt qu'une requête
+// sur toute la collection `conversations` (que la règle ci-dessus refuserait de toute
+// façon sans where(), voir le commentaire de listMyFriendRequests()).
+window.countUnreadConversations = async function (convoIds) {
+    const user = auth.currentUser;
+    if (!user || !convoIds || convoIds.length === 0) return 0;
+    let count = 0;
+    for (const convoId of convoIds) {
+        try {
+            const [convoSnap, readSnap] = await Promise.all([
+                getDoc(doc(db, 'conversations', convoId)),
+                getDoc(doc(db, 'conversations', convoId, 'reads', user.uid)),
+            ]);
+            if (!convoSnap.exists() || !convoSnap.data().lastMessageAt) continue;
+            if (convoSnap.data().lastMessageFromUid === user.uid) continue;
+            const lastMsgSeconds = convoSnap.data().lastMessageAt.seconds || 0;
+            const readData = readSnap.exists() ? readSnap.data() : null;
+            const readSeconds = (readData && readData.lastReadAt && readData.lastReadAt.seconds) || 0;
+            if (lastMsgSeconds > readSeconds) count++;
+        } catch (e) {
+            console.warn('Vérification des messages non lus échouée pour ' + convoId + ' :', e);
+        }
+    }
+    return count;
 };
 
 // Dès que l'état de connexion est connu (au chargement de la page, et à chaque

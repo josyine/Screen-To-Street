@@ -603,7 +603,9 @@
                             <input type="hidden" id="memory-food-rating-val" value="4">
                         </div>
 
-                        <div id="memory-value-rating-block" class="hidden">
+                        <!-- Rapport qualité/prix : pour TOUS les lieux (pas seulement Cafe/Restaurants) —
+                             un stade ou une boutique peuvent aussi être chers ou non. -->
+                        <div id="memory-value-rating-block">
                             <span class="sub-label" style="margin-top:14px;" data-i18n="valueForMoneyRating">Value for money</span>
                             <div class="stars" id="memory-value-stars">
                                 <svg class="star active" data-val="1" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -613,6 +615,32 @@
                                 <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                             </div>
                             <input type="hidden" id="memory-value-rating-val" value="4">
+                        </div>
+
+                        <!-- Accessibilité et qualité du lieu : pour TOUS les lieux, mêmes stats voulues
+                             pour l'onglet Info (demande du 06/09/2026). -->
+                        <div id="memory-accessibility-rating-block">
+                            <span class="sub-label" style="margin-top:14px;" data-i18n="accessibilityRating">Easy to access?</span>
+                            <div class="stars" id="memory-accessibility-stars">
+                                <svg class="star active" data-val="1" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="2" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="3" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="4" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <input type="hidden" id="memory-accessibility-rating-val" value="4">
+                        </div>
+
+                        <div id="memory-sitequality-rating-block">
+                            <span class="sub-label" style="margin-top:14px;" data-i18n="siteQualityRating">Site quality</span>
+                            <div class="stars" id="memory-sitequality-stars">
+                                <svg class="star active" data-val="1" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="2" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="3" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="4" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <input type="hidden" id="memory-sitequality-rating-val" value="4">
                         </div>
 
                         <span class="sub-label" style="margin-top:14px;" data-i18n="whenDidYouVisit">When did you visit?</span>
@@ -810,19 +838,13 @@
             <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
             </button>
-            <!-- Lieux partagés par des amis (voir shareLocationWithFriend()/listSharesForMe()
-                 dans firebase-init.js) : masqué pour un visiteur non connecté, voir
-                 firebase-ready plus bas — partager un lieu nécessite un compte réel. -->
-            <div class="dropdown-container hidden" id="friend-shares-container">
-                <button id="friend-shares-btn" class="header-icon-btn" title="Shared with you">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                    <span id="friend-shares-badge" class="notif-badge hidden">0</span>
-                </button>
-                <div id="friend-shares-menu" class="dropdown-menu hidden" style="width:290px; max-height:360px; overflow-y:auto;">
-                    <div id="friend-shares-list"></div>
-                    <div id="friend-shares-empty" class="hidden" style="padding:16px; font-size:12px; color:#94a3b8; text-align:center;" data-i18n="sharesEmpty">Nothing shared with you yet.</div>
-                </div>
-            </div>
+            <!-- Icône "Amis" (voir friends.html) : masquée pour un visiteur non connecté,
+                 voir firebase-ready plus bas. Le badge cumule messages non lus + lieux/voyages
+                 partagés non vus (voir window.refreshFriendNotifications() dans script.js). -->
+            <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Friends">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span id="friend-icon-badge" class="notif-badge hidden">0</span>
+            </button>
             <div class="dropdown-container">
                 <button id="profile-btn" class="header-icon-btn user-avatar-btn" title="Account">U</button>
                 <div id="profile-menu" class="dropdown-menu hidden">
@@ -833,6 +855,7 @@
                     <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
                     <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
                     <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+                    <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
                     <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
                     <div class="dropdown-divider"></div>
                     <a href="index.html" class="dropdown-option" id="logout-btn" style="color:var(--primary-magenta); font-weight:bold;" data-i18n="logoutOption">Logout</a>
@@ -1185,11 +1208,12 @@
             if (adminBtn && await window.isCurrentUserAdmin()) adminBtn.classList.remove('hidden');
         }
 
-        // Cloche "partagé par vos amis" + bouton "Partager" sur la fiche lieu :
-        // uniquement pour un compte réel (partager un lieu nécessite un compte, voir la
-        // règle friendShares dans firebase-init.js).
+        // Icône "Amis" (badge unifié messages/partages) + bouton "Partager" sur la fiche
+        // lieu : uniquement pour un compte réel.
         if (user) {
-            if (typeof window.refreshFriendShares === 'function') window.refreshFriendShares();
+            const friendIconBtn = document.getElementById('friend-icon-btn');
+            if (friendIconBtn) friendIconBtn.classList.remove('hidden');
+            if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
             const shareContainer = document.getElementById('share-location-container');
             if (shareContainer) shareContainer.classList.remove('hidden');
         }

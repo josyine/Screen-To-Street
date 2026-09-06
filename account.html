@@ -157,6 +157,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
             <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
             <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+            <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
             <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
             <div class="dropdown-divider"></div>
             <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
@@ -202,7 +203,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
       </div>
 
       <div class="box-container" id="friends-section" style="margin-bottom:26px;">
-        <div class="section-title" data-i18n="friendsTitle">Friends</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <span class="section-title" style="margin:0;" data-i18n="friendsTitle">Friends</span>
+          <a href="friends.html" style="font-size:12px; font-weight:700; color:#D42759;" data-i18n="openFriendsMessagesLink">Open Friends &amp; Messages →</a>
+        </div>
         <div style="display:flex; gap:8px; margin-bottom:14px;">
           <input type="text" id="friend-username-input" class="field-value" style="flex:1;" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">
           <button id="friend-add-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:0 20px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="friendsAddBtn">Add</button>
