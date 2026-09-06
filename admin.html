@@ -36,6 +36,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-badge{display:inline-block;margin-top:4px;background:#FCE7F0;color:#D42759;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;}
 .sub-edit-tag{background:#EFF6FF;color:#2563eb;}
 .sub-meta{font-size:12px;color:#64748b;margin-bottom:12px;}
+.sub-photo{margin-bottom:12px;border-radius:10px;overflow:hidden;}
+.sub-photo img{display:block;width:100%;max-height:220px;object-fit:cover;}
+.sub-photo-missing{background:#FFF7F8;border:1px dashed #FBD5DC;border-radius:10px;padding:14px;text-align:center;color:#D42759;font-size:12px;font-weight:600;margin-bottom:12px;}
 .sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;margin-bottom:12px;}
 .sub-story p{margin-bottom:8px;}
 .sub-story p:last-child{margin-bottom:0;}
@@ -85,6 +88,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         return en || '<em>No story text provided.</em>';
     }
 
+    // Une IA peut fournir une URL de photo qui n'existe pas réellement (hallucination) —
+    // plutôt qu'une icône d'image cassée silencieuse, on remplace par un message explicite
+    // pour que ce soit visible pendant la relecture, avant d'approuver.
+    function handleSubPhotoError(imgEl) {
+        const wrapper = imgEl.closest('.sub-photo');
+        if (wrapper) wrapper.outerHTML = '<div class="sub-photo-missing">⚠ Photo URL provided but failed to load — verify or replace before approving.</div>';
+    }
+
     function renderCard(sub) {
         const isEdit = !!sub.matchedLocId;
         const practicalCount = Array.isArray(sub.practicalInfo) ? sub.practicalInfo.length : 0;
@@ -101,6 +112,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 </div>
             </div>
             <div class="sub-meta">${escapeHtml(sub.group || '')} · ${escapeHtml(sub.member || '')} &middot; ${escapeHtml(sub.city || '')}, ${escapeHtml(sub.country || '')} &middot; ${escapeHtml(sub.category || '')} &middot; ${escapeHtml(sub.year || '')}</div>
+            ${sub.img
+                ? `<div class="sub-photo"><img src="${escapeHtml(sub.img)}" alt="" loading="lazy" onerror="handleSubPhotoError(this)"></div>`
+                : `<div class="sub-photo-missing">No photo provided — add one manually before approving.</div>`}
             <div class="sub-story">${storyHtml(sub)}</div>
             <div class="sub-fields">
                 <span>${practicalCount} practical info item${practicalCount === 1 ? '' : 's'}</span>

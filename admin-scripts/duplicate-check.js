@@ -124,6 +124,41 @@ function findNearbyDuplicate(lat, lng, existingLocations, thresholdMeters = 50) 
     return closest;
 }
 
+// Retire les accents, met en minuscules, découpe en mots (ponctuation ignorée) et TRIE
+// ces mots — "Cafe Magnate" et "Magnate Cafe" donnent alors exactement la même clé. C'est
+// volontairement une égalité STRICTE de l'ensemble des mots, pas une comparaison floue :
+// une IA peut réordonner "Cafe Magnate" en "Magnate Cafe" d'une génération à l'autre (même
+// lieu), mais une clé stricte évite de rapprocher à tort deux lieux différents qui
+// partagent juste un mot générique ("Cafe X" et "Cafe Y" ont des clés différentes).
+function normalizedNameKey(name) {
+    if (!name) return '';
+    return name
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .split(/\s+/)
+        .filter(Boolean)
+        .sort()
+        .join(' ');
+}
+
+// Vérification à deux niveaux : distance GPS (fiable mais inefficace si l'IA ne donne que
+// des coordonnées approximatives/génériques pour un lieu qu'elle reformule différemment),
+// PUIS mots du nom strictement identiques une fois réordonnés (attrape "Magnate Cafe" vs
+// "Cafe Magnate" même quand les coordonnées proposées sont trop éloignées pour matcher).
+// Renvoie { location, reason: 'distance'|'name', distanceMeters? } ou null.
+function findDuplicate(candidate, existingLocations, thresholdMeters = 50) {
+    const distanceDup = findNearbyDuplicate(candidate.lat, candidate.lng, existingLocations, thresholdMeters);
+    if (distanceDup) return Object.assign({ reason: 'distance' }, distanceDup);
+
+    const candidateKey = normalizedNameKey(candidate.name);
+    if (candidateKey) {
+        const nameMatch = existingLocations.find((loc) => normalizedNameKey(loc.name) === candidateKey);
+        if (nameMatch) return { location: nameMatch, reason: 'name' };
+    }
+    return null;
+}
+
 module.exports = {
     haversineMeters,
     loadStaticLocations,
@@ -132,6 +167,8 @@ module.exports = {
     loadApprovedLocations,
     loadAllExistingLocations,
     findNearbyDuplicate,
+    normalizedNameKey,
+    findDuplicate,
 };
 
 // Auto-test quand ce fichier est exécuté directement (`node duplicate-check.js`) : charge
