@@ -67,6 +67,10 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: 12.5px; line-height: 1.5; word-break: break-word; }
 .msg-bubble-wrap.mine .msg-bubble { background: #D42759; color: #fff; border-bottom-right-radius: 4px; }
 .msg-bubble-wrap.theirs .msg-bubble { background: #faf9fc; border: 1px solid #EFECF6; color: #334155; border-bottom-left-radius: 4px; }
+.msg-bubble-row { display: flex; align-items: center; gap: 6px; }
+.msg-delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0; transition: opacity .15s; padding: 3px; flex-shrink: 0; }
+.msg-bubble-wrap:hover .msg-delete-btn { opacity: .55; }
+.msg-delete-btn:hover { opacity: 1 !important; }
 .convo-input-row { padding: 14px 18px; border-top: 1px solid #EFECF6; display: flex; gap: 8px; }
 .convo-input-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 10px 16px; font-size: 12.5px; font-family: 'Poppins', sans-serif; outline: none; }
 .convo-input-row button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
@@ -344,19 +348,37 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
     }
 
+    const MESSAGE_DELETE_WINDOW_MS = 10 * 60 * 1000;
     async function loadAndRenderMessages() {
         const msgs = typeof window.loadMessages === 'function' ? await window.loadMessages(currentConvoId) : [];
         const container = document.getElementById('convo-messages');
         const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+        const now = Date.now();
         container.innerHTML = msgs.map(m => {
             const mine = m.fromUid === myUid;
+            const sentMs = (m.createdAt && m.createdAt.seconds) ? m.createdAt.seconds * 1000 : null;
+            const canDelete = mine && sentMs && (now - sentMs) < MESSAGE_DELETE_WINDOW_MS;
             return `<div class="msg-bubble-wrap ${mine ? 'mine' : 'theirs'}">
                 ${!mine ? `<div class="msg-sender">${escapeHtml(m.fromUsername || '')}</div>` : ''}
-                <div class="msg-bubble">${escapeHtml(m.text)}</div>
+                <div class="msg-bubble-row">
+                    ${canDelete ? `<button class="msg-delete-btn" data-msg-id="${m.id}" title="${t('deleteMessageOption')}">🗑</button>` : ''}
+                    <div class="msg-bubble">${escapeHtml(m.text)}</div>
+                </div>
             </div>`;
         }).join('');
         container.scrollTop = container.scrollHeight;
     }
+    document.getElementById('convo-messages').addEventListener('click', async (e) => {
+        const btn = e.target.closest('.msg-delete-btn');
+        if (!btn || !currentConvoId || typeof window.deleteMessage !== 'function') return;
+        const isFr = currentLang === 'fr';
+        if (!window.confirm(isFr ? 'Supprimer ce message ?' : 'Delete this message?')) return;
+        const result = await window.deleteMessage(currentConvoId, btn.dataset.msgId);
+        if (result && result.success) await loadAndRenderMessages();
+        else if (typeof window.showSimpleToast === 'function') {
+            window.showSimpleToast(isFr ? 'Trop tard pour supprimer ce message.' : 'Too late to delete this message.', { isError: true });
+        }
+    });
 
     document.getElementById('convo-back-btn').addEventListener('click', () => {
         document.getElementById('friends-shell').classList.remove('chat-open');

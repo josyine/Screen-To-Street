@@ -959,6 +959,8 @@ window.markShareSeen = async function (shareId) {
 //         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
 //       allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
 //         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+//       allow delete: if request.auth != null && resource.data.fromUid == request.auth.uid
+//         && request.time < resource.data.createdAt + duration.value(10, 'm');
 //     }
 //     match /reads/{uid} {
 //       allow read, write: if request.auth != null && request.auth.uid == uid;
@@ -1026,12 +1028,26 @@ window.loadMessages = async function (convoId) {
     try {
         const snap = await getDocs(collection(db, 'conversations', convoId, 'messages'));
         const msgs = [];
-        snap.forEach(d => msgs.push(d.data()));
+        snap.forEach(d => msgs.push(Object.assign({ id: d.id }, d.data())));
         msgs.sort((a, b) => ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0));
         return msgs;
     } catch (e) {
         console.warn('Lecture des messages échouée :', e);
         return [];
+    }
+};
+
+// Supprime un message qu'on a soi-même envoyé, si les 10 minutes autorisées ne sont pas
+// encore écoulées (voir la règle Firestore ci-dessus, seule autorité réelle sur ce délai —
+// cette fonction se contente de relayer un 'permission-denied' clair si le client a laissé
+// le bouton visible trop longtemps, ex: horloge locale décalée).
+window.deleteMessage = async function (convoId, messageId) {
+    try {
+        await deleteDoc(doc(db, 'conversations', convoId, 'messages', messageId));
+        return { success: true };
+    } catch (e) {
+        console.warn('Suppression du message échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
     }
 };
 

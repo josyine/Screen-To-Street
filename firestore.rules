@@ -210,6 +210,13 @@ service cloud.firestore {
           && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
         allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
           && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+        // "Delete my message" (friends.html) : seulement son propre message, et seulement
+        // dans les 10 minutes suivant l'envoi — au-delà, même l'auteur ne peut plus le
+        // supprimer. La fenêtre est vérifiée côté serveur (request.time), pas seulement
+        // en cachant le bouton côté client, pour rester valable même contre un appel
+        // direct à l'API en dehors de l'UI normale.
+        allow delete: if request.auth != null && resource.data.fromUid == request.auth.uid
+          && request.time < resource.data.createdAt + duration.value(10, 'm');
       }
 
       // Horodatage "dernière lecture" par personne, pour calculer les messages non lus.
