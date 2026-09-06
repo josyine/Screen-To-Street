@@ -3210,13 +3210,18 @@ function hideMapHoverTip() {
     if (tip) tip.classList.remove('open');
 }
 
-function addSingleLocationMarker(loc, visitedData) {
+function addSingleLocationMarker(loc, wishlistData) {
     const catIconSvg = iconsSVG[loc.category] || iconsSVG["Default"];
-    const isVisited = visitedData.some(v => v.id === loc.id || v === loc.id);
+    // Le remplissage de couleur reflète maintenant la wishlist, pas la visite (demande du
+    // 06/09/2026) : avant, "visité" remplissait le marqueur, ce qui se confondait
+    // visuellement avec le remplissage automatique des clusters (voir addClusterMarker) —
+    // l'affichage reste "clair" (contour + icône coloré, fond blanc) tant que le lieu n'a
+    // pas été ajouté à la wishlist.
+    const isWishlisted = wishlistData.some(w => w.id === loc.id || w === loc.id);
     const baseColor = groupColors[loc.group] || '#334e68';
 
     let inlineStyle = `border-color: ${baseColor}; --marker-color: ${baseColor};`;
-    inlineStyle += isVisited ? ` background-color: ${baseColor}; color: white;` : ` background-color: white; color: ${baseColor};`;
+    inlineStyle += isWishlisted ? ` background-color: ${baseColor}; color: white;` : ` background-color: white; color: ${baseColor};`;
 
     const customIcon = L.divIcon({ className: 'custom-category-marker', html: `<div style="${inlineStyle}">${catIconSvg}</div>`, iconSize: [32,32], iconAnchor: [16,16] });
     const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markerGroup);
@@ -3225,8 +3230,15 @@ function addSingleLocationMarker(loc, visitedData) {
     marker.on('mouseout', () => hideMapHoverTip());
 }
 
-function addClusterMarker(cluster) {
+function addClusterMarker(cluster, wishlistData) {
     const count = cluster.locs.length;
+    const isWishlisted = (loc) => wishlistData.some(w => w.id === loc.id || w === loc.id);
+    // Le simple fait que des lieux se chevauchent (et forment donc un cluster) ne doit plus
+    // remplir automatiquement le marqueur (demande du 06/09/2026) — même règle que pour un
+    // marqueur individuel : "clair" par défaut, rempli seulement si TOUS les lieux du
+    // cluster sont dans la wishlist (un cluster partiellement wishlisté reste clair plutôt
+    // que de choisir arbitrairement lequel représenter).
+    const allWishlisted = cluster.locs.length > 0 && cluster.locs.every(isWishlisted);
 
     // Groupes distincts présents dans ce cluster : un même lieu réel (mêmes coordonnées,
     // ex: BTS ET Blackpink ayant tous deux tourné au Stade de France) finit dans le même
@@ -3237,30 +3249,26 @@ function addClusterMarker(cluster) {
     // marqueur est divisé en parts égales, une couleur par groupe présent, pour qu'aucun
     // des groupes ayant visité ce lieu ne disparaisse visuellement derrière un autre.
     const distinctGroups = [...new Set(cluster.locs.map(l => l.group))];
-    const html = distinctGroups.length > 1
-        ? (() => {
-            const step = 360 / distinctGroups.length;
-            const slices = distinctGroups.map((g, i) => `${groupColors[g] || '#334e68'} ${(i * step).toFixed(2)}deg ${((i + 1) * step).toFixed(2)}deg`).join(', ');
-            return `
-                <span style="position:relative; display:inline-block;">
-                    <div style="border-color:#fff; --marker-color:#fff; background:conic-gradient(${slices}); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3);">${CLUSTER_ICON_SVG}</div>
-                    <span class="cluster-badge">×${count}</span>
-                </span>
-            `;
-        })()
-        : (() => {
-            const baseColor = groupColors[distinctGroups[0]] || '#334e68';
-            // Le badge (span, pas div) et le conteneur (span aussi) évitent volontairement
-            // le sélecteur CSS ".custom-category-marker div", qui appliquerait sinon le
-            // style rond du marqueur à tout div descendant, y compris le conteneur et le
-            // badge.
-            return `
-                <span style="position:relative; display:inline-block;">
-                    <div style="border-color:${baseColor}; --marker-color:${baseColor}; background-color:${baseColor}; color:#fff;">${CLUSTER_ICON_SVG}</div>
-                    <span class="cluster-badge">×${count}</span>
-                </span>
-            `;
-        })();
+    let discStyle;
+    if (!allWishlisted) {
+        discStyle = `border-color:#94a3b8; --marker-color:#94a3b8; background-color:#fff; color:#94a3b8;`;
+    } else if (distinctGroups.length > 1) {
+        const step = 360 / distinctGroups.length;
+        const slices = distinctGroups.map((g, i) => `${groupColors[g] || '#334e68'} ${(i * step).toFixed(2)}deg ${((i + 1) * step).toFixed(2)}deg`).join(', ');
+        discStyle = `border-color:#fff; --marker-color:#fff; background:conic-gradient(${slices}); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3);`;
+    } else {
+        const baseColor = groupColors[distinctGroups[0]] || '#334e68';
+        discStyle = `border-color:${baseColor}; --marker-color:${baseColor}; background-color:${baseColor}; color:#fff;`;
+    }
+    // Le badge (span, pas div) et le conteneur (span aussi) évitent volontairement le
+    // sélecteur CSS ".custom-category-marker div", qui appliquerait sinon le style rond du
+    // marqueur à tout div descendant, y compris le conteneur et le badge.
+    const html = `
+        <span style="position:relative; display:inline-block;">
+            <div style="${discStyle}">${CLUSTER_ICON_SVG}</div>
+            <span class="cluster-badge">×${count}</span>
+        </span>
+    `;
     const clusterIcon = L.divIcon({ className: 'custom-category-marker', html, iconSize: [32, 32], iconAnchor: [16, 16] });
     const marker = L.marker(cluster.center, { icon: clusterIcon }).addTo(markerGroup);
     marker.on('click', () => { map.setView(cluster.center, Math.min(map.getZoom() + 3, 18)); });
@@ -3269,12 +3277,12 @@ function addClusterMarker(cluster) {
 function renderMapMarkers(locations, opts) {
     if (!map || !markerGroup) return;
     markerGroup.clearLayers();
-    const visitedData = getVisitedLocs();
+    const wishlistData = getWishlistLocs();
     const clusters = clusterLocationsForZoom(locations, map.getZoom());
 
     clusters.forEach(cluster => {
-        if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0], visitedData);
-        else addClusterMarker(cluster);
+        if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0], wishlistData);
+        else addClusterMarker(cluster, wishlistData);
     });
 
     // Le fitBounds initial doit couvrir les vraies coordonnées de chaque lieu (pas les
