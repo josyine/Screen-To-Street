@@ -1173,8 +1173,14 @@ window.addEventListener('firebase-ready', async (e) => {
         if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
     }
     const adminShortcutBtn = document.getElementById('admin-shortcut-btn');
-    if (adminShortcutBtn && typeof window.isCurrentUserAdmin === 'function' && await window.isCurrentUserAdmin()) {
-        adminShortcutBtn.classList.remove('hidden');
+    if (typeof window.isCurrentUserAdmin === 'function' && await window.isCurrentUserAdmin()) {
+        if (adminShortcutBtn) adminShortcutBtn.classList.remove('hidden');
+        // Mémorisé une fois ici (pas re-vérifié à chaque ouverture de fiche lieu, ce qui
+        // ferait clignoter l'icône crayon) — voir openDetailsPanel() et
+        // openLocationEditModal() plus bas, qui s'appuient dessus.
+        window.__isAdminUser = true;
+        const adminEditBtn = document.getElementById('details-admin-edit-btn');
+        if (adminEditBtn) adminEditBtn.classList.remove('hidden');
     }
 
     // Voyages partagés par d'autres utilisateurs (voir listSharedTripsForMe() dans
@@ -4231,6 +4237,190 @@ function renderLocationRichContent(loc) {
         });
         socialCont.classList.toggle('hidden', !anySocial);
     }
+}
+
+// ==========================================
+// ÉDITION DIRECTE D'UN LIEU PAR UN ADMIN (icône crayon sur la fiche du lieu, demande du
+// 06/09/2026) — contourne la file de soumissions/approbation d'admin.html : un admin qui
+// modifie un lieu déjà publié n'a pas besoin de se re-approuver lui-même. N'écrit QUE dans
+// locationContent/{locationId} via window.adminUpdateLocationContent() (firebase-init.js) —
+// jamais les champs "squelette" (nom, coordonnées...), qui restent dans
+// script.js/celebLocations (voir la stratégie hybride : squelette gratuit sur GitHub,
+// contenu riche chargé à la demande depuis Firestore). Textes non traduits (8 langues) :
+// fonction réservée aux admins, comme admin.html lui-même.
+function extractYouTubeIdForEdit(url) {
+    const s = (url || '').trim();
+    if (!s) return null;
+    const m = s.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
+    return m ? m[1] : (/^[a-zA-Z0-9_-]{10,15}$/.test(s) ? s : null);
+}
+function extractTweetUrlForEdit(url) {
+    const s = (url || '').trim();
+    return /^https?:\/\/(www\.)?(twitter|x)\.com\/[^/]+\/status\/\d+/.test(s) ? s : null;
+}
+function extractSocialUrlForEdit(url, domainRe) {
+    const s = (url || '').trim();
+    return new RegExp(`^https?:\\/\\/(www\\.)?${domainRe}\\/.+`).test(s) ? s : null;
+}
+// Convertit un fullDescription HTML (<p>...</p><p>...</p>) en texte simple éditable
+// (un paragraphe par ligne vide), et inversement à la sauvegarde.
+function htmlParagraphsToPlainText(html) {
+    if (!html) return '';
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    const paragraphs = Array.from(temp.querySelectorAll('p'));
+    if (paragraphs.length === 0) return temp.textContent || '';
+    return paragraphs.map(p => p.textContent.trim()).join('\n\n');
+}
+function plainTextToHtmlParagraphs(text) {
+    return (text || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+}
+
+function ensureLocationEditModal() {
+    let modal = document.getElementById('location-edit-modal');
+    if (modal) return modal;
+    modal = document.createElement('div');
+    modal.id = 'location-edit-modal';
+    modal.className = 'modal hidden';
+    modal.style.zIndex = '10600';
+    const fieldStyle = "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:9px 12px; font-size:12.5px; font-family:'Poppins',sans-serif; margin-bottom:4px;";
+    const labelStyle = "font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:4px;";
+    const errStyle = "font-size:10.5px; color:#D42759; margin-bottom:10px;";
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:480px;">
+            <span class="close-btn" onclick="document.getElementById('location-edit-modal').classList.add('hidden')">&times;</span>
+            <div style="font-size:15px; font-weight:700; color:#212832; margin-bottom:2px;" id="location-edit-title">Edit location</div>
+            <div style="font-size:11px; color:#94a3b8; margin-bottom:16px;">Admin only — changes are published immediately.</div>
+
+            <label style="${labelStyle}">Story (English)</label>
+            <textarea id="location-edit-story" rows="6" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="One paragraph per blank line"></textarea>
+
+            <label style="${labelStyle}">YouTube video URL</label>
+            <input type="url" id="location-edit-youtube" style="${fieldStyle}" placeholder="https://www.youtube.com/watch?v=...">
+            <div id="location-edit-youtube-error" class="hidden" style="${errStyle}">Doesn't look like a YouTube URL.</div>
+
+            <label style="${labelStyle}">Twitter / X post URL</label>
+            <input type="url" id="location-edit-tweet" style="${fieldStyle}" placeholder="https://x.com/.../status/...">
+            <div id="location-edit-tweet-error" class="hidden" style="${errStyle}">Doesn't look like a twitter.com/x.com status URL.</div>
+
+            <label style="${labelStyle}">Instagram URL</label>
+            <input type="url" id="location-edit-instagram" style="${fieldStyle}" placeholder="https://instagram.com/...">
+            <div id="location-edit-instagram-error" class="hidden" style="${errStyle}">Doesn't look like an instagram.com URL.</div>
+
+            <label style="${labelStyle}">Facebook URL</label>
+            <input type="url" id="location-edit-facebook" style="${fieldStyle}" placeholder="https://facebook.com/...">
+            <div id="location-edit-facebook-error" class="hidden" style="${errStyle}">Doesn't look like a facebook.com URL.</div>
+
+            <label style="${labelStyle}">TikTok URL</label>
+            <input type="url" id="location-edit-tiktok" style="${fieldStyle}" placeholder="https://tiktok.com/...">
+            <div id="location-edit-tiktok-error" class="hidden" style="${errStyle} margin-bottom:14px;">Doesn't look like a tiktok.com URL.</div>
+
+            <button id="location-edit-save-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:11px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Save changes</button>
+            <div id="location-edit-result" class="hidden" style="font-size:12px; font-weight:600; margin-top:10px; text-align:center;"></div>
+        </div>`;
+    document.body.appendChild(modal);
+    return modal;
+}
+
+let locationEditCurrentId = null;
+let locationEditExistingFullDescription = {};
+window.openLocationEditModal = async function (locId) {
+    if (!window.__isAdminUser || locId === null || locId === undefined) return;
+    const loc = celebLocations.find(l => l.id === locId);
+    if (!loc) return;
+    locationEditCurrentId = locId;
+
+    const modal = ensureLocationEditModal();
+    document.getElementById('location-edit-title').textContent = `Edit — ${loc.name}`;
+    ['youtube', 'tweet', 'instagram', 'facebook', 'tiktok'].forEach(k => document.getElementById(`location-edit-${k}-error`).classList.add('hidden'));
+    const resultEl = document.getElementById('location-edit-result');
+    resultEl.classList.add('hidden');
+    modal.classList.remove('hidden');
+
+    // Pré-remplit d'abord avec les données locales (immédiat), puis tente une lecture
+    // Firestore qui, si elle répond, remplace le pré-remplissage par la version
+    // réellement affichée aux visiteurs (même logique que openDetailsPanel).
+    const fillForm = (data) => {
+        document.getElementById('location-edit-story').value = htmlParagraphsToPlainText(getLocText(data.fullDescription));
+        document.getElementById('location-edit-youtube').value = data.ytId ? `https://www.youtube.com/watch?v=${data.ytId}` : '';
+        document.getElementById('location-edit-tweet').value = data.tweetUrl || '';
+        document.getElementById('location-edit-instagram').value = data.instagramUrl || '';
+        document.getElementById('location-edit-facebook').value = data.facebookUrl || '';
+        document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
+        locationEditExistingFullDescription = data.fullDescription || {};
+    };
+    fillForm(loc);
+
+    if (typeof window.fetchLocationContent === 'function') {
+        const remote = await window.fetchLocationContent(locId);
+        if (remote && locationEditCurrentId === locId) fillForm(Object.assign({}, loc, remote));
+    }
+
+    const saveBtn = document.getElementById('location-edit-save-btn');
+    saveBtn.onclick = () => saveLocationEdit(locId, modal);
+};
+
+async function saveLocationEdit(locId, modal) {
+    const saveBtn = document.getElementById('location-edit-save-btn');
+    const resultEl = document.getElementById('location-edit-result');
+    saveBtn.disabled = true;
+
+    const storyText = document.getElementById('location-edit-story').value;
+    const youtubeVal = document.getElementById('location-edit-youtube').value.trim();
+    const tweetVal = document.getElementById('location-edit-tweet').value.trim();
+    const instagramVal = document.getElementById('location-edit-instagram').value.trim();
+    const facebookVal = document.getElementById('location-edit-facebook').value.trim();
+    const tiktokVal = document.getElementById('location-edit-tiktok').value.trim();
+
+    let hasError = false;
+    const checkField = (val, extracted, errId) => {
+        const errEl = document.getElementById(errId);
+        if (val && !extracted) { errEl.classList.remove('hidden'); hasError = true; }
+        else errEl.classList.add('hidden');
+    };
+    const ytId = youtubeVal ? extractYouTubeIdForEdit(youtubeVal) : null;
+    checkField(youtubeVal, ytId, 'location-edit-youtube-error');
+    const tweetUrl = tweetVal ? extractTweetUrlForEdit(tweetVal) : null;
+    checkField(tweetVal, tweetUrl, 'location-edit-tweet-error');
+    const instagramUrl = instagramVal ? extractSocialUrlForEdit(instagramVal, 'instagram\\.com') : null;
+    checkField(instagramVal, instagramUrl, 'location-edit-instagram-error');
+    const facebookUrl = facebookVal ? extractSocialUrlForEdit(facebookVal, 'facebook\\.com') : null;
+    checkField(facebookVal, facebookUrl, 'location-edit-facebook-error');
+    const tiktokUrl = tiktokVal ? extractSocialUrlForEdit(tiktokVal, 'tiktok\\.com') : null;
+    checkField(tiktokVal, tiktokUrl, 'location-edit-tiktok-error');
+
+    if (hasError) { saveBtn.disabled = false; return; }
+
+    // Ne remplace QUE la clé "en" de fullDescription, jamais les autres langues déjà
+    // traduites (locationEditExistingFullDescription posé par openLocationEditModal).
+    const fullDescription = Object.assign({}, locationEditExistingFullDescription, { en: plainTextToHtmlParagraphs(storyText) });
+    const fields = {
+        fullDescription,
+        ytId: ytId || '',
+        tweetUrl: tweetUrl || '',
+        instagramUrl: instagramUrl || '',
+        facebookUrl: facebookUrl || '',
+        tiktokUrl: tiktokUrl || ''
+    };
+
+    const res = await window.adminUpdateLocationContent(locId, fields);
+    resultEl.classList.remove('hidden');
+    if (res.success) {
+        resultEl.textContent = '✓ Saved.';
+        resultEl.style.color = '#10b981';
+        // Reflète immédiatement le changement dans la fiche déjà ouverte, sans recharger
+        // la page ni attendre le prochain fetchLocationContent().
+        const loc = celebLocations.find(l => l.id === locId);
+        if (loc) {
+            Object.assign(loc, fields);
+            if (currentLocationIdForMemory === locId) renderLocationRichContent(loc);
+        }
+        setTimeout(() => modal.classList.add('hidden'), 900);
+    } else {
+        resultEl.textContent = 'Failed: ' + res.code;
+        resultEl.style.color = '#ef4444';
+    }
+    saveBtn.disabled = false;
 }
 
 window.openDetailsPanel = function(id) {

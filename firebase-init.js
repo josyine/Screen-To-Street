@@ -502,6 +502,29 @@ window.rejectLocationSubmission = async function (submissionId, note) {
     }
 };
 
+// Édition directe d'un lieu déjà publié, par un admin, depuis l'icône crayon de sa fiche
+// sur la carte (voir openLocationEditModal() dans script.js — demande du 06/09/2026) :
+// contourne la file de soumissions/approbation ci-dessus, réservée aux propositions de
+// non-admins ou aux nouveaux lieux — un admin qui modifie un lieu qu'il vient de relire
+// n'a pas besoin de se re-approuver lui-même. N'écrit QUE dans locationContent/{id},
+// jamais les champs "squelette" (nom, coordonnées...) qui restent dans
+// script.js/celebLocations (stratégie hybride : squelette gratuit sur GitHub, contenu
+// riche chargé à la demande depuis Firestore, pour ne jamais épuiser le quota gratuit de
+// lectures/jour en rechargeant les 200 lieux à chaque visite). La vraie protection reste
+// la règle Firestore de locationContent (write : admin uniquement) — ce isCurrentUserAdmin()
+// côté client n'est qu'un raccourci UX pour éviter un aller-retour réseau inutile.
+window.adminUpdateLocationContent = async function (locationId, fields) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        await setDoc(doc(db, 'locationContent', String(locationId)), fields, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Édition directe du lieu échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Lu par map.html au chargement (voir firebase-ready) : les nouveaux lieux déjà approuvés
 // (voir approveLocationSubmission ci-dessus) sont fusionnés dans celebLocations à la
 // volée, jamais écrits dans script.js.
