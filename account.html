@@ -611,8 +611,18 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         const isFr = currentLang === 'fr';
         let claimResult = { success: true };
         if (typeof window.claimUsername === 'function') claimResult = await window.claimUsername(newName);
-        if (claimResult && claimResult.success === false && claimResult.code === 'taken') {
-            showUsernameMsg(isFr ? "Cet identifiant est déjà pris." : "This username is already taken.", true);
+        // Toute erreur (pas seulement 'taken') doit bloquer : avant ce correctif, un échec
+        // pour une AUTRE raison (ex: permission-denied pendant que les règles Firestore
+        // n'étaient pas encore à jour côté console) affichait quand même "✓ Identifiant mis
+        // à jour" alors que l'entrée usernames/{pseudo} n'avait pas réellement été écrite —
+        // laissant l'index public désynchronisé sans que personne ne s'en aperçoive (bug à
+        // l'origine des invitations d'ami à sens unique).
+        if (claimResult && claimResult.success === false) {
+            if (claimResult.code === 'taken') {
+                showUsernameMsg(isFr ? "Cet identifiant est déjà pris." : "This username is already taken.", true);
+            } else {
+                showUsernameMsg(isFr ? "Échec de la mise à jour — réessayez." : "Update failed — please try again.", true);
+            }
             nameInputEl.removeAttribute('readonly');
             nameInputEl.style.borderColor = '#D42759';
             nameInputEl.focus();
