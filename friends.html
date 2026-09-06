@@ -71,9 +71,23 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .msg-delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0; transition: opacity .15s; padding: 3px; flex-shrink: 0; }
 .msg-bubble-wrap:hover .msg-delete-btn { opacity: .55; }
 .msg-delete-btn:hover { opacity: 1 !important; }
-.convo-input-row { padding: 14px 18px; border-top: 1px solid #EFECF6; display: flex; gap: 8px; }
+.convo-input-row { padding: 14px 18px; border-top: 1px solid #EFECF6; display: flex; gap: 8px; align-items: center; }
 .convo-input-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 10px 16px; font-size: 12.5px; font-family: 'Poppins', sans-serif; outline: none; }
-.convo-input-row button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.convo-input-row > button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.attach-btn { width: 34px; height: 34px; border-radius: 50%; background: #f1f5f9; color: #64748b; border: none; font-size: 19px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; padding-bottom: 2px; }
+.attach-btn:hover { background: #FCE7F0; color: #D42759; }
+.attach-location-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; color: #212832; }
+.attach-location-row:hover { background: #FFF7F8; }
+.chat-card { border: 1.5px solid #EFECF6; border-radius: 12px; padding: 10px 12px; cursor: pointer; text-decoration: none; display: block; max-width: 220px; }
+.chat-card:hover { border-color: #fbcfe8; background: #FFF7F8; }
+.chat-card-label { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: #94a3b8; margin-bottom: 3px; }
+.chat-card-title { font-size: 12.5px; font-weight: 700; color: #212832; }
+.poll-card { border: 1.5px solid #EFECF6; border-radius: 12px; padding: 12px 14px; max-width: 240px; }
+.poll-question { font-size: 12.5px; font-weight: 700; color: #212832; margin-bottom: 8px; }
+.poll-option-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; background: #faf9fc; border: 1px solid #EFECF6; border-radius: 8px; padding: 7px 10px; font-size: 11.5px; font-weight: 600; color: #334155; cursor: pointer; margin-bottom: 5px; font-family: 'Poppins', sans-serif; text-align: left; }
+.poll-option-btn:hover { border-color: #fbcfe8; }
+.poll-option-btn.voted { background: #FCE7F0; border-color: #D42759; color: #D42759; }
+.poll-option-count { font-size: 10px; color: #94a3b8; font-weight: 700; }
 
 .share-trip-btn { background: transparent; border: 1.5px solid #cbd5e1; color: #64748b; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 100px; cursor: pointer; font-family: 'Poppins', sans-serif; white-space: nowrap; }
 .share-trip-picker { position: absolute; top: 56px; right: 22px; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.12); padding: 8px; min-width: 220px; z-index: 20; }
@@ -220,7 +234,31 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                 <div id="share-trip-empty" class="hidden" style="padding:9px 10px; font-size:11.5px; color:#94a3b8;" data-i18n="noOwnedTrips">You don't have any trips yet.</div>
             </div>
             <div id="convo-messages" class="convo-messages"></div>
+
+            <div id="attach-location-picker" class="share-trip-picker hidden" style="bottom:64px; top:auto; left:18px; right:18px;">
+                <div class="share-trip-picker-title" data-i18n="attachLocationTitle">Share a location</div>
+                <input type="text" id="attach-location-input" autocomplete="off" placeholder="${'Search a place...'}" style="width:100%; border:1.5px solid #cbd5e1; border-radius:100px; padding:8px 14px; font-size:12px; font-family:'Poppins',sans-serif; margin-bottom:6px;">
+                <div id="attach-location-results" style="max-height:160px; overflow-y:auto;"></div>
+            </div>
+            <div id="attach-poll-picker" class="share-trip-picker hidden" style="bottom:64px; top:auto; left:18px; right:18px; min-width:0;">
+                <div class="share-trip-picker-title" data-i18n="attachPollTitle">Create a poll</div>
+                <input type="text" id="poll-question-input" placeholder="Question" style="width:100%; border:1.5px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:12px; font-family:'Poppins',sans-serif; margin-bottom:6px;">
+                <input type="text" class="poll-option-input" placeholder="Option 1" style="width:100%; border:1.5px solid #cbd5e1; border-radius:8px; padding:7px 12px; font-size:11.5px; font-family:'Poppins',sans-serif; margin-bottom:5px;">
+                <input type="text" class="poll-option-input" placeholder="Option 2" style="width:100%; border:1.5px solid #cbd5e1; border-radius:8px; padding:7px 12px; font-size:11.5px; font-family:'Poppins',sans-serif; margin-bottom:5px;">
+                <input type="text" class="poll-option-input" placeholder="Option 3 (optional)" style="width:100%; border:1.5px solid #cbd5e1; border-radius:8px; padding:7px 12px; font-size:11.5px; font-family:'Poppins',sans-serif; margin-bottom:5px;">
+                <input type="text" class="poll-option-input" placeholder="Option 4 (optional)" style="width:100%; border:1.5px solid #cbd5e1; border-radius:8px; padding:7px 12px; font-size:11.5px; font-family:'Poppins',sans-serif; margin-bottom:8px;">
+                <button id="poll-create-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:9px; font-size:12px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="attachPollCreateBtn">Create poll</button>
+            </div>
+
             <div class="convo-input-row">
+                <div class="dropdown-container">
+                    <button id="convo-attach-btn" class="attach-btn" title="Add">+</button>
+                    <div id="convo-attach-menu" class="dropdown-menu hidden" style="bottom:44px; top:auto;">
+                        <a href="#" id="attach-location-option" class="dropdown-option" data-i18n="attachLocationOption">📍 Share a location</a>
+                        <a href="#" id="attach-trip-option" class="dropdown-option" data-i18n="attachTripOption">🧳 Share a trip</a>
+                        <a href="#" id="attach-poll-option" class="dropdown-option" data-i18n="attachPollOption">📊 Create a poll</a>
+                    </div>
+                </div>
                 <input type="text" id="convo-message-input" data-i18n-placeholder="messagePlaceholder" placeholder="Message...">
                 <button id="convo-send-btn" data-i18n="sendBtn">Send</button>
             </div>
@@ -276,7 +314,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const list = document.getElementById('trip-groups-list');
         const empty = document.getElementById('trip-groups-empty');
         list.innerHTML = groups.map(g => `<div class="convo-row" data-kind="trip" data-trip-id="${g.id}" data-trip-name="${escapeHtml(g.name)}">
-            <div class="convo-thumb-icon">🧳</div>
+            <div class="convo-thumb-icon"${g.coverImage ? ` style="background-image:url('${g.coverImage}'); background-size:cover; background-position:center; font-size:0;"` : ''}>${g.coverImage ? '' : '🧳'}</div>
             <div>
                 <div class="convo-row-name">${escapeHtml(g.name)}</div>
                 <div class="convo-row-meta">${g.isOwner ? t('tripGroupOwner') : t('tripGroupMember')}</div>
@@ -358,6 +396,36 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     }
 
     const MESSAGE_DELETE_WINDOW_MS = 10 * 60 * 1000;
+    // Contenu de la bulle selon le type de message (voir sendRichMessage() et les 3
+    // fonctions dédiées dans firebase-init.js) — texte simple par défaut (rétrocompatible
+    // avec tous les messages envoyés avant l'ajout du menu "+").
+    function renderMessageContent(m, mine, myUid) {
+        if (m.type === 'location') {
+            return `<a class="chat-card" href="map.html?loc=${encodeURIComponent(m.locationId)}">
+                <div class="chat-card-label">📍 ${t('attachLocationOption').replace('📍 ', '')}</div>
+                <div class="chat-card-title">${escapeHtml(m.locationName || '')}</div>
+            </a>`;
+        }
+        if (m.type === 'trip') {
+            return `<a class="chat-card" href="trips.html?openTrip=${encodeURIComponent(m.sharedTripId)}">
+                <div class="chat-card-label">🧳 ${t('attachTripOption').replace('🧳 ', '')}</div>
+                <div class="chat-card-title">${escapeHtml(m.sharedTripName || '')}</div>
+            </a>`;
+        }
+        if (m.type === 'poll') {
+            const votes = m.votes || {};
+            const counts = (m.pollOptions || []).map((_, i) => Object.values(votes).filter(v => v === i).length);
+            const totalVotes = Object.keys(votes).length;
+            const myVote = votes[myUid];
+            const optsHtml = (m.pollOptions || []).map((opt, i) => `
+                <button type="button" class="poll-option-btn ${myVote === i ? 'voted' : ''}" data-msg-id="${m.id}" data-option="${i}">
+                    <span>${escapeHtml(opt)}</span>
+                    <span class="poll-option-count">${counts[i]}${totalVotes > 0 ? ' · ' + Math.round(100 * counts[i] / totalVotes) + '%' : ''}</span>
+                </button>`).join('');
+            return `<div class="poll-card"><div class="poll-question">📊 ${escapeHtml(m.pollQuestion || '')}</div>${optsHtml}</div>`;
+        }
+        return `<div class="msg-bubble">${escapeHtml(m.text)}</div>`;
+    }
     async function loadAndRenderMessages() {
         const msgs = typeof window.loadMessages === 'function' ? await window.loadMessages(currentConvoId) : [];
         const container = document.getElementById('convo-messages');
@@ -366,26 +434,31 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         container.innerHTML = msgs.map(m => {
             const mine = m.fromUid === myUid;
             const sentMs = (m.createdAt && m.createdAt.seconds) ? m.createdAt.seconds * 1000 : null;
-            const canDelete = mine && sentMs && (now - sentMs) < MESSAGE_DELETE_WINDOW_MS;
+            const canDelete = mine && m.type !== 'poll' && sentMs && (now - sentMs) < MESSAGE_DELETE_WINDOW_MS;
             return `<div class="msg-bubble-wrap ${mine ? 'mine' : 'theirs'}">
                 ${!mine ? `<div class="msg-sender">${escapeHtml(m.fromUsername || '')}</div>` : ''}
                 <div class="msg-bubble-row">
                     ${canDelete ? `<button class="msg-delete-btn" data-msg-id="${m.id}" title="${t('deleteMessageOption')}">🗑</button>` : ''}
-                    <div class="msg-bubble">${escapeHtml(m.text)}</div>
+                    ${renderMessageContent(m, mine, myUid)}
                 </div>
             </div>`;
         }).join('');
         container.scrollTop = container.scrollHeight;
     }
     document.getElementById('convo-messages').addEventListener('click', async (e) => {
-        const btn = e.target.closest('.msg-delete-btn');
-        if (!btn || !currentConvoId || typeof window.deleteMessage !== 'function') return;
-        const isFr = currentLang === 'fr';
-        if (!window.confirm(isFr ? 'Supprimer ce message ?' : 'Delete this message?')) return;
-        const result = await window.deleteMessage(currentConvoId, btn.dataset.msgId);
-        if (result && result.success) await loadAndRenderMessages();
-        else if (typeof window.showSimpleToast === 'function') {
-            window.showSimpleToast(isFr ? 'Trop tard pour supprimer ce message.' : 'Too late to delete this message.', { isError: true });
+        const deleteBtn = e.target.closest('.msg-delete-btn');
+        const pollBtn = e.target.closest('.poll-option-btn');
+        if (deleteBtn && currentConvoId && typeof window.deleteMessage === 'function') {
+            const isFr = currentLang === 'fr';
+            if (!window.confirm(isFr ? 'Supprimer ce message ?' : 'Delete this message?')) return;
+            const result = await window.deleteMessage(currentConvoId, deleteBtn.dataset.msgId);
+            if (result && result.success) await loadAndRenderMessages();
+            else if (typeof window.showSimpleToast === 'function') {
+                window.showSimpleToast(isFr ? 'Trop tard pour supprimer ce message.' : 'Too late to delete this message.', { isError: true });
+            }
+        } else if (pollBtn && currentConvoId && typeof window.voteInPoll === 'function') {
+            await window.voteInPoll(currentConvoId, pollBtn.dataset.msgId, parseInt(pollBtn.dataset.option, 10));
+            await loadAndRenderMessages();
         }
     });
 
@@ -406,6 +479,87 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         await loadAndRenderMessages();
         if (currentConvoType === 'trip') refreshTripGroupsList(); else refreshDmListUI();
     }
+
+    // --- Menu "+" du composeur (partager un lieu / un voyage / créer un sondage) ---
+    document.getElementById('convo-attach-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('attach-location-picker').classList.add('hidden');
+        document.getElementById('attach-poll-picker').classList.add('hidden');
+        document.getElementById('attach-trip-option').classList.toggle('hidden', currentConvoType === 'trip');
+        document.getElementById('convo-attach-menu').classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('convo-attach-menu');
+        const btn = document.getElementById('convo-attach-btn');
+        if (!menu.contains(e.target) && e.target !== btn) menu.classList.add('hidden');
+    });
+
+    document.getElementById('attach-location-option').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('convo-attach-menu').classList.add('hidden');
+        document.getElementById('attach-poll-picker').classList.add('hidden');
+        const picker = document.getElementById('attach-location-picker');
+        picker.classList.remove('hidden');
+        document.getElementById('attach-location-input').value = '';
+        document.getElementById('attach-location-results').innerHTML = '';
+        document.getElementById('attach-location-input').focus();
+    });
+    let locationSearchTimer = null;
+    document.getElementById('attach-location-input').addEventListener('input', (e) => {
+        clearTimeout(locationSearchTimer);
+        const q = e.target.value;
+        locationSearchTimer = setTimeout(() => {
+            const resultsEl = document.getElementById('attach-location-results');
+            if (typeof window.searchCelebLocationsByName !== 'function') return;
+            const matches = window.searchCelebLocationsByName(q, 8);
+            resultsEl.innerHTML = matches.map(loc => `<div class="attach-location-row" data-loc-id="${loc.id}" data-loc-name="${escapeHtml(loc.name)}">${escapeHtml(loc.name)}</div>`).join('');
+            resultsEl.querySelectorAll('.attach-location-row').forEach(row => {
+                row.addEventListener('click', async () => {
+                    if (typeof window.sendLocationShareMessage === 'function' && currentConvoId) {
+                        await window.sendLocationShareMessage(currentConvoId, row.dataset.locId, row.dataset.locName);
+                        await loadAndRenderMessages();
+                        if (currentConvoType === 'trip') refreshTripGroupsList(); else refreshDmListUI();
+                    }
+                    document.getElementById('attach-location-picker').classList.add('hidden');
+                });
+            });
+        }, 200);
+    });
+
+    document.getElementById('attach-trip-option').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('convo-attach-menu').classList.add('hidden');
+        // Réutilise le sélecteur de voyage déjà existant (bouton "Share a trip" du
+        // header, DM uniquement) plutôt que d'en dupliquer un second — un clic ici
+        // simule celui du bouton pour ouvrir exactement le même picker.
+        document.getElementById('convo-share-trip-btn').click();
+    });
+
+    document.getElementById('attach-poll-option').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('convo-attach-menu').classList.add('hidden');
+        document.getElementById('attach-location-picker').classList.add('hidden');
+        document.getElementById('poll-question-input').value = '';
+        document.querySelectorAll('.poll-option-input').forEach(el => el.value = '');
+        document.getElementById('attach-poll-picker').classList.remove('hidden');
+        document.getElementById('poll-question-input').focus();
+    });
+    document.getElementById('poll-create-btn').addEventListener('click', async () => {
+        const question = document.getElementById('poll-question-input').value;
+        const options = Array.from(document.querySelectorAll('.poll-option-input')).map(el => el.value);
+        if (typeof window.sendPollMessage !== 'function' || !currentConvoId) return;
+        const result = await window.sendPollMessage(currentConvoId, question, options);
+        if (result && result.error) {
+            const isFr = currentLang === 'fr';
+            if (typeof window.showSimpleToast === 'function') {
+                window.showSimpleToast(isFr ? 'Ajoutez une question et au moins 2 options.' : 'Add a question and at least 2 options.', { isError: true });
+            }
+            return;
+        }
+        document.getElementById('attach-poll-picker').classList.add('hidden');
+        await loadAndRenderMessages();
+        if (currentConvoType === 'trip') refreshTripGroupsList(); else refreshDmListUI();
+    });
 
     // --- Menu "⋮" d'une conversation de groupe (renommer / quitter) ---
     document.getElementById('convo-options-btn').addEventListener('click', (e) => {
@@ -484,6 +638,10 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                 const trip = myTrips.find(t => t.id === opt.dataset.tripId);
                 if (!trip || !currentConvoFriendUid) return;
                 await window.shareTripFromFriendsPage(trip, currentConvoFriendUid, currentConvoFriendUsername);
+                if (typeof window.sendTripShareMessage === 'function') {
+                    await window.sendTripShareMessage(currentConvoId, trip.id, trip.name);
+                    await loadAndRenderMessages();
+                }
                 picker.classList.add('hidden');
                 await refreshTripGroupsList();
             });

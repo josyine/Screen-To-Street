@@ -21,7 +21,7 @@ import {
     EmailAuthProvider,
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, serverTimestamp, query, where, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -466,7 +466,7 @@ window.approveLocationSubmission = async function (submission) {
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         const targetId = submission.matchedLocId ? String(submission.matchedLocId) : 'new-' + submission.id;
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink'];
+        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'tweetUrl'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), contentDoc, { merge: true });
@@ -557,7 +557,11 @@ window.claimUsername = async function (username) {
         if (existing.exists() && existing.data().uid !== user.uid) {
             return { success: false, code: 'taken' };
         }
-        await setDoc(doc(db, 'usernames', key), { uid: user.uid }, { merge: true });
+        // `username` (en plus de `uid`) garde la casse d'affichage d'origine (ex:
+        // "Perrine4058") — la clé du document, elle, reste toujours en minuscules pour
+        // que la recherche par préfixe ci-dessous (searchUsernamesByPrefix) ne dépende
+        // pas de la casse tapée par la personne qui cherche.
+        await setDoc(doc(db, 'usernames', key), { uid: user.uid, username: username.trim() }, { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Réservation du pseudo échouée :', e);
@@ -573,6 +577,31 @@ window.lookupUserByUsername = async function (username) {
     } catch (e) {
         console.warn('Recherche du pseudo échouée :', e);
         return null;
+    }
+};
+
+// Auto-complétion par pseudo (partage de voyage, friends.html) : requête par PRÉFIXE sur
+// l'id du document (toujours en minuscules) via une plage [prefix, prefix+'') — la
+// seule forme de recherche texte que Firestore sait faire nativement, pas une vraie
+// recherche "contient" (ça nécessiterait un service de recherche externe, hors de portée
+// d'un site statique sans backend). "Perrine" retrouve donc "Perrine4058" (préfixe), mais
+// pas un pseudo où "Perrine" apparaîtrait au milieu — limite acceptée pour ce site.
+window.searchUsernamesByPrefix = async function (prefix, maxResults) {
+    const key = (prefix || '').toLowerCase().trim();
+    if (!key) return [];
+    try {
+        const q = query(collection(db, 'usernames'),
+            orderBy(documentId()),
+            where(documentId(), '>=', key),
+            where(documentId(), '<', key + ''),
+            limit(maxResults || 6));
+        const snap = await getDocs(q);
+        const results = [];
+        snap.forEach(d => results.push({ uid: d.data().uid, username: d.data().username || d.id }));
+        return results;
+    } catch (e) {
+        console.warn('Recherche de pseudos échouée :', e);
+        return [];
     }
 };
 
@@ -959,6 +988,9 @@ window.markShareSeen = async function (shareId) {
 //         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
 //       allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
 //         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+//       allow update: if request.auth != null
+//         && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data)
+//         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']);
 //       allow delete: if request.auth != null && resource.data.fromUid == request.auth.uid
 //         && request.time < resource.data.createdAt + duration.value(10, 'm');
 //     }
@@ -1006,20 +1038,77 @@ window.ensureTripConversation = async function (tripId, tripName) {
 };
 
 window.sendMessage = async function (convoId, text) {
-    const user = auth.currentUser;
-    if (!user) return { error: 'not-signed-in' };
     const trimmed = (text || '').trim();
     if (!trimmed) return { error: 'empty' };
+    return window.sendRichMessage(convoId, { text: trimmed }, trimmed);
+};
+
+// Version générique derrière sendMessage() (texte simple) ET le menu "+" de friends.html
+// (partager un lieu, partager un voyage, créer un sondage) : `extraFields` porte les
+// champs propres à chaque type (voir les 3 fonctions ci-dessous), `previewText` est ce
+// qui s'affiche dans la sidebar (ex: "📍 Shared a location" plutôt que le texte brut d'un
+// sondage). Aucune restriction de champs côté règles Firestore sur la création d'un
+// message — seule la mise à jour ultérieure de `votes` (vote dans un sondage) est
+// contrainte.
+window.sendRichMessage = async function (convoId, extraFields, previewText) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
     const myUsername = (localStorage.getItem('userFirstName') || localStorage.getItem('userName') || 'ARMY').trim();
     try {
         const msgRef = doc(collection(db, 'conversations', convoId, 'messages'));
-        await setDoc(msgRef, { fromUid: user.uid, fromUsername: myUsername, text: trimmed, createdAt: serverTimestamp() });
+        await setDoc(msgRef, Object.assign({ fromUid: user.uid, fromUsername: myUsername, createdAt: serverTimestamp() }, extraFields));
         await setDoc(doc(db, 'conversations', convoId), {
-            lastMessageAt: serverTimestamp(), lastMessageText: trimmed.slice(0, 140), lastMessageFromUid: user.uid,
+            lastMessageAt: serverTimestamp(), lastMessageText: (previewText || '').slice(0, 140), lastMessageFromUid: user.uid,
         }, { merge: true });
-        return { success: true };
+        return { success: true, id: msgRef.id };
     } catch (e) {
         console.warn('Envoi du message échoué :', e);
+        return { error: 'failed' };
+    }
+};
+
+// Partager un lieu précis DANS une conversation (menu "+", différent de
+// shareLocationWithFriend() ci-dessus qui alimente les notifications de la sidebar sans
+// passer par une conversation) — locationId/locationName suffisent, le rendu ressort les
+// détails (image, lien) depuis celebLocations côté client, jamais dupliqués ici.
+window.sendLocationShareMessage = async function (convoId, locationId, locationName) {
+    return window.sendRichMessage(convoId,
+        { type: 'location', locationId: String(locationId), locationName: locationName || '' },
+        '📍 ' + (locationName || 'Shared a location'));
+};
+
+// Partager un voyage DANS une conversation (menu "+", complète shareTripWithFriend() qui
+// gère l'invitation/la notif indépendamment du contenu du chat).
+window.sendTripShareMessage = async function (convoId, tripId, tripName) {
+    return window.sendRichMessage(convoId,
+        { type: 'trip', sharedTripId: String(tripId), sharedTripName: tripName || '' },
+        '🧳 ' + (tripName || 'Shared a trip'));
+};
+
+// Sondage simple : question + jusqu'à 4 options, votes stockés comme {uid: optionIndex}
+// directement sur le message (pas de sous-collection — un sondage de conversation reste
+// de taille modeste). Pas de mise à jour en temps réel (comme le reste de la messagerie
+// de ce site, qui n'utilise jamais onSnapshot) : les votes des autres n'apparaissent
+// qu'au prochain rafraîchissement de la conversation.
+window.sendPollMessage = async function (convoId, question, options) {
+    const cleanOptions = (options || []).map(o => (o || '').trim()).filter(Boolean).slice(0, 4);
+    if (!question || !question.trim() || cleanOptions.length < 2) return { error: 'invalid' };
+    return window.sendRichMessage(convoId,
+        { type: 'poll', pollQuestion: question.trim(), pollOptions: cleanOptions, votes: {} },
+        '📊 ' + question.trim());
+};
+
+// Voter (ou changer son vote) dans un sondage — un seul choix par personne, la ré-écriture
+// du même uid remplace simplement son vote précédent (merge sur `votes.<uid>`).
+window.voteInPoll = async function (convoId, messageId, optionIndex) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    try {
+        await setDoc(doc(db, 'conversations', convoId, 'messages', messageId),
+            { votes: { [user.uid]: optionIndex } }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Vote dans le sondage échoué :', e);
         return { error: 'failed' };
     }
 };

@@ -33,6 +33,39 @@ window.escapeHtml = escapeHtml;
 // request envoyée, username changé...) — voir .simple-toast-container dans style.css.
 // Crée son propre conteneur à la volée au premier appel (pas de <div> à ajouter dans
 // chaque fichier HTML) ; plusieurs toasts successifs s'empilent verticalement.
+// Recherche par nom parmi celebLocations (pas exposée directement sur window pour garder
+// une frontière d'API propre) — utilisée par le menu "+" de friends.html pour partager un
+// lieu précis dans une conversation, sans dupliquer la liste des lieux ailleurs.
+window.searchCelebLocationsByName = function (query, maxResults) {
+    const q = (query || '').toLowerCase().trim();
+    if (!q) return [];
+    return celebLocations.filter(l => (l.name || '').toLowerCase().includes(q)).slice(0, maxResults || 8);
+};
+
+// Charge le widget officiel Twitter/X une seule fois (partagé par toutes les fiches lieu
+// visitées dans la session), puis fait rendre le <blockquote> injecté à chaque appel —
+// widgets.js ne transforme QUE les blockquotes présents au moment de son propre
+// chargement, un blockquote ajouté dynamiquement plus tard a besoin d'un appel explicite
+// à widgets.load() pour être rendu (voir renderTweetEmbedOnDetails ci-dessous).
+let _twitterWidgetLoadPromise = null;
+function loadTwitterWidgetScriptOnce() {
+    if (window.twttr && window.twttr.widgets) return Promise.resolve();
+    if (_twitterWidgetLoadPromise) return _twitterWidgetLoadPromise;
+    _twitterWidgetLoadPromise = new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = 'https://platform.twitter.com/widgets.js';
+        s.onload = resolve;
+        s.onerror = resolve;
+        document.body.appendChild(s);
+    });
+    return _twitterWidgetLoadPromise;
+}
+async function renderTweetEmbedOnDetails(container, tweetUrl) {
+    container.innerHTML = `<blockquote class="twitter-tweet"><a href="${tweetUrl}"></a></blockquote>`;
+    await loadTwitterWidgetScriptOnce();
+    if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
+}
+
 window.showSimpleToast = function (message, opts) {
     const isError = opts && opts.isError;
     let container = document.getElementById('simple-toast-container');
@@ -219,7 +252,12 @@ const ARIRANG_TOUR = {
               { dates: ['2026-08-27'], surpriseSongs: ['Tomorrow', '힙합성애자 (Hip Hop Phile)'] },
               { dates: ['2026-08-28'], surpriseSongs: ['134340', '소우주 (Mikrokosmos)'], highlights: { en: ["During Mikrokosmos, a light rain began to fall over the open-air stadium, making the atmosphere magical and deeply poetic."], fr: ["Pendant Mikrokosmos, une pluie fine a commencé à tomber sur le stade ouvert, rendant l'atmosphère magique et très poétique."], es: ["Durante Mikrokosmos, comenzó a caer una lluvia fina sobre el estadio al aire libre, creando una atmósfera mágica y muy poética."], it: ["Durante Mikrokosmos, una pioggerellina ha iniziato a cadere sullo stadio all'aperto, rendendo l'atmosfera magica e molto poetica."], pt: ["Durante Mikrokosmos, uma chuva fina começou a cair sobre o estádio a céu aberto, tornando a atmosfera mágica e muito poética."], ko: ["Mikrokosmos가 흐르는 동안 개방형 경기장 위로 가랑비가 내리기 시작해, 마법 같고 매우 시적인 분위기를 자아냈다."], ja: ["Mikrokosmosが流れている間、屋外スタジアムに小雨が降り始め、幻想的でとても詩的な雰囲気を作り出した。"], zh: ["在演唱《Mikrokosmos》期间，露天体育场开始下起细雨，营造出如梦似幻、诗意十足的氛围。"] } }
           ] },
-        { id: 'la',          city: 'Los Angeles',   country: 'USA',         venue: 'SoFi Stadium',               lat: 33.9535,  lng: -118.3392, showDates: ['2026-09-01', '2026-09-02', '2026-09-05', '2026-09-06'] },
+        { id: 'la',          city: 'Los Angeles',   country: 'USA',         venue: 'SoFi Stadium',               lat: 33.9535,  lng: -118.3392, showDates: ['2026-09-01', '2026-09-02', '2026-09-05', '2026-09-06'],
+          nights: [
+              { dates: ['2026-09-01'], surpriseSongs: ['상남자 (Boy in Luv)', 'Magic Shop'] },
+              { dates: ['2026-09-02'], surpriseSongs: ['Love Maze', '뱁새 (Silver Spoon)'] }
+              /* 2026-09-05: surprise songs not yet reported by sourced outlets — add once verified, do not invent */
+          ] },
         { id: 'bogota',      city: 'Bogota',        country: 'Colombia',    venue: 'Estadio El Campín',          lat: 4.6486,   lng: -74.0925,  showDates: ['2026-10-02', '2026-10-03'] },
         { id: 'lima',        city: 'Lima',          country: 'Peru',        venue: 'Estadio San Marcos',         lat: -12.0578, lng: -77.0839,  showDates: ['2026-10-07', '2026-10-09', '2026-10-10'] },
         { id: 'santiago',    city: 'Santiago',      country: 'Chile',       venue: 'Estadio Nacional',           lat: -33.4642, lng: -70.6072,  showDates: ['2026-10-14', '2026-10-16', '2026-10-17'] },
@@ -927,9 +965,9 @@ window.refreshFriendNotifications = async function() {
 // groupe pour le comptage des messages non lus (chaque voyage <-> une conversation
 // "trip_<id>", voir tripConversationId()).
 window.listMyTripGroups = async function() {
-    const owned = getMyTripsList().filter(t => t.isShared).map(t => ({ id: t.id, name: t.name, isOwner: true }));
+    const owned = getMyTripsList().filter(t => t.isShared).map(t => ({ id: t.id, name: t.name, isOwner: true, coverImage: t.coverImage }));
     const shared = typeof window.listSharedTripsForMe === 'function' ? await window.listSharedTripsForMe() : [];
-    const collaborator = shared.map(t => ({ id: t._sharedTripId, name: t.name, isOwner: false }));
+    const collaborator = shared.map(t => ({ id: t._sharedTripId, name: t.name, isOwner: false, coverImage: t.coverImage }));
     return owned.concat(collaborator);
 };
 
@@ -2556,7 +2594,7 @@ const translations = {
         accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address",
         accCountryLabel: "Country you're interested in", accCountryPlaceholder: "Select a country (optional)",
         accActivityTitle: "Your activity", accTrips: "Trips", accVisited: "Visited", accWishlist: "Wishlist", accPasses: "Passes & billing",
-        friendsTitle: "Friends", openFriendsMessagesLink: "Open Friends & Messages →", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}", friendsPageTitle: "Friends & Messages", tripGroupsLabel: "Trip groups", directMessagesLabel: "Direct messages", noTripGroups: "No shared trips yet — share one from a conversation.", noFriendsForDm: "Add a friend to start messaging.", selectConversationPrompt: "Select a conversation to start chatting", messagePlaceholder: "Message...", sendBtn: "Send", tripGroupOwner: "You created this trip", tripGroupMember: "Shared with you", shareTripBtn: "Share a trip", shareTripPickTitle: "Choose a trip to share", noOwnedTrips: "You don't have any trips yet.", viewItineraryLink: "View itinerary", chatForTripLabel: "Group chat for this trip", friendRequestSentToast: "Friend request sent", renameTripGroupOption: "Rename group", leaveTripGroupOption: "Leave group", deleteMessageOption: "Delete message",
+        friendsTitle: "Friends", openFriendsMessagesLink: "Open Friends & Messages →", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}", friendsPageTitle: "Friends & Messages", tripGroupsLabel: "Trip groups", directMessagesLabel: "Direct messages", noTripGroups: "No shared trips yet — share one from a conversation.", noFriendsForDm: "Add a friend to start messaging.", selectConversationPrompt: "Select a conversation to start chatting", messagePlaceholder: "Message...", sendBtn: "Send", tripGroupOwner: "You created this trip", tripGroupMember: "Shared with you", shareTripBtn: "Share a trip", shareTripPickTitle: "Choose a trip to share", noOwnedTrips: "You don't have any trips yet.", viewItineraryLink: "View itinerary", chatForTripLabel: "Group chat for this trip", friendRequestSentToast: "Friend request sent", renameTripGroupOption: "Rename group", leaveTripGroupOption: "Leave group", deleteMessageOption: "Delete message", attachLocationTitle: "Share a location", attachPollTitle: "Create a poll", attachPollCreateBtn: "Create poll", attachLocationOption: "📍 Share a location", attachTripOption: "🧳 Share a trip", attachPollOption: "📊 Create a poll",
         accEditBtn: "Edit Profile", accSaveBtn: "Save Changes", accSaved: "✓ Saved Successfully", accNoPasses: "No active passes", accAmountPaid: "Amount paid", accGuestUsername: "Not signed in",
         accDangerZone: "Danger zone",
         accDeleteConfirmTitle: "Are you sure you want to delete your account?",
@@ -2585,7 +2623,7 @@ const translations = {
         gateResetSent: "Password reset email sent — check your inbox.", gateEnterEmailFirst: "Please enter your email address first.",
         tourModeLiveIn: "Live now — BTS is live in {city}", tourModeSchedule: "Tour Schedule", tourModeLive: "Live", tourModeDone: "Done", tourModeUpcoming: "Upcoming", tourModePrev: "Previous", tourModeNext: "Next",
         tourModeFooterNote: "Dates as announced by the tour — always double-check official ticketing sites before booking travel.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
+        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripAddCoverBtn: "+ Cover photo", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} is live now — {event} in {city}", tourModeLiveNowOne: "Live now", tourModeLiveNowCount: "{n} live now", tourModeMoreCount: "+{n} more",
         tourModeEyebrow: "Tour Mode", tourModeChooseTour: "Choose a tour", tourModeStep: "Step {n} of {total}",
         tourModeHighlights: "Highlights", tourModeSurpriseSong: "Surprise song:", tourModeNoHighlightsYet: "No highlights added yet for this show.", tourModeNoSurpriseSongYet: "Not announced yet.",
@@ -2620,7 +2658,7 @@ const translations = {
         accTitle: "Votre compte", accChangePhoto: "Changer la photo de profil", accResetPhoto: "Réinitialiser la photo de profil", accNameLabel: "Identifiant", accChangeUsernameHint: "Changer d'identifiant", accEmailLabel: "Adresse e-mail",
         accCountryLabel: "Pays qui vous intéresse", accCountryPlaceholder: "Choisir un pays (optionnel)",
         accActivityTitle: "Votre activité", accTrips: "Voyages", accVisited: "Visités", accWishlist: "Wishlist", accPasses: "Pass et facturation",
-        friendsTitle: "Amis", openFriendsMessagesLink: "Ouvrir Amis & Messages →", friendsAddPlaceholder: "Ajouter un ami par pseudo", friendsAddBtn: "Ajouter", friendsRequestsLabel: "Demandes d'ami", friendsListLabel: "Vos amis", friendsEmpty: "Pas encore d'ami — ajoutez-en un par son pseudo ci-dessus.", friendsAccept: "Accepter", friendsDecline: "Refuser", friendsCancel: "Annuler", friendsRemove: "Retirer", friendsErrNotFound: "Aucun utilisateur trouvé avec ce pseudo.", friendsErrSelf: "Vous ne pouvez pas vous ajouter vous-même.", friendsSentLabel: "Envoyée — en attente de réponse", friendsRequestFrom: "{username} souhaite devenir votre ami", shareWithFriendBtn: "Partager", shareNoFriends: "Ajoutez d'abord un ami pour partager des lieux.", sharesEmpty: "Rien n'a encore été partagé avec vous.", sharedByLabel: "{username} a partagé {location}", friendsPageTitle: "Amis & Messages", tripGroupsLabel: "Groupes de voyage", directMessagesLabel: "Messages directs", noTripGroups: "Aucun voyage partagé pour l'instant — partagez-en un depuis une conversation.", noFriendsForDm: "Ajoutez un ami pour commencer à discuter.", selectConversationPrompt: "Sélectionnez une conversation pour commencer à discuter", messagePlaceholder: "Message...", sendBtn: "Envoyer", tripGroupOwner: "Vous avez créé ce voyage", tripGroupMember: "Partagé avec vous", shareTripBtn: "Partager un voyage", shareTripPickTitle: "Choisissez un voyage à partager", noOwnedTrips: "Vous n'avez pas encore de voyage.", viewItineraryLink: "Voir l'itinéraire", chatForTripLabel: "Discussion de groupe pour ce voyage", friendRequestSentToast: "Demande d'ami envoyée", renameTripGroupOption: "Renommer le groupe", leaveTripGroupOption: "Quitter le groupe", deleteMessageOption: "Supprimer le message",
+        friendsTitle: "Amis", openFriendsMessagesLink: "Ouvrir Amis & Messages →", friendsAddPlaceholder: "Ajouter un ami par pseudo", friendsAddBtn: "Ajouter", friendsRequestsLabel: "Demandes d'ami", friendsListLabel: "Vos amis", friendsEmpty: "Pas encore d'ami — ajoutez-en un par son pseudo ci-dessus.", friendsAccept: "Accepter", friendsDecline: "Refuser", friendsCancel: "Annuler", friendsRemove: "Retirer", friendsErrNotFound: "Aucun utilisateur trouvé avec ce pseudo.", friendsErrSelf: "Vous ne pouvez pas vous ajouter vous-même.", friendsSentLabel: "Envoyée — en attente de réponse", friendsRequestFrom: "{username} souhaite devenir votre ami", shareWithFriendBtn: "Partager", shareNoFriends: "Ajoutez d'abord un ami pour partager des lieux.", sharesEmpty: "Rien n'a encore été partagé avec vous.", sharedByLabel: "{username} a partagé {location}", friendsPageTitle: "Amis & Messages", tripGroupsLabel: "Groupes de voyage", directMessagesLabel: "Messages directs", noTripGroups: "Aucun voyage partagé pour l'instant — partagez-en un depuis une conversation.", noFriendsForDm: "Ajoutez un ami pour commencer à discuter.", selectConversationPrompt: "Sélectionnez une conversation pour commencer à discuter", messagePlaceholder: "Message...", sendBtn: "Envoyer", tripGroupOwner: "Vous avez créé ce voyage", tripGroupMember: "Partagé avec vous", shareTripBtn: "Partager un voyage", shareTripPickTitle: "Choisissez un voyage à partager", noOwnedTrips: "Vous n'avez pas encore de voyage.", viewItineraryLink: "Voir l'itinéraire", chatForTripLabel: "Discussion de groupe pour ce voyage", friendRequestSentToast: "Demande d'ami envoyée", renameTripGroupOption: "Renommer le groupe", leaveTripGroupOption: "Quitter le groupe", deleteMessageOption: "Supprimer le message", attachLocationTitle: "Partager un lieu", attachPollTitle: "Créer un sondage", attachPollCreateBtn: "Créer le sondage", attachLocationOption: "📍 Partager un lieu", attachTripOption: "🧳 Partager un voyage", attachPollOption: "📊 Créer un sondage",
         accEditBtn: "Modifier le profil", accSaveBtn: "Enregistrer", accSaved: "✓ Enregistré avec succès", accNoPasses: "Aucun pass actif", accAmountPaid: "Montant payé", accGuestUsername: "Non connecté",
         accDangerZone: "Zone de danger",
         accDeleteConfirmTitle: "Êtes-vous sûr(e) de vouloir supprimer votre compte ?",
@@ -2649,7 +2687,7 @@ const translations = {
         gateResetSent: "E-mail de réinitialisation envoyé — vérifiez votre boîte de réception.", gateEnterEmailFirst: "Merci d'indiquer d'abord votre adresse e-mail.",
         tourModeLiveIn: "En direct — BTS est en concert à {city}", tourModeSchedule: "Calendrier de la tournée", tourModeLive: "En direct", tourModeDone: "Terminé", tourModeUpcoming: "À venir", tourModePrev: "Précédent", tourModeNext: "Suivant",
         tourModeFooterNote: "Dates annoncées par la tournée — vérifiez toujours les sites de billetterie officiels avant de réserver un voyage.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " et à venir", liveTimelineEmpty: "Rien de prévu pour le moment — revenez bientôt.", liveTimelineFooterNote: "Uniquement des activités officielles et rendues publiques — dates annoncées, vérifiez toujours les sources officielles avant de réserver un voyage.", liveFilterAll: "Tous", liveTodayLive: "Aujourd'hui · En direct", liveKindGroup: "Groupe", liveKindSolo: "Solo", newBadgeLabel: "Nouveau", usernameCooldownNote: "Vous ne pouvez changer ceci qu'une fois tous les 7 jours.", usernameConfirmTitle: "Changer votre identifiant ?", usernameConfirmCancel: "Annuler", usernameConfirmOk: "Oui, changer", subtitle: "Sur les traces de vos artistes préférés", backToList: "← Retour à la liste", chooserTourOption: "Itinéraire de tournée", chooserLiveOption: "Toute l'activité en direct", tripShareThis: "+ Partager ce voyage", switchArtistLabel: "Changer d'artiste", groupNoDataYet: "Aucune donnée de tournée ou de live disponible pour {group} pour le moment — revenez bientôt.", tripInviteLabel: "Inviter des personnes (facultatif)", shareTripUsernamePlaceholder: "Leur pseudo",
+        liveBadgeLabel: "Live", liveTimelineTitle: " et à venir", liveTimelineEmpty: "Rien de prévu pour le moment — revenez bientôt.", liveTimelineFooterNote: "Uniquement des activités officielles et rendues publiques — dates annoncées, vérifiez toujours les sources officielles avant de réserver un voyage.", liveFilterAll: "Tous", liveTodayLive: "Aujourd'hui · En direct", liveKindGroup: "Groupe", liveKindSolo: "Solo", newBadgeLabel: "Nouveau", usernameCooldownNote: "Vous ne pouvez changer ceci qu'une fois tous les 7 jours.", usernameConfirmTitle: "Changer votre identifiant ?", usernameConfirmCancel: "Annuler", usernameConfirmOk: "Oui, changer", subtitle: "Sur les traces de vos artistes préférés", backToList: "← Retour à la liste", chooserTourOption: "Itinéraire de tournée", chooserLiveOption: "Toute l'activité en direct", tripShareThis: "+ Partager ce voyage", tripAddCoverBtn: "+ Photo de couverture", switchArtistLabel: "Changer d'artiste", groupNoDataYet: "Aucune donnée de tournée ou de live disponible pour {group} pour le moment — revenez bientôt.", tripInviteLabel: "Inviter des personnes (facultatif)", shareTripUsernamePlaceholder: "Leur pseudo",
         tourModeGenericLabel: "Tournée", tourModeMemberLiveIn: "{member} est en direct — {event} à {city}", tourModeLiveNowOne: "En direct maintenant", tourModeLiveNowCount: "{n} en direct maintenant", tourModeMoreCount: "+{n} autres",
         tourModeEyebrow: "Mode Tournée", tourModeChooseTour: "Choisir une tournée", tourModeStep: "Étape {n} sur {total}",
         tourModeHighlights: "Temps forts", tourModeSurpriseSong: "Chanson surprise :", tourModeNoHighlightsYet: "Aucun temps fort ajouté pour ce concert pour le moment.", tourModeNoSurpriseSongYet: "Pas encore annoncée.",
@@ -2684,7 +2722,7 @@ const translations = {
         accTitle: "Tu cuenta", accChangePhoto: "Cambiar foto de perfil", accResetPhoto: "Restablecer foto de perfil", accNameLabel: "Nombre de usuario", accChangeUsernameHint: "Cambiar nombre de usuario", accEmailLabel: "Correo electrónico",
         accCountryLabel: "País que te interesa", accCountryPlaceholder: "Elige un país (opcional)",
         accActivityTitle: "Tu actividad", accTrips: "Viajes", accVisited: "Visitados", accWishlist: "Lista de deseos", accPasses: "Pases y facturación",
-        friendsTitle: "Amigos", openFriendsMessagesLink: "Abrir Amigos y Mensajes →", friendsAddPlaceholder: "Añadir un amigo por nombre de usuario", friendsAddBtn: "Añadir", friendsRequestsLabel: "Solicitudes de amistad", friendsListLabel: "Tus amigos", friendsEmpty: "Aún no tienes amigos — añade uno por su nombre de usuario arriba.", friendsAccept: "Aceptar", friendsDecline: "Rechazar", friendsCancel: "Cancelar", friendsRemove: "Quitar", friendsErrNotFound: "No se encontró ningún usuario con ese nombre.", friendsErrSelf: "No puedes añadirte a ti mismo.", friendsSentLabel: "Enviada — esperando respuesta", friendsRequestFrom: "{username} quiere ser tu amigo", shareWithFriendBtn: "Compartir", shareNoFriends: "Añade primero un amigo para compartir lugares.", sharesEmpty: "Nadie ha compartido nada contigo todavía.", sharedByLabel: "{username} compartió {location}", friendsPageTitle: "Amigos y Mensajes", tripGroupsLabel: "Grupos de viaje", directMessagesLabel: "Mensajes directos", noTripGroups: "Aún no hay viajes compartidos — comparte uno desde una conversación.", noFriendsForDm: "Añade un amigo para empezar a chatear.", selectConversationPrompt: "Selecciona una conversación para empezar a chatear", messagePlaceholder: "Mensaje...", sendBtn: "Enviar", tripGroupOwner: "Creaste este viaje", tripGroupMember: "Compartido contigo", shareTripBtn: "Compartir un viaje", shareTripPickTitle: "Elige un viaje para compartir", noOwnedTrips: "Aún no tienes ningún viaje.", viewItineraryLink: "Ver itinerario", chatForTripLabel: "Chat de grupo para este viaje", friendRequestSentToast: "Solicitud de amistad enviada", renameTripGroupOption: "Renombrar grupo", leaveTripGroupOption: "Abandonar grupo", deleteMessageOption: "Eliminar mensaje",
+        friendsTitle: "Amigos", openFriendsMessagesLink: "Abrir Amigos y Mensajes →", friendsAddPlaceholder: "Añadir un amigo por nombre de usuario", friendsAddBtn: "Añadir", friendsRequestsLabel: "Solicitudes de amistad", friendsListLabel: "Tus amigos", friendsEmpty: "Aún no tienes amigos — añade uno por su nombre de usuario arriba.", friendsAccept: "Aceptar", friendsDecline: "Rechazar", friendsCancel: "Cancelar", friendsRemove: "Quitar", friendsErrNotFound: "No se encontró ningún usuario con ese nombre.", friendsErrSelf: "No puedes añadirte a ti mismo.", friendsSentLabel: "Enviada — esperando respuesta", friendsRequestFrom: "{username} quiere ser tu amigo", shareWithFriendBtn: "Compartir", shareNoFriends: "Añade primero un amigo para compartir lugares.", sharesEmpty: "Nadie ha compartido nada contigo todavía.", sharedByLabel: "{username} compartió {location}", friendsPageTitle: "Amigos y Mensajes", tripGroupsLabel: "Grupos de viaje", directMessagesLabel: "Mensajes directos", noTripGroups: "Aún no hay viajes compartidos — comparte uno desde una conversación.", noFriendsForDm: "Añade un amigo para empezar a chatear.", selectConversationPrompt: "Selecciona una conversación para empezar a chatear", messagePlaceholder: "Mensaje...", sendBtn: "Enviar", tripGroupOwner: "Creaste este viaje", tripGroupMember: "Compartido contigo", shareTripBtn: "Compartir un viaje", shareTripPickTitle: "Elige un viaje para compartir", noOwnedTrips: "Aún no tienes ningún viaje.", viewItineraryLink: "Ver itinerario", chatForTripLabel: "Chat de grupo para este viaje", friendRequestSentToast: "Solicitud de amistad enviada", renameTripGroupOption: "Renombrar grupo", leaveTripGroupOption: "Abandonar grupo", deleteMessageOption: "Eliminar mensaje", attachLocationTitle: "Compartir un lugar", attachPollTitle: "Crear una encuesta", attachPollCreateBtn: "Crear encuesta", attachLocationOption: "📍 Compartir un lugar", attachTripOption: "🧳 Compartir un viaje", attachPollOption: "📊 Crear una encuesta",
         accEditBtn: "Editar perfil", accSaveBtn: "Guardar cambios", accSaved: "✓ Guardado con éxito", accNoPasses: "Sin pases activos", accAmountPaid: "Importe pagado", accGuestUsername: "No conectado",
         accDangerZone: "Zona de peligro",
         accDeleteConfirmTitle: "¿Seguro que quieres eliminar tu cuenta?",
@@ -2713,7 +2751,7 @@ const translations = {
         gateResetSent: "Correo de restablecimiento enviado — revisa tu bandeja de entrada.", gateEnterEmailFirst: "Indica primero tu correo electrónico.",
         tourModeLiveIn: "En directo — BTS está actuando en {city}", tourModeSchedule: "Calendario de la gira", tourModeLive: "En directo", tourModeDone: "Finalizado", tourModeUpcoming: "Próximamente", tourModePrev: "Anterior", tourModeNext: "Siguiente",
         tourModeFooterNote: "Fechas anunciadas por la gira — comprueba siempre los sitios oficiales de venta de entradas antes de reservar un viaje.",
-        liveBadgeLabel: "En vivo", liveTimelineTitle: " y próximos", liveTimelineEmpty: "Nada programado por ahora — vuelve pronto.", liveTimelineFooterNote: "Solo actividades oficiales y anunciadas públicamente — fechas según lo anunciado, comprueba siempre las fuentes oficiales antes de reservar un viaje.", liveFilterAll: "Todos", liveTodayLive: "Hoy · En vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Nuevo", usernameCooldownNote: "Solo puedes cambiar esto una vez cada 7 días.", usernameConfirmTitle: "¿Cambiar tu nombre de usuario?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sí, cambiarlo", subtitle: "Siguiendo los pasos de tus artistas favoritos", backToList: "← Volver a la lista", chooserTourOption: "Ruta de la gira", chooserLiveOption: "Toda la actividad en directo", tripShareThis: "+ Compartir este viaje", switchArtistLabel: "Cambiar de artista", groupNoDataYet: "Aún no hay datos de gira ni de directo para {group} — vuelve pronto.", tripInviteLabel: "Invitar personas (opcional)", shareTripUsernamePlaceholder: "Su nombre de usuario",
+        liveBadgeLabel: "En vivo", liveTimelineTitle: " y próximos", liveTimelineEmpty: "Nada programado por ahora — vuelve pronto.", liveTimelineFooterNote: "Solo actividades oficiales y anunciadas públicamente — fechas según lo anunciado, comprueba siempre las fuentes oficiales antes de reservar un viaje.", liveFilterAll: "Todos", liveTodayLive: "Hoy · En vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Nuevo", usernameCooldownNote: "Solo puedes cambiar esto una vez cada 7 días.", usernameConfirmTitle: "¿Cambiar tu nombre de usuario?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sí, cambiarlo", subtitle: "Siguiendo los pasos de tus artistas favoritos", backToList: "← Volver a la lista", chooserTourOption: "Ruta de la gira", chooserLiveOption: "Toda la actividad en directo", tripShareThis: "+ Compartir este viaje", tripAddCoverBtn: "+ Foto de portada", switchArtistLabel: "Cambiar de artista", groupNoDataYet: "Aún no hay datos de gira ni de directo para {group} — vuelve pronto.", tripInviteLabel: "Invitar personas (opcional)", shareTripUsernamePlaceholder: "Su nombre de usuario",
         tourModeGenericLabel: "Gira", tourModeMemberLiveIn: "{member} está en directo — {event} en {city}", tourModeLiveNowOne: "En directo ahora", tourModeLiveNowCount: "{n} en directo ahora", tourModeMoreCount: "+{n} más",
         tourModeEyebrow: "Modo Gira", tourModeChooseTour: "Elegir una gira", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Momentos destacados", tourModeSurpriseSong: "Canción sorpresa:", tourModeNoHighlightsYet: "Aún no se han añadido momentos destacados para este concierto.", tourModeNoSurpriseSongYet: "Aún no anunciada.",
@@ -2747,7 +2785,7 @@ const translations = {
         accTitle: "Il tuo account", accChangePhoto: "Cambia foto profilo", accResetPhoto: "Ripristina foto profilo", accNameLabel: "Nome utente", accChangeUsernameHint: "Cambia nome utente", accEmailLabel: "Indirizzo email",
         accCountryLabel: "Paese che ti interessa", accCountryPlaceholder: "Scegli un paese (opzionale)",
         accActivityTitle: "La tua attività", accTrips: "Viaggi", accVisited: "Visitati", accWishlist: "Wishlist", accPasses: "Pass e fatturazione",
-        friendsTitle: "Amici", openFriendsMessagesLink: "Apri Amici e Messaggi →", friendsAddPlaceholder: "Aggiungi un amico tramite username", friendsAddBtn: "Aggiungi", friendsRequestsLabel: "Richieste di amicizia", friendsListLabel: "I tuoi amici", friendsEmpty: "Ancora nessun amico — aggiungine uno tramite il suo username qui sopra.", friendsAccept: "Accetta", friendsDecline: "Rifiuta", friendsCancel: "Annulla", friendsRemove: "Rimuovi", friendsErrNotFound: "Nessun utente trovato con questo username.", friendsErrSelf: "Non puoi aggiungere te stesso.", friendsSentLabel: "Inviata — in attesa di risposta", friendsRequestFrom: "{username} vuole essere tuo amico", shareWithFriendBtn: "Condividi", shareNoFriends: "Aggiungi prima un amico per condividere i luoghi.", sharesEmpty: "Nessuno ha ancora condiviso nulla con te.", sharedByLabel: "{username} ha condiviso {location}", friendsPageTitle: "Amici e Messaggi", tripGroupsLabel: "Gruppi di viaggio", directMessagesLabel: "Messaggi diretti", noTripGroups: "Ancora nessun viaggio condiviso — condividine uno da una conversazione.", noFriendsForDm: "Aggiungi un amico per iniziare a chattare.", selectConversationPrompt: "Seleziona una conversazione per iniziare a chattare", messagePlaceholder: "Messaggio...", sendBtn: "Invia", tripGroupOwner: "Hai creato questo viaggio", tripGroupMember: "Condiviso con te", shareTripBtn: "Condividi un viaggio", shareTripPickTitle: "Scegli un viaggio da condividere", noOwnedTrips: "Non hai ancora nessun viaggio.", viewItineraryLink: "Vedi l'itinerario", chatForTripLabel: "Chat di gruppo per questo viaggio", friendRequestSentToast: "Richiesta di amicizia inviata", renameTripGroupOption: "Rinomina gruppo", leaveTripGroupOption: "Abbandona gruppo", deleteMessageOption: "Elimina messaggio",
+        friendsTitle: "Amici", openFriendsMessagesLink: "Apri Amici e Messaggi →", friendsAddPlaceholder: "Aggiungi un amico tramite username", friendsAddBtn: "Aggiungi", friendsRequestsLabel: "Richieste di amicizia", friendsListLabel: "I tuoi amici", friendsEmpty: "Ancora nessun amico — aggiungine uno tramite il suo username qui sopra.", friendsAccept: "Accetta", friendsDecline: "Rifiuta", friendsCancel: "Annulla", friendsRemove: "Rimuovi", friendsErrNotFound: "Nessun utente trovato con questo username.", friendsErrSelf: "Non puoi aggiungere te stesso.", friendsSentLabel: "Inviata — in attesa di risposta", friendsRequestFrom: "{username} vuole essere tuo amico", shareWithFriendBtn: "Condividi", shareNoFriends: "Aggiungi prima un amico per condividere i luoghi.", sharesEmpty: "Nessuno ha ancora condiviso nulla con te.", sharedByLabel: "{username} ha condiviso {location}", friendsPageTitle: "Amici e Messaggi", tripGroupsLabel: "Gruppi di viaggio", directMessagesLabel: "Messaggi diretti", noTripGroups: "Ancora nessun viaggio condiviso — condividine uno da una conversazione.", noFriendsForDm: "Aggiungi un amico per iniziare a chattare.", selectConversationPrompt: "Seleziona una conversazione per iniziare a chattare", messagePlaceholder: "Messaggio...", sendBtn: "Invia", tripGroupOwner: "Hai creato questo viaggio", tripGroupMember: "Condiviso con te", shareTripBtn: "Condividi un viaggio", shareTripPickTitle: "Scegli un viaggio da condividere", noOwnedTrips: "Non hai ancora nessun viaggio.", viewItineraryLink: "Vedi l'itinerario", chatForTripLabel: "Chat di gruppo per questo viaggio", friendRequestSentToast: "Richiesta di amicizia inviata", renameTripGroupOption: "Rinomina gruppo", leaveTripGroupOption: "Abbandona gruppo", deleteMessageOption: "Elimina messaggio", attachLocationTitle: "Condividi un luogo", attachPollTitle: "Crea un sondaggio", attachPollCreateBtn: "Crea sondaggio", attachLocationOption: "📍 Condividi un luogo", attachTripOption: "🧳 Condividi un viaggio", attachPollOption: "📊 Crea un sondaggio",
         accEditBtn: "Modifica profilo", accSaveBtn: "Salva modifiche", accSaved: "✓ Salvato con successo", accNoPasses: "Nessun pass attivo", accAmountPaid: "Importo pagato", accGuestUsername: "Non connesso",
         accDangerZone: "Zona pericolosa",
         accDeleteConfirmTitle: "Sei sicuro di voler eliminare il tuo account?",
@@ -2776,7 +2814,7 @@ const translations = {
         gateResetSent: "Email di reimpostazione inviata — controlla la posta in arrivo.", gateEnterEmailFirst: "Inserisci prima il tuo indirizzo email.",
         tourModeLiveIn: "In diretta — I BTS si esibiscono a {city}", tourModeSchedule: "Calendario del tour", tourModeLive: "In diretta", tourModeDone: "Concluso", tourModeUpcoming: "In arrivo", tourModePrev: "Precedente", tourModeNext: "Successivo",
         tourModeFooterNote: "Date annunciate dal tour — verifica sempre i siti di biglietteria ufficiali prima di prenotare un viaggio.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " e prossimi", liveTimelineEmpty: "Nulla in programma al momento — torna a trovarci presto.", liveTimelineFooterNote: "Solo attività ufficiali e annunciate pubblicamente — date come annunciate, verifica sempre le fonti ufficiali prima di prenotare un viaggio.", liveFilterAll: "Tutti", liveTodayLive: "Oggi · Live", liveKindGroup: "Gruppo", liveKindSolo: "Solo", newBadgeLabel: "Nuovo", usernameCooldownNote: "Puoi modificarlo solo una volta ogni 7 giorni.", usernameConfirmTitle: "Vuoi cambiare il tuo nome utente?", usernameConfirmCancel: "Annulla", usernameConfirmOk: "Sì, cambialo", subtitle: "Sulle orme dei tuoi artisti preferiti", backToList: "← Torna alla lista", chooserTourOption: "Percorso del tour", chooserLiveOption: "Tutta l'attività dal vivo", tripShareThis: "+ Condividi questo viaggio", switchArtistLabel: "Cambia artista", groupNoDataYet: "Nessun dato di tour o live disponibile ancora per {group} — torna a trovarci presto.", tripInviteLabel: "Invita persone (facoltativo)", shareTripUsernamePlaceholder: "Il loro nome utente",
+        liveBadgeLabel: "Live", liveTimelineTitle: " e prossimi", liveTimelineEmpty: "Nulla in programma al momento — torna a trovarci presto.", liveTimelineFooterNote: "Solo attività ufficiali e annunciate pubblicamente — date come annunciate, verifica sempre le fonti ufficiali prima di prenotare un viaggio.", liveFilterAll: "Tutti", liveTodayLive: "Oggi · Live", liveKindGroup: "Gruppo", liveKindSolo: "Solo", newBadgeLabel: "Nuovo", usernameCooldownNote: "Puoi modificarlo solo una volta ogni 7 giorni.", usernameConfirmTitle: "Vuoi cambiare il tuo nome utente?", usernameConfirmCancel: "Annulla", usernameConfirmOk: "Sì, cambialo", subtitle: "Sulle orme dei tuoi artisti preferiti", backToList: "← Torna alla lista", chooserTourOption: "Percorso del tour", chooserLiveOption: "Tutta l'attività dal vivo", tripShareThis: "+ Condividi questo viaggio", tripAddCoverBtn: "+ Foto di copertina", switchArtistLabel: "Cambia artista", groupNoDataYet: "Nessun dato di tour o live disponibile ancora per {group} — torna a trovarci presto.", tripInviteLabel: "Invita persone (facoltativo)", shareTripUsernamePlaceholder: "Il loro nome utente",
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} è in diretta — {event} a {city}", tourModeLiveNowOne: "In diretta ora", tourModeLiveNowCount: "{n} in diretta ora", tourModeMoreCount: "+{n} altri",
         tourModeEyebrow: "Modalità Tour", tourModeChooseTour: "Scegli un tour", tourModeStep: "Tappa {n} di {total}",
         tourModeHighlights: "Momenti salienti", tourModeSurpriseSong: "Canzone a sorpresa:", tourModeNoHighlightsYet: "Nessun momento saliente ancora aggiunto per questo concerto.", tourModeNoSurpriseSongYet: "Non ancora annunciata.",
@@ -2810,7 +2848,7 @@ const translations = {
         accTitle: "Sua conta", accChangePhoto: "Alterar foto de perfil", accResetPhoto: "Redefinir foto de perfil", accNameLabel: "Nome de usuário", accChangeUsernameHint: "Alterar nome de usuário", accEmailLabel: "Endereço de e-mail",
         accCountryLabel: "País de interesse", accCountryPlaceholder: "Escolha um país (opcional)",
         accActivityTitle: "Sua atividade", accTrips: "Viagens", accVisited: "Visitados", accWishlist: "Wishlist", accPasses: "Passes e faturamento",
-        friendsTitle: "Amigos", openFriendsMessagesLink: "Abrir Amigos e Mensagens →", friendsAddPlaceholder: "Adicionar um amigo pelo nome de usuário", friendsAddBtn: "Adicionar", friendsRequestsLabel: "Pedidos de amizade", friendsListLabel: "Seus amigos", friendsEmpty: "Ainda sem amigos — adicione um pelo nome de usuário acima.", friendsAccept: "Aceitar", friendsDecline: "Recusar", friendsCancel: "Cancelar", friendsRemove: "Remover", friendsErrNotFound: "Nenhum usuário encontrado com esse nome.", friendsErrSelf: "Você não pode se adicionar.", friendsSentLabel: "Enviado — aguardando resposta", friendsRequestFrom: "{username} quer ser seu amigo", shareWithFriendBtn: "Compartilhar", shareNoFriends: "Adicione um amigo primeiro para compartilhar lugares.", sharesEmpty: "Ainda ninguém compartilhou nada com você.", sharedByLabel: "{username} compartilhou {location}", friendsPageTitle: "Amigos e Mensagens", tripGroupsLabel: "Grupos de viagem", directMessagesLabel: "Mensagens diretas", noTripGroups: "Ainda sem viagens compartilhadas — compartilhe uma a partir de uma conversa.", noFriendsForDm: "Adicione um amigo para começar a conversar.", selectConversationPrompt: "Selecione uma conversa para começar a conversar", messagePlaceholder: "Mensagem...", sendBtn: "Enviar", tripGroupOwner: "Você criou esta viagem", tripGroupMember: "Compartilhado com você", shareTripBtn: "Compartilhar uma viagem", shareTripPickTitle: "Escolha uma viagem para compartilhar", noOwnedTrips: "Você ainda não tem nenhuma viagem.", viewItineraryLink: "Ver itinerário", chatForTripLabel: "Chat em grupo para esta viagem", friendRequestSentToast: "Pedido de amizade enviado", renameTripGroupOption: "Renomear grupo", leaveTripGroupOption: "Sair do grupo", deleteMessageOption: "Excluir mensagem",
+        friendsTitle: "Amigos", openFriendsMessagesLink: "Abrir Amigos e Mensagens →", friendsAddPlaceholder: "Adicionar um amigo pelo nome de usuário", friendsAddBtn: "Adicionar", friendsRequestsLabel: "Pedidos de amizade", friendsListLabel: "Seus amigos", friendsEmpty: "Ainda sem amigos — adicione um pelo nome de usuário acima.", friendsAccept: "Aceitar", friendsDecline: "Recusar", friendsCancel: "Cancelar", friendsRemove: "Remover", friendsErrNotFound: "Nenhum usuário encontrado com esse nome.", friendsErrSelf: "Você não pode se adicionar.", friendsSentLabel: "Enviado — aguardando resposta", friendsRequestFrom: "{username} quer ser seu amigo", shareWithFriendBtn: "Compartilhar", shareNoFriends: "Adicione um amigo primeiro para compartilhar lugares.", sharesEmpty: "Ainda ninguém compartilhou nada com você.", sharedByLabel: "{username} compartilhou {location}", friendsPageTitle: "Amigos e Mensagens", tripGroupsLabel: "Grupos de viagem", directMessagesLabel: "Mensagens diretas", noTripGroups: "Ainda sem viagens compartilhadas — compartilhe uma a partir de uma conversa.", noFriendsForDm: "Adicione um amigo para começar a conversar.", selectConversationPrompt: "Selecione uma conversa para começar a conversar", messagePlaceholder: "Mensagem...", sendBtn: "Enviar", tripGroupOwner: "Você criou esta viagem", tripGroupMember: "Compartilhado com você", shareTripBtn: "Compartilhar uma viagem", shareTripPickTitle: "Escolha uma viagem para compartilhar", noOwnedTrips: "Você ainda não tem nenhuma viagem.", viewItineraryLink: "Ver itinerário", chatForTripLabel: "Chat em grupo para esta viagem", friendRequestSentToast: "Pedido de amizade enviado", renameTripGroupOption: "Renomear grupo", leaveTripGroupOption: "Sair do grupo", deleteMessageOption: "Excluir mensagem", attachLocationTitle: "Compartilhar um local", attachPollTitle: "Criar uma enquete", attachPollCreateBtn: "Criar enquete", attachLocationOption: "📍 Compartilhar um local", attachTripOption: "🧳 Compartilhar uma viagem", attachPollOption: "📊 Criar uma enquete",
         accEditBtn: "Editar perfil", accSaveBtn: "Salvar alterações", accSaved: "✓ Salvo com sucesso", accNoPasses: "Nenhum passe ativo", accAmountPaid: "Valor pago", accGuestUsername: "Não conectado",
         accDangerZone: "Zona de perigo",
         accDeleteConfirmTitle: "Tem certeza de que deseja excluir sua conta?",
@@ -2839,7 +2877,7 @@ const translations = {
         gateResetSent: "E-mail de redefinição enviado — verifique sua caixa de entrada.", gateEnterEmailFirst: "Informe primeiro seu endereço de e-mail.",
         tourModeLiveIn: "Ao vivo — BTS está se apresentando em {city}", tourModeSchedule: "Calendário da turnê", tourModeLive: "Ao vivo", tourModeDone: "Concluído", tourModeUpcoming: "Em breve", tourModePrev: "Anterior", tourModeNext: "Próximo",
         tourModeFooterNote: "Datas anunciadas pela turnê — sempre confira os sites oficiais de venda de ingressos antes de reservar uma viagem.",
-        liveBadgeLabel: "Ao vivo", liveTimelineTitle: " e próximos", liveTimelineEmpty: "Nada programado no momento — volte em breve.", liveTimelineFooterNote: "Apenas atividades oficiais e anunciadas publicamente — datas conforme anunciadas, sempre confira as fontes oficiais antes de reservar uma viagem.", liveFilterAll: "Todos", liveTodayLive: "Hoje · Ao vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Novo", usernameCooldownNote: "Você só pode alterar isso uma vez a cada 7 dias.", usernameConfirmTitle: "Alterar seu nome de usuário?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sim, alterar", subtitle: "Nos passos dos seus artistas favoritos", backToList: "← Voltar à lista", chooserTourOption: "Rota da turnê", chooserLiveOption: "Toda a atividade ao vivo", tripShareThis: "+ Compartilhar esta viagem", switchArtistLabel: "Trocar de artista", groupNoDataYet: "Ainda não há dados de turnê ou ao vivo para {group} — volte em breve.", tripInviteLabel: "Convidar pessoas (opcional)", shareTripUsernamePlaceholder: "O nome de usuário deles",
+        liveBadgeLabel: "Ao vivo", liveTimelineTitle: " e próximos", liveTimelineEmpty: "Nada programado no momento — volte em breve.", liveTimelineFooterNote: "Apenas atividades oficiais e anunciadas publicamente — datas conforme anunciadas, sempre confira as fontes oficiais antes de reservar uma viagem.", liveFilterAll: "Todos", liveTodayLive: "Hoje · Ao vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Novo", usernameCooldownNote: "Você só pode alterar isso uma vez a cada 7 dias.", usernameConfirmTitle: "Alterar seu nome de usuário?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sim, alterar", subtitle: "Nos passos dos seus artistas favoritos", backToList: "← Voltar à lista", chooserTourOption: "Rota da turnê", chooserLiveOption: "Toda a atividade ao vivo", tripShareThis: "+ Compartilhar esta viagem", tripAddCoverBtn: "+ Foto de capa", switchArtistLabel: "Trocar de artista", groupNoDataYet: "Ainda não há dados de turnê ou ao vivo para {group} — volte em breve.", tripInviteLabel: "Convidar pessoas (opcional)", shareTripUsernamePlaceholder: "O nome de usuário deles",
         tourModeGenericLabel: "Turnê", tourModeMemberLiveIn: "{member} está ao vivo agora — {event} em {city}", tourModeLiveNowOne: "Ao vivo agora", tourModeLiveNowCount: "{n} ao vivo agora", tourModeMoreCount: "+{n} mais",
         tourModeEyebrow: "Modo Turnê", tourModeChooseTour: "Escolher uma turnê", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Melhores momentos", tourModeSurpriseSong: "Música surpresa:", tourModeNoHighlightsYet: "Nenhum destaque adicionado ainda para este show.", tourModeNoSurpriseSongYet: "Ainda não anunciada.",
@@ -2873,7 +2911,7 @@ const translations = {
         accTitle: "내 계정", accChangePhoto: "프로필 사진 변경", accResetPhoto: "프로필 사진 재설정", accNameLabel: "아이디", accChangeUsernameHint: "아이디 변경", accEmailLabel: "이메일 주소",
         accCountryLabel: "관심 있는 국가", accCountryPlaceholder: "국가 선택 (선택 사항)",
         accActivityTitle: "내 활동", accTrips: "여행", accVisited: "방문함", accWishlist: "위시리스트", accPasses: "이용권 및 결제",
-        friendsTitle: "친구", openFriendsMessagesLink: "친구 및 메시지 열기 →", friendsAddPlaceholder: "사용자 이름으로 친구 추가", friendsAddBtn: "추가", friendsRequestsLabel: "친구 요청", friendsListLabel: "내 친구", friendsEmpty: "아직 친구가 없습니다 — 위에서 사용자 이름으로 친구를 추가해보세요.", friendsAccept: "수락", friendsDecline: "거절", friendsCancel: "취소", friendsRemove: "삭제", friendsErrNotFound: "해당 사용자 이름을 가진 사용자를 찾을 수 없습니다.", friendsErrSelf: "자기 자신은 추가할 수 없습니다.", friendsSentLabel: "전송됨 — 응답 대기 중", friendsRequestFrom: "{username}님이 친구가 되고 싶어합니다", shareWithFriendBtn: "공유", shareNoFriends: "장소를 공유하려면 먼저 친구를 추가하세요.", sharesEmpty: "아직 공유받은 것이 없습니다.", sharedByLabel: "{username}님이 {location}을(를) 공유했습니다", friendsPageTitle: "친구 및 메시지", tripGroupsLabel: "여행 그룹", directMessagesLabel: "다이렉트 메시지", noTripGroups: "아직 공유된 여행이 없습니다 — 대화에서 여행을 공유해보세요.", noFriendsForDm: "메시지를 보내려면 먼저 친구를 추가하세요.", selectConversationPrompt: "채팅을 시작하려면 대화를 선택하세요", messagePlaceholder: "메시지...", sendBtn: "전송", tripGroupOwner: "이 여행을 만드셨습니다", tripGroupMember: "공유받은 여행", shareTripBtn: "여행 공유하기", shareTripPickTitle: "공유할 여행을 선택하세요", noOwnedTrips: "아직 여행이 없습니다.", viewItineraryLink: "일정 보기", chatForTripLabel: "이 여행의 그룹 채팅", friendRequestSentToast: "친구 요청을 보냈습니다", renameTripGroupOption: "그룹 이름 변경", leaveTripGroupOption: "그룹 나가기", deleteMessageOption: "메시지 삭제",
+        friendsTitle: "친구", openFriendsMessagesLink: "친구 및 메시지 열기 →", friendsAddPlaceholder: "사용자 이름으로 친구 추가", friendsAddBtn: "추가", friendsRequestsLabel: "친구 요청", friendsListLabel: "내 친구", friendsEmpty: "아직 친구가 없습니다 — 위에서 사용자 이름으로 친구를 추가해보세요.", friendsAccept: "수락", friendsDecline: "거절", friendsCancel: "취소", friendsRemove: "삭제", friendsErrNotFound: "해당 사용자 이름을 가진 사용자를 찾을 수 없습니다.", friendsErrSelf: "자기 자신은 추가할 수 없습니다.", friendsSentLabel: "전송됨 — 응답 대기 중", friendsRequestFrom: "{username}님이 친구가 되고 싶어합니다", shareWithFriendBtn: "공유", shareNoFriends: "장소를 공유하려면 먼저 친구를 추가하세요.", sharesEmpty: "아직 공유받은 것이 없습니다.", sharedByLabel: "{username}님이 {location}을(를) 공유했습니다", friendsPageTitle: "친구 및 메시지", tripGroupsLabel: "여행 그룹", directMessagesLabel: "다이렉트 메시지", noTripGroups: "아직 공유된 여행이 없습니다 — 대화에서 여행을 공유해보세요.", noFriendsForDm: "메시지를 보내려면 먼저 친구를 추가하세요.", selectConversationPrompt: "채팅을 시작하려면 대화를 선택하세요", messagePlaceholder: "메시지...", sendBtn: "전송", tripGroupOwner: "이 여행을 만드셨습니다", tripGroupMember: "공유받은 여행", shareTripBtn: "여행 공유하기", shareTripPickTitle: "공유할 여행을 선택하세요", noOwnedTrips: "아직 여행이 없습니다.", viewItineraryLink: "일정 보기", chatForTripLabel: "이 여행의 그룹 채팅", friendRequestSentToast: "친구 요청을 보냈습니다", renameTripGroupOption: "그룹 이름 변경", leaveTripGroupOption: "그룹 나가기", deleteMessageOption: "메시지 삭제", attachLocationTitle: "장소 공유", attachPollTitle: "설문조사 만들기", attachPollCreateBtn: "설문조사 만들기", attachLocationOption: "📍 장소 공유", attachTripOption: "🧳 여행 공유", attachPollOption: "📊 설문조사 만들기",
         accEditBtn: "프로필 수정", accSaveBtn: "변경사항 저장", accSaved: "✓ 저장되었습니다", accNoPasses: "활성화된 이용권 없음", accAmountPaid: "결제 금액", accGuestUsername: "로그인하지 않음",
         accDangerZone: "위험 구역",
         accDeleteConfirmTitle: "정말 계정을 삭제하시겠습니까?",
@@ -2902,7 +2940,7 @@ const translations = {
         gateResetSent: "비밀번호 재설정 이메일을 보냈습니다 — 받은편지함을 확인해주세요.", gateEnterEmailFirst: "먼저 이메일 주소를 입력해주세요.",
         tourModeLiveIn: "라이브 중 — BTS가 {city}에서 공연 중입니다", tourModeSchedule: "투어 일정", tourModeLive: "라이브", tourModeDone: "종료", tourModeUpcoming: "예정", tourModePrev: "이전", tourModeNext: "다음",
         tourModeFooterNote: "투어 측이 발표한 날짜입니다 — 여행 예약 전 공식 티켓 판매 사이트를 꼭 확인하세요.",
-        liveBadgeLabel: "라이브", liveTimelineTitle: " 및 예정", liveTimelineEmpty: "지금은 예정된 일정이 없습니다 — 곧 다시 확인해주세요.", liveTimelineFooterNote: "공식적으로 공개된 활동만 표시됩니다 — 발표된 날짜 기준이며, 여행 예약 전 항상 공식 출처를 확인하세요.", liveFilterAll: "전체", liveTodayLive: "오늘 · 라이브", liveKindGroup: "그룹", liveKindSolo: "솔로", newBadgeLabel: "신규", usernameCooldownNote: "7일에 한 번만 변경할 수 있습니다.", usernameConfirmTitle: "아이디를 변경하시겠습니까?", usernameConfirmCancel: "취소", usernameConfirmOk: "네, 변경합니다", subtitle: "당신이 좋아하는 아티스트의 발자취를 따라", backToList: "← 목록으로 돌아가기", chooserTourOption: "투어 경로", chooserLiveOption: "모든 라이브 활동", tripShareThis: "+ 이 여행 공유하기", switchArtistLabel: "아티스트 변경", groupNoDataYet: "{group}의 투어 또는 라이브 정보가 아직 없습니다 — 곧 다시 확인해주세요.", tripInviteLabel: "사람 초대하기 (선택 사항)", shareTripUsernamePlaceholder: "상대방 아이디",
+        liveBadgeLabel: "라이브", liveTimelineTitle: " 및 예정", liveTimelineEmpty: "지금은 예정된 일정이 없습니다 — 곧 다시 확인해주세요.", liveTimelineFooterNote: "공식적으로 공개된 활동만 표시됩니다 — 발표된 날짜 기준이며, 여행 예약 전 항상 공식 출처를 확인하세요.", liveFilterAll: "전체", liveTodayLive: "오늘 · 라이브", liveKindGroup: "그룹", liveKindSolo: "솔로", newBadgeLabel: "신규", usernameCooldownNote: "7일에 한 번만 변경할 수 있습니다.", usernameConfirmTitle: "아이디를 변경하시겠습니까?", usernameConfirmCancel: "취소", usernameConfirmOk: "네, 변경합니다", subtitle: "당신이 좋아하는 아티스트의 발자취를 따라", backToList: "← 목록으로 돌아가기", chooserTourOption: "투어 경로", chooserLiveOption: "모든 라이브 활동", tripShareThis: "+ 이 여행 공유하기", tripAddCoverBtn: "+ 커버 사진", switchArtistLabel: "아티스트 변경", groupNoDataYet: "{group}의 투어 또는 라이브 정보가 아직 없습니다 — 곧 다시 확인해주세요.", tripInviteLabel: "사람 초대하기 (선택 사항)", shareTripUsernamePlaceholder: "상대방 아이디",
         tourModeGenericLabel: "투어", tourModeMemberLiveIn: "{member} 라이브 중 — {city}에서 {event}", tourModeLiveNowOne: "지금 라이브", tourModeLiveNowCount: "지금 {n}건 라이브", tourModeMoreCount: "+{n}개 더보기",
         tourModeEyebrow: "투어 모드", tourModeChooseTour: "투어 선택", tourModeStep: "{total}단계 중 {n}단계",
         tourModeHighlights: "하이라이트", tourModeSurpriseSong: "깜짝 곡:", tourModeNoHighlightsYet: "이 공연의 하이라이트가 아직 등록되지 않았습니다.", tourModeNoSurpriseSongYet: "아직 발표되지 않았습니다.",
@@ -2936,7 +2974,7 @@ const translations = {
         accTitle: "アカウント", accChangePhoto: "プロフィール写真を変更", accResetPhoto: "プロフィール写真をリセット", accNameLabel: "ユーザー名", accChangeUsernameHint: "ユーザー名を変更", accEmailLabel: "メールアドレス",
         accCountryLabel: "興味のある国", accCountryPlaceholder: "国を選択（任意）",
         accActivityTitle: "アクティビティ", accTrips: "旅行", accVisited: "訪問済み", accWishlist: "ウィッシュリスト", accPasses: "パスとお支払い",
-        friendsTitle: "フレンド", openFriendsMessagesLink: "フレンド＆メッセージを開く →", friendsAddPlaceholder: "ユーザー名でフレンドを追加", friendsAddBtn: "追加", friendsRequestsLabel: "フレンド申請", friendsListLabel: "フレンド一覧", friendsEmpty: "まだフレンドがいません — 上のユーザー名で追加しましょう。", friendsAccept: "承認", friendsDecline: "拒否", friendsCancel: "キャンセル", friendsRemove: "削除", friendsErrNotFound: "そのユーザー名のユーザーが見つかりません。", friendsErrSelf: "自分自身は追加できません。", friendsSentLabel: "送信済み — 返信待ち", friendsRequestFrom: "{username}さんがフレンド申請をしています", shareWithFriendBtn: "共有", shareNoFriends: "場所を共有するには、まずフレンドを追加してください。", sharesEmpty: "まだ何も共有されていません。", sharedByLabel: "{username}さんが{location}を共有しました", friendsPageTitle: "フレンド＆メッセージ", tripGroupsLabel: "旅行グループ", directMessagesLabel: "ダイレクトメッセージ", noTripGroups: "共有された旅行はまだありません — 会話から旅行を共有しましょう。", noFriendsForDm: "メッセージを送るにはまずフレンドを追加してください。", selectConversationPrompt: "チャットを始めるには会話を選択してください", messagePlaceholder: "メッセージ...", sendBtn: "送信", tripGroupOwner: "あなたが作成した旅行です", tripGroupMember: "共有された旅行", shareTripBtn: "旅行を共有", shareTripPickTitle: "共有する旅行を選択", noOwnedTrips: "まだ旅行がありません。", viewItineraryLink: "旅程を見る", chatForTripLabel: "この旅行のグループチャット", friendRequestSentToast: "フレンドリクエストを送信しました", renameTripGroupOption: "グループ名を変更", leaveTripGroupOption: "グループを退出", deleteMessageOption: "メッセージを削除",
+        friendsTitle: "フレンド", openFriendsMessagesLink: "フレンド＆メッセージを開く →", friendsAddPlaceholder: "ユーザー名でフレンドを追加", friendsAddBtn: "追加", friendsRequestsLabel: "フレンド申請", friendsListLabel: "フレンド一覧", friendsEmpty: "まだフレンドがいません — 上のユーザー名で追加しましょう。", friendsAccept: "承認", friendsDecline: "拒否", friendsCancel: "キャンセル", friendsRemove: "削除", friendsErrNotFound: "そのユーザー名のユーザーが見つかりません。", friendsErrSelf: "自分自身は追加できません。", friendsSentLabel: "送信済み — 返信待ち", friendsRequestFrom: "{username}さんがフレンド申請をしています", shareWithFriendBtn: "共有", shareNoFriends: "場所を共有するには、まずフレンドを追加してください。", sharesEmpty: "まだ何も共有されていません。", sharedByLabel: "{username}さんが{location}を共有しました", friendsPageTitle: "フレンド＆メッセージ", tripGroupsLabel: "旅行グループ", directMessagesLabel: "ダイレクトメッセージ", noTripGroups: "共有された旅行はまだありません — 会話から旅行を共有しましょう。", noFriendsForDm: "メッセージを送るにはまずフレンドを追加してください。", selectConversationPrompt: "チャットを始めるには会話を選択してください", messagePlaceholder: "メッセージ...", sendBtn: "送信", tripGroupOwner: "あなたが作成した旅行です", tripGroupMember: "共有された旅行", shareTripBtn: "旅行を共有", shareTripPickTitle: "共有する旅行を選択", noOwnedTrips: "まだ旅行がありません。", viewItineraryLink: "旅程を見る", chatForTripLabel: "この旅行のグループチャット", friendRequestSentToast: "フレンドリクエストを送信しました", renameTripGroupOption: "グループ名を変更", leaveTripGroupOption: "グループを退出", deleteMessageOption: "メッセージを削除", attachLocationTitle: "場所を共有", attachPollTitle: "投票を作成", attachPollCreateBtn: "投票を作成", attachLocationOption: "📍 場所を共有", attachTripOption: "🧳 旅行を共有", attachPollOption: "📊 投票を作成",
         accEditBtn: "プロフィールを編集", accSaveBtn: "変更を保存", accSaved: "✓ 保存しました", accNoPasses: "有効なパスはありません", accAmountPaid: "お支払い金額", accGuestUsername: "未ログイン",
         accDangerZone: "危険ゾーン",
         accDeleteConfirmTitle: "本当にアカウントを削除しますか？",
@@ -2965,7 +3003,7 @@ const translations = {
         gateResetSent: "パスワード再設定メールを送信しました — 受信トレイをご確認ください。", gateEnterEmailFirst: "先にメールアドレスを入力してください。",
         tourModeLiveIn: "ライブ配信中 — BTSは{city}で公演中です", tourModeSchedule: "ツアースケジュール", tourModeLive: "ライブ", tourModeDone: "終了", tourModeUpcoming: "開催予定", tourModePrev: "前へ", tourModeNext: "次へ",
         tourModeFooterNote: "ツアー側が発表した日程です — 旅行の予約前に必ず公式チケットサイトをご確認ください。",
-        liveBadgeLabel: "ライブ", liveTimelineTitle: "・今後の予定", liveTimelineEmpty: "現在予定はありません — また後でご確認ください。", liveTimelineFooterNote: "公式に発表された活動のみを表示しています — 発表された日程です。旅行の予約前に必ず公式情報をご確認ください。", liveFilterAll: "すべて", liveTodayLive: "本日・ライブ", liveKindGroup: "グループ", liveKindSolo: "ソロ", newBadgeLabel: "新着", usernameCooldownNote: "この変更は7日に1回だけ行えます。", usernameConfirmTitle: "ユーザー名を変更しますか？", usernameConfirmCancel: "キャンセル", usernameConfirmOk: "はい、変更します", subtitle: "お気に入りのアーティストの足跡をたどって", backToList: "← リストに戻る", chooserTourOption: "ツアールート", chooserLiveOption: "すべてのライブ活動", tripShareThis: "+ この旅行を共有", switchArtistLabel: "アーティストを変更", groupNoDataYet: "{group}のツアー・ライブ情報はまだありません — また後でご確認ください。", tripInviteLabel: "メンバーを招待（任意）", shareTripUsernamePlaceholder: "相手のユーザー名",
+        liveBadgeLabel: "ライブ", liveTimelineTitle: "・今後の予定", liveTimelineEmpty: "現在予定はありません — また後でご確認ください。", liveTimelineFooterNote: "公式に発表された活動のみを表示しています — 発表された日程です。旅行の予約前に必ず公式情報をご確認ください。", liveFilterAll: "すべて", liveTodayLive: "本日・ライブ", liveKindGroup: "グループ", liveKindSolo: "ソロ", newBadgeLabel: "新着", usernameCooldownNote: "この変更は7日に1回だけ行えます。", usernameConfirmTitle: "ユーザー名を変更しますか？", usernameConfirmCancel: "キャンセル", usernameConfirmOk: "はい、変更します", subtitle: "お気に入りのアーティストの足跡をたどって", backToList: "← リストに戻る", chooserTourOption: "ツアールート", chooserLiveOption: "すべてのライブ活動", tripShareThis: "+ この旅行を共有", tripAddCoverBtn: "+ カバー写真", switchArtistLabel: "アーティストを変更", groupNoDataYet: "{group}のツアー・ライブ情報はまだありません — また後でご確認ください。", tripInviteLabel: "メンバーを招待（任意）", shareTripUsernamePlaceholder: "相手のユーザー名",
         tourModeGenericLabel: "ツアー", tourModeMemberLiveIn: "{member}がライブ配信中 — {city}で{event}", tourModeLiveNowOne: "現在ライブ中", tourModeLiveNowCount: "現在{n}件ライブ中", tourModeMoreCount: "他+{n}件",
         tourModeEyebrow: "ツアーモード", tourModeChooseTour: "ツアーを選択", tourModeStep: "ステップ {n}/{total}",
         tourModeHighlights: "ハイライト", tourModeSurpriseSong: "サプライズソング：", tourModeNoHighlightsYet: "この公演のハイライトはまだ追加されていません。", tourModeNoSurpriseSongYet: "まだ発表されていません。",
@@ -2999,7 +3037,7 @@ const translations = {
         accTitle: "我的账户", accChangePhoto: "更换头像", accResetPhoto: "重置头像", accNameLabel: "用户名", accChangeUsernameHint: "更改用户名", accEmailLabel: "电子邮箱",
         accCountryLabel: "感兴趣的国家", accCountryPlaceholder: "选择国家（可选）",
         accActivityTitle: "我的动态", accTrips: "行程", accVisited: "已访问", accWishlist: "收藏清单", accPasses: "通行证与账单",
-        friendsTitle: "好友", openFriendsMessagesLink: "打开好友与消息 →", friendsAddPlaceholder: "通过用户名添加好友", friendsAddBtn: "添加", friendsRequestsLabel: "好友请求", friendsListLabel: "你的好友", friendsEmpty: "还没有好友——在上方通过用户名添加一个吧。", friendsAccept: "接受", friendsDecline: "拒绝", friendsCancel: "取消", friendsRemove: "移除", friendsErrNotFound: "未找到该用户名对应的用户。", friendsErrSelf: "不能添加自己。", friendsSentLabel: "已发送——等待回应", friendsRequestFrom: "{username} 想加你为好友", shareWithFriendBtn: "分享", shareNoFriends: "请先添加好友才能分享地点。", sharesEmpty: "还没有人与你分享任何内容。", sharedByLabel: "{username} 分享了 {location}", friendsPageTitle: "好友与消息", tripGroupsLabel: "行程群组", directMessagesLabel: "私信", noTripGroups: "还没有共享的行程——从对话中分享一个吧。", noFriendsForDm: "先添加好友才能开始聊天。", selectConversationPrompt: "选择一个对话开始聊天", messagePlaceholder: "消息...", sendBtn: "发送", tripGroupOwner: "你创建了这个行程", tripGroupMember: "与你共享", shareTripBtn: "分享行程", shareTripPickTitle: "选择要分享的行程", noOwnedTrips: "你还没有任何行程。", viewItineraryLink: "查看行程", chatForTripLabel: "该行程的群聊", friendRequestSentToast: "好友请求已发送", renameTripGroupOption: "重命名群组", leaveTripGroupOption: "退出群组", deleteMessageOption: "删除消息",
+        friendsTitle: "好友", openFriendsMessagesLink: "打开好友与消息 →", friendsAddPlaceholder: "通过用户名添加好友", friendsAddBtn: "添加", friendsRequestsLabel: "好友请求", friendsListLabel: "你的好友", friendsEmpty: "还没有好友——在上方通过用户名添加一个吧。", friendsAccept: "接受", friendsDecline: "拒绝", friendsCancel: "取消", friendsRemove: "移除", friendsErrNotFound: "未找到该用户名对应的用户。", friendsErrSelf: "不能添加自己。", friendsSentLabel: "已发送——等待回应", friendsRequestFrom: "{username} 想加你为好友", shareWithFriendBtn: "分享", shareNoFriends: "请先添加好友才能分享地点。", sharesEmpty: "还没有人与你分享任何内容。", sharedByLabel: "{username} 分享了 {location}", friendsPageTitle: "好友与消息", tripGroupsLabel: "行程群组", directMessagesLabel: "私信", noTripGroups: "还没有共享的行程——从对话中分享一个吧。", noFriendsForDm: "先添加好友才能开始聊天。", selectConversationPrompt: "选择一个对话开始聊天", messagePlaceholder: "消息...", sendBtn: "发送", tripGroupOwner: "你创建了这个行程", tripGroupMember: "与你共享", shareTripBtn: "分享行程", shareTripPickTitle: "选择要分享的行程", noOwnedTrips: "你还没有任何行程。", viewItineraryLink: "查看行程", chatForTripLabel: "该行程的群聊", friendRequestSentToast: "好友请求已发送", renameTripGroupOption: "重命名群组", leaveTripGroupOption: "退出群组", deleteMessageOption: "删除消息", attachLocationTitle: "分享地点", attachPollTitle: "创建投票", attachPollCreateBtn: "创建投票", attachLocationOption: "📍 分享地点", attachTripOption: "🧳 分享行程", attachPollOption: "📊 创建投票",
         accEditBtn: "编辑资料", accSaveBtn: "保存更改", accSaved: "✓ 保存成功", accNoPasses: "暂无有效通行证", accAmountPaid: "已支付金额", accGuestUsername: "未登录",
         accDangerZone: "危险区域",
         accDeleteConfirmTitle: "确定要删除您的账户吗？",
@@ -3028,7 +3066,7 @@ const translations = {
         gateResetSent: "密码重置邮件已发送——请查收您的收件箱。", gateEnterEmailFirst: "请先输入您的电子邮箱。",
         tourModeLiveIn: "直播中 — BTS 正在{city}演出", tourModeSchedule: "巡演日程", tourModeLive: "直播中", tourModeDone: "已结束", tourModeUpcoming: "即将开始", tourModePrev: "上一个", tourModeNext: "下一个",
         tourModeFooterNote: "日期以巡演方公布为准——预订行程前请务必查看官方售票网站确认。",
-        liveBadgeLabel: "直播", liveTimelineTitle: "与即将到来", liveTimelineEmpty: "目前暂无安排——请稍后再来查看。", liveTimelineFooterNote: "仅显示官方公开发布的活动——日期以官方公布为准，预订行程前请务必核实官方信息来源。", liveFilterAll: "全部", liveTodayLive: "今天 · 直播中", liveKindGroup: "团体", liveKindSolo: "单人", newBadgeLabel: "新增", usernameCooldownNote: "每7天只能更改一次。", usernameConfirmTitle: "要更改你的用户名吗？", usernameConfirmCancel: "取消", usernameConfirmOk: "是的，更改", subtitle: "追随你喜爱的艺人的足迹", backToList: "← 返回列表", chooserTourOption: "巡演路线", chooserLiveOption: "全部直播动态", tripShareThis: "+ 分享此行程", switchArtistLabel: "切换艺人", groupNoDataYet: "{group}暂无巡演或直播数据——请稍后再来查看。", tripInviteLabel: "邀请他人（可选）", shareTripUsernamePlaceholder: "对方的用户名",
+        liveBadgeLabel: "直播", liveTimelineTitle: "与即将到来", liveTimelineEmpty: "目前暂无安排——请稍后再来查看。", liveTimelineFooterNote: "仅显示官方公开发布的活动——日期以官方公布为准，预订行程前请务必核实官方信息来源。", liveFilterAll: "全部", liveTodayLive: "今天 · 直播中", liveKindGroup: "团体", liveKindSolo: "单人", newBadgeLabel: "新增", usernameCooldownNote: "每7天只能更改一次。", usernameConfirmTitle: "要更改你的用户名吗？", usernameConfirmCancel: "取消", usernameConfirmOk: "是的，更改", subtitle: "追随你喜爱的艺人的足迹", backToList: "← 返回列表", chooserTourOption: "巡演路线", chooserLiveOption: "全部直播动态", tripShareThis: "+ 分享此行程", tripAddCoverBtn: "+ 封面图片", switchArtistLabel: "切换艺人", groupNoDataYet: "{group}暂无巡演或直播数据——请稍后再来查看。", tripInviteLabel: "邀请他人（可选）", shareTripUsernamePlaceholder: "对方的用户名",
         tourModeGenericLabel: "巡演", tourModeMemberLiveIn: "{member} 直播中 — 于{city}参加{event}", tourModeLiveNowOne: "现在直播中", tourModeLiveNowCount: "现在{n}个直播中", tourModeMoreCount: "+{n}个更多",
         tourModeEyebrow: "巡演模式", tourModeChooseTour: "选择巡演", tourModeStep: "第 {n} 步，共 {total} 步",
         tourModeHighlights: "精彩瞬间", tourModeSurpriseSong: "惊喜曲目：", tourModeNoHighlightsYet: "该场演出暂无精彩瞬间记录。", tourModeNoSurpriseSongYet: "尚未公布。",
@@ -3517,18 +3555,17 @@ function hideMapHoverTip() {
     if (tip) tip.classList.remove('open');
 }
 
-function addSingleLocationMarker(loc, wishlistData) {
+function addSingleLocationMarker(loc, visitedData) {
     const catIconSvg = iconsSVG[loc.category] || iconsSVG["Default"];
-    // Le remplissage de couleur reflète maintenant la wishlist, pas la visite (demande du
-    // 06/09/2026) : avant, "visité" remplissait le marqueur, ce qui se confondait
-    // visuellement avec le remplissage automatique des clusters (voir addClusterMarker) —
-    // l'affichage reste "clair" (contour + icône coloré, fond blanc) tant que le lieu n'a
-    // pas été ajouté à la wishlist.
-    const isWishlisted = wishlistData.some(w => w.id === loc.id || w === loc.id);
+    // Le remplissage de couleur reflète la visite, pas la wishlist (demande du 06/09/2026,
+    // qui annule le changement inverse fait plus tôt le même jour) : l'affichage reste
+    // "clair" (contour + icône coloré, fond blanc) tant que le lieu n'a pas été marqué comme
+    // visité, peu importe s'il est dans la wishlist.
+    const isVisited = visitedData.some(v => v.id === loc.id || v === loc.id);
     const baseColor = groupColors[loc.group] || '#334e68';
 
     let inlineStyle = `border-color: ${baseColor}; --marker-color: ${baseColor};`;
-    inlineStyle += isWishlisted ? ` background-color: ${baseColor}; color: white;` : ` background-color: white; color: ${baseColor};`;
+    inlineStyle += isVisited ? ` background-color: ${baseColor}; color: white;` : ` background-color: white; color: ${baseColor};`;
 
     const customIcon = L.divIcon({ className: 'custom-category-marker', html: `<div style="${inlineStyle}">${catIconSvg}</div>`, iconSize: [32,32], iconAnchor: [16,16] });
     const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markerGroup);
@@ -3537,15 +3574,13 @@ function addSingleLocationMarker(loc, wishlistData) {
     marker.on('mouseout', () => hideMapHoverTip());
 }
 
-function addClusterMarker(cluster, wishlistData) {
+function addClusterMarker(cluster, visitedData) {
     const count = cluster.locs.length;
-    const isWishlisted = (loc) => wishlistData.some(w => w.id === loc.id || w === loc.id);
-    // Le simple fait que des lieux se chevauchent (et forment donc un cluster) ne doit plus
-    // remplir automatiquement le marqueur (demande du 06/09/2026) — même règle que pour un
-    // marqueur individuel : "clair" par défaut, rempli seulement si TOUS les lieux du
-    // cluster sont dans la wishlist (un cluster partiellement wishlisté reste clair plutôt
-    // que de choisir arbitrairement lequel représenter).
-    const allWishlisted = cluster.locs.length > 0 && cluster.locs.every(isWishlisted);
+    const isVisited = (loc) => visitedData.some(v => v.id === loc.id || v === loc.id);
+    // Rempli dès qu'AU MOINS UN des lieux du cluster a été visité (demande du 06/09/2026) —
+    // pas besoin que tous le soient : un cluster partiellement visité reste représentatif du
+    // fait qu'on est déjà venu ici.
+    const anyVisited = cluster.locs.some(isVisited);
 
     // Groupes distincts présents dans ce cluster : un même lieu réel (mêmes coordonnées,
     // ex: BTS ET Blackpink ayant tous deux tourné au Stade de France) finit dans le même
@@ -3557,15 +3592,21 @@ function addClusterMarker(cluster, wishlistData) {
     // des groupes ayant visité ce lieu ne disparaisse visuellement derrière un autre.
     const distinctGroups = [...new Set(cluster.locs.map(l => l.group))];
     let discStyle;
-    if (!allWishlisted) {
+    if (distinctGroups.length === 1) {
+        // Un seul groupe dans ce cluster (ex: 2 lieux BTS superposés) : même traitement
+        // qu'un marqueur individuel de ce groupe — le gris neutre ne doit apparaître que
+        // pour un vrai mélange de groupes différents (voir plus bas), jamais ici, sinon on
+        // perd l'info "c'est du BTS" alors qu'aucun lieu de ce groupe n'a encore été visité.
+        const baseColor = groupColors[distinctGroups[0]] || '#334e68';
+        discStyle = anyVisited
+            ? `border-color:${baseColor}; --marker-color:${baseColor}; background-color:${baseColor}; color:#fff;`
+            : `border-color:${baseColor}; --marker-color:${baseColor}; background-color:#fff; color:${baseColor};`;
+    } else if (!anyVisited) {
         discStyle = `border-color:#94a3b8; --marker-color:#94a3b8; background-color:#fff; color:#94a3b8;`;
-    } else if (distinctGroups.length > 1) {
+    } else {
         const step = 360 / distinctGroups.length;
         const slices = distinctGroups.map((g, i) => `${groupColors[g] || '#334e68'} ${(i * step).toFixed(2)}deg ${((i + 1) * step).toFixed(2)}deg`).join(', ');
         discStyle = `border-color:#fff; --marker-color:#fff; background:conic-gradient(${slices}); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3);`;
-    } else {
-        const baseColor = groupColors[distinctGroups[0]] || '#334e68';
-        discStyle = `border-color:${baseColor}; --marker-color:${baseColor}; background-color:${baseColor}; color:#fff;`;
     }
     // Le badge (span, pas div) et le conteneur (span aussi) évitent volontairement le
     // sélecteur CSS ".custom-category-marker div", qui appliquerait sinon le style rond du
@@ -3584,12 +3625,12 @@ function addClusterMarker(cluster, wishlistData) {
 function renderMapMarkers(locations, opts) {
     if (!map || !markerGroup) return;
     markerGroup.clearLayers();
-    const wishlistData = getWishlistLocs();
+    const visitedData = getVisitedLocs();
     const clusters = clusterLocationsForZoom(locations, map.getZoom());
 
     clusters.forEach(cluster => {
-        if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0], wishlistData);
-        else addClusterMarker(cluster, wishlistData);
+        if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0], visitedData);
+        else addClusterMarker(cluster, visitedData);
     });
 
     // Le fitBounds initial doit couvrir les vraies coordonnées de chaque lieu (pas les
@@ -4168,6 +4209,12 @@ function renderLocationRichContent(loc) {
             videoSection.classList.remove('hidden');
         } else if (loc.ytId) {
             videoContainer.innerHTML = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${loc.ytId}" frameborder="0" allowfullscreen></iframe></div>`;
+            videoSection.classList.remove('hidden');
+        } else if (loc.tweetUrl) {
+            // Post Twitter/X embarqué (voir admin.html, champ "Tweet / X post URL") : rendu
+            // via le widget officiel Twitter, jamais tenté comme une image — cliquer dessus
+            // renvoie naturellement vers Twitter (comportement natif du widget).
+            renderTweetEmbedOnDetails(videoContainer, loc.tweetUrl);
             videoSection.classList.remove('hidden');
         } else { videoSection.classList.add('hidden'); }
     }
@@ -4783,6 +4830,9 @@ window.deleteVisit = function(idx) {
     }
     window.refreshLocationRating(currentLocationIdForMemory);
     if (typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+    // Supprimer la dernière visite peut faire repasser le lieu en "non visité" (voir plus
+    // haut) : le marqueur carte doit refléter ça immédiatement (remplissage = visité).
+    if (map) renderLocations(true);
 };
 
 const addVisitBtn = document.getElementById('add-visit-btn');
@@ -4960,6 +5010,9 @@ window.postQuickReview = async function() {
     if (tabBtnVisit) tabBtnVisit.classList.remove('hidden');
     window.renderVisitsList(list[idx].visits);
     window.refreshLocationRating(locId);
+    // Un avis rapide peut marquer le lieu comme visité pour la première fois (idx === -1
+    // ci-dessus) : le marqueur carte doit refléter ça immédiatement (remplissage = visité).
+    if (map) renderLocations(true);
 
     if (notesEl) notesEl.value = '';
     window.setReviewComposeStars(4);
@@ -5809,9 +5862,12 @@ function ensureShareTripModal() {
             </div>
             <div id="share-trip-buddies"></div>
             <div id="share-trip-error" class="hidden" style="font-size:11px; color:#D42759; margin-bottom:8px;"></div>
-            <div style="display:flex; gap:8px; margin-top:6px;">
-                <input id="share-trip-invite-input" placeholder="${currentLang === 'fr' ? 'Leur pseudo' : 'Their username'}" style="flex:1; border:1.5px solid #cbd5e1; border-radius:100px; padding:10px 14px; font-size:12px; font-family:'Poppins',sans-serif;">
-                <button id="share-trip-invite-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 18px; font-size:12px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="shareTripInvite">Invite</button>
+            <div style="position:relative;">
+                <div style="display:flex; gap:8px; margin-top:6px;">
+                    <input id="share-trip-invite-input" autocomplete="off" placeholder="${currentLang === 'fr' ? 'Leur pseudo' : 'Their username'}" style="flex:1; border:1.5px solid #cbd5e1; border-radius:100px; padding:10px 14px; font-size:12px; font-family:'Poppins',sans-serif;">
+                    <button id="share-trip-invite-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 18px; font-size:12px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="shareTripInvite">Invite</button>
+                </div>
+                <div id="share-trip-suggestions" class="hidden" style="position:absolute; top:calc(100% + 4px); left:0; right:66px; background:#fff; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.12); max-height:180px; overflow-y:auto; z-index:20;"></div>
             </div>
             <div style="font-size:9.5px; color:#94a3b8; text-align:center; margin-top:10px;" data-i18n="shareTripHint">Tap the icon next to a name to switch between edit and view-only access.</div>
         </div>`;
@@ -5830,6 +5886,43 @@ window.openShareTripModal = async function(tripId, event) {
     document.getElementById('share-trip-name').textContent = trip.name;
     modal.classList.remove('hidden');
     await window.renderShareTripBuddies(tripId);
+
+    // Auto-complétion par pseudo (voir window.searchUsernamesByPrefix dans
+    // firebase-init.js) : debounce 250ms pour ne pas interroger Firestore à chaque
+    // frappe, un seul écouteur réutilisé à chaque ouverture de la modale (pas
+    // ré-attaché à chaque fois — ensureShareTripModal() ne recrée le DOM qu'une fois).
+    const inviteInput = document.getElementById('share-trip-invite-input');
+    const suggestionsBox = document.getElementById('share-trip-suggestions');
+    if (inviteInput && !inviteInput.dataset.autocompleteWired) {
+        inviteInput.dataset.autocompleteWired = '1';
+        let debounceTimer = null;
+        inviteInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            const q = inviteInput.value.trim();
+            if (!q) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
+            debounceTimer = setTimeout(async () => {
+                if (typeof window.searchUsernamesByPrefix !== 'function') return;
+                const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+                const matches = (await window.searchUsernamesByPrefix(q, 6)).filter(m => m.uid !== myUid);
+                if (inviteInput.value.trim() !== q) return; // la personne a continué à taper entre-temps
+                if (matches.length === 0) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
+                suggestionsBox.innerHTML = matches.map(m => `<div class="share-suggestion-row" data-username="${escapeHtml(m.username)}" style="padding:9px 14px; font-size:12px; font-weight:600; color:#212832; cursor:pointer;">${escapeHtml(m.username)}</div>`).join('');
+                suggestionsBox.querySelectorAll('.share-suggestion-row').forEach(row => {
+                    row.addEventListener('mouseenter', () => row.style.background = '#FFF7F8');
+                    row.addEventListener('mouseleave', () => row.style.background = '');
+                    row.addEventListener('mousedown', (e) => e.preventDefault()); // évite le blur avant le click
+                    row.addEventListener('click', () => {
+                        inviteInput.value = row.dataset.username;
+                        suggestionsBox.classList.add('hidden');
+                        suggestionsBox.innerHTML = '';
+                        inviteInput.focus();
+                    });
+                });
+                suggestionsBox.classList.remove('hidden');
+            }, 250);
+        });
+        inviteInput.addEventListener('blur', () => setTimeout(() => suggestionsBox.classList.add('hidden'), 150));
+    }
 
     const inviteBtn = document.getElementById('share-trip-invite-btn');
     inviteBtn.onclick = async () => {
@@ -5858,6 +5951,7 @@ window.openShareTripModal = async function(tripId, event) {
             return;
         }
         input.value = '';
+        if (suggestionsBox) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; }
         window.renderShareTripBuddies(tripId);
     };
 };
@@ -5884,6 +5978,11 @@ window.renderShareTripBuddies = async function(tripId) {
             <div style="flex:1;"><div style="font-size:12px; font-weight:700; color:#212832;">${ownerName}</div><div style="font-size:9px; color:#94a3b8;">${creatorLabel}</div></div>
         </div>`;
 
+    // Libellé de rôle explicite (pas seulement un title au survol, invisible sur mobile
+    // et pas assez clair d'après le retour utilisateur) : "Editor — can add/edit places"
+    // vs "Viewer — can only see the itinerary", affiché en permanence sous le nom.
+    const editorLabel = currentLang === 'fr' ? 'Éditeur — peut modifier le voyage' : 'Editor — can edit the trip';
+    const viewerLabel = currentLang === 'fr' ? 'Lecteur — peut seulement consulter' : 'Viewer — can only view';
     Object.keys(members).forEach(uid => {
         const role = members[uid];
         const name = memberNames[uid] || uid;
@@ -5891,9 +5990,12 @@ window.renderShareTripBuddies = async function(tripId) {
         rowsHtml += `
         <div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #f6f4fb;">
             <div style="width:34px; height:34px; border-radius:50%; background:#8B5CF6; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0;">${initial}</div>
-            <div style="flex:1;"><div style="font-size:12px; font-weight:700; color:#212832;">${name}</div></div>
-            <div class="share-role-toggle" data-uid="${uid}" data-role="${role}" title="${role === 'edit' ? (currentLang === 'fr' ? 'Peut modifier' : 'Can edit') : (currentLang === 'fr' ? 'Lecture seule' : 'View only')}" style="width:28px; height:28px; border-radius:50%; background:${role === 'edit' ? '#FCE7F0' : '#f1f5f9'}; display:flex; align-items:center; justify-content:center; cursor:pointer;">${role === 'edit' ? editIconSvg : viewIconSvg}</div>
-            <div class="share-remove-btn" data-uid="${uid}" title="${currentLang === 'fr' ? 'Retirer' : 'Remove'}" style="width:20px; height:20px; border-radius:50%; color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; font-weight:700;">&times;</div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size:12px; font-weight:700; color:#212832;">${name}</div>
+                <div style="font-size:9.5px; color:#94a3b8;">${role === 'edit' ? editorLabel : viewerLabel}</div>
+            </div>
+            <div class="share-role-toggle" data-uid="${uid}" data-role="${role}" title="${currentLang === 'fr' ? 'Cliquer pour basculer entre éditeur et lecteur' : 'Click to switch between editor and viewer'}" style="width:28px; height:28px; border-radius:50%; background:${role === 'edit' ? '#FCE7F0' : '#f1f5f9'}; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">${role === 'edit' ? editIconSvg : viewIconSvg}</div>
+            <div class="share-remove-btn" data-uid="${uid}" title="${currentLang === 'fr' ? 'Retirer' : 'Remove'}" style="width:20px; height:20px; border-radius:50%; color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; font-weight:700; flex-shrink:0;">&times;</div>
         </div>`;
     });
 
@@ -5999,9 +6101,29 @@ window.renderTripsSidebar = function() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
             </div>
             <div class="del-trip-btn" onclick="openDeleteModal('${t.id}', event)" title="Delete trip">✕</div>
+            ${t.isShared ? `<div class="trip-pill-avatars" data-trip-id="${t.id}"></div>` : ''}
             <div class="trip-pill-meta">${dateStr} &middot; ${totalLocs} locations</div>
         `;
         listContainer.appendChild(pill);
+    });
+
+    // Avatars des collaborateurs sous le nom de chaque voyage partagé (t.isShared) —
+    // en passe async SÉPARÉE du rendu synchrone ci-dessus (une requête Firestore par
+    // voyage partagé, jamais bloquant pour le premier affichage de la liste). Le survol
+    // d'un avatar affiche le pseudo via l'attribut title natif.
+    document.querySelectorAll('.trip-pill-avatars').forEach(async (container) => {
+        const tripId = container.dataset.tripId;
+        if (typeof window.loadSharedTrip !== 'function') return;
+        const shared = await window.loadSharedTrip(tripId);
+        if (!shared || !shared.members) return;
+        const memberNames = shared.memberNames || {};
+        const uids = Object.keys(shared.members);
+        if (uids.length === 0) return;
+        container.innerHTML = uids.map(uid => {
+            const name = memberNames[uid] || uid;
+            const initial = name.trim().charAt(0).toUpperCase();
+            return `<div class="trip-pill-avatar" title="${escapeHtml(name)}">${escapeHtml(initial)}</div>`;
+        }).join('');
     });
 
     // Voyages que d'AUTRES personnes ont partagés avec ce compte (jamais dans myTrips —
@@ -6211,11 +6333,69 @@ window.renderTripBuddiesAvatars = async function() {
     container.classList.remove('hidden');
 };
 
+// Photo de couverture d'un voyage (voir la demande du 06/09/2026) : stockée directement
+// en dataURL sur le document du voyage (comme userPhoto pour un compte, voir
+// account.html) — pas de Firebase Storage sur ce site 100% statique, donc redimensionnée
+// et compressée assez fort côté client pour rester sous la limite de 1 Mo par champ
+// Firestore. Utilisée à la fois en aperçu ici (trips.html) et à la place de la valise 🧳
+// générique dans la liste "Trip groups" de friends.html (voir listMyTripGroups()).
+window.renderTripCoverPreview = function() {
+    const el = document.getElementById('trip-cover-preview');
+    if (!el || !currentTrip) return;
+    if (currentTrip.coverImage) {
+        el.style.backgroundImage = `url('${currentTrip.coverImage}')`;
+        el.title = currentLang === 'fr' ? 'Changer la photo de couverture' : 'Change cover photo';
+        el.classList.remove('hidden');
+    } else {
+        el.classList.add('hidden');
+        el.style.backgroundImage = '';
+    }
+};
+
+function resizeTripCoverDataUrl(dataUrl, maxSize) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function () {
+            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.onerror = () => resolve(dataUrl);
+        img.src = dataUrl;
+    });
+}
+
+// Écouteur attaché une seule fois (voir data-wired) — window.initTrips() est rappelé à
+// chaque changement de voyage, ré-attacher l'écouteur à chaque fois déclencherait un
+// upload en double par fichier choisi.
+function wireTripCoverInputOnce() {
+    const input = document.getElementById('trip-cover-input');
+    if (!input || input.dataset.wired) return;
+    input.dataset.wired = '1';
+    input.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file || !currentTrip) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const resized = await resizeTripCoverDataUrl(event.target.result, 800);
+            currentTrip.coverImage = resized;
+            window.renderTripCoverPreview();
+            if (typeof window.saveTrip === 'function') window.saveTrip();
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
 window.renderTrip = function() {
     if (!currentTrip) return;
 
     document.getElementById('edit-trip-name').value = currentTrip.name;
     if (typeof window.renderTripBuddiesAvatars === 'function') window.renderTripBuddiesAvatars();
+    if (typeof window.renderTripCoverPreview === 'function') window.renderTripCoverPreview();
+    wireTripCoverInputOnce();
     
     let metaText = "";
     if (currentTrip.group) metaText += currentTrip.group + " • ";

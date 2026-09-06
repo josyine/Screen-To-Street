@@ -210,6 +210,12 @@ service cloud.firestore {
           && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
         allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
           && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+        // Voter dans un sondage (message de type 'poll', menu "+" de friends.html) :
+        // n'importe quel membre de la conversation peut écrire dans `votes`, mais RIEN
+        // d'autre — jamais la question, les options, ni le fromUid du sondage original.
+        allow update: if request.auth != null
+          && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['votes']);
         // "Delete my message" (friends.html) : seulement son propre message, et seulement
         // dans les 10 minutes suivant l'envoi — au-delà, même l'auteur ne peut plus le
         // supprimer. La fenêtre est vérifiée côté serveur (request.time), pas seulement
