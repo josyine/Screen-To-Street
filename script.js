@@ -19,6 +19,16 @@ const OSM_TILE_URL = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png';
 const OSM_TILE_FALLBACK_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 const OSM_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
+// Échappe du texte fourni par un·e utilisateur·rice (message de chat, pseudo, nom de
+// voyage...) avant de l'insérer via innerHTML — sans ça, un message de la messagerie
+// amis (voir friends.html) contenant du HTML/JS s'exécuterait chez qui le lit.
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+}
+window.escapeHtml = escapeHtml;
+
 // Bascule silencieusement une couche de tuiles vers le repli OSM standard si trop de
 // tuiles du style principal échouent à charger (ex: service Wikimedia temporairement
 // indisponible) — au-delà d'un petit nombre d'échecs pour ne pas réagir à une simple
@@ -861,47 +871,72 @@ function friendsWhoVisited(locId) {
 }
 window.friendsWhoVisited = friendsWhoVisited;
 
-// Lieux partagés par des amis (cloche du header, voir map.html) : rechargé au login
-// puis après chaque action (partage envoyé, lieu ouvert depuis la liste).
-window.refreshFriendShares = async function() {
-    if (typeof window.listSharesForMe !== 'function') return;
-    const shares = await window.listSharesForMe();
-    const container = document.getElementById('friend-shares-container');
-    const badge = document.getElementById('friend-shares-badge');
-    const list = document.getElementById('friend-shares-list');
-    const empty = document.getElementById('friend-shares-empty');
-    if (!container) return;
-    container.classList.remove('hidden');
-    shares.sort((a, b) => (a.seen === b.seen) ? 0 : (a.seen ? 1 : -1));
-    const unseenCount = shares.filter(s => !s.seen).length;
-    if (badge) {
-        badge.textContent = unseenCount;
-        badge.classList.toggle('hidden', unseenCount === 0);
-    }
-    if (list) {
-        list.innerHTML = shares.map(s => `<div class="friend-row friend-share-row" style="cursor:pointer;" data-share-id="${s.id}" data-location-id="${s.locationId}">
-            <span>${s.seen ? '' : '🔵 '}${t('sharedByLabel').replace('{username}', s.fromUsername).replace('{location}', s.locationName)}</span>
-        </div>`).join('');
-    }
-    if (empty) empty.classList.toggle('hidden', shares.length > 0);
+// Badge unifié de l'icône "Amis" du header (voir map.html) : cumule les partages
+// (lieu/voyage) non vus ET les conversations avec un message non lu — voir friends.html
+// pour l'endroit où tout ça se consulte réellement, l'icône ne fait plus qu'y renvoyer.
+window.refreshFriendNotifications = async function() {
+    const badge = document.getElementById('friend-icon-badge');
+    if (!badge) return;
+    if (typeof window.countUnreadFriendNotifications !== 'function') return;
+    const count = await window.countUnreadFriendNotifications();
+    badge.textContent = count;
+    badge.classList.toggle('hidden', count === 0);
 };
 
-const friendSharesListEl = document.getElementById('friend-shares-list');
-if (friendSharesListEl) {
-    friendSharesListEl.addEventListener('click', (e) => {
-        const row = e.target.closest('.friend-share-row');
-        if (!row) return;
-        const locId = Number(row.getAttribute('data-location-id'));
-        const shareId = row.getAttribute('data-share-id');
-        if (typeof window.markShareSeen === 'function') window.markShareSeen(shareId);
-        const menu = document.getElementById('friend-shares-menu');
-        if (menu) menu.classList.add('hidden');
-        const loc = celebLocations.find(l => l.id === locId);
-        if (loc && map) map.flyTo([loc.lat, loc.lng], 16);
-        if (typeof window.openDetailsPanel === 'function') window.openDetailsPanel(locId);
-        window.refreshFriendShares();
-    });
-}
+// Voyages partagés dont JE fais partie (propriétaire qui les a partagés, voir
+// trip.isShared, OU collaborateur — voir listSharedTripsForMe() dans firebase-init.js) :
+// c'est la liste "Trip groups" de friends.html, ET la source des ids de conversation de
+// groupe pour le comptage des messages non lus (chaque voyage <-> une conversation
+// "trip_<id>", voir tripConversationId()).
+window.listMyTripGroups = async function() {
+    const owned = getMyTripsList().filter(t => t.isShared).map(t => ({ id: t.id, name: t.name, isOwner: true }));
+    const shared = typeof window.listSharedTripsForMe === 'function' ? await window.listSharedTripsForMe() : [];
+    const collaborator = shared.map(t => ({ id: t._sharedTripId, name: t.name, isOwner: false }));
+    return owned.concat(collaborator);
+};
+
+// Additionne les deux sources de notifications "amis" : partages (lieu/voyage) non vus,
+// et conversations (DM + groupes de voyage) avec au moins un message non lu.
+window.countUnreadFriendNotifications = async function() {
+    let count = 0;
+    if (typeof window.listSharesForMe === 'function') {
+        const shares = await window.listSharesForMe();
+        count += shares.filter(s => !s.seen).length;
+    }
+    if (typeof window.countUnreadConversations === 'function' && typeof window.dmConversationId === 'function') {
+        const user = window.firebaseCurrentUser;
+        if (user) {
+            const dmIds = myFriendsList.map(f => window.dmConversationId(user.uid, f.uid));
+            const tripGroups = await window.listMyTripGroups();
+            const tripIds = tripGroups.map(g => window.tripConversationId(g.id));
+            count += await window.countUnreadConversations(dmIds.concat(tripIds));
+        }
+    }
+    return count;
+};
+
+// Partage un voyage à un ami DEPUIS friends.html : invite l'ami comme collaborateur en
+// lecture seule s'il ne l'est pas déjà (nécessaire pour qu'il puisse ne serait-ce
+// qu'ouvrir le voyage), s'assure que la conversation de groupe existe, puis enregistre
+// la notification de partage. `tripLocalObj` est l'entrée telle que dans getMyTripsList().
+window.shareTripFromFriendsPage = async function(tripLocalObj, friendUid, friendUsername) {
+    if (!tripLocalObj.isShared) {
+        if (typeof window.createSharedTrip === 'function') await window.createSharedTrip(tripLocalObj);
+        tripLocalObj.isShared = true;
+        const trips = getMyTripsList();
+        const idx = trips.findIndex(t => t.id === tripLocalObj.id);
+        if (idx !== -1) { trips[idx] = tripLocalObj; localStorage.setItem('myTrips', JSON.stringify(trips)); syncTrips(trips); }
+    }
+    if (typeof window.inviteTripCollaborator === 'function') {
+        await window.inviteTripCollaborator(tripLocalObj.id, friendUsername, 'view');
+    }
+    if (typeof window.ensureTripConversation === 'function') {
+        await window.ensureTripConversation(tripLocalObj.id, tripLocalObj.name);
+    }
+    if (typeof window.shareTripWithFriend === 'function') {
+        return window.shareTripWithFriend(friendUid, tripLocalObj.id, tripLocalObj.name);
+    }
+};
 
 // Bouton "Partager" de la fiche lieu : liste les amis (myFriendsList, déjà chargée au
 // login, voir plus haut) plutôt qu'un aller-retour réseau à chaque ouverture du menu.
@@ -2456,7 +2491,7 @@ const translations = {
         locationsCount: "LOCATIONS", statsCountries: "COUNTRIES", cookieText: "We use cookies to enhance your experience.", cookiePolicy: "Cookie Policy", 
         cookieManage: "Manage", cookieReject: "Reject", cookieAccept: "Accept",
         exploreDestOption: "Explore Destinations", exploreArtistsOption: "Explore Artists", accountOption: "Your Account",
-        visitedOption: "My Visited Places", wishlistOption: "My Wishlist", tripsOption: "My Trips", settingsOption: "Settings", logoutOption: "Logout",
+        visitedOption: "My Visited Places", wishlistOption: "My Wishlist", tripsOption: "My Trips", friendsOption: "Friends", settingsOption: "Settings", logoutOption: "Logout",
         footerText: "Screen To Street is an independent fan-made guide.", footerMentions: "Legal Notice", footerAbout: "About Us", footerTOS: "Terms of Service", footerPrivacy: "Privacy Policy",
         allGroups: "All Groups", allMembers: "All Members", allAreas: "All Areas", allYears: "All Years", allCategories: "All Categories",
         checkVisited: "I visited this place", checkWishlist: "Add to Wishlist", tripWhich: "Which trip is this for?",
@@ -2469,7 +2504,7 @@ const translations = {
         accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address",
         accCountryLabel: "Country you're interested in", accCountryPlaceholder: "Select a country (optional)",
         accActivityTitle: "Your activity", accTrips: "Trips", accVisited: "Visited", accWishlist: "Wishlist", accPasses: "Passes & billing",
-        friendsTitle: "Friends", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}",
+        friendsTitle: "Friends", openFriendsMessagesLink: "Open Friends & Messages →", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}", friendsPageTitle: "Friends & Messages", tripGroupsLabel: "Trip groups", directMessagesLabel: "Direct messages", noTripGroups: "No shared trips yet — share one from a conversation.", noFriendsForDm: "Add a friend to start messaging.", selectConversationPrompt: "Select a conversation to start chatting", messagePlaceholder: "Message...", sendBtn: "Send", tripGroupOwner: "You created this trip", tripGroupMember: "Shared with you", shareTripBtn: "Share a trip", shareTripPickTitle: "Choose a trip to share", noOwnedTrips: "You don't have any trips yet.", viewItineraryLink: "View itinerary", chatForTripLabel: "Group chat for this trip",
         accEditBtn: "Edit Profile", accSaveBtn: "Save Changes", accSaved: "✓ Saved Successfully", accNoPasses: "No active passes", accAmountPaid: "Amount paid", accGuestUsername: "Not signed in",
         accDangerZone: "Danger zone",
         accDeleteConfirmTitle: "Are you sure you want to delete your account?",
@@ -2520,7 +2555,7 @@ const translations = {
         locationsCount: "LIEUX", statsCountries: "PAYS", cookieText: "Nous utilisons des cookies pour améliorer votre expérience.", cookiePolicy: "Politique de cookies", 
         cookieManage: "Gérer", cookieReject: "Refuser", cookieAccept: "Accepter",
         exploreDestOption: "Explorer les Destinations", exploreArtistsOption: "Explorer les Artistes", accountOption: "Mon Compte",
-        visitedOption: "Mes Lieux Visités", wishlistOption: "Ma Wishlist", tripsOption: "Mes Voyages", settingsOption: "Paramètres", logoutOption: "Déconnexion",
+        visitedOption: "Mes Lieux Visités", wishlistOption: "Ma Wishlist", tripsOption: "Mes Voyages", friendsOption: "Amis", settingsOption: "Paramètres", logoutOption: "Déconnexion",
         footerText: "Screen To Street est un guide indépendant créé par des fans.", footerMentions: "Mentions légales", footerAbout: "Qui sommes-nous", footerTOS: "CGU", footerPrivacy: "Confidentialité",
         allGroups: "Tous les groupes", allMembers: "Tous les membres", allAreas: "Toutes les régions", allYears: "Toutes les années", allCategories: "Toutes les catégories",
         checkVisited: "J'ai visité ce lieu", checkWishlist: "Ajouter à ma Wishlist", tripWhich: "Pour quel voyage ?",
@@ -2533,7 +2568,7 @@ const translations = {
         accTitle: "Votre compte", accChangePhoto: "Changer la photo de profil", accResetPhoto: "Réinitialiser la photo de profil", accNameLabel: "Identifiant", accChangeUsernameHint: "Changer d'identifiant", accEmailLabel: "Adresse e-mail",
         accCountryLabel: "Pays qui vous intéresse", accCountryPlaceholder: "Choisir un pays (optionnel)",
         accActivityTitle: "Votre activité", accTrips: "Voyages", accVisited: "Visités", accWishlist: "Wishlist", accPasses: "Pass et facturation",
-        friendsTitle: "Amis", friendsAddPlaceholder: "Ajouter un ami par pseudo", friendsAddBtn: "Ajouter", friendsRequestsLabel: "Demandes d'ami", friendsListLabel: "Vos amis", friendsEmpty: "Pas encore d'ami — ajoutez-en un par son pseudo ci-dessus.", friendsAccept: "Accepter", friendsDecline: "Refuser", friendsCancel: "Annuler", friendsRemove: "Retirer", friendsErrNotFound: "Aucun utilisateur trouvé avec ce pseudo.", friendsErrSelf: "Vous ne pouvez pas vous ajouter vous-même.", friendsSentLabel: "Envoyée — en attente de réponse", friendsRequestFrom: "{username} souhaite devenir votre ami", shareWithFriendBtn: "Partager", shareNoFriends: "Ajoutez d'abord un ami pour partager des lieux.", sharesEmpty: "Rien n'a encore été partagé avec vous.", sharedByLabel: "{username} a partagé {location}",
+        friendsTitle: "Amis", openFriendsMessagesLink: "Ouvrir Amis & Messages →", friendsAddPlaceholder: "Ajouter un ami par pseudo", friendsAddBtn: "Ajouter", friendsRequestsLabel: "Demandes d'ami", friendsListLabel: "Vos amis", friendsEmpty: "Pas encore d'ami — ajoutez-en un par son pseudo ci-dessus.", friendsAccept: "Accepter", friendsDecline: "Refuser", friendsCancel: "Annuler", friendsRemove: "Retirer", friendsErrNotFound: "Aucun utilisateur trouvé avec ce pseudo.", friendsErrSelf: "Vous ne pouvez pas vous ajouter vous-même.", friendsSentLabel: "Envoyée — en attente de réponse", friendsRequestFrom: "{username} souhaite devenir votre ami", shareWithFriendBtn: "Partager", shareNoFriends: "Ajoutez d'abord un ami pour partager des lieux.", sharesEmpty: "Rien n'a encore été partagé avec vous.", sharedByLabel: "{username} a partagé {location}", friendsPageTitle: "Amis & Messages", tripGroupsLabel: "Groupes de voyage", directMessagesLabel: "Messages directs", noTripGroups: "Aucun voyage partagé pour l'instant — partagez-en un depuis une conversation.", noFriendsForDm: "Ajoutez un ami pour commencer à discuter.", selectConversationPrompt: "Sélectionnez une conversation pour commencer à discuter", messagePlaceholder: "Message...", sendBtn: "Envoyer", tripGroupOwner: "Vous avez créé ce voyage", tripGroupMember: "Partagé avec vous", shareTripBtn: "Partager un voyage", shareTripPickTitle: "Choisissez un voyage à partager", noOwnedTrips: "Vous n'avez pas encore de voyage.", viewItineraryLink: "Voir l'itinéraire", chatForTripLabel: "Discussion de groupe pour ce voyage",
         accEditBtn: "Modifier le profil", accSaveBtn: "Enregistrer", accSaved: "✓ Enregistré avec succès", accNoPasses: "Aucun pass actif", accAmountPaid: "Montant payé", accGuestUsername: "Non connecté",
         accDangerZone: "Zone de danger",
         accDeleteConfirmTitle: "Êtes-vous sûr(e) de vouloir supprimer votre compte ?",
@@ -2584,7 +2619,7 @@ const translations = {
         locationsCount: "LUGARES", statsCountries: "PAÍSES", cookieText: "Utilizamos cookies para mejorar tu experiencia.", cookiePolicy: "Política de cookies",
         cookieManage: "Gestionar", cookieReject: "Rechazar", cookieAccept: "Aceptar",
         exploreDestOption: "Explorar Destinos", exploreArtistsOption: "Explorar Artistas", accountOption: "Tu Cuenta",
-        visitedOption: "Lugares Visitados", wishlistOption: "Mi Lista de Deseos", tripsOption: "Mis Viajes", settingsOption: "Ajustes", logoutOption: "Cerrar sesión",
+        visitedOption: "Lugares Visitados", wishlistOption: "Mi Lista de Deseos", tripsOption: "Mis Viajes", friendsOption: "Amigos", settingsOption: "Ajustes", logoutOption: "Cerrar sesión",
         footerText: "Screen To Street es una guía independiente creada por fans.", footerMentions: "Aviso Legal", footerAbout: "Sobre Nosotros", footerTOS: "Términos de Servicio", footerPrivacy: "Política de Privacidad",
         allGroups: "Todos los grupos", allMembers: "Todos los miembros", allAreas: "Todas las zonas", allYears: "Todos los años", allCategories: "Todas las categorías",
         checkVisited: "He visitado este lugar", checkWishlist: "Añadir a mi lista", tripWhich: "¿Para qué viaje es esto?",
@@ -2597,7 +2632,7 @@ const translations = {
         accTitle: "Tu cuenta", accChangePhoto: "Cambiar foto de perfil", accResetPhoto: "Restablecer foto de perfil", accNameLabel: "Nombre de usuario", accChangeUsernameHint: "Cambiar nombre de usuario", accEmailLabel: "Correo electrónico",
         accCountryLabel: "País que te interesa", accCountryPlaceholder: "Elige un país (opcional)",
         accActivityTitle: "Tu actividad", accTrips: "Viajes", accVisited: "Visitados", accWishlist: "Lista de deseos", accPasses: "Pases y facturación",
-        friendsTitle: "Amigos", friendsAddPlaceholder: "Añadir un amigo por nombre de usuario", friendsAddBtn: "Añadir", friendsRequestsLabel: "Solicitudes de amistad", friendsListLabel: "Tus amigos", friendsEmpty: "Aún no tienes amigos — añade uno por su nombre de usuario arriba.", friendsAccept: "Aceptar", friendsDecline: "Rechazar", friendsCancel: "Cancelar", friendsRemove: "Quitar", friendsErrNotFound: "No se encontró ningún usuario con ese nombre.", friendsErrSelf: "No puedes añadirte a ti mismo.", friendsSentLabel: "Enviada — esperando respuesta", friendsRequestFrom: "{username} quiere ser tu amigo", shareWithFriendBtn: "Compartir", shareNoFriends: "Añade primero un amigo para compartir lugares.", sharesEmpty: "Nadie ha compartido nada contigo todavía.", sharedByLabel: "{username} compartió {location}",
+        friendsTitle: "Amigos", openFriendsMessagesLink: "Abrir Amigos y Mensajes →", friendsAddPlaceholder: "Añadir un amigo por nombre de usuario", friendsAddBtn: "Añadir", friendsRequestsLabel: "Solicitudes de amistad", friendsListLabel: "Tus amigos", friendsEmpty: "Aún no tienes amigos — añade uno por su nombre de usuario arriba.", friendsAccept: "Aceptar", friendsDecline: "Rechazar", friendsCancel: "Cancelar", friendsRemove: "Quitar", friendsErrNotFound: "No se encontró ningún usuario con ese nombre.", friendsErrSelf: "No puedes añadirte a ti mismo.", friendsSentLabel: "Enviada — esperando respuesta", friendsRequestFrom: "{username} quiere ser tu amigo", shareWithFriendBtn: "Compartir", shareNoFriends: "Añade primero un amigo para compartir lugares.", sharesEmpty: "Nadie ha compartido nada contigo todavía.", sharedByLabel: "{username} compartió {location}", friendsPageTitle: "Amigos y Mensajes", tripGroupsLabel: "Grupos de viaje", directMessagesLabel: "Mensajes directos", noTripGroups: "Aún no hay viajes compartidos — comparte uno desde una conversación.", noFriendsForDm: "Añade un amigo para empezar a chatear.", selectConversationPrompt: "Selecciona una conversación para empezar a chatear", messagePlaceholder: "Mensaje...", sendBtn: "Enviar", tripGroupOwner: "Creaste este viaje", tripGroupMember: "Compartido contigo", shareTripBtn: "Compartir un viaje", shareTripPickTitle: "Elige un viaje para compartir", noOwnedTrips: "Aún no tienes ningún viaje.", viewItineraryLink: "Ver itinerario", chatForTripLabel: "Chat de grupo para este viaje",
         accEditBtn: "Editar perfil", accSaveBtn: "Guardar cambios", accSaved: "✓ Guardado con éxito", accNoPasses: "Sin pases activos", accAmountPaid: "Importe pagado", accGuestUsername: "No conectado",
         accDangerZone: "Zona de peligro",
         accDeleteConfirmTitle: "¿Seguro que quieres eliminar tu cuenta?",
@@ -2647,7 +2682,7 @@ const translations = {
         locationsCount: "LUOGHI", statsCountries: "PAESI", cookieText: "Utilizziamo i cookie per migliorare la tua esperienza.", cookiePolicy: "Informativa sui cookie",
         cookieManage: "Gestisci", cookieReject: "Rifiuta", cookieAccept: "Accetta",
         exploreDestOption: "Esplora Destinazioni", exploreArtistsOption: "Esplora Artisti", accountOption: "Il Tuo Account",
-        visitedOption: "Luoghi Visitati", wishlistOption: "La Mia Wishlist", tripsOption: "I Miei Viaggi", settingsOption: "Impostazioni", logoutOption: "Esci",
+        visitedOption: "Luoghi Visitati", wishlistOption: "La Mia Wishlist", tripsOption: "I Miei Viaggi", friendsOption: "Amici", settingsOption: "Impostazioni", logoutOption: "Esci",
         footerText: "Screen To Street è una guida indipendente creata dai fan.", footerMentions: "Note Legali", footerAbout: "Chi Siamo", footerTOS: "Termini di Servizio", footerPrivacy: "Privacy Policy",
         allGroups: "Tutti i gruppi", allMembers: "Tutti i membri", allAreas: "Tutte le zone", allYears: "Tutti gli anni", allCategories: "Tutte le categorie",
         checkVisited: "Ho visitato questo posto", checkWishlist: "Aggiungi alla wishlist", tripWhich: "Per quale viaggio è questo?",
@@ -2660,7 +2695,7 @@ const translations = {
         accTitle: "Il tuo account", accChangePhoto: "Cambia foto profilo", accResetPhoto: "Ripristina foto profilo", accNameLabel: "Nome utente", accChangeUsernameHint: "Cambia nome utente", accEmailLabel: "Indirizzo email",
         accCountryLabel: "Paese che ti interessa", accCountryPlaceholder: "Scegli un paese (opzionale)",
         accActivityTitle: "La tua attività", accTrips: "Viaggi", accVisited: "Visitati", accWishlist: "Wishlist", accPasses: "Pass e fatturazione",
-        friendsTitle: "Amici", friendsAddPlaceholder: "Aggiungi un amico tramite username", friendsAddBtn: "Aggiungi", friendsRequestsLabel: "Richieste di amicizia", friendsListLabel: "I tuoi amici", friendsEmpty: "Ancora nessun amico — aggiungine uno tramite il suo username qui sopra.", friendsAccept: "Accetta", friendsDecline: "Rifiuta", friendsCancel: "Annulla", friendsRemove: "Rimuovi", friendsErrNotFound: "Nessun utente trovato con questo username.", friendsErrSelf: "Non puoi aggiungere te stesso.", friendsSentLabel: "Inviata — in attesa di risposta", friendsRequestFrom: "{username} vuole essere tuo amico", shareWithFriendBtn: "Condividi", shareNoFriends: "Aggiungi prima un amico per condividere i luoghi.", sharesEmpty: "Nessuno ha ancora condiviso nulla con te.", sharedByLabel: "{username} ha condiviso {location}",
+        friendsTitle: "Amici", openFriendsMessagesLink: "Apri Amici e Messaggi →", friendsAddPlaceholder: "Aggiungi un amico tramite username", friendsAddBtn: "Aggiungi", friendsRequestsLabel: "Richieste di amicizia", friendsListLabel: "I tuoi amici", friendsEmpty: "Ancora nessun amico — aggiungine uno tramite il suo username qui sopra.", friendsAccept: "Accetta", friendsDecline: "Rifiuta", friendsCancel: "Annulla", friendsRemove: "Rimuovi", friendsErrNotFound: "Nessun utente trovato con questo username.", friendsErrSelf: "Non puoi aggiungere te stesso.", friendsSentLabel: "Inviata — in attesa di risposta", friendsRequestFrom: "{username} vuole essere tuo amico", shareWithFriendBtn: "Condividi", shareNoFriends: "Aggiungi prima un amico per condividere i luoghi.", sharesEmpty: "Nessuno ha ancora condiviso nulla con te.", sharedByLabel: "{username} ha condiviso {location}", friendsPageTitle: "Amici e Messaggi", tripGroupsLabel: "Gruppi di viaggio", directMessagesLabel: "Messaggi diretti", noTripGroups: "Ancora nessun viaggio condiviso — condividine uno da una conversazione.", noFriendsForDm: "Aggiungi un amico per iniziare a chattare.", selectConversationPrompt: "Seleziona una conversazione per iniziare a chattare", messagePlaceholder: "Messaggio...", sendBtn: "Invia", tripGroupOwner: "Hai creato questo viaggio", tripGroupMember: "Condiviso con te", shareTripBtn: "Condividi un viaggio", shareTripPickTitle: "Scegli un viaggio da condividere", noOwnedTrips: "Non hai ancora nessun viaggio.", viewItineraryLink: "Vedi l'itinerario", chatForTripLabel: "Chat di gruppo per questo viaggio",
         accEditBtn: "Modifica profilo", accSaveBtn: "Salva modifiche", accSaved: "✓ Salvato con successo", accNoPasses: "Nessun pass attivo", accAmountPaid: "Importo pagato", accGuestUsername: "Non connesso",
         accDangerZone: "Zona pericolosa",
         accDeleteConfirmTitle: "Sei sicuro di voler eliminare il tuo account?",
@@ -2710,7 +2745,7 @@ const translations = {
         locationsCount: "LOCAIS", statsCountries: "PAÍSES", cookieText: "Usamos cookies para melhorar sua experiência.", cookiePolicy: "Política de Cookies",
         cookieManage: "Gerenciar", cookieReject: "Rejeitar", cookieAccept: "Aceitar",
         exploreDestOption: "Explorar Destinos", exploreArtistsOption: "Explorar Artistas", accountOption: "Sua Conta",
-        visitedOption: "Locais Visitados", wishlistOption: "Minha Wishlist", tripsOption: "Minhas Viagens", settingsOption: "Configurações", logoutOption: "Sair",
+        visitedOption: "Locais Visitados", wishlistOption: "Minha Wishlist", tripsOption: "Minhas Viagens", friendsOption: "Amigos", settingsOption: "Configurações", logoutOption: "Sair",
         footerText: "Screen To Street é um guia independente feito por fãs.", footerMentions: "Aviso Legal", footerAbout: "Sobre Nós", footerTOS: "Termos de Serviço", footerPrivacy: "Política de Privacidade",
         allGroups: "Todos os grupos", allMembers: "Todos os membros", allAreas: "Todas as regiões", allYears: "Todos os anos", allCategories: "Todas as categorias",
         checkVisited: "Eu visitei este lugar", checkWishlist: "Adicionar à wishlist", tripWhich: "Para qual viagem é isso?",
@@ -2723,7 +2758,7 @@ const translations = {
         accTitle: "Sua conta", accChangePhoto: "Alterar foto de perfil", accResetPhoto: "Redefinir foto de perfil", accNameLabel: "Nome de usuário", accChangeUsernameHint: "Alterar nome de usuário", accEmailLabel: "Endereço de e-mail",
         accCountryLabel: "País de interesse", accCountryPlaceholder: "Escolha um país (opcional)",
         accActivityTitle: "Sua atividade", accTrips: "Viagens", accVisited: "Visitados", accWishlist: "Wishlist", accPasses: "Passes e faturamento",
-        friendsTitle: "Amigos", friendsAddPlaceholder: "Adicionar um amigo pelo nome de usuário", friendsAddBtn: "Adicionar", friendsRequestsLabel: "Pedidos de amizade", friendsListLabel: "Seus amigos", friendsEmpty: "Ainda sem amigos — adicione um pelo nome de usuário acima.", friendsAccept: "Aceitar", friendsDecline: "Recusar", friendsCancel: "Cancelar", friendsRemove: "Remover", friendsErrNotFound: "Nenhum usuário encontrado com esse nome.", friendsErrSelf: "Você não pode se adicionar.", friendsSentLabel: "Enviado — aguardando resposta", friendsRequestFrom: "{username} quer ser seu amigo", shareWithFriendBtn: "Compartilhar", shareNoFriends: "Adicione um amigo primeiro para compartilhar lugares.", sharesEmpty: "Ainda ninguém compartilhou nada com você.", sharedByLabel: "{username} compartilhou {location}",
+        friendsTitle: "Amigos", openFriendsMessagesLink: "Abrir Amigos e Mensagens →", friendsAddPlaceholder: "Adicionar um amigo pelo nome de usuário", friendsAddBtn: "Adicionar", friendsRequestsLabel: "Pedidos de amizade", friendsListLabel: "Seus amigos", friendsEmpty: "Ainda sem amigos — adicione um pelo nome de usuário acima.", friendsAccept: "Aceitar", friendsDecline: "Recusar", friendsCancel: "Cancelar", friendsRemove: "Remover", friendsErrNotFound: "Nenhum usuário encontrado com esse nome.", friendsErrSelf: "Você não pode se adicionar.", friendsSentLabel: "Enviado — aguardando resposta", friendsRequestFrom: "{username} quer ser seu amigo", shareWithFriendBtn: "Compartilhar", shareNoFriends: "Adicione um amigo primeiro para compartilhar lugares.", sharesEmpty: "Ainda ninguém compartilhou nada com você.", sharedByLabel: "{username} compartilhou {location}", friendsPageTitle: "Amigos e Mensagens", tripGroupsLabel: "Grupos de viagem", directMessagesLabel: "Mensagens diretas", noTripGroups: "Ainda sem viagens compartilhadas — compartilhe uma a partir de uma conversa.", noFriendsForDm: "Adicione um amigo para começar a conversar.", selectConversationPrompt: "Selecione uma conversa para começar a conversar", messagePlaceholder: "Mensagem...", sendBtn: "Enviar", tripGroupOwner: "Você criou esta viagem", tripGroupMember: "Compartilhado com você", shareTripBtn: "Compartilhar uma viagem", shareTripPickTitle: "Escolha uma viagem para compartilhar", noOwnedTrips: "Você ainda não tem nenhuma viagem.", viewItineraryLink: "Ver itinerário", chatForTripLabel: "Chat em grupo para esta viagem",
         accEditBtn: "Editar perfil", accSaveBtn: "Salvar alterações", accSaved: "✓ Salvo com sucesso", accNoPasses: "Nenhum passe ativo", accAmountPaid: "Valor pago", accGuestUsername: "Não conectado",
         accDangerZone: "Zona de perigo",
         accDeleteConfirmTitle: "Tem certeza de que deseja excluir sua conta?",
@@ -2773,7 +2808,7 @@ const translations = {
         locationsCount: "장소", statsCountries: "국가", cookieText: "더 나은 경험을 위해 쿠키를 사용합니다.", cookiePolicy: "쿠키 정책",
         cookieManage: "관리", cookieReject: "거부", cookieAccept: "수락",
         exploreDestOption: "여행지 둘러보기", exploreArtistsOption: "아티스트 둘러보기", accountOption: "내 계정",
-        visitedOption: "방문한 장소", wishlistOption: "위시리스트", tripsOption: "내 여행", settingsOption: "설정", logoutOption: "로그아웃",
+        visitedOption: "방문한 장소", wishlistOption: "위시리스트", tripsOption: "내 여행", friendsOption: "친구", settingsOption: "설정", logoutOption: "로그아웃",
         footerText: "Screen To Street는 팬이 만든 독립적인 가이드입니다.", footerMentions: "법적 고지", footerAbout: "소개", footerTOS: "이용약관", footerPrivacy: "개인정보처리방침",
         allGroups: "모든 그룹", allMembers: "모든 멤버", allAreas: "모든 지역", allYears: "모든 연도", allCategories: "모든 카테고리",
         checkVisited: "이 장소를 방문했어요", checkWishlist: "위시리스트에 추가", tripWhich: "어떤 여행을 위한 건가요?",
@@ -2786,7 +2821,7 @@ const translations = {
         accTitle: "내 계정", accChangePhoto: "프로필 사진 변경", accResetPhoto: "프로필 사진 재설정", accNameLabel: "아이디", accChangeUsernameHint: "아이디 변경", accEmailLabel: "이메일 주소",
         accCountryLabel: "관심 있는 국가", accCountryPlaceholder: "국가 선택 (선택 사항)",
         accActivityTitle: "내 활동", accTrips: "여행", accVisited: "방문함", accWishlist: "위시리스트", accPasses: "이용권 및 결제",
-        friendsTitle: "친구", friendsAddPlaceholder: "사용자 이름으로 친구 추가", friendsAddBtn: "추가", friendsRequestsLabel: "친구 요청", friendsListLabel: "내 친구", friendsEmpty: "아직 친구가 없습니다 — 위에서 사용자 이름으로 친구를 추가해보세요.", friendsAccept: "수락", friendsDecline: "거절", friendsCancel: "취소", friendsRemove: "삭제", friendsErrNotFound: "해당 사용자 이름을 가진 사용자를 찾을 수 없습니다.", friendsErrSelf: "자기 자신은 추가할 수 없습니다.", friendsSentLabel: "전송됨 — 응답 대기 중", friendsRequestFrom: "{username}님이 친구가 되고 싶어합니다", shareWithFriendBtn: "공유", shareNoFriends: "장소를 공유하려면 먼저 친구를 추가하세요.", sharesEmpty: "아직 공유받은 것이 없습니다.", sharedByLabel: "{username}님이 {location}을(를) 공유했습니다",
+        friendsTitle: "친구", openFriendsMessagesLink: "친구 및 메시지 열기 →", friendsAddPlaceholder: "사용자 이름으로 친구 추가", friendsAddBtn: "추가", friendsRequestsLabel: "친구 요청", friendsListLabel: "내 친구", friendsEmpty: "아직 친구가 없습니다 — 위에서 사용자 이름으로 친구를 추가해보세요.", friendsAccept: "수락", friendsDecline: "거절", friendsCancel: "취소", friendsRemove: "삭제", friendsErrNotFound: "해당 사용자 이름을 가진 사용자를 찾을 수 없습니다.", friendsErrSelf: "자기 자신은 추가할 수 없습니다.", friendsSentLabel: "전송됨 — 응답 대기 중", friendsRequestFrom: "{username}님이 친구가 되고 싶어합니다", shareWithFriendBtn: "공유", shareNoFriends: "장소를 공유하려면 먼저 친구를 추가하세요.", sharesEmpty: "아직 공유받은 것이 없습니다.", sharedByLabel: "{username}님이 {location}을(를) 공유했습니다", friendsPageTitle: "친구 및 메시지", tripGroupsLabel: "여행 그룹", directMessagesLabel: "다이렉트 메시지", noTripGroups: "아직 공유된 여행이 없습니다 — 대화에서 여행을 공유해보세요.", noFriendsForDm: "메시지를 보내려면 먼저 친구를 추가하세요.", selectConversationPrompt: "채팅을 시작하려면 대화를 선택하세요", messagePlaceholder: "메시지...", sendBtn: "전송", tripGroupOwner: "이 여행을 만드셨습니다", tripGroupMember: "공유받은 여행", shareTripBtn: "여행 공유하기", shareTripPickTitle: "공유할 여행을 선택하세요", noOwnedTrips: "아직 여행이 없습니다.", viewItineraryLink: "일정 보기", chatForTripLabel: "이 여행의 그룹 채팅",
         accEditBtn: "프로필 수정", accSaveBtn: "변경사항 저장", accSaved: "✓ 저장되었습니다", accNoPasses: "활성화된 이용권 없음", accAmountPaid: "결제 금액", accGuestUsername: "로그인하지 않음",
         accDangerZone: "위험 구역",
         accDeleteConfirmTitle: "정말 계정을 삭제하시겠습니까?",
@@ -2836,7 +2871,7 @@ const translations = {
         locationsCount: "スポット", statsCountries: "国", cookieText: "より良い体験のためにクッキーを使用しています。", cookiePolicy: "クッキーポリシー",
         cookieManage: "管理", cookieReject: "拒否", cookieAccept: "同意",
         exploreDestOption: "旅先を探す", exploreArtistsOption: "アーティストを探す", accountOption: "アカウント",
-        visitedOption: "訪れた場所", wishlistOption: "ウィッシュリスト", tripsOption: "マイトリップ", settingsOption: "設定", logoutOption: "ログアウト",
+        visitedOption: "訪れた場所", wishlistOption: "ウィッシュリスト", tripsOption: "マイトリップ", friendsOption: "フレンド", settingsOption: "設定", logoutOption: "ログアウト",
         footerText: "Screen To Streetはファンによる独立系ガイドです。", footerMentions: "特定商取引法に基づく表記", footerAbout: "私たちについて", footerTOS: "利用規約", footerPrivacy: "プライバシーポリシー",
         allGroups: "すべてのグループ", allMembers: "すべてのメンバー", allAreas: "すべてのエリア", allYears: "すべての年", allCategories: "すべてのカテゴリー",
         checkVisited: "この場所を訪れました", checkWishlist: "ウィッシュリストに追加", tripWhich: "どの旅行のためですか？",
@@ -2849,7 +2884,7 @@ const translations = {
         accTitle: "アカウント", accChangePhoto: "プロフィール写真を変更", accResetPhoto: "プロフィール写真をリセット", accNameLabel: "ユーザー名", accChangeUsernameHint: "ユーザー名を変更", accEmailLabel: "メールアドレス",
         accCountryLabel: "興味のある国", accCountryPlaceholder: "国を選択（任意）",
         accActivityTitle: "アクティビティ", accTrips: "旅行", accVisited: "訪問済み", accWishlist: "ウィッシュリスト", accPasses: "パスとお支払い",
-        friendsTitle: "フレンド", friendsAddPlaceholder: "ユーザー名でフレンドを追加", friendsAddBtn: "追加", friendsRequestsLabel: "フレンド申請", friendsListLabel: "フレンド一覧", friendsEmpty: "まだフレンドがいません — 上のユーザー名で追加しましょう。", friendsAccept: "承認", friendsDecline: "拒否", friendsCancel: "キャンセル", friendsRemove: "削除", friendsErrNotFound: "そのユーザー名のユーザーが見つかりません。", friendsErrSelf: "自分自身は追加できません。", friendsSentLabel: "送信済み — 返信待ち", friendsRequestFrom: "{username}さんがフレンド申請をしています", shareWithFriendBtn: "共有", shareNoFriends: "場所を共有するには、まずフレンドを追加してください。", sharesEmpty: "まだ何も共有されていません。", sharedByLabel: "{username}さんが{location}を共有しました",
+        friendsTitle: "フレンド", openFriendsMessagesLink: "フレンド＆メッセージを開く →", friendsAddPlaceholder: "ユーザー名でフレンドを追加", friendsAddBtn: "追加", friendsRequestsLabel: "フレンド申請", friendsListLabel: "フレンド一覧", friendsEmpty: "まだフレンドがいません — 上のユーザー名で追加しましょう。", friendsAccept: "承認", friendsDecline: "拒否", friendsCancel: "キャンセル", friendsRemove: "削除", friendsErrNotFound: "そのユーザー名のユーザーが見つかりません。", friendsErrSelf: "自分自身は追加できません。", friendsSentLabel: "送信済み — 返信待ち", friendsRequestFrom: "{username}さんがフレンド申請をしています", shareWithFriendBtn: "共有", shareNoFriends: "場所を共有するには、まずフレンドを追加してください。", sharesEmpty: "まだ何も共有されていません。", sharedByLabel: "{username}さんが{location}を共有しました", friendsPageTitle: "フレンド＆メッセージ", tripGroupsLabel: "旅行グループ", directMessagesLabel: "ダイレクトメッセージ", noTripGroups: "共有された旅行はまだありません — 会話から旅行を共有しましょう。", noFriendsForDm: "メッセージを送るにはまずフレンドを追加してください。", selectConversationPrompt: "チャットを始めるには会話を選択してください", messagePlaceholder: "メッセージ...", sendBtn: "送信", tripGroupOwner: "あなたが作成した旅行です", tripGroupMember: "共有された旅行", shareTripBtn: "旅行を共有", shareTripPickTitle: "共有する旅行を選択", noOwnedTrips: "まだ旅行がありません。", viewItineraryLink: "旅程を見る", chatForTripLabel: "この旅行のグループチャット",
         accEditBtn: "プロフィールを編集", accSaveBtn: "変更を保存", accSaved: "✓ 保存しました", accNoPasses: "有効なパスはありません", accAmountPaid: "お支払い金額", accGuestUsername: "未ログイン",
         accDangerZone: "危険ゾーン",
         accDeleteConfirmTitle: "本当にアカウントを削除しますか？",
@@ -2899,7 +2934,7 @@ const translations = {
         locationsCount: "地点", statsCountries: "国家", cookieText: "我们使用 Cookie 来改善您的体验。", cookiePolicy: "Cookie 政策",
         cookieManage: "管理", cookieReject: "拒绝", cookieAccept: "接受",
         exploreDestOption: "探索目的地", exploreArtistsOption: "探索艺人", accountOption: "我的账户",
-        visitedOption: "已访问的地点", wishlistOption: "我的收藏清单", tripsOption: "我的行程", settingsOption: "设置", logoutOption: "退出登录",
+        visitedOption: "已访问的地点", wishlistOption: "我的收藏清单", tripsOption: "我的行程", friendsOption: "好友", settingsOption: "设置", logoutOption: "退出登录",
         footerText: "Screen To Street 是由粉丝创建的独立指南。", footerMentions: "法律声明", footerAbout: "关于我们", footerTOS: "服务条款", footerPrivacy: "隐私政策",
         allGroups: "所有团体", allMembers: "所有成员", allAreas: "所有地区", allYears: "所有年份", allCategories: "所有分类",
         checkVisited: "我去过这个地方", checkWishlist: "添加到收藏清单", tripWhich: "这是为哪次行程添加的？",
@@ -2912,7 +2947,7 @@ const translations = {
         accTitle: "我的账户", accChangePhoto: "更换头像", accResetPhoto: "重置头像", accNameLabel: "用户名", accChangeUsernameHint: "更改用户名", accEmailLabel: "电子邮箱",
         accCountryLabel: "感兴趣的国家", accCountryPlaceholder: "选择国家（可选）",
         accActivityTitle: "我的动态", accTrips: "行程", accVisited: "已访问", accWishlist: "收藏清单", accPasses: "通行证与账单",
-        friendsTitle: "好友", friendsAddPlaceholder: "通过用户名添加好友", friendsAddBtn: "添加", friendsRequestsLabel: "好友请求", friendsListLabel: "你的好友", friendsEmpty: "还没有好友——在上方通过用户名添加一个吧。", friendsAccept: "接受", friendsDecline: "拒绝", friendsCancel: "取消", friendsRemove: "移除", friendsErrNotFound: "未找到该用户名对应的用户。", friendsErrSelf: "不能添加自己。", friendsSentLabel: "已发送——等待回应", friendsRequestFrom: "{username} 想加你为好友", shareWithFriendBtn: "分享", shareNoFriends: "请先添加好友才能分享地点。", sharesEmpty: "还没有人与你分享任何内容。", sharedByLabel: "{username} 分享了 {location}",
+        friendsTitle: "好友", openFriendsMessagesLink: "打开好友与消息 →", friendsAddPlaceholder: "通过用户名添加好友", friendsAddBtn: "添加", friendsRequestsLabel: "好友请求", friendsListLabel: "你的好友", friendsEmpty: "还没有好友——在上方通过用户名添加一个吧。", friendsAccept: "接受", friendsDecline: "拒绝", friendsCancel: "取消", friendsRemove: "移除", friendsErrNotFound: "未找到该用户名对应的用户。", friendsErrSelf: "不能添加自己。", friendsSentLabel: "已发送——等待回应", friendsRequestFrom: "{username} 想加你为好友", shareWithFriendBtn: "分享", shareNoFriends: "请先添加好友才能分享地点。", sharesEmpty: "还没有人与你分享任何内容。", sharedByLabel: "{username} 分享了 {location}", friendsPageTitle: "好友与消息", tripGroupsLabel: "行程群组", directMessagesLabel: "私信", noTripGroups: "还没有共享的行程——从对话中分享一个吧。", noFriendsForDm: "先添加好友才能开始聊天。", selectConversationPrompt: "选择一个对话开始聊天", messagePlaceholder: "消息...", sendBtn: "发送", tripGroupOwner: "你创建了这个行程", tripGroupMember: "与你共享", shareTripBtn: "分享行程", shareTripPickTitle: "选择要分享的行程", noOwnedTrips: "你还没有任何行程。", viewItineraryLink: "查看行程", chatForTripLabel: "该行程的群聊",
         accEditBtn: "编辑资料", accSaveBtn: "保存更改", accSaved: "✓ 保存成功", accNoPasses: "暂无有效通行证", accAmountPaid: "已支付金额", accGuestUsername: "未登录",
         accDangerZone: "危险区域",
         accDeleteConfirmTitle: "确定要删除您的账户吗？",
