@@ -27,20 +27,25 @@
 // sans source vérifiable est à rejeter en relecture (voir admin.html), pas à publier
 // "parce que ça semble plausible".
 //
-// Anti-doublon : comparer les NOMS n'est pas fiable (l'IA reformule différemment d'une
-// génération à l'autre) — et de toute façon, `locationContent` (la seule collection lue
-// ci-dessous dans une version antérieure de ce script) ne contient JAMAIS le nom d'un
-// lieu, seulement son texte riche : un filtre par nom basé dessus ne peut donc jamais
-// rien détecter. Un lieu physique ne bouge jamais : on compare donc la DISTANCE entre
+// Anti-doublon : comparer les NOMS seuls n'est pas fiable (l'IA reformule différemment
+// d'une génération à l'autre) — et de toute façon, `locationContent` (la seule collection
+// lue ci-dessous dans une version antérieure de ce script) ne contient JAMAIS le nom d'un
+// lieu, seulement son texte riche : un filtre par nom basé dessus ne peut donc jamais rien
+// détecter. Un lieu physique ne bouge jamais : on compare donc d'abord la DISTANCE entre
 // chaque proposition et les lieux déjà connus (184 lieux historiques de script.js + ceux
-// déjà approuvés dans Firestore) — voir duplicate-check.js.
+// déjà approuvés dans Firestore). Mais la distance seule peut manquer un vrai doublon si
+// l'IA ne donne que des coordonnées approximatives pour un lieu qu'elle reformule
+// différemment (ex: "Magnate Cafe" proposé alors que la base a déjà "Cafe Magnate", à des
+// coordonnées trop éloignées pour matcher) — findDuplicate() ajoute donc une deuxième
+// vérification stricte : mêmes mots que le nom d'un lieu connu, juste dans un ordre
+// différent. Voir duplicate-check.js pour le détail des deux vérifications.
 
 require('dotenv').config(); // Va chercher la clé dans ton fichier .env (no-op si absent, comme en CI)
 const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { loadStaticLocations, locationsFromSnapshot, combineExistingLocations, findNearbyDuplicate } = require('./duplicate-check');
+const { locationsFromSnapshot, combineExistingLocations, findDuplicate } = require('./duplicate-check');
 
 const DUPLICATE_THRESHOLD_METERS = 50;
 
@@ -69,20 +74,55 @@ async function runAgent() {
         console.log(`   ${existingLocations.length} lieux existants chargés.`);
 
         console.log("🤖 L'IA génère 5 propositions pour BTS...");
-        // Les champs demandés correspondent à ceux attendus par admin.html / la carte
-        // (voir window.approveLocationSubmission dans firebase-init.js) : une proposition
-        // qui utiliserait d'autres noms de champs serait acceptée dans la file d'attente,
-        // mais publierait un pin incomplet une fois approuvée (icône, adresse affichée...).
-        const prompt = `Trouve 5 lieux réels, différents et emblématiques liés à BTS.
-    Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 5 objets avec cette structure exacte :
-    [{ "name": "Nom du lieu", "group": "BTS", "member": "All (ou le nom du membre concerné)", "country": "Pays", "city": "Ville", "category": "Cafe, MV Location, Concerts, Landmarks...", "year": "Année", "address": "Adresse complète et réelle (jamais inventée)", "lat": 0.0, "lng": 0.0, "fullDescription": { "en": "<p>Description</p>" }, "episodeLink": "https://source-verifiable-reelle.com" }]`;
+        // La liste des noms déjà connus est donnée à l'IA pour limiter d'emblée les
+        // propositions redondantes (moins d'appels gaspillés) — findDuplicate() reste le
+        // vrai filet de sécurité après coup, l'IA peut très bien se tromper ou reformuler
+        // malgré cette liste.
+        const existingNames = existingLocations.map((l) => l.name).filter(Boolean);
+
+        // Les champs demandés correspondent à ceux attendus par admin.html / la carte (voir
+        // window.approveLocationSubmission dans firebase-init.js) : une proposition qui
+        // utiliserait d'autres noms de champs serait acceptée dans la file d'attente, mais
+        // publierait un pin incomplet une fois approuvée (icône, adresse affichée...).
+        // Contenu complet demandé (récit + infos pratiques + astuce) pour correspondre à la
+        // qualité des fiches déjà publiées, PAS pour remplacer la relecture humaine : chaque
+        // proposition reste en attente sur admin.html tant qu'elle n'est pas approuvée.
+        const prompt = `Tu es un expert en tourisme K-pop spécialisé dans BTS.
+
+Lieux déjà connus (NE PROPOSE AUCUN de ceux-ci, même reformulé différemment) :
+${existingNames.join(', ')}
+
+Trouve 5 lieux réels, différents et emblématiques liés à BTS, absents de la liste ci-dessus.
+Pour chacun, rédige un contenu complet et soigné, dans le même esprit que les fiches déjà
+publiées sur le site (récit narratif sur 2 paragraphes minimum, infos pratiques concrètes,
+une astuce de visite). Règle absolue : ne jamais inventer une adresse, un lien ou une URL
+de photo — si tu n'es pas certain à 100% qu'une information est réelle et vérifiable,
+laisse le champ correspondant vide ("") plutôt que d'en inventer une.
+
+Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 5 objets avec cette structure exacte :
+[{
+  "name": "Nom du lieu",
+  "group": "BTS",
+  "member": "All (ou le nom du membre concerné)",
+  "country": "Pays",
+  "city": "Ville",
+  "category": "Cafe, MV Location, Concerts, Landmarks...",
+  "year": "Année",
+  "address": "Adresse complète et réelle (jamais inventée)",
+  "lat": 0.0, "lng": 0.0,
+  "fullDescription": { "en": "<p>Premier paragraphe : le lieu lui-même, son contexte, son histoire.</p><p>Deuxième paragraphe : son lien concret avec BTS/le membre (tournage, évènement, visite...).</p>" },
+  "practicalInfo": [ { "title": { "en": "How to get there" }, "text": { "en": "Indications concrètes pour s'y rendre." } } ],
+  "tipsList": [ { "title": { "en": "Astuce" }, "text": { "en": "Un conseil concret et utile pour la visite." } } ],
+  "img": "URL réelle d'une photo (Wikimedia Commons ou site officiel) — laisse vide (\\"\\") si tu n'es pas certain qu'elle existe",
+  "episodeLink": "https://source-verifiable-reelle.com (laisse vide si aucune source certaine)"
+}]`;
 
         const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
         const result = await model.generateContent(prompt);
         const text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
         const locations = JSON.parse(text);
 
-        console.log('🛡️ Vérification anti-doublon (distance GPS)...');
+        console.log('🛡️ Vérification anti-doublon (distance GPS + mots du nom)...');
         let addedCount = 0;
 
         for (const loc of locations) {
@@ -91,11 +131,16 @@ async function runAgent() {
                 continue;
             }
 
-            const duplicate = findNearbyDuplicate(loc.lat, loc.lng, existingLocations, DUPLICATE_THRESHOLD_METERS);
+            const duplicate = findDuplicate(loc, existingLocations, DUPLICATE_THRESHOLD_METERS);
             if (duplicate) {
-                console.log(`🚫 Bloqué (à ${duplicate.distanceMeters}m de "${duplicate.location.name}", déjà connu) : ${loc.name}`);
+                const why = duplicate.reason === 'distance'
+                    ? `à ${duplicate.distanceMeters}m de "${duplicate.location.name}"`
+                    : `mêmes mots que "${duplicate.location.name}"`;
+                console.log(`🚫 Bloqué (${why}, déjà connu) : ${loc.name}`);
                 continue;
             }
+
+            if (!loc.img) console.log(`⚠️  Pas de photo fournie pour "${loc.name}" — à ajouter manuellement avant d'approuver.`);
 
             await db.collection('locationSubmissions').add({
                 ...loc,
