@@ -42,6 +42,30 @@ window.searchCelebLocationsByName = function (query, maxResults) {
     return celebLocations.filter(l => (l.name || '').toLowerCase().includes(q)).slice(0, maxResults || 8);
 };
 
+// Charge le widget officiel Twitter/X une seule fois (partagé par toutes les fiches lieu
+// visitées dans la session), puis fait rendre le <blockquote> injecté à chaque appel —
+// widgets.js ne transforme QUE les blockquotes présents au moment de son propre
+// chargement, un blockquote ajouté dynamiquement plus tard a besoin d'un appel explicite
+// à widgets.load() pour être rendu (voir renderTweetEmbedOnDetails ci-dessous).
+let _twitterWidgetLoadPromise = null;
+function loadTwitterWidgetScriptOnce() {
+    if (window.twttr && window.twttr.widgets) return Promise.resolve();
+    if (_twitterWidgetLoadPromise) return _twitterWidgetLoadPromise;
+    _twitterWidgetLoadPromise = new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = 'https://platform.twitter.com/widgets.js';
+        s.onload = resolve;
+        s.onerror = resolve;
+        document.body.appendChild(s);
+    });
+    return _twitterWidgetLoadPromise;
+}
+async function renderTweetEmbedOnDetails(container, tweetUrl) {
+    container.innerHTML = `<blockquote class="twitter-tweet"><a href="${tweetUrl}"></a></blockquote>`;
+    await loadTwitterWidgetScriptOnce();
+    if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
+}
+
 window.showSimpleToast = function (message, opts) {
     const isError = opts && opts.isError;
     let container = document.getElementById('simple-toast-container');
@@ -4177,6 +4201,12 @@ function renderLocationRichContent(loc) {
             videoSection.classList.remove('hidden');
         } else if (loc.ytId) {
             videoContainer.innerHTML = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${loc.ytId}" frameborder="0" allowfullscreen></iframe></div>`;
+            videoSection.classList.remove('hidden');
+        } else if (loc.tweetUrl) {
+            // Post Twitter/X embarqué (voir admin.html, champ "Tweet / X post URL") : rendu
+            // via le widget officiel Twitter, jamais tenté comme une image — cliquer dessus
+            // renvoie naturellement vers Twitter (comportement natif du widget).
+            renderTweetEmbedOnDetails(videoContainer, loc.tweetUrl);
             videoSection.classList.remove('hidden');
         } else { videoSection.classList.add('hidden'); }
     }

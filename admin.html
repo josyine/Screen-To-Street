@@ -40,8 +40,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-preview{margin-bottom:8px;border-radius:10px;overflow:hidden;}
 .sub-photo-preview img{display:block;width:100%;max-height:220px;object-fit:cover;}
 .sub-photo-missing{background:#FFF7F8;border:1px dashed #FBD5DC;border-radius:10px;padding:14px;text-align:center;color:#D42759;font-size:12px;font-weight:600;}
-.sub-photo-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
+.sub-photo-input,.sub-tweet-input,.sub-video-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
 .sub-photo-hint{font-size:10.5px;color:#94a3b8;margin-bottom:12px;line-height:1.4;}
+.sub-tweet-preview{margin-bottom:8px;}
 .sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;margin-bottom:12px;}
 .sub-story p{margin-bottom:8px;}
 .sub-story p:last-child{margin-bottom:0;}
@@ -105,6 +106,45 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             : `<div class="sub-photo-missing">No photo provided — paste a URL below before approving.</div>`;
     }
 
+    // Extrait l'id d'une vidéo YouTube depuis n'importe quelle forme d'URL usuelle
+    // (watch?v=, youtu.be/, /embed/, /shorts/) — avant ce correctif, il n'y avait aucun
+    // champ pour saisir une vidéo dans cet écran : coller l'URL dans "Photo URL" échouait
+    // silencieusement (ni vignette dans le header du lieu, ni vidéo affichée), puisque ni
+    // <img> ni `ytId` n'étaient jamais réellement renseignés.
+    function extractYouTubeId(url) {
+        const s = (url || '').trim();
+        if (!s) return null;
+        const m = s.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
+        return m ? m[1] : (/^[a-zA-Z0-9_-]{10,15}$/.test(s) ? s : null);
+    }
+
+    // Reconnaît un lien vers un post Twitter/X (peu importe le domaine historique ou
+    // actuel) — utilisé pour proposer un embed réel plutôt que de tenter de le charger
+    // comme une image, ce qui échouait toujours (ce n'est pas une image).
+    function extractTweetUrl(url) {
+        const s = (url || '').trim();
+        return /^https?:\/\/(www\.)?(twitter|x)\.com\/[^/]+\/status\/\d+/.test(s) ? s : null;
+    }
+
+    let twitterWidgetLoading = null;
+    function loadTwitterWidgetScript() {
+        if (window.twttr && window.twttr.widgets) return Promise.resolve();
+        if (twitterWidgetLoading) return twitterWidgetLoading;
+        twitterWidgetLoading = new Promise((resolve) => {
+            const s = document.createElement('script');
+            s.src = 'https://platform.twitter.com/widgets.js';
+            s.onload = resolve;
+            s.onerror = resolve;
+            document.body.appendChild(s);
+        });
+        return twitterWidgetLoading;
+    }
+    async function renderTweetEmbed(container, tweetUrl) {
+        container.innerHTML = `<blockquote class="twitter-tweet"><a href="${escapeHtml(tweetUrl)}"></a></blockquote>`;
+        await loadTwitterWidgetScript();
+        if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
+    }
+
     function renderCard(sub) {
         const isEdit = !!sub.matchedLocId;
         const practicalCount = Array.isArray(sub.practicalInfo) ? sub.practicalInfo.length : 0;
@@ -123,12 +163,20 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-meta">${escapeHtml(sub.group || '')} · ${escapeHtml(sub.member || '')} &middot; ${escapeHtml(sub.city || '')}, ${escapeHtml(sub.country || '')} &middot; ${escapeHtml(sub.category || '')} &middot; ${escapeHtml(sub.year || '')}</div>
             <div class="sub-photo-preview">${photoPreviewHtml(sub.img)}</div>
             <input type="url" class="sub-photo-input" placeholder="Photo URL" value="${escapeHtml(sub.img || '')}">
-            <div class="sub-photo-hint">Tip: right-click a photo on the artist's official Instagram/X/Weverse post → "Copy image address", then paste it here. Approving publishes exactly this URL.</div>
+            <div class="sub-photo-hint">Tip: right-click a photo on the artist's official Instagram/X/Weverse post → "Copy image address", then paste it here. Approving publishes exactly this URL. (A YouTube link or a Twitter/X post link goes in the fields below instead — pasting one here won't work.)</div>
+
+            <div class="sub-tweet-preview hidden"></div>
+            <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)" value="${escapeHtml(sub.tweetUrl || '')}">
+            <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
+
+            <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)" value="${sub.ytId ? 'https://www.youtube.com/watch?v=' + escapeHtml(sub.ytId) : ''}">
+            <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:12px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
+
             <div class="sub-story">${storyHtml(sub)}</div>
             <div class="sub-fields">
                 <span>${practicalCount} practical info item${practicalCount === 1 ? '' : 's'}</span>
                 <span>${tipsCount} tip${tipsCount === 1 ? '' : 's'}</span>
-                <span>${sub.ytId ? 'YouTube video: ' + escapeHtml(sub.ytId) : 'No YouTube video'}</span>
+                <span class="sub-video-status">${sub.ytId ? 'YouTube video: ' + escapeHtml(sub.ytId) : 'No YouTube video'}</span>
                 <span>lat/lng: ${sub.lat != null ? sub.lat : '—'}, ${sub.lng != null ? sub.lng : '—'}</span>
             </div>
             <div class="sub-source">
@@ -148,13 +196,67 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const rejectBtn = card.querySelector('.btn-reject');
         const photoInput = card.querySelector('.sub-photo-input');
         const photoPreview = card.querySelector('.sub-photo-preview');
+        const tweetInput = card.querySelector('.sub-tweet-input');
+        const tweetPreview = card.querySelector('.sub-tweet-preview');
+        const tweetError = card.querySelector('.sub-tweet-error');
+        const videoInput = card.querySelector('.sub-video-input');
+        const videoStatus = card.querySelector('.sub-video-status');
 
         // Modifie directement `sub` (fermé par les callbacks d'approbation/rejet ci-dessous) :
         // approuver publie donc la valeur éditée ici, pas la proposition d'origine de l'IA.
         if (photoInput) {
             photoInput.addEventListener('change', () => {
-                sub.img = photoInput.value.trim();
+                const val = photoInput.value.trim();
+                // Un lien Twitter/X collé ici (par erreur, "Photo URL" n'accepte que des
+                // images) est automatiquement redirigé vers le bon champ ci-dessous plutôt
+                // que d'échouer silencieusement comme avant ce correctif — voir la demande
+                // du 06/09/2026 (post Museum SAN).
+                const asTweet = extractTweetUrl(val);
+                if (asTweet) {
+                    photoInput.value = '';
+                    sub.img = '';
+                    photoPreview.innerHTML = photoPreviewHtml(sub.img);
+                    tweetInput.value = asTweet;
+                    tweetInput.dispatchEvent(new Event('change'));
+                    return;
+                }
+                sub.img = val;
                 photoPreview.innerHTML = photoPreviewHtml(sub.img);
+            });
+        }
+
+        if (tweetInput) {
+            const refreshTweet = async () => {
+                const val = tweetInput.value.trim();
+                if (!val) { sub.tweetUrl = ''; tweetPreview.classList.add('hidden'); tweetError.classList.add('hidden'); return; }
+                const clean = extractTweetUrl(val);
+                if (!clean) { tweetError.classList.remove('hidden'); tweetPreview.classList.add('hidden'); return; }
+                tweetError.classList.add('hidden');
+                sub.tweetUrl = clean;
+                tweetPreview.classList.remove('hidden');
+                await renderTweetEmbed(tweetPreview, clean);
+            };
+            tweetInput.addEventListener('change', refreshTweet);
+            if (sub.tweetUrl) refreshTweet();
+        }
+
+        if (videoInput) {
+            videoInput.addEventListener('change', () => {
+                const val = videoInput.value.trim();
+                if (!val) { sub.ytId = ''; videoStatus.textContent = 'No YouTube video'; return; }
+                const id = extractYouTubeId(val);
+                if (!id) { videoStatus.textContent = "Doesn't look like a YouTube URL"; return; }
+                sub.ytId = id;
+                videoStatus.textContent = 'YouTube video: ' + id;
+                // Vignette automatique dans le header du lieu si aucune photo n'a été
+                // fournie par ailleurs — sans ce correctif, un lieu avec une vidéo mais
+                // sans "Photo URL" n'affichait aucune image nulle part.
+                if (!photoInput.value.trim()) {
+                    const thumbUrl = `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+                    photoInput.value = thumbUrl;
+                    sub.img = thumbUrl;
+                    photoPreview.innerHTML = photoPreviewHtml(sub.img);
+                }
             });
         }
 
