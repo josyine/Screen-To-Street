@@ -111,6 +111,21 @@
             });
             const marker = L.marker([stop.lat, stop.lng], { icon }).addTo(map);
             marker.on('click', () => { tourModeGoToIndex(i); window.openTourModeTip(i); });
+            // Survol (souris uniquement — un doigt sur mobile ne "survole" jamais, le clic
+            // ci-dessus reste donc le seul chemin possible là-bas) : montre juste la bulle
+            // d'info au même endroit qu'un clic, mais SANS déplacer/zoomer la carte ni
+            // changer l'étape "active" de l'itinéraire — un simple aperçu, pas une
+            // navigation. Un clic explicite garde tout son comportement habituel.
+            marker.on('mouseover', () => {
+                tourModeTipIndex = i;
+                renderTipContent(i);
+                const tip = document.getElementById('tour-mode-tip');
+                if (tip) tip.classList.add('open');
+                positionTip(i);
+            });
+            marker.on('mouseout', () => {
+                if (tourModeTipIndex === i) window.closeTourModeTip();
+            });
             tourModeMarkers.push(marker);
         });
 
