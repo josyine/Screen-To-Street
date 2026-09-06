@@ -187,7 +187,12 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         <div style="font-size:11.5px;color:#94a3b8;margin-bottom:24px;" id="member-since-line"></div>
         <div style="text-align:left;">
           <span class="field-label" data-i18n="accNameLabel">Username</span>
-          <input type="text" id="user-name-input" class="field-value" style="outline:none;" readonly value="User">
+          <div style="display:flex; align-items:center; gap:8px;">
+              <input type="text" id="user-name-input" class="field-value" style="outline:none; flex:1; margin-bottom:0;" readonly value="User">
+              <button id="username-confirm-btn" type="button" class="hidden" title="Confirm" style="flex-shrink:0; width:30px; height:30px; border-radius:50%; border:none; background:#10b981; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </button>
+          </div>
           <a id="change-username-link" style="display:block; font-size:11px; font-weight:700; color:#D42759; cursor:pointer; margin:6px 0 4px;" data-i18n="accChangeUsernameHint">Change username</a>
           <div id="username-msg" class="hidden" style="font-size:10.5px; font-weight:600; margin:0 0 4px;"></div>
           <div style="font-size:10px; color:#94a3b8; margin:0 0 12px;" data-i18n="usernameCooldownNote">You can only change this once every 7 days.</div>
@@ -504,6 +509,8 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     function exitUsernameEditMode() {
         nameInputEl.setAttribute('readonly', true);
         nameInputEl.style.borderColor = '#e2e8f0';
+        const confirmBtn = document.getElementById('username-confirm-btn');
+        if (confirmBtn) confirmBtn.classList.add('hidden');
     }
     // Un changement d'identifiant verrouille le champ pendant USERNAME_COOLDOWN_DAYS —
     // 'lastUsernameChangeAt' est synchronisé depuis/vers le cloud (voir firebase-ready
@@ -636,6 +643,9 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         if (typeof window.syncUserData === 'function') window.syncUserData({ username: newName, lastUsernameChangeAt: now });
         usernameOriginalValue = newName;
         showUsernameMsg(isFr ? "✓ Identifiant mis à jour." : "✓ Username updated.", false);
+        if (typeof window.showSimpleToast === 'function') {
+            window.showSimpleToast(isFr ? "L'identifiant a bien été modifié." : "Username successfully changed.");
+        }
         exitUsernameEditMode();
         setTimeout(() => showUsernameMsg(null), 2500);
     }
@@ -676,6 +686,8 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             nameInputEl.style.borderColor = '#D42759';
             nameInputEl.focus();
             nameInputEl.select();
+            const confirmBtn = document.getElementById('username-confirm-btn');
+            if (confirmBtn) confirmBtn.classList.remove('hidden');
         });
         nameInputEl.addEventListener('blur', () => {
             if (usernameSaveInProgress || nameInputEl.hasAttribute('readonly')) return;
@@ -687,6 +699,15 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             if (e.key === 'Enter') { e.preventDefault(); saveUsername(); }
             else if (e.key === 'Escape') { nameInputEl.value = usernameOriginalValue; showUsernameMsg(null); exitUsernameEditMode(); nameInputEl.blur(); }
         });
+        const usernameConfirmBtn = document.getElementById('username-confirm-btn');
+        if (usernameConfirmBtn) {
+            // preventDefault() sur mousedown (pas click) : empêche l'input de perdre le
+            // focus AVANT que le clic n'atteigne ce bouton — sans ça, le handler 'blur'
+            // ci-dessus s'exécute en premier et annule la saisie avant même que le clic
+            // sur la coche n'ait eu la moindre chance d'être traité.
+            usernameConfirmBtn.addEventListener('mousedown', (e) => e.preventDefault());
+            usernameConfirmBtn.addEventListener('click', () => saveUsername());
+        }
     }
 
     // Rafraîchit les quelques éléments générés dynamiquement quand la langue change
