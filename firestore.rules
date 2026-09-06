@@ -132,8 +132,17 @@ service cloud.firestore {
       allow read: if request.auth != null
         && (resource.data.ownerUid == request.auth.uid || request.auth.uid in resource.data.members);
       allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
-      allow update: if request.auth != null
-        && (resource.data.ownerUid == request.auth.uid || resource.data.members[request.auth.uid] == 'edit');
+      allow update: if request.auth != null && (
+        resource.data.ownerUid == request.auth.uid
+        || resource.data.members[request.auth.uid] == 'edit'
+        // "Leave group" (friends.html) : un collaborateur, même en lecture seule, peut se
+        // retirer lui-même de members/memberNames — mais seulement lui-même, et seulement
+        // ces deux champs. Sans cette clause, un collaborateur "view" n'avait aucun moyen
+        // de quitter un voyage partagé (la règle précédente ne l'autorisait qu'en 'edit').
+        || (request.auth.uid in resource.data.members
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberNames'])
+            && !(request.auth.uid in request.resource.data.members))
+      );
       allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
     }
 

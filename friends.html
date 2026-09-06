@@ -181,14 +181,24 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         <div id="convo-empty-state" class="convo-empty-state" data-i18n="selectConversationPrompt">Select a conversation to start chatting</div>
         <div id="convo-panel" class="hidden" style="display:none; flex-direction:column; height:100%; position:relative;">
             <div class="convo-header">
-                <div style="display:flex; align-items:center;">
+                <div style="display:flex; align-items:center; min-width:0;">
                     <button class="convo-back-btn" id="convo-back-btn">←</button>
-                    <div>
+                    <div style="min-width:0;">
                         <div class="convo-header-title" id="convo-title"></div>
                         <div class="convo-header-sub" id="convo-subtitle"></div>
                     </div>
                 </div>
-                <button class="share-trip-btn hidden" id="convo-share-trip-btn" data-i18n="shareTripBtn">Share a trip</button>
+                <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+                    <a href="#" id="convo-view-trip-link" class="hidden" style="font-size:11px; font-weight:700; color:#D42759; white-space:nowrap;" data-i18n="viewItineraryLink">View itinerary</a>
+                    <button class="share-trip-btn hidden" id="convo-share-trip-btn" data-i18n="shareTripBtn">Share a trip</button>
+                    <div class="dropdown-container">
+                        <button id="convo-options-btn" class="hidden" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer; padding:4px 8px; line-height:1;">⋮</button>
+                        <div id="convo-options-menu" class="dropdown-menu hidden" style="right:0; top:32px;">
+                            <a href="#" id="convo-rename-option" class="dropdown-option hidden" data-i18n="renameTripGroupOption">Rename group</a>
+                            <a href="#" id="convo-leave-option" class="dropdown-option hidden" style="color:#D42759;" data-i18n="leaveTripGroupOption">Leave group</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="share-trip-picker" class="share-trip-picker hidden">
                 <div class="share-trip-picker-title" data-i18n="shareTripPickTitle">Choose a trip to share</div>
@@ -226,6 +236,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     let currentConvoFriendUsername = null;
     let currentConvoTripId = null;
     let currentConvoTripName = null;
+    let currentConvoIsTripOwner = false;
 
     async function refreshSidebar() {
         await refreshFriendRequests();
@@ -293,6 +304,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-subtitle').textContent = '';
         document.getElementById('convo-share-trip-btn').classList.remove('hidden');
         document.getElementById('share-trip-picker').classList.add('hidden');
+        document.getElementById('convo-view-trip-link').classList.add('hidden');
+        document.getElementById('convo-options-btn').classList.add('hidden');
+        document.getElementById('convo-options-menu').classList.add('hidden');
         currentConvoId = await window.ensureDmConversation(friendUid, friendUsername);
         await openConvoPanel();
     }
@@ -302,11 +316,18 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         currentConvoTripId = tripId;
         currentConvoTripName = tripName;
         currentConvoFriendUid = null;
+        currentConvoIsTripOwner = isOwner;
         setActiveRow('trip', tripId);
         document.getElementById('convo-title').textContent = tripName;
         document.getElementById('convo-subtitle').textContent = t('chatForTripLabel');
         document.getElementById('convo-share-trip-btn').classList.add('hidden');
         document.getElementById('share-trip-picker').classList.add('hidden');
+        document.getElementById('convo-view-trip-link').href = `trips.html?openTrip=${encodeURIComponent(tripId)}`;
+        document.getElementById('convo-view-trip-link').classList.remove('hidden');
+        document.getElementById('convo-options-btn').classList.remove('hidden');
+        document.getElementById('convo-options-menu').classList.add('hidden');
+        document.getElementById('convo-rename-option').classList.toggle('hidden', !isOwner);
+        document.getElementById('convo-leave-option').classList.toggle('hidden', isOwner);
         currentConvoId = await window.ensureTripConversation(tripId, tripName);
         await openConvoPanel();
     }
@@ -353,6 +374,48 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         await loadAndRenderMessages();
         if (currentConvoType === 'trip') refreshTripGroupsList(); else refreshDmListUI();
     }
+
+    // --- Menu "⋮" d'une conversation de groupe (renommer / quitter) ---
+    document.getElementById('convo-options-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('convo-options-menu').classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('convo-options-menu');
+        const btn = document.getElementById('convo-options-btn');
+        if (!menu.contains(e.target) && e.target !== btn) menu.classList.add('hidden');
+    });
+    document.getElementById('convo-rename-option').addEventListener('click', async (e) => {
+        e.preventDefault();
+        document.getElementById('convo-options-menu').classList.add('hidden');
+        const isFr = currentLang === 'fr';
+        const newName = (window.prompt(isFr ? 'Nouveau nom du voyage :' : 'New trip name:', currentConvoTripName) || '').trim();
+        if (!newName || newName === currentConvoTripName || !currentConvoTripId) return;
+        if (typeof window.saveSharedTrip === 'function') await window.saveSharedTrip(currentConvoTripId, { name: newName });
+        if (typeof window.ensureTripConversation === 'function') await window.ensureTripConversation(currentConvoTripId, newName);
+        currentConvoTripName = newName;
+        document.getElementById('convo-title').textContent = newName;
+        document.getElementById('convo-view-trip-link').href = `trips.html?openTrip=${encodeURIComponent(currentConvoTripId)}`;
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(isFr ? 'Groupe renommé.' : 'Group renamed.');
+        refreshTripGroupsList();
+    });
+    document.getElementById('convo-leave-option').addEventListener('click', async (e) => {
+        e.preventDefault();
+        document.getElementById('convo-options-menu').classList.add('hidden');
+        const isFr = currentLang === 'fr';
+        if (!window.confirm(isFr ? 'Quitter ce groupe de voyage ?' : 'Leave this trip group?')) return;
+        const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+        if (myUid && currentConvoTripId && typeof window.removeTripCollaborator === 'function') {
+            await window.removeTripCollaborator(currentConvoTripId, myUid);
+        }
+        document.getElementById('friends-shell').classList.remove('chat-open');
+        document.getElementById('convo-panel').classList.add('hidden');
+        document.getElementById('convo-panel').style.display = 'none';
+        document.getElementById('convo-empty-state').classList.remove('hidden');
+        currentConvoId = null; currentConvoTripId = null; currentConvoType = null;
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(isFr ? 'Vous avez quitté le groupe.' : 'You left the group.');
+        refreshTripGroupsList();
+    });
 
     // --- Partager un voyage depuis une conversation DM ---
     document.getElementById('convo-share-trip-btn').addEventListener('click', () => {
