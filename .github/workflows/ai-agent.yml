@@ -12,7 +12,7 @@ name: Agent IA — propositions de lieux BTS
 #                                 service > Générer une nouvelle clé privée)
 on:
   schedule:
-    - cron: '0 8 * * *'   # tous les jours à 8h UTC — ajuste selon ta préférence
+    - cron: '0 7 * * *'   # tous les jours à 7h UTC (demande du 06/09/2026) — ajuste selon ta préférence
   workflow_dispatch:       # + bouton "Run workflow" manuel dans l'onglet Actions de GitHub
 
 jobs:
