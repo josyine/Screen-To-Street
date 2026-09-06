@@ -809,11 +809,11 @@ window.searchUsernamesContaining = async function (text, maxResults) {
 };
 
 // Idempotent (merge:true, jamais members/memberNames dans le payload) : peut être
-// rappelée sans risque sur un voyage déjà partagé, ce qui sert d'auto-réparation quand le
-// document `trips/{id}` a été créé de façon incomplète — par exemple par le filet de
-// sécurité de inviteTripCollaborator() ci-dessous (qui ne connaît que ownerUid, jamais
-// name/ownerName) — sans jamais écraser les collaborateurs déjà invités (bug rapporté le
-// 06/09/2026 : un voyage partagé affichait "undefined" et "Shared by ARMY").
+// rappelée sans risque sur un voyage déjà partagé — appelée à chaque partage/invitation
+// (voir sendTripInvite() plus bas), ça auto-répare aussi bien un document jamais créé
+// qu'un document créé de façon incomplète par l'ancien bug de ce nom, sans jamais écraser
+// les collaborateurs déjà présents (bug rapporté le 06/09/2026 : un voyage partagé
+// affichait "undefined" et "Shared by ARMY").
 window.createSharedTrip = async function (trip) {
     const user = auth.currentUser;
     if (!user) return { error: 'not-signed-in' };
@@ -847,33 +847,6 @@ window.loadSharedTrip = async function (tripId) {
     }
 };
 
-// Toujours appelée par le propriétaire du voyage (bouton "Inviter" — visible seulement à
-// lui). `ownerUid` est réécrit ici (valeur inchangée dans le cas normal, le document
-// existe déjà) uniquement pour auto-réparer les voyages dont le document Firestore n'a
-// jamais réellement été créé malgré `trip.isShared === true` côté client (ex : un premier
-// createSharedTrip() resté silencieusement en échec) — sans lui, ce merge sur un document
-// inexistant est classé "create" par les règles Firestore, qui exigent
-// request.resource.data.ownerUid == uid courant ; comme ce champ était absent de cet
-// appel, la création échouait avec "Failed to send the invite" malgré un pseudo valide
-// (bug rapporté le 06/09/2026).
-window.inviteTripCollaborator = async function (tripId, username, role) {
-    const user = auth.currentUser;
-    if (!user) return { error: 'not-signed-in' };
-    const uid = await window.lookupUserByUsername(username);
-    if (!uid) return { error: 'not-found' };
-    try {
-        await setDoc(doc(db, 'trips', tripId), {
-            ownerUid: user.uid,
-            members: { [uid]: role },
-            memberNames: { [uid]: username.trim() }
-        }, { merge: true });
-        return { uid, username: username.trim(), role };
-    } catch (e) {
-        console.warn('Invitation échouée :', e);
-        return { error: 'failed' };
-    }
-};
-
 window.setTripCollaboratorRole = async function (tripId, uid, role) {
     try {
         await setDoc(doc(db, 'trips', tripId), { members: { [uid]: role } }, { merge: true });
@@ -890,6 +863,92 @@ window.removeTripCollaborator = async function (tripId, uid) {
         }, { merge: true });
     } catch (e) {
         console.warn('Retrait du collaborateur échoué :', e);
+    }
+};
+
+// Invitation à rejoindre un voyage partagé (demande du 06/09/2026) : remplace l'ancien
+// inviteTripCollaborator(), qui ajoutait directement à trips/{id}.members — désormais,
+// la personne invitée n'apparaît dans le voyage (donc dans My Itinerary/Explore côté
+// carte, et la liste "Trip groups" de friends.html, qui lisent tous cette même source)
+// qu'après avoir accepté elle-même (voir acceptTripInvite ci-dessous), comme pour une
+// demande d'ami. `tripName`/`tripCoverImage` sont dupliqués sur l'invitation elle-même
+// (plutôt que relus depuis trips/{id} au moment de l'affichage) pour que la personne
+// invitée puisse voir de quel voyage il s'agit sans avoir encore accès en lecture au
+// document trips/{id} lui-même (la règle de lecture exige d'être déjà membre).
+window.sendTripInvite = async function (tripId, tripName, tripCoverImage, username, role) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    const cleanUsername = (username || '').trim();
+    if (!cleanUsername) return { error: 'empty' };
+    const uid = await window.lookupUserByUsername(cleanUsername);
+    if (!uid) return { error: 'not-found' };
+    if (uid === user.uid) return { error: 'self' };
+    try {
+        const tripSnap = await getDoc(doc(db, 'trips', tripId));
+        if (tripSnap.exists() && tripSnap.data().members && tripSnap.data().members[uid]) {
+            return { error: 'already-member' };
+        }
+        const existingSnap = await getDocs(query(collection(db, 'tripInvites'), where('fromUid', '==', user.uid)));
+        let alreadyInvited = false;
+        existingSnap.forEach(d => { if (d.data().toUid === uid && d.data().tripId === String(tripId)) alreadyInvited = true; });
+        if (alreadyInvited) return { error: 'already-invited' };
+        const myUsername = (localStorage.getItem('userName') || '').trim();
+        const ref = doc(collection(db, 'tripInvites'));
+        await setDoc(ref, {
+            tripId: String(tripId), tripName: tripName || '', tripCoverImage: tripCoverImage || '',
+            fromUid: user.uid, fromUsername: myUsername,
+            toUid: uid, toUsername: cleanUsername,
+            role: role || 'view',
+            createdAt: serverTimestamp()
+        });
+        return { success: true, uid, username: cleanUsername, role: role || 'view' };
+    } catch (e) {
+        console.warn('Invitation au voyage échouée :', e);
+        return { error: 'failed' };
+    }
+};
+
+// Reçues ET envoyées, même schéma que listMyFriendRequests() (deux where() séparés).
+window.listMyTripInvites = async function () {
+    const user = auth.currentUser;
+    if (!user) return { incoming: [], outgoing: [] };
+    try {
+        const [incomingSnap, outgoingSnap] = await Promise.all([
+            getDocs(query(collection(db, 'tripInvites'), where('toUid', '==', user.uid))),
+            getDocs(query(collection(db, 'tripInvites'), where('fromUid', '==', user.uid)))
+        ]);
+        const incoming = [], outgoing = [];
+        incomingSnap.forEach(d => incoming.push(Object.assign({ id: d.id }, d.data())));
+        outgoingSnap.forEach(d => outgoing.push(Object.assign({ id: d.id }, d.data())));
+        return { incoming, outgoing };
+    } catch (e) {
+        console.warn('Lecture des invitations de voyage échouée :', e);
+        return { incoming: [], outgoing: [] };
+    }
+};
+
+window.acceptTripInvite = async function (inviteId, tripId, role) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    const myUsername = (localStorage.getItem('userName') || '').trim();
+    try {
+        await setDoc(doc(db, 'trips', tripId), {
+            members: { [user.uid]: role || 'view' },
+            memberNames: { [user.uid]: myUsername }
+        }, { merge: true });
+        await deleteDoc(doc(db, 'tripInvites', inviteId));
+        return { success: true };
+    } catch (e) {
+        console.warn('Acceptation de l\'invitation au voyage échouée :', e);
+        return { error: 'failed' };
+    }
+};
+
+window.declineTripInvite = async function (inviteId) {
+    try {
+        await deleteDoc(doc(db, 'tripInvites', inviteId));
+    } catch (e) {
+        console.warn('Refus de l\'invitation au voyage échoué :', e);
     }
 };
 
@@ -1137,28 +1196,6 @@ window.shareLocationWithFriend = async function (toUid, locationId, locationName
     }
 };
 
-// Même principe que shareLocationWithFriend() mais pour un voyage — appelée APRÈS avoir
-// invité l'ami comme collaborateur (voir window.shareTripFromFriendsPage() dans
-// script.js, qui orchestre les deux) : sans l'invitation, le lien partagé pointerait
-// vers un voyage que l'ami ne peut pas ouvrir (règle Firestore de `trips`).
-window.shareTripWithFriend = async function (toUid, tripId, tripName) {
-    const user = auth.currentUser;
-    if (!user) return { error: 'not-signed-in' };
-    const myUsername = (localStorage.getItem('userName') || '').trim();
-    try {
-        const ref = doc(collection(db, 'friendShares'));
-        await setDoc(ref, {
-            fromUid: user.uid, fromUsername: myUsername,
-            toUid, type: 'trip', tripId: String(tripId), tripName: tripName || '',
-            seen: false, createdAt: serverTimestamp()
-        });
-        return { success: true };
-    } catch (e) {
-        console.warn('Partage du voyage échoué :', e);
-        return { error: 'failed' };
-    }
-};
-
 // Filtrée sur toUid==moi (même raison que listMyFriendRequests() plus haut : un
 // getDocs() sans where() sur toute la collection serait refusé par la règle ci-dessus).
 window.listSharesForMe = async function () {
@@ -1336,8 +1373,8 @@ window.sendLocationShareMessage = async function (convoId, locationId, locationN
         locationName || 'Shared a location');
 };
 
-// Partager un voyage DANS une conversation (menu "+", complète shareTripWithFriend() qui
-// gère l'invitation/la notif indépendamment du contenu du chat).
+// Partager un voyage DANS une conversation (menu "+", simple carte de chat — indépendant
+// de sendTripInvite() qui gère l'invitation à rejoindre le voyage lui-même).
 window.sendTripShareMessage = async function (convoId, tripId, tripName) {
     return window.sendRichMessage(convoId,
         { type: 'trip', sharedTripId: String(tripId), sharedTripName: tripName || '' },
@@ -1420,6 +1457,36 @@ window.loadConversationMeta = async function (convoId) {
     }
 };
 
+// Aperçu d'UNE conversation pour la sidebar de friends.html (demande du 06/09/2026, liste
+// façon messagerie mobile : dernier message + heure relative + "non lu") — regroupe en un
+// seul appel ce que loadConversationMeta() (aperçu) et countUnreadConversations() (juste
+// un compteur global) faisaient séparément, pour ne pas dupliquer la logique de
+// comparaison lastMessageAt/lastReadAt à chaque ligne de la liste.
+window.getConversationPreview = async function (convoId) {
+    const user = auth.currentUser;
+    if (!user) return null;
+    try {
+        const [convoSnap, readSnap] = await Promise.all([
+            getDoc(doc(db, 'conversations', convoId)),
+            getDoc(doc(db, 'conversations', convoId, 'reads', user.uid)),
+        ]);
+        if (!convoSnap.exists()) return null;
+        const data = convoSnap.data();
+        const lastMsgSeconds = (data.lastMessageAt && data.lastMessageAt.seconds) || 0;
+        const readData = readSnap.exists() ? readSnap.data() : null;
+        const readSeconds = (readData && readData.lastReadAt && readData.lastReadAt.seconds) || 0;
+        const mine = data.lastMessageFromUid === user.uid;
+        return {
+            lastMessageText: data.lastMessageText || '',
+            lastMessageAt: lastMsgSeconds || null,
+            mine,
+            unread: !mine && lastMsgSeconds > 0 && lastMsgSeconds > readSeconds
+        };
+    } catch (e) {
+        return null;
+    }
+};
+
 // Compte les CONVERSATIONS ayant au moins un message non lu (pas le nombre total de
 // messages non lus) parmi la liste d'ids donnée — convoIds construite côté script.js à
 // partir de myFriendsList (une conversation DM potentielle par ami) et des voyages
@@ -1453,7 +1520,33 @@ window.countUnreadConversations = async function (convoIds) {
 // connexion/déconnexion), on prévient le reste du site via un évènement custom —
 // c'est le pont qui permet à script.js (non-module) de réagir sans avoir besoin
 // d'imports ES.
+// Auto-répare usernameLogin/{pseudo} (connexion par pseudo — voir resolveLoginEmail plus
+// haut) pour un compte créé/renommé AVANT ce correctif. loadExistingProfileAndRedirect()
+// dans welcome-script.js ne le fait qu'à une connexion FRAÎCHE par e-mail — un compte qui
+// reste connecté (session Firebase persistée, jamais de nouvelle connexion depuis le
+// correctif) ne passe jamais par là, laissant sa connexion par pseudo cassée
+// indéfiniment (bug rapporté le 06/09/2026 : "josyine" existe bien mais la connexion par
+// pseudo échoue). onAuthStateChanged ci-dessous se déclenche à CHAQUE chargement de page
+// avec une session active, correctif ou pas — l'endroit idéal pour ce genre de réparation
+// silencieuse. Ne réécrit rien si l'entrée existe déjà (un getDoc de plus par chargement
+// de page reste négligeable pour un site à ce niveau de trafic).
+async function ensureUsernameLoginIndexed(user) {
+    try {
+        const userSnap = await getDoc(doc(db, 'users', user.uid));
+        if (!userSnap.exists() || !userSnap.data().username) return;
+        const key = userSnap.data().username.toLowerCase().trim();
+        const loginSnap = await getDoc(doc(db, 'usernameLogin', key));
+        if (!loginSnap.exists()) {
+            await setDoc(doc(db, 'usernameLogin', key), { email: user.email }, { merge: true });
+        }
+    } catch (e) {
+        // Pas grave si ça échoue (règles pas encore republiées, etc.) : la connexion par
+        // e-mail reste toujours disponible en secours.
+    }
+}
+
 onAuthStateChanged(auth, (user) => {
     window.firebaseCurrentUser = user || null;
     window.dispatchEvent(new CustomEvent('firebase-ready', { detail: { user: user || null } }));
+    if (user) ensureUsernameLoginIndexed(user);
 });
