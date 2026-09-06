@@ -330,6 +330,20 @@
       .tour-mode-mapwrap { flex: none; height: 38vh; }
       .tour-mode-rail { width: auto; flex: 1; box-shadow: none; border-left: none; border-top: 1px solid #eee; }
   }
+
+  /* Bulle résumé au survol d'un pin (demande du 05/09/2026) : même style que la bulle du
+     Mode Tournée ci-dessus, mais positionnée en absolute par rapport à .map-container
+     (pas fixed) — pas besoin de gérer une fenêtre séparée ici, et pointer-events:none
+     pour qu'elle ne vole jamais le mouseout du marqueur qu'elle survole. Ouverte/fermée/
+     positionnée par addSingleLocationMarker() dans script.js. */
+  .map-hover-tip { position: absolute; z-index: 1500; pointer-events: none; display: none; transform: translate(-50%, calc(-100% - 14px)); }
+  .map-hover-tip.open { display: block; }
+  .map-hover-tip-card { background: #fff; border-radius: 12px; padding: 10px 12px; box-shadow: 0 12px 28px rgba(0,0,0,.22); display: flex; align-items: center; gap: 10px; max-width: 230px; position: relative; }
+  .map-hover-tip-arrow { position: absolute; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); bottom: -5px; left: 50%; margin-left: -6px; box-shadow: 3px 3px 6px rgba(0,0,0,.05); }
+  .map-hover-tip-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .map-hover-tip-icon svg { width: 16px; height: 16px; }
+  .map-hover-tip-title { font-size: 12.5px; font-weight: 800; color: var(--text-main); line-height: 1.3; }
+  .map-hover-tip-meta { font-size: 10.5px; color: var(--muted-text); margin-top: 2px; }
 </style>
 </head>
 <body class="auth-gate-active">
@@ -772,6 +786,16 @@
         </div>
 
         <div id="map"></div>
+        <div class="map-hover-tip" id="map-hover-tip">
+            <div class="map-hover-tip-card">
+                <div class="map-hover-tip-arrow"></div>
+                <div class="map-hover-tip-icon" id="map-hover-tip-icon"></div>
+                <div>
+                    <div class="map-hover-tip-title" id="map-hover-tip-title"></div>
+                    <div class="map-hover-tip-meta" id="map-hover-tip-meta"></div>
+                </div>
+            </div>
+        </div>
         <div id="map-loading-overlay" class="map-loading-overlay hidden">
             <div class="map-loading-spinner"></div>
             <span data-i18n="mapLoading">Loading map…</span>
@@ -937,7 +961,7 @@
                 <button type="button" class="paywall-buy-btn" onclick="window.location.href='payment.html?plan=monthly'" data-i18n="paywallBuyMonthly">Get the Travel Pass</button>
             </div>
             <div class="paywall-card paywall-card-vip">
-                <div class="paywall-vip-badge" data-i18n="paywallVipBadge">⭐️ BEST VALUE</div>
+                <div class="paywall-vip-badge" data-i18n="paywallVipBadge">BEST VALUE</div>
                 <div class="paywall-card-name" data-i18n="paywallVipName">VIP PASS (Lifetime Access)</div>
                 <div class="paywall-card-desc" data-i18n="paywallVipDesc">For true fans. Pay once, enjoy forever.</div>
                 <ul class="paywall-features">
