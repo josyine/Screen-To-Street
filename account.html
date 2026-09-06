@@ -492,7 +492,9 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     const nameInputEl = document.getElementById('user-name-input');
     const changeUsernameLink = document.getElementById('change-username-link');
     const usernameMsgEl = document.getElementById('username-msg');
-    const USERNAME_RE = /^[a-zA-Z0-9_.]{3,20}$/;
+    // Toujours en minuscules (règle du 06/09/2026, jamais de majuscule dans un pseudo) —
+    // voir aussi l'écoute 'input' plus bas qui force la casse au fil de la frappe.
+    const USERNAME_RE = /^[a-z0-9_.]{3,20}$/;
     const USERNAME_COOLDOWN_DAYS = 7;
     let usernameOriginalValue = '';
     let usernameSaveInProgress = false;
@@ -539,7 +541,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 
     async function saveUsername() {
         if (usernameSaveInProgress) return;
-        const newName = nameInputEl.value.trim();
+        const newName = nameInputEl.value.trim().toLowerCase();
         const isFr = currentLang === 'fr';
 
         if (!newName || newName === usernameOriginalValue) {
@@ -616,6 +618,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     // réalité été pris entre-temps par quelqu'un d'autre.
     async function commitUsernameChange(newName) {
         const isFr = currentLang === 'fr';
+        const previousUsername = usernameOriginalValue;
         let claimResult = { success: true };
         if (typeof window.claimUsername === 'function') claimResult = await window.claimUsername(newName);
         // Toute erreur (pas seulement 'taken') doit bloquer : avant ce correctif, un échec
@@ -635,6 +638,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             nameInputEl.focus();
             nameInputEl.select();
             return;
+        }
+
+        if (previousUsername && previousUsername.toLowerCase() !== newName.toLowerCase() && typeof window.releaseUsername === 'function') {
+            await window.releaseUsername(previousUsername);
         }
 
         const now = Date.now();
@@ -694,6 +701,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             nameInputEl.value = usernameOriginalValue;
             showUsernameMsg(null);
             exitUsernameEditMode();
+        });
+        // Force la casse minuscule au fil de la frappe (règle du 06/09/2026) plutôt que
+        // d'attendre la validation pour rejeter une majuscule — préserve la position du
+        // curseur, sinon toLowerCase() replacerait le curseur en fin de champ à chaque
+        // frappe.
+        nameInputEl.addEventListener('input', () => {
+            if (nameInputEl.hasAttribute('readonly')) return;
+            const cursor = nameInputEl.selectionStart;
+            nameInputEl.value = nameInputEl.value.toLowerCase();
+            nameInputEl.setSelectionRange(cursor, cursor);
         });
         nameInputEl.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') { e.preventDefault(); saveUsername(); }
