@@ -21,7 +21,7 @@ import {
     EmailAuthProvider,
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, serverTimestamp, query, where, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -557,7 +557,11 @@ window.claimUsername = async function (username) {
         if (existing.exists() && existing.data().uid !== user.uid) {
             return { success: false, code: 'taken' };
         }
-        await setDoc(doc(db, 'usernames', key), { uid: user.uid }, { merge: true });
+        // `username` (en plus de `uid`) garde la casse d'affichage d'origine (ex:
+        // "Perrine4058") — la clé du document, elle, reste toujours en minuscules pour
+        // que la recherche par préfixe ci-dessous (searchUsernamesByPrefix) ne dépende
+        // pas de la casse tapée par la personne qui cherche.
+        await setDoc(doc(db, 'usernames', key), { uid: user.uid, username: username.trim() }, { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Réservation du pseudo échouée :', e);
@@ -573,6 +577,31 @@ window.lookupUserByUsername = async function (username) {
     } catch (e) {
         console.warn('Recherche du pseudo échouée :', e);
         return null;
+    }
+};
+
+// Auto-complétion par pseudo (partage de voyage, friends.html) : requête par PRÉFIXE sur
+// l'id du document (toujours en minuscules) via une plage [prefix, prefix+'') — la
+// seule forme de recherche texte que Firestore sait faire nativement, pas une vraie
+// recherche "contient" (ça nécessiterait un service de recherche externe, hors de portée
+// d'un site statique sans backend). "Perrine" retrouve donc "Perrine4058" (préfixe), mais
+// pas un pseudo où "Perrine" apparaîtrait au milieu — limite acceptée pour ce site.
+window.searchUsernamesByPrefix = async function (prefix, maxResults) {
+    const key = (prefix || '').toLowerCase().trim();
+    if (!key) return [];
+    try {
+        const q = query(collection(db, 'usernames'),
+            orderBy(documentId()),
+            where(documentId(), '>=', key),
+            where(documentId(), '<', key + ''),
+            limit(maxResults || 6));
+        const snap = await getDocs(q);
+        const results = [];
+        snap.forEach(d => results.push({ uid: d.data().uid, username: d.data().username || d.id }));
+        return results;
+    } catch (e) {
+        console.warn('Recherche de pseudos échouée :', e);
+        return [];
     }
 };
 

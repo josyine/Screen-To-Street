@@ -59,6 +59,9 @@
   .trip-pill-name { font-size: 14px; font-weight: 700; color: #212832; margin-bottom: 4px; padding-right: 46px; pointer-events: none;}
   .trip-pill.active .trip-pill-name { color: #D42759; }
   .trip-pill-meta { font-size: 11px; color: #94a3b8; pointer-events: none;}
+  .trip-pill-avatars { display: flex; margin: 4px 0; pointer-events: none; }
+  .trip-pill-avatar { width: 20px; height: 20px; border-radius: 50%; background: #8B5CF6; color: #fff; font-size: 9.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; margin-left: -6px; pointer-events: auto; cursor: default; }
+  .trip-pill-avatar:first-child { margin-left: 0; }
   /* Partager et supprimer sont tous deux positionnés en absolu dans le coin (comme
      .del-trip-btn l'a toujours fait) : les mettre côte à côte dans un flex wrapper ne
      suffisait pas, .del-trip-btn ignore la mise en page du flux normal et se plaçait

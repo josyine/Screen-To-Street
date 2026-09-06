@@ -5809,9 +5809,12 @@ function ensureShareTripModal() {
             </div>
             <div id="share-trip-buddies"></div>
             <div id="share-trip-error" class="hidden" style="font-size:11px; color:#D42759; margin-bottom:8px;"></div>
-            <div style="display:flex; gap:8px; margin-top:6px;">
-                <input id="share-trip-invite-input" placeholder="${currentLang === 'fr' ? 'Leur pseudo' : 'Their username'}" style="flex:1; border:1.5px solid #cbd5e1; border-radius:100px; padding:10px 14px; font-size:12px; font-family:'Poppins',sans-serif;">
-                <button id="share-trip-invite-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 18px; font-size:12px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="shareTripInvite">Invite</button>
+            <div style="position:relative;">
+                <div style="display:flex; gap:8px; margin-top:6px;">
+                    <input id="share-trip-invite-input" autocomplete="off" placeholder="${currentLang === 'fr' ? 'Leur pseudo' : 'Their username'}" style="flex:1; border:1.5px solid #cbd5e1; border-radius:100px; padding:10px 14px; font-size:12px; font-family:'Poppins',sans-serif;">
+                    <button id="share-trip-invite-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 18px; font-size:12px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="shareTripInvite">Invite</button>
+                </div>
+                <div id="share-trip-suggestions" class="hidden" style="position:absolute; top:calc(100% + 4px); left:0; right:66px; background:#fff; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.12); max-height:180px; overflow-y:auto; z-index:20;"></div>
             </div>
             <div style="font-size:9.5px; color:#94a3b8; text-align:center; margin-top:10px;" data-i18n="shareTripHint">Tap the icon next to a name to switch between edit and view-only access.</div>
         </div>`;
@@ -5830,6 +5833,43 @@ window.openShareTripModal = async function(tripId, event) {
     document.getElementById('share-trip-name').textContent = trip.name;
     modal.classList.remove('hidden');
     await window.renderShareTripBuddies(tripId);
+
+    // Auto-complétion par pseudo (voir window.searchUsernamesByPrefix dans
+    // firebase-init.js) : debounce 250ms pour ne pas interroger Firestore à chaque
+    // frappe, un seul écouteur réutilisé à chaque ouverture de la modale (pas
+    // ré-attaché à chaque fois — ensureShareTripModal() ne recrée le DOM qu'une fois).
+    const inviteInput = document.getElementById('share-trip-invite-input');
+    const suggestionsBox = document.getElementById('share-trip-suggestions');
+    if (inviteInput && !inviteInput.dataset.autocompleteWired) {
+        inviteInput.dataset.autocompleteWired = '1';
+        let debounceTimer = null;
+        inviteInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            const q = inviteInput.value.trim();
+            if (!q) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
+            debounceTimer = setTimeout(async () => {
+                if (typeof window.searchUsernamesByPrefix !== 'function') return;
+                const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+                const matches = (await window.searchUsernamesByPrefix(q, 6)).filter(m => m.uid !== myUid);
+                if (inviteInput.value.trim() !== q) return; // la personne a continué à taper entre-temps
+                if (matches.length === 0) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
+                suggestionsBox.innerHTML = matches.map(m => `<div class="share-suggestion-row" data-username="${escapeHtml(m.username)}" style="padding:9px 14px; font-size:12px; font-weight:600; color:#212832; cursor:pointer;">${escapeHtml(m.username)}</div>`).join('');
+                suggestionsBox.querySelectorAll('.share-suggestion-row').forEach(row => {
+                    row.addEventListener('mouseenter', () => row.style.background = '#FFF7F8');
+                    row.addEventListener('mouseleave', () => row.style.background = '');
+                    row.addEventListener('mousedown', (e) => e.preventDefault()); // évite le blur avant le click
+                    row.addEventListener('click', () => {
+                        inviteInput.value = row.dataset.username;
+                        suggestionsBox.classList.add('hidden');
+                        suggestionsBox.innerHTML = '';
+                        inviteInput.focus();
+                    });
+                });
+                suggestionsBox.classList.remove('hidden');
+            }, 250);
+        });
+        inviteInput.addEventListener('blur', () => setTimeout(() => suggestionsBox.classList.add('hidden'), 150));
+    }
 
     const inviteBtn = document.getElementById('share-trip-invite-btn');
     inviteBtn.onclick = async () => {
@@ -5858,6 +5898,7 @@ window.openShareTripModal = async function(tripId, event) {
             return;
         }
         input.value = '';
+        if (suggestionsBox) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; }
         window.renderShareTripBuddies(tripId);
     };
 };
@@ -5884,6 +5925,11 @@ window.renderShareTripBuddies = async function(tripId) {
             <div style="flex:1;"><div style="font-size:12px; font-weight:700; color:#212832;">${ownerName}</div><div style="font-size:9px; color:#94a3b8;">${creatorLabel}</div></div>
         </div>`;
 
+    // Libellé de rôle explicite (pas seulement un title au survol, invisible sur mobile
+    // et pas assez clair d'après le retour utilisateur) : "Editor — can add/edit places"
+    // vs "Viewer — can only see the itinerary", affiché en permanence sous le nom.
+    const editorLabel = currentLang === 'fr' ? 'Éditeur — peut modifier le voyage' : 'Editor — can edit the trip';
+    const viewerLabel = currentLang === 'fr' ? 'Lecteur — peut seulement consulter' : 'Viewer — can only view';
     Object.keys(members).forEach(uid => {
         const role = members[uid];
         const name = memberNames[uid] || uid;
@@ -5891,9 +5937,12 @@ window.renderShareTripBuddies = async function(tripId) {
         rowsHtml += `
         <div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #f6f4fb;">
             <div style="width:34px; height:34px; border-radius:50%; background:#8B5CF6; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0;">${initial}</div>
-            <div style="flex:1;"><div style="font-size:12px; font-weight:700; color:#212832;">${name}</div></div>
-            <div class="share-role-toggle" data-uid="${uid}" data-role="${role}" title="${role === 'edit' ? (currentLang === 'fr' ? 'Peut modifier' : 'Can edit') : (currentLang === 'fr' ? 'Lecture seule' : 'View only')}" style="width:28px; height:28px; border-radius:50%; background:${role === 'edit' ? '#FCE7F0' : '#f1f5f9'}; display:flex; align-items:center; justify-content:center; cursor:pointer;">${role === 'edit' ? editIconSvg : viewIconSvg}</div>
-            <div class="share-remove-btn" data-uid="${uid}" title="${currentLang === 'fr' ? 'Retirer' : 'Remove'}" style="width:20px; height:20px; border-radius:50%; color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; font-weight:700;">&times;</div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size:12px; font-weight:700; color:#212832;">${name}</div>
+                <div style="font-size:9.5px; color:#94a3b8;">${role === 'edit' ? editorLabel : viewerLabel}</div>
+            </div>
+            <div class="share-role-toggle" data-uid="${uid}" data-role="${role}" title="${currentLang === 'fr' ? 'Cliquer pour basculer entre éditeur et lecteur' : 'Click to switch between editor and viewer'}" style="width:28px; height:28px; border-radius:50%; background:${role === 'edit' ? '#FCE7F0' : '#f1f5f9'}; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">${role === 'edit' ? editIconSvg : viewIconSvg}</div>
+            <div class="share-remove-btn" data-uid="${uid}" title="${currentLang === 'fr' ? 'Retirer' : 'Remove'}" style="width:20px; height:20px; border-radius:50%; color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; font-weight:700; flex-shrink:0;">&times;</div>
         </div>`;
     });
 
@@ -5999,9 +6048,29 @@ window.renderTripsSidebar = function() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
             </div>
             <div class="del-trip-btn" onclick="openDeleteModal('${t.id}', event)" title="Delete trip">✕</div>
+            ${t.isShared ? `<div class="trip-pill-avatars" data-trip-id="${t.id}"></div>` : ''}
             <div class="trip-pill-meta">${dateStr} &middot; ${totalLocs} locations</div>
         `;
         listContainer.appendChild(pill);
+    });
+
+    // Avatars des collaborateurs sous le nom de chaque voyage partagé (t.isShared) —
+    // en passe async SÉPARÉE du rendu synchrone ci-dessus (une requête Firestore par
+    // voyage partagé, jamais bloquant pour le premier affichage de la liste). Le survol
+    // d'un avatar affiche le pseudo via l'attribut title natif.
+    document.querySelectorAll('.trip-pill-avatars').forEach(async (container) => {
+        const tripId = container.dataset.tripId;
+        if (typeof window.loadSharedTrip !== 'function') return;
+        const shared = await window.loadSharedTrip(tripId);
+        if (!shared || !shared.members) return;
+        const memberNames = shared.memberNames || {};
+        const uids = Object.keys(shared.members);
+        if (uids.length === 0) return;
+        container.innerHTML = uids.map(uid => {
+            const name = memberNames[uid] || uid;
+            const initial = name.trim().charAt(0).toUpperCase();
+            return `<div class="trip-pill-avatar" title="${escapeHtml(name)}">${escapeHtml(initial)}</div>`;
+        }).join('');
     });
 
     // Voyages que d'AUTRES personnes ont partagés avec ce compte (jamais dans myTrips —
