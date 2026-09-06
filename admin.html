@@ -25,6 +25,7 @@ body{background:#E7E9EC;padding:0;min-height:100vh;height:auto;display:block;ove
 
 .page{max-width:820px;margin:0 auto;padding:32px 20px 80px;}
 h1{font-size:22px;color:#212832;margin-bottom:6px;}
+.submissions-count{font-size:16px;font-weight:600;color:#D42759;}
 .sub{font-size:13px;color:#64748b;margin-bottom:28px;}
 
 .state-box{background:#fff;border:1px solid #ECE7F3;border-radius:16px;padding:40px;text-align:center;color:#64748b;font-size:14px;}
@@ -66,7 +67,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 </div>
 
 <div class="page">
-    <h1>Location submissions</h1>
+    <h1>Location submissions <span id="submissions-count" class="submissions-count hidden"></span></h1>
     <p class="sub">New locations and corrections proposed for review — nothing here is visible on the site until approved.</p>
 
     <div id="loading-state" class="state-box">Checking access…</div>
@@ -193,9 +194,17 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
     async function loadSubmissions() {
         const listEl = document.getElementById('submissions-list');
+        // Pas de limite ici : window.listPendingSubmissions() (firebase-init.js) interroge
+        // Firestore sans `limit()`, donc TOUTES les soumissions en attente sont déjà
+        // chargées, quel que soit leur nombre — seul ce compteur manquait pour le voir.
         const submissions = await window.listPendingSubmissions();
         listEl.innerHTML = '';
         document.getElementById('empty-state').classList.toggle('hidden', submissions.length > 0);
+        const countEl = document.getElementById('submissions-count');
+        if (countEl) {
+            countEl.textContent = submissions.length > 0 ? `(${submissions.length})` : '';
+            countEl.classList.toggle('hidden', submissions.length === 0);
+        }
         submissions.forEach(sub => listEl.appendChild(renderCard(sub)));
     }
 
