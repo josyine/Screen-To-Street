@@ -1080,6 +1080,20 @@ window.addEventListener('firebase-ready', async (e) => {
     const user = e.detail && e.detail.user;
     if (!user) return; // visiteur non connecté : on garde les données locales telles quelles
 
+    // Icônes "Amis" et "Admin" du header : présentes en HTML (masquées par défaut via la
+    // classe .hidden) sur TOUTES les pages qui incluent ce script — un seul endroit pour
+    // les afficher/rafraîchir plutôt qu'un bout de JS dupliqué par page. Idempotent : ne
+    // fait rien sur une page qui n'a pas ces boutons dans son HTML (ex: page de login).
+    const friendIconBtn = document.getElementById('friend-icon-btn');
+    if (friendIconBtn) {
+        friendIconBtn.classList.remove('hidden');
+        if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
+    }
+    const adminShortcutBtn = document.getElementById('admin-shortcut-btn');
+    if (adminShortcutBtn && typeof window.isCurrentUserAdmin === 'function' && await window.isCurrentUserAdmin()) {
+        adminShortcutBtn.classList.remove('hidden');
+    }
+
     // Voyages partagés par d'autres utilisateurs (voir listSharedTripsForMe() dans
     // firebase-init.js) : chargés une fois par page trips.html, indépendamment des
     // propres voyages de la personne (cloudData.myTrips ci-dessous), puisqu'il s'agit

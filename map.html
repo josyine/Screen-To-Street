@@ -1199,21 +1199,11 @@
 
         const user = e.detail && e.detail.user;
 
-        // Bouton "Location submissions" du header : affiché uniquement pour un compte
-        // reconnu administrateur (document admins/{uid}, voir isCurrentUserAdmin() dans
-        // firebase-init.js) — reste cachée (classe .hidden déjà posée dans le HTML) pour
-        // tout le monde d'autre, y compris un visiteur non connecté.
-        if (typeof window.isCurrentUserAdmin === 'function') {
-            const adminBtn = document.getElementById('admin-shortcut-btn');
-            if (adminBtn && await window.isCurrentUserAdmin()) adminBtn.classList.remove('hidden');
-        }
-
-        // Icône "Amis" (badge unifié messages/partages) + bouton "Partager" sur la fiche
-        // lieu : uniquement pour un compte réel.
+        // Icônes "Amis"/"Admin" du header : affichées et rafraîchies depuis le listener
+        // global 'firebase-ready' de script.js (partagé par toutes les pages) — rien à
+        // faire ici pour elles. Bouton "Partager" sur la fiche lieu : spécifique à
+        // map.html, reste géré ici.
         if (user) {
-            const friendIconBtn = document.getElementById('friend-icon-btn');
-            if (friendIconBtn) friendIconBtn.classList.remove('hidden');
-            if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
             const shareContainer = document.getElementById('share-location-container');
             if (shareContainer) shareContainer.classList.remove('hidden');
         }
