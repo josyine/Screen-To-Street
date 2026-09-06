@@ -16,7 +16,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .hero-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; background: linear-gradient(135deg, #F5F3FC, #E3DEF5, #D8CFF0, #E3DEF5); background-size: 200% 200%; animation: gradientShift 10s ease infinite; }
 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 1000; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
+.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 2500; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
 .brand-text { font-size: 19px; font-weight: 700; color: #2E3644; line-height: 1.2; }
 .universal-icons { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; gap: 9px; align-items: center; }
 .dropdown-container { position: relative; display: inline-block; }
@@ -83,18 +83,27 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .share-trip-already-tag { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: #94a3b8; background: #f1f5f9; padding: 3px 7px; border-radius: 100px; flex-shrink: 0; }
 
 @media (max-width: 760px) {
-  .universal-logo { top: 14px; left: 14px; gap: 8px; }
+  /* env(safe-area-inset-top) : sur un appareil à encoche (iPhone notch/Dynamic Island),
+     "top: 14px" seul plaçait le logo et les icônes partiellement sous l'encoche — d'où le
+     header rogné signalé, aussi bien sur la liste que dans une conversation ouverte
+     (qui démarre juste sous ce même header fixe). Sans encoche, l'inset vaut 0 et rien ne
+     change par rapport à avant. */
+  .universal-logo { top: calc(14px + env(safe-area-inset-top)); left: 14px; gap: 8px; }
   .universal-logo svg { width: 32px; height: 32px; }
   .universal-logo .tagline, .universal-logo .brand-text { display: none; }
-  .universal-icons { top: 14px; right: 14px; gap: 6px; }
+  .universal-icons { top: calc(14px + env(safe-area-inset-top)); right: 14px; gap: 6px; }
   .header-icon-btn { width: 36px; height: 36px; }
-  .friends-page { padding: 74px 0 0 0; }
+  .friends-page { padding: calc(74px + env(safe-area-inset-top)) 0 0 0; }
   .friends-shell { border-radius: 0; max-width: 100%; }
   .friends-sidebar { width: 100%; border-right: none; }
   .friends-main { display: none; }
   .friends-shell.chat-open .friends-sidebar { display: none; }
   .friends-shell.chat-open .friends-main { display: flex; }
   .convo-back-btn { display: inline-block; }
+  /* Un champ texte avec une taille de police < 16px déclenche un zoom automatique à la
+     mise au point sur iOS Safari (comportement du navigateur, pas un bug de mise en page)
+     — c'est le "ça zoom sur le message" signalé en tapant dans le champ de saisie. */
+  .friend-add-row input, .convo-input-row input { font-size: 16px; }
 }
 </style>
 <script>
