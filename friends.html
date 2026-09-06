@@ -74,8 +74,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .share-trip-btn { background: transparent; border: 1.5px solid #cbd5e1; color: #64748b; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 100px; cursor: pointer; font-family: 'Poppins', sans-serif; white-space: nowrap; }
 .share-trip-picker { position: absolute; top: 56px; right: 22px; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.12); padding: 8px; min-width: 220px; z-index: 20; }
 .share-trip-picker-title { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; padding: 6px 10px; }
-.share-trip-option { padding: 9px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #212832; cursor: pointer; }
+.share-trip-option { padding: 9px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #212832; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .share-trip-option:hover { background: #FFF7F8; color: #D42759; }
+.share-trip-already-tag { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: #94a3b8; background: #f1f5f9; padding: 3px 7px; border-radius: 100px; flex-shrink: 0; }
 
 @media (max-width: 760px) {
   .universal-logo { top: 14px; left: 14px; gap: 8px; }
@@ -418,13 +419,35 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     });
 
     // --- Partager un voyage depuis une conversation DM ---
-    document.getElementById('convo-share-trip-btn').addEventListener('click', () => {
+    document.getElementById('convo-share-trip-btn').addEventListener('click', async () => {
         const picker = document.getElementById('share-trip-picker');
         const optsEl = document.getElementById('share-trip-options');
         const emptyEl = document.getElementById('share-trip-empty');
+        const wasHidden = picker.classList.contains('hidden');
+        if (!wasHidden) { picker.classList.add('hidden'); return; }
         const myTrips = getMyTripsList();
+        const isFr = currentLang === 'fr';
         optsEl.innerHTML = myTrips.map(trip => `<div class="share-trip-option" data-trip-id="${trip.id}">${escapeHtml(trip.name)}</div>`).join('');
         emptyEl.classList.toggle('hidden', myTrips.length > 0);
+        picker.classList.remove('hidden');
+        // Déjà partagé avec CE destinataire ? Vérifié en interrogeant trips/{id} (seuls
+        // les voyages déjà partagés — trip.isShared — ont un document là-bas ; les
+        // autres ne sont testés pour rien). Affiché après coup (le picker s'ouvre tout de
+        // suite avec la liste simple) pour ne jamais bloquer l'ouverture sur ces requêtes.
+        if (currentConvoFriendUid && typeof window.loadSharedTrip === 'function') {
+            const sharedOnes = myTrips.filter(t => t.isShared);
+            const results = await Promise.all(sharedOnes.map(t => window.loadSharedTrip(t.id)));
+            sharedOnes.forEach((trip, i) => {
+                const data = results[i];
+                if (data && data.members && data.members[currentConvoFriendUid]) {
+                    const optEl = optsEl.querySelector(`.share-trip-option[data-trip-id="${trip.id}"]`);
+                    if (optEl) {
+                        optEl.classList.add('share-trip-option-already');
+                        optEl.innerHTML = `${escapeHtml(trip.name)} <span class="share-trip-already-tag">${isFr ? 'déjà partagé' : 'already shared'}</span>`;
+                    }
+                }
+            });
+        }
         optsEl.querySelectorAll('.share-trip-option').forEach(opt => {
             opt.addEventListener('click', async () => {
                 const trip = myTrips.find(t => t.id === opt.dataset.tripId);
@@ -434,7 +457,6 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                 await refreshTripGroupsList();
             });
         });
-        picker.classList.toggle('hidden');
     });
     document.addEventListener('click', (e) => {
         const picker = document.getElementById('share-trip-picker');
