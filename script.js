@@ -746,7 +746,26 @@ let createTripPendingInvitees = [];
 // firebase-init.js n'est pas chargé sur la page (ex: map-destinations.html) ou si
 // personne n'est connecté, cette fonction ne fait rien de plus — la wishlist reste
 // purement locale, exactement comme avant.
+function wishlistIdSet(wList) {
+    return new Set((wList || []).map(w => (w && typeof w === 'object') ? w.id : w));
+}
+// Dernier état connu (dédupliqué par id) de la wishlist, utilisé pour ne compter dans
+// l'agrégat public `locationStats.wishlistCount` (voir plus bas) qu'un lieu qui vient
+// RÉELLEMENT d'entrer ou de sortir de la wishlist — pas chaque écriture localStorage,
+// puisqu'un même lieu peut avoir plusieurs entrées (une par voyage, voir trips.html).
+let lastSyncedWishlistIds = wishlistIdSet(getWishlistLocs());
+
+function applyWishlistCountDeltas(wList) {
+    const newIds = wishlistIdSet(wList);
+    if (typeof window.updateLocationWishlistCount === 'function') {
+        newIds.forEach(id => { if (!lastSyncedWishlistIds.has(id)) window.updateLocationWishlistCount(id, 1); });
+        lastSyncedWishlistIds.forEach(id => { if (!newIds.has(id)) window.updateLocationWishlistCount(id, -1); });
+    }
+    lastSyncedWishlistIds = newIds;
+}
+
 function syncWishlist(wList) {
+    applyWishlistCountDeltas(wList);
     if (typeof window.syncUserData === 'function') {
         window.syncUserData({ wishlistLocs: wList });
     }
@@ -770,31 +789,197 @@ window.normalizeVisitEntry = normalizeVisitEntry;
 // menu de gauche : moyenne partagée entre TOUS les utilisateurs du site (pas seulement
 // les visites de la personne connectée), agrégée côté Firestore dans la collection
 // publique `locationRatings` (voir firebase-init.js — nécessite une règle Firestore
-// dédiée, non déployable depuis ce fichier). Cache local {locationId: {sum, count}},
-// rempli une fois au chargement (voir le listener "firebase-ready" de map.html) puis
-// mis à jour de façon optimiste dès qu'on enregistre/modifie/retire une note, pour un
-// affichage immédiat sans attendre l'aller-retour réseau.
+// dédiée, non déployable depuis ce fichier). Cache local {locationId: {sum, count,
+// foodSum, foodCount, valueSum, valueCount}} (les 4 derniers champs uniquement pour les
+// lieux Cafe/Restaurants, voir FOOD_RELATED_CATEGORIES), rempli une fois au chargement
+// (voir le listener "firebase-ready" de map.html) puis mis à jour de façon optimiste dès
+// qu'on enregistre/modifie/retire une note, pour un affichage immédiat sans attendre
+// l'aller-retour réseau.
 let communityRatings = {};
+const RATING_DIMENSION_KEYS = ['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount'];
 
 function communityRatingAvg(locId) {
     const r = communityRatings[locId];
     if (!r || !r.count) return null;
     return r.sum / r.count;
 }
+function communityDimensionAvg(locId, dim) {
+    const r = communityRatings[locId];
+    const sumKey = dim + 'Sum', countKey = dim + 'Count';
+    if (!r || !r[countKey]) return null;
+    return r[sumKey] / r[countKey];
+}
+window.communityDimensionAvg = communityDimensionAvg;
+
+// Statistique "X% des utilisateurs ont ajouté ce lieu à leur wishlist" (onglet Info de la
+// fiche détail) : locationWishlistStats = {locationId: {wishlistCount}}, siteTotalUsers =
+// nombre total de comptes créés sur le site (voir loadAllLocationStats()/loadSiteStats()
+// dans firebase-init.js). Retourne null tant que ces données ne sont pas encore chargées,
+// ou si le site compte trop peu de comptes pour qu'un pourcentage soit représentatif.
+let locationWishlistStats = {};
+let siteTotalUsers = 0;
+const MIN_USERS_FOR_WISHLIST_STAT = 5;
+window.setLocationWishlistStats = function(stats, totalUsers) {
+    locationWishlistStats = stats || {};
+    siteTotalUsers = totalUsers || 0;
+};
+function wishlistPercentForLocation(locId) {
+    if (siteTotalUsers < MIN_USERS_FOR_WISHLIST_STAT) return null;
+    const count = (locationWishlistStats[locId] && locationWishlistStats[locId].wishlistCount) || 0;
+    if (count <= 0) return null;
+    return Math.min(100, Math.round((count / siteTotalUsers) * 100));
+}
+window.wishlistPercentForLocation = wishlistPercentForLocation;
+
+// Amis : liste de {uid, username} + lieux visités par chacun ({uid: [locationIds]}),
+// chargées une seule fois au login (voir le listener "firebase-ready" de map.html) puis
+// consultées à chaque ouverture de fiche lieu — voir friendsWhoVisited() plus bas.
+let myFriendsList = [];
+let friendVisitsCache = {};
+window.setFriendsData = function(friends, visits) {
+    myFriendsList = friends || [];
+    friendVisitsCache = visits || {};
+};
+function friendsWhoVisited(locId) {
+    return myFriendsList.filter(f => (friendVisitsCache[f.uid] || []).includes(locId));
+}
+window.friendsWhoVisited = friendsWhoVisited;
+
+// Lieux partagés par des amis (cloche du header, voir map.html) : rechargé au login
+// puis après chaque action (partage envoyé, lieu ouvert depuis la liste).
+window.refreshFriendShares = async function() {
+    if (typeof window.listSharesForMe !== 'function') return;
+    const shares = await window.listSharesForMe();
+    const container = document.getElementById('friend-shares-container');
+    const badge = document.getElementById('friend-shares-badge');
+    const list = document.getElementById('friend-shares-list');
+    const empty = document.getElementById('friend-shares-empty');
+    if (!container) return;
+    container.classList.remove('hidden');
+    shares.sort((a, b) => (a.seen === b.seen) ? 0 : (a.seen ? 1 : -1));
+    const unseenCount = shares.filter(s => !s.seen).length;
+    if (badge) {
+        badge.textContent = unseenCount;
+        badge.classList.toggle('hidden', unseenCount === 0);
+    }
+    if (list) {
+        list.innerHTML = shares.map(s => `<div class="friend-row friend-share-row" style="cursor:pointer;" data-share-id="${s.id}" data-location-id="${s.locationId}">
+            <span>${s.seen ? '' : '🔵 '}${t('sharedByLabel').replace('{username}', s.fromUsername).replace('{location}', s.locationName)}</span>
+        </div>`).join('');
+    }
+    if (empty) empty.classList.toggle('hidden', shares.length > 0);
+};
+
+const friendSharesListEl = document.getElementById('friend-shares-list');
+if (friendSharesListEl) {
+    friendSharesListEl.addEventListener('click', (e) => {
+        const row = e.target.closest('.friend-share-row');
+        if (!row) return;
+        const locId = Number(row.getAttribute('data-location-id'));
+        const shareId = row.getAttribute('data-share-id');
+        if (typeof window.markShareSeen === 'function') window.markShareSeen(shareId);
+        const menu = document.getElementById('friend-shares-menu');
+        if (menu) menu.classList.add('hidden');
+        const loc = celebLocations.find(l => l.id === locId);
+        if (loc && map) map.flyTo([loc.lat, loc.lng], 16);
+        if (typeof window.openDetailsPanel === 'function') window.openDetailsPanel(locId);
+        window.refreshFriendShares();
+    });
+}
+
+// Bouton "Partager" de la fiche lieu : liste les amis (myFriendsList, déjà chargée au
+// login, voir plus haut) plutôt qu'un aller-retour réseau à chaque ouverture du menu.
+const shareLocationBtn = document.getElementById('share-location-btn');
+if (shareLocationBtn) {
+    shareLocationBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const menu = document.getElementById('share-location-menu');
+        const list = document.getElementById('share-friend-list');
+        const empty = document.getElementById('share-no-friends');
+        if (!menu || !list) return;
+        const willOpen = menu.classList.contains('hidden');
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
+        if (!willOpen) return;
+        list.innerHTML = myFriendsList.map(f => `<div class="dropdown-option share-friend-option" data-friend-uid="${f.uid}">${f.username}</div>`).join('');
+        if (empty) empty.classList.toggle('hidden', myFriendsList.length > 0);
+        menu.classList.remove('hidden');
+    });
+}
+const shareFriendListEl = document.getElementById('share-friend-list');
+if (shareFriendListEl) {
+    shareFriendListEl.addEventListener('click', async (e) => {
+        const opt = e.target.closest('.share-friend-option');
+        if (!opt || typeof window.shareLocationWithFriend !== 'function') return;
+        const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
+        if (!loc) return;
+        await window.shareLocationWithFriend(opt.getAttribute('data-friend-uid'), loc.id, loc.name);
+        const menu = document.getElementById('share-location-menu');
+        if (menu) menu.classList.add('hidden');
+        if (shareLocationBtn) {
+            shareLocationBtn.classList.add('share-sent-flash');
+            setTimeout(() => shareLocationBtn.classList.remove('share-sent-flash'), 900);
+        }
+    });
+}
 
 window.setCommunityRatings = function(ratings) {
     communityRatings = ratings || {};
 };
 
-// Applique un delta au cache local (affichage immédiat) ET le persiste sur Firestore
-// pour que les autres utilisateurs le voient aussi à leur prochain chargement.
-function applyCommunityRatingDelta(locId, sumDelta, countDelta) {
-    if (!sumDelta && !countDelta) return;
-    const cur = communityRatings[locId] || { sum: 0, count: 0 };
-    communityRatings[locId] = { sum: cur.sum + sumDelta, count: Math.max(0, cur.count + countDelta) };
+// Applique un delta au cache local (affichage immédiat) ET le persiste sur Firestore pour
+// que les autres utilisateurs le voient aussi à leur prochain chargement. `deltas` ne
+// contient que les clés à modifier parmi RATING_DIMENSION_KEYS (ex: {sum:4, count:1} pour
+// une nouvelle visite sans note food/valeur).
+function applyCommunityRatingDelta(locId, deltas) {
+    if (!deltas || RATING_DIMENSION_KEYS.every(k => !deltas[k])) return;
+    const cur = communityRatings[locId] || { sum: 0, count: 0, foodSum: 0, foodCount: 0, valueSum: 0, valueCount: 0 };
+    const next = Object.assign({}, cur);
+    RATING_DIMENSION_KEYS.forEach(k => { if (deltas[k]) next[k] = (cur[k] || 0) + deltas[k]; });
+    ['count', 'foodCount', 'valueCount'].forEach(k => { if (next[k] < 0) next[k] = 0; });
+    communityRatings[locId] = next;
     if (typeof window.updateLocationRatingAggregate === 'function') {
-        window.updateLocationRatingAggregate(locId, sumDelta, countDelta);
+        window.updateLocationRatingAggregate(locId, deltas);
     }
+}
+
+// Calcule les deltas à appliquer pour un visit donné, selon qu'il s'agit d'une NOUVELLE
+// visite (isNewVisit=true, le compte de chaque dimension présente augmente de 1) ou de la
+// MODIFICATION d'une visite existante (isNewVisit=false, seule la différence avec
+// l'ancienne valeur compte, le compte ne change que si une dimension apparaît/disparaît —
+// ex: la catégorie du lieu a changé entre-temps).
+function buildRatingDeltas(newVisit, isNewVisit, oldVisit) {
+    const deltas = {};
+    if (isNewVisit) {
+        deltas.sum = newVisit.rating || 0;
+        deltas.count = 1;
+        if (newVisit.ratingFood != null) { deltas.foodSum = newVisit.ratingFood; deltas.foodCount = 1; }
+        if (newVisit.ratingValue != null) { deltas.valueSum = newVisit.ratingValue; deltas.valueCount = 1; }
+    } else {
+        const old = oldVisit || {};
+        deltas.sum = (newVisit.rating || 0) - (old.rating || 0);
+        if (newVisit.ratingFood != null || old.ratingFood != null) {
+            deltas.foodSum = (newVisit.ratingFood || 0) - (old.ratingFood || 0);
+            deltas.foodCount = (newVisit.ratingFood != null ? 1 : 0) - (old.ratingFood != null ? 1 : 0);
+        }
+        if (newVisit.ratingValue != null || old.ratingValue != null) {
+            deltas.valueSum = (newVisit.ratingValue || 0) - (old.ratingValue || 0);
+            deltas.valueCount = (newVisit.ratingValue != null ? 1 : 0) - (old.ratingValue != null ? 1 : 0);
+        }
+    }
+    return deltas;
+}
+
+// Deltas (négatifs) à appliquer pour retirer la contribution d'une ou plusieurs visites
+// déjà comptées — un seul visit ([removed]) pour la suppression d'une visite précise, ou
+// toutes les visites d'un lieu quand on décoche entièrement "J'ai visité ce lieu".
+function buildRemovalDeltas(visits) {
+    const deltas = { sum: 0, count: 0, foodSum: 0, foodCount: 0, valueSum: 0, valueCount: 0 };
+    (visits || []).forEach(v => {
+        if (v.rating > 0) { deltas.sum -= v.rating; deltas.count -= 1; }
+        if (v.ratingFood != null) { deltas.foodSum -= v.ratingFood; deltas.foodCount -= 1; }
+        if (v.ratingValue != null) { deltas.valueSum -= v.ratingValue; deltas.valueCount -= 1; }
+    });
+    return deltas;
 }
 window.applyCommunityRatingDelta = applyCommunityRatingDelta;
 
@@ -814,6 +999,11 @@ window.refreshLocationRating = function(locId) {
 function syncVisited(vList) {
     if (typeof window.syncUserData === 'function') {
         window.syncUserData({ visitedLocs: vList });
+    }
+    // Miroir minimal pour la fonctionnalité "amis" (voir syncFriendVisits() dans
+    // firebase-init.js) : uniquement la liste des ids, jamais les dates/notes/photos.
+    if (typeof window.syncFriendVisits === 'function') {
+        window.syncFriendVisits(vList.map(v => (v && typeof v === 'object') ? v.id : v));
     }
 }
 window.syncVisited = syncVisited;
@@ -848,6 +1038,9 @@ window.addEventListener('firebase-ready', async (e) => {
     if (cloudData) {
         if (Array.isArray(cloudData.wishlistLocs)) {
             localStorage.setItem('wishlistLocs', JSON.stringify(cloudData.wishlistLocs));
+            // Recale la référence locale sur l'état cloud SANS déclencher de delta sur
+            // l'agrégat public (ce n'est pas un clic sur "wishlist", juste un chargement).
+            lastSyncedWishlistIds = wishlistIdSet(cloudData.wishlistLocs);
 
             // Rafraîchit les affichages déjà construits qui dépendent de la wishlist.
             // skipFitBounds=true (comme dans map.html) : ce rafraîchissement arrive ici de
@@ -1093,7 +1286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    ['lang-btn', 'profile-btn', 'cart-btn'].forEach(id => {
+    ['lang-btn', 'profile-btn', 'cart-btn', 'friend-shares-btn'].forEach(id => {
         const btn = document.getElementById(id);
         if(btn) btn.addEventListener('click', (e) => {
             if(id === 'cart-btn') return; 
@@ -2252,11 +2445,12 @@ const translations = {
         itiTitle: "Auto-Itinerary Generator", itiDesc: "Select a group, a country, and how many days you stay.", itiCreateBtn: "Create My Guide", itiCatLabel: "Categories (optional, select multiple)", itiExport: "Export Guide as PDF", itiSave: "Save to My Trips",
         noTripsFound: "No trips found.", selectTripToView: "Select a trip to view", deselectTripOption: "— No trip selected —", locationsWord: "location", locationsWordPlural: "locations",
         addAnotherVisit: "Add another visit",
-        tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Watch:", lOfficialLink: "Official Link", lWatchEpi: "Watch the Episode", lPractical: "Practical information & access", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
+        tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "Visited by: {names}", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Watch:", lOfficialLink: "Official Link", lWatchEpi: "Watch the Episode", lPractical: "Practical information & access", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
         backToMap: "← Back to Map", moreDetails: "More details", openInMaps: "Open in Google Maps", detailsLabel: "Details", aboutPlaceLabel: "About this place",
         accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address",
         accCountryLabel: "Country you're interested in", accCountryPlaceholder: "Select a country (optional)",
         accActivityTitle: "Your activity", accTrips: "Trips", accVisited: "Visited", accWishlist: "Wishlist", accPasses: "Passes & billing",
+        friendsTitle: "Friends", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}",
         accEditBtn: "Edit Profile", accSaveBtn: "Save Changes", accSaved: "✓ Saved Successfully", accNoPasses: "No active passes", accAmountPaid: "Amount paid", accGuestUsername: "Not signed in",
         accDangerZone: "Danger zone",
         accDeleteConfirmTitle: "Are you sure you want to delete your account?",
@@ -2315,11 +2509,12 @@ const translations = {
         itiTitle: "Générateur Itinéraire", itiDesc: "Sélectionnez un groupe, un pays, et le nombre de jours.", itiCreateBtn: "Créer mon guide", itiCatLabel: "Catégories (facultatif, sélection multiple)", itiExport: "Exporter en PDF", itiSave: "Sauvegarder dans My Trips",
         noTripsFound: "Aucun voyage trouvé.", selectTripToView: "Sélectionner un voyage", deselectTripOption: "— Aucun voyage sélectionné —", locationsWord: "lieu", locationsWordPlural: "lieux",
         addAnotherVisit: "Ajouter une autre visite",
-        tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Voir :", lOfficialLink: "Lien officiel", lWatchEpi: "Regarder l'épisode", lPractical: "Informations pratiques & accès", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
+        tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "Visité par : {names}", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Voir :", lOfficialLink: "Lien officiel", lWatchEpi: "Regarder l'épisode", lPractical: "Informations pratiques & accès", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
         backToMap: "← Retour à la carte", moreDetails: "Plus de détails", openInMaps: "Ouvrir dans Google Maps", detailsLabel: "Détails", aboutPlaceLabel: "À propos de ce lieu",
         accTitle: "Votre compte", accChangePhoto: "Changer la photo de profil", accResetPhoto: "Réinitialiser la photo de profil", accNameLabel: "Identifiant", accChangeUsernameHint: "Changer d'identifiant", accEmailLabel: "Adresse e-mail",
         accCountryLabel: "Pays qui vous intéresse", accCountryPlaceholder: "Choisir un pays (optionnel)",
         accActivityTitle: "Votre activité", accTrips: "Voyages", accVisited: "Visités", accWishlist: "Wishlist", accPasses: "Pass et facturation",
+        friendsTitle: "Amis", friendsAddPlaceholder: "Ajouter un ami par pseudo", friendsAddBtn: "Ajouter", friendsRequestsLabel: "Demandes d'ami", friendsListLabel: "Vos amis", friendsEmpty: "Pas encore d'ami — ajoutez-en un par son pseudo ci-dessus.", friendsAccept: "Accepter", friendsDecline: "Refuser", friendsCancel: "Annuler", friendsRemove: "Retirer", friendsErrNotFound: "Aucun utilisateur trouvé avec ce pseudo.", friendsErrSelf: "Vous ne pouvez pas vous ajouter vous-même.", friendsSentLabel: "Envoyée — en attente de réponse", friendsRequestFrom: "{username} souhaite devenir votre ami", shareWithFriendBtn: "Partager", shareNoFriends: "Ajoutez d'abord un ami pour partager des lieux.", sharesEmpty: "Rien n'a encore été partagé avec vous.", sharedByLabel: "{username} a partagé {location}",
         accEditBtn: "Modifier le profil", accSaveBtn: "Enregistrer", accSaved: "✓ Enregistré avec succès", accNoPasses: "Aucun pass actif", accAmountPaid: "Montant payé", accGuestUsername: "Non connecté",
         accDangerZone: "Zone de danger",
         accDeleteConfirmTitle: "Êtes-vous sûr(e) de vouloir supprimer votre compte ?",
@@ -2378,11 +2573,12 @@ const translations = {
         itiTitle: "Generador de Itinerarios", itiDesc: "Selecciona un grupo, un país y cuántos días te quedas.", itiCreateBtn: "Crear mi guía", itiCatLabel: "Categorías (opcional, selección múltiple)", itiExport: "Exportar guía en PDF", itiSave: "Guardar en Mis Viajes",
         noTripsFound: "No se encontraron viajes.", selectTripToView: "Selecciona un viaje para ver", deselectTripOption: "— Ningún viaje seleccionado —", locationsWord: "lugar", locationsWordPlural: "lugares",
         addAnotherVisit: "Añadir otra visita",
-        tabExplore: "Explorar", tabMyItinerary: "Mi Itinerario", yourRating: "Tu valoración", whenDidYouVisit: "¿Cuándo visitaste este lugar?", saveMemory: "Guardar recuerdo", myVisitTab: "Mi Visita", tabReviews: "Reseñas", tabInfo: "Info", tabStory: "Historia", lGroup: "Grupo:", lMembers: "Miembros:", lCountry: "País:", lCity: "Ciudad:", lDate: "Fecha:", lEpisode: "Episodio:", lWatch: "Ver:", lOfficialLink: "Enlace oficial", lWatchEpi: "Ver el episodio", lPractical: "Información práctica y acceso", lAddress: "Dirección", lOpenMap: "Abrir en Google Maps", lStoryPlace: "La historia de este lugar", lStoryBts: "Siguiendo los pasos de BTS", lTipsTitle: "LOS CONSEJOS DE «SCREEN TO STREET»", lHowToGetThere: "Cómo llegar:", memoryNotesLabel: "Tus notas (opcional)", memoryNotesPlaceholder: "¿Qué recuerdas de este lugar?", reviewsCountLabel: "{n} reseñas públicas", reviewsWriteLabel: "Escribe tu reseña", reviewsComposePlaceholder: "Comparte lo que pensaste...", reviewsComposeMakePublic: "Hacer esto público", reviewsComposePost: "Publicar reseña", memoryPhotoLabel: "Añadir una foto (opcional)", memoryPhotoChoose: "Elegir una foto", memoryPhotoRemove: "Quitar", memoryMakePublic: "Hacer pública esta reseña (visible para otros usuarios)", reviewsLoading: "Cargando reseñas…", reviewsEmpty: "Todavía no hay reseñas públicas para este lugar — ¡sé el primero en compartir la tuya desde la pestaña «Mi Visita»!",
+        tabExplore: "Explorar", tabMyItinerary: "Mi Itinerario", yourRating: "Tu valoración", foodQualityRating: "Calidad de la comida", valueForMoneyRating: "Relación calidad-precio", wishlistStat: "El {pct}% de los usuarios añadió este lugar a su lista de deseos", friendsVisitedStat: "Visitado por: {names}", whenDidYouVisit: "¿Cuándo visitaste este lugar?", saveMemory: "Guardar recuerdo", myVisitTab: "Mi Visita", tabReviews: "Reseñas", tabInfo: "Info", tabStory: "Historia", lGroup: "Grupo:", lMembers: "Miembros:", lCountry: "País:", lCity: "Ciudad:", lDate: "Fecha:", lEpisode: "Episodio:", lWatch: "Ver:", lOfficialLink: "Enlace oficial", lWatchEpi: "Ver el episodio", lPractical: "Información práctica y acceso", lAddress: "Dirección", lOpenMap: "Abrir en Google Maps", lStoryPlace: "La historia de este lugar", lStoryBts: "Siguiendo los pasos de BTS", lTipsTitle: "LOS CONSEJOS DE «SCREEN TO STREET»", lHowToGetThere: "Cómo llegar:", memoryNotesLabel: "Tus notas (opcional)", memoryNotesPlaceholder: "¿Qué recuerdas de este lugar?", reviewsCountLabel: "{n} reseñas públicas", reviewsWriteLabel: "Escribe tu reseña", reviewsComposePlaceholder: "Comparte lo que pensaste...", reviewsComposeMakePublic: "Hacer esto público", reviewsComposePost: "Publicar reseña", memoryPhotoLabel: "Añadir una foto (opcional)", memoryPhotoChoose: "Elegir una foto", memoryPhotoRemove: "Quitar", memoryMakePublic: "Hacer pública esta reseña (visible para otros usuarios)", reviewsLoading: "Cargando reseñas…", reviewsEmpty: "Todavía no hay reseñas públicas para este lugar — ¡sé el primero en compartir la tuya desde la pestaña «Mi Visita»!",
         backToMap: "← Volver al mapa", moreDetails: "Más detalles", openInMaps: "Abrir en Google Maps", detailsLabel: "Detalles", aboutPlaceLabel: "Sobre este lugar",
         accTitle: "Tu cuenta", accChangePhoto: "Cambiar foto de perfil", accResetPhoto: "Restablecer foto de perfil", accNameLabel: "Nombre de usuario", accChangeUsernameHint: "Cambiar nombre de usuario", accEmailLabel: "Correo electrónico",
         accCountryLabel: "País que te interesa", accCountryPlaceholder: "Elige un país (opcional)",
         accActivityTitle: "Tu actividad", accTrips: "Viajes", accVisited: "Visitados", accWishlist: "Lista de deseos", accPasses: "Pases y facturación",
+        friendsTitle: "Amigos", friendsAddPlaceholder: "Añadir un amigo por nombre de usuario", friendsAddBtn: "Añadir", friendsRequestsLabel: "Solicitudes de amistad", friendsListLabel: "Tus amigos", friendsEmpty: "Aún no tienes amigos — añade uno por su nombre de usuario arriba.", friendsAccept: "Aceptar", friendsDecline: "Rechazar", friendsCancel: "Cancelar", friendsRemove: "Quitar", friendsErrNotFound: "No se encontró ningún usuario con ese nombre.", friendsErrSelf: "No puedes añadirte a ti mismo.", friendsSentLabel: "Enviada — esperando respuesta", friendsRequestFrom: "{username} quiere ser tu amigo", shareWithFriendBtn: "Compartir", shareNoFriends: "Añade primero un amigo para compartir lugares.", sharesEmpty: "Nadie ha compartido nada contigo todavía.", sharedByLabel: "{username} compartió {location}",
         accEditBtn: "Editar perfil", accSaveBtn: "Guardar cambios", accSaved: "✓ Guardado con éxito", accNoPasses: "Sin pases activos", accAmountPaid: "Importe pagado", accGuestUsername: "No conectado",
         accDangerZone: "Zona de peligro",
         accDeleteConfirmTitle: "¿Seguro que quieres eliminar tu cuenta?",
@@ -2440,11 +2636,12 @@ const translations = {
         itiTitle: "Generatore di Itinerari", itiDesc: "Seleziona un gruppo, un paese e quanti giorni resti.", itiCreateBtn: "Crea la mia guida", itiCatLabel: "Categorie (opzionale, selezione multipla)", itiExport: "Esporta guida in PDF", itiSave: "Salva nei Miei Viaggi",
         noTripsFound: "Nessun viaggio trovato.", selectTripToView: "Seleziona un viaggio da vedere", deselectTripOption: "— Nessun viaggio selezionato —", locationsWord: "luogo", locationsWordPlural: "luoghi",
         addAnotherVisit: "Aggiungi un'altra visita",
-        tabExplore: "Esplora", tabMyItinerary: "Il Mio Itinerario", yourRating: "La tua valutazione", whenDidYouVisit: "Quando hai visitato questo posto?", saveMemory: "Salva ricordo", myVisitTab: "La Mia Visita", tabReviews: "Recensioni", tabInfo: "Info", tabStory: "Storia", lGroup: "Gruppo:", lMembers: "Membri:", lCountry: "Paese:", lCity: "Città:", lDate: "Data:", lEpisode: "Episodio:", lWatch: "Guarda:", lOfficialLink: "Link ufficiale", lWatchEpi: "Guarda l'episodio", lPractical: "Informazioni pratiche e accesso", lAddress: "Indirizzo", lOpenMap: "Apri in Google Maps", lStoryPlace: "La storia di questo posto", lStoryBts: "Sulle orme dei BTS", lTipsTitle: "I CONSIGLI DI «SCREEN TO STREET»", lHowToGetThere: "Come arrivare:", memoryNotesLabel: "Le tue note (facoltativo)", memoryNotesPlaceholder: "Cosa ricordi di questo posto?", reviewsCountLabel: "{n} recensioni pubbliche", reviewsWriteLabel: "Scrivi la tua recensione", reviewsComposePlaceholder: "Condividi cosa ne pensi...", reviewsComposeMakePublic: "Rendi pubblica questa recensione", reviewsComposePost: "Pubblica recensione", memoryPhotoLabel: "Aggiungi una foto (facoltativo)", memoryPhotoChoose: "Scegli una foto", memoryPhotoRemove: "Rimuovi", memoryMakePublic: "Rendi pubblica questa recensione (visibile agli altri utenti)", reviewsLoading: "Caricamento recensioni…", reviewsEmpty: "Ancora nessuna recensione pubblica per questo posto — sii il primo a condividere la tua dalla scheda «La Mia Visita»!",
+        tabExplore: "Esplora", tabMyItinerary: "Il Mio Itinerario", yourRating: "La tua valutazione", foodQualityRating: "Qualità del cibo", valueForMoneyRating: "Rapporto qualità-prezzo", wishlistStat: "Il {pct}% degli utenti ha aggiunto questo posto alla propria wishlist", friendsVisitedStat: "Visitato da: {names}", whenDidYouVisit: "Quando hai visitato questo posto?", saveMemory: "Salva ricordo", myVisitTab: "La Mia Visita", tabReviews: "Recensioni", tabInfo: "Info", tabStory: "Storia", lGroup: "Gruppo:", lMembers: "Membri:", lCountry: "Paese:", lCity: "Città:", lDate: "Data:", lEpisode: "Episodio:", lWatch: "Guarda:", lOfficialLink: "Link ufficiale", lWatchEpi: "Guarda l'episodio", lPractical: "Informazioni pratiche e accesso", lAddress: "Indirizzo", lOpenMap: "Apri in Google Maps", lStoryPlace: "La storia di questo posto", lStoryBts: "Sulle orme dei BTS", lTipsTitle: "I CONSIGLI DI «SCREEN TO STREET»", lHowToGetThere: "Come arrivare:", memoryNotesLabel: "Le tue note (facoltativo)", memoryNotesPlaceholder: "Cosa ricordi di questo posto?", reviewsCountLabel: "{n} recensioni pubbliche", reviewsWriteLabel: "Scrivi la tua recensione", reviewsComposePlaceholder: "Condividi cosa ne pensi...", reviewsComposeMakePublic: "Rendi pubblica questa recensione", reviewsComposePost: "Pubblica recensione", memoryPhotoLabel: "Aggiungi una foto (facoltativo)", memoryPhotoChoose: "Scegli una foto", memoryPhotoRemove: "Rimuovi", memoryMakePublic: "Rendi pubblica questa recensione (visibile agli altri utenti)", reviewsLoading: "Caricamento recensioni…", reviewsEmpty: "Ancora nessuna recensione pubblica per questo posto — sii il primo a condividere la tua dalla scheda «La Mia Visita»!",
         backToMap: "← Torna alla mappa", moreDetails: "Maggiori dettagli", openInMaps: "Apri in Google Maps", detailsLabel: "Dettagli", aboutPlaceLabel: "Informazioni su questo luogo",
         accTitle: "Il tuo account", accChangePhoto: "Cambia foto profilo", accResetPhoto: "Ripristina foto profilo", accNameLabel: "Nome utente", accChangeUsernameHint: "Cambia nome utente", accEmailLabel: "Indirizzo email",
         accCountryLabel: "Paese che ti interessa", accCountryPlaceholder: "Scegli un paese (opzionale)",
         accActivityTitle: "La tua attività", accTrips: "Viaggi", accVisited: "Visitati", accWishlist: "Wishlist", accPasses: "Pass e fatturazione",
+        friendsTitle: "Amici", friendsAddPlaceholder: "Aggiungi un amico tramite username", friendsAddBtn: "Aggiungi", friendsRequestsLabel: "Richieste di amicizia", friendsListLabel: "I tuoi amici", friendsEmpty: "Ancora nessun amico — aggiungine uno tramite il suo username qui sopra.", friendsAccept: "Accetta", friendsDecline: "Rifiuta", friendsCancel: "Annulla", friendsRemove: "Rimuovi", friendsErrNotFound: "Nessun utente trovato con questo username.", friendsErrSelf: "Non puoi aggiungere te stesso.", friendsSentLabel: "Inviata — in attesa di risposta", friendsRequestFrom: "{username} vuole essere tuo amico", shareWithFriendBtn: "Condividi", shareNoFriends: "Aggiungi prima un amico per condividere i luoghi.", sharesEmpty: "Nessuno ha ancora condiviso nulla con te.", sharedByLabel: "{username} ha condiviso {location}",
         accEditBtn: "Modifica profilo", accSaveBtn: "Salva modifiche", accSaved: "✓ Salvato con successo", accNoPasses: "Nessun pass attivo", accAmountPaid: "Importo pagato", accGuestUsername: "Non connesso",
         accDangerZone: "Zona pericolosa",
         accDeleteConfirmTitle: "Sei sicuro di voler eliminare il tuo account?",
@@ -2502,11 +2699,12 @@ const translations = {
         itiTitle: "Gerador de Roteiros", itiDesc: "Selecione um grupo, um país e quantos dias você fica.", itiCreateBtn: "Criar meu guia", itiCatLabel: "Categorias (opcional, seleção múltipla)", itiExport: "Exportar guia em PDF", itiSave: "Salvar em Minhas Viagens",
         noTripsFound: "Nenhuma viagem encontrada.", selectTripToView: "Selecione uma viagem para ver", deselectTripOption: "— Nenhuma viagem selecionada —", locationsWord: "local", locationsWordPlural: "locais",
         addAnotherVisit: "Adicionar outra visita",
-        tabExplore: "Explorar", tabMyItinerary: "Meu Itinerário", yourRating: "Sua avaliação", whenDidYouVisit: "Quando você visitou este lugar?", saveMemory: "Salvar lembrança", myVisitTab: "Minha Visita", tabReviews: "Avaliações", tabInfo: "Info", tabStory: "História", lGroup: "Grupo:", lMembers: "Membros:", lCountry: "País:", lCity: "Cidade:", lDate: "Data:", lEpisode: "Episódio:", lWatch: "Assistir:", lOfficialLink: "Link oficial", lWatchEpi: "Assistir ao episódio", lPractical: "Informações práticas e acesso", lAddress: "Endereço", lOpenMap: "Abrir no Google Maps", lStoryPlace: "A história deste lugar", lStoryBts: "Nos passos do BTS", lTipsTitle: "AS DICAS «SCREEN TO STREET»", lHowToGetThere: "Como chegar:", memoryNotesLabel: "Suas notas (opcional)", memoryNotesPlaceholder: "O que você lembra deste lugar?", reviewsCountLabel: "{n} avaliações públicas", reviewsWriteLabel: "Escreva sua avaliação", reviewsComposePlaceholder: "Compartilhe sua opinião...", reviewsComposeMakePublic: "Tornar isso público", reviewsComposePost: "Publicar avaliação", memoryPhotoLabel: "Adicionar uma foto (opcional)", memoryPhotoChoose: "Escolher uma foto", memoryPhotoRemove: "Remover", memoryMakePublic: "Tornar esta avaliação pública (visível para outros usuários)", reviewsLoading: "Carregando avaliações…", reviewsEmpty: "Ainda não há avaliações públicas para este lugar — seja o primeiro a compartilhar a sua na aba «Minha Visita»!",
+        tabExplore: "Explorar", tabMyItinerary: "Meu Itinerário", yourRating: "Sua avaliação", foodQualityRating: "Qualidade da comida", valueForMoneyRating: "Custo-benefício", wishlistStat: "{pct}% dos usuários adicionaram este lugar à lista de desejos", friendsVisitedStat: "Visitado por: {names}", whenDidYouVisit: "Quando você visitou este lugar?", saveMemory: "Salvar lembrança", myVisitTab: "Minha Visita", tabReviews: "Avaliações", tabInfo: "Info", tabStory: "História", lGroup: "Grupo:", lMembers: "Membros:", lCountry: "País:", lCity: "Cidade:", lDate: "Data:", lEpisode: "Episódio:", lWatch: "Assistir:", lOfficialLink: "Link oficial", lWatchEpi: "Assistir ao episódio", lPractical: "Informações práticas e acesso", lAddress: "Endereço", lOpenMap: "Abrir no Google Maps", lStoryPlace: "A história deste lugar", lStoryBts: "Nos passos do BTS", lTipsTitle: "AS DICAS «SCREEN TO STREET»", lHowToGetThere: "Como chegar:", memoryNotesLabel: "Suas notas (opcional)", memoryNotesPlaceholder: "O que você lembra deste lugar?", reviewsCountLabel: "{n} avaliações públicas", reviewsWriteLabel: "Escreva sua avaliação", reviewsComposePlaceholder: "Compartilhe sua opinião...", reviewsComposeMakePublic: "Tornar isso público", reviewsComposePost: "Publicar avaliação", memoryPhotoLabel: "Adicionar uma foto (opcional)", memoryPhotoChoose: "Escolher uma foto", memoryPhotoRemove: "Remover", memoryMakePublic: "Tornar esta avaliação pública (visível para outros usuários)", reviewsLoading: "Carregando avaliações…", reviewsEmpty: "Ainda não há avaliações públicas para este lugar — seja o primeiro a compartilhar a sua na aba «Minha Visita»!",
         backToMap: "← Voltar ao mapa", moreDetails: "Mais detalhes", openInMaps: "Abrir no Google Maps", detailsLabel: "Detalhes", aboutPlaceLabel: "Sobre este local",
         accTitle: "Sua conta", accChangePhoto: "Alterar foto de perfil", accResetPhoto: "Redefinir foto de perfil", accNameLabel: "Nome de usuário", accChangeUsernameHint: "Alterar nome de usuário", accEmailLabel: "Endereço de e-mail",
         accCountryLabel: "País de interesse", accCountryPlaceholder: "Escolha um país (opcional)",
         accActivityTitle: "Sua atividade", accTrips: "Viagens", accVisited: "Visitados", accWishlist: "Wishlist", accPasses: "Passes e faturamento",
+        friendsTitle: "Amigos", friendsAddPlaceholder: "Adicionar um amigo pelo nome de usuário", friendsAddBtn: "Adicionar", friendsRequestsLabel: "Pedidos de amizade", friendsListLabel: "Seus amigos", friendsEmpty: "Ainda sem amigos — adicione um pelo nome de usuário acima.", friendsAccept: "Aceitar", friendsDecline: "Recusar", friendsCancel: "Cancelar", friendsRemove: "Remover", friendsErrNotFound: "Nenhum usuário encontrado com esse nome.", friendsErrSelf: "Você não pode se adicionar.", friendsSentLabel: "Enviado — aguardando resposta", friendsRequestFrom: "{username} quer ser seu amigo", shareWithFriendBtn: "Compartilhar", shareNoFriends: "Adicione um amigo primeiro para compartilhar lugares.", sharesEmpty: "Ainda ninguém compartilhou nada com você.", sharedByLabel: "{username} compartilhou {location}",
         accEditBtn: "Editar perfil", accSaveBtn: "Salvar alterações", accSaved: "✓ Salvo com sucesso", accNoPasses: "Nenhum passe ativo", accAmountPaid: "Valor pago", accGuestUsername: "Não conectado",
         accDangerZone: "Zona de perigo",
         accDeleteConfirmTitle: "Tem certeza de que deseja excluir sua conta?",
@@ -2564,11 +2762,12 @@ const translations = {
         itiTitle: "자동 일정 생성기", itiDesc: "그룹, 국가, 체류 일수를 선택하세요.", itiCreateBtn: "가이드 만들기", itiCatLabel: "카테고리 (선택 사항, 다중 선택 가능)", itiExport: "가이드 PDF로 내보내기", itiSave: "내 여행에 저장",
         noTripsFound: "여행을 찾을 수 없습니다.", selectTripToView: "볼 여행을 선택하세요", deselectTripOption: "— 선택된 여행 없음 —", locationsWord: "장소", locationsWordPlural: "장소",
         addAnotherVisit: "다른 방문 추가",
-        tabExplore: "탐색", tabMyItinerary: "내 일정", yourRating: "평점", whenDidYouVisit: "언제 방문하셨나요?", saveMemory: "추억 저장", myVisitTab: "내 방문", tabReviews: "후기", tabInfo: "정보", tabStory: "스토리", lGroup: "그룹:", lMembers: "멤버:", lCountry: "국가:", lCity: "도시:", lDate: "날짜:", lEpisode: "에피소드:", lWatch: "시청:", lOfficialLink: "공식 링크", lWatchEpi: "에피소드 보기", lPractical: "실용 정보 및 접근 방법", lAddress: "주소", lOpenMap: "구글 지도에서 열기", lStoryPlace: "이 장소의 이야기", lStoryBts: "BTS의 발자취를 따라", lTipsTitle: "'SCREEN TO STREET' 팁", lHowToGetThere: "가는 방법:", memoryNotesLabel: "나의 메모 (선택 사항)", memoryNotesPlaceholder: "이 장소에 대해 기억나는 것이 있나요?", reviewsCountLabel: "공개 후기 {n}개", reviewsWriteLabel: "후기 작성하기", reviewsComposePlaceholder: "느낀 점을 공유해보세요...", reviewsComposeMakePublic: "이 후기를 공개로 설정", reviewsComposePost: "후기 게시", memoryPhotoLabel: "사진 추가 (선택 사항)", memoryPhotoChoose: "사진 선택", memoryPhotoRemove: "제거", memoryMakePublic: "이 후기를 공개로 설정 (다른 사용자에게 표시됨)", reviewsLoading: "후기를 불러오는 중…", reviewsEmpty: "아직 이 장소에 대한 공개 후기가 없습니다 — '내 방문' 탭에서 첫 후기를 남겨보세요!",
+        tabExplore: "탐색", tabMyItinerary: "내 일정", yourRating: "평점", foodQualityRating: "음식 품질", valueForMoneyRating: "가성비", wishlistStat: "사용자의 {pct}%가 이 장소를 위시리스트에 추가했습니다", friendsVisitedStat: "방문한 친구: {names}", whenDidYouVisit: "언제 방문하셨나요?", saveMemory: "추억 저장", myVisitTab: "내 방문", tabReviews: "후기", tabInfo: "정보", tabStory: "스토리", lGroup: "그룹:", lMembers: "멤버:", lCountry: "국가:", lCity: "도시:", lDate: "날짜:", lEpisode: "에피소드:", lWatch: "시청:", lOfficialLink: "공식 링크", lWatchEpi: "에피소드 보기", lPractical: "실용 정보 및 접근 방법", lAddress: "주소", lOpenMap: "구글 지도에서 열기", lStoryPlace: "이 장소의 이야기", lStoryBts: "BTS의 발자취를 따라", lTipsTitle: "'SCREEN TO STREET' 팁", lHowToGetThere: "가는 방법:", memoryNotesLabel: "나의 메모 (선택 사항)", memoryNotesPlaceholder: "이 장소에 대해 기억나는 것이 있나요?", reviewsCountLabel: "공개 후기 {n}개", reviewsWriteLabel: "후기 작성하기", reviewsComposePlaceholder: "느낀 점을 공유해보세요...", reviewsComposeMakePublic: "이 후기를 공개로 설정", reviewsComposePost: "후기 게시", memoryPhotoLabel: "사진 추가 (선택 사항)", memoryPhotoChoose: "사진 선택", memoryPhotoRemove: "제거", memoryMakePublic: "이 후기를 공개로 설정 (다른 사용자에게 표시됨)", reviewsLoading: "후기를 불러오는 중…", reviewsEmpty: "아직 이 장소에 대한 공개 후기가 없습니다 — '내 방문' 탭에서 첫 후기를 남겨보세요!",
         backToMap: "← 지도로 돌아가기", moreDetails: "자세히 보기", openInMaps: "구글 지도에서 열기", detailsLabel: "상세 정보", aboutPlaceLabel: "이 장소에 대해",
         accTitle: "내 계정", accChangePhoto: "프로필 사진 변경", accResetPhoto: "프로필 사진 재설정", accNameLabel: "아이디", accChangeUsernameHint: "아이디 변경", accEmailLabel: "이메일 주소",
         accCountryLabel: "관심 있는 국가", accCountryPlaceholder: "국가 선택 (선택 사항)",
         accActivityTitle: "내 활동", accTrips: "여행", accVisited: "방문함", accWishlist: "위시리스트", accPasses: "이용권 및 결제",
+        friendsTitle: "친구", friendsAddPlaceholder: "사용자 이름으로 친구 추가", friendsAddBtn: "추가", friendsRequestsLabel: "친구 요청", friendsListLabel: "내 친구", friendsEmpty: "아직 친구가 없습니다 — 위에서 사용자 이름으로 친구를 추가해보세요.", friendsAccept: "수락", friendsDecline: "거절", friendsCancel: "취소", friendsRemove: "삭제", friendsErrNotFound: "해당 사용자 이름을 가진 사용자를 찾을 수 없습니다.", friendsErrSelf: "자기 자신은 추가할 수 없습니다.", friendsSentLabel: "전송됨 — 응답 대기 중", friendsRequestFrom: "{username}님이 친구가 되고 싶어합니다", shareWithFriendBtn: "공유", shareNoFriends: "장소를 공유하려면 먼저 친구를 추가하세요.", sharesEmpty: "아직 공유받은 것이 없습니다.", sharedByLabel: "{username}님이 {location}을(를) 공유했습니다",
         accEditBtn: "프로필 수정", accSaveBtn: "변경사항 저장", accSaved: "✓ 저장되었습니다", accNoPasses: "활성화된 이용권 없음", accAmountPaid: "결제 금액", accGuestUsername: "로그인하지 않음",
         accDangerZone: "위험 구역",
         accDeleteConfirmTitle: "정말 계정을 삭제하시겠습니까?",
@@ -2626,11 +2825,12 @@ const translations = {
         itiTitle: "自動旅程ジェネレーター", itiDesc: "グループ、国、滞在日数を選択してください。", itiCreateBtn: "ガイドを作成", itiCatLabel: "カテゴリー（任意、複数選択可）", itiExport: "ガイドをPDFで出力", itiSave: "マイトリップに保存",
         noTripsFound: "旅行が見つかりません。", selectTripToView: "表示する旅行を選択", deselectTripOption: "— 選択された旅行はありません —", locationsWord: "スポット", locationsWordPlural: "スポット",
         addAnotherVisit: "別の訪問を追加",
-        tabExplore: "探索", tabMyItinerary: "マイ旅程", yourRating: "評価", whenDidYouVisit: "いつ訪れましたか？", saveMemory: "思い出を保存", myVisitTab: "マイビジット", tabReviews: "レビュー", tabInfo: "情報", tabStory: "ストーリー", lGroup: "グループ：", lMembers: "メンバー：", lCountry: "国：", lCity: "都市：", lDate: "日付：", lEpisode: "エピソード：", lWatch: "視聴：", lOfficialLink: "公式リンク", lWatchEpi: "エピソードを見る", lPractical: "実用情報とアクセス", lAddress: "住所", lOpenMap: "Googleマップで開く", lStoryPlace: "この場所の物語", lStoryBts: "BTSの足跡をたどって", lTipsTitle: "「SCREEN TO STREET」のヒント", lHowToGetThere: "行き方：", memoryNotesLabel: "メモ（任意）", memoryNotesPlaceholder: "この場所について覚えていることは？", reviewsCountLabel: "公開レビュー{n}件", reviewsWriteLabel: "レビューを書く", reviewsComposePlaceholder: "感想をシェアしましょう…", reviewsComposeMakePublic: "このレビューを公開する", reviewsComposePost: "レビューを投稿", memoryPhotoLabel: "写真を追加（任意）", memoryPhotoChoose: "写真を選択", memoryPhotoRemove: "削除", memoryMakePublic: "このレビューを公開する（他のユーザーに表示されます）", reviewsLoading: "レビューを読み込み中…", reviewsEmpty: "この場所にはまだ公開レビューがありません —「マイビジット」タブから最初のレビューを共有しましょう！",
+        tabExplore: "探索", tabMyItinerary: "マイ旅程", yourRating: "評価", foodQualityRating: "料理の質", valueForMoneyRating: "コストパフォーマンス", wishlistStat: "ユーザーの{pct}%がこの場所をウィッシュリストに追加しました", friendsVisitedStat: "訪問した友達：{names}", whenDidYouVisit: "いつ訪れましたか？", saveMemory: "思い出を保存", myVisitTab: "マイビジット", tabReviews: "レビュー", tabInfo: "情報", tabStory: "ストーリー", lGroup: "グループ：", lMembers: "メンバー：", lCountry: "国：", lCity: "都市：", lDate: "日付：", lEpisode: "エピソード：", lWatch: "視聴：", lOfficialLink: "公式リンク", lWatchEpi: "エピソードを見る", lPractical: "実用情報とアクセス", lAddress: "住所", lOpenMap: "Googleマップで開く", lStoryPlace: "この場所の物語", lStoryBts: "BTSの足跡をたどって", lTipsTitle: "「SCREEN TO STREET」のヒント", lHowToGetThere: "行き方：", memoryNotesLabel: "メモ（任意）", memoryNotesPlaceholder: "この場所について覚えていることは？", reviewsCountLabel: "公開レビュー{n}件", reviewsWriteLabel: "レビューを書く", reviewsComposePlaceholder: "感想をシェアしましょう…", reviewsComposeMakePublic: "このレビューを公開する", reviewsComposePost: "レビューを投稿", memoryPhotoLabel: "写真を追加（任意）", memoryPhotoChoose: "写真を選択", memoryPhotoRemove: "削除", memoryMakePublic: "このレビューを公開する（他のユーザーに表示されます）", reviewsLoading: "レビューを読み込み中…", reviewsEmpty: "この場所にはまだ公開レビューがありません —「マイビジット」タブから最初のレビューを共有しましょう！",
         backToMap: "← 地図に戻る", moreDetails: "詳細を見る", openInMaps: "Googleマップで開く", detailsLabel: "詳細", aboutPlaceLabel: "この場所について",
         accTitle: "アカウント", accChangePhoto: "プロフィール写真を変更", accResetPhoto: "プロフィール写真をリセット", accNameLabel: "ユーザー名", accChangeUsernameHint: "ユーザー名を変更", accEmailLabel: "メールアドレス",
         accCountryLabel: "興味のある国", accCountryPlaceholder: "国を選択（任意）",
         accActivityTitle: "アクティビティ", accTrips: "旅行", accVisited: "訪問済み", accWishlist: "ウィッシュリスト", accPasses: "パスとお支払い",
+        friendsTitle: "フレンド", friendsAddPlaceholder: "ユーザー名でフレンドを追加", friendsAddBtn: "追加", friendsRequestsLabel: "フレンド申請", friendsListLabel: "フレンド一覧", friendsEmpty: "まだフレンドがいません — 上のユーザー名で追加しましょう。", friendsAccept: "承認", friendsDecline: "拒否", friendsCancel: "キャンセル", friendsRemove: "削除", friendsErrNotFound: "そのユーザー名のユーザーが見つかりません。", friendsErrSelf: "自分自身は追加できません。", friendsSentLabel: "送信済み — 返信待ち", friendsRequestFrom: "{username}さんがフレンド申請をしています", shareWithFriendBtn: "共有", shareNoFriends: "場所を共有するには、まずフレンドを追加してください。", sharesEmpty: "まだ何も共有されていません。", sharedByLabel: "{username}さんが{location}を共有しました",
         accEditBtn: "プロフィールを編集", accSaveBtn: "変更を保存", accSaved: "✓ 保存しました", accNoPasses: "有効なパスはありません", accAmountPaid: "お支払い金額", accGuestUsername: "未ログイン",
         accDangerZone: "危険ゾーン",
         accDeleteConfirmTitle: "本当にアカウントを削除しますか？",
@@ -2688,11 +2888,12 @@ const translations = {
         itiTitle: "自动行程生成器", itiDesc: "选择一个团体、一个国家，以及停留天数。", itiCreateBtn: "生成我的指南", itiCatLabel: "类别（可选，可多选）", itiExport: "导出指南为 PDF", itiSave: "保存到我的行程",
         noTripsFound: "未找到任何行程。", selectTripToView: "选择要查看的行程", deselectTripOption: "— 未选择行程 —", locationsWord: "个地点", locationsWordPlural: "个地点",
         addAnotherVisit: "添加另一次访问",
-        tabExplore: "探索", tabMyItinerary: "我的行程", yourRating: "你的评分", whenDidYouVisit: "你什么时候去的？", saveMemory: "保存回忆", myVisitTab: "我的到访", tabReviews: "评价", tabInfo: "信息", tabStory: "故事", lGroup: "组合：", lMembers: "成员：", lCountry: "国家：", lCity: "城市：", lDate: "日期：", lEpisode: "集数：", lWatch: "观看：", lOfficialLink: "官方链接", lWatchEpi: "观看该集", lPractical: "实用信息与交通", lAddress: "地址", lOpenMap: "在谷歌地图中打开", lStoryPlace: "这个地方的故事", lStoryBts: "追随BTS的足迹", lTipsTitle: "「SCREEN TO STREET」小贴士", lHowToGetThere: "交通方式：", memoryNotesLabel: "你的备注（可选）", memoryNotesPlaceholder: "你还记得这个地方的什么？", reviewsCountLabel: "{n}条公开评价", reviewsWriteLabel: "写下你的评价", reviewsComposePlaceholder: "分享你的感受…", reviewsComposeMakePublic: "公开此评价", reviewsComposePost: "发布评价", memoryPhotoLabel: "添加照片（可选）", memoryPhotoChoose: "选择照片", memoryPhotoRemove: "移除", memoryMakePublic: "公开此评价（其他用户可见）", reviewsLoading: "正在加载评价…", reviewsEmpty: "该地点暂无公开评价——从「我的到访」标签页分享第一条评价吧！",
+        tabExplore: "探索", tabMyItinerary: "我的行程", yourRating: "你的评分", foodQualityRating: "食物质量", valueForMoneyRating: "性价比", wishlistStat: "{pct}%的用户将这个地方加入了心愿单", friendsVisitedStat: "到访过的好友：{names}", whenDidYouVisit: "你什么时候去的？", saveMemory: "保存回忆", myVisitTab: "我的到访", tabReviews: "评价", tabInfo: "信息", tabStory: "故事", lGroup: "组合：", lMembers: "成员：", lCountry: "国家：", lCity: "城市：", lDate: "日期：", lEpisode: "集数：", lWatch: "观看：", lOfficialLink: "官方链接", lWatchEpi: "观看该集", lPractical: "实用信息与交通", lAddress: "地址", lOpenMap: "在谷歌地图中打开", lStoryPlace: "这个地方的故事", lStoryBts: "追随BTS的足迹", lTipsTitle: "「SCREEN TO STREET」小贴士", lHowToGetThere: "交通方式：", memoryNotesLabel: "你的备注（可选）", memoryNotesPlaceholder: "你还记得这个地方的什么？", reviewsCountLabel: "{n}条公开评价", reviewsWriteLabel: "写下你的评价", reviewsComposePlaceholder: "分享你的感受…", reviewsComposeMakePublic: "公开此评价", reviewsComposePost: "发布评价", memoryPhotoLabel: "添加照片（可选）", memoryPhotoChoose: "选择照片", memoryPhotoRemove: "移除", memoryMakePublic: "公开此评价（其他用户可见）", reviewsLoading: "正在加载评价…", reviewsEmpty: "该地点暂无公开评价——从「我的到访」标签页分享第一条评价吧！",
         backToMap: "← 返回地图", moreDetails: "更多详情", openInMaps: "在 Google 地图中打开", detailsLabel: "详情", aboutPlaceLabel: "关于这个地方",
         accTitle: "我的账户", accChangePhoto: "更换头像", accResetPhoto: "重置头像", accNameLabel: "用户名", accChangeUsernameHint: "更改用户名", accEmailLabel: "电子邮箱",
         accCountryLabel: "感兴趣的国家", accCountryPlaceholder: "选择国家（可选）",
         accActivityTitle: "我的动态", accTrips: "行程", accVisited: "已访问", accWishlist: "收藏清单", accPasses: "通行证与账单",
+        friendsTitle: "好友", friendsAddPlaceholder: "通过用户名添加好友", friendsAddBtn: "添加", friendsRequestsLabel: "好友请求", friendsListLabel: "你的好友", friendsEmpty: "还没有好友——在上方通过用户名添加一个吧。", friendsAccept: "接受", friendsDecline: "拒绝", friendsCancel: "取消", friendsRemove: "移除", friendsErrNotFound: "未找到该用户名对应的用户。", friendsErrSelf: "不能添加自己。", friendsSentLabel: "已发送——等待回应", friendsRequestFrom: "{username} 想加你为好友", shareWithFriendBtn: "分享", shareNoFriends: "请先添加好友才能分享地点。", sharesEmpty: "还没有人与你分享任何内容。", sharedByLabel: "{username} 分享了 {location}",
         accEditBtn: "编辑资料", accSaveBtn: "保存更改", accSaved: "✓ 保存成功", accNoPasses: "暂无有效通行证", accAmountPaid: "已支付金额", accGuestUsername: "未登录",
         accDangerZone: "危险区域",
         accDeleteConfirmTitle: "确定要删除您的账户吗？",
@@ -3210,13 +3411,18 @@ function hideMapHoverTip() {
     if (tip) tip.classList.remove('open');
 }
 
-function addSingleLocationMarker(loc, visitedData) {
+function addSingleLocationMarker(loc, wishlistData) {
     const catIconSvg = iconsSVG[loc.category] || iconsSVG["Default"];
-    const isVisited = visitedData.some(v => v.id === loc.id || v === loc.id);
+    // Le remplissage de couleur reflète maintenant la wishlist, pas la visite (demande du
+    // 06/09/2026) : avant, "visité" remplissait le marqueur, ce qui se confondait
+    // visuellement avec le remplissage automatique des clusters (voir addClusterMarker) —
+    // l'affichage reste "clair" (contour + icône coloré, fond blanc) tant que le lieu n'a
+    // pas été ajouté à la wishlist.
+    const isWishlisted = wishlistData.some(w => w.id === loc.id || w === loc.id);
     const baseColor = groupColors[loc.group] || '#334e68';
 
     let inlineStyle = `border-color: ${baseColor}; --marker-color: ${baseColor};`;
-    inlineStyle += isVisited ? ` background-color: ${baseColor}; color: white;` : ` background-color: white; color: ${baseColor};`;
+    inlineStyle += isWishlisted ? ` background-color: ${baseColor}; color: white;` : ` background-color: white; color: ${baseColor};`;
 
     const customIcon = L.divIcon({ className: 'custom-category-marker', html: `<div style="${inlineStyle}">${catIconSvg}</div>`, iconSize: [32,32], iconAnchor: [16,16] });
     const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markerGroup);
@@ -3225,8 +3431,15 @@ function addSingleLocationMarker(loc, visitedData) {
     marker.on('mouseout', () => hideMapHoverTip());
 }
 
-function addClusterMarker(cluster) {
+function addClusterMarker(cluster, wishlistData) {
     const count = cluster.locs.length;
+    const isWishlisted = (loc) => wishlistData.some(w => w.id === loc.id || w === loc.id);
+    // Le simple fait que des lieux se chevauchent (et forment donc un cluster) ne doit plus
+    // remplir automatiquement le marqueur (demande du 06/09/2026) — même règle que pour un
+    // marqueur individuel : "clair" par défaut, rempli seulement si TOUS les lieux du
+    // cluster sont dans la wishlist (un cluster partiellement wishlisté reste clair plutôt
+    // que de choisir arbitrairement lequel représenter).
+    const allWishlisted = cluster.locs.length > 0 && cluster.locs.every(isWishlisted);
 
     // Groupes distincts présents dans ce cluster : un même lieu réel (mêmes coordonnées,
     // ex: BTS ET Blackpink ayant tous deux tourné au Stade de France) finit dans le même
@@ -3237,30 +3450,26 @@ function addClusterMarker(cluster) {
     // marqueur est divisé en parts égales, une couleur par groupe présent, pour qu'aucun
     // des groupes ayant visité ce lieu ne disparaisse visuellement derrière un autre.
     const distinctGroups = [...new Set(cluster.locs.map(l => l.group))];
-    const html = distinctGroups.length > 1
-        ? (() => {
-            const step = 360 / distinctGroups.length;
-            const slices = distinctGroups.map((g, i) => `${groupColors[g] || '#334e68'} ${(i * step).toFixed(2)}deg ${((i + 1) * step).toFixed(2)}deg`).join(', ');
-            return `
-                <span style="position:relative; display:inline-block;">
-                    <div style="border-color:#fff; --marker-color:#fff; background:conic-gradient(${slices}); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3);">${CLUSTER_ICON_SVG}</div>
-                    <span class="cluster-badge">×${count}</span>
-                </span>
-            `;
-        })()
-        : (() => {
-            const baseColor = groupColors[distinctGroups[0]] || '#334e68';
-            // Le badge (span, pas div) et le conteneur (span aussi) évitent volontairement
-            // le sélecteur CSS ".custom-category-marker div", qui appliquerait sinon le
-            // style rond du marqueur à tout div descendant, y compris le conteneur et le
-            // badge.
-            return `
-                <span style="position:relative; display:inline-block;">
-                    <div style="border-color:${baseColor}; --marker-color:${baseColor}; background-color:${baseColor}; color:#fff;">${CLUSTER_ICON_SVG}</div>
-                    <span class="cluster-badge">×${count}</span>
-                </span>
-            `;
-        })();
+    let discStyle;
+    if (!allWishlisted) {
+        discStyle = `border-color:#94a3b8; --marker-color:#94a3b8; background-color:#fff; color:#94a3b8;`;
+    } else if (distinctGroups.length > 1) {
+        const step = 360 / distinctGroups.length;
+        const slices = distinctGroups.map((g, i) => `${groupColors[g] || '#334e68'} ${(i * step).toFixed(2)}deg ${((i + 1) * step).toFixed(2)}deg`).join(', ');
+        discStyle = `border-color:#fff; --marker-color:#fff; background:conic-gradient(${slices}); color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.3);`;
+    } else {
+        const baseColor = groupColors[distinctGroups[0]] || '#334e68';
+        discStyle = `border-color:${baseColor}; --marker-color:${baseColor}; background-color:${baseColor}; color:#fff;`;
+    }
+    // Le badge (span, pas div) et le conteneur (span aussi) évitent volontairement le
+    // sélecteur CSS ".custom-category-marker div", qui appliquerait sinon le style rond du
+    // marqueur à tout div descendant, y compris le conteneur et le badge.
+    const html = `
+        <span style="position:relative; display:inline-block;">
+            <div style="${discStyle}">${CLUSTER_ICON_SVG}</div>
+            <span class="cluster-badge">×${count}</span>
+        </span>
+    `;
     const clusterIcon = L.divIcon({ className: 'custom-category-marker', html, iconSize: [32, 32], iconAnchor: [16, 16] });
     const marker = L.marker(cluster.center, { icon: clusterIcon }).addTo(markerGroup);
     marker.on('click', () => { map.setView(cluster.center, Math.min(map.getZoom() + 3, 18)); });
@@ -3269,12 +3478,12 @@ function addClusterMarker(cluster) {
 function renderMapMarkers(locations, opts) {
     if (!map || !markerGroup) return;
     markerGroup.clearLayers();
-    const visitedData = getVisitedLocs();
+    const wishlistData = getWishlistLocs();
     const clusters = clusterLocationsForZoom(locations, map.getZoom());
 
     clusters.forEach(cluster => {
-        if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0], visitedData);
-        else addClusterMarker(cluster);
+        if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0], wishlistData);
+        else addClusterMarker(cluster, wishlistData);
     });
 
     // Le fitBounds initial doit couvrir les vraies coordonnées de chaque lieu (pas les
@@ -3949,9 +4158,32 @@ window.openDetailsPanel = function(id) {
         });
     }
 
+    const wishlistStatBox = document.getElementById('details-wishlist-stat');
+    if (wishlistStatBox) {
+        const pct = wishlistPercentForLocation(loc.id);
+        if (pct != null) {
+            wishlistStatBox.innerHTML = `<span>🔥</span><span>${t('wishlistStat').replace('{pct}', pct)}</span>`;
+            wishlistStatBox.classList.remove('hidden');
+        } else {
+            wishlistStatBox.classList.add('hidden');
+        }
+    }
+
+    const friendVisitBox = document.getElementById('details-friend-visits');
+    if (friendVisitBox) {
+        const visitors = friendsWhoVisited(loc.id);
+        if (visitors.length > 0) {
+            const names = visitors.map(f => f.username).join(', ');
+            friendVisitBox.innerHTML = `<span>👥</span><span>${t('friendsVisitedStat').replace('{names}', names)}</span>`;
+            friendVisitBox.classList.remove('hidden');
+        } else {
+            friendVisitBox.classList.add('hidden');
+        }
+    }
+
     const dGroup = document.getElementById('details-group');
     if(dGroup) dGroup.textContent = loc.group;
-    
+
     const dMember = document.getElementById('details-member');
     if(dMember) dMember.textContent = loc.member === "All" ? "All" : loc.member;
     
@@ -4013,9 +4245,9 @@ window.openDetailsPanel = function(id) {
                 // à la moyenne communautaire avant de les supprimer localement.
                 const removedEntry = list.find(v => (v.id === loc.id || v === loc.id));
                 const removedVisits = removedEntry ? normalizeVisitEntry(removedEntry).visits : [];
-                const removedRatings = removedVisits.map(v => v.rating).filter(r => r > 0);
-                if (removedRatings.length > 0) {
-                    applyCommunityRatingDelta(loc.id, -removedRatings.reduce((a,b) => a+b, 0), -removedRatings.length);
+                const hasAnyRating = removedVisits.some(v => v.rating > 0 || v.ratingFood != null || v.ratingValue != null);
+                if (hasAnyRating) {
+                    applyCommunityRatingDelta(loc.id, buildRemovalDeltas(removedVisits));
                 }
 
                 list = list.filter(v => v.id !== loc.id && v !== loc.id);
@@ -4072,12 +4304,19 @@ window.openDetailsPanel = function(id) {
     setTimeout(() => { if(map) map.invalidateSize(); }, 450);
 };
 
-window.setStars = function(val) {
-    const memoryRatingVal = document.getElementById('memory-rating-val');
-    if(!memoryRatingVal) return;
-    memoryRatingVal.value = val;
-    document.querySelectorAll('#memory-stars .star').forEach((star, index) => {
-        if(index < val) {
+// Catégories pour lesquelles on demande, en plus de la note générale, une note de
+// qualité de la nourriture et de rapport qualité/prix (demande du 06/09/2026).
+const FOOD_RELATED_CATEGORIES = ['Cafe', 'Restaurants'];
+
+// Widget d'étoiles générique : plusieurs coexistent maintenant dans le formulaire "I
+// visited this place" (note générale + food/valeur pour les Cafe/Restaurants), tous
+// pilotés par la même logique de coloration plutôt que trois copies quasi identiques.
+function setStarsGeneric(containerId, inputId, val) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.value = val;
+    document.querySelectorAll('#' + containerId + ' .star').forEach((star, index) => {
+        if (index < val) {
             star.setAttribute('fill', '#D42759');
             star.setAttribute('stroke', '#D42759');
         } else {
@@ -4086,8 +4325,17 @@ window.setStars = function(val) {
         }
     });
 }
-document.querySelectorAll('#memory-stars .star').forEach(star => {
-    star.addEventListener('click', function() { window.setStars(parseInt(this.getAttribute('data-val'))); });
+window.setStars = function(val) { setStarsGeneric('memory-stars', 'memory-rating-val', val); };
+window.setFoodStars = function(val) { setStarsGeneric('memory-food-stars', 'memory-food-rating-val', val); };
+window.setValueStars = function(val) { setStarsGeneric('memory-value-stars', 'memory-value-rating-val', val); };
+[
+    ['memory-stars', window.setStars],
+    ['memory-food-stars', window.setFoodStars],
+    ['memory-value-stars', window.setValueStars],
+].forEach(([containerId, setter]) => {
+    document.querySelectorAll('#' + containerId + ' .star').forEach(star => {
+        star.addEventListener('click', function() { setter(parseInt(this.getAttribute('data-val'))); });
+    });
 });
 
 // editingVisitIndex : null = on ajoute une NOUVELLE visite ; un nombre = on modifie
@@ -4165,11 +4413,19 @@ function openMemoryEditor(visitIndex) {
     if (photoInput) photoInput.value = '';
     if (publicCheck) publicCheck.checked = false;
 
+    const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
+    const isFoodCategory = !!(loc && FOOD_RELATED_CATEGORIES.includes(loc.category));
+    const foodBlock = document.getElementById('memory-food-rating-block');
+    const valueBlock = document.getElementById('memory-value-rating-block');
+    if (foodBlock) foodBlock.classList.toggle('hidden', !isFoodCategory);
+    if (valueBlock) valueBlock.classList.toggle('hidden', !isFoodCategory);
+
     if (visitIndex === null) {
         // Nouvelle visite : date du jour, note vierge, 4 étoiles par défaut.
         document.getElementById('memory-date').value = new Date().toISOString().split('T')[0];
         document.getElementById('memory-notes').value = '';
         window.setStars(4);
+        if (isFoodCategory) { window.setFoodStars(4); window.setValueStars(4); }
     } else {
         let list = getVisitedLocs();
         let entry = list.find(v => v.id === currentLocationIdForMemory || v === currentLocationIdForMemory);
@@ -4179,6 +4435,10 @@ function openMemoryEditor(visitIndex) {
             document.getElementById('memory-date').value = visit.date || '';
             document.getElementById('memory-notes').value = visit.notes || '';
             window.setStars(visit.rating || 4);
+            if (isFoodCategory) {
+                window.setFoodStars(visit.ratingFood || 4);
+                window.setValueStars(visit.ratingValue || 4);
+            }
             if (visit.photo) {
                 pendingMemoryPhoto = visit.photo;
                 const previewImg = document.getElementById('memory-photo-preview-img');
@@ -4203,23 +4463,30 @@ if(saveMemoryBtn) {
         const notes = document.getElementById('memory-notes').value;
         const photo = pendingMemoryPhoto || null;
         const isPublic = !!(document.getElementById('memory-public-check') && document.getElementById('memory-public-check').checked);
+        const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
+        const isFoodCategory = !!(loc && FOOD_RELATED_CATEGORIES.includes(loc.category));
+        const ratingFood = isFoodCategory ? Number(document.getElementById('memory-food-rating-val').value) : null;
+        const ratingValue = isFoodCategory ? Number(document.getElementById('memory-value-rating-val').value) : null;
 
         let list = getVisitedLocs();
         const idx = list.findIndex(v => v.id === currentLocationIdForMemory || v === currentLocationIdForMemory);
 
         if(idx !== -1) {
             list[idx] = normalizeVisitEntry(list[idx]);
+            const visitData = { date, rating, notes, photo, isPublic };
+            if (ratingFood != null) visitData.ratingFood = ratingFood;
+            if (ratingValue != null) visitData.ratingValue = ratingValue;
 
             // Nouvelle visite : la note s'ajoute intégralement à la moyenne communautaire.
             // Modification d'une visite existante : seule la différence avec l'ancienne
             // note compte (le nombre de visites, lui, ne change pas).
             if (editingVisitIndex === null) {
-                list[idx].visits.push({ date, rating, notes, photo, isPublic });
-                applyCommunityRatingDelta(currentLocationIdForMemory, rating, 1);
+                list[idx].visits.push(visitData);
+                applyCommunityRatingDelta(currentLocationIdForMemory, buildRatingDeltas(visitData, true));
             } else {
-                const oldRating = list[idx].visits[editingVisitIndex].rating || 0;
-                list[idx].visits[editingVisitIndex] = { date, rating, notes, photo, isPublic };
-                applyCommunityRatingDelta(currentLocationIdForMemory, rating - oldRating, 0);
+                const oldVisit = list[idx].visits[editingVisitIndex];
+                list[idx].visits[editingVisitIndex] = visitData;
+                applyCommunityRatingDelta(currentLocationIdForMemory, buildRatingDeltas(visitData, false, oldVisit));
             }
 
             localStorage.setItem('visitedLocs', JSON.stringify(list));
@@ -4231,11 +4498,11 @@ if(saveMemoryBtn) {
             // publié/retiré/mis à jour à chaque sauvegarde selon l'état de la case.
             if (isPublic) {
                 if (typeof window.setLocationReview === 'function') {
-                    const publishResult = await window.setLocationReview(String(currentLocationIdForMemory), {
+                    const publishResult = await window.setLocationReview(String(currentLocationIdForMemory), Object.assign({
                         rating, notes, photo,
                         userName: (localStorage.getItem('userFirstName') || localStorage.getItem('userName') || 'ARMY').trim(),
                         userPhoto: localStorage.getItem('userPhoto') || null
-                    });
+                    }, ratingFood != null ? { ratingFood, ratingValue } : {}));
                     // Sans ça, un échec de publication (règles Firestore pas encore
                     // déployées, hors-ligne...) passait totalement inaperçu : la case
                     // "rendre public" restait cochée dans l'interface comme si tout
@@ -4266,7 +4533,18 @@ if(saveMemoryBtn) {
 window.renderVisitsList = function(visits) {
     const starSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
     const emptyStarSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    const smallStarSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    const smallEmptyStarSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
     const editSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
+
+    // Ligne "label + petites étoiles" pour une dimension de note optionnelle (food/value) —
+    // absente du HTML si cette visite n'a pas cette dimension (lieux non Cafe/Restaurants).
+    function dimensionRow(label, value) {
+        if (value == null) return '';
+        let stars = '';
+        for (let i = 0; i < 5; i++) stars += (i < value) ? smallStarSvg : smallEmptyStarSvg;
+        return `<div style="display:flex; align-items:center; gap:6px; margin-top:4px; font-size:10.5px; color:#64748b; font-weight:600;">${label} <span style="display:inline-flex; gap:2px;">${stars}</span></div>`;
+    }
 
     // On garde une trace de l'index d'origine (dans le tableau non trié) pour que
     // "Edit"/"Supprimer" modifient bien la bonne visite, même une fois la liste triée à
@@ -4306,6 +4584,8 @@ window.renderVisitsList = function(visits) {
                 <div class="stars" style="pointer-events:none;">${starsHtml}</div>
                 <div class="memory-date">${formattedDate || (currentLang === 'fr' ? 'Date inconnue' : 'Unknown date')}${publicBadgeHtml}</div>
             </div>
+            ${dimensionRow(t('foodQualityRating'), v.ratingFood)}
+            ${dimensionRow(t('valueForMoneyRating'), v.ratingValue)}
             <div class="memory-notes">${notesText}</div>
             ${photoHtml}
             <button class="edit-memory-btn" data-idx="${v.__idx}" style="background:transparent; border:1.5px solid #cbd5e1; color:#64748b; font-size:11px; font-weight:700; padding:6px 12px; border-radius:100px; margin-top:20px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">${editSvg} ${editLabel}</button>
@@ -4366,7 +4646,7 @@ window.deleteVisit = function(idx) {
     const removed = list[listIdx].visits[idx];
     if (!removed) return;
     list[listIdx].visits.splice(idx, 1);
-    applyCommunityRatingDelta(currentLocationIdForMemory, -(removed.rating || 0), -1);
+    applyCommunityRatingDelta(currentLocationIdForMemory, buildRemovalDeltas([removed]));
 
     if (list[listIdx].visits.length === 0) {
         list.splice(listIdx, 1);
@@ -4445,6 +4725,14 @@ window.loadLocationReviews = async function(locationId) {
 
     const starSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
     const emptyStarSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    const smallStarSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    const smallEmptyStarSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    function reviewDimensionRow(label, value) {
+        if (value == null) return '';
+        let stars = '';
+        for (let i = 0; i < 5; i++) stars += (i < value) ? smallStarSvg : smallEmptyStarSvg;
+        return `<div style="display:flex; align-items:center; gap:6px; margin-top:3px; font-size:10px; color:#94a3b8; font-weight:600;">${label} <span style="display:inline-flex; gap:2px;">${stars}</span></div>`;
+    }
 
     reviews
         .sort((a, b) => (b.updatedAt && b.updatedAt.seconds || 0) - (a.updatedAt && a.updatedAt.seconds || 0))
@@ -4466,6 +4754,8 @@ window.loadLocationReviews = async function(locationId) {
                     <div style="flex:1;">
                         <div style="font-size:12.5px; font-weight:700; color:#212832;">${r.userName || (currentLang === 'fr' ? 'ARMY' : 'ARMY')}</div>
                         <div class="stars" style="pointer-events:none; margin-top:2px;">${starsHtml}</div>
+                        ${reviewDimensionRow(t('foodQualityRating'), r.ratingFood)}
+                        ${reviewDimensionRow(t('valueForMoneyRating'), r.ratingValue)}
                     </div>
                 </div>
                 ${notesHtml}
@@ -4530,7 +4820,7 @@ window.postQuickReview = async function() {
     if (idx === -1) { list.push({ id: locId, visits: [] }); idx = list.length - 1; }
     list[idx] = normalizeVisitEntry(list[idx]);
     list[idx].visits.push({ date, rating, notes, photo, isPublic });
-    applyCommunityRatingDelta(locId, rating, 1);
+    applyCommunityRatingDelta(locId, { sum: rating, count: 1 });
 
     localStorage.setItem('visitedLocs', JSON.stringify(list));
     syncVisited(list);
@@ -5181,6 +5471,7 @@ window.saveItineraryToTrips = async function() {
     localStorage.setItem('myTrips', JSON.stringify(trips));
     localStorage.setItem('wishlistLocs', JSON.stringify(wList));
     localStorage.setItem('activeTripId', newTripId);
+    applyWishlistCountDeltas(wList);
 
     // On ATTEND que la synchronisation Firestore soit vraiment terminée avant de
     // continuer (redirection comprise) : sinon, la navigation vers trips.html pouvait

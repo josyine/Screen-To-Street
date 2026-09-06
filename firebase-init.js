@@ -163,19 +163,29 @@ window.loadUserCloudData = async function () {
 //   match /locationRatings/{locationId} {
 //     allow read: if true;
 //     allow write: if request.auth != null
-//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sum', 'count']);
+//       && request.resource.data.diff(resource.data).affectedKeys()
+//            .hasOnly(['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount']);
 //   }
+// (Si la règle précédente, sans foodSum/foodCount/valueSum/valueCount, est encore en place,
+// remplacez-la par celle-ci — sinon les notes food/valeur des lieux Cafe/Restaurants
+// échoueront silencieusement avec permission-denied.)
 // Limite connue : un client malveillant authentifié pourrait tout de même écrire un
 // incrément arbitraire (ex: +1000) puisque les règles Firestore seules ne peuvent pas
 // vérifier qu'un increment() correspond à "une vraie note entre 1 et 5" sans passer par
 // une Cloud Function — hors de portée d'un site 100% statique sans backend comme celui-ci.
-window.updateLocationRatingAggregate = async function (locationId, sumDelta, countDelta) {
-    if (!sumDelta && !countDelta) return;
+//
+// `deltas` : objet ne contenant QUE les clés à incrémenter parmi sum/count/foodSum/
+// foodCount/valueSum/valueCount (voir buildRatingDeltas()/buildRemovalDeltas() dans
+// script.js) — foodSum/valueSum n'existent que pour les lieux Cafe/Restaurants.
+window.updateLocationRatingAggregate = async function (locationId, deltas) {
+    if (!deltas) return;
+    const payload = {};
+    for (const key of ['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount']) {
+        if (deltas[key]) payload[key] = increment(deltas[key]);
+    }
+    if (Object.keys(payload).length === 0) return;
     try {
-        await setDoc(doc(db, 'locationRatings', String(locationId)), {
-            sum: increment(sumDelta),
-            count: increment(countDelta)
-        }, { merge: true });
+        await setDoc(doc(db, 'locationRatings', String(locationId)), payload, { merge: true });
     } catch (e) {
         console.warn('Mise à jour de la note communautaire échouée :', e);
     }
@@ -191,6 +201,67 @@ window.loadAllLocationRatings = async function () {
         return result;
     } catch (e) {
         console.warn('Lecture des notes communautaires échouée :', e);
+        return {};
+    }
+};
+
+// Compteur public "combien d'utilisateurs ont ce lieu dans leur wishlist" — utilisé pour
+// afficher une statistique dans l'onglet Info ("X% des utilisateurs ont ajouté ce lieu à
+// leur wishlist"), voir applyWishlistCountDeltas()/syncWishlist() dans script.js.
+//
+// IMPORTANT — nécessite une règle Firestore dédiée (à ajouter dans la console Firebase) :
+//   match /locationStats/{locationId} {
+//     allow read: if true;
+//     allow write: if request.auth != null
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['wishlistCount']);
+//   }
+// Même limite connue que locationRatings : un client malveillant authentifié pourrait
+// envoyer un increment() arbitraire — hors de portée d'un site statique sans backend.
+window.updateLocationWishlistCount = async function (locationId, delta) {
+    if (!delta) return;
+    try {
+        await setDoc(doc(db, 'locationStats', String(locationId)), { wishlistCount: increment(delta) }, { merge: true });
+    } catch (e) {
+        console.warn('Mise à jour du compteur wishlist échouée :', e);
+    }
+};
+
+window.loadAllLocationStats = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'locationStats'));
+        const result = {};
+        snap.forEach(d => { result[d.id] = d.data(); });
+        return result;
+    } catch (e) {
+        console.warn('Lecture des statistiques de lieux échouée :', e);
+        return {};
+    }
+};
+
+// Nombre total de comptes créés sur le site — dénominateur du pourcentage ci-dessus.
+// Incrémenté une seule fois par compte, juste après createUserWithEmailAndPassword
+// (voir welcome-script.js). Document public à un seul champ, jamais de données perso.
+//
+// IMPORTANT — nécessite une règle Firestore dédiée (à ajouter dans la console Firebase) :
+//   match /siteStats/global {
+//     allow read: if true;
+//     allow write: if request.auth != null
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['totalUsers']);
+//   }
+window.incrementSiteUserCount = async function () {
+    try {
+        await setDoc(doc(db, 'siteStats', 'global'), { totalUsers: increment(1) }, { merge: true });
+    } catch (e) {
+        console.warn('Incrémentation du compteur global d\'utilisateurs échouée :', e);
+    }
+};
+
+window.loadSiteStats = async function () {
+    try {
+        const snap = await getDoc(doc(db, 'siteStats', 'global'));
+        return snap.exists() ? snap.data() : {};
+    } catch (e) {
+        console.warn('Lecture des statistiques globales échouée :', e);
         return {};
     }
 };
@@ -581,6 +652,255 @@ window.listSharedTripsForMe = async function () {
     } catch (e) {
         console.warn('Lecture des voyages partagés échouée :', e);
         return [];
+    }
+};
+
+// ==========================================
+// AMIS (ajout d'amis, partage de lieux, "quels amis ont visité ce lieu")
+// ==========================================
+// Réutilise l'index public usernames/{pseudo}->uid déjà en place pour le partage de
+// voyages (voir lookupUserByUsername ci-dessus) pour retrouver un compte par pseudo.
+//
+// Une demande d'ami est un document à PART (friendRequests/{id}), supprimé dès qu'il
+// est traité (accepté ou refusé) — pas de champ "status" à faire vivre indéfiniment.
+// Une fois acceptée, l'amitié elle-même est stockée en DOUBLE, une fois de chaque côté,
+// dans une sous-collection privée à chaque compte : users/{uid}/friendIndex/{friendUid}.
+// Ce doublon (plutôt qu'un unique document partagé comme pour les voyages) est
+// nécessaire ici : la règle ci-dessous n'autorise QUE deux personnes à écrire dans
+// users/{ownerUid}/friendIndex/{friendUid} — le propriétaire de la liste, ou la personne
+// qui y est ajoutée — ce qui permet à la personne qui ACCEPTE la demande d'écrire les
+// deux côtés en une fois (dans sa propre liste, et dans celle de l'autre) sans jamais
+// avoir besoin d'un accès en écriture plus large sur le compte d'autrui.
+//
+// friendVisits/{uid} est un MIROIR minimal et volontairement pauvre de users/{uid}.visitedLocs
+// (uniquement la liste des ids de lieux, jamais les dates/notes/photos) : une collection
+// séparée exprès, pour ne JAMAIS avoir à assouplir la règle du document users/{uid}
+// complet (qui contient l'email et d'autres informations privées) juste pour permettre
+// à un·e ami·e de voir "as-tu visité ce lieu ?".
+//
+// IMPORTANT — nécessite ces règles Firestore (non déployables depuis ce fichier, à
+// ajouter dans la console Firebase, onglet Firestore > Rules) :
+//   match /friendRequests/{requestId} {
+//     allow read: if request.auth != null
+//       && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+//     allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid;
+//     allow delete: if request.auth != null
+//       && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+//   }
+//   match /users/{ownerUid}/friendIndex/{friendUid} {
+//     allow read: if request.auth != null && request.auth.uid == ownerUid;
+//     allow write: if request.auth != null
+//       && (request.auth.uid == ownerUid || request.auth.uid == friendUid);
+//   }
+//   match /friendVisits/{uid} {
+//     allow read: if request.auth != null && (
+//       request.auth.uid == uid ||
+//       exists(/databases/$(database)/documents/users/$(request.auth.uid)/friendIndex/$(uid))
+//     );
+//     allow write: if request.auth != null && request.auth.uid == uid
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['locationIds']);
+//   }
+// Limite connue, même famille que celle documentée plus haut pour usernames/trips :
+// pas de vérification serveur qu'un uid "ami" existe vraiment avant l'écriture d'une
+// demande — au pire, une demande fantôme vers un uid inexistant, sans conséquence
+// (jamais acceptée puisque personne ne peut la lire).
+
+window.sendFriendRequest = async function (username) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    const cleanUsername = (username || '').trim();
+    if (!cleanUsername) return { error: 'empty' };
+    const myUsername = (localStorage.getItem('userName') || '').trim();
+    if (cleanUsername.toLowerCase() === myUsername.toLowerCase()) return { error: 'self' };
+    const toUid = await window.lookupUserByUsername(cleanUsername);
+    if (!toUid) return { error: 'not-found' };
+    if (toUid === user.uid) return { error: 'self' };
+    try {
+        const alreadyFriend = await getDoc(doc(db, 'users', user.uid, 'friendIndex', toUid));
+        if (alreadyFriend.exists()) return { error: 'already-friends' };
+        // Filtrée sur fromUid==moi (jamais un scan complet de la collection, voir la
+        // règle Firestore ci-dessus et le commentaire de listMyFriendRequests()) : évite
+        // d'envoyer deux fois la même demande tant que la précédente est en attente.
+        const existingSnap = await getDocs(query(collection(db, 'friendRequests'), where('fromUid', '==', user.uid)));
+        let alreadySent = false;
+        existingSnap.forEach(d => { if (d.data().toUid === toUid) alreadySent = true; });
+        if (alreadySent) return { error: 'already-sent' };
+        const ref = doc(collection(db, 'friendRequests'));
+        await setDoc(ref, {
+            fromUid: user.uid, fromUsername: myUsername,
+            toUid, toUsername: cleanUsername,
+            createdAt: serverTimestamp()
+        });
+        return { success: true };
+    } catch (e) {
+        console.warn('Envoi de la demande d\'ami échoué :', e);
+        return { error: 'failed' };
+    }
+};
+
+// Demandes reçues ET envoyées, via DEUX requêtes filtrées séparément (jamais un scan
+// non filtré de toute la collection) : une règle Firestore de type "toUid==moi OU
+// fromUid==moi" ne peut être vérifiée par le serveur sur un getDocs() SANS where() -
+// Firestore refuse alors la requête entière (elle ne "filtre" pas silencieusement les
+// documents non lisibles pour une liste non contrainte). Chaque where() ci-dessous est
+// en revanche trivialement valide pour la règle, puisque TOUS ses résultats possibles
+// la respectent par construction.
+window.listMyFriendRequests = async function () {
+    const user = auth.currentUser;
+    if (!user) return { incoming: [], outgoing: [] };
+    try {
+        const [incomingSnap, outgoingSnap] = await Promise.all([
+            getDocs(query(collection(db, 'friendRequests'), where('toUid', '==', user.uid))),
+            getDocs(query(collection(db, 'friendRequests'), where('fromUid', '==', user.uid)))
+        ]);
+        const incoming = [], outgoing = [];
+        incomingSnap.forEach(d => incoming.push(Object.assign({ id: d.id }, d.data())));
+        outgoingSnap.forEach(d => outgoing.push(Object.assign({ id: d.id }, d.data())));
+        return { incoming, outgoing };
+    } catch (e) {
+        console.warn('Lecture des demandes d\'ami échouée :', e);
+        return { incoming: [], outgoing: [] };
+    }
+};
+
+window.acceptFriendRequest = async function (requestId, fromUid, fromUsername) {
+    const user = auth.currentUser;
+    if (!user) return;
+    const myUsername = (localStorage.getItem('userName') || '').trim();
+    try {
+        await Promise.all([
+            setDoc(doc(db, 'users', user.uid, 'friendIndex', fromUid), { username: fromUsername, since: serverTimestamp() }),
+            setDoc(doc(db, 'users', fromUid, 'friendIndex', user.uid), { username: myUsername, since: serverTimestamp() }),
+            deleteDoc(doc(db, 'friendRequests', requestId))
+        ]);
+    } catch (e) {
+        console.warn('Acceptation de la demande d\'ami échouée :', e);
+    }
+};
+
+// Sert aussi bien à refuser une demande reçue qu'à annuler une demande qu'on a
+// soi-même envoyée — dans les deux cas, il suffit de supprimer le document.
+window.declineFriendRequest = async function (requestId) {
+    try {
+        await deleteDoc(doc(db, 'friendRequests', requestId));
+    } catch (e) {
+        console.warn('Suppression de la demande d\'ami échouée :', e);
+    }
+};
+
+window.listMyFriends = async function () {
+    const user = auth.currentUser;
+    if (!user) return [];
+    try {
+        const snap = await getDocs(collection(db, 'users', user.uid, 'friendIndex'));
+        const result = [];
+        snap.forEach(d => result.push({ uid: d.id, username: d.data().username }));
+        return result;
+    } catch (e) {
+        console.warn('Lecture de la liste d\'amis échouée :', e);
+        return [];
+    }
+};
+
+window.removeFriend = async function (friendUid) {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+        await Promise.all([
+            deleteDoc(doc(db, 'users', user.uid, 'friendIndex', friendUid)),
+            deleteDoc(doc(db, 'users', friendUid, 'friendIndex', user.uid))
+        ]);
+    } catch (e) {
+        console.warn('Retrait de l\'ami échoué :', e);
+    }
+};
+
+// Miroir minimal (juste les ids) de la liste des lieux visités, voir le commentaire
+// d'en-tête de cette section. Appelé depuis syncVisited() dans script.js à chaque
+// changement de la liste des visites.
+window.syncFriendVisits = async function (locationIds) {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+        await setDoc(doc(db, 'friendVisits', user.uid), { locationIds: locationIds || [] }, { merge: true });
+    } catch (e) {
+        console.warn('Synchronisation des visites (amis) échouée :', e);
+    }
+};
+
+// Charge en un seul aller-retour les lieux visités de chaque ami donné — appelé une
+// fois au chargement (voir firebase-ready de map.html), pas par fiche lieu ouverte.
+window.loadFriendVisits = async function (friendUids) {
+    if (!friendUids || friendUids.length === 0) return {};
+    try {
+        const snaps = await Promise.all(friendUids.map(uid => getDoc(doc(db, 'friendVisits', uid))));
+        const result = {};
+        snaps.forEach((snap, i) => { result[friendUids[i]] = (snap.exists() && snap.data().locationIds) || []; });
+        return result;
+    } catch (e) {
+        console.warn('Lecture des visites des amis échouée :', e);
+        return {};
+    }
+};
+
+// Partage d'un lieu précis à un ami (suite du système d'amis ci-dessus) : un simple
+// document par partage, jamais modifié après coup sauf pour son champ `seen` (marqué
+// par le destinataire une fois consulté). Pas de collection à part pour "mes partages
+// envoyés" : listSharesForMe() de chacun suffit, et fromUid reste dans le document pour
+// l'affichage ("Alice a partagé...").
+//
+// IMPORTANT — nécessite cette règle Firestore (non déployable depuis ce fichier, à
+// ajouter dans la console Firebase, onglet Firestore > Rules) :
+//   match /friendShares/{shareId} {
+//     allow read: if request.auth != null
+//       && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+//     allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
+//       && exists(/databases/$(database)/documents/users/$(request.auth.uid)/friendIndex/$(request.resource.data.toUid));
+//     allow update: if request.auth != null && resource.data.toUid == request.auth.uid
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['seen']);
+//   }
+// La condition exists(...) dans allow create empêche de partager un lieu à quelqu'un
+// qui n'est pas (encore) un ami — cohérent avec le reste du système d'amis.
+
+window.shareLocationWithFriend = async function (toUid, locationId, locationName) {
+    const user = auth.currentUser;
+    if (!user) return { error: 'not-signed-in' };
+    const myUsername = (localStorage.getItem('userName') || '').trim();
+    try {
+        const ref = doc(collection(db, 'friendShares'));
+        await setDoc(ref, {
+            fromUid: user.uid, fromUsername: myUsername,
+            toUid, locationId, locationName: locationName || '',
+            seen: false, createdAt: serverTimestamp()
+        });
+        return { success: true };
+    } catch (e) {
+        console.warn('Partage du lieu échoué :', e);
+        return { error: 'failed' };
+    }
+};
+
+// Filtrée sur toUid==moi (même raison que listMyFriendRequests() plus haut : un
+// getDocs() sans where() sur toute la collection serait refusé par la règle ci-dessus).
+window.listSharesForMe = async function () {
+    const user = auth.currentUser;
+    if (!user) return [];
+    try {
+        const snap = await getDocs(query(collection(db, 'friendShares'), where('toUid', '==', user.uid)));
+        const result = [];
+        snap.forEach(d => result.push(Object.assign({ id: d.id }, d.data())));
+        return result;
+    } catch (e) {
+        console.warn('Lecture des lieux partagés échouée :', e);
+        return [];
+    }
+};
+
+window.markShareSeen = async function (shareId) {
+    try {
+        await setDoc(doc(db, 'friendShares', shareId), { seen: true }, { merge: true });
+    } catch (e) {
+        console.warn('Marquage du partage comme lu échoué :', e);
     }
 };
 

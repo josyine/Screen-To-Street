@@ -346,7 +346,8 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         let wList = JSON.parse(localStorage.getItem('wishlistLocs') || '[]');
         wList = wList.filter(w => !(Number(w.id) === Number(id) && ((w.tripId && w.tripId !== 'none' ? w.tripId : 'none') === tripId)));
         localStorage.setItem('wishlistLocs', JSON.stringify(wList));
-        if (typeof window.syncUserData === 'function') window.syncUserData({ wishlistLocs: wList });
+        if (typeof syncWishlist === 'function') syncWishlist(wList);
+        else if (typeof window.syncUserData === 'function') window.syncUserData({ wishlistLocs: wList });
         renderWishlist();
     }
 

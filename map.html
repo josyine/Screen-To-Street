@@ -528,6 +528,19 @@
                     <div style="display:flex; gap:16px; width:100%; align-items:center; flex-wrap:wrap;">
                         <label class="check-item"><input type="checkbox" id="details-visited" class="custom-checkbox"> <span data-i18n="checkVisited">I visited this place</span></label>
                         <label class="check-item"><input type="checkbox" id="details-wishlist" class="custom-checkbox" onchange="toggleWishlist()"> <span data-i18n="checkWishlist">Add to Wishlist</span></label>
+                        <!-- Partager ce lieu à un ami (voir shareLocationWithFriend() dans
+                             firebase-init.js) : masqué pour un visiteur non connecté, voir
+                             firebase-ready plus bas. -->
+                        <div class="dropdown-container hidden" id="share-location-container">
+                            <button type="button" id="share-location-btn" class="check-item" style="border:none;background:none;cursor:pointer;padding:0;color:#64748b;font-family:'Poppins',sans-serif;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                <span data-i18n="shareWithFriendBtn">Share</span>
+                            </button>
+                            <div id="share-location-menu" class="dropdown-menu share-picker-menu hidden">
+                                <div id="share-friend-list"></div>
+                                <div id="share-no-friends" class="hidden" style="padding:10px 14px; font-size:12px; color:#94a3b8;" data-i18n="shareNoFriends">Add a friend first to share locations.</div>
+                            </div>
+                        </div>
                         <!-- Note du lieu : moyenne des notes que CET utilisateur a attribuées lors de
                              ses visites ("I visited this place" -> formulaire de souvenir). Le site
                              n'a pas de note communautaire partagée entre utilisateurs (pas de backend
@@ -575,7 +588,33 @@
                             <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
                         <input type="hidden" id="memory-rating-val" value="4">
-                        
+
+                        <!-- Uniquement pour les catégories Cafe/Restaurants (voir FOOD_RELATED_CATEGORIES
+                             dans script.js) — affiché/masqué par openMemoryEditor() selon le lieu. -->
+                        <div id="memory-food-rating-block" class="hidden">
+                            <span class="sub-label" style="margin-top:14px;" data-i18n="foodQualityRating">Food quality</span>
+                            <div class="stars" id="memory-food-stars">
+                                <svg class="star active" data-val="1" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="2" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="3" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="4" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <input type="hidden" id="memory-food-rating-val" value="4">
+                        </div>
+
+                        <div id="memory-value-rating-block" class="hidden">
+                            <span class="sub-label" style="margin-top:14px;" data-i18n="valueForMoneyRating">Value for money</span>
+                            <div class="stars" id="memory-value-stars">
+                                <svg class="star active" data-val="1" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="2" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="3" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="4" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <input type="hidden" id="memory-value-rating-val" value="4">
+                        </div>
+
                         <span class="sub-label" style="margin-top:14px;" data-i18n="whenDidYouVisit">When did you visit?</span>
                         <input type="date" id="memory-date" style="display:block; width:100%; background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:9px 12px; font-size:12px; color:#334155; margin-bottom:14px; outline:none; font-family:'Poppins', sans-serif;">
                         
@@ -609,6 +648,9 @@
                 </div>
 
                 <div class="tab-panel active" id="tab-info">
+                    <div id="details-wishlist-stat" class="wishlist-stat-box hidden"></div>
+                    <div id="details-friend-visits" class="friend-visits-box hidden"></div>
+
                     <div class="meta-box">
                         <b data-i18n="lGroup">Group:</b> <span id="details-group"></span><br>
                         <b data-i18n="lMembers">Members:</b> <span id="details-member"></span><br>
@@ -768,6 +810,19 @@
             <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
             </button>
+            <!-- Lieux partagés par des amis (voir shareLocationWithFriend()/listSharesForMe()
+                 dans firebase-init.js) : masqué pour un visiteur non connecté, voir
+                 firebase-ready plus bas — partager un lieu nécessite un compte réel. -->
+            <div class="dropdown-container hidden" id="friend-shares-container">
+                <button id="friend-shares-btn" class="header-icon-btn" title="Shared with you">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span id="friend-shares-badge" class="notif-badge hidden">0</span>
+                </button>
+                <div id="friend-shares-menu" class="dropdown-menu hidden" style="width:290px; max-height:360px; overflow-y:auto;">
+                    <div id="friend-shares-list"></div>
+                    <div id="friend-shares-empty" class="hidden" style="padding:16px; font-size:12px; color:#94a3b8; text-align:center;" data-i18n="sharesEmpty">Nothing shared with you yet.</div>
+                </div>
+            </div>
             <div class="dropdown-container">
                 <button id="profile-btn" class="header-icon-btn user-avatar-btn" title="Account">U</button>
                 <div id="profile-menu" class="dropdown-menu hidden">
@@ -1076,6 +1131,23 @@
             window.setCommunityRatings(await window.loadAllLocationRatings());
         }
 
+        // Statistique "X% des utilisateurs ont ajouté ce lieu à leur wishlist" (onglet Info) :
+        // même principe que les notes communautaires ci-dessus, lue une seule fois ici.
+        if (typeof window.loadAllLocationStats === 'function' && typeof window.loadSiteStats === 'function'
+            && typeof window.setLocationWishlistStats === 'function') {
+            const [stats, siteStats] = await Promise.all([window.loadAllLocationStats(), window.loadSiteStats()]);
+            window.setLocationWishlistStats(stats, siteStats.totalUsers || 0);
+        }
+
+        // Amis : liste + lieux visités par chacun, pour l'indicateur "👥 Visité par : ..."
+        // dans l'onglet Info (voir friendsWhoVisited() dans script.js).
+        if (typeof window.listMyFriends === 'function' && typeof window.loadFriendVisits === 'function'
+            && typeof window.setFriendsData === 'function') {
+            const friends = await window.listMyFriends();
+            const visits = await window.loadFriendVisits(friends.map(f => f.uid));
+            window.setFriendsData(friends, visits);
+        }
+
         // Nouveaux lieux approuvés via la file de relecture (voir approveLocationSubmission()
         // dans firebase-init.js) : fusionnés dans celebLocations AVANT le premier rendu, pour
         // qu'un lieu approuvé apparaisse sur la carte sans jamais avoir besoin de modifier
@@ -1111,6 +1183,15 @@
         if (typeof window.isCurrentUserAdmin === 'function') {
             const adminBtn = document.getElementById('admin-shortcut-btn');
             if (adminBtn && await window.isCurrentUserAdmin()) adminBtn.classList.remove('hidden');
+        }
+
+        // Cloche "partagé par vos amis" + bouton "Partager" sur la fiche lieu :
+        // uniquement pour un compte réel (partager un lieu nécessite un compte, voir la
+        // règle friendShares dans firebase-init.js).
+        if (user) {
+            if (typeof window.refreshFriendShares === 'function') window.refreshFriendShares();
+            const shareContainer = document.getElementById('share-location-container');
+            if (shareContainer) shareContainer.classList.remove('hidden');
         }
 
         // "Continuer gratuitement" (voir #gate-continue-free-link plus bas) : la personne

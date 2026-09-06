@@ -201,6 +201,24 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         </div>
       </div>
 
+      <div class="box-container" id="friends-section" style="margin-bottom:26px;">
+        <div class="section-title" data-i18n="friendsTitle">Friends</div>
+        <div style="display:flex; gap:8px; margin-bottom:14px;">
+          <input type="text" id="friend-username-input" class="field-value" style="flex:1;" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">
+          <button id="friend-add-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:0 20px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="friendsAddBtn">Add</button>
+        </div>
+        <div id="friend-add-error" class="hidden" style="background:#FFF1F3; border:1px solid #FBD5DC; color:#D42759; font-size:12px; font-weight:600; padding:8px 12px; border-radius:8px; margin-bottom:14px;"></div>
+
+        <div id="friend-requests-section" class="hidden" style="margin-bottom:18px;">
+          <span class="sub-label" data-i18n="friendsRequestsLabel">Friend requests</span>
+          <div id="friend-requests-list"></div>
+        </div>
+
+        <span class="sub-label" data-i18n="friendsListLabel">Your friends</span>
+        <div id="friends-list"></div>
+        <div id="friends-empty" class="hidden" style="font-size:12.5px;color:#94a3b8;" data-i18n="friendsEmpty">No friends yet — add one by their username above.</div>
+      </div>
+
       <div class="box-container" style="margin-bottom:26px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;"><span class="section-title" style="margin:0;" data-i18n="accPasses">Passes &amp; billing</span></div>
         <div style="display:flex;gap:8px;margin-bottom:16px; flex-wrap:wrap;" id="unlocked-passes"></div>
@@ -713,6 +731,9 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             if (cooldownNote) cooldownNote.classList.remove('hidden');
             const dangerZone = document.getElementById('danger-zone-section');
             if (dangerZone) dangerZone.classList.remove('hidden');
+            const friendsSection = document.getElementById('friends-section');
+            if (friendsSection) friendsSection.classList.remove('hidden');
+            refreshFriendsUI();
         }
         else {
             // Visiteur en "continuer gratuitement" (voir map.html) : il n'y a ni compte ni
@@ -727,8 +748,105 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             if (cooldownNote) cooldownNote.classList.add('hidden');
             const dangerZone = document.getElementById('danger-zone-section');
             if (dangerZone) dangerZone.classList.add('hidden');
+            // Pas de compte = pas d'amis possibles (ça nécessite un pseudo réel et
+            // Firestore) : masqué plutôt que laissé vide et non-fonctionnel.
+            const friendsSection = document.getElementById('friends-section');
+            if (friendsSection) friendsSection.classList.add('hidden');
         }
     });
+
+    // ==========================================
+    // AMIS
+    // ==========================================
+    async function refreshFriendsUI() {
+        if (typeof window.listMyFriends !== 'function' || typeof window.listMyFriendRequests !== 'function') return;
+        const [friends, requests] = await Promise.all([window.listMyFriends(), window.listMyFriendRequests()]);
+        renderFriendRequests(requests.incoming, requests.outgoing);
+        renderFriendsList(friends);
+    }
+
+    function renderFriendRequests(incoming, outgoing) {
+        const section = document.getElementById('friend-requests-section');
+        const list = document.getElementById('friend-requests-list');
+        if (!section || !list) return;
+        const rows = [];
+        incoming.forEach(r => {
+            rows.push(`<div class="friend-row">
+                <span>${t('friendsRequestFrom').replace('{username}', r.fromUsername)}</span>
+                <div style="display:flex;gap:6px;">
+                    <button class="friend-accept-btn" data-request-id="${r.id}" data-from-uid="${r.fromUid}" data-from-username="${r.fromUsername}">${t('friendsAccept')}</button>
+                    <button class="friend-decline-btn" data-request-id="${r.id}">${t('friendsDecline')}</button>
+                </div>
+            </div>`);
+        });
+        outgoing.forEach(r => {
+            rows.push(`<div class="friend-row">
+                <span>${r.toUsername} — ${t('friendsSentLabel')}</span>
+                <button class="friend-decline-btn" data-request-id="${r.id}">${t('friendsCancel')}</button>
+            </div>`);
+        });
+        list.innerHTML = rows.join('');
+        section.classList.toggle('hidden', rows.length === 0);
+    }
+
+    function renderFriendsList(friends) {
+        const list = document.getElementById('friends-list');
+        const empty = document.getElementById('friends-empty');
+        if (!list || !empty) return;
+        list.innerHTML = friends.map(f => `<div class="friend-row">
+            <span>${f.username}</span>
+            <button class="friend-remove-btn" data-friend-uid="${f.uid}">${t('friendsRemove')}</button>
+        </div>`).join('');
+        empty.classList.toggle('hidden', friends.length > 0);
+    }
+
+    const friendAddBtn = document.getElementById('friend-add-btn');
+    if (friendAddBtn) {
+        friendAddBtn.addEventListener('click', async () => {
+            const input = document.getElementById('friend-username-input');
+            const errBox = document.getElementById('friend-add-error');
+            errBox.classList.add('hidden');
+            const username = input.value.trim();
+            if (!username || typeof window.sendFriendRequest !== 'function') return;
+            const result = await window.sendFriendRequest(username);
+            if (result.error === 'not-found') {
+                errBox.textContent = t('friendsErrNotFound');
+                errBox.classList.remove('hidden');
+            } else if (result.error === 'self') {
+                errBox.textContent = t('friendsErrSelf');
+                errBox.classList.remove('hidden');
+            } else if (result.success) {
+                input.value = '';
+                refreshFriendsUI();
+            }
+        });
+    }
+
+    const friendRequestsList = document.getElementById('friend-requests-list');
+    if (friendRequestsList) {
+        friendRequestsList.addEventListener('click', async (e) => {
+            const acceptBtn = e.target.closest('.friend-accept-btn');
+            const declineBtn = e.target.closest('.friend-decline-btn');
+            if (acceptBtn) {
+                await window.acceptFriendRequest(acceptBtn.dataset.requestId, acceptBtn.dataset.fromUid, acceptBtn.dataset.fromUsername);
+                refreshFriendsUI();
+            } else if (declineBtn) {
+                await window.declineFriendRequest(declineBtn.dataset.requestId);
+                refreshFriendsUI();
+            }
+        });
+    }
+
+    const friendsListEl = document.getElementById('friends-list');
+    if (friendsListEl) {
+        friendsListEl.addEventListener('click', async (e) => {
+            const removeBtn = e.target.closest('.friend-remove-btn');
+            if (removeBtn) {
+                await window.removeFriend(removeBtn.dataset.friendUid);
+                refreshFriendsUI();
+            }
+        });
+    }
 
     // ==========================================
     // SUPPRESSION DE COMPTE
