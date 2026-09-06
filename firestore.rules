@@ -1,0 +1,220 @@
+// ==========================================
+// RÈGLES FIRESTORE COMPLÈTES — Screen To Street
+// ==========================================
+// Ce fichier n'est PAS déployé automatiquement (le site est un simple hébergement
+// statique GitHub Pages, sans Firebase CLI/CI configuré) : il sert de référence
+// unique, à copier-coller manuellement dans la console Firebase
+// (Firestore Database > Rules > coller tout ce fichier > Publier) à chaque fois
+// qu'une collection change. Compilé à partir des règles documentées en commentaire
+// à côté de chaque fonction dans firebase-init.js — gardez les deux synchronisés :
+// toute nouvelle collection/champ ajouté côté code doit être répercuté ici.
+//
+// Convention générale du site : aucune Cloud Function (site 100% statique sans
+// backend) — les règles ci-dessous sont donc la SEULE ligne de défense. Une limite
+// commune à plusieurs collections d'agrégats (locationRatings, locationStats,
+// siteStats) est documentée à chaque bloc concerné : un compte authentifié
+// malveillant pourrait toujours écrire un increment() arbitraire, une vraie
+// validation de "la note est bien entre 1 et 5" nécessiterait une Cloud Function.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // COMPTES UTILISATEURS
+    // ==========================================
+    // Document privé complet d'un compte (profil, myTrips, visitedLocs, wishlist,
+    // notes de visite, email...) — jamais lisible par un autre compte.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // Liste d'amis d'un compte (users/{ownerUid}/friendIndex/{friendUid}) : stockée
+      // en double, une fois de chaque côté de l'amitié (voir acceptFriendRequest dans
+      // firebase-init.js). Le propriétaire ET la personne ajoutée peuvent y écrire —
+      // c'est ce qui permet à celle qui ACCEPTE une demande d'écrire les deux côtés en
+      // une fois, sans avoir besoin d'un accès plus large au compte d'autrui. Seul le
+      // propriétaire peut LIRE sa propre liste (l'existence d'une entrée y est en
+      // revanche vérifiée via exists() par d'autres règles plus bas, sans lecture directe).
+      match /friendIndex/{friendUid} {
+        allow read: if request.auth != null && request.auth.uid == ownerUid;
+        allow write: if request.auth != null
+          && (request.auth.uid == ownerUid || request.auth.uid == friendUid);
+      }
+    }
+
+    // Index public pseudo -> uid, utilisé pour retrouver un compte par son pseudo
+    // (partage de voyages, demandes d'ami). Un compte ne peut réserver/modifier que
+    // l'entrée qui pointe vers SON PROPRE uid.
+    match /usernames/{username} {
+      allow read: if true;
+      allow write: if request.auth != null && request.resource.data.uid == request.auth.uid;
+    }
+
+    // ==========================================
+    // NOTES & STATISTIQUES COMMUNAUTAIRES (agrégats publics, jamais de note individuelle)
+    // ==========================================
+    // Note communautaire (/5) + dimensions optionnelles (food/value/accessibility/
+    // siteQuality) d'un lieu : moyenne partagée entre tous les comptes.
+    match /locationRatings/{locationId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount',
+                       'accessibilitySum', 'accessibilityCount', 'siteQualitySum', 'siteQualityCount']);
+    }
+
+    // Compteur public "combien de comptes ont ce lieu dans leur wishlist".
+    match /locationStats/{locationId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['wishlistCount']);
+    }
+
+    // Statistiques globales du site (nombre total de comptes créés). Un seul document
+    // aujourd'hui (siteStats/global), mais la règle s'applique à tout document de la
+    // collection pour rester valable si d'autres compteurs globaux s'ajoutent plus tard.
+    match /siteStats/{statId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['totalUsers']);
+    }
+
+    // ==========================================
+    // CONTENU DES LIEUX (migration progressive hors de script.js)
+    // ==========================================
+    // Contenu riche (Story/infos pratiques/conseils/vidéo) d'un lieu, publié UNIQUEMENT
+    // via un script d'administration (Admin SDK, qui contourne ces règles) ou via
+    // approveLocationSubmission() côté site — jamais en écriture directe depuis un client.
+    match /locationContent/{locationId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Avis publics ("Reviews") sur un lieu : un avis par personne et par lieu, stocké
+    // dans une sous-collection pour pouvoir lire tous les avis d'UN lieu sans lire
+    // toute la collection.
+    match /locationReviews/{locationId}/items/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // File de relecture des propositions de nouveaux lieux/corrections (par un agent IA
+    // ou un humain) : n'importe qui peut proposer, mais seul un administrateur peut lire
+    // la file, approuver ou rejeter.
+    match /locationSubmissions/{submissionId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Lieux nouvellement approuvés (fusionnés dans celebLocations côté client au
+    // chargement de la carte) : lisibles par tous, écrits uniquement par un admin.
+    match /newLocations/{locationId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Statut administrateur : un compte ne peut lire QUE son propre statut (pour savoir
+    // s'il doit voir les liens admin dans l'UI) ; ce document ne peut JAMAIS être créé
+    // depuis le site, uniquement depuis la console Firebase (voir le commentaire
+    // détaillé au-dessus de isCurrentUserAdmin() dans firebase-init.js).
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // ==========================================
+    // VOYAGES PARTAGÉS ("travel buddies")
+    // ==========================================
+    match /trips/{tripId} {
+      allow read: if request.auth != null
+        && (resource.data.ownerUid == request.auth.uid || request.auth.uid in resource.data.members);
+      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if request.auth != null
+        && (resource.data.ownerUid == request.auth.uid || resource.data.members[request.auth.uid] == 'edit');
+      allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // ==========================================
+    // AMIS
+    // ==========================================
+    // Demande d'ami : document temporaire, supprimé dès qu'il est traité (accepté ou
+    // refusé). Lisible/supprimable par l'expéditeur ET le destinataire.
+    match /friendRequests/{requestId} {
+      allow read: if request.auth != null
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+      allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid;
+      allow delete: if request.auth != null
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+    }
+
+    // Miroir minimal (uniquement les ids de lieux, jamais dates/notes/photos) de la
+    // liste des lieux visités d'un compte, exposé à ses amis uniquement — pour ne
+    // jamais avoir à assouplir la règle du document users/{uid} complet (qui contient
+    // l'email et d'autres informations privées) juste pour ça.
+    match /friendVisits/{uid} {
+      allow read: if request.auth != null && (
+        request.auth.uid == uid ||
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)/friendIndex/$(uid))
+      );
+      allow write: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['locationIds']);
+    }
+
+    // Partage d'un lieu ou d'un voyage à un ami. La condition exists(...) sur
+    // allow create empêche de partager à quelqu'un qui n'est pas (encore) un ami.
+    // Seul `seen` peut être modifié après création, et seulement par le destinataire
+    // (marquage "lu").
+    match /friendShares/{shareId} {
+      allow read: if request.auth != null
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+      allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid)/friendIndex/$(request.resource.data.toUid));
+      allow update: if request.auth != null && resource.data.toUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['seen']);
+    }
+
+    // ==========================================
+    // MESSAGERIE (friends.html) — DM entre deux amis, ou groupe lié à un voyage partagé
+    // ==========================================
+    // Une conversation DM porte members:[uidA,uidB] en dur (jamais modifié). Une
+    // conversation de groupe ("trip_<tripId>") NE duplique PAS la liste des membres :
+    // elle consulte directement trips/{tripId}, déjà la source de vérité pour "qui est
+    // dans ce voyage", pour ne jamais risquer une désynchronisation entre deux listes.
+    function isConvoMember(convoData) {
+      return convoData.type == 'dm'
+        ? request.auth.uid in convoData.members
+        : (get(/databases/$(database)/documents/trips/$(convoData.tripId)).data.ownerUid == request.auth.uid
+           || request.auth.uid in get(/databases/$(database)/documents/trips/$(convoData.tripId)).data.members);
+    }
+    match /conversations/{convoId} {
+      allow read: if request.auth != null && isConvoMember(resource.data);
+      allow create: if request.auth != null && isConvoMember(request.resource.data);
+      allow update: if request.auth != null && isConvoMember(resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid']);
+
+      match /messages/{messageId} {
+        allow read: if request.auth != null
+          && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+        allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid
+          && isConvoMember(get(/databases/$(database)/documents/conversations/$(convoId)).data);
+      }
+
+      // Horodatage "dernière lecture" par personne, pour calculer les messages non lus.
+      match /reads/{uid} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // ==========================================
+    // GARDE-FOU : tout le reste est refusé par défaut (déjà le comportement natif de
+    // Firestore pour un chemin sans règle correspondante — explicité ici par clarté).
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
