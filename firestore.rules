@@ -180,8 +180,36 @@ service cloud.firestore {
         || (request.auth.uid in resource.data.members
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberNames'])
             && !(request.auth.uid in request.resource.data.members))
+        // Accepter une invitation à un voyage (demande du 06/09/2026, tripInvites/{id} plus
+        // bas) : symétrique de la clause "Leave group" juste au-dessus — on ne peut jamais
+        // s'ajouter aux côtés d'un autre changement, seulement s'ajouter SOI-MÊME (jamais
+        // quelqu'un d'autre) avec un rôle valide, et seulement si on n'était pas déjà
+        // membre. Pas de vérification qu'une invitation existe réellement pour ce voyage
+        // précis (limite acceptée, même famille que celle documentée ailleurs dans ce
+        // fichier pour usernames/friendRequests : au pire quelqu'un qui connaît déjà un id
+        // de voyage s'y ajoute sans invitation, sans conséquence grave sur un site sans
+        // données sensibles dans un voyage).
+        || (!(request.auth.uid in resource.data.members)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberNames'])
+            && request.resource.data.members[request.auth.uid] in ['view', 'edit'])
       );
       allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Invitation à rejoindre un voyage partagé (demande du 06/09/2026) : contrairement à
+    // l'ancien inviteTripCollaborator() qui ajoutait directement la personne à
+    // trips/{id}.members, partager un voyage ou y ajouter quelqu'un crée maintenant une
+    // invitation EN ATTENTE ici — la personne n'apparaît dans trips/{id}.members (et donc
+    // dans "My Itinerary"/"Explore"/la liste "Trip groups" de friends.html, qui lisent
+    // tous les trois cette même source) qu'après l'avoir acceptée elle-même (voir la
+    // clause d'auto-ajout ci-dessus). Même schéma que friendRequests/{id} : deux requêtes
+    // where() séparées (toUid==moi, fromUid==moi), jamais un scan de toute la collection.
+    match /tripInvites/{inviteId} {
+      allow read: if request.auth != null
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
+      allow create: if request.auth != null && request.resource.data.fromUid == request.auth.uid;
+      allow delete: if request.auth != null
+        && (resource.data.toUid == request.auth.uid || resource.data.fromUid == request.auth.uid);
     }
 
     // ==========================================
