@@ -575,7 +575,33 @@
                             <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                         </div>
                         <input type="hidden" id="memory-rating-val" value="4">
-                        
+
+                        <!-- Uniquement pour les catégories Cafe/Restaurants (voir FOOD_RELATED_CATEGORIES
+                             dans script.js) — affiché/masqué par openMemoryEditor() selon le lieu. -->
+                        <div id="memory-food-rating-block" class="hidden">
+                            <span class="sub-label" style="margin-top:14px;" data-i18n="foodQualityRating">Food quality</span>
+                            <div class="stars" id="memory-food-stars">
+                                <svg class="star active" data-val="1" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="2" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="3" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="4" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <input type="hidden" id="memory-food-rating-val" value="4">
+                        </div>
+
+                        <div id="memory-value-rating-block" class="hidden">
+                            <span class="sub-label" style="margin-top:14px;" data-i18n="valueForMoneyRating">Value for money</span>
+                            <div class="stars" id="memory-value-stars">
+                                <svg class="star active" data-val="1" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="2" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="3" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star active" data-val="4" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <svg class="star" data-val="5" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </div>
+                            <input type="hidden" id="memory-value-rating-val" value="4">
+                        </div>
+
                         <span class="sub-label" style="margin-top:14px;" data-i18n="whenDidYouVisit">When did you visit?</span>
                         <input type="date" id="memory-date" style="display:block; width:100%; background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:9px 12px; font-size:12px; color:#334155; margin-bottom:14px; outline:none; font-family:'Poppins', sans-serif;">
                         

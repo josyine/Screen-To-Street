@@ -163,19 +163,29 @@ window.loadUserCloudData = async function () {
 //   match /locationRatings/{locationId} {
 //     allow read: if true;
 //     allow write: if request.auth != null
-//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sum', 'count']);
+//       && request.resource.data.diff(resource.data).affectedKeys()
+//            .hasOnly(['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount']);
 //   }
+// (Si la règle précédente, sans foodSum/foodCount/valueSum/valueCount, est encore en place,
+// remplacez-la par celle-ci — sinon les notes food/valeur des lieux Cafe/Restaurants
+// échoueront silencieusement avec permission-denied.)
 // Limite connue : un client malveillant authentifié pourrait tout de même écrire un
 // incrément arbitraire (ex: +1000) puisque les règles Firestore seules ne peuvent pas
 // vérifier qu'un increment() correspond à "une vraie note entre 1 et 5" sans passer par
 // une Cloud Function — hors de portée d'un site 100% statique sans backend comme celui-ci.
-window.updateLocationRatingAggregate = async function (locationId, sumDelta, countDelta) {
-    if (!sumDelta && !countDelta) return;
+//
+// `deltas` : objet ne contenant QUE les clés à incrémenter parmi sum/count/foodSum/
+// foodCount/valueSum/valueCount (voir buildRatingDeltas()/buildRemovalDeltas() dans
+// script.js) — foodSum/valueSum n'existent que pour les lieux Cafe/Restaurants.
+window.updateLocationRatingAggregate = async function (locationId, deltas) {
+    if (!deltas) return;
+    const payload = {};
+    for (const key of ['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount']) {
+        if (deltas[key]) payload[key] = increment(deltas[key]);
+    }
+    if (Object.keys(payload).length === 0) return;
     try {
-        await setDoc(doc(db, 'locationRatings', String(locationId)), {
-            sum: increment(sumDelta),
-            count: increment(countDelta)
-        }, { merge: true });
+        await setDoc(doc(db, 'locationRatings', String(locationId)), payload, { merge: true });
     } catch (e) {
         console.warn('Mise à jour de la note communautaire échouée :', e);
     }
