@@ -19,6 +19,7 @@ import {
     doc,
     setDoc,
     getDoc,
+    writeBatch,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
@@ -306,6 +307,21 @@ function friendlyAuthError(code) {
     return table[code] || t.errDefault;
 }
 
+// Réserve (ou répare) l'entrée usernames/{pseudo} -> uid. Fonction LOCALE à ce fichier
+// (et non window.claimUsername de firebase-init.js) car cette page-ci n'a jamais chargé
+// firebase-init.js : index.html ne charge que welcome-script.js. `window.claimUsername`
+// y est donc TOUJOURS undefined, et les anciens appels `if (typeof window.claimUsername
+// === 'function')` plus bas ne s'exécutaient en réalité jamais — la cause principale
+// d'une collection `usernames` restée quasiment vide malgré de nombreux comptes dans
+// `users`. Pas de transaction ici (juste lecture puis écriture séparées) : un très léger
+// risque de collision entre deux inscriptions simultanées avec EXACTEMENT le même pseudo
+// à la même milliseconde reste possible, un risque déjà accepté ailleurs sur ce site pour
+// ce même index (voir claimUsername()/searchUsernamesByPrefix() dans firebase-init.js).
+async function isUsernameTakenByOther(key, uid) {
+    const snap = await getDoc(doc(db, 'usernames', key));
+    return snap.exists() && snap.data().uid !== uid;
+}
+
 // ==========================================
 // CHARGEMENT DU PROFIL D'UN UTILISATEUR EXISTANT
 // ==========================================
@@ -319,22 +335,23 @@ async function loadExistingProfileAndRedirect(user) {
         if (snap.exists()) {
             const data = snap.data();
             if (data.username) localStorage.setItem('userName', data.username);
-            // Comptes créés avant l'ajout du partage de voyages : sans pseudo réservé dans
-            // l'index public usernames/, personne ne peut inviter cette personne comme
-            // "travel buddy" — on le répare discrètement à chaque connexion.
-            // Fire-and-forget volontaire (ne doit jamais bloquer la connexion), mais on
-            // vérifie quand même le résultat pour le journaliser : un échec silencieux ici
-            // (ex: règles Firestore pas encore à jour au moment de cette connexion) est
-            // exactement ce qui a laissé certains comptes plus anciens sans entrée
-            // usernames/{pseudo}, les rendant introuvables par les autres. claimUsername()
-            // avale déjà ses propres erreurs réseau (elle ne rejette jamais), d'où la
-            // vérification du résultat plutôt qu'un .catch().
-            if (data.username && typeof window.claimUsername === 'function') {
-                window.claimUsername(data.username).then(r => {
-                    if (r && r.success === false && r.code !== 'taken') {
-                        console.warn('Réparation du pseudo public échouée au login :', r.code);
+            // Comptes créés avant l'ajout du partage de voyages (ou avant ce correctif) :
+            // sans pseudo réservé dans l'index public usernames/, personne ne peut inviter
+            // cette personne comme "travel buddy" — on le répare à chaque connexion.
+            // AWAIT nécessaire (pas de fire-and-forget) : le redirect vers map.html juste
+            // en dessous coupe immédiatement le contexte JS de cette page, ce qui annule
+            // toute requête réseau encore en vol — un fire-and-forget ici n'aboutissait
+            // donc presque jamais avant même le problème de window.claimUsername absent
+            // (voir isUsernameTakenByOther ci-dessus).
+            if (data.username) {
+                const key = data.username.toLowerCase().trim();
+                try {
+                    if (!(await isUsernameTakenByOther(key, user.uid))) {
+                        await setDoc(doc(db, 'usernames', key), { uid: user.uid, username: data.username.trim() }, { merge: true });
                     }
-                });
+                } catch (e) {
+                    console.warn('Réparation du pseudo public échouée au login :', e);
+                }
             }
             if (data.firstName) localStorage.setItem('userFirstName', data.firstName);
             if (Array.isArray(data.unlockedGroups)) localStorage.setItem('unlockedGroups', JSON.stringify(data.unlockedGroups));
@@ -526,9 +543,23 @@ if(btnToStep3) {
         const user = auth.currentUser;
         if (user) {
             btnToStep3.disabled = true;
+            const usernameKey = usernameVal.toLowerCase().trim();
             try {
                 await updateProfile(user, { displayName: usernameVal });
-                await setDoc(doc(db, 'users', user.uid), {
+                const taken = await isUsernameTakenByOther(usernameKey, user.uid);
+                // Écriture en lot (Batched Write) : native à Firebase, gratuite, aucun
+                // compte de facturation requis (contrairement aux Cloud Functions). Le
+                // profil du compte (users/{uid}) ET sa réservation de pseudo public
+                // (usernames/{pseudo}) partent comme UNE SEULE opération atomique — si
+                // l'une échoue (coupure réseau...), l'autre n'est jamais écrite non plus.
+                // Avant ce correctif, les deux écritures étaient indépendantes, et la
+                // réservation du pseudo dépendait même de window.claimUsername(), une
+                // fonction définie dans firebase-init.js — jamais chargé sur cette page
+                // (index.html ne charge que welcome-script.js) : elle ne s'exécutait donc
+                // silencieusement JAMAIS, laissant `usernames` quasiment vide malgré de
+                // nombreux comptes dans `users`.
+                const batch = writeBatch(db);
+                batch.set(doc(db, 'users', user.uid), {
                     username: usernameVal,
                     firstName: fnameVal,
                     lastName: lnameVal,
@@ -541,17 +572,13 @@ if(btnToStep3) {
                     myTrips: [],
                     createdAt: serverTimestamp()
                 }, { merge: true });
+                if (!taken) {
+                    batch.set(doc(db, 'usernames', usernameKey), { uid: user.uid, username: usernameVal }, { merge: true });
+                }
+                await batch.commit();
             } catch (e) {
                 // On laisse la personne avancer même si l'écriture échoue pour l'instant ;
                 // les règles de sécurité Firestore seront ajustées dans une étape suivante.
-            }
-            // Réserve le pseudo dans l'index public usernames/ (voir firebase-init.js) :
-            // c'est ce qui permet à un autre utilisateur d'inviter cette personne comme
-            // "travel buddy" sur un voyage (trips.html) en tapant simplement son pseudo.
-            if (typeof window.claimUsername === 'function') {
-                window.claimUsername(usernameVal).then(r => {
-                    if (r && r.success === false) console.warn('Réservation du pseudo à l\'inscription échouée :', r.code);
-                });
             }
             btnToStep3.disabled = false;
         }

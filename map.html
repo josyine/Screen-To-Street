@@ -475,22 +475,15 @@
 
                 <!-- ONGLET 2 : MY ITINERARY -->
                 <div id="sidebar-itinerary" class="sidebar-main-panel hidden">
-                    
-                    <!-- MENU DÉROULANT CUSTOM REDESIGNÉ -->
-                    <div class="custom-trip-select">
-                        <div class="trip-select-header" id="trip-select-header-box" onclick="toggleTripDropdown(event)">
-                            <div class="trip-select-header-text">
-                                <div class="trip-select-icon">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                                </div>
-                                <span id="trip-select-label" class="trip-select-label-main" style="color: #64748b; font-weight: 500;">Select a trip to view</span>
-                            </div>
-                            <svg id="trip-select-chevron" class="trip-select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                        <div class="trip-select-dropdown hidden" id="trip-dropdown-list">
-                            <!-- Injecté par JS de façon robuste -->
-                        </div>
+
+                    <!-- Barre de recherche discrète (même style que la recherche de l'onglet
+                         Explore, sans en changer la place à elle) + liste épurée des voyages,
+                         sans encart de carte lourd (demande du 06/09/2026). -->
+                    <div style="position:relative; margin-bottom:16px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; left:14px; top:12px;"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="itinerary-search-input" class="input-field" style="padding-left:36px; background: transparent; border: 1.5px solid #cbd5e1; box-shadow: none;" oninput="window.filterItineraryTripList()" data-i18n-placeholder="searchTripsPlaceholder" placeholder="Search your trips...">
                     </div>
+                    <div id="itinerary-trip-list" class="itinerary-trip-list"></div>
 
                     <!-- BOUTON AUTO-ITINERARY GENERATOR -->
                     <button id="iti-generator-btn" class="gen-btn" onclick="openItineraryModal()" style="width:100%; justify-content:center; margin-bottom:25px;">
@@ -693,6 +686,12 @@
                     <div id="details-video-section" class="media-section hidden">
                         <span class="sub-label" data-i18n="lWatchEpi">Watch</span>
                         <div class="video-wrapper" id="details-video-container"></div>
+                        <!-- Conteneur DÉDIÉ au post Twitter/X embarqué (voir renderTweetEmbedOnDetails()
+                             dans script.js) : .video-wrapper impose un ratio 16:9 fixe + overflow:hidden
+                             pensé pour un <iframe> vidéo, ce qui écrasait/rognait le widget Twitter (bien
+                             plus haut que large) — d'où l'affichage "moche" signalé. Ce conteneur laisse
+                             au contraire le widget prendre sa hauteur naturelle. -->
+                        <div class="tweet-embed-wrapper hidden" id="details-tweet-container"></div>
                     </div>
 
                     <span class="sub-label" data-i18n="lPractical">Practical information &amp; access</span>
