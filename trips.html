@@ -90,7 +90,8 @@
 
   /* Edition de Voyage */
   .trip-detail-wrapper { width: 100%; display: none; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 35px 40px; box-shadow: 0 12px 40px rgba(80,60,120,.08); border: 1px solid rgba(255,255,255,0.6);}
-  .trip-hero { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #e2e8f0; }
+  .trip-hero { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #e2e8f0; gap: 16px; }
+  .trip-cover-preview { width: 72px; height: 72px; border-radius: 14px; background-size: cover; background-position: center; flex-shrink: 0; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
   .trip-head-info { display: flex; flex-direction: column; gap: 8px; flex: 1; }
   .trip-name-input { width: 100%; font-size: 32px; font-weight: 700; color: #212832; border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 4px 8px; margin-left: -8px; outline: none; transition: 0.2s;}
   .trip-name-input:focus, .trip-name-input:hover { border-color: #cbd5e1; background: #fff; }
@@ -290,14 +291,19 @@
             <div class="empty-state" id="empty-state">Loading your trips...</div>
 
             <div id="trip-detail-content" class="trip-detail-wrapper">
-                <div class="trip-hero">
-                    <div class="trip-head-info">
-                        <input type="text" id="edit-trip-name" class="trip-name-input" placeholder="Trip Name" onchange="saveTrip()">
-                        <div class="trip-access-row">
-                            <div id="trip-buddies-avatars" class="trip-buddies-avatars"></div>
-                            <button type="button" class="trip-share-pill owner-only" onclick="if(currentTrip) openShareTripModal(currentTrip.id, event)" data-i18n="tripShareThis">+ Share this trip</button>
+                <div class="trip-hero" id="trip-hero">
+                    <div style="display:flex; align-items:flex-start; gap:16px; min-width:0;">
+                        <div id="trip-cover-preview" class="trip-cover-preview hidden" onclick="document.getElementById('trip-cover-input').click()" title=""></div>
+                        <div class="trip-head-info">
+                            <input type="text" id="edit-trip-name" class="trip-name-input" placeholder="Trip Name" onchange="saveTrip()">
+                            <div class="trip-access-row">
+                                <div id="trip-buddies-avatars" class="trip-buddies-avatars"></div>
+                                <button type="button" class="trip-share-pill owner-only" onclick="if(currentTrip) openShareTripModal(currentTrip.id, event)" data-i18n="tripShareThis">+ Share this trip</button>
+                                <button type="button" class="trip-share-pill owner-only" onclick="document.getElementById('trip-cover-input').click()" data-i18n="tripAddCoverBtn">+ Cover photo</button>
+                                <input type="file" id="trip-cover-input" accept="image/*" style="display:none;">
+                            </div>
+                            <div class="trip-dates" id="dates-display"></div>
                         </div>
-                        <div class="trip-dates" id="dates-display"></div>
                     </div>
                     <div>
                         <button class="gen-btn ghost owner-only" style="border-color:#ef4444; color:#ef4444;" onclick="openDeleteModal()" id="i18n-delete-trip">Delete</button>
