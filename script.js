@@ -252,7 +252,12 @@ const ARIRANG_TOUR = {
               { dates: ['2026-08-27'], surpriseSongs: ['Tomorrow', '힙합성애자 (Hip Hop Phile)'] },
               { dates: ['2026-08-28'], surpriseSongs: ['134340', '소우주 (Mikrokosmos)'], highlights: { en: ["During Mikrokosmos, a light rain began to fall over the open-air stadium, making the atmosphere magical and deeply poetic."], fr: ["Pendant Mikrokosmos, une pluie fine a commencé à tomber sur le stade ouvert, rendant l'atmosphère magique et très poétique."], es: ["Durante Mikrokosmos, comenzó a caer una lluvia fina sobre el estadio al aire libre, creando una atmósfera mágica y muy poética."], it: ["Durante Mikrokosmos, una pioggerellina ha iniziato a cadere sullo stadio all'aperto, rendendo l'atmosfera magica e molto poetica."], pt: ["Durante Mikrokosmos, uma chuva fina começou a cair sobre o estádio a céu aberto, tornando a atmosfera mágica e muito poética."], ko: ["Mikrokosmos가 흐르는 동안 개방형 경기장 위로 가랑비가 내리기 시작해, 마법 같고 매우 시적인 분위기를 자아냈다."], ja: ["Mikrokosmosが流れている間、屋外スタジアムに小雨が降り始め、幻想的でとても詩的な雰囲気を作り出した。"], zh: ["在演唱《Mikrokosmos》期间，露天体育场开始下起细雨，营造出如梦似幻、诗意十足的氛围。"] } }
           ] },
-        { id: 'la',          city: 'Los Angeles',   country: 'USA',         venue: 'SoFi Stadium',               lat: 33.9535,  lng: -118.3392, showDates: ['2026-09-01', '2026-09-02', '2026-09-05', '2026-09-06'] },
+        { id: 'la',          city: 'Los Angeles',   country: 'USA',         venue: 'SoFi Stadium',               lat: 33.9535,  lng: -118.3392, showDates: ['2026-09-01', '2026-09-02', '2026-09-05', '2026-09-06'],
+          nights: [
+              { dates: ['2026-09-01'], surpriseSongs: ['상남자 (Boy in Luv)', 'Magic Shop'] },
+              { dates: ['2026-09-02'], surpriseSongs: ['Love Maze', '뱁새 (Silver Spoon)'] }
+              /* 2026-09-05: surprise songs not yet reported by sourced outlets — add once verified, do not invent */
+          ] },
         { id: 'bogota',      city: 'Bogota',        country: 'Colombia',    venue: 'Estadio El Campín',          lat: 4.6486,   lng: -74.0925,  showDates: ['2026-10-02', '2026-10-03'] },
         { id: 'lima',        city: 'Lima',          country: 'Peru',        venue: 'Estadio San Marcos',         lat: -12.0578, lng: -77.0839,  showDates: ['2026-10-07', '2026-10-09', '2026-10-10'] },
         { id: 'santiago',    city: 'Santiago',      country: 'Chile',       venue: 'Estadio Nacional',           lat: -33.4642, lng: -70.6072,  showDates: ['2026-10-14', '2026-10-16', '2026-10-17'] },
