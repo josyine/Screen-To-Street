@@ -40,7 +40,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-preview{margin-bottom:8px;border-radius:10px;overflow:hidden;}
 .sub-photo-preview img{display:block;width:100%;max-height:220px;object-fit:cover;}
 .sub-photo-missing{background:#FFF7F8;border:1px dashed #FBD5DC;border-radius:10px;padding:14px;text-align:center;color:#D42759;font-size:12px;font-weight:600;}
-.sub-photo-input,.sub-tweet-input,.sub-video-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
+.sub-photo-input,.sub-tweet-input,.sub-video-input,.sub-social-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
 .sub-photo-hint{font-size:10.5px;color:#94a3b8;margin-bottom:12px;line-height:1.4;}
 .sub-tweet-preview{margin-bottom:8px;}
 .sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;margin-bottom:12px;}
@@ -126,6 +126,23 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         return /^https?:\/\/(www\.)?(twitter|x)\.com\/[^/]+\/status\/\d+/.test(s) ? s : null;
     }
 
+    // Instagram/Facebook/TikTok (demande du 06/09/2026, en plus du champ Twitter/X) :
+    // pas d'embed ici (contrairement au tweet), juste un lien "Follow" cliquable sur la
+    // fiche du lieu — valide seulement le domaine, pour éviter d'y coller une image ou
+    // une URL d'un autre site par erreur.
+    function extractInstagramUrl(url) {
+        const s = (url || '').trim();
+        return /^https?:\/\/(www\.)?instagram\.com\/.+/.test(s) ? s : null;
+    }
+    function extractFacebookUrl(url) {
+        const s = (url || '').trim();
+        return /^https?:\/\/(www\.)?facebook\.com\/.+/.test(s) ? s : null;
+    }
+    function extractTikTokUrl(url) {
+        const s = (url || '').trim();
+        return /^https?:\/\/(www\.)?tiktok\.com\/.+/.test(s) ? s : null;
+    }
+
     let twitterWidgetLoading = null;
     function loadTwitterWidgetScript() {
         if (window.twttr && window.twttr.widgets) return Promise.resolve();
@@ -168,6 +185,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-tweet-preview hidden"></div>
             <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)" value="${escapeHtml(sub.tweetUrl || '')}">
             <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
+
+            <input type="url" class="sub-social-input" data-platform="instagram" placeholder="Instagram URL (optional)" value="${escapeHtml(sub.instagramUrl || '')}">
+            <div class="sub-social-error hidden" data-platform="instagram" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like an instagram.com URL.</div>
+            <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional)" value="${escapeHtml(sub.facebookUrl || '')}">
+            <div class="sub-social-error hidden" data-platform="facebook" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a facebook.com URL.</div>
+            <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)" value="${escapeHtml(sub.tiktokUrl || '')}">
+            <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
 
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)" value="${sub.ytId ? 'https://www.youtube.com/watch?v=' + escapeHtml(sub.ytId) : ''}">
             <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:12px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
@@ -239,6 +263,28 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             tweetInput.addEventListener('change', refreshTweet);
             if (sub.tweetUrl) refreshTweet();
         }
+
+        // Instagram/Facebook/TikTok : mêmes trois champs, aucun embed (voir plus haut),
+        // juste une validation de domaine avant d'accepter la valeur dans `sub`.
+        const socialConfig = {
+            instagram: { extract: extractInstagramUrl, field: 'instagramUrl' },
+            facebook: { extract: extractFacebookUrl, field: 'facebookUrl' },
+            tiktok: { extract: extractTikTokUrl, field: 'tiktokUrl' }
+        };
+        card.querySelectorAll('.sub-social-input').forEach(input => {
+            const platform = input.dataset.platform;
+            const cfg = socialConfig[platform];
+            const errorEl = card.querySelector(`.sub-social-error[data-platform="${platform}"]`);
+            if (!cfg || !errorEl) return;
+            input.addEventListener('change', () => {
+                const val = input.value.trim();
+                if (!val) { sub[cfg.field] = ''; errorEl.classList.add('hidden'); return; }
+                const clean = cfg.extract(val);
+                if (!clean) { errorEl.classList.remove('hidden'); return; }
+                errorEl.classList.add('hidden');
+                sub[cfg.field] = clean;
+            });
+        });
 
         if (videoInput) {
             videoInput.addEventListener('change', () => {

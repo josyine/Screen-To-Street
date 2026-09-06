@@ -287,8 +287,12 @@ window.loadSiteStats = async function () {
 // lui-même (à ajouter dans la console Firebase, onglet Firestore > Rules) :
 //   match /locationContent/{locationId} {
 //     allow read: if true;
-//     allow write: if false;  // écrit uniquement via le script d'administration, jamais depuis le site
+//     allow write: if request.auth != null
+//       && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
 //   }
+// (écrit uniquement par un compte admin — voir approveLocationSubmission() plus bas, qui
+// écrit ici après approbation d'une proposition ; "write: if false" a longtemps bloqué
+// cette écriture avec une erreur "permission-denied" au clic sur "Approuver".)
 window.fetchLocationContent = async function (locationId) {
     try {
         const snap = await getDoc(doc(db, 'locationContent', String(locationId)));
@@ -466,7 +470,7 @@ window.approveLocationSubmission = async function (submission) {
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         const targetId = submission.matchedLocId ? String(submission.matchedLocId) : 'new-' + submission.id;
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'tweetUrl'];
+        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), contentDoc, { merge: true });
