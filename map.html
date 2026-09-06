@@ -636,6 +636,7 @@
 
                 <div class="tab-panel active" id="tab-info">
                     <div id="details-wishlist-stat" class="wishlist-stat-box hidden"></div>
+                    <div id="details-friend-visits" class="friend-visits-box hidden"></div>
 
                     <div class="meta-box">
                         <b data-i18n="lGroup">Group:</b> <span id="details-group"></span><br>
@@ -1110,6 +1111,15 @@
             && typeof window.setLocationWishlistStats === 'function') {
             const [stats, siteStats] = await Promise.all([window.loadAllLocationStats(), window.loadSiteStats()]);
             window.setLocationWishlistStats(stats, siteStats.totalUsers || 0);
+        }
+
+        // Amis : liste + lieux visités par chacun, pour l'indicateur "👥 Visité par : ..."
+        // dans l'onglet Info (voir friendsWhoVisited() dans script.js).
+        if (typeof window.listMyFriends === 'function' && typeof window.loadFriendVisits === 'function'
+            && typeof window.setFriendsData === 'function') {
+            const friends = await window.listMyFriends();
+            const visits = await window.loadFriendVisits(friends.map(f => f.uid));
+            window.setFriendsData(friends, visits);
         }
 
         // Nouveaux lieux approuvés via la file de relecture (voir approveLocationSubmission()
