@@ -322,7 +322,20 @@ async function loadExistingProfileAndRedirect(user) {
             // Comptes créés avant l'ajout du partage de voyages : sans pseudo réservé dans
             // l'index public usernames/, personne ne peut inviter cette personne comme
             // "travel buddy" — on le répare discrètement à chaque connexion.
-            if (data.username && typeof window.claimUsername === 'function') window.claimUsername(data.username);
+            // Fire-and-forget volontaire (ne doit jamais bloquer la connexion), mais on
+            // vérifie quand même le résultat pour le journaliser : un échec silencieux ici
+            // (ex: règles Firestore pas encore à jour au moment de cette connexion) est
+            // exactement ce qui a laissé certains comptes plus anciens sans entrée
+            // usernames/{pseudo}, les rendant introuvables par les autres. claimUsername()
+            // avale déjà ses propres erreurs réseau (elle ne rejette jamais), d'où la
+            // vérification du résultat plutôt qu'un .catch().
+            if (data.username && typeof window.claimUsername === 'function') {
+                window.claimUsername(data.username).then(r => {
+                    if (r && r.success === false && r.code !== 'taken') {
+                        console.warn('Réparation du pseudo public échouée au login :', r.code);
+                    }
+                });
+            }
             if (data.firstName) localStorage.setItem('userFirstName', data.firstName);
             if (Array.isArray(data.unlockedGroups)) localStorage.setItem('unlockedGroups', JSON.stringify(data.unlockedGroups));
             // Pays d'intérêt : sans ça, une connexion sur un appareil qui n'a jamais vu ce
@@ -535,7 +548,11 @@ if(btnToStep3) {
             // Réserve le pseudo dans l'index public usernames/ (voir firebase-init.js) :
             // c'est ce qui permet à un autre utilisateur d'inviter cette personne comme
             // "travel buddy" sur un voyage (trips.html) en tapant simplement son pseudo.
-            if (typeof window.claimUsername === 'function') window.claimUsername(usernameVal);
+            if (typeof window.claimUsername === 'function') {
+                window.claimUsername(usernameVal).then(r => {
+                    if (r && r.success === false) console.warn('Réservation du pseudo à l\'inscription échouée :', r.code);
+                });
+            }
             btnToStep3.disabled = false;
         }
         

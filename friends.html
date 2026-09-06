@@ -16,7 +16,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .hero-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; background: linear-gradient(135deg, #F5F3FC, #E3DEF5, #D8CFF0, #E3DEF5); background-size: 200% 200%; animation: gradientShift 10s ease infinite; }
 @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 1000; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
+.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 2500; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
 .brand-text { font-size: 19px; font-weight: 700; color: #2E3644; line-height: 1.2; }
 .universal-icons { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; gap: 9px; align-items: center; }
 .dropdown-container { position: relative; display: inline-block; }
@@ -67,6 +67,10 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: 12.5px; line-height: 1.5; word-break: break-word; }
 .msg-bubble-wrap.mine .msg-bubble { background: #D42759; color: #fff; border-bottom-right-radius: 4px; }
 .msg-bubble-wrap.theirs .msg-bubble { background: #faf9fc; border: 1px solid #EFECF6; color: #334155; border-bottom-left-radius: 4px; }
+.msg-bubble-row { display: flex; align-items: center; gap: 6px; }
+.msg-delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0; transition: opacity .15s; padding: 3px; flex-shrink: 0; }
+.msg-bubble-wrap:hover .msg-delete-btn { opacity: .55; }
+.msg-delete-btn:hover { opacity: 1 !important; }
 .convo-input-row { padding: 14px 18px; border-top: 1px solid #EFECF6; display: flex; gap: 8px; }
 .convo-input-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 10px 16px; font-size: 12.5px; font-family: 'Poppins', sans-serif; outline: none; }
 .convo-input-row button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
@@ -74,22 +78,32 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .share-trip-btn { background: transparent; border: 1.5px solid #cbd5e1; color: #64748b; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 100px; cursor: pointer; font-family: 'Poppins', sans-serif; white-space: nowrap; }
 .share-trip-picker { position: absolute; top: 56px; right: 22px; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.12); padding: 8px; min-width: 220px; z-index: 20; }
 .share-trip-picker-title { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; padding: 6px 10px; }
-.share-trip-option { padding: 9px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #212832; cursor: pointer; }
+.share-trip-option { padding: 9px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #212832; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .share-trip-option:hover { background: #FFF7F8; color: #D42759; }
+.share-trip-already-tag { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: #94a3b8; background: #f1f5f9; padding: 3px 7px; border-radius: 100px; flex-shrink: 0; }
 
 @media (max-width: 760px) {
-  .universal-logo { top: 14px; left: 14px; gap: 8px; }
+  /* env(safe-area-inset-top) : sur un appareil à encoche (iPhone notch/Dynamic Island),
+     "top: 14px" seul plaçait le logo et les icônes partiellement sous l'encoche — d'où le
+     header rogné signalé, aussi bien sur la liste que dans une conversation ouverte
+     (qui démarre juste sous ce même header fixe). Sans encoche, l'inset vaut 0 et rien ne
+     change par rapport à avant. */
+  .universal-logo { top: calc(14px + env(safe-area-inset-top)); left: 14px; gap: 8px; }
   .universal-logo svg { width: 32px; height: 32px; }
   .universal-logo .tagline, .universal-logo .brand-text { display: none; }
-  .universal-icons { top: 14px; right: 14px; gap: 6px; }
+  .universal-icons { top: calc(14px + env(safe-area-inset-top)); right: 14px; gap: 6px; }
   .header-icon-btn { width: 36px; height: 36px; }
-  .friends-page { padding: 74px 0 0 0; }
+  .friends-page { padding: calc(74px + env(safe-area-inset-top)) 0 0 0; }
   .friends-shell { border-radius: 0; max-width: 100%; }
   .friends-sidebar { width: 100%; border-right: none; }
   .friends-main { display: none; }
   .friends-shell.chat-open .friends-sidebar { display: none; }
   .friends-shell.chat-open .friends-main { display: flex; }
   .convo-back-btn { display: inline-block; }
+  /* Un champ texte avec une taille de police < 16px déclenche un zoom automatique à la
+     mise au point sur iOS Safari (comportement du navigateur, pas un bug de mise en page)
+     — c'est le "ça zoom sur le message" signalé en tapant dans le champ de saisie. */
+  .friend-add-row input, .convo-input-row input { font-size: 16px; }
 }
 </style>
 <script>
@@ -130,6 +144,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         </button>
     </div>
+    <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+    </button>
     <div class="dropdown-container">
         <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
         <div id="profile-menu" class="dropdown-menu hidden">
@@ -178,14 +195,24 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         <div id="convo-empty-state" class="convo-empty-state" data-i18n="selectConversationPrompt">Select a conversation to start chatting</div>
         <div id="convo-panel" class="hidden" style="display:none; flex-direction:column; height:100%; position:relative;">
             <div class="convo-header">
-                <div style="display:flex; align-items:center;">
+                <div style="display:flex; align-items:center; min-width:0;">
                     <button class="convo-back-btn" id="convo-back-btn">←</button>
-                    <div>
+                    <div style="min-width:0;">
                         <div class="convo-header-title" id="convo-title"></div>
                         <div class="convo-header-sub" id="convo-subtitle"></div>
                     </div>
                 </div>
-                <button class="share-trip-btn hidden" id="convo-share-trip-btn" data-i18n="shareTripBtn">Share a trip</button>
+                <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+                    <a href="#" id="convo-view-trip-link" class="hidden" style="font-size:11px; font-weight:700; color:#D42759; white-space:nowrap;" data-i18n="viewItineraryLink">View itinerary</a>
+                    <button class="share-trip-btn hidden" id="convo-share-trip-btn" data-i18n="shareTripBtn">Share a trip</button>
+                    <div class="dropdown-container">
+                        <button id="convo-options-btn" class="hidden" style="background:none; border:none; color:#94a3b8; font-size:18px; cursor:pointer; padding:4px 8px; line-height:1;">⋮</button>
+                        <div id="convo-options-menu" class="dropdown-menu hidden" style="right:0; top:32px;">
+                            <a href="#" id="convo-rename-option" class="dropdown-option hidden" data-i18n="renameTripGroupOption">Rename group</a>
+                            <a href="#" id="convo-leave-option" class="dropdown-option hidden" style="color:#D42759;" data-i18n="leaveTripGroupOption">Leave group</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="share-trip-picker" class="share-trip-picker hidden">
                 <div class="share-trip-picker-title" data-i18n="shareTripPickTitle">Choose a trip to share</div>
@@ -223,6 +250,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     let currentConvoFriendUsername = null;
     let currentConvoTripId = null;
     let currentConvoTripName = null;
+    let currentConvoIsTripOwner = false;
 
     async function refreshSidebar() {
         await refreshFriendRequests();
@@ -290,6 +318,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-subtitle').textContent = '';
         document.getElementById('convo-share-trip-btn').classList.remove('hidden');
         document.getElementById('share-trip-picker').classList.add('hidden');
+        document.getElementById('convo-view-trip-link').classList.add('hidden');
+        document.getElementById('convo-options-btn').classList.add('hidden');
+        document.getElementById('convo-options-menu').classList.add('hidden');
         currentConvoId = await window.ensureDmConversation(friendUid, friendUsername);
         await openConvoPanel();
     }
@@ -299,11 +330,18 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         currentConvoTripId = tripId;
         currentConvoTripName = tripName;
         currentConvoFriendUid = null;
+        currentConvoIsTripOwner = isOwner;
         setActiveRow('trip', tripId);
         document.getElementById('convo-title').textContent = tripName;
         document.getElementById('convo-subtitle').textContent = t('chatForTripLabel');
         document.getElementById('convo-share-trip-btn').classList.add('hidden');
         document.getElementById('share-trip-picker').classList.add('hidden');
+        document.getElementById('convo-view-trip-link').href = `trips.html?openTrip=${encodeURIComponent(tripId)}`;
+        document.getElementById('convo-view-trip-link').classList.remove('hidden');
+        document.getElementById('convo-options-btn').classList.remove('hidden');
+        document.getElementById('convo-options-menu').classList.add('hidden');
+        document.getElementById('convo-rename-option').classList.toggle('hidden', !isOwner);
+        document.getElementById('convo-leave-option').classList.toggle('hidden', isOwner);
         currentConvoId = await window.ensureTripConversation(tripId, tripName);
         await openConvoPanel();
     }
@@ -319,19 +357,37 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
     }
 
+    const MESSAGE_DELETE_WINDOW_MS = 10 * 60 * 1000;
     async function loadAndRenderMessages() {
         const msgs = typeof window.loadMessages === 'function' ? await window.loadMessages(currentConvoId) : [];
         const container = document.getElementById('convo-messages');
         const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+        const now = Date.now();
         container.innerHTML = msgs.map(m => {
             const mine = m.fromUid === myUid;
+            const sentMs = (m.createdAt && m.createdAt.seconds) ? m.createdAt.seconds * 1000 : null;
+            const canDelete = mine && sentMs && (now - sentMs) < MESSAGE_DELETE_WINDOW_MS;
             return `<div class="msg-bubble-wrap ${mine ? 'mine' : 'theirs'}">
                 ${!mine ? `<div class="msg-sender">${escapeHtml(m.fromUsername || '')}</div>` : ''}
-                <div class="msg-bubble">${escapeHtml(m.text)}</div>
+                <div class="msg-bubble-row">
+                    ${canDelete ? `<button class="msg-delete-btn" data-msg-id="${m.id}" title="${t('deleteMessageOption')}">🗑</button>` : ''}
+                    <div class="msg-bubble">${escapeHtml(m.text)}</div>
+                </div>
             </div>`;
         }).join('');
         container.scrollTop = container.scrollHeight;
     }
+    document.getElementById('convo-messages').addEventListener('click', async (e) => {
+        const btn = e.target.closest('.msg-delete-btn');
+        if (!btn || !currentConvoId || typeof window.deleteMessage !== 'function') return;
+        const isFr = currentLang === 'fr';
+        if (!window.confirm(isFr ? 'Supprimer ce message ?' : 'Delete this message?')) return;
+        const result = await window.deleteMessage(currentConvoId, btn.dataset.msgId);
+        if (result && result.success) await loadAndRenderMessages();
+        else if (typeof window.showSimpleToast === 'function') {
+            window.showSimpleToast(isFr ? 'Trop tard pour supprimer ce message.' : 'Too late to delete this message.', { isError: true });
+        }
+    });
 
     document.getElementById('convo-back-btn').addEventListener('click', () => {
         document.getElementById('friends-shell').classList.remove('chat-open');
@@ -351,14 +407,78 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         if (currentConvoType === 'trip') refreshTripGroupsList(); else refreshDmListUI();
     }
 
+    // --- Menu "⋮" d'une conversation de groupe (renommer / quitter) ---
+    document.getElementById('convo-options-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('convo-options-menu').classList.toggle('hidden');
+    });
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('convo-options-menu');
+        const btn = document.getElementById('convo-options-btn');
+        if (!menu.contains(e.target) && e.target !== btn) menu.classList.add('hidden');
+    });
+    document.getElementById('convo-rename-option').addEventListener('click', async (e) => {
+        e.preventDefault();
+        document.getElementById('convo-options-menu').classList.add('hidden');
+        const isFr = currentLang === 'fr';
+        const newName = (window.prompt(isFr ? 'Nouveau nom du voyage :' : 'New trip name:', currentConvoTripName) || '').trim();
+        if (!newName || newName === currentConvoTripName || !currentConvoTripId) return;
+        if (typeof window.saveSharedTrip === 'function') await window.saveSharedTrip(currentConvoTripId, { name: newName });
+        if (typeof window.ensureTripConversation === 'function') await window.ensureTripConversation(currentConvoTripId, newName);
+        currentConvoTripName = newName;
+        document.getElementById('convo-title').textContent = newName;
+        document.getElementById('convo-view-trip-link').href = `trips.html?openTrip=${encodeURIComponent(currentConvoTripId)}`;
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(isFr ? 'Groupe renommé.' : 'Group renamed.');
+        refreshTripGroupsList();
+    });
+    document.getElementById('convo-leave-option').addEventListener('click', async (e) => {
+        e.preventDefault();
+        document.getElementById('convo-options-menu').classList.add('hidden');
+        const isFr = currentLang === 'fr';
+        if (!window.confirm(isFr ? 'Quitter ce groupe de voyage ?' : 'Leave this trip group?')) return;
+        const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+        if (myUid && currentConvoTripId && typeof window.removeTripCollaborator === 'function') {
+            await window.removeTripCollaborator(currentConvoTripId, myUid);
+        }
+        document.getElementById('friends-shell').classList.remove('chat-open');
+        document.getElementById('convo-panel').classList.add('hidden');
+        document.getElementById('convo-panel').style.display = 'none';
+        document.getElementById('convo-empty-state').classList.remove('hidden');
+        currentConvoId = null; currentConvoTripId = null; currentConvoType = null;
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(isFr ? 'Vous avez quitté le groupe.' : 'You left the group.');
+        refreshTripGroupsList();
+    });
+
     // --- Partager un voyage depuis une conversation DM ---
-    document.getElementById('convo-share-trip-btn').addEventListener('click', () => {
+    document.getElementById('convo-share-trip-btn').addEventListener('click', async () => {
         const picker = document.getElementById('share-trip-picker');
         const optsEl = document.getElementById('share-trip-options');
         const emptyEl = document.getElementById('share-trip-empty');
+        const wasHidden = picker.classList.contains('hidden');
+        if (!wasHidden) { picker.classList.add('hidden'); return; }
         const myTrips = getMyTripsList();
+        const isFr = currentLang === 'fr';
         optsEl.innerHTML = myTrips.map(trip => `<div class="share-trip-option" data-trip-id="${trip.id}">${escapeHtml(trip.name)}</div>`).join('');
         emptyEl.classList.toggle('hidden', myTrips.length > 0);
+        picker.classList.remove('hidden');
+        // Déjà partagé avec CE destinataire ? Vérifié en interrogeant trips/{id} (seuls
+        // les voyages déjà partagés — trip.isShared — ont un document là-bas ; les
+        // autres ne sont testés pour rien). Affiché après coup (le picker s'ouvre tout de
+        // suite avec la liste simple) pour ne jamais bloquer l'ouverture sur ces requêtes.
+        if (currentConvoFriendUid && typeof window.loadSharedTrip === 'function') {
+            const sharedOnes = myTrips.filter(t => t.isShared);
+            const results = await Promise.all(sharedOnes.map(t => window.loadSharedTrip(t.id)));
+            sharedOnes.forEach((trip, i) => {
+                const data = results[i];
+                if (data && data.members && data.members[currentConvoFriendUid]) {
+                    const optEl = optsEl.querySelector(`.share-trip-option[data-trip-id="${trip.id}"]`);
+                    if (optEl) {
+                        optEl.classList.add('share-trip-option-already');
+                        optEl.innerHTML = `${escapeHtml(trip.name)} <span class="share-trip-already-tag">${isFr ? 'déjà partagé' : 'already shared'}</span>`;
+                    }
+                }
+            });
+        }
         optsEl.querySelectorAll('.share-trip-option').forEach(opt => {
             opt.addEventListener('click', async () => {
                 const trip = myTrips.find(t => t.id === opt.dataset.tripId);
@@ -368,7 +488,6 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                 await refreshTripGroupsList();
             });
         });
-        picker.classList.toggle('hidden');
     });
     document.addEventListener('click', (e) => {
         const picker = document.getElementById('share-trip-picker');
@@ -386,7 +505,11 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const result = await window.sendFriendRequest(username);
         if (result.error === 'not-found') { errBox.textContent = t('friendsErrNotFound'); errBox.classList.remove('hidden'); }
         else if (result.error === 'self') { errBox.textContent = t('friendsErrSelf'); errBox.classList.remove('hidden'); }
-        else if (result.success) { input.value = ''; refreshSidebar(); }
+        else if (result.success) {
+            input.value = '';
+            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('friendRequestSentToast'));
+            refreshSidebar();
+        }
     });
     document.getElementById('friend-requests-list').addEventListener('click', async (e) => {
         const acceptBtn = e.target.closest('.friend-accept-btn');
