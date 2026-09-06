@@ -133,6 +133,19 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin-bottom: 18px; box-shadow: 0 6px 18px rgba(0,0,0,.1); }
 .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
+/* Post Twitter/X embarqué sur la fiche d'un lieu (voir renderTweetEmbedOnDetails() dans
+   script.js) : conteneur DÉDIÉ, distinct de .video-wrapper ci-dessus — celui-ci impose un
+   ratio 16:9 fixe pensé pour un <iframe> vidéo, ce qui écrasait/rognait le widget Twitter
+   (bien plus haut que large) et donnait un rendu illisible (demande du 06/09/2026). Ici, le
+   widget garde sa hauteur naturelle ; le conteneur est juste centré et habillé (coins
+   arrondis, ombre) pour rester cohérent avec le reste de la fiche.
+   Le widget lui-même charge d'abord un <blockquote> de secours (texte brut + lien),
+   remplacé par l'iframe Twitter une fois widgets.js chargé — ce secours ne doit jamais
+   dépasser du conteneur non plus. */
+.tweet-embed-wrapper { margin-bottom: 18px; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.1); display: flex; justify-content: center; background: #fff; }
+.tweet-embed-wrapper iframe { max-width: 100%; }
+.tweet-embed-wrapper .twitter-tweet { margin: 0 !important; max-width: 100%; }
+
 .practical-box { background: #faf9fc; border: 1px solid #EFECF6; border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; }
 .practical-item { font-size: 12.5px; line-height: 1.7; color: #3f495c; margin-bottom: 12px; }
 .practical-item:last-child { margin-bottom: 0; }
@@ -356,52 +369,23 @@ body.trip-not-owner .owner-only { display: none !important; }
 /* ==========================================
    CUSTOM TRIP SELECTOR (MAP) — VERSION REDESIGNEE
    ========================================== */
-.custom-trip-select { position: relative; width: 100%; margin-bottom: 20px; }
-.trip-select-header {
-    background: #fff; border: 1.5px solid #e2e8f0; border-radius: 16px;
-    padding: 13px 16px; display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer; transition: 0.2s; font-size: 13px;
-    box-shadow: 0 4px 14px rgba(80,60,120,.05);
-}
-.trip-select-header:hover { border-color: var(--primary-magenta); box-shadow: 0 6px 18px rgba(212,39,89,.12); }
-.trip-select-header.open { border-color: var(--primary-magenta); border-radius: 16px 16px 0 0; box-shadow: 0 6px 18px rgba(212,39,89,.12); }
-/* Aucun voyage créé : le sélecteur est visuellement et fonctionnellement désactivé
-   plutôt que de proposer un clic qui n'ouvrirait qu'un menu vide. */
-.trip-select-header.disabled { cursor: default; opacity: 0.65; pointer-events: none; }
-.trip-select-header.disabled:hover { border-color: #e2e8f0; box-shadow: 0 4px 14px rgba(80,60,120,.05); }
-.trip-select-header.disabled .trip-select-chevron { display: none; }
-.trip-select-icon { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-pink); color: var(--primary-magenta); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 10px; }
-.trip-select-header-text { display: flex; align-items: center; flex: 1; overflow: hidden; }
-.trip-select-label-main { font-weight: 700; color: #1e293b; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.trip-select-chevron { transition: transform 0.3s ease; stroke: #94a3b8; flex-shrink: 0; }
-
-/* IMPORTANT : la liste n'est PAS en position absolute/overlay — elle reste dans le flux
-   normal du document (comme sur la maquette fournie). Cela évite tout bug de clipping
-   par un ancêtre en overflow:auto (ce qui causait la liste invisible) et pousse
-   naturellement le reste du panneau vers le bas quand elle s'ouvre. */
-.trip-select-dropdown {
-    width: 100%; background: #faf9fc;
-    border: 1.5px solid #e2e8f0; border-top: none; border-radius: 0 0 16px 16px;
-    max-height: 320px; overflow-y: auto;
-    padding: 6px; margin-top: -1px;
-}
-.trip-select-dropdown::-webkit-scrollbar { width: 5px; }
-.trip-select-dropdown::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.15); border-radius: 10px; }
-
-.trip-option {
+/* Liste épurée des voyages dans l'onglet "My Itinerary" (remplace l'ancien menu
+   déroulant avec encart de carte — demande du 06/09/2026) : pas de bordure/ombre par
+   ligne, juste un fin séparateur, comme sur la maquette fournie. Cliquer une ligne
+   sélectionne ce voyage sur la carte ; recliquer la ligne déjà sélectionnée la
+   désélectionne (voir toggleItineraryTripSelection() dans script.js). */
+.itinerary-trip-list { width: 100%; margin-bottom: 20px; }
+.itin-trip-row {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 13px 14px; cursor: pointer; transition: 0.15s; border-radius: 10px; margin-bottom: 2px;
+    padding: 12px 4px; cursor: pointer; border-bottom: 1px solid #f1f5f9;
 }
-.trip-option:last-child { margin-bottom: 0; }
-.trip-option:hover { background: #fff; }
-.trip-option.selected { background: var(--accent-pink); }
-.trip-opt-body { flex: 1; min-width: 0; }
-.trip-opt-name { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.trip-opt-meta { font-size: 11.5px; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
-.trip-opt-check { width: 18px; height: 18px; border-radius: 50%; background: var(--primary-magenta); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; }
-.trip-select-empty { padding: 18px 12px; font-size: 13px; color: #94a3b8; text-align: center; }
-.trip-option-clear { font-size: 12.5px; font-weight: 600; font-style: italic; color: #94a3b8; border-bottom: 1px solid #f1f5f9; border-radius: 0; margin-bottom: 4px; padding-bottom: 10px; }
-.trip-option-clear.selected { background: transparent; color: var(--primary-magenta); }
+.itin-trip-row:last-child { border-bottom: none; }
+.itin-trip-row-body { flex: 1; min-width: 0; }
+.itin-trip-row-name { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.itin-trip-row.selected .itin-trip-row-name { color: var(--primary-magenta); }
+.itin-trip-row-meta { font-size: 11.5px; color: #94a3b8; }
+.itin-trip-row-check { width: 18px; height: 18px; border-radius: 50%; background: var(--primary-magenta); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; }
+.itinerary-empty { padding: 18px 4px; font-size: 13px; color: #94a3b8; text-align: center; }
 
 /* ==========================================
    MOBILE : SIDEBAR EN TIROIR + HAMBURGER (map.html & trips.html)
