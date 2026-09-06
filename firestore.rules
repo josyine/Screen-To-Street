@@ -85,10 +85,14 @@ service cloud.firestore {
     // ==========================================
     // Contenu riche (Story/infos pratiques/conseils/vidéo) d'un lieu, publié UNIQUEMENT
     // via un script d'administration (Admin SDK, qui contourne ces règles) ou via
-    // approveLocationSubmission() côté site — jamais en écriture directe depuis un client.
+    // approveLocationSubmission() côté site — jamais en écriture directe depuis un
+    // visiteur normal, seulement par un compte admin (voir approveLocationSubmission()
+    // dans firebase-init.js, qui écrit ici APRÈS avoir vérifié isCurrentUserAdmin() côté
+    // client — cette règle est le vrai rempart côté serveur).
     match /locationContent/{locationId} {
       allow read: if true;
-      allow write: if false;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     // Avis publics ("Reviews") sur un lieu : un avis par personne et par lieu, stocké

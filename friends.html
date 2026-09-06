@@ -661,13 +661,24 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const username = input.value.trim();
         if (!username || typeof window.sendFriendRequest !== 'function') return;
         const result = await window.sendFriendRequest(username);
-        if (result.error === 'not-found') { errBox.textContent = t('friendsErrNotFound'); errBox.classList.remove('hidden'); }
-        else if (result.error === 'self') { errBox.textContent = t('friendsErrSelf'); errBox.classList.remove('hidden'); }
-        else if (result.success) {
+        if (result.success) {
             input.value = '';
             if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('friendRequestSentToast'));
             refreshSidebar();
+            return;
         }
+        // Avant ce correctif, seuls 'not-found' et 'self' affichaient un message — tout
+        // autre code d'erreur (already-sent, already-friends, not-signed-in, empty,
+        // failed) laissait le clic sur "Add" sans aucun retour visible, ce qui donnait
+        // l'impression que le bouton ne faisait plus rien (demande du 06/09/2026).
+        const errKey = {
+            'not-found': 'friendsErrNotFound',
+            'self': 'friendsErrSelf',
+            'already-sent': 'friendsErrAlreadySent',
+            'already-friends': 'friendsErrAlreadyFriends'
+        }[result.error] || 'friendsErrGeneric';
+        errBox.textContent = t(errKey);
+        errBox.classList.remove('hidden');
     });
     document.getElementById('friend-requests-list').addEventListener('click', async (e) => {
         const acceptBtn = e.target.closest('.friend-accept-btn');
