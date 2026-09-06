@@ -319,7 +319,20 @@ function friendlyAuthError(code) {
 // ce même index (voir claimUsername()/searchUsernamesByPrefix() dans firebase-init.js).
 async function isUsernameTakenByOther(key, uid) {
     const snap = await getDoc(doc(db, 'usernames', key));
-    return snap.exists() && snap.data().uid !== uid;
+    if (!snap.exists() || snap.data().uid === uid) return false;
+    // Pris par un AUTRE compte — mais seulement "réellement" pris si ce compte existe
+    // encore. Un compte supprimé libère normalement son pseudo lui-même (voir
+    // cleanupFirestoreBeforeAccountDeletion dans firebase-init.js), mais un compte
+    // supprimé par une autre voie laisse une entrée usernames/ orpheline qui bloquerait
+    // ce pseudo pour toujours (demande du 06/09/2026 : "j'ai recréé un compte avec le
+    // même pseudo et j'ai 2x le même pseudo"). Même vérification que claimUsername()
+    // dans firebase-init.js.
+    try {
+        const holderSnap = await getDoc(doc(db, 'users', snap.data().uid));
+        return holderSnap.exists();
+    } catch (e) {
+        return true; // par prudence, en cas d'erreur de lecture on ne vole pas le pseudo
+    }
 }
 
 // ==========================================
