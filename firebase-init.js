@@ -609,6 +609,52 @@ window.searchUsernamesByPrefix = async function (prefix, maxResults) {
     }
 };
 
+// Recherche "contient" (friends.html, ajout d'ami — demande du 06/09/2026) : contrairement
+// à searchUsernamesByPrefix() ci-dessus, retrouve un pseudo où le texte tapé apparaît
+// n'importe où, pas seulement en préfixe ("Perrine" retrouve aussi "xPerrine99"). Firestore
+// ne sait pas faire ça nativement (il faudrait un service de recherche externe payant, hors
+// de portée d'un site 100% statique) : on charge donc TOUTE la collection usernames/ une
+// seule fois (mise en cache en mémoire pour la session — `allow read: if true` l'autorise
+// déjà, c'est le même index public utilisé pour le partage de voyage) et on filtre côté
+// client. Ne pose pas de problème d'échelle ni de vie privée particulier ici : la
+// collection ne contient que pseudo->uid, déjà entièrement publique/lisible par tous.
+let _allUsernamesCache = null;
+let _allUsernamesCachePromise = null;
+async function loadAllUsernamesCached() {
+    if (_allUsernamesCache) return _allUsernamesCache;
+    if (_allUsernamesCachePromise) return _allUsernamesCachePromise;
+    _allUsernamesCachePromise = (async () => {
+        try {
+            const snap = await getDocs(collection(db, 'usernames'));
+            const list = [];
+            snap.forEach(d => list.push({ uid: d.data().uid, username: d.data().username || d.id }));
+            _allUsernamesCache = list;
+            return list;
+        } catch (e) {
+            console.warn('Chargement de la liste des pseudos échoué :', e);
+            return [];
+        } finally {
+            _allUsernamesCachePromise = null;
+        }
+    })();
+    return _allUsernamesCachePromise;
+}
+window.searchUsernamesContaining = async function (text, maxResults) {
+    const q = (text || '').toLowerCase().trim();
+    if (!q) return [];
+    const all = await loadAllUsernamesCached();
+    const matches = all.filter(u => u.username.toLowerCase().includes(q));
+    // Un pseudo qui COMMENCE par le texte tapé est plus pertinent qu'un pseudo où le
+    // texte apparaît seulement au milieu/à la fin — trié en premier, sinon alphabétique.
+    matches.sort((a, b) => {
+        const aStarts = a.username.toLowerCase().startsWith(q);
+        const bStarts = b.username.toLowerCase().startsWith(q);
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
+        return a.username.localeCompare(b.username);
+    });
+    return matches.slice(0, maxResults || 8);
+};
+
 window.createSharedTrip = async function (trip) {
     const user = auth.currentUser;
     if (!user) return;
@@ -703,10 +749,14 @@ window.listSharedTripsForMe = async function () {
 // dans une sous-collection privée à chaque compte : users/{uid}/friendIndex/{friendUid}.
 // Ce doublon (plutôt qu'un unique document partagé comme pour les voyages) est
 // nécessaire ici : la règle ci-dessous n'autorise QUE deux personnes à écrire dans
-// users/{ownerUid}/friendIndex/{friendUid} — le propriétaire de la liste, ou la personne
+// users/{uid}/friendIndex/{friendUid} — le propriétaire de la liste, ou la personne
 // qui y est ajoutée — ce qui permet à la personne qui ACCEPTE la demande d'écrire les
 // deux côtés en une fois (dans sa propre liste, et dans celle de l'autre) sans jamais
 // avoir besoin d'un accès en écriture plus large sur le compte d'autrui.
+// BUG corrigé le 06/09/2026 : la règle publiée référençait `ownerUid`, une variable
+// jamais déclarée dans ce match imbriqué (seul `uid`, du match /users/{uid} englobant,
+// existe ici) — ce qui faisait échouer toute lecture/écriture de friendIndex avec
+// permission-denied, empêchant purement et simplement d'ajouter des amis.
 //
 // friendVisits/{uid} est un MIROIR minimal et volontairement pauvre de users/{uid}.visitedLocs
 // (uniquement la liste des ids de lieux, jamais les dates/notes/photos) : une collection
