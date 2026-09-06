@@ -472,6 +472,7 @@ if(btnToStep2) {
 
         try {
             await createUserWithEmailAndPassword(auth, emailVal, passVal);
+            if (typeof window.incrementSiteUserCount === 'function') window.incrementSiteUserCount();
             resetFreshAccountData();
             localStorage.setItem('userEmail', emailVal);
             btnToStep2.disabled = false;

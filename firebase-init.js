@@ -205,6 +205,67 @@ window.loadAllLocationRatings = async function () {
     }
 };
 
+// Compteur public "combien d'utilisateurs ont ce lieu dans leur wishlist" — utilisé pour
+// afficher une statistique dans l'onglet Info ("X% des utilisateurs ont ajouté ce lieu à
+// leur wishlist"), voir applyWishlistCountDeltas()/syncWishlist() dans script.js.
+//
+// IMPORTANT — nécessite une règle Firestore dédiée (à ajouter dans la console Firebase) :
+//   match /locationStats/{locationId} {
+//     allow read: if true;
+//     allow write: if request.auth != null
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['wishlistCount']);
+//   }
+// Même limite connue que locationRatings : un client malveillant authentifié pourrait
+// envoyer un increment() arbitraire — hors de portée d'un site statique sans backend.
+window.updateLocationWishlistCount = async function (locationId, delta) {
+    if (!delta) return;
+    try {
+        await setDoc(doc(db, 'locationStats', String(locationId)), { wishlistCount: increment(delta) }, { merge: true });
+    } catch (e) {
+        console.warn('Mise à jour du compteur wishlist échouée :', e);
+    }
+};
+
+window.loadAllLocationStats = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'locationStats'));
+        const result = {};
+        snap.forEach(d => { result[d.id] = d.data(); });
+        return result;
+    } catch (e) {
+        console.warn('Lecture des statistiques de lieux échouée :', e);
+        return {};
+    }
+};
+
+// Nombre total de comptes créés sur le site — dénominateur du pourcentage ci-dessus.
+// Incrémenté une seule fois par compte, juste après createUserWithEmailAndPassword
+// (voir welcome-script.js). Document public à un seul champ, jamais de données perso.
+//
+// IMPORTANT — nécessite une règle Firestore dédiée (à ajouter dans la console Firebase) :
+//   match /siteStats/global {
+//     allow read: if true;
+//     allow write: if request.auth != null
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['totalUsers']);
+//   }
+window.incrementSiteUserCount = async function () {
+    try {
+        await setDoc(doc(db, 'siteStats', 'global'), { totalUsers: increment(1) }, { merge: true });
+    } catch (e) {
+        console.warn('Incrémentation du compteur global d\'utilisateurs échouée :', e);
+    }
+};
+
+window.loadSiteStats = async function () {
+    try {
+        const snap = await getDoc(doc(db, 'siteStats', 'global'));
+        return snap.exists() ? snap.data() : {};
+    } catch (e) {
+        console.warn('Lecture des statistiques globales échouée :', e);
+        return {};
+    }
+};
+
 // ==========================================
 // CONTENU RICHE D'UN LIEU (migration progressive hors de script.js)
 // ==========================================

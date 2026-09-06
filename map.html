@@ -635,6 +635,8 @@
                 </div>
 
                 <div class="tab-panel active" id="tab-info">
+                    <div id="details-wishlist-stat" class="wishlist-stat-box hidden"></div>
+
                     <div class="meta-box">
                         <b data-i18n="lGroup">Group:</b> <span id="details-group"></span><br>
                         <b data-i18n="lMembers">Members:</b> <span id="details-member"></span><br>
@@ -1100,6 +1102,14 @@
         // authentifié (voir la règle Firestore documentée dans firebase-init.js).
         if (typeof window.loadAllLocationRatings === 'function' && typeof window.setCommunityRatings === 'function') {
             window.setCommunityRatings(await window.loadAllLocationRatings());
+        }
+
+        // Statistique "X% des utilisateurs ont ajouté ce lieu à leur wishlist" (onglet Info) :
+        // même principe que les notes communautaires ci-dessus, lue une seule fois ici.
+        if (typeof window.loadAllLocationStats === 'function' && typeof window.loadSiteStats === 'function'
+            && typeof window.setLocationWishlistStats === 'function') {
+            const [stats, siteStats] = await Promise.all([window.loadAllLocationStats(), window.loadSiteStats()]);
+            window.setLocationWishlistStats(stats, siteStats.totalUsers || 0);
         }
 
         // Nouveaux lieux approuvés via la file de relecture (voir approveLocationSubmission()
