@@ -4221,37 +4221,51 @@ function renderLocationRichContent(loc) {
     // ici, le lien "Follow: Instagram" ne doit pas être répété en double en dessous.
     let instagramEmbedded = false;
     if (videoContainer && videoSection) {
+        // Chacun des trois types de média a son propre conteneur, affiché ou masqué
+        // INDÉPENDAMMENT des deux autres (demande du 07/09/2026 : un lien YouTube ET un lien
+        // Twitter tous les deux renseignés n'affichaient jusqu'ici que YouTube, à cause d'un
+        // if/else-if qui ne permettait qu'un seul média à la fois). La section entière ne
+        // reste masquée que si AUCUN des trois n'a de contenu.
         videoContainer.innerHTML = "";
-        videoContainer.classList.remove('hidden');
+        videoContainer.classList.add('hidden');
         if (tweetContainer) { tweetContainer.innerHTML = ""; tweetContainer.classList.add('hidden'); }
         if (instagramContainer) { instagramContainer.innerHTML = ""; instagramContainer.classList.add('hidden'); }
+        let anyMedia = false;
+
+        // Vidéo(s)/YouTube : les deux restent mutuellement exclusifs ENTRE EUX (ils partagent
+        // le même conteneur "vidéo"), videoEmbeds prenant la priorité — ce sont deux façons de
+        // renseigner la MÊME sorte de média, contrairement à Twitter/Instagram qui sont des
+        // types de contenu distincts.
         if (loc.videoEmbeds && loc.videoEmbeds.length > 0) {
             loc.videoEmbeds.forEach(vidSrc => { videoContainer.innerHTML += `<div class="video-wrapper"><iframe src="${vidSrc}" frameborder="0" allowfullscreen></iframe></div>`; });
-            videoSection.classList.remove('hidden');
+            videoContainer.classList.remove('hidden');
+            anyMedia = true;
         } else if (loc.ytId) {
             videoContainer.innerHTML = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${loc.ytId}" frameborder="0" allowfullscreen></iframe></div>`;
-            videoSection.classList.remove('hidden');
-        } else if (loc.tweetUrl && tweetContainer) {
+            videoContainer.classList.remove('hidden');
+            anyMedia = true;
+        }
+        if (loc.tweetUrl && tweetContainer) {
             // Post Twitter/X embarqué (voir admin.html, champ "Tweet / X post URL") : rendu
             // dans son propre conteneur, PAS .video-wrapper — celui-ci impose un ratio 16:9
             // fixe + overflow:hidden pensé pour un <iframe> vidéo, ce qui écrasait/rognait
             // le widget Twitter (bien plus haut que large), d'où l'affichage "moche" signalé
             // (demande du 06/09/2026). Le widget officiel garde ici sa hauteur naturelle, et
             // cliquer dessus renvoie naturellement vers Twitter (comportement natif).
-            videoContainer.classList.add('hidden');
             tweetContainer.classList.remove('hidden');
             renderTweetEmbedOnDetails(tweetContainer, loc.tweetUrl);
-            videoSection.classList.remove('hidden');
-        } else if (loc.instagramUrl && isInstagramPostUrl(loc.instagramUrl) && instagramContainer) {
+            anyMedia = true;
+        }
+        if (loc.instagramUrl && isInstagramPostUrl(loc.instagramUrl) && instagramContainer) {
             // Même chose pour un post/reel Instagram précis (demande du 07/09/2026) — un
             // simple lien de profil (pas de post) n'a pas d'équivalent embarquable, voir
             // isInstagramPostUrl(), et reste donc affiché comme lien "Follow" plus bas.
-            videoContainer.classList.add('hidden');
             instagramContainer.classList.remove('hidden');
             renderInstagramEmbedOnDetails(instagramContainer, loc.instagramUrl);
-            videoSection.classList.remove('hidden');
             instagramEmbedded = true;
-        } else { videoSection.classList.add('hidden'); }
+            anyMedia = true;
+        }
+        videoSection.classList.toggle('hidden', !anyMedia);
     }
 
     // Tips box : un lieu peut fournir plusieurs conseils TITRÉS (loc.tipsList — titre en
@@ -4361,6 +4375,14 @@ function ensureLocationEditModal() {
             <div style="font-size:15px; font-weight:700; color:#212832; margin-bottom:2px;" id="location-edit-title">Edit location</div>
             <div style="font-size:11px; color:#94a3b8; margin-bottom:16px;">Admin only — changes are published immediately.</div>
 
+            <label style="${labelStyle}">Header photo</label>
+            <div id="location-edit-photo-preview" style="margin-bottom:8px; border-radius:10px; overflow:hidden; display:none;"><img style="display:block; width:100%; max-height:180px; object-fit:cover;"></div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+                <button type="button" id="location-edit-photo-upload-btn" style="background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">Upload from device</button>
+                <input type="file" id="location-edit-photo-file-input" accept="image/*" class="hidden">
+                <span id="location-edit-photo-name" style="font-size:10.5px; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+            </div>
+
             <label style="${labelStyle}">Story (English)</label>
             <textarea id="location-edit-story" rows="6" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="One paragraph per blank line"></textarea>
 
@@ -4388,7 +4410,38 @@ function ensureLocationEditModal() {
             <div id="location-edit-result" class="hidden" style="font-size:12px; font-weight:600; margin-top:10px; text-align:center;"></div>
         </div>`;
     document.body.appendChild(modal);
+    wireLocationEditPhotoInputOnce(modal);
     return modal;
+}
+
+// Import direct depuis la galerie pour la photo d'en-tête (demande du 07/09/2026 : ce
+// modal "crayon" n'avait jusqu'ici aucun champ photo du tout) — pas de Firebase Storage sur
+// ce site 100% statique, donc redimensionnée/compressée côté client en dataURL, même
+// technique que la photo de couverture d'un voyage (resizeTripCoverDataUrl, voir plus haut)
+// et que l'upload équivalent dans admin.html. Écouteur attaché une seule fois : le modal
+// n'est créé qu'une fois par ensureLocationEditModal (dataset.wired protège d'un double
+// upload par fichier choisi si jamais cette fonction était rappelée).
+let locationEditPendingImg = null;
+function wireLocationEditPhotoInputOnce(modal) {
+    const btn = modal.querySelector('#location-edit-photo-upload-btn');
+    const input = modal.querySelector('#location-edit-photo-file-input');
+    if (!btn || !input || input.dataset.wired) return;
+    input.dataset.wired = '1';
+    btn.addEventListener('click', () => input.click());
+    input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const resized = typeof resizeTripCoverDataUrl === 'function' ? await resizeTripCoverDataUrl(event.target.result, 1200) : event.target.result;
+            locationEditPendingImg = resized;
+            const preview = document.getElementById('location-edit-photo-preview');
+            preview.style.display = 'block';
+            preview.querySelector('img').src = resized;
+            document.getElementById('location-edit-photo-name').textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    });
 }
 
 let locationEditCurrentId = null;
@@ -4417,6 +4470,11 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-facebook').value = data.facebookUrl || '';
         document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
         locationEditExistingFullDescription = data.fullDescription || {};
+        locationEditPendingImg = null;
+        document.getElementById('location-edit-photo-name').textContent = '';
+        const photoPreview = document.getElementById('location-edit-photo-preview');
+        if (data.img) { photoPreview.style.display = 'block'; photoPreview.querySelector('img').src = data.img; }
+        else { photoPreview.style.display = 'none'; photoPreview.querySelector('img').src = ''; }
     };
     fillForm(loc);
 
@@ -4471,6 +4529,10 @@ async function saveLocationEdit(locId, modal) {
         facebookUrl: facebookUrl || '',
         tiktokUrl: tiktokUrl || ''
     };
+    // N'inclut `img` QUE si une nouvelle photo a été choisie — jamais une valeur vide,
+    // pour ne jamais effacer une photo déjà en place quand on modifie seulement un autre
+    // champ (demande du 07/09/2026).
+    if (locationEditPendingImg) fields.img = locationEditPendingImg;
 
     const res = await window.adminUpdateLocationContent(locId, fields);
     resultEl.classList.remove('hidden');
@@ -7031,10 +7093,55 @@ window.toggleDateCalendar = function(prefix) {
     if (opening) renderDateRangeCalendar(prefix);
 };
 
+// Redistribue automatiquement TOUS les lieux déjà associés à ce voyage (assignés à un jour
+// OU seulement dans la liste "non assignés") sur le nombre de jours actuel — demande du
+// 07/09/2026 : "quand je change les dates et que je clique sur apply, il faut que ça génère
+// automatiquement un nouvel itinéraire", pas seulement ajouter/retirer des jours vides
+// (c'est déjà le rôle de syncItineraryDaysToDates ci-dessus). Réutilise buildDayPlans() —
+// la même répartition "réaliste" (horaires d'ouverture) que le générateur d'itinéraire
+// automatique (window.generateItinerary) — avec le même tri "plus proche voisin" pour
+// l'ordre de visite, mais SANS les filtres groupe/pays/ville du générateur : ici, ce sont
+// déjà les lieux propres à ce voyage, pas une nouvelle sélection à construire.
+window.regenerateTripItinerary = function() {
+    if (!currentTrip || !activeTripAccess.isOwner) return;
+    const wList = getWishlistLocs();
+    const tripLocIds = [...new Set(wList.filter(w => w.tripId === currentTrip.id).map(w => Number(w.id)))];
+    let locs = tripLocIds.map(id => celebLocations.find(l => l.id === id)).filter(Boolean);
+    if (locs.length === 0) return;
+
+    let route = [locs.shift()];
+    while (locs.length > 0) {
+        let lastLoc = route[route.length - 1], nearestIdx = 0, minDist = Infinity;
+        for (let i = 0; i < locs.length; i++) {
+            const d = Math.hypot(lastLoc.lat - locs[i].lat, lastLoc.lng - locs[i].lng);
+            if (d < minDist) { minDist = d; nearestIdx = i; }
+        }
+        route.push(locs.splice(nearestIdx, 1)[0]);
+    }
+
+    const dayCount = document.querySelectorAll('#itinerary-box .day-card').length;
+    if (!dayCount) return;
+    const { dayPlans } = buildDayPlans(route, dayCount, null);
+
+    // renderTrip() reconstruit tout le HTML des .day-card/.day-loc à partir de
+    // currentTrip.days — saveTrip() relit ENSUITE ce DOM pour persister, donc l'ordre
+    // (currentTrip.days d'abord, renderTrip(), puis saveTrip()) est important : sauvegarder
+    // avant renderTrip() effacerait ce changement en relisant l'ancien DOM (voir la même
+    // remarque sur syncItineraryDaysToDates plus haut).
+    currentTrip.days = dayPlans.map(dayLocs => dayLocs.map(l => l.id));
+    while (currentTrip.days.length < dayCount) currentTrip.days.push([]);
+    window.renderTrip();
+    window.saveTrip();
+};
+
 window.applyDateCalendar = function(prefix) {
     const popup = document.getElementById(prefix + '-cal-popup');
     if (popup) popup.classList.add('hidden');
     updateDateBoxes(prefix);
+    if (prefix === 'edit') {
+        syncItineraryDaysToDates();
+        window.regenerateTripItinerary();
+    }
 };
 
 window.navCalendar = function(prefix, dir) {
