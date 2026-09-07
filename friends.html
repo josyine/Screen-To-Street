@@ -583,6 +583,19 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         await loadAndRenderMessages();
         if (typeof window.markConversationRead === 'function') await window.markConversationRead(currentConvoId);
         if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
+        // Sans ça, la ligne de la sidebar gardait "Nouveau message" jusqu'au prochain
+        // rafraîchissement complet — markConversationRead() ci-dessus écrit bien la lecture
+        // côté Firestore, mais la ligne déjà affichée à l'écran n'était jamais recalculée
+        // pour en tenir compte (bug rapporté le 07/09/2026). Comme ce rafraîchissement
+        // reconstruit toute la liste, il faut ré-appliquer la surbrillance de la ligne
+        // ouverte ensuite, sinon elle disparaît juste après l'ouverture.
+        if (currentConvoType === 'trip') {
+            await refreshTripGroupsList();
+            setActiveRow('trip', currentConvoTripId);
+        } else {
+            await refreshDmListUI();
+            setActiveRow('dm', currentConvoFriendUid);
+        }
     }
 
     const MESSAGE_DELETE_WINDOW_MS = 10 * 60 * 1000;
@@ -778,6 +791,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const isFr = currentLang === 'fr';
         const username = (window.prompt(isFr ? "Pseudo de la personne à ajouter :" : "Username of the person to add:") || '').trim();
         if (!username || !currentConvoTripId || typeof window.sendTripInvite !== 'function') return;
+        // Auto-répare le document trips/{id} AVANT d'envoyer l'invitation (comme les
+        // autres points d'entrée de partage dans script.js) : sans ça, un voyage jamais
+        // rouvert par son propriétaire depuis trips.html restait avec un nom manquant,
+        // et la personne invitée depuis ce menu voyait "Shared trip" au lieu du vrai nom
+        // (bug rapporté le 07/09/2026).
+        if (typeof window.createSharedTrip === 'function' && typeof getMyTripsList === 'function') {
+            const localTrip = getMyTripsList().find(tr => String(tr.id) === String(currentConvoTripId));
+            if (localTrip) await window.createSharedTrip(localTrip);
+        }
         const result = await window.sendTripInvite(currentConvoTripId, currentConvoTripName, null, username, 'view');
         if (typeof window.showSimpleToast !== 'function') return;
         if (result && result.error) {
