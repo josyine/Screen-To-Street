@@ -6,7 +6,7 @@
 <title>Screen To Street — Friends</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260830">
+<link rel="stylesheet" href="style.css?v=20260907">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -65,6 +65,17 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .friend-request-row button { border: none; border-radius: 100px; padding: 5px 10px; font-size: 10px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
 .friend-accept-btn { background: #D42759; color: #fff; }
 .friend-decline-btn { background: #f1f5f9; color: #64748b; }
+
+/* Carte d'invitation à un voyage (demande du 07/09/2026 : jusqu'ici .friend-request-row
+   ne stylait ni fond de carte ni couleur des boutons Accept/Decline — même famille
+   visuelle que .trip-invite-card dans trips.html, adaptée à la largeur de la sidebar. */
+.trip-invite-row { display: flex; align-items: flex-start; gap: 10px; margin: 8px 18px; padding: 10px 12px; background: #FCE7F0; border: 1px solid #FBD5DC; border-radius: 12px; }
+.trip-invite-row-avatar { width: 30px; height: 30px; border-radius: 50%; background: #D42759; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.trip-invite-row-text { font-size: 11.5px; color: #334155; line-height: 1.4; margin-bottom: 8px; }
+.trip-invite-row-text b { color: #D42759; }
+.trip-invite-row-actions { display: flex; gap: 8px; }
+.trip-invite-accept-btn { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 6px 14px; font-size: 10.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.trip-invite-decline-btn { background: #fff; color: #64748b; border: 1px solid #cbd5e1; border-radius: 100px; padding: 6px 14px; font-size: 10.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
 
 .friends-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .convo-empty-state { flex: 1; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-size: 13px; text-align: center; padding: 40px; }
@@ -296,8 +307,8 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
   </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260830"></script>
-<script src="script.js?v=20260830"></script>
+<script type="module" src="firebase-init.js?v=20260907"></script>
+<script src="script.js?v=20260907"></script>
 <script>
     const savedFirstName = (localStorage.getItem('userFirstName') || '').trim();
     const savedName = (localStorage.getItem('userName') || 'User').trim();
@@ -352,11 +363,24 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const { incoming } = await window.listMyTripInvites();
         const section = document.getElementById('trip-invites-section');
         const list = document.getElementById('trip-invites-list');
-        list.innerHTML = incoming.map(inv => `<div class="friend-request-row">
-            <span style="flex:1;">${escapeHtml(t('tripInviteFrom').replace('{username}', inv.fromUsername).replace('{tripname}', inv.tripName || ''))}</span>
-            <button class="trip-invite-accept-btn" data-invite-id="${inv.id}" data-trip-id="${inv.tripId}" data-role="${inv.role || 'view'}">${t('friendsAccept')}</button>
-            <button class="trip-invite-decline-btn" data-invite-id="${inv.id}">${t('friendsDecline')}</button>
-        </div>`).join('');
+        list.innerHTML = incoming.map(inv => {
+            // Remplacement APRÈS échappement (comme le même texte dans trips.html) pour ne
+            // jamais casser le <b> voulu autour du pseudo — voir refreshTripInvitesSidebar()
+            // dans script.js, même schéma, même clé de traduction (demande du 07/09/2026 :
+            // les boutons Accept/Decline n'avaient jusqu'ici aucune couleur/carte, contraste
+            // avec la version déjà stylée dans trips.html).
+            const text = t('tripInviteFrom').replace('{username}', `<b>${escapeHtml(inv.fromUsername)}</b>`).replace('{tripname}', escapeHtml(inv.tripName || ''));
+            return `<div class="trip-invite-row">
+                <div class="trip-invite-row-avatar">${escapeHtml((inv.fromUsername || '?').charAt(0).toUpperCase())}</div>
+                <div style="flex:1; min-width:0;">
+                    <div class="trip-invite-row-text">${text}</div>
+                    <div class="trip-invite-row-actions">
+                        <button class="trip-invite-accept-btn" data-invite-id="${inv.id}" data-trip-id="${inv.tripId}" data-role="${inv.role || 'view'}">${t('friendsAccept')}</button>
+                        <button class="trip-invite-decline-btn" data-invite-id="${inv.id}">${t('friendsDecline')}</button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
         section.classList.toggle('hidden', incoming.length === 0);
     }
 
@@ -1115,7 +1139,20 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const acceptBtn = e.target.closest('.trip-invite-accept-btn');
         const declineBtn = e.target.closest('.trip-invite-decline-btn');
         if (acceptBtn) {
-            await window.acceptTripInvite(acceptBtn.dataset.inviteId, acceptBtn.dataset.tripId, acceptBtn.dataset.role);
+            acceptBtn.disabled = true;
+            const result = typeof window.acceptTripInvite === 'function'
+                ? await window.acceptTripInvite(acceptBtn.dataset.inviteId, acceptBtn.dataset.tripId, acceptBtn.dataset.role)
+                : { error: 'failed' };
+            acceptBtn.disabled = false;
+            // Avant ce correctif, un échec ici ne montrait rien : la carte restait affichée
+            // sans le moindre indice que "Accept" n'avait servi à rien (bug rapporté le
+            // 07/09/2026 — voir le correctif dans sendTripInvite(), firebase-init.js).
+            if (result && result.error) {
+                if (typeof window.showSimpleToast === 'function') {
+                    window.showSimpleToast(currentLang === 'fr' ? "Échec de l'acceptation. Réessayez." : 'Failed to accept. Please try again.', { isError: true });
+                }
+                return;
+            }
             refreshSidebar();
         } else if (declineBtn) {
             await window.declineTripInvite(declineBtn.dataset.inviteId);

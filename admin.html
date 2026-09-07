@@ -6,7 +6,7 @@
 <title>Screen To Street — Location submissions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260904">
+<link rel="stylesheet" href="style.css?v=20260907">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -47,6 +47,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-upload-btn:hover{border-color:#D42759;color:#D42759;background:#FCE7F0;}
 .sub-photo-upload-name{font-size:10.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sub-tweet-preview{margin-bottom:8px;}
+.sub-instagram-preview{margin-bottom:8px;}
 .sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;margin-bottom:12px;}
 .sub-story p{margin-bottom:8px;}
 .sub-story p:last-child{margin-bottom:0;}
@@ -109,9 +110,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260904"></script>
-<script src="countries.js?v=20260904"></script>
-<script src="script.js?v=20260904"></script>
+<script type="module" src="firebase-init.js?v=20260907"></script>
+<script src="countries.js?v=20260907"></script>
+<script src="script.js?v=20260907"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -194,6 +195,32 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
     }
 
+    // Embed Instagram (demande du 07/09/2026 : le lien Instagram ne s'affichait jamais en
+    // prévisualisation ici, contrairement au tweet) — même mécanisme officiel sans clé API
+    // (embed.js), valable seulement pour un post/reel PRÉCIS (instagram.com/p/.../reel/...),
+    // pas pour un simple lien de profil (voir isInstagramPostUrl).
+    function isInstagramPostUrl(url) {
+        return /^https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[^/?]+/i.test((url || '').trim());
+    }
+    let instagramWidgetLoading = null;
+    function loadInstagramWidgetScript() {
+        if (window.instgrm && window.instgrm.Embeds) return Promise.resolve();
+        if (instagramWidgetLoading) return instagramWidgetLoading;
+        instagramWidgetLoading = new Promise((resolve) => {
+            const s = document.createElement('script');
+            s.src = 'https://www.instagram.com/embed.js';
+            s.onload = resolve;
+            s.onerror = resolve;
+            document.body.appendChild(s);
+        });
+        return instagramWidgetLoading;
+    }
+    async function renderInstagramEmbed(container, instagramUrl) {
+        container.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(instagramUrl)}" data-instgrm-version="14"></blockquote>`;
+        await loadInstagramWidgetScript();
+        if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+    }
+
     function renderCard(sub) {
         const isEdit = !!sub.matchedLocId;
         const practicalCount = Array.isArray(sub.practicalInfo) ? sub.practicalInfo.length : 0;
@@ -223,7 +250,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)" value="${escapeHtml(sub.tweetUrl || '')}">
             <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
 
-            <input type="url" class="sub-social-input" data-platform="instagram" placeholder="Instagram URL (optional)" value="${escapeHtml(sub.instagramUrl || '')}">
+            <div class="sub-instagram-preview hidden"></div>
+            <input type="url" class="sub-social-input" data-platform="instagram" placeholder="Instagram URL (optional) — a specific post/reel link embeds a preview" value="${escapeHtml(sub.instagramUrl || '')}">
             <div class="sub-social-error hidden" data-platform="instagram" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like an instagram.com URL.</div>
             <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional)" value="${escapeHtml(sub.facebookUrl || '')}">
             <div class="sub-social-error hidden" data-platform="facebook" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a facebook.com URL.</div>
@@ -330,8 +358,12 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             if (sub.tweetUrl) refreshTweet();
         }
 
-        // Instagram/Facebook/TikTok : mêmes trois champs, aucun embed (voir plus haut),
-        // juste une validation de domaine avant d'accepter la valeur dans `sub`.
+        // Instagram/Facebook/TikTok : mêmes trois champs, juste une validation de domaine
+        // avant d'accepter la valeur dans `sub` — Instagram a EN PLUS un embed (demande du
+        // 07/09/2026, voir renderInstagramEmbed plus haut), uniquement pour un post/reel
+        // précis (isInstagramPostUrl) ; Facebook/TikTok restent sans embed, aucune méthode
+        // fiable sans clé API pour ces deux-là.
+        const instagramPreview = card.querySelector('.sub-instagram-preview');
         const socialConfig = {
             instagram: { extract: extractInstagramUrl, field: 'instagramUrl' },
             facebook: { extract: extractFacebookUrl, field: 'facebookUrl' },
@@ -342,14 +374,33 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const cfg = socialConfig[platform];
             const errorEl = card.querySelector(`.sub-social-error[data-platform="${platform}"]`);
             if (!cfg || !errorEl) return;
-            input.addEventListener('change', () => {
+            const refreshSocial = () => {
                 const val = input.value.trim();
-                if (!val) { sub[cfg.field] = ''; errorEl.classList.add('hidden'); return; }
+                if (!val) {
+                    sub[cfg.field] = '';
+                    errorEl.classList.add('hidden');
+                    if (platform === 'instagram' && instagramPreview) instagramPreview.classList.add('hidden');
+                    return;
+                }
                 const clean = cfg.extract(val);
-                if (!clean) { errorEl.classList.remove('hidden'); return; }
+                if (!clean) {
+                    errorEl.classList.remove('hidden');
+                    if (platform === 'instagram' && instagramPreview) instagramPreview.classList.add('hidden');
+                    return;
+                }
                 errorEl.classList.add('hidden');
                 sub[cfg.field] = clean;
-            });
+                if (platform === 'instagram' && instagramPreview) {
+                    if (isInstagramPostUrl(clean)) {
+                        instagramPreview.classList.remove('hidden');
+                        renderInstagramEmbed(instagramPreview, clean);
+                    } else {
+                        instagramPreview.classList.add('hidden');
+                    }
+                }
+            };
+            input.addEventListener('change', refreshSocial);
+            if (sub[cfg.field]) refreshSocial();
         });
 
         if (videoInput) {

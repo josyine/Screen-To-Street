@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260830">
+<link rel="stylesheet" href="style.css?v=20260907">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -699,6 +699,11 @@
                              plus haut que large) — d'où l'affichage "moche" signalé. Ce conteneur laisse
                              au contraire le widget prendre sa hauteur naturelle. -->
                         <div class="tweet-embed-wrapper hidden" id="details-tweet-container"></div>
+                        <!-- Post Instagram embarqué (demande du 07/09/2026, même principe que le
+                             conteneur tweet ci-dessus) : uniquement pour un lien vers UN post/reel
+                             précis (instagram.com/p/.../reel/...) — un simple lien de profil reste
+                             affiché comme lien "Follow" (voir #details-social-links). -->
+                        <div class="tweet-embed-wrapper hidden" id="details-instagram-container"></div>
                     </div>
 
                     <span class="sub-label" data-i18n="lPractical">Practical information &amp; access</span>
@@ -1124,11 +1129,11 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260830"></script>
-<script type="module" src="firebase-init.js?v=20260830"></script>
-<script src="script.js?v=20260830"></script>
+<script src="countries.js?v=20260907"></script>
+<script type="module" src="firebase-init.js?v=20260907"></script>
+<script src="script.js?v=20260907"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260830"></script>
+<script src="map-tour.js?v=20260907"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
