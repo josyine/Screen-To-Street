@@ -898,6 +898,31 @@ window.sendTripInvite = async function (tripId, tripName, tripCoverImage, userna
     } catch (e) {
         console.warn('Vérification "déjà membre" ignorée (voyage pas encore synchronisé ou règles à republier) :', e);
     }
+    // Auto-réparation GARANTIE du document trips/{id} avant de créer l'invitation (demande
+    // du 07/09/2026 : "il faut régler ce problème une bonne fois pour toute") — jusqu'ici,
+    // chaque écran qui envoie une invitation devait PENSER À appeler createSharedTrip()
+    // séparément avant, et un seul oubli (ex: la création d'un voyage avec invités en une
+    // étape, dans createNewTripAdvanced()) suffisait à laisser trips/{id} sans ownerUid/name
+    // — l'invitation partait quand même (sendTripInvite ne dépend pas de ce document), mais
+    // acceptTripInvite() échouait ensuite en silence : sa clause d'auto-ajout dans les
+    // règles Firestore exige que le document existe déjà AVEC un ownerUid valide, donc
+    // Firestore la traite comme une création interdite (payload sans ownerUid) plutôt
+    // qu'une mise à jour. En centralisant ici, dans la SEULE fonction par laquelle toute
+    // invitation transite, ce oubli devient impossible. `name`/`coverImage` ne sont écrits
+    // que s'ils sont fournis (jamais une chaîne vide qui écraserait une vraie valeur déjà
+    // en place) ; un échec ici (ex: appelant qui n'est ni propriétaire ni éditeur du voyage)
+    // est ignoré sans bloquer l'envoi de l'invitation elle-même.
+    try {
+        const heal = {
+            ownerUid: user.uid,
+            ownerName: (localStorage.getItem('userFirstName') || localStorage.getItem('userName') || 'ARMY').trim(),
+        };
+        if (tripName) heal.name = tripName;
+        if (tripCoverImage) heal.coverImage = tripCoverImage;
+        await setDoc(doc(db, 'trips', tripId), heal, { merge: true });
+    } catch (e) {
+        console.warn('Auto-réparation du voyage avant invitation ignorée :', e);
+    }
     try {
         const existingSnap = await getDocs(query(collection(db, 'tripInvites'), where('fromUid', '==', user.uid)));
         let alreadyInvited = false;

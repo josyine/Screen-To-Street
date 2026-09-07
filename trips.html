@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260830">
+<link rel="stylesheet" href="style.css?v=20260907">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -153,6 +153,19 @@
   .date-tab.active { color: #D42759; border-bottom-color: #D42759; }
   .pill-btn { border: 1px solid #cbd5e1; border-radius: 20px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; transition: 0.2s; background: #fff; }
   .pill-btn.active { background: #FCE7F0; border-color: #D42759; color: #D42759; }
+
+  /* Cases "Départ"/"Retour" repliées par défaut (demande du 07/09/2026, retour à l'ancien
+     format d'affichage) : un clic sur l'une ou l'autre déplie le calendrier ci-dessous
+     (voir toggleDateCalendar() dans script.js) ; le bouton "Appliquer" à l'intérieur du
+     calendrier le replie de nouveau, ne laissant que le résumé dans les deux cases. */
+  .stp-date-boxes { display: flex; gap: 10px; margin-bottom: 10px; }
+  .stp-date-box { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; cursor: pointer; transition: 0.15s; background: #fff; }
+  .stp-date-box:hover { border-color: #D42759; }
+  .stp-date-box-label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+  .stp-date-box-value { font-size: 13px; font-weight: 600; color: #212832; }
+  .stp-cal-popup { margin-top: 4px; padding-top: 4px; }
+  .stp-cal-apply-btn { display: block; margin: 14px auto 0; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 9px 26px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; }
+  .stp-cal-apply-btn:hover { background: #b81f49; }
 
   /* Calendrier de sélection de plage de dates (demande du 07/09/2026, remplace les deux
      <input type="date"> bruts) : deux mois affichés côte à côte, un clic pose le début,
@@ -400,21 +413,34 @@
                     </div>
 
                     <div id="edit-date-specific-panel">
-                        <input type="date" id="date-start" class="hidden" onchange="saveTrip()">
-                        <input type="date" id="date-end" class="hidden" onchange="saveTrip()">
-                        <div class="stp-cal-nav">
-                            <div class="stp-cal-arrow" onclick="navCalendar('edit',-1)">&lsaquo;</div>
-                            <div class="stp-cal-arrow" onclick="navCalendar('edit',1)">&rsaquo;</div>
+                        <input type="date" id="date-start" class="hidden" onchange="syncItineraryDaysToDates(); saveTrip();">
+                        <input type="date" id="date-end" class="hidden" onchange="syncItineraryDaysToDates(); saveTrip();">
+                        <div class="stp-date-boxes">
+                            <div class="stp-date-box" onclick="toggleDateCalendar('edit')">
+                                <div class="stp-date-box-label" data-i18n="tripDepartureLabel">Departure</div>
+                                <div class="stp-date-box-value" id="edit-date-box-start">Select date</div>
+                            </div>
+                            <div class="stp-date-box" onclick="toggleDateCalendar('edit')">
+                                <div class="stp-date-box-label" data-i18n="tripReturnLabel">Return</div>
+                                <div class="stp-date-box-value" id="edit-date-box-end">Select date</div>
+                            </div>
                         </div>
-                        <div class="stp-cal-grids"></div>
+                        <div class="stp-cal-popup hidden" id="edit-cal-popup">
+                            <div class="stp-cal-nav">
+                                <div class="stp-cal-arrow" onclick="navCalendar('edit',-1)">&lsaquo;</div>
+                                <div class="stp-cal-arrow" onclick="navCalendar('edit',1)">&rsaquo;</div>
+                            </div>
+                            <div class="stp-cal-grids"></div>
+                            <button type="button" class="stp-cal-apply-btn" onclick="applyDateCalendar('edit')" data-i18n="tripApplyDatesBtn">Apply</button>
+                        </div>
                     </div>
 
                     <div id="edit-date-flexible-panel" class="hidden" style="margin-bottom:10px;">
                         <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
-                             <div class="pill-btn active" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); saveTrip();">Weekend</div>
-                             <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); saveTrip();">1 week</div>
-                             <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); saveTrip();">2 weeks</div>
-                             <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); saveTrip();">1 month</div>
+                             <div class="pill-btn active" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); syncItineraryDaysToDates(); saveTrip();">Weekend</div>
+                             <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); syncItineraryDaysToDates(); saveTrip();">1 week</div>
+                             <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); syncItineraryDaysToDates(); saveTrip();">2 weeks</div>
+                             <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); syncItineraryDaysToDates(); saveTrip();">1 month</div>
                         </div>
                         <div class="stp-month-grid" id="edit-month-grid" style="margin-top:12px;"></div>
                     </div>
@@ -512,11 +538,24 @@
         <div id="create-date-specific-panel" style="margin-bottom:20px;">
             <input type="date" id="create-trip-start" class="hidden">
             <input type="date" id="create-trip-end" class="hidden">
-            <div class="stp-cal-nav">
-                <div class="stp-cal-arrow" onclick="navCalendar('create',-1)">&lsaquo;</div>
-                <div class="stp-cal-arrow" onclick="navCalendar('create',1)">&rsaquo;</div>
+            <div class="stp-date-boxes">
+                <div class="stp-date-box" onclick="toggleDateCalendar('create')">
+                    <div class="stp-date-box-label" data-i18n="tripDepartureLabel">Departure</div>
+                    <div class="stp-date-box-value" id="create-date-box-start">Select date</div>
+                </div>
+                <div class="stp-date-box" onclick="toggleDateCalendar('create')">
+                    <div class="stp-date-box-label" data-i18n="tripReturnLabel">Return</div>
+                    <div class="stp-date-box-value" id="create-date-box-end">Select date</div>
+                </div>
             </div>
-            <div class="stp-cal-grids"></div>
+            <div class="stp-cal-popup hidden" id="create-cal-popup">
+                <div class="stp-cal-nav">
+                    <div class="stp-cal-arrow" onclick="navCalendar('create',-1)">&lsaquo;</div>
+                    <div class="stp-cal-arrow" onclick="navCalendar('create',1)">&rsaquo;</div>
+                </div>
+                <div class="stp-cal-grids"></div>
+                <button type="button" class="stp-cal-apply-btn" onclick="applyDateCalendar('create')" data-i18n="tripApplyDatesBtn">Apply</button>
+            </div>
         </div>
 
         <div id="create-date-flexible-panel" class="hidden" style="margin-bottom:20px;">
@@ -671,8 +710,8 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20260830"></script>
-<script src="script.js?v=20260830"></script>
+<script type="module" src="firebase-init.js?v=20260907"></script>
+<script src="script.js?v=20260907"></script>
 
 </body>
 </html>
