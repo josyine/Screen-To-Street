@@ -167,8 +167,16 @@ service cloud.firestore {
     // VOYAGES PARTAGÉS ("travel buddies")
     // ==========================================
     match /trips/{tripId} {
+      // `resource == null` (document inexistant) doit être autorisé explicitement : même
+      // bug que celui documenté plus bas pour /conversations/{convoId} — sans ça,
+      // `resource.data` plante l'évaluation de la règle sur le getDoc() de vérification
+      // d'existence fait par sendTripInvite() (firebase-init.js) avant d'inviter quelqu'un
+      // à un voyage qui n'a pas encore de document Firestore, et Firestore refuse la
+      // lecture avec permission-denied au lieu de simplement renvoyer "n'existe pas" —
+      // bug rapporté le 07/09/2026 : "Failed to send the invite" pour un voyage tout
+      // juste créé (jamais encore synchronisé côté serveur au moment de l'invitation).
       allow read: if request.auth != null
-        && (resource.data.ownerUid == request.auth.uid || request.auth.uid in resource.data.members);
+        && (resource == null || resource.data.ownerUid == request.auth.uid || request.auth.uid in resource.data.members);
       allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
       allow update: if request.auth != null && (
         resource.data.ownerUid == request.auth.uid

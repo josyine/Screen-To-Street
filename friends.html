@@ -33,8 +33,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 #attach-location-option, #attach-trip-option, #attach-poll-option { display: flex; align-items: center; gap: 8px; }
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
 
-.friends-page { position: relative; z-index: 2000; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 110px 20px 30px 20px; }
-.friends-shell { width: 100%; max-width: 1120px; height: 100%; background: #fff; border-radius: 20px; box-shadow: 0 15px 40px rgba(80,60,120,.08); display: flex; overflow: hidden; }
+/* Bloc blanc plein écran (demande du 07/09/2026) : le fond violet ne doit plus être
+   visible que dans la bande d'en-tête (110px réservés en haut pour le logo/icônes fixes,
+   voir .universal-logo/.universal-icons) — ni marge latérale, ni largeur maximale, ni
+   coins arrondis (qui laisseraient deviner le fond violet dans les angles). */
+.friends-page { position: relative; z-index: 2000; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 110px 0 0 0; }
+.friends-shell { width: 100%; max-width: 100%; height: 100%; background: #fff; border-radius: 0; box-shadow: none; display: flex; overflow: hidden; }
 
 .friends-sidebar { width: 290px; border-right: 1px solid #EFECF6; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
 .friends-sidebar-header { padding: 20px 18px 12px 18px; }
@@ -314,6 +318,14 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     let currentConvoTripId = null;
     let currentConvoTripName = null;
     let currentConvoIsTripOwner = false;
+    // Désabonnement du listener temps réel de la conversation actuellement ouverte (voir
+    // window.listenForMessages dans firebase-init.js, demande du 07/09/2026) — un seul à la
+    // fois, jamais un par conversation : il faut le couper à chaque changement/fermeture de
+    // conversation, sinon d'anciens abonnements continueraient de tourner en arrière-plan.
+    let currentMessagesUnsubscribe = null;
+    function stopListeningToMessages() {
+        if (currentMessagesUnsubscribe) { currentMessagesUnsubscribe(); currentMessagesUnsubscribe = null; }
+    }
 
     async function refreshSidebar() {
         await refreshFriendRequests();
@@ -371,13 +383,19 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     // nôtre, sinon le texte du dernier message reçu (tronqué) suivi de l'heure relative.
     // `fallback` est le sous-titre statique déjà utilisé quand la conversation n'a encore
     // aucun message (ex: "Shared with you"/"Add a friend to start messaging").
-    function renderConvoPreviewMeta(preview, fallback) {
+    // `count` vient de countUnreadMessagesInConversation() (firebase-init.js, demande du
+    // 07/09/2026) : avant ce correctif, le badge affichait toujours "1" quel que soit le
+    // nombre réel de messages non lus (preview.unread n'est qu'un booléen).
+    function renderConvoPreviewMeta(preview, fallback, count) {
         const isFr = currentLang === 'fr';
-        if (!preview || !preview.lastMessageAt) return { html: escapeHtml(fallback || ''), unread: false };
+        if (!preview || !preview.lastMessageAt) return { html: escapeHtml(fallback || ''), unread: false, count: 0 };
         const rel = formatRelativeTime(preview.lastMessageAt);
         if (preview.unread) {
-            const text = isFr ? `Nouveau message · ${rel}` : `New message · ${rel}`;
-            return { html: escapeHtml(text), unread: true };
+            const n = count || 1;
+            const text = isFr
+                ? (n > 1 ? `${n} nouveaux messages · ${rel}` : `Nouveau message · ${rel}`)
+                : (n > 1 ? `${n} new messages · ${rel}` : `New message · ${rel}`);
+            return { html: escapeHtml(text), unread: true, count: n };
         }
         if (preview.mine) {
             const text = isFr ? `Envoyé il y a ${rel}` : `Sent ${rel} ago`;
@@ -390,18 +408,20 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     async function refreshTripGroupsList() {
         const groups = typeof window.listMyTripGroups === 'function' ? await window.listMyTripGroups() : [];
         const previews = await Promise.all(groups.map(g => typeof window.getConversationPreview === 'function' ? window.getConversationPreview(window.tripConversationId(g.id)) : null));
+        const counts = await Promise.all(previews.map((p, i) => (p && p.unread && typeof window.countUnreadMessagesInConversation === 'function')
+            ? window.countUnreadMessagesInConversation(window.tripConversationId(groups[i].id)) : Promise.resolve(0)));
         const list = document.getElementById('trip-groups-list');
         const empty = document.getElementById('trip-groups-empty');
         list.innerHTML = groups.map((g, i) => {
             const fallback = g.isOwner ? t('tripGroupOwner') : t('tripGroupMember');
-            const meta = renderConvoPreviewMeta(previews[i], fallback);
+            const meta = renderConvoPreviewMeta(previews[i], fallback, counts[i]);
             return `<div class="convo-row" data-kind="trip" data-trip-id="${g.id}" data-trip-name="${escapeHtml(g.name || (currentLang === 'fr' ? 'Voyage partagé' : 'Shared trip'))}">
             <div class="convo-thumb-icon"${g.coverImage ? ` style="background-image:url('${g.coverImage}'); background-size:cover; background-position:center;"` : ''}>${g.coverImage ? '' : tripThumbFallbackIcon}</div>
             <div class="convo-row-info">
                 <div class="convo-row-name">${escapeHtml(g.name || (currentLang === 'fr' ? 'Voyage partagé' : 'Shared trip'))}</div>
                 <div class="convo-row-meta${meta.unread ? ' unread' : ''}">${meta.html}</div>
             </div>
-            ${meta.unread ? `<div class="convo-unread-badge">1</div>` : ''}
+            ${meta.unread ? `<div class="convo-unread-badge">${meta.count}</div>` : ''}
             <button type="button" class="convo-row-delete-btn" data-kind="trip" data-trip-id="${g.id}" title="${t('deleteConvoBtn')}" aria-label="${t('deleteConvoBtn')}">&times;</button>
         </div>`;
         }).join('');
@@ -418,17 +438,19 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     async function refreshDmListUI() {
         const user = window.firebaseCurrentUser;
         const previews = await Promise.all(myFriendsList.map(f => (user && typeof window.getConversationPreview === 'function') ? window.getConversationPreview(window.dmConversationId(user.uid, f.uid)) : null));
+        const counts = await Promise.all(previews.map((p, i) => (p && p.unread && user && typeof window.countUnreadMessagesInConversation === 'function')
+            ? window.countUnreadMessagesInConversation(window.dmConversationId(user.uid, myFriendsList[i].uid)) : Promise.resolve(0)));
         const list = document.getElementById('dm-list');
         const empty = document.getElementById('dm-empty');
         list.innerHTML = myFriendsList.map((f, i) => {
-            const meta = renderConvoPreviewMeta(previews[i], t('noFriendsForDm'));
+            const meta = renderConvoPreviewMeta(previews[i], t('noFriendsForDm'), counts[i]);
             return `<div class="convo-row" data-kind="dm" data-friend-uid="${f.uid}" data-friend-username="${escapeHtml(f.username)}">
             <div class="convo-thumb-icon">${escapeHtml((f.username || '?').charAt(0).toUpperCase())}</div>
             <div class="convo-row-info">
                 <div class="convo-row-name">${escapeHtml(f.username)}</div>
                 <div class="convo-row-meta${meta.unread ? ' unread' : ''}">${meta.html}</div>
             </div>
-            ${meta.unread ? `<div class="convo-unread-badge">1</div>` : ''}
+            ${meta.unread ? `<div class="convo-unread-badge">${meta.count}</div>` : ''}
             <button type="button" class="convo-row-delete-btn" data-kind="dm" data-friend-uid="${f.uid}" title="${t('deleteConvoBtn')}" aria-label="${t('deleteConvoBtn')}">&times;</button>
         </div>`;
         }).join('');
@@ -481,6 +503,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-panel').style.display = 'none';
         document.getElementById('convo-empty-state').classList.remove('hidden');
         currentConvoId = null; currentConvoTripId = null; currentConvoType = null;
+        stopListeningToMessages();
     }
     async function refreshMyFriendsList() {
         if (typeof window.listMyFriends !== 'function') return;
@@ -580,7 +603,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         panel.classList.remove('hidden');
         panel.style.display = 'flex';
         document.getElementById('friends-shell').classList.add('chat-open');
+        stopListeningToMessages();
         await loadAndRenderMessages();
+        // Temps réel (demande du 07/09/2026) : tant que cette conversation reste ouverte,
+        // tout nouveau message (envoyé par l'autre personne depuis un autre appareil/onglet)
+        // apparaît sans recharger la page — un seul abonnement actif à la fois, coupé par
+        // stopListeningToMessages() ci-dessus à chaque changement de conversation.
+        if (typeof window.listenForMessages === 'function') {
+            currentMessagesUnsubscribe = window.listenForMessages(currentConvoId, renderMessagesList);
+        }
         if (typeof window.markConversationRead === 'function') await window.markConversationRead(currentConvoId);
         if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
         // Sans ça, la ligne de la sidebar gardait "Nouveau message" jusqu'au prochain
@@ -633,11 +664,17 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         }
         return `<div class="msg-bubble">${escapeHtml(m.text)}</div>`;
     }
-    async function loadAndRenderMessages() {
-        const msgs = typeof window.loadMessages === 'function' ? await window.loadMessages(currentConvoId) : [];
+    // Séparé de loadAndRenderMessages() (demande du 07/09/2026, messages en temps réel) :
+    // renderMessagesList() est le rendu pur, réutilisé aussi bien par le chargement initial
+    // one-shot que par chaque évènement du listener temps réel (window.listenForMessages).
+    function renderMessagesList(msgs) {
         const container = document.getElementById('convo-messages');
         const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
         const now = Date.now();
+        // Ne pas casser le défilement en cours si la personne a remonté dans l'historique :
+        // ne recolle en bas que si elle était déjà tout en bas juste avant ce re-rendu (ex:
+        // un nouveau message vient d'arriver via le listener temps réel).
+        const wasAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 40;
         container.innerHTML = msgs.map(m => {
             const mine = m.fromUid === myUid;
             const sentMs = (m.createdAt && m.createdAt.seconds) ? m.createdAt.seconds * 1000 : null;
@@ -650,7 +687,11 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                 </div>
             </div>`;
         }).join('');
-        container.scrollTop = container.scrollHeight;
+        if (wasAtBottom) container.scrollTop = container.scrollHeight;
+    }
+    async function loadAndRenderMessages() {
+        const msgs = typeof window.loadMessages === 'function' ? await window.loadMessages(currentConvoId) : [];
+        renderMessagesList(msgs);
     }
     document.getElementById('convo-messages').addEventListener('click', async (e) => {
         const deleteBtn = e.target.closest('.msg-delete-btn');
@@ -785,35 +826,115 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const btn = document.getElementById('convo-options-btn');
         if (!menu.contains(e.target) && e.target !== btn) menu.classList.add('hidden');
     });
-    document.getElementById('convo-add-member-option').addEventListener('click', async (e) => {
+    // Modale stylée (remplace l'ancien window.prompt() natif, hors charte graphique —
+    // demande du 07/09/2026) : même famille visuelle que ensureShareTripModal() dans
+    // script.js (pilule rose, autocomplétion par pseudo), injectée en JS une seule fois.
+    function ensureAddMemberModal() {
+        let modal = document.getElementById('add-member-modal');
+        if (modal) return modal;
+        const isFr = currentLang === 'fr';
+        modal = document.createElement('div');
+        modal.id = 'add-member-modal';
+        modal.className = 'modal hidden';
+        modal.style.zIndex = '10500';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:380px;">
+                <span class="close-btn" onclick="document.getElementById('add-member-modal').classList.add('hidden')">&times;</span>
+                <div style="text-align:center; margin-bottom:16px;">
+                    <div style="font-size:15px; font-weight:700; color:#212832;">${isFr ? 'Ajouter un membre' : 'Add a member'}</div>
+                    <div style="font-size:11px; color:#94a3b8; margin-top:2px;" id="add-member-sub"></div>
+                </div>
+                <div style="position:relative;">
+                    <div style="display:flex; gap:8px;">
+                        <input id="add-member-input" autocomplete="off" placeholder="${isFr ? 'Leur pseudo' : 'Their username'}" style="flex:1; border:1.5px solid #cbd5e1; border-radius:100px; padding:10px 14px; font-size:12px; font-family:'Poppins',sans-serif;">
+                        <button id="add-member-confirm-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 18px; font-size:12px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">${isFr ? 'Inviter' : 'Invite'}</button>
+                    </div>
+                    <div id="add-member-suggestions" class="hidden" style="position:absolute; top:calc(100% + 4px); left:0; right:66px; background:#fff; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.12); max-height:180px; overflow-y:auto; z-index:20;"></div>
+                </div>
+                <div id="add-member-error" class="hidden" style="font-size:11px; color:#D42759; margin-top:10px;"></div>
+            </div>`;
+        document.body.appendChild(modal);
+
+        const input = modal.querySelector('#add-member-input');
+        const suggestionsBox = modal.querySelector('#add-member-suggestions');
+        let debounceTimer = null;
+        input.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            const q = input.value.trim();
+            if (!q) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
+            debounceTimer = setTimeout(async () => {
+                if (typeof window.searchUsernamesByPrefix !== 'function') return;
+                const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+                const matches = (await window.searchUsernamesByPrefix(q, 6)).filter(m => m.uid !== myUid);
+                if (input.value.trim() !== q) return;
+                if (matches.length === 0) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
+                suggestionsBox.innerHTML = matches.map(m => `<div class="share-suggestion-row" data-username="${escapeHtml(m.username)}" style="padding:9px 14px; font-size:12px; font-weight:600; color:#212832; cursor:pointer;">${escapeHtml(m.username)}</div>`).join('');
+                suggestionsBox.querySelectorAll('.share-suggestion-row').forEach(row => {
+                    row.addEventListener('mouseenter', () => row.style.background = '#FFF7F8');
+                    row.addEventListener('mouseleave', () => row.style.background = '');
+                    row.addEventListener('mousedown', (e) => e.preventDefault());
+                    row.addEventListener('click', () => {
+                        input.value = row.dataset.username;
+                        suggestionsBox.classList.add('hidden');
+                        suggestionsBox.innerHTML = '';
+                        input.focus();
+                    });
+                });
+                suggestionsBox.classList.remove('hidden');
+            }, 250);
+        });
+        input.addEventListener('blur', () => setTimeout(() => suggestionsBox.classList.add('hidden'), 150));
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); modal.querySelector('#add-member-confirm-btn').click(); } });
+
+        modal.querySelector('#add-member-confirm-btn').addEventListener('click', async () => {
+            const btn = modal.querySelector('#add-member-confirm-btn');
+            const errorEl = modal.querySelector('#add-member-error');
+            const username = input.value.trim();
+            errorEl.classList.add('hidden');
+            if (!username || !currentConvoTripId || typeof window.sendTripInvite !== 'function') return;
+            btn.disabled = true;
+            // Auto-répare le document trips/{id} AVANT d'envoyer l'invitation (comme les
+            // autres points d'entrée de partage dans script.js) : sans ça, un voyage jamais
+            // rouvert par son propriétaire depuis trips.html restait avec un nom manquant,
+            // et la personne invitée depuis ce menu voyait "Shared trip" au lieu du vrai nom
+            // (bug rapporté le 07/09/2026).
+            if (typeof window.createSharedTrip === 'function' && typeof getMyTripsList === 'function') {
+                const localTrip = getMyTripsList().find(tr => String(tr.id) === String(currentConvoTripId));
+                if (localTrip) await window.createSharedTrip(localTrip);
+            }
+            const result = await window.sendTripInvite(currentConvoTripId, currentConvoTripName, null, username, 'view');
+            btn.disabled = false;
+            if (result && result.error) {
+                errorEl.textContent = result.error === 'not-found'
+                    ? (isFr ? `Aucun compte trouvé pour le pseudo « ${username} ».` : `No account found for the username "${username}".`)
+                    : result.error === 'already-invited' || result.error === 'already-member'
+                    ? (isFr ? "Cette personne fait déjà partie du voyage ou a déjà été invitée." : 'This person is already in the trip or already invited.')
+                    : result.error === 'self'
+                    ? (isFr ? "Vous ne pouvez pas vous inviter vous-même." : "You can't invite yourself.")
+                    : (isFr ? "Échec de l'invitation. Réessayez." : 'Failed to send the invite. Please try again.');
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            input.value = '';
+            suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = '';
+            modal.classList.add('hidden');
+            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(isFr ? `Invitation envoyée à ${username}.` : `Invite sent to ${username}.`);
+        });
+        return modal;
+    }
+
+    document.getElementById('convo-add-member-option').addEventListener('click', (e) => {
         e.preventDefault();
         document.getElementById('convo-options-menu').classList.add('hidden');
         const isFr = currentLang === 'fr';
-        const username = (window.prompt(isFr ? "Pseudo de la personne à ajouter :" : "Username of the person to add:") || '').trim();
-        if (!username || !currentConvoTripId || typeof window.sendTripInvite !== 'function') return;
-        // Auto-répare le document trips/{id} AVANT d'envoyer l'invitation (comme les
-        // autres points d'entrée de partage dans script.js) : sans ça, un voyage jamais
-        // rouvert par son propriétaire depuis trips.html restait avec un nom manquant,
-        // et la personne invitée depuis ce menu voyait "Shared trip" au lieu du vrai nom
-        // (bug rapporté le 07/09/2026).
-        if (typeof window.createSharedTrip === 'function' && typeof getMyTripsList === 'function') {
-            const localTrip = getMyTripsList().find(tr => String(tr.id) === String(currentConvoTripId));
-            if (localTrip) await window.createSharedTrip(localTrip);
-        }
-        const result = await window.sendTripInvite(currentConvoTripId, currentConvoTripName, null, username, 'view');
-        if (typeof window.showSimpleToast !== 'function') return;
-        if (result && result.error) {
-            const msg = result.error === 'not-found'
-                ? (isFr ? `Aucun compte trouvé pour le pseudo « ${username} ».` : `No account found for the username "${username}".`)
-                : result.error === 'already-invited' || result.error === 'already-member'
-                ? (isFr ? "Cette personne fait déjà partie du voyage ou a déjà été invitée." : 'This person is already in the trip or already invited.')
-                : result.error === 'self'
-                ? (isFr ? "Vous ne pouvez pas vous inviter vous-même." : "You can't invite yourself.")
-                : (isFr ? "Échec de l'invitation." : 'Failed to send the invite.');
-            window.showSimpleToast(msg, { isError: true });
-            return;
-        }
-        window.showSimpleToast(isFr ? `Invitation envoyée à ${username}.` : `Invite sent to ${username}.`);
+        const modal = ensureAddMemberModal();
+        modal.querySelector('#add-member-sub').textContent = currentConvoTripName
+            ? (isFr ? `Invite quelqu'un à rejoindre « ${currentConvoTripName} »` : `Invite someone to join "${currentConvoTripName}"`)
+            : (isFr ? "Invite quelqu'un à rejoindre ce voyage" : 'Invite someone to join this trip');
+        modal.querySelector('#add-member-error').classList.add('hidden');
+        modal.querySelector('#add-member-input').value = '';
+        modal.classList.remove('hidden');
+        modal.querySelector('#add-member-input').focus();
     });
     document.getElementById('convo-rename-option').addEventListener('click', async (e) => {
         e.preventDefault();
@@ -843,6 +964,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-panel').style.display = 'none';
         document.getElementById('convo-empty-state').classList.remove('hidden');
         currentConvoId = null; currentConvoTripId = null; currentConvoType = null;
+        stopListeningToMessages();
         if (typeof window.showSimpleToast === 'function') window.showSimpleToast(isFr ? 'Vous avez quitté le groupe.' : 'You left the group.');
         refreshTripGroupsList();
     });
