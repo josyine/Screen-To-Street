@@ -85,6 +85,19 @@
   .avatar-name-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: #212832; }
   .trip-buddy-avatar:hover .avatar-name-bubble, .trip-buddy-avatar.tooltip-active .avatar-name-bubble,
   .trip-pill-avatar:hover .avatar-name-bubble, .trip-pill-avatar.tooltip-active .avatar-name-bubble { opacity: 1; visibility: visible; }
+  /* Popup Editor/Viewer au clic sur l'avatar d'un membre (demande du 07/09/2026, capture
+     d'écran fournie) — position:fixed, ajouté à <body> plutôt qu'à l'intérieur de la
+     bannière (voir openTripRoleMenu()/ensureTripRoleMenuEl() dans script.js) : la bannière
+     a overflow:hidden pour rogner sa photo de couverture, un enfant positionné en absolu
+     aurait donc été rogné dès qu'il dépasse en dessous d'elle. */
+  .trip-buddy-avatar.role-clickable { cursor: pointer; }
+  #trip-role-menu-popup { position: fixed; background: #fff; border-radius: 14px; box-shadow: 0 10px 28px rgba(0,0,0,.18); padding: 12px 14px; min-width: 150px; z-index: 10600; opacity: 0; visibility: hidden; transition: opacity .12s; }
+  #trip-role-menu-popup.open { opacity: 1; visibility: visible; }
+  .trip-role-menu-name { font-size: 12.5px; font-weight: 700; color: #212832; margin-bottom: 8px; white-space: nowrap; }
+  .trip-role-menu-pills { display: flex; gap: 6px; }
+  .trip-role-pill { border: 1.5px solid #cbd5e1; background: #fff; color: #64748b; border-radius: 100px; padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; transition: .15s; white-space: nowrap; }
+  .trip-role-pill.active { background: #D42759; border-color: #D42759; color: #fff; }
+
   .trip-share-pill { display: inline-flex; align-items: center; background: #faf9fc; border: 1.5px dashed #cbd5e1; border-radius: 100px; padding: 6px 14px; font-size: 11.5px; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Poppins', sans-serif; transition: 0.2s; white-space: nowrap; }
   .trip-share-pill:hover { border-color: #D42759; color: #D42759; background: #FCE7F0; }
   .invitee-chip { display: inline-flex; align-items: center; gap: 6px; background: #FCE7F0; color: #D42759; border-radius: 100px; padding: 5px 6px 5px 12px; font-size: 11.5px; font-weight: 700; }
@@ -142,6 +155,12 @@
      de rester une petite étiquette flottante. */
   .trip-hero-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 22px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; }
   .trip-dates { font-size: 13.5px; font-weight: 700; color: #D42759; background: #FCE7F0; border: 1px solid #FBD5DC; padding: 9px 18px; border-radius: 100px; display: inline-flex; align-items: center; gap: 8px; width: max-content;}
+  /* Bouton "Delete" allégé (demande du 07/09/2026 : trop imposant/loin à droite avec le
+     style .gen-btn habituel, pensé pour une action principale) — reste bien à droite dans
+     .trip-hero-meta-row (espace intentionnel entre une info et une action destructive),
+     mais moins massif visuellement qu'un vrai bouton pilule pleine taille. */
+  .trip-delete-btn { background: none; border: none; color: #94a3b8; font-size: 12px; font-weight: 600; padding: 8px 6px; cursor: pointer; transition: 0.15s; }
+  .trip-delete-btn:hover { color: #ef4444; }
 
   .gen-btn { display:inline-flex;align-items:center;gap:7px;background:#D42759;color:#fff;font-size:13.5px;font-weight:700; padding:12px 24px;border-radius:100px;box-shadow:0 8px 18px rgba(212,39,89,.22);cursor:pointer; border:none; transition: 0.2s; }
   .gen-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(212,39,89,.35); }
@@ -347,7 +366,8 @@
         <!-- TOP NAV IDENTIQUE A MAP.HTML (mêmes classes header-icon-btn, hamburger mobile ajouté) -->
         <div class="top-nav">
             <button id="mobile-menu-btn" class="header-icon-btn hamburger-btn" style="display: none;" onclick="toggleMobileMenu()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg class="hamburger-icon-bars" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg class="hamburger-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
             <div class="dropdown-container">
                 <button id="lang-btn" class="header-icon-btn" title="Langue">
@@ -416,7 +436,7 @@
                     </div>
                     <div class="trip-hero-meta-row">
                         <div class="trip-dates" id="dates-display"></div>
-                        <button class="gen-btn ghost owner-only" style="border-color:#ef4444; color:#ef4444;" onclick="openDeleteModal()" id="i18n-delete-trip">Delete</button>
+                        <button class="trip-delete-btn owner-only" onclick="openDeleteModal()" id="i18n-delete-trip">Delete</button>
                     </div>
                 </div>
 

@@ -314,6 +314,12 @@ body.trip-not-owner .owner-only { display: none !important; }
 .custom-category-marker div svg { width: var(--icon-size); height: var(--icon-size); transition: all 0.2s ease;}
 .custom-category-marker:hover div { transform: scale(1.15) translateY(-2px); background-color: var(--marker-color) !important; color: white !important; }
 
+/* Marqueur "point coloré" (un lieu, pas un cluster) : voir addSingleLocationMarker() dans
+   script.js — plus petit qu'un badge d'icône puisqu'il n'y a plus d'icône à contenir à
+   l'intérieur. Le survol/highlight ci-dessus (.custom-category-marker:hover) s'applique
+   sans changement. */
+.location-dot-marker div { width: 16px; height: 16px; border-width: 3px; }
+
 /* Badge "×N" en haut à droite d'un marqueur regroupant plusieurs lieux trop proches
    pour être affichés séparément à ce niveau de zoom. */
 .cluster-badge { position: absolute; top: -6px; right: -6px; background: var(--primary-magenta); color: #fff; font-size: 9.5px; font-weight: 800; line-height: 1; border-radius: 100px; min-width: 18px; height: 18px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
@@ -423,6 +429,15 @@ body.trip-not-owner .owner-only { display: none !important; }
        invisible/incliquable dès que le menu s'ouvrait. */
     .top-nav { top: 14px; right: 14px; gap: 7px; z-index: 3500; }
     .nav-btn, .header-icon-btn { width: 38px; height: 38px; }
+
+    /* Menu ouvert : le bouton hamburger devient une croix ("retour à la carte") et les
+       autres icônes du top-nav (langue, panier, amis, profil) sont masquées le temps
+       que le menu occupe tout l'écran, pour ne pas se superposer visuellement à lui. */
+    .hamburger-icon-close { display: none; }
+    .hamburger-btn.is-open .hamburger-icon-bars { display: none; }
+    .hamburger-btn.is-open .hamburger-icon-close { display: block; }
+    .top-nav.menu-open .header-icon-btn:not(.hamburger-btn),
+    .top-nav.menu-open .dropdown-container { display: none; }
 
     .filters-grid { grid-template-columns: 1fr; }
     .stat-pill { top: 14px; left: 14px; padding: 6px 10px; font-size: 11px; gap: 8px; }

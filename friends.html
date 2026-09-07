@@ -235,6 +235,18 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             <div id="trip-invites-list"></div>
         </div>
 
+        <!-- Lieux partagés par un ami (bouton "Partager" d'une fiche lieu, voir
+             shareLocationWithFriend() dans firebase-init.js) : cette section n'existait
+             plus du tout depuis la refonte de cette page en messagerie (demande du
+             24/08/2026), alors que countUnreadFriendNotifications() comptait toujours ces
+             partages dans le badge de l'icône "Amis" — un partage reçu allumait donc le
+             badge pour toujours, sans jamais rien à voir en ouvrant la page (bug rapporté
+             le 07/09/2026). -->
+        <div id="location-shares-section" class="hidden">
+            <div class="sidebar-section-title" data-i18n="locationSharesLabel">Shared with you</div>
+            <div id="location-shares-list"></div>
+        </div>
+
         <div class="sidebar-section-title" data-i18n="tripGroupsLabel">Trip groups</div>
         <div id="trip-groups-list"></div>
         <div id="trip-groups-empty" class="sidebar-empty-note hidden" data-i18n="noTripGroups">No shared trips yet — share one from a conversation.</div>
@@ -341,8 +353,27 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     async function refreshSidebar() {
         await refreshFriendRequests();
         await refreshTripInvites();
+        await refreshLocationShares();
         await refreshTripGroupsList();
         await refreshDmListUI();
+    }
+
+    // Voir la note plus haut sur #location-shares-section : marque chaque partage comme vu
+    // (window.markShareSeen, déjà existant mais jamais appelé nulle part) dès qu'il est
+    // affiché ici, pour que le badge de l'icône "Amis" retombe à zéro une fois consultés.
+    async function refreshLocationShares() {
+        if (typeof window.listSharesForMe !== 'function') return;
+        const shares = (await window.listSharesForMe()).filter(s => s.type === 'location');
+        const section = document.getElementById('location-shares-section');
+        const list = document.getElementById('location-shares-list');
+        if (!section || !list) return;
+        list.innerHTML = shares.map(s => `<a class="friend-request-row" href="map.html?loc=${encodeURIComponent(s.locationId)}" style="text-decoration:none;">
+            <span style="flex:1;">${escapeHtml(t('locationShareFrom').replace('{username}', s.fromUsername || '').replace('{location}', s.locationName || ''))}</span>
+        </a>`).join('');
+        section.classList.toggle('hidden', shares.length === 0);
+        if (typeof window.markShareSeen === 'function') {
+            shares.filter(s => !s.seen).forEach(s => window.markShareSeen(s.id));
+        }
     }
 
     async function refreshFriendRequests() {
