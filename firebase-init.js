@@ -390,6 +390,17 @@ window.setLocationReview = async function (locationId, reviewData) {
             uid: user.uid,
             updatedAt: serverTimestamp()
         }, reviewData));
+        // Miroir vers publicProfiles/{uid} (voir plus haut) pour la page de profil public :
+        // ne bloque jamais la publication de l'avis lui-même si ce miroir échoue (ex: règle
+        // Firestore pas encore déployée) — l'avis reste visible sur la fiche du lieu même
+        // si le profil met du temps à le refléter.
+        try {
+            await setDoc(doc(db, 'publicProfiles', user.uid), {
+                reviews: { [String(locationId)]: Object.assign({}, reviewData, { locationId: String(locationId), updatedAt: serverTimestamp() }) }
+            }, { merge: true });
+        } catch (mirrorErr) {
+            console.warn('Miroir public de l\'avis échoué :', mirrorErr);
+        }
         return { success: true };
     } catch (e) {
         console.warn('Publication de l\'avis échouée :', e);
@@ -402,8 +413,41 @@ window.deleteLocationReview = async function (locationId) {
     if (!user) return;
     try {
         await deleteDoc(doc(db, 'locationReviews', String(locationId), 'items', user.uid));
+        await setDoc(doc(db, 'publicProfiles', user.uid), {
+            reviews: { [String(locationId)]: deleteField() }
+        }, { merge: true });
     } catch (e) {
         console.warn('Suppression de l\'avis échouée :', e);
+    }
+};
+
+// Page de profil public (profile.html) : miroir des avis d'un compte, voir
+// setLocationReview()/deleteLocationReview() ci-dessus.
+window.fetchPublicProfile = async function (uid) {
+    try {
+        const snap = await getDoc(doc(db, 'publicProfiles', uid));
+        return snap.exists() ? snap.data() : { reviews: {} };
+    } catch (e) {
+        console.warn('Lecture du profil public échouée :', e);
+        return { reviews: {} };
+    }
+};
+
+// Retrouve le pseudo d'un compte à partir de son uid (sens inverse de
+// lookupUserByUsername ci-dessus) : nécessaire pour afficher l'en-tête d'un profil
+// public ouvert depuis un uid (avatar ami, "a visité ce lieu"...) plutôt qu'un pseudo.
+// Même collection publique usernames/ que lookupUserByUsername (allow read: if true).
+window.lookupUsernameByUid = async function (uid) {
+    if (!uid) return null;
+    try {
+        const q = query(collection(db, 'usernames'), where('uid', '==', uid), limit(1));
+        const snap = await getDocs(q);
+        let username = null;
+        snap.forEach(d => { username = d.data().username || d.id; });
+        return username;
+    } catch (e) {
+        console.warn('Recherche du pseudo par uid échouée :', e);
+        return null;
     }
 };
 
@@ -1072,13 +1116,19 @@ window.listSharedTripsForMe = async function () {
 //       && (request.auth.uid == ownerUid || request.auth.uid == friendUid);
 //   }
 //   match /friendVisits/{uid} {
-//     allow read: if request.auth != null && (
-//       request.auth.uid == uid ||
-//       exists(/databases/$(database)/documents/users/$(request.auth.uid)/friendIndex/$(uid))
-//     );
+//     allow read: if true;
 //     allow write: if request.auth != null && request.auth.uid == uid
 //       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['locationIds']);
 //   }
+//   match /publicProfiles/{uid} {
+//     allow read: if true;
+//     allow write: if request.auth != null && request.auth.uid == uid;
+//   }
+// friendVisits/{uid} est désormais public en lecture (demande du 07/09/2026, page de
+// profil public façon Instagram) — voir firestore.rules pour le détail de ce
+// changement. publicProfiles/{uid} est un miroir des avis publics d'un compte (voir
+// setLocationReview() plus bas), pour afficher "ses avis"/"ses photos" sur son profil
+// sans avoir besoin d'une requête collection group sur locationReviews/*/items.
 // Limite connue, même famille que celle documentée plus haut pour usernames/trips :
 // pas de vérification serveur qu'un uid "ami" existe vraiment avant l'écriture d'une
 // demande — au pire, une demande fantôme vers un uid inexistant, sans conséquence
@@ -1219,6 +1269,19 @@ window.loadFriendVisits = async function (friendUids) {
     } catch (e) {
         console.warn('Lecture des visites des amis échouée :', e);
         return {};
+    }
+};
+
+// Page de profil public (profile.html) : lieux visités d'UN compte quelconque, pas
+// nécessairement un ami (friendVisits/{uid} est public en lecture, voir plus haut).
+window.fetchUserVisitedIds = async function (uid) {
+    if (!uid) return [];
+    try {
+        const snap = await getDoc(doc(db, 'friendVisits', uid));
+        return (snap.exists() && snap.data().locationIds) || [];
+    } catch (e) {
+        console.warn('Lecture des lieux visités du profil échouée :', e);
+        return [];
     }
 };
 
