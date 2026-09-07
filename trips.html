@@ -137,8 +137,11 @@
   .trip-name-input::placeholder { color: rgba(255,255,255,.75); }
   .trip-cover-change-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.92); color: #212832; border: none; border-radius: 100px; padding: 8px 14px; font-size: 11.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: .15s; }
   .trip-cover-change-btn:hover { background: #fff; }
-  .trip-hero-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; }
-  .trip-dates { font-size: 13px; font-weight: 600; color: #D42759; background: #FCE7F0; padding: 6px 12px; border-radius: 100px; display: inline-flex; align-items: center; gap: 8px; width: max-content;}
+  /* Demande du 07/09/2026 : la pilule de méta-infos semblait "perdue" collée au bord
+     gauche, juste sous la bannière — agrandie et davantage détachée du bord plutôt que
+     de rester une petite étiquette flottante. */
+  .trip-hero-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 22px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; }
+  .trip-dates { font-size: 13.5px; font-weight: 700; color: #D42759; background: #FCE7F0; border: 1px solid #FBD5DC; padding: 9px 18px; border-radius: 100px; display: inline-flex; align-items: center; gap: 8px; width: max-content;}
 
   .gen-btn { display:inline-flex;align-items:center;gap:7px;background:#D42759;color:#fff;font-size:13.5px;font-weight:700; padding:12px 24px;border-radius:100px;box-shadow:0 8px 18px rgba(212,39,89,.22);cursor:pointer; border:none; transition: 0.2s; }
   .gen-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(212,39,89,.35); }
@@ -193,6 +196,21 @@
   .stp-month-tile { border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 6px; text-align: center; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer; transition: 0.15s; background: #fff; }
   .stp-month-tile:hover { border-color: #D42759; }
   .stp-month-tile.active { background: #FCE7F0; border-color: #D42759; color: #D42759; }
+
+  /* Modale "Change cover" (demande du 07/09/2026) : onglets "Upload photo"/"Choose
+     gradient" mutuellement exclusifs, aperçu de la bannière en haut mis à jour au fur et à
+     mesure du choix (voir updateCoverModalPreview() dans script.js), avant validation. */
+  .cover-modal-preview { width: 100%; height: 110px; border-radius: 14px; background-size: cover; background-position: center; margin-bottom: 16px; box-shadow: 0 6px 16px rgba(80,60,120,.12); }
+  .cover-modal-tabs { display: flex; border-bottom: 1px solid #e2e8f0; margin-bottom: 16px; }
+  .cover-modal-tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-size: 13px; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; transition: 0.2s; }
+  .cover-modal-tab.active { color: #D42759; border-bottom-color: #D42759; }
+  .cover-modal-panel.hidden { display: none; }
+  .cover-modal-upload-btn { width: 100%; background: #faf9fc; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 20px; font-size: 13px; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Poppins', sans-serif; transition: 0.15s; }
+  .cover-modal-upload-btn:hover { border-color: #D42759; color: #D42759; background: #FCE7F0; }
+  .cover-gradient-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cover-gradient-swatch { height: 56px; border-radius: 12px; cursor: pointer; border: 3px solid transparent; transition: 0.15s; }
+  .cover-gradient-swatch:hover { transform: translateY(-1px); }
+  .cover-gradient-swatch.selected { border-color: #212832; }
 
   .loc-row {display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9;}
   .loc-row:last-child {border-bottom:none;}
@@ -385,11 +403,10 @@
                         <div class="trip-hero-overlay">
                             <div class="trip-hero-top">
                                 <input type="text" id="edit-trip-name" class="trip-name-input" placeholder="Trip Name" onchange="saveTrip()">
-                                <button type="button" class="trip-cover-change-btn owner-only" onclick="document.getElementById('trip-cover-input').click()">
+                                <button type="button" class="trip-cover-change-btn owner-only" onclick="openChangeCoverModal()">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                                     <span data-i18n="tripChangeCoverBtn">Change cover</span>
                                 </button>
-                                <input type="file" id="trip-cover-input" accept="image/*" style="display:none;">
                             </div>
                             <div class="trip-access-row">
                                 <div id="trip-buddies-avatars" class="trip-buddies-avatars"></div>
@@ -623,6 +640,19 @@
         <div style="display: flex; gap: 10px; justify-content: center;">
             <button class="gen-btn ghost" style="flex:1;" onclick="document.getElementById('delete-trip-modal').classList.add('hidden')" id="i18n-del-cancel">Cancel</button>
             <button class="gen-btn" style="background: #ef4444; border-color: #ef4444; flex:1; justify-content:center;" onclick="confirmDeleteTrip()" id="i18n-del-confirm">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Quitter un voyage partagé (demande du 07/09/2026, remplace l'ancien window.confirm()
+     natif hors charte graphique) : même structure que #delete-trip-modal ci-dessus. -->
+<div class="modal hidden" id="leave-trip-modal" style="z-index: 2000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <h3 style="margin-bottom: 10px; color: #212832;" data-i18n="tripLeaveTitle">Leave this shared trip?</h3>
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 20px;" data-i18n="tripLeaveDesc">Are you sure you want to leave this trip? You'll need a new invite to rejoin.</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button class="gen-btn ghost" style="flex:1;" onclick="document.getElementById('leave-trip-modal').classList.add('hidden')" data-i18n="tripLeaveCancel">Cancel</button>
+            <button class="gen-btn" style="background: #ef4444; border-color: #ef4444; flex:1; justify-content:center;" onclick="confirmLeaveSharedTrip()" data-i18n="tripLeaveConfirm">Leave</button>
         </div>
     </div>
 </div>

@@ -2670,7 +2670,7 @@ const translations = {
         gateResetSent: "Password reset email sent — check your inbox.", gateEnterEmailFirst: "Please enter your email address first.",
         tourModeLiveIn: "Live now — BTS is live in {city}", tourModeSchedule: "Tour Schedule", tourModeLive: "Live", tourModeDone: "Done", tourModeUpcoming: "Upcoming", tourModePrev: "Previous", tourModeNext: "Next",
         tourModeFooterNote: "Dates as announced by the tour — always double-check official ticketing sites before booking travel.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
+        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", tripLeaveTitle: "Leave this shared trip?", tripLeaveDesc: "Are you sure you want to leave this trip? You'll need a new invite to rejoin.", tripLeaveCancel: "Cancel", tripLeaveConfirm: "Leave", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} is live now — {event} in {city}", tourModeLiveNowOne: "Live now", tourModeLiveNowCount: "{n} live now", tourModeMoreCount: "+{n} more",
         tourModeEyebrow: "Tour Mode", tourModeChooseTour: "Choose a tour", tourModeStep: "Step {n} of {total}",
         tourModeHighlights: "Highlights", tourModeSurpriseSong: "Surprise song:", tourModeNoHighlightsYet: "No highlights added yet for this show.", tourModeNoSurpriseSongYet: "Not announced yet.",
@@ -2734,7 +2734,7 @@ const translations = {
         gateResetSent: "E-mail de réinitialisation envoyé — vérifiez votre boîte de réception.", gateEnterEmailFirst: "Merci d'indiquer d'abord votre adresse e-mail.",
         tourModeLiveIn: "En direct — BTS est en concert à {city}", tourModeSchedule: "Calendrier de la tournée", tourModeLive: "En direct", tourModeDone: "Terminé", tourModeUpcoming: "À venir", tourModePrev: "Précédent", tourModeNext: "Suivant",
         tourModeFooterNote: "Dates annoncées par la tournée — vérifiez toujours les sites de billetterie officiels avant de réserver un voyage.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " et à venir", liveTimelineEmpty: "Rien de prévu pour le moment — revenez bientôt.", liveTimelineFooterNote: "Uniquement des activités officielles et rendues publiques — dates annoncées, vérifiez toujours les sources officielles avant de réserver un voyage.", liveFilterAll: "Tous", liveTodayLive: "Aujourd'hui · En direct", liveKindGroup: "Groupe", liveKindSolo: "Solo", newBadgeLabel: "Nouveau", usernameCooldownNote: "Vous ne pouvez changer ceci qu'une fois tous les 7 jours.", usernameConfirmTitle: "Changer votre identifiant ?", usernameConfirmCancel: "Annuler", usernameConfirmOk: "Oui, changer", subtitle: "Sur les traces de vos artistes préférés", backToList: "← Retour à la liste", chooserTourOption: "Itinéraire de tournée", chooserLiveOption: "Toute l'activité en direct", tripShareThis: "+ Partager ce voyage", tripChangeCoverBtn: "Changer la couverture", tripDepartureLabel: "Départ", tripReturnLabel: "Retour", tripApplyDatesBtn: "Appliquer", switchArtistLabel: "Changer d'artiste", groupNoDataYet: "Aucune donnée de tournée ou de live disponible pour {group} pour le moment — revenez bientôt.", tripInviteLabel: "Inviter des personnes (facultatif)", shareTripUsernamePlaceholder: "Leur pseudo",
+        liveBadgeLabel: "Live", liveTimelineTitle: " et à venir", liveTimelineEmpty: "Rien de prévu pour le moment — revenez bientôt.", liveTimelineFooterNote: "Uniquement des activités officielles et rendues publiques — dates annoncées, vérifiez toujours les sources officielles avant de réserver un voyage.", liveFilterAll: "Tous", liveTodayLive: "Aujourd'hui · En direct", liveKindGroup: "Groupe", liveKindSolo: "Solo", newBadgeLabel: "Nouveau", usernameCooldownNote: "Vous ne pouvez changer ceci qu'une fois tous les 7 jours.", usernameConfirmTitle: "Changer votre identifiant ?", usernameConfirmCancel: "Annuler", usernameConfirmOk: "Oui, changer", subtitle: "Sur les traces de vos artistes préférés", backToList: "← Retour à la liste", chooserTourOption: "Itinéraire de tournée", chooserLiveOption: "Toute l'activité en direct", tripShareThis: "+ Partager ce voyage", tripChangeCoverBtn: "Changer la couverture", tripDepartureLabel: "Départ", tripReturnLabel: "Retour", tripApplyDatesBtn: "Appliquer", tripLeaveTitle: "Quitter ce voyage partagé ?", tripLeaveDesc: "Voulez-vous vraiment quitter ce voyage ? Il vous faudra une nouvelle invitation pour le rejoindre.", tripLeaveCancel: "Annuler", tripLeaveConfirm: "Quitter", switchArtistLabel: "Changer d'artiste", groupNoDataYet: "Aucune donnée de tournée ou de live disponible pour {group} pour le moment — revenez bientôt.", tripInviteLabel: "Inviter des personnes (facultatif)", shareTripUsernamePlaceholder: "Leur pseudo",
         tourModeGenericLabel: "Tournée", tourModeMemberLiveIn: "{member} est en direct — {event} à {city}", tourModeLiveNowOne: "En direct maintenant", tourModeLiveNowCount: "{n} en direct maintenant", tourModeMoreCount: "+{n} autres",
         tourModeEyebrow: "Mode Tournée", tourModeChooseTour: "Choisir une tournée", tourModeStep: "Étape {n} sur {total}",
         tourModeHighlights: "Temps forts", tourModeSurpriseSong: "Chanson surprise :", tourModeNoHighlightsYet: "Aucun temps fort ajouté pour ce concert pour le moment.", tourModeNoSurpriseSongYet: "Pas encore annoncée.",
@@ -2798,7 +2798,7 @@ const translations = {
         gateResetSent: "Correo de restablecimiento enviado — revisa tu bandeja de entrada.", gateEnterEmailFirst: "Indica primero tu correo electrónico.",
         tourModeLiveIn: "En directo — BTS está actuando en {city}", tourModeSchedule: "Calendario de la gira", tourModeLive: "En directo", tourModeDone: "Finalizado", tourModeUpcoming: "Próximamente", tourModePrev: "Anterior", tourModeNext: "Siguiente",
         tourModeFooterNote: "Fechas anunciadas por la gira — comprueba siempre los sitios oficiales de venta de entradas antes de reservar un viaje.",
-        liveBadgeLabel: "En vivo", liveTimelineTitle: " y próximos", liveTimelineEmpty: "Nada programado por ahora — vuelve pronto.", liveTimelineFooterNote: "Solo actividades oficiales y anunciadas públicamente — fechas según lo anunciado, comprueba siempre las fuentes oficiales antes de reservar un viaje.", liveFilterAll: "Todos", liveTodayLive: "Hoy · En vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Nuevo", usernameCooldownNote: "Solo puedes cambiar esto una vez cada 7 días.", usernameConfirmTitle: "¿Cambiar tu nombre de usuario?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sí, cambiarlo", subtitle: "Siguiendo los pasos de tus artistas favoritos", backToList: "← Volver a la lista", chooserTourOption: "Ruta de la gira", chooserLiveOption: "Toda la actividad en directo", tripShareThis: "+ Compartir este viaje", tripChangeCoverBtn: "Cambiar portada", tripDepartureLabel: "Salida", tripReturnLabel: "Regreso", tripApplyDatesBtn: "Aplicar", switchArtistLabel: "Cambiar de artista", groupNoDataYet: "Aún no hay datos de gira ni de directo para {group} — vuelve pronto.", tripInviteLabel: "Invitar personas (opcional)", shareTripUsernamePlaceholder: "Su nombre de usuario",
+        liveBadgeLabel: "En vivo", liveTimelineTitle: " y próximos", liveTimelineEmpty: "Nada programado por ahora — vuelve pronto.", liveTimelineFooterNote: "Solo actividades oficiales y anunciadas públicamente — fechas según lo anunciado, comprueba siempre las fuentes oficiales antes de reservar un viaje.", liveFilterAll: "Todos", liveTodayLive: "Hoy · En vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Nuevo", usernameCooldownNote: "Solo puedes cambiar esto una vez cada 7 días.", usernameConfirmTitle: "¿Cambiar tu nombre de usuario?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sí, cambiarlo", subtitle: "Siguiendo los pasos de tus artistas favoritos", backToList: "← Volver a la lista", chooserTourOption: "Ruta de la gira", chooserLiveOption: "Toda la actividad en directo", tripShareThis: "+ Compartir este viaje", tripChangeCoverBtn: "Cambiar portada", tripDepartureLabel: "Salida", tripReturnLabel: "Regreso", tripApplyDatesBtn: "Aplicar", tripLeaveTitle: "¿Salir de este viaje compartido?", tripLeaveDesc: "¿Seguro que quieres salir de este viaje? Necesitarás una nueva invitación para volver a unirte.", tripLeaveCancel: "Cancelar", tripLeaveConfirm: "Salir", switchArtistLabel: "Cambiar de artista", groupNoDataYet: "Aún no hay datos de gira ni de directo para {group} — vuelve pronto.", tripInviteLabel: "Invitar personas (opcional)", shareTripUsernamePlaceholder: "Su nombre de usuario",
         tourModeGenericLabel: "Gira", tourModeMemberLiveIn: "{member} está en directo — {event} en {city}", tourModeLiveNowOne: "En directo ahora", tourModeLiveNowCount: "{n} en directo ahora", tourModeMoreCount: "+{n} más",
         tourModeEyebrow: "Modo Gira", tourModeChooseTour: "Elegir una gira", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Momentos destacados", tourModeSurpriseSong: "Canción sorpresa:", tourModeNoHighlightsYet: "Aún no se han añadido momentos destacados para este concierto.", tourModeNoSurpriseSongYet: "Aún no anunciada.",
@@ -2861,7 +2861,7 @@ const translations = {
         gateResetSent: "Email di reimpostazione inviata — controlla la posta in arrivo.", gateEnterEmailFirst: "Inserisci prima il tuo indirizzo email.",
         tourModeLiveIn: "In diretta — I BTS si esibiscono a {city}", tourModeSchedule: "Calendario del tour", tourModeLive: "In diretta", tourModeDone: "Concluso", tourModeUpcoming: "In arrivo", tourModePrev: "Precedente", tourModeNext: "Successivo",
         tourModeFooterNote: "Date annunciate dal tour — verifica sempre i siti di biglietteria ufficiali prima di prenotare un viaggio.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " e prossimi", liveTimelineEmpty: "Nulla in programma al momento — torna a trovarci presto.", liveTimelineFooterNote: "Solo attività ufficiali e annunciate pubblicamente — date come annunciate, verifica sempre le fonti ufficiali prima di prenotare un viaggio.", liveFilterAll: "Tutti", liveTodayLive: "Oggi · Live", liveKindGroup: "Gruppo", liveKindSolo: "Solo", newBadgeLabel: "Nuovo", usernameCooldownNote: "Puoi modificarlo solo una volta ogni 7 giorni.", usernameConfirmTitle: "Vuoi cambiare il tuo nome utente?", usernameConfirmCancel: "Annulla", usernameConfirmOk: "Sì, cambialo", subtitle: "Sulle orme dei tuoi artisti preferiti", backToList: "← Torna alla lista", chooserTourOption: "Percorso del tour", chooserLiveOption: "Tutta l'attività dal vivo", tripShareThis: "+ Condividi questo viaggio", tripChangeCoverBtn: "Cambia copertina", tripDepartureLabel: "Partenza", tripReturnLabel: "Ritorno", tripApplyDatesBtn: "Applica", switchArtistLabel: "Cambia artista", groupNoDataYet: "Nessun dato di tour o live disponibile ancora per {group} — torna a trovarci presto.", tripInviteLabel: "Invita persone (facoltativo)", shareTripUsernamePlaceholder: "Il loro nome utente",
+        liveBadgeLabel: "Live", liveTimelineTitle: " e prossimi", liveTimelineEmpty: "Nulla in programma al momento — torna a trovarci presto.", liveTimelineFooterNote: "Solo attività ufficiali e annunciate pubblicamente — date come annunciate, verifica sempre le fonti ufficiali prima di prenotare un viaggio.", liveFilterAll: "Tutti", liveTodayLive: "Oggi · Live", liveKindGroup: "Gruppo", liveKindSolo: "Solo", newBadgeLabel: "Nuovo", usernameCooldownNote: "Puoi modificarlo solo una volta ogni 7 giorni.", usernameConfirmTitle: "Vuoi cambiare il tuo nome utente?", usernameConfirmCancel: "Annulla", usernameConfirmOk: "Sì, cambialo", subtitle: "Sulle orme dei tuoi artisti preferiti", backToList: "← Torna alla lista", chooserTourOption: "Percorso del tour", chooserLiveOption: "Tutta l'attività dal vivo", tripShareThis: "+ Condividi questo viaggio", tripChangeCoverBtn: "Cambia copertina", tripDepartureLabel: "Partenza", tripReturnLabel: "Ritorno", tripApplyDatesBtn: "Applica", tripLeaveTitle: "Uscire da questo viaggio condiviso?", tripLeaveDesc: "Sei sicuro di voler uscire da questo viaggio? Ti servirà un nuovo invito per rientrare.", tripLeaveCancel: "Annulla", tripLeaveConfirm: "Esci", switchArtistLabel: "Cambia artista", groupNoDataYet: "Nessun dato di tour o live disponibile ancora per {group} — torna a trovarci presto.", tripInviteLabel: "Invita persone (facoltativo)", shareTripUsernamePlaceholder: "Il loro nome utente",
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} è in diretta — {event} a {city}", tourModeLiveNowOne: "In diretta ora", tourModeLiveNowCount: "{n} in diretta ora", tourModeMoreCount: "+{n} altri",
         tourModeEyebrow: "Modalità Tour", tourModeChooseTour: "Scegli un tour", tourModeStep: "Tappa {n} di {total}",
         tourModeHighlights: "Momenti salienti", tourModeSurpriseSong: "Canzone a sorpresa:", tourModeNoHighlightsYet: "Nessun momento saliente ancora aggiunto per questo concerto.", tourModeNoSurpriseSongYet: "Non ancora annunciata.",
@@ -2924,7 +2924,7 @@ const translations = {
         gateResetSent: "E-mail de redefinição enviado — verifique sua caixa de entrada.", gateEnterEmailFirst: "Informe primeiro seu endereço de e-mail.",
         tourModeLiveIn: "Ao vivo — BTS está se apresentando em {city}", tourModeSchedule: "Calendário da turnê", tourModeLive: "Ao vivo", tourModeDone: "Concluído", tourModeUpcoming: "Em breve", tourModePrev: "Anterior", tourModeNext: "Próximo",
         tourModeFooterNote: "Datas anunciadas pela turnê — sempre confira os sites oficiais de venda de ingressos antes de reservar uma viagem.",
-        liveBadgeLabel: "Ao vivo", liveTimelineTitle: " e próximos", liveTimelineEmpty: "Nada programado no momento — volte em breve.", liveTimelineFooterNote: "Apenas atividades oficiais e anunciadas publicamente — datas conforme anunciadas, sempre confira as fontes oficiais antes de reservar uma viagem.", liveFilterAll: "Todos", liveTodayLive: "Hoje · Ao vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Novo", usernameCooldownNote: "Você só pode alterar isso uma vez a cada 7 dias.", usernameConfirmTitle: "Alterar seu nome de usuário?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sim, alterar", subtitle: "Nos passos dos seus artistas favoritos", backToList: "← Voltar à lista", chooserTourOption: "Rota da turnê", chooserLiveOption: "Toda a atividade ao vivo", tripShareThis: "+ Compartilhar esta viagem", tripChangeCoverBtn: "Alterar capa", tripDepartureLabel: "Partida", tripReturnLabel: "Volta", tripApplyDatesBtn: "Aplicar", switchArtistLabel: "Trocar de artista", groupNoDataYet: "Ainda não há dados de turnê ou ao vivo para {group} — volte em breve.", tripInviteLabel: "Convidar pessoas (opcional)", shareTripUsernamePlaceholder: "O nome de usuário deles",
+        liveBadgeLabel: "Ao vivo", liveTimelineTitle: " e próximos", liveTimelineEmpty: "Nada programado no momento — volte em breve.", liveTimelineFooterNote: "Apenas atividades oficiais e anunciadas publicamente — datas conforme anunciadas, sempre confira as fontes oficiais antes de reservar uma viagem.", liveFilterAll: "Todos", liveTodayLive: "Hoje · Ao vivo", liveKindGroup: "Grupo", liveKindSolo: "Solo", newBadgeLabel: "Novo", usernameCooldownNote: "Você só pode alterar isso uma vez a cada 7 dias.", usernameConfirmTitle: "Alterar seu nome de usuário?", usernameConfirmCancel: "Cancelar", usernameConfirmOk: "Sim, alterar", subtitle: "Nos passos dos seus artistas favoritos", backToList: "← Voltar à lista", chooserTourOption: "Rota da turnê", chooserLiveOption: "Toda a atividade ao vivo", tripShareThis: "+ Compartilhar esta viagem", tripChangeCoverBtn: "Alterar capa", tripDepartureLabel: "Partida", tripReturnLabel: "Volta", tripApplyDatesBtn: "Aplicar", tripLeaveTitle: "Sair desta viagem compartilhada?", tripLeaveDesc: "Tem certeza de que deseja sair desta viagem? Você precisará de um novo convite para participar novamente.", tripLeaveCancel: "Cancelar", tripLeaveConfirm: "Sair", switchArtistLabel: "Trocar de artista", groupNoDataYet: "Ainda não há dados de turnê ou ao vivo para {group} — volte em breve.", tripInviteLabel: "Convidar pessoas (opcional)", shareTripUsernamePlaceholder: "O nome de usuário deles",
         tourModeGenericLabel: "Turnê", tourModeMemberLiveIn: "{member} está ao vivo agora — {event} em {city}", tourModeLiveNowOne: "Ao vivo agora", tourModeLiveNowCount: "{n} ao vivo agora", tourModeMoreCount: "+{n} mais",
         tourModeEyebrow: "Modo Turnê", tourModeChooseTour: "Escolher uma turnê", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Melhores momentos", tourModeSurpriseSong: "Música surpresa:", tourModeNoHighlightsYet: "Nenhum destaque adicionado ainda para este show.", tourModeNoSurpriseSongYet: "Ainda não anunciada.",
@@ -2987,7 +2987,7 @@ const translations = {
         gateResetSent: "비밀번호 재설정 이메일을 보냈습니다 — 받은편지함을 확인해주세요.", gateEnterEmailFirst: "먼저 이메일 주소를 입력해주세요.",
         tourModeLiveIn: "라이브 중 — BTS가 {city}에서 공연 중입니다", tourModeSchedule: "투어 일정", tourModeLive: "라이브", tourModeDone: "종료", tourModeUpcoming: "예정", tourModePrev: "이전", tourModeNext: "다음",
         tourModeFooterNote: "투어 측이 발표한 날짜입니다 — 여행 예약 전 공식 티켓 판매 사이트를 꼭 확인하세요.",
-        liveBadgeLabel: "라이브", liveTimelineTitle: " 및 예정", liveTimelineEmpty: "지금은 예정된 일정이 없습니다 — 곧 다시 확인해주세요.", liveTimelineFooterNote: "공식적으로 공개된 활동만 표시됩니다 — 발표된 날짜 기준이며, 여행 예약 전 항상 공식 출처를 확인하세요.", liveFilterAll: "전체", liveTodayLive: "오늘 · 라이브", liveKindGroup: "그룹", liveKindSolo: "솔로", newBadgeLabel: "신규", usernameCooldownNote: "7일에 한 번만 변경할 수 있습니다.", usernameConfirmTitle: "아이디를 변경하시겠습니까?", usernameConfirmCancel: "취소", usernameConfirmOk: "네, 변경합니다", subtitle: "당신이 좋아하는 아티스트의 발자취를 따라", backToList: "← 목록으로 돌아가기", chooserTourOption: "투어 경로", chooserLiveOption: "모든 라이브 활동", tripShareThis: "+ 이 여행 공유하기", tripChangeCoverBtn: "커버 변경", tripDepartureLabel: "출발", tripReturnLabel: "귀국", tripApplyDatesBtn: "적용", switchArtistLabel: "아티스트 변경", groupNoDataYet: "{group}의 투어 또는 라이브 정보가 아직 없습니다 — 곧 다시 확인해주세요.", tripInviteLabel: "사람 초대하기 (선택 사항)", shareTripUsernamePlaceholder: "상대방 아이디",
+        liveBadgeLabel: "라이브", liveTimelineTitle: " 및 예정", liveTimelineEmpty: "지금은 예정된 일정이 없습니다 — 곧 다시 확인해주세요.", liveTimelineFooterNote: "공식적으로 공개된 활동만 표시됩니다 — 발표된 날짜 기준이며, 여행 예약 전 항상 공식 출처를 확인하세요.", liveFilterAll: "전체", liveTodayLive: "오늘 · 라이브", liveKindGroup: "그룹", liveKindSolo: "솔로", newBadgeLabel: "신규", usernameCooldownNote: "7일에 한 번만 변경할 수 있습니다.", usernameConfirmTitle: "아이디를 변경하시겠습니까?", usernameConfirmCancel: "취소", usernameConfirmOk: "네, 변경합니다", subtitle: "당신이 좋아하는 아티스트의 발자취를 따라", backToList: "← 목록으로 돌아가기", chooserTourOption: "투어 경로", chooserLiveOption: "모든 라이브 활동", tripShareThis: "+ 이 여행 공유하기", tripChangeCoverBtn: "커버 변경", tripDepartureLabel: "출발", tripReturnLabel: "귀국", tripApplyDatesBtn: "적용", tripLeaveTitle: "공유된 여행에서 나가시겠습니까?", tripLeaveDesc: "정말로 이 여행에서 나가시겠습니까? 다시 참여하려면 새 초대가 필요합니다.", tripLeaveCancel: "취소", tripLeaveConfirm: "나가기", switchArtistLabel: "아티스트 변경", groupNoDataYet: "{group}의 투어 또는 라이브 정보가 아직 없습니다 — 곧 다시 확인해주세요.", tripInviteLabel: "사람 초대하기 (선택 사항)", shareTripUsernamePlaceholder: "상대방 아이디",
         tourModeGenericLabel: "투어", tourModeMemberLiveIn: "{member} 라이브 중 — {city}에서 {event}", tourModeLiveNowOne: "지금 라이브", tourModeLiveNowCount: "지금 {n}건 라이브", tourModeMoreCount: "+{n}개 더보기",
         tourModeEyebrow: "투어 모드", tourModeChooseTour: "투어 선택", tourModeStep: "{total}단계 중 {n}단계",
         tourModeHighlights: "하이라이트", tourModeSurpriseSong: "깜짝 곡:", tourModeNoHighlightsYet: "이 공연의 하이라이트가 아직 등록되지 않았습니다.", tourModeNoSurpriseSongYet: "아직 발표되지 않았습니다.",
@@ -3050,7 +3050,7 @@ const translations = {
         gateResetSent: "パスワード再設定メールを送信しました — 受信トレイをご確認ください。", gateEnterEmailFirst: "先にメールアドレスを入力してください。",
         tourModeLiveIn: "ライブ配信中 — BTSは{city}で公演中です", tourModeSchedule: "ツアースケジュール", tourModeLive: "ライブ", tourModeDone: "終了", tourModeUpcoming: "開催予定", tourModePrev: "前へ", tourModeNext: "次へ",
         tourModeFooterNote: "ツアー側が発表した日程です — 旅行の予約前に必ず公式チケットサイトをご確認ください。",
-        liveBadgeLabel: "ライブ", liveTimelineTitle: "・今後の予定", liveTimelineEmpty: "現在予定はありません — また後でご確認ください。", liveTimelineFooterNote: "公式に発表された活動のみを表示しています — 発表された日程です。旅行の予約前に必ず公式情報をご確認ください。", liveFilterAll: "すべて", liveTodayLive: "本日・ライブ", liveKindGroup: "グループ", liveKindSolo: "ソロ", newBadgeLabel: "新着", usernameCooldownNote: "この変更は7日に1回だけ行えます。", usernameConfirmTitle: "ユーザー名を変更しますか？", usernameConfirmCancel: "キャンセル", usernameConfirmOk: "はい、変更します", subtitle: "お気に入りのアーティストの足跡をたどって", backToList: "← リストに戻る", chooserTourOption: "ツアールート", chooserLiveOption: "すべてのライブ活動", tripShareThis: "+ この旅行を共有", tripChangeCoverBtn: "カバーを変更", tripDepartureLabel: "出発", tripReturnLabel: "帰着", tripApplyDatesBtn: "適用", switchArtistLabel: "アーティストを変更", groupNoDataYet: "{group}のツアー・ライブ情報はまだありません — また後でご確認ください。", tripInviteLabel: "メンバーを招待（任意）", shareTripUsernamePlaceholder: "相手のユーザー名",
+        liveBadgeLabel: "ライブ", liveTimelineTitle: "・今後の予定", liveTimelineEmpty: "現在予定はありません — また後でご確認ください。", liveTimelineFooterNote: "公式に発表された活動のみを表示しています — 発表された日程です。旅行の予約前に必ず公式情報をご確認ください。", liveFilterAll: "すべて", liveTodayLive: "本日・ライブ", liveKindGroup: "グループ", liveKindSolo: "ソロ", newBadgeLabel: "新着", usernameCooldownNote: "この変更は7日に1回だけ行えます。", usernameConfirmTitle: "ユーザー名を変更しますか？", usernameConfirmCancel: "キャンセル", usernameConfirmOk: "はい、変更します", subtitle: "お気に入りのアーティストの足跡をたどって", backToList: "← リストに戻る", chooserTourOption: "ツアールート", chooserLiveOption: "すべてのライブ活動", tripShareThis: "+ この旅行を共有", tripChangeCoverBtn: "カバーを変更", tripDepartureLabel: "出発", tripReturnLabel: "帰着", tripApplyDatesBtn: "適用", tripLeaveTitle: "この共有旅行から退出しますか？", tripLeaveDesc: "本当にこの旅行から退出しますか？再参加するには新しい招待が必要です。", tripLeaveCancel: "キャンセル", tripLeaveConfirm: "退出", switchArtistLabel: "アーティストを変更", groupNoDataYet: "{group}のツアー・ライブ情報はまだありません — また後でご確認ください。", tripInviteLabel: "メンバーを招待（任意）", shareTripUsernamePlaceholder: "相手のユーザー名",
         tourModeGenericLabel: "ツアー", tourModeMemberLiveIn: "{member}がライブ配信中 — {city}で{event}", tourModeLiveNowOne: "現在ライブ中", tourModeLiveNowCount: "現在{n}件ライブ中", tourModeMoreCount: "他+{n}件",
         tourModeEyebrow: "ツアーモード", tourModeChooseTour: "ツアーを選択", tourModeStep: "ステップ {n}/{total}",
         tourModeHighlights: "ハイライト", tourModeSurpriseSong: "サプライズソング：", tourModeNoHighlightsYet: "この公演のハイライトはまだ追加されていません。", tourModeNoSurpriseSongYet: "まだ発表されていません。",
@@ -3113,7 +3113,7 @@ const translations = {
         gateResetSent: "密码重置邮件已发送——请查收您的收件箱。", gateEnterEmailFirst: "请先输入您的电子邮箱。",
         tourModeLiveIn: "直播中 — BTS 正在{city}演出", tourModeSchedule: "巡演日程", tourModeLive: "直播中", tourModeDone: "已结束", tourModeUpcoming: "即将开始", tourModePrev: "上一个", tourModeNext: "下一个",
         tourModeFooterNote: "日期以巡演方公布为准——预订行程前请务必查看官方售票网站确认。",
-        liveBadgeLabel: "直播", liveTimelineTitle: "与即将到来", liveTimelineEmpty: "目前暂无安排——请稍后再来查看。", liveTimelineFooterNote: "仅显示官方公开发布的活动——日期以官方公布为准，预订行程前请务必核实官方信息来源。", liveFilterAll: "全部", liveTodayLive: "今天 · 直播中", liveKindGroup: "团体", liveKindSolo: "单人", newBadgeLabel: "新增", usernameCooldownNote: "每7天只能更改一次。", usernameConfirmTitle: "要更改你的用户名吗？", usernameConfirmCancel: "取消", usernameConfirmOk: "是的，更改", subtitle: "追随你喜爱的艺人的足迹", backToList: "← 返回列表", chooserTourOption: "巡演路线", chooserLiveOption: "全部直播动态", tripShareThis: "+ 分享此行程", tripChangeCoverBtn: "更换封面", tripDepartureLabel: "出发", tripReturnLabel: "返回", tripApplyDatesBtn: "应用", switchArtistLabel: "切换艺人", groupNoDataYet: "{group}暂无巡演或直播数据——请稍后再来查看。", tripInviteLabel: "邀请他人（可选）", shareTripUsernamePlaceholder: "对方的用户名",
+        liveBadgeLabel: "直播", liveTimelineTitle: "与即将到来", liveTimelineEmpty: "目前暂无安排——请稍后再来查看。", liveTimelineFooterNote: "仅显示官方公开发布的活动——日期以官方公布为准，预订行程前请务必核实官方信息来源。", liveFilterAll: "全部", liveTodayLive: "今天 · 直播中", liveKindGroup: "团体", liveKindSolo: "单人", newBadgeLabel: "新增", usernameCooldownNote: "每7天只能更改一次。", usernameConfirmTitle: "要更改你的用户名吗？", usernameConfirmCancel: "取消", usernameConfirmOk: "是的，更改", subtitle: "追随你喜爱的艺人的足迹", backToList: "← 返回列表", chooserTourOption: "巡演路线", chooserLiveOption: "全部直播动态", tripShareThis: "+ 分享此行程", tripChangeCoverBtn: "更换封面", tripDepartureLabel: "出发", tripReturnLabel: "返回", tripApplyDatesBtn: "应用", tripLeaveTitle: "要退出这个共享行程吗？", tripLeaveDesc: "确定要退出此行程吗？再次加入需要新的邀请。", tripLeaveCancel: "取消", tripLeaveConfirm: "退出", switchArtistLabel: "切换艺人", groupNoDataYet: "{group}暂无巡演或直播数据——请稍后再来查看。", tripInviteLabel: "邀请他人（可选）", shareTripUsernamePlaceholder: "对方的用户名",
         tourModeGenericLabel: "巡演", tourModeMemberLiveIn: "{member} 直播中 — 于{city}参加{event}", tourModeLiveNowOne: "现在直播中", tourModeLiveNowCount: "现在{n}个直播中", tourModeMoreCount: "+{n}个更多",
         tourModeEyebrow: "巡演模式", tourModeChooseTour: "选择巡演", tourModeStep: "第 {n} 步，共 {total} 步",
         tourModeHighlights: "精彩瞬间", tourModeSurpriseSong: "惊喜曲目：", tourModeNoHighlightsYet: "该场演出暂无精彩瞬间记录。", tourModeNoSurpriseSongYet: "尚未公布。",
@@ -3790,16 +3790,18 @@ window.filterItineraryTripList = renderItineraryTripList;
 window.loadItineraryTabOptions = function() {
     renderItineraryTripList();
 
-    // NE PAS masquer/réinitialiser le voyage actif quand on rouvre l'onglet :
-    // si un voyage était déjà sélectionné, on ré-affiche directement son itinéraire.
-    const trips = getMyTripsList();
-    const activeId = localStorage.getItem('activeTripId');
-    if(activeId && trips.some(tr => tr.id === activeId)) {
-        window.loadItineraryView(activeId);
-    } else {
-        document.getElementById('itinerary-content-container').classList.add('hidden');
-        window.clearTripFromMainMap();
-    }
+    // Jamais de voyage présélectionné par défaut (demande du 07/09/2026 : "à défaut ne
+    // sélectionne pas l'affichage de trips, ni dans explore ni dans my itinerary") — même
+    // si activeTripId contient encore la valeur d'une session précédente (ex: dernier
+    // voyage ouvert dans trips.html), la carte démarre neutre tant que la personne n'a pas
+    // cliqué explicitement sur un voyage dans cette liste. Avant ce correctif, ce
+    // comportement "restaure le dernier voyage actif" se déclenchait aussi bien à
+    // l'ouverture de cet onglet qu'à chaque synchronisation cloud des données (voir plus
+    // haut, sur reçoit event 'firebase-ready'/cloudData.myTrips) — y compris pendant que
+    // l'onglet "Explore" était affiché, faisant apparaître silencieusement l'itinéraire
+    // d'un voyage par-dessus la carte normale.
+    document.getElementById('itinerary-content-container').classList.add('hidden');
+    window.clearTripFromMainMap();
 };
 
 // Clic sur une ligne de la liste : sélectionne ce voyage pour l'afficher sur la carte,
@@ -4377,11 +4379,14 @@ function ensureLocationEditModal() {
 
             <label style="${labelStyle}">Header photo</label>
             <div id="location-edit-photo-preview" style="margin-bottom:8px; border-radius:10px; overflow:hidden; display:none;"><img style="display:block; width:100%; max-height:180px; object-fit:cover;"></div>
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
+            <input type="url" id="location-edit-photo-url" style="${fieldStyle}" placeholder="Photo URL (optional)">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
                 <button type="button" id="location-edit-photo-upload-btn" style="background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">Upload from device</button>
-                <input type="file" id="location-edit-photo-file-input" accept="image/*" class="hidden">
+                <input type="file" id="location-edit-photo-file-input" accept="image/*,.heic,.heif" class="hidden">
                 <span id="location-edit-photo-name" style="font-size:10.5px; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
             </div>
+            <div id="location-edit-photo-error" class="hidden" style="${errStyle}"></div>
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">A URL or an uploaded photo both override the header photo — leave both empty to fall back to the YouTube thumbnail, if a video is set.</div>
 
             <label style="${labelStyle}">Story (English)</label>
             <textarea id="location-edit-story" rows="6" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="One paragraph per blank line"></textarea>
@@ -4414,38 +4419,109 @@ function ensureLocationEditModal() {
     return modal;
 }
 
+// Un fichier .heic/.heif (format par défaut de l'appareil photo iPhone) ne peut être décodé
+// par AUCUN navigateur autre que Safari — ni <img>, ni canvas — donc resizeTripCoverDataUrl()
+// (qui dessine dans un canvas) échouait en silence dessus, et son filet de secours
+// (img.onerror renvoyant le dataURL HEIC brut tel quel) produisait une "photo" totalement
+// inutilisable ailleurs que sur Safari (bug rapporté le 07/09/2026 : "je n'arrive pas à
+// importer une photo format .heic"). heic2any (bibliothèque JS pure, chargée à la demande
+// depuis un CDN comme les widgets Twitter/Instagram plus haut) convertit d'abord en JPEG.
+function isHeicFile(file) {
+    const name = (file.name || '').toLowerCase();
+    return file.type === 'image/heic' || file.type === 'image/heif' || name.endsWith('.heic') || name.endsWith('.heif');
+}
+let _heic2anyLoadPromise = null;
+function loadHeic2AnyScriptOnce() {
+    if (window.heic2any) return Promise.resolve();
+    if (_heic2anyLoadPromise) return _heic2anyLoadPromise;
+    _heic2anyLoadPromise = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('heic2any failed to load'));
+        document.body.appendChild(s);
+    });
+    return _heic2anyLoadPromise;
+}
+// Convertit un fichier photo (HEIC compris) en dataURL JPEG redimensionnée — utilisée aussi
+// bien ici que, potentiellement, par tout futur champ d'upload de photo sur ce site.
+async function fileToResizedDataUrl(file, maxSize) {
+    let blob = file;
+    if (isHeicFile(file)) {
+        await loadHeic2AnyScriptOnce();
+        if (!window.heic2any) throw new Error('heic2any unavailable');
+        const converted = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.8 });
+        blob = Array.isArray(converted) ? converted[0] : converted;
+    }
+    const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => reject(new Error('Could not read file'));
+        reader.readAsDataURL(blob);
+    });
+    return typeof resizeTripCoverDataUrl === 'function' ? resizeTripCoverDataUrl(dataUrl, maxSize) : dataUrl;
+}
+
 // Import direct depuis la galerie pour la photo d'en-tête (demande du 07/09/2026 : ce
 // modal "crayon" n'avait jusqu'ici aucun champ photo du tout) — pas de Firebase Storage sur
 // ce site 100% statique, donc redimensionnée/compressée côté client en dataURL, même
 // technique que la photo de couverture d'un voyage (resizeTripCoverDataUrl, voir plus haut)
-// et que l'upload équivalent dans admin.html. Écouteur attaché une seule fois : le modal
-// n'est créé qu'une fois par ensureLocationEditModal (dataset.wired protège d'un double
-// upload par fichier choisi si jamais cette fonction était rappelée).
-let locationEditPendingImg = null;
+// et que l'upload équivalent dans admin.html. Un champ URL est proposé EN PLUS (demande du
+// 07/09/2026) : le champ modifié EN DERNIER gagne — remplir l'URL vide le champ importé et
+// inversement, jamais les deux en même temps (voir updateLocationEditPhotoPreview).
+// Écouteurs attachés une seule fois : le modal n'est créé qu'une fois par
+// ensureLocationEditModal (dataset.wired protège d'un double upload par fichier choisi si
+// jamais cette fonction était rappelée).
+let locationEditPendingImg = null; // dataURL d'une photo tout juste importée, ou null
+let locationEditImgTouched = false; // true dès que l'URL ou l'upload a été modifié cette session
+function updateLocationEditPhotoPreview(src) {
+    const preview = document.getElementById('location-edit-photo-preview');
+    if (src) { preview.style.display = 'block'; preview.querySelector('img').src = src; }
+    else { preview.style.display = 'none'; preview.querySelector('img').src = ''; }
+}
 function wireLocationEditPhotoInputOnce(modal) {
     const btn = modal.querySelector('#location-edit-photo-upload-btn');
     const input = modal.querySelector('#location-edit-photo-file-input');
+    const urlInput = modal.querySelector('#location-edit-photo-url');
+    const errorEl = modal.querySelector('#location-edit-photo-error');
     if (!btn || !input || input.dataset.wired) return;
     input.dataset.wired = '1';
     btn.addEventListener('click', () => input.click());
-    input.addEventListener('change', (e) => {
+    input.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            const resized = typeof resizeTripCoverDataUrl === 'function' ? await resizeTripCoverDataUrl(event.target.result, 1200) : event.target.result;
+        errorEl.classList.add('hidden');
+        btn.disabled = true;
+        try {
+            const resized = await fileToResizedDataUrl(file, 1200);
             locationEditPendingImg = resized;
-            const preview = document.getElementById('location-edit-photo-preview');
-            preview.style.display = 'block';
-            preview.querySelector('img').src = resized;
+            locationEditImgTouched = true;
+            if (urlInput) urlInput.value = '';
+            updateLocationEditPhotoPreview(resized);
             document.getElementById('location-edit-photo-name').textContent = file.name;
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            console.warn('Import de la photo échoué :', err);
+            errorEl.textContent = isHeicFile(file)
+                ? "Couldn't convert this HEIC photo. Try exporting it as JPEG first, or paste a Photo URL instead."
+                : "Couldn't read this photo. Try a different file, or paste a Photo URL instead.";
+            errorEl.classList.remove('hidden');
+        }
+        btn.disabled = false;
     });
+    if (urlInput) {
+        urlInput.addEventListener('input', () => {
+            const val = urlInput.value.trim();
+            locationEditPendingImg = val || null;
+            locationEditImgTouched = true;
+            document.getElementById('location-edit-photo-name').textContent = '';
+            updateLocationEditPhotoPreview(val || null);
+        });
+    }
 }
 
 let locationEditCurrentId = null;
 let locationEditExistingFullDescription = {};
+let locationEditExistingImg = '';
 window.openLocationEditModal = async function (locId) {
     if (!window.__isAdminUser || locId === null || locId === undefined) return;
     const loc = celebLocations.find(l => l.id === locId);
@@ -4455,6 +4531,7 @@ window.openLocationEditModal = async function (locId) {
     const modal = ensureLocationEditModal();
     document.getElementById('location-edit-title').textContent = `Edit — ${loc.name}`;
     ['youtube', 'tweet', 'instagram', 'facebook', 'tiktok'].forEach(k => document.getElementById(`location-edit-${k}-error`).classList.add('hidden'));
+    document.getElementById('location-edit-photo-error').classList.add('hidden');
     const resultEl = document.getElementById('location-edit-result');
     resultEl.classList.add('hidden');
     modal.classList.remove('hidden');
@@ -4470,11 +4547,14 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-facebook').value = data.facebookUrl || '';
         document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
         locationEditExistingFullDescription = data.fullDescription || {};
+        locationEditExistingImg = data.img || '';
         locationEditPendingImg = null;
+        locationEditImgTouched = false;
         document.getElementById('location-edit-photo-name').textContent = '';
-        const photoPreview = document.getElementById('location-edit-photo-preview');
-        if (data.img) { photoPreview.style.display = 'block'; photoPreview.querySelector('img').src = data.img; }
-        else { photoPreview.style.display = 'none'; photoPreview.querySelector('img').src = ''; }
+        // Une dataURL importée ne va jamais dans le champ URL (illisible, énorme) — même
+        // convention que admin.html pour ce même champ.
+        document.getElementById('location-edit-photo-url').value = locationEditExistingImg.startsWith('data:') ? '' : locationEditExistingImg;
+        updateLocationEditPhotoPreview(locationEditExistingImg || null);
     };
     fillForm(loc);
 
@@ -4529,10 +4609,17 @@ async function saveLocationEdit(locId, modal) {
         facebookUrl: facebookUrl || '',
         tiktokUrl: tiktokUrl || ''
     };
-    // N'inclut `img` QUE si une nouvelle photo a été choisie — jamais une valeur vide,
-    // pour ne jamais effacer une photo déjà en place quand on modifie seulement un autre
-    // champ (demande du 07/09/2026).
-    if (locationEditPendingImg) fields.img = locationEditPendingImg;
+    // Priorité de la photo d'en-tête (demande du 07/09/2026) : URL ou import — tous deux
+    // suivis via locationEditPendingImg/locationEditImgTouched (voir
+    // wireLocationEditPhotoInputOnce), le dernier des deux champs modifié gagnant — sinon,
+    // si ni l'un ni l'autre n'a jamais été renseigné ET qu'une vidéo YouTube est indiquée,
+    // repli automatique sur sa vignette (même convention que admin.html à la création
+    // d'une nouvelle fiche) ; sinon, on ne touche pas au champ existant.
+    if (locationEditImgTouched) {
+        fields.img = locationEditPendingImg || '';
+    } else if (!locationEditExistingImg && ytId) {
+        fields.img = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+    }
 
     const res = await window.adminUpdateLocationContent(locId, fields);
     resultEl.classList.remove('hidden');
@@ -6788,6 +6875,30 @@ window.renderTripBuddiesAvatars = async function() {
 // vraie bannière pleine largeur plutôt qu'une miniature à côté du titre — voir le CSS de
 // .trip-hero-banner dans trips.html), et à l'icône de la liste "Trip groups" de
 // friends.html (voir listMyTripGroups()).
+// Palette de dégradés de secours pour un voyage sans photo de couverture (demande du
+// 07/09/2026 : "il faut changer la couleur du dégradé pour chaque trip" — jusqu'ici, un
+// seul dégradé fixe pour tous, codé en dur dans le CSS de .trip-hero-banner). L'index choisi
+// est stocké sur currentTrip.coverGradient une fois choisi explicitement via le modal
+// "Change cover" ; tant qu'aucun choix n'a été fait, resolveTripGradientIndex() en dérive
+// un déterministe à partir de l'id du voyage, pour que deux voyages sans cover affichent
+// des couleurs différentes dès le départ plutôt que le même dégradé partout.
+const TRIP_COVER_GRADIENTS = [
+    'linear-gradient(135deg, #F06090 0%, #D42759 45%, #8B5CF6 100%)',
+    'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+    'linear-gradient(135deg, #f472b6 0%, #fb923c 100%)',
+    'linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%)',
+    'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+    'linear-gradient(135deg, #fb923c 0%, #ef4444 100%)',
+];
+function resolveTripGradientIndex(trip) {
+    if (!trip) return 0;
+    if (typeof trip.coverGradient === 'number' && trip.coverGradient >= 0 && trip.coverGradient < TRIP_COVER_GRADIENTS.length) return trip.coverGradient;
+    const id = String(trip.id || '');
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+    return hash % TRIP_COVER_GRADIENTS.length;
+}
+
 window.renderTripCoverPreview = function() {
     const el = document.getElementById('trip-hero-banner');
     if (!el || !currentTrip) return;
@@ -6796,7 +6907,7 @@ window.renderTripCoverPreview = function() {
         el.classList.add('has-cover');
     } else {
         el.classList.remove('has-cover');
-        el.style.backgroundImage = '';
+        el.style.backgroundImage = TRIP_COVER_GRADIENTS[resolveTripGradientIndex(currentTrip)];
     }
 };
 
@@ -6816,26 +6927,123 @@ function resizeTripCoverDataUrl(dataUrl, maxSize) {
     });
 }
 
-// Écouteur attaché une seule fois (voir data-wired) — window.initTrips() est rappelé à
-// chaque changement de voyage, ré-attacher l'écouteur à chaque fois déclencherait un
-// upload en double par fichier choisi.
-function wireTripCoverInputOnce() {
-    const input = document.getElementById('trip-cover-input');
-    if (!input || input.dataset.wired) return;
-    input.dataset.wired = '1';
-    input.addEventListener('change', async (e) => {
+// Modale "Change cover" (demande du 07/09/2026, remplace l'ancien bouton qui déclenchait
+// directement un <input type=file>) : deux onglets mutuellement exclusifs — "Upload photo"
+// / "Choose gradient" — avec un aperçu de la bannière en haut qui se met à jour au fur et à
+// mesure du choix, avant validation par "Apply". `coverModalPendingPhoto`/
+// `coverModalPendingGradientIdx` restent de simples brouillons tant qu'Apply n'a pas été
+// cliqué — fermer la modale sans valider (ou changer d'onglet) ne modifie jamais
+// currentTrip.
+let coverModalPendingPhoto = null;
+let coverModalPendingGradientIdx = 0;
+let coverModalActiveTab = 'upload';
+
+function ensureChangeCoverModal() {
+    let modal = document.getElementById('change-cover-modal');
+    if (modal) return modal;
+    const isFr = currentLang === 'fr';
+    modal = document.createElement('div');
+    modal.id = 'change-cover-modal';
+    modal.className = 'modal hidden';
+    modal.style.zIndex = '10500';
+    const swatchesHtml = TRIP_COVER_GRADIENTS.map((g, i) => `<div class="cover-gradient-swatch" data-idx="${i}" style="background:${g};"></div>`).join('');
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:420px;">
+            <span class="close-btn" onclick="document.getElementById('change-cover-modal').classList.add('hidden')">&times;</span>
+            <div style="font-size:15px; font-weight:700; color:#212832; margin-bottom:14px; text-align:center;">${isFr ? 'Changer la couverture' : 'Change cover'}</div>
+            <div id="cover-modal-preview" class="cover-modal-preview"></div>
+            <div class="cover-modal-tabs">
+                <div class="cover-modal-tab active" data-tab="upload">${isFr ? 'Importer une photo' : 'Upload photo'}</div>
+                <div class="cover-modal-tab" data-tab="gradient">${isFr ? 'Choisir un dégradé' : 'Choose gradient'}</div>
+            </div>
+            <div id="cover-modal-upload-panel" class="cover-modal-panel">
+                <button type="button" id="cover-modal-upload-btn" class="cover-modal-upload-btn">${isFr ? 'Choisir un fichier' : 'Choose a file'}</button>
+                <input type="file" id="cover-modal-file-input" accept="image/*" class="hidden">
+            </div>
+            <div id="cover-modal-gradient-panel" class="cover-modal-panel hidden">
+                <div class="cover-gradient-grid">${swatchesHtml}</div>
+            </div>
+            <button type="button" class="stp-cal-apply-btn" style="width:100%; margin-top:16px;" onclick="applyChangeCover()">${isFr ? 'Appliquer' : 'Apply'}</button>
+        </div>`;
+    document.body.appendChild(modal);
+
+    modal.querySelectorAll('.cover-modal-tab').forEach(tabEl => {
+        tabEl.addEventListener('click', () => {
+            coverModalActiveTab = tabEl.dataset.tab;
+            modal.querySelectorAll('.cover-modal-tab').forEach(t => t.classList.toggle('active', t === tabEl));
+            document.getElementById('cover-modal-upload-panel').classList.toggle('hidden', coverModalActiveTab !== 'upload');
+            document.getElementById('cover-modal-gradient-panel').classList.toggle('hidden', coverModalActiveTab !== 'gradient');
+            updateCoverModalPreview();
+        });
+    });
+    modal.querySelector('#cover-modal-upload-btn').addEventListener('click', () => modal.querySelector('#cover-modal-file-input').click());
+    modal.querySelector('#cover-modal-file-input').addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (!file || !currentTrip) return;
+        if (!file) return;
         const reader = new FileReader();
         reader.onload = async (event) => {
-            const resized = await resizeTripCoverDataUrl(event.target.result, 800);
-            currentTrip.coverImage = resized;
-            window.renderTripCoverPreview();
-            if (typeof window.saveTrip === 'function') window.saveTrip();
+            coverModalPendingPhoto = await resizeTripCoverDataUrl(event.target.result, 800);
+            updateCoverModalPreview();
         };
         reader.readAsDataURL(file);
     });
+    modal.querySelectorAll('.cover-gradient-swatch').forEach(sw => {
+        sw.addEventListener('click', () => {
+            coverModalPendingGradientIdx = parseInt(sw.dataset.idx, 10);
+            modal.querySelectorAll('.cover-gradient-swatch').forEach(s => s.classList.toggle('selected', s === sw));
+            updateCoverModalPreview();
+        });
+    });
+    return modal;
 }
+
+function updateCoverModalPreview() {
+    const preview = document.getElementById('cover-modal-preview');
+    if (!preview) return;
+    // Un seul choix visible à la fois (demande du 07/09/2026) : l'aperçu reflète
+    // uniquement l'onglet ACTIF, jamais les deux en même temps.
+    if (coverModalActiveTab === 'upload') {
+        const src = coverModalPendingPhoto || (currentTrip && currentTrip.coverImage) || '';
+        if (src) { preview.style.backgroundImage = `url('${src}')`; return; }
+        preview.style.backgroundImage = TRIP_COVER_GRADIENTS[coverModalPendingGradientIdx];
+    } else {
+        preview.style.backgroundImage = TRIP_COVER_GRADIENTS[coverModalPendingGradientIdx];
+    }
+}
+
+window.openChangeCoverModal = function() {
+    if (!currentTrip) return;
+    const modal = ensureChangeCoverModal();
+    coverModalPendingPhoto = null;
+    coverModalPendingGradientIdx = resolveTripGradientIndex(currentTrip);
+    // Par défaut, ouvre sur l'onglet qui correspond à l'état actuel du voyage : une photo
+    // déjà en place → onglet "Upload" (pour la remplacer) ; pas de photo → onglet
+    // "Gradient" (pour changer sa couleur), plutôt que toujours le même onglet par défaut.
+    coverModalActiveTab = currentTrip.coverImage ? 'upload' : 'gradient';
+    modal.querySelectorAll('.cover-modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === coverModalActiveTab));
+    document.getElementById('cover-modal-upload-panel').classList.toggle('hidden', coverModalActiveTab !== 'upload');
+    document.getElementById('cover-modal-gradient-panel').classList.toggle('hidden', coverModalActiveTab !== 'gradient');
+    modal.querySelectorAll('.cover-gradient-swatch').forEach((s, i) => s.classList.toggle('selected', i === coverModalPendingGradientIdx));
+    modal.querySelector('#cover-modal-file-input').value = '';
+    updateCoverModalPreview();
+    modal.classList.remove('hidden');
+};
+
+window.applyChangeCover = function() {
+    if (!currentTrip) return;
+    if (coverModalActiveTab === 'upload' && coverModalPendingPhoto) {
+        currentTrip.coverImage = coverModalPendingPhoto;
+    } else if (coverModalActiveTab === 'gradient') {
+        currentTrip.coverImage = '';
+        currentTrip.coverGradient = coverModalPendingGradientIdx;
+    }
+    // Sinon (onglet "Upload" sans nouveau fichier choisi) : on ne touche à rien, ferme
+    // simplement la modale — évite d'effacer une photo déjà en place pour rien.
+    window.renderTripCoverPreview();
+    if (typeof window.saveTrip === 'function') window.saveTrip();
+    const modal = document.getElementById('change-cover-modal');
+    if (modal) modal.classList.add('hidden');
+};
 
 window.renderTrip = function() {
     if (!currentTrip) return;
@@ -6847,8 +7055,7 @@ window.renderTrip = function() {
     document.getElementById('edit-trip-name').value = currentTrip.name || (currentLang === 'fr' ? 'Voyage partagé' : 'Shared trip');
     if (typeof window.renderTripBuddiesAvatars === 'function') window.renderTripBuddiesAvatars();
     if (typeof window.renderTripCoverPreview === 'function') window.renderTripCoverPreview();
-    wireTripCoverInputOnce();
-    
+
     let metaText = "";
     if (currentTrip.group) metaText += currentTrip.group + " • ";
     if (currentTrip.country) metaText += currentTrip.country + " • ";
@@ -7977,10 +8184,20 @@ window.confirmDeleteTrip = function() {
 // à "Delete" (réservé au propriétaire, ci-dessus), on ne fait que se retirer soi-même de
 // members/memberNames (voir window.removeTripCollaborator dans firebase-init.js) — le
 // voyage continue d'exister pour son propriétaire et les autres collaborateurs.
-window.leaveSharedTrip = async function(sharedTripId, event) {
+let sharedTripIdToLeave = null;
+window.leaveSharedTrip = function(sharedTripId, event) {
     if (event) event.stopPropagation();
-    const isFr = currentLang === 'fr';
-    if (!window.confirm(isFr ? 'Quitter ce voyage partagé ?' : 'Leave this shared trip?')) return;
+    sharedTripIdToLeave = sharedTripId;
+    const modal = document.getElementById('leave-trip-modal');
+    if (modal) modal.classList.remove('hidden');
+};
+
+window.confirmLeaveSharedTrip = async function() {
+    const sharedTripId = sharedTripIdToLeave;
+    const modal = document.getElementById('leave-trip-modal');
+    if (modal) modal.classList.add('hidden');
+    if (!sharedTripId) return;
+    sharedTripIdToLeave = null;
     const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
     if (!myUid || typeof window.removeTripCollaborator !== 'function') return;
     await window.removeTripCollaborator(sharedTripId, myUid);
