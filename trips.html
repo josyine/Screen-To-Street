@@ -120,8 +120,14 @@
      un dégradé sombre pour rester lisibles sur n'importe quelle photo. Sans photo (pas
      encore de couverture choisie), un dégradé de marque sert de fond par défaut plutôt
      que de masquer entièrement la bannière — le texte reste blanc dans les deux cas. */
-  .trip-hero { margin-bottom: 24px; }
-  .trip-hero-banner { position: relative; width: 100%; min-height: 190px; border-radius: 20px; background-size: cover; background-position: center; background-color: #e2e8f0; overflow: hidden; display: flex; align-items: flex-end; box-shadow: 0 8px 24px rgba(80,60,120,.1); }
+  /* Bannière en plein bleed (demande du 07/09/2026) : "toute la largeur du bloc blanc,
+     sans marge en haut ni sur les côtés" — des marges négatives annulent exactement le
+     padding de .trip-detail-wrapper (35px 40px, redéclaré 22px 18px sur mobile plus bas)
+     sur ces trois côtés seulement ; le bas garde un espacement normal avant le reste du
+     contenu, qui lui reste dans la zone paddée. Coins du haut arrondis pour rester dans
+     le contour de la carte, coins du bas droits puisqu'elle ne touche plus le bord bas. */
+  .trip-hero { margin: -35px -40px 24px; }
+  .trip-hero-banner { position: relative; width: 100%; min-height: 220px; border-radius: 20px 20px 0 0; background-size: cover; background-position: center; background-color: #e2e8f0; overflow: hidden; display: flex; align-items: flex-end; box-shadow: 0 8px 24px rgba(80,60,120,.1); }
   .trip-hero-banner:not(.has-cover) { background-image: linear-gradient(135deg, #F06090 0%, #D42759 45%, #8B5CF6 100%); }
   .trip-hero-banner.has-cover::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.08) 0%, rgba(0,0,0,.62) 100%); }
   .trip-hero-overlay { position: relative; z-index: 1; width: 100%; padding: 18px 22px; display: flex; flex-direction: column; gap: 12px; }
@@ -147,6 +153,33 @@
   .date-tab.active { color: #D42759; border-bottom-color: #D42759; }
   .pill-btn { border: 1px solid #cbd5e1; border-radius: 20px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; transition: 0.2s; background: #fff; }
   .pill-btn.active { background: #FCE7F0; border-color: #D42759; color: #D42759; }
+
+  /* Calendrier de sélection de plage de dates (demande du 07/09/2026, remplace les deux
+     <input type="date"> bruts) : deux mois affichés côte à côte, un clic pose le début,
+     le clic suivant pose la fin (voir pickCalendarDate() dans script.js) — pas de couleurs
+     par prix (il n'y a pas de tarifs sur ce site), une seule teinte de marque. */
+  .stp-cal-nav { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 6px; }
+  .stp-cal-arrow { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #cbd5e1; background: #fff; color: #334155; font-size: 16px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.15s; }
+  .stp-cal-arrow:hover { border-color: #D42759; color: #D42759; background: #FCE7F0; }
+  .stp-cal-grids { display: flex; gap: 24px; flex-wrap: wrap; }
+  .stp-cal-month { flex: 1; min-width: 230px; }
+  .stp-cal-month-label { font-size: 13px; font-weight: 700; color: #212832; text-align: center; margin-bottom: 10px; }
+  .stp-cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 10.5px; font-weight: 700; color: #94a3b8; margin-bottom: 4px; }
+  .stp-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; }
+  .stp-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer; border-radius: 50%; transition: 0.15s; position: relative; }
+  .stp-cal-day.empty { cursor: default; }
+  .stp-cal-day:not(.empty):hover { background: #FCE7F0; }
+  .stp-cal-day.in-range { background: #FCE7F0; border-radius: 0; }
+  .stp-cal-day.range-start, .stp-cal-day.range-end { background: #D42759; color: #fff; font-weight: 700; }
+  .stp-cal-day.range-start:not(.range-end) { border-radius: 50% 0 0 50%; }
+  .stp-cal-day.range-end:not(.range-start) { border-radius: 0 50% 50% 0; }
+
+  /* Grille de mois pour "Dates flexibles" (demande du 07/09/2026 : plus de mois qu'avant,
+     jamais de couleur liée à un prix — juste le nom du mois, sélection simple). */
+  .stp-month-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+  .stp-month-tile { border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 6px; text-align: center; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer; transition: 0.15s; background: #fff; }
+  .stp-month-tile:hover { border-color: #D42759; }
+  .stp-month-tile.active { background: #FCE7F0; border-color: #D42759; color: #D42759; }
 
   .loc-row {display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9;}
   .loc-row:last-child {border-bottom:none;}
@@ -214,6 +247,7 @@
          l'emportaient donc à tort sur les valeurs mobiles, même sur petit écran. */
       .trips-main { padding: 90px 16px 40px 16px; }
       .trip-detail-wrapper { padding: 22px 18px; }
+      .trip-hero { margin: -22px -18px 24px; }
       .trip-hero-top { flex-direction: column; }
       .trip-cover-change-btn { align-self: flex-end; }
       .trip-name-input { font-size: 24px; }
@@ -365,9 +399,14 @@
                         <div class="date-tab" data-tab="edit-flexible" onclick="switchEditDateTab('flexible')">Flexible dates</div>
                     </div>
 
-                    <div id="edit-date-specific-panel" style="display:flex; gap:10px; margin-bottom:10px;">
-                        <input type="date" id="date-start" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; outline:none;" onchange="saveTrip()">
-                        <input type="date" id="date-end" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; outline:none;" onchange="saveTrip()">
+                    <div id="edit-date-specific-panel">
+                        <input type="date" id="date-start" class="hidden" onchange="saveTrip()">
+                        <input type="date" id="date-end" class="hidden" onchange="saveTrip()">
+                        <div class="stp-cal-nav">
+                            <div class="stp-cal-arrow" onclick="navCalendar('edit',-1)">&lsaquo;</div>
+                            <div class="stp-cal-arrow" onclick="navCalendar('edit',1)">&rsaquo;</div>
+                        </div>
+                        <div class="stp-cal-grids"></div>
                     </div>
 
                     <div id="edit-date-flexible-panel" class="hidden" style="margin-bottom:10px;">
@@ -377,12 +416,7 @@
                              <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); saveTrip();">2 weeks</div>
                              <div class="pill-btn" data-type="edit-duration" onclick="selectEditPill(this, 'edit-duration'); saveTrip();">1 month</div>
                         </div>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; justify-content:center;">
-                             <div class="pill-btn active" data-type="edit-month" onclick="selectEditPill(this, 'edit-month'); saveTrip();">August</div>
-                             <div class="pill-btn" data-type="edit-month" onclick="selectEditPill(this, 'edit-month'); saveTrip();">September</div>
-                             <div class="pill-btn" data-type="edit-month" onclick="selectEditPill(this, 'edit-month'); saveTrip();">October</div>
-                             <div class="pill-btn" data-type="edit-month" onclick="selectEditPill(this, 'edit-month'); saveTrip();">Next 6 months</div>
-                        </div>
+                        <div class="stp-month-grid" id="edit-month-grid" style="margin-top:12px;"></div>
                     </div>
                 </div>
 
@@ -475,9 +509,14 @@
             <div class="date-tab" data-tab="create-flexible" onclick="switchCreateDateTab('flexible')">Flexible dates</div>
         </div>
 
-        <div id="create-date-specific-panel" style="display:flex; gap:10px; margin-bottom:20px;">
-            <input type="date" id="create-trip-start" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; outline:none;">
-            <input type="date" id="create-trip-end" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; outline:none;">
+        <div id="create-date-specific-panel" style="margin-bottom:20px;">
+            <input type="date" id="create-trip-start" class="hidden">
+            <input type="date" id="create-trip-end" class="hidden">
+            <div class="stp-cal-nav">
+                <div class="stp-cal-arrow" onclick="navCalendar('create',-1)">&lsaquo;</div>
+                <div class="stp-cal-arrow" onclick="navCalendar('create',1)">&rsaquo;</div>
+            </div>
+            <div class="stp-cal-grids"></div>
         </div>
 
         <div id="create-date-flexible-panel" class="hidden" style="margin-bottom:20px;">
@@ -487,12 +526,7 @@
                  <div class="pill-btn" data-type="create-duration" onclick="selectCreatePill(this, 'create-duration')">2 weeks</div>
                  <div class="pill-btn" data-type="create-duration" onclick="selectCreatePill(this, 'create-duration')">1 month</div>
             </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; justify-content:center;">
-                 <div class="pill-btn active" data-type="create-month" onclick="selectCreatePill(this, 'create-month')">August</div>
-                 <div class="pill-btn" data-type="create-month" onclick="selectCreatePill(this, 'create-month')">September</div>
-                 <div class="pill-btn" data-type="create-month" onclick="selectCreatePill(this, 'create-month')">October</div>
-                 <div class="pill-btn" data-type="create-month" onclick="selectCreatePill(this, 'create-month')">Next 6 months</div>
-            </div>
+            <div class="stp-month-grid" id="create-month-grid" style="margin-top:12px;"></div>
         </div>
 
         <!-- Inviter des collaborateurs DÈS la création (voir la demande du 04/09/2026) : plus

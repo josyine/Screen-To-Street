@@ -6347,12 +6347,18 @@ window.initTrips = function() {
 window.renderTripsSidebar = function() {
     const listContainer = document.getElementById('trips-list-container');
     if(!listContainer) return;
-    
+
     let trips = getMyTripsList();
     let wList = getWishlistLocs();
-    
+
     listContainer.innerHTML = '';
-    document.getElementById('sidebar-title').textContent = `MY TRIPS (${trips.length})`;
+    // Un voyage partagé accepté (sharedTripsCache) compte désormais dans "MY TRIPS", au
+    // même titre qu'un voyage possédé — plus de section "Shared with me" séparée (demande
+    // du 07/09/2026) : tant que l'invitation n'est pas acceptée, le voyage n'apparaît nulle
+    // part (voir sendTripInvite/acceptTripInvite/declineTripInvite) ; une fois acceptée, il
+    // rejoint directement la liste principale plutôt qu'une liste à part qui laissait croire
+    // qu'il fallait encore une action pour "vraiment" l'avoir.
+    document.getElementById('sidebar-title').textContent = `MY TRIPS (${trips.length + sharedTripsCache.length})`;
 
     trips.forEach(t => {
         let allAssignedIds = (t.days || []).flat();
@@ -6415,29 +6421,24 @@ window.renderTripsSidebar = function() {
         wireAvatarTapTooltips(container);
     });
 
-    // Voyages que d'AUTRES personnes ont partagés avec ce compte (jamais dans myTrips —
-    // voir refreshSharedTrips()) : affichés à la suite, avec un badge indiquant qui les a
-    // partagés et le niveau d'accès accordé, pas de glisser-déposer ni de suppression
-    // (ce n'est pas notre voyage).
-    if (sharedTripsCache.length > 0) {
-        const sectionTitle = document.createElement('div');
-        sectionTitle.style.cssText = 'font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:.05em; text-transform:uppercase; margin:18px 0 8px;';
-        sectionTitle.textContent = currentLang === 'fr' ? `Partagés avec moi (${sharedTripsCache.length})` : `Shared with me (${sharedTripsCache.length})`;
-        listContainer.appendChild(sectionTitle);
-
-        sharedTripsCache.forEach(t => {
-            const roleLabel = t._myRole === 'edit' ? (currentLang === 'fr' ? 'Peut modifier' : 'Can edit') : (currentLang === 'fr' ? 'Lecture seule' : 'View only');
-            const pill = document.createElement('div');
-            pill.className = `trip-pill ${!activeTripAccess.isOwner && currentTrip && currentTrip.id === t._sharedTripId ? 'active' : ''}`;
-            pill.onclick = () => window.openSharedTrip(t._sharedTripId);
-            pill.innerHTML = `
-                <div class="trip-pill-name">${escapeHtml(t.name || (currentLang === 'fr' ? 'Voyage partagé' : 'Shared trip'))}</div>
-                <div class="del-trip-btn" onclick="leaveSharedTrip('${t._sharedTripId}', event)" title="${currentLang === 'fr' ? 'Quitter ce voyage' : 'Leave this trip'}">✕</div>
-                <div class="trip-pill-meta">${currentLang === 'fr' ? 'Partagé par' : 'Shared by'} ${escapeHtml(t.ownerName || 'ARMY')} &middot; ${roleLabel}</div>
-            `;
-            listContainer.appendChild(pill);
-        });
-    }
+    // Voyages que d'AUTRES personnes ont partagés avec ce compte ET que ce compte a
+    // acceptés (sharedTripsCache, jamais dans myTrips — voir refreshSharedTrips()) :
+    // ajoutés à la SUITE de la même liste "MY TRIPS" plutôt que dans une section à part
+    // (demande du 07/09/2026), avec un badge "Shared by X" + niveau d'accès à la place des
+    // méta habituelles, pas de glisser-déposer ni de suppression (ce n'est pas notre
+    // voyage) — un bouton "Quitter" remplace le bouton "Supprimer".
+    sharedTripsCache.forEach(t => {
+        const roleLabel = t._myRole === 'edit' ? (currentLang === 'fr' ? 'Peut modifier' : 'Can edit') : (currentLang === 'fr' ? 'Lecture seule' : 'View only');
+        const pill = document.createElement('div');
+        pill.className = `trip-pill trip-pill-shared ${!activeTripAccess.isOwner && currentTrip && currentTrip.id === t._sharedTripId ? 'active' : ''}`;
+        pill.onclick = () => window.openSharedTrip(t._sharedTripId);
+        pill.innerHTML = `
+            <div class="trip-pill-name">${escapeHtml(t.name || (currentLang === 'fr' ? 'Voyage partagé' : 'Shared trip'))}</div>
+            <div class="del-trip-btn" onclick="leaveSharedTrip('${t._sharedTripId}', event)" title="${currentLang === 'fr' ? 'Quitter ce voyage' : 'Leave this trip'}">✕</div>
+            <div class="trip-pill-meta">${currentLang === 'fr' ? 'Partagé par' : 'Shared by'} ${escapeHtml(t.ownerName || 'ARMY')} &middot; ${roleLabel}</div>
+        `;
+        listContainer.appendChild(pill);
+    });
 }
 
 window.dragTripStart = function(e, id, type) { 
@@ -6714,7 +6715,11 @@ function wireTripCoverInputOnce() {
 window.renderTrip = function() {
     if (!currentTrip) return;
 
-    document.getElementById('edit-trip-name').value = currentTrip.name;
+    // Jamais currentTrip.name tel quel : sur un voyage partagé avant le correctif
+    // createSharedTrip (voir plus haut), le champ peut être absent côté Firestore — assigner
+    // `undefined` à .value le convertit en la chaîne littérale "undefined" affichée dans la
+    // bannière (bug rapporté le 07/09/2026), d'où ce filet de sécurité.
+    document.getElementById('edit-trip-name').value = currentTrip.name || (currentLang === 'fr' ? 'Voyage partagé' : 'Shared trip');
     if (typeof window.renderTripBuddiesAvatars === 'function') window.renderTripBuddiesAvatars();
     if (typeof window.renderTripCoverPreview === 'function') window.renderTripCoverPreview();
     wireTripCoverInputOnce();
@@ -6733,12 +6738,13 @@ window.renderTrip = function() {
 
     window.populateEditTripFilters();
 
+    renderFlexibleMonthGrid('edit');
     if(currentTrip.dateType === 'duration') {
         document.getElementById('edit-date-specific-panel').classList.add('hidden');
         document.getElementById('edit-date-flexible-panel').classList.remove('hidden');
         document.querySelector('.date-tab[data-tab="edit-specific"]').classList.remove('active');
         document.querySelector('.date-tab[data-tab="edit-flexible"]').classList.add('active');
-        
+
         document.querySelectorAll('.edit-banner .pill-btn').forEach(el => el.classList.remove('active'));
         if (currentTrip.duration) {
             const parts = currentTrip.duration.split(' in ');
@@ -6760,6 +6766,7 @@ window.renderTrip = function() {
         document.querySelector('.date-tab[data-tab="edit-flexible"]').classList.remove('active');
         document.getElementById('date-start').value = currentTrip.startDate || '';
         document.getElementById('date-end').value = currentTrip.endDate || '';
+        renderDateRangeCalendar('edit');
     }
     
     const unlockedGroups = getUnlockedGroups();
@@ -6856,17 +6863,140 @@ window.renderTrip = function() {
     window.refreshDayTimelines();
 }
 
+// ==========================================
+// CALENDRIER DE SÉLECTION DE PLAGE DE DATES (demande du 07/09/2026)
+// ==========================================
+// Remplace les deux <input type="date"> bruts par un vrai calendrier navigable, deux mois
+// affichés côte à côte, avec sélection directe de la tranche (premier clic = début,
+// second clic = fin) — comme les captures d'écran de référence fournies, MAIS sans les
+// couleurs par prix (aucune notion de tarif sur ce site). Un seul composant, réutilisé
+// pour le panneau "edit" (fiche voyage) et "create" (modale de création), distingués par
+// un préfixe ('edit'/'create') qui retrouve les bons inputs cachés #date-start/#date-end
+// ou #create-trip-start/#create-trip-end (toujours mis à jour en parallèle : c'est toujours
+// eux que lit le reste du code, saveTrip()/createNewTripAdvanced() inclus, donc aucune
+// autre fonction n'a besoin de changer).
+const _calState = {};
+
+function _calInputIds(prefix) {
+    return prefix === 'edit' ? ['date-start', 'date-end'] : ['create-trip-start', 'create-trip-end'];
+}
+
+function renderDateRangeCalendar(prefix) {
+    const [startId, endId] = _calInputIds(prefix);
+    const startInput = document.getElementById(startId);
+    const endInput = document.getElementById(endId);
+    const container = document.getElementById(prefix + '-date-specific-panel');
+    if (!startInput || !endInput || !container) return;
+    const gridsEl = container.querySelector('.stp-cal-grids');
+    if (!gridsEl) return;
+
+    const curStart = startInput.value || null;
+    const curEnd = endInput.value || null;
+    let st = _calState[prefix];
+    // Resynchronise depuis les inputs cachés seulement si leur valeur a changé depuis
+    // l'extérieur (nouveau voyage ouvert, modale de création qui vient de s'ouvrir...) —
+    // si on vient nous-mêmes de les mettre à jour via pickCalendarDate() ci-dessous, start/
+    // end correspondent déjà à st et ce bloc ne s'exécute pas, ce qui préserve le mois
+    // actuellement affiché plutôt que de sauter ailleurs à chaque clic.
+    if (!st || st.start !== curStart || st.end !== curEnd) {
+        const ref = curStart ? new Date(curStart + 'T00:00:00') : new Date();
+        st = _calState[prefix] = { viewMonth: ref.getMonth(), viewYear: ref.getFullYear(), start: curStart, end: curEnd };
+    }
+
+    const monthNames = currentLang === 'fr'
+        ? ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+        : ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const dayLabels = currentLang === 'fr' ? ['L','M','M','J','V','S','D'] : ['M','T','W','T','F','S','S'];
+
+    function buildMonthGrid(year, month) {
+        const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7; // lundi = 0
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let cells = '';
+        for (let i = 0; i < firstWeekday; i++) cells += `<div class="stp-cal-day empty"></div>`;
+        for (let d = 1; d <= daysInMonth; d++) {
+            const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            let cls = 'stp-cal-day';
+            const isStart = st.start === iso;
+            const isEnd = st.end === iso;
+            if (isStart) cls += ' range-start';
+            if (isEnd) cls += ' range-end';
+            if (st.start && st.end && iso > st.start && iso < st.end) cls += ' in-range';
+            cells += `<div class="${cls}" onclick="pickCalendarDate('${prefix}','${iso}')">${d}</div>`;
+        }
+        return `<div class="stp-cal-month">
+            <div class="stp-cal-month-label">${monthNames[month]} ${year}</div>
+            <div class="stp-cal-weekdays">${dayLabels.map(l => `<div>${l}</div>`).join('')}</div>
+            <div class="stp-cal-grid">${cells}</div>
+        </div>`;
+    }
+
+    let m2 = st.viewMonth + 1, y2 = st.viewYear;
+    if (m2 > 11) { m2 = 0; y2++; }
+    gridsEl.innerHTML = buildMonthGrid(st.viewYear, st.viewMonth) + buildMonthGrid(y2, m2);
+}
+
+window.navCalendar = function(prefix, dir) {
+    const st = _calState[prefix];
+    if (!st) return;
+    st.viewMonth += dir;
+    if (st.viewMonth > 11) { st.viewMonth = 0; st.viewYear++; }
+    if (st.viewMonth < 0) { st.viewMonth = 11; st.viewYear--; }
+    renderDateRangeCalendar(prefix);
+};
+
+window.pickCalendarDate = function(prefix, iso) {
+    const st = _calState[prefix];
+    if (!st) return;
+    if (!st.start || st.end) {
+        st.start = iso; st.end = null;
+    } else if (iso < st.start) {
+        st.start = iso; st.end = null;
+    } else {
+        st.end = iso;
+    }
+    const [startId, endId] = _calInputIds(prefix);
+    document.getElementById(startId).value = st.start || '';
+    document.getElementById(endId).value = st.end || '';
+    renderDateRangeCalendar(prefix);
+    if (prefix === 'edit') window.saveTrip();
+};
+
+// Grille de mois pour l'onglet "Dates flexibles" (demande du 07/09/2026 : plus de choix
+// qu'avant — 12 mois glissants à partir d'aujourd'hui, calculés dynamiquement plutôt que
+// codés en dur, sans aucune couleur de prix). Réutilise les fonctions de sélection déjà en
+// place (selectEditPill/selectCreatePill) et la classe .pill-btn : le reste du code (lecture
+// de currentTrip.duration, createNewTripAdvanced()...) continue de fonctionner sans y toucher.
+function renderFlexibleMonthGrid(prefix) {
+    const grid = document.getElementById(prefix + '-month-grid');
+    if (!grid) return;
+    const monthNames = currentLang === 'fr'
+        ? ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+        : ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const today = new Date();
+    let html = '';
+    for (let i = 0; i < 12; i++) {
+        const d = new Date(today.getFullYear(), today.getMonth() + i, 1);
+        const label = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        const fnName = prefix === 'edit' ? 'selectEditPill' : 'selectCreatePill';
+        const save = prefix === 'edit' ? ' saveTrip();' : '';
+        html += `<div class="pill-btn stp-month-tile${i === 0 ? ' active' : ''}" data-type="${prefix}-month" onclick="${fnName}(this, '${prefix}-month');${save}">${label}</div>`;
+    }
+    grid.innerHTML = html;
+}
+
 window.switchEditDateTab = function(tab) {
     if(tab === 'specific') {
         document.getElementById('edit-date-specific-panel').classList.remove('hidden');
         document.getElementById('edit-date-flexible-panel').classList.add('hidden');
         document.querySelector('.date-tab[data-tab="edit-specific"]').classList.add('active');
         document.querySelector('.date-tab[data-tab="edit-flexible"]').classList.remove('active');
+        renderDateRangeCalendar('edit');
     } else {
         document.getElementById('edit-date-specific-panel').classList.add('hidden');
         document.getElementById('edit-date-flexible-panel').classList.remove('hidden');
         document.querySelector('.date-tab[data-tab="edit-specific"]').classList.remove('active');
         document.querySelector('.date-tab[data-tab="edit-flexible"]').classList.add('active');
+        if (!document.getElementById('edit-month-grid').children.length) renderFlexibleMonthGrid('edit');
     }
     window.saveTrip();
 }
@@ -7246,6 +7376,14 @@ function wireCreateTripInviteAutocompleteOnce() {
 window.openNewTripModal = function() {
     document.getElementById('add-trip-modal').classList.remove('hidden');
     wireCreateTripInviteAutocompleteOnce();
+    // Repart d'un état de calendrier neuf à chaque ouverture (voir _calState dans
+    // renderDateRangeCalendar plus haut) : une modale de création rouverte ne doit jamais
+    // garder la plage de dates du voyage précédent affichée.
+    delete _calState.create;
+    document.getElementById('create-trip-start').value = '';
+    document.getElementById('create-trip-end').value = '';
+    renderDateRangeCalendar('create');
+    renderFlexibleMonthGrid('create');
     const gSelect = document.getElementById('create-trip-group');
     if(gSelect && gSelect.options.length <= 1) {
         const unlockedGroups = getUnlockedGroups();
@@ -7296,13 +7434,15 @@ window.updateCreateTripOptions = function() {
 window.switchCreateDateTab = function(tab) {
     document.querySelectorAll('#add-trip-modal .date-tab').forEach(el => el.classList.remove('active'));
     document.querySelector(`#add-trip-modal .date-tab[data-tab="create-${tab}"]`).classList.add('active');
-    
+
     if(tab === 'specific') {
         document.getElementById('create-date-specific-panel').classList.remove('hidden');
         document.getElementById('create-date-flexible-panel').classList.add('hidden');
+        renderDateRangeCalendar('create');
     } else {
         document.getElementById('create-date-specific-panel').classList.add('hidden');
         document.getElementById('create-date-flexible-panel').classList.remove('hidden');
+        if (!document.getElementById('create-month-grid').children.length) renderFlexibleMonthGrid('create');
     }
 }
 

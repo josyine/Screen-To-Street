@@ -21,7 +21,7 @@ import {
     EmailAuthProvider,
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -883,11 +883,22 @@ window.sendTripInvite = async function (tripId, tripName, tripCoverImage, userna
     const uid = await window.lookupUserByUsername(cleanUsername);
     if (!uid) return { error: 'not-found' };
     if (uid === user.uid) return { error: 'self' };
+    // Vérification "déjà membre" à part, dans son propre try/catch : un échec ici (ex.
+    // règles Firestore pas encore republiées côté console après un changement, voir
+    // firestore.rules) ne doit jamais faire échouer l'invitation entière — au pire on saute
+    // cette vérification et on laisse la règle de création de tripInvites/{id} (toujours
+    // valide, elle, tant que fromUid == soi-même) et la déduplication "already-invited"
+    // ci-dessous protéger contre les doublons (demande du 07/09/2026 : "Failed to send the
+    // invite" pour un compte non-admin alors que le compte admin y arrivait).
     try {
         const tripSnap = await getDoc(doc(db, 'trips', tripId));
         if (tripSnap.exists() && tripSnap.data().members && tripSnap.data().members[uid]) {
             return { error: 'already-member' };
         }
+    } catch (e) {
+        console.warn('Vérification "déjà membre" ignorée (voyage pas encore synchronisé ou règles à republier) :', e);
+    }
+    try {
         const existingSnap = await getDocs(query(collection(db, 'tripInvites'), where('fromUid', '==', user.uid)));
         let alreadyInvited = false;
         existingSnap.forEach(d => { if (d.data().toUid === uid && d.data().tripId === String(tripId)) alreadyInvited = true; });
@@ -1419,6 +1430,55 @@ window.loadMessages = async function (convoId) {
     } catch (e) {
         console.warn('Lecture des messages échouée :', e);
         return [];
+    }
+};
+
+// Écoute en temps réel les messages d'UNE conversation ouverte (demande du 07/09/2026 :
+// "je veux recevoir les messages sans devoir recharger la page") — seul endroit du site à
+// utiliser onSnapshot (voir la note plus haut sur sendPollMessage : jusqu'ici, toute la
+// messagerie se contentait de charger une fois à l'ouverture). Volontairement limité à LA
+// conversation actuellement ouverte plutôt qu'un onSnapshot par ligne de la sidebar — un
+// abonnement par ami/voyage resterait actif en permanence même en arrière-plan, ce qui
+// multiplierait les lectures Firestore facturées pour un gain surtout utile pendant qu'on
+// regarde activement une conversation. `callback(msgs)` est rappelé à chaque changement
+// (même tri par createdAt que loadMessages ci-dessus) ; la fonction retournée se désabonne
+// (à appeler quand on change de conversation ou qu'on ferme le panneau).
+window.listenForMessages = function (convoId, callback) {
+    try {
+        return onSnapshot(collection(db, 'conversations', convoId, 'messages'), (snap) => {
+            const msgs = [];
+            snap.forEach(d => msgs.push(Object.assign({ id: d.id }, d.data())));
+            msgs.sort((a, b) => ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0));
+            callback(msgs);
+        }, (e) => {
+            console.warn('Écoute des messages échouée :', e);
+        });
+    } catch (e) {
+        console.warn('Abonnement aux messages échoué :', e);
+        return () => {};
+    }
+};
+
+// Nombre RÉEL de messages non lus dans une conversation (demande du 07/09/2026 : le badge
+// de la sidebar affichait toujours "1", jamais le vrai total) — tous les messages créés
+// après la dernière lecture (reads/{uid}, voir markConversationRead), moins les nôtres
+// (on ne compte jamais ses propres messages comme "non lus" pour soi-même). Une seule
+// inégalité (`createdAt >`) : jamais besoin d'index composite, contrairement à un filtre
+// combiné sur fromUid — le tri par expéditeur se fait donc côté client après lecture.
+window.countUnreadMessagesInConversation = async function (convoId) {
+    const user = auth.currentUser;
+    if (!user) return 0;
+    try {
+        const readSnap = await getDoc(doc(db, 'conversations', convoId, 'reads', user.uid));
+        const readAt = readSnap.exists() ? readSnap.data().lastReadAt : null;
+        const messagesRef = collection(db, 'conversations', convoId, 'messages');
+        const snap = await getDocs(readAt ? query(messagesRef, where('createdAt', '>', readAt)) : messagesRef);
+        let count = 0;
+        snap.forEach(d => { if (d.data().fromUid !== user.uid) count++; });
+        return count;
+    } catch (e) {
+        console.warn('Comptage des messages non lus échoué :', e);
+        return 0;
     }
 };
 

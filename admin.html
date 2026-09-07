@@ -42,6 +42,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-missing{background:#FFF7F8;border:1px dashed #FBD5DC;border-radius:10px;padding:14px;text-align:center;color:#D42759;font-size:12px;font-weight:600;}
 .sub-photo-input,.sub-tweet-input,.sub-video-input,.sub-social-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
 .sub-photo-hint{font-size:10.5px;color:#94a3b8;margin-bottom:12px;line-height:1.4;}
+.sub-photo-upload-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.sub-photo-upload-btn{background:#faf9fc;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:11.5px;font-weight:700;color:#64748b;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:.15s;}
+.sub-photo-upload-btn:hover{border-color:#D42759;color:#D42759;background:#FCE7F0;}
+.sub-photo-upload-name{font-size:10.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sub-tweet-preview{margin-bottom:8px;}
 .sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;margin-bottom:12px;}
 .sub-story p{margin-bottom:8px;}
@@ -207,8 +211,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             </div>
             <div class="sub-meta">${escapeHtml(sub.group || '')} · ${escapeHtml(sub.member || '')} &middot; ${escapeHtml(sub.city || '')}, ${escapeHtml(sub.country || '')} &middot; ${escapeHtml(sub.category || '')} &middot; ${escapeHtml(sub.year || '')}</div>
             <div class="sub-photo-preview">${photoPreviewHtml(sub.img)}</div>
-            <input type="url" class="sub-photo-input" placeholder="Photo URL" value="${escapeHtml(sub.img || '')}">
-            <div class="sub-photo-hint">Tip: right-click a photo on the artist's official Instagram/X/Weverse post → "Copy image address", then paste it here. Approving publishes exactly this URL. (A YouTube link or a Twitter/X post link goes in the fields below instead — pasting one here won't work.)</div>
+            <input type="url" class="sub-photo-input" placeholder="Photo URL" value="${escapeHtml((sub.img || '').startsWith('data:') ? '' : (sub.img || ''))}">
+            <div class="sub-photo-upload-row">
+                <button type="button" class="sub-photo-upload-btn">Upload from device</button>
+                <input type="file" class="sub-photo-file-input hidden" accept="image/*">
+                <span class="sub-photo-upload-name">${(sub.img || '').startsWith('data:') ? 'Uploaded photo' : ''}</span>
+            </div>
+            <div class="sub-photo-hint">Paste an image URL above (right-click a photo on the artist's official Instagram/X/Weverse post → "Copy image address"), or use "Upload from device" to pick a photo from your gallery instead — either one sets the location's header photo. (A YouTube link or a Twitter/X post link goes in the fields below instead — pasting one here won't work.)</div>
 
             <div class="sub-tweet-preview hidden"></div>
             <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)" value="${escapeHtml(sub.tweetUrl || '')}">
@@ -248,6 +257,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const rejectBtn = card.querySelector('.btn-reject');
         const photoInput = card.querySelector('.sub-photo-input');
         const photoPreview = card.querySelector('.sub-photo-preview');
+        const photoUploadBtn = card.querySelector('.sub-photo-upload-btn');
+        const photoFileInput = card.querySelector('.sub-photo-file-input');
+        const photoUploadName = card.querySelector('.sub-photo-upload-name');
         const tweetInput = card.querySelector('.sub-tweet-input');
         const tweetPreview = card.querySelector('.sub-tweet-preview');
         const tweetError = card.querySelector('.sub-tweet-error');
@@ -274,6 +286,32 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 }
                 sub.img = val;
                 photoPreview.innerHTML = photoPreviewHtml(sub.img);
+                if (photoUploadName) photoUploadName.textContent = '';
+            });
+        }
+
+        // Upload direct depuis la galerie (demande du 07/09/2026 : jusqu'ici, seule une URL
+        // pouvait être saisie) — pas de Firebase Storage sur ce site 100% statique, donc la
+        // photo est redimensionnée/compressée côté client puis stockée en dataURL
+        // directement sur le document du lieu, même technique que la photo de couverture
+        // d'un voyage (resizeTripCoverDataUrl(), voir script.js) pour rester sous la limite
+        // de 1 Mo par champ Firestore.
+        if (photoUploadBtn && photoFileInput) {
+            photoUploadBtn.addEventListener('click', () => photoFileInput.click());
+            photoFileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const resized = typeof resizeTripCoverDataUrl === 'function'
+                        ? await resizeTripCoverDataUrl(event.target.result, 1200)
+                        : event.target.result;
+                    sub.img = resized;
+                    photoPreview.innerHTML = photoPreviewHtml(sub.img);
+                    if (photoInput) photoInput.value = '';
+                    if (photoUploadName) photoUploadName.textContent = file.name;
+                };
+                reader.readAsDataURL(file);
             });
         }
 
