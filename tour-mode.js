@@ -354,7 +354,10 @@
                 ? t('tourModeMemberLiveIn').replace('{member}', top.member).replace('{event}', top.eventName || top.title).replace('{city}', top.city)
                 : t('tourModeLiveIn').replace('{city}', top.city);
         } else {
-            label = t('tourModeGenericLabel');
+            // Demande du 07/09/2026 : ce badge n'ouvre plus qu'openLivePanel() (Tour Mode a
+            // son propre onglet dans la sidebar désormais, voir map.html) — son libellé par
+            // défaut reflète donc ce nouveau rôle unique plutôt que l'ancien "Tour" générique.
+            label = t('chooserLiveOption');
         }
 
         [badge, badgeMobile].forEach(el => {
