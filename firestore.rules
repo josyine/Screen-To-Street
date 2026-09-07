@@ -248,16 +248,24 @@ service cloud.firestore {
     }
 
     // Miroir minimal (uniquement les ids de lieux, jamais dates/notes/photos) de la
-    // liste des lieux visités d'un compte, exposé à ses amis uniquement — pour ne
-    // jamais avoir à assouplir la règle du document users/{uid} complet (qui contient
-    // l'email et d'autres informations privées) juste pour ça.
+    // liste des lieux visités d'un compte — public en lecture (demande du 07/09/2026,
+    // page de profil public façon Instagram) : ne contient toujours que des ids de
+    // lieux, jamais les informations privées de users/{uid} (email, etc.), donc rien
+    // n'empêche de le rendre public plutôt que réservé aux amis comme avant.
     match /friendVisits/{uid} {
-      allow read: if request.auth != null && (
-        request.auth.uid == uid ||
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)/friendIndex/$(uid))
-      );
+      allow read: if true;
       allow write: if request.auth != null && request.auth.uid == uid
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['locationIds']);
+    }
+
+    // Miroir public des avis publiés par un compte (voir setLocationReview() dans
+    // firebase-init.js), pour sa page de profil public : évite d'avoir à faire une
+    // requête "collection group" sur locationReviews/*/items pour retrouver tous les
+    // avis d'UNE personne (non couvert par la règle ci-dessus, qui ne s'applique qu'à
+    // un lieu précis à la fois). Ne duplique que ce qui est déjà public par ailleurs.
+    match /publicProfiles/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
     }
 
     // Partage d'un lieu ou d'un voyage à un ami. La condition exists(...) sur
