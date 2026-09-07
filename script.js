@@ -4641,6 +4641,21 @@ async function saveLocationEdit(locId, modal) {
     saveBtn.disabled = false;
 }
 
+// Bannière en haut de la fiche lieu — extraite pour être rappelable une seconde fois une
+// fois la lecture Firestore résolue (voir l'appel à fetchLocationContent() plus bas), sans
+// quoi une photo d'en-tête changée depuis le modal "crayon" (admin.html) restait invisible
+// tant qu'on n'avait pas rechargé complètement la page (bug rapporté le 07/09/2026).
+// `loc.img` (URL collée OU photo importée) est désormais TOUJOURS prioritaire sur la
+// vignette YouTube automatique plutôt que l'inverse — avant ce correctif, un ytId présent
+// (le cas de la quasi-totalité des lieux de ce site) faisait ignorer purement et simplement
+// tout changement du champ photo, quoi qu'on y mette.
+function renderLocationHeroBg(loc) {
+    const heroBg = document.getElementById('detail-hero-bg');
+    if (!heroBg) return;
+    const bgImg = loc.img || (loc.ytId ? `https://img.youtube.com/vi/${loc.ytId}/maxresdefault.jpg` : '');
+    heroBg.style.backgroundImage = `linear-gradient(180deg, rgba(20,16,30,.15) 0%, rgba(20,16,30,.75) 100%), url('${bgImg}')`;
+}
+
 window.openDetailsPanel = function(id) {
     const loc = celebLocations.find(l => l.id === id);
     if(!loc) return;
@@ -4668,12 +4683,8 @@ window.openDetailsPanel = function(id) {
     currentLocationIdForMemory = loc.id;
     highlightSelectedLocationMarker(loc);
 
-    const heroBg = document.getElementById('detail-hero-bg');
-    if(heroBg) {
-        const bgImg = loc.ytId ? `https://img.youtube.com/vi/${loc.ytId}/maxresdefault.jpg` : loc.img;
-        heroBg.style.backgroundImage = `linear-gradient(180deg, rgba(20,16,30,.15) 0%, rgba(20,16,30,.75) 100%), url('${bgImg}')`;
-    }
-    
+    renderLocationHeroBg(loc);
+
     const badge = document.getElementById('detail-badge');
     if(badge) badge.textContent = `${loc.group} · ${getCatName(loc.category)}`;
 
@@ -4696,7 +4707,14 @@ window.openDetailsPanel = function(id) {
     if (typeof window.fetchLocationContent === 'function') {
         window.fetchLocationContent(id).then(remote => {
             if (remote && currentLocationIdForMemory === id) {
-                renderLocationRichContent(Object.assign({}, loc, remote));
+                const merged = Object.assign({}, loc, remote);
+                renderLocationRichContent(merged);
+                // La bannière est posée plus haut de façon synchrone, à partir des seules
+                // données locales de script.js — sans ce second appel, un `img` changé
+                // depuis le modal "crayon" (admin.html) n'apparaissait jamais tant qu'on
+                // n'avait pas complètement rechargé la page, malgré une lecture Firestore
+                // qui répondait pourtant correctement (bug rapporté le 07/09/2026).
+                renderLocationHeroBg(merged);
             }
         });
     }
