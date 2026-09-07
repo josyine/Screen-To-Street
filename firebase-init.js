@@ -968,10 +968,37 @@ window.acceptTripInvite = async function (inviteId, tripId, role) {
     if (!user) return { error: 'not-signed-in' };
     const myUsername = (localStorage.getItem('userName') || '').trim();
     try {
-        await setDoc(doc(db, 'trips', tripId), {
-            members: { [user.uid]: role || 'view' },
-            memberNames: { [user.uid]: myUsername }
-        }, { merge: true });
+        // Un voyage invité AVANT le correctif d'auto-réparation de sendTripInvite() (voir
+        // plus haut) peut encore, malgré tout, ne pas avoir de document trips/{id} : dans ce
+        // cas, la simple fusion members/memberNames ci-dessous serait traitée comme une
+        // CRÉATION par Firestore (le document n'existe pas), refusée puisqu'elle ne fournit
+        // aucun ownerUid — d'où "Failed to accept" en silence malgré le correctif précédent
+        // (bug rapporté à nouveau le 07/09/2026, cette fois pour une invitation antérieure au
+        // premier correctif). On construit ici nous-mêmes un document complet à partir des
+        // informations déjà stockées sur l'invitation elle-même (tripName/tripCoverImage/
+        // fromUid/fromUsername, voir sendTripInvite()) — la personne qui accepte devient un
+        // simple membre, jamais propriétaire (voir la règle `create` élargie dans
+        // firestore.rules, qui l'autorise explicitement). Si le document existe déjà
+        // (immense majorité des cas), ceci reste une simple fusion sans aucun effet de bord :
+        // ownerUid/name/coverImage sont réécrits avec les mêmes valeurs qu'avant (self-heal
+        // habituel), members/memberNames s'ajoutent normalement.
+        let heal = { members: { [user.uid]: role || 'view' }, memberNames: { [user.uid]: myUsername } };
+        try {
+            const tripSnap = await getDoc(doc(db, 'trips', tripId));
+            if (!tripSnap.exists()) {
+                const inviteSnap = await getDoc(doc(db, 'tripInvites', inviteId));
+                const inv = inviteSnap.exists() ? inviteSnap.data() : {};
+                heal = Object.assign({
+                    ownerUid: inv.fromUid || '',
+                    ownerName: inv.fromUsername || 'ARMY',
+                    name: inv.tripName || '',
+                    coverImage: inv.tripCoverImage || '',
+                }, heal);
+            }
+        } catch (e) {
+            console.warn('Vérification du voyage avant acceptation ignorée :', e);
+        }
+        await setDoc(doc(db, 'trips', tripId), heal, { merge: true });
         await deleteDoc(doc(db, 'tripInvites', inviteId));
         return { success: true };
     } catch (e) {

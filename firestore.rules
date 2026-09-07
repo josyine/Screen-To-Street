@@ -177,7 +177,21 @@ service cloud.firestore {
       // juste créé (jamais encore synchronisé côté serveur au moment de l'invitation).
       allow read: if request.auth != null
         && (resource == null || resource.data.ownerUid == request.auth.uid || request.auth.uid in resource.data.members);
-      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
+      // Deuxième cas (demande du 07/09/2026) : accepter une invitation à un voyage dont le
+      // document trips/{id} n'existe TOUJOURS pas (ex: invitation envoyée avant le correctif
+      // d'auto-réparation de sendTripInvite() — voir la note sur `resource == null` plus
+      // haut) tombe ici, pas dans `update`, puisque le document n'existe pas encore.
+      // acceptTripInvite() (firebase-init.js) crée alors elle-même le document à partir des
+      // infos déjà stockées sur l'invitation (fromUid/fromUsername/tripName/tripCoverImage)
+      // en s'ajoutant comme simple membre — jamais comme propriétaire. Même tolérance déjà
+      // acceptée ailleurs dans ce fichier (voir la clause d'auto-ajout juste en dessous, dans
+      // `update`) : au pire quelqu'un qui connaît déjà un id de voyage le crée avec un
+      // ownerUid de son choix en s'ajoutant lui-même comme membre, sans conséquence grave sur
+      // un site sans données sensibles dans un voyage.
+      allow create: if request.auth != null && (
+        request.resource.data.ownerUid == request.auth.uid
+        || request.resource.data.members[request.auth.uid] in ['view', 'edit']
+      );
       allow update: if request.auth != null && (
         resource.data.ownerUid == request.auth.uid
         || resource.data.members[request.auth.uid] == 'edit'
