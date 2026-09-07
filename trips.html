@@ -60,7 +60,7 @@
   .trip-pill.active .trip-pill-name { color: #D42759; }
   .trip-pill-meta { font-size: 11px; color: #94a3b8; pointer-events: none;}
   .trip-pill-avatars { display: flex; margin: 4px 0; pointer-events: none; }
-  .trip-pill-avatar { width: 20px; height: 20px; border-radius: 50%; background: #8B5CF6; color: #fff; font-size: 9.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; margin-left: -6px; pointer-events: auto; cursor: default; }
+  .trip-pill-avatar { width: 20px; height: 20px; border-radius: 50%; background: #8B5CF6; color: #fff; font-size: 9.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; margin-left: -6px; pointer-events: auto; cursor: default; position: relative; }
   .trip-pill-avatar:first-child { margin-left: 0; }
   /* Partager et supprimer sont tous deux positionnés en absolu dans le coin (comme
      .del-trip-btn l'a toujours fait) : les mettre côte à côte dans un flex wrapper ne
@@ -73,8 +73,18 @@
      voyage — masqué tant que personne n'a été invité (voyage non partagé). */
   .trip-access-row { display: flex; align-items: center; gap: 10px; }
   .trip-buddies-avatars { display: flex; align-items: center; }
-  .trip-buddy-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 11px; margin-left: -8px; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+  .trip-buddy-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 11px; margin-left: -8px; box-shadow: 0 2px 6px rgba(0,0,0,.12); position: relative; }
   .trip-buddy-avatar:first-child { margin-left: 0; }
+  /* Bulle de pseudo au survol (souris) ET au tap (mobile/tactile) — demande du 06 puis du
+     07/09/2026 : le simple attribut title="" ne se déclenche jamais sur un écran tactile
+     (pas de "survol" possible), qui est comment ce site est majoritairement testé. Le
+     survol marche nativement via :hover ci-dessous ; le tap est géré en JS
+     (renderTripBuddiesAvatars()/le rendu des avatars de la sidebar dans script.js), qui
+     ajoute/retire la classe .tooltip-active. */
+  .avatar-name-bubble { position: absolute; bottom: calc(100% + 7px); left: 50%; transform: translateX(-50%); background: #212832; color: #fff; font-size: 10.5px; font-weight: 600; padding: 4px 9px; border-radius: 6px; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity .12s; z-index: 60; }
+  .avatar-name-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-top-color: #212832; }
+  .trip-buddy-avatar:hover .avatar-name-bubble, .trip-buddy-avatar.tooltip-active .avatar-name-bubble,
+  .trip-pill-avatar:hover .avatar-name-bubble, .trip-pill-avatar.tooltip-active .avatar-name-bubble { opacity: 1; visibility: visible; }
   .trip-share-pill { display: inline-flex; align-items: center; background: #faf9fc; border: 1.5px dashed #cbd5e1; border-radius: 100px; padding: 6px 14px; font-size: 11.5px; font-weight: 700; color: #64748b; cursor: pointer; font-family: 'Poppins', sans-serif; transition: 0.2s; white-space: nowrap; }
   .trip-share-pill:hover { border-color: #D42759; color: #D42759; background: #FCE7F0; }
   .invitee-chip { display: inline-flex; align-items: center; gap: 6px; background: #FCE7F0; color: #D42759; border-radius: 100px; padding: 5px 6px 5px 12px; font-size: 11.5px; font-weight: 700; }
@@ -88,13 +98,40 @@
   .new-trip-pill { border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 700; color: #D42759; transition: 0.2s; background: transparent; margin-top: auto; }
   .new-trip-pill:hover { border-color: #D42759; background: #FCE7F0; }
 
+  /* Carte d'invitation à un voyage (demande du 07/09/2026, capture d'écran fournie) : en
+     haut de "MY TRIPS", avant les voyages existants — voir refreshTripInvitesSidebar()
+     dans script.js. */
+  .trip-invite-card { display: flex; align-items: flex-start; gap: 10px; background: #FCE7F0; border: 1.5px solid #FBD1DE; border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+  .trip-invite-card-avatar { width: 30px; height: 30px; border-radius: 50%; background: #D42759; color: #fff; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .trip-invite-card-text { font-size: 12.5px; line-height: 1.4; color: #212832; margin-bottom: 8px; }
+  .trip-invite-card-text b { color: #D42759; }
+  .trip-invite-card-actions { display: flex; gap: 8px; }
+  .trip-invite-accept-btn, .trip-invite-decline-btn { flex: 1; border: none; border-radius: 100px; padding: 7px 0; font-size: 11.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+  .trip-invite-accept-btn { background: #D42759; color: #fff; }
+  .trip-invite-accept-btn:hover { background: #b81f49; }
+  .trip-invite-decline-btn { background: #fff; color: #64748b; border: 1.5px solid #e2e8f0; }
+  .trip-invite-decline-btn:hover { border-color: #cbd5e1; color: #334155; }
+
   /* Edition de Voyage */
   .trip-detail-wrapper { width: 100%; display: none; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 35px 40px; box-shadow: 0 12px 40px rgba(80,60,120,.08); border: 1px solid rgba(255,255,255,0.6);}
-  .trip-hero { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #e2e8f0; gap: 16px; }
-  .trip-cover-preview { width: 72px; height: 72px; border-radius: 14px; background-size: cover; background-position: center; flex-shrink: 0; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-  .trip-head-info { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-  .trip-name-input { width: 100%; font-size: 32px; font-weight: 700; color: #212832; border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 4px 8px; margin-left: -8px; outline: none; transition: 0.2s;}
-  .trip-name-input:focus, .trip-name-input:hover { border-color: #cbd5e1; background: #fff; }
+  /* Bannière pleine largeur (demande du 07/09/2026) : la photo de couverture n'est plus
+     une simple miniature à côté du titre, elle devient le fond du bandeau d'en-tête —
+     titre, avatars des membres et bouton de partage affichés PAR-DESSUS en overlay, avec
+     un dégradé sombre pour rester lisibles sur n'importe quelle photo. Sans photo (pas
+     encore de couverture choisie), un dégradé de marque sert de fond par défaut plutôt
+     que de masquer entièrement la bannière — le texte reste blanc dans les deux cas. */
+  .trip-hero { margin-bottom: 24px; }
+  .trip-hero-banner { position: relative; width: 100%; min-height: 190px; border-radius: 20px; background-size: cover; background-position: center; background-color: #e2e8f0; overflow: hidden; display: flex; align-items: flex-end; box-shadow: 0 8px 24px rgba(80,60,120,.1); }
+  .trip-hero-banner:not(.has-cover) { background-image: linear-gradient(135deg, #F06090 0%, #D42759 45%, #8B5CF6 100%); }
+  .trip-hero-banner.has-cover::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.08) 0%, rgba(0,0,0,.62) 100%); }
+  .trip-hero-overlay { position: relative; z-index: 1; width: 100%; padding: 18px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .trip-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .trip-name-input { flex: 1; min-width: 0; font-size: 32px; font-weight: 700; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,.35); border: 1px solid transparent; background: transparent; border-radius: 8px; padding: 4px 8px; margin-left: -8px; outline: none; transition: 0.2s;}
+  .trip-name-input:focus, .trip-name-input:hover { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.14); }
+  .trip-name-input::placeholder { color: rgba(255,255,255,.75); }
+  .trip-cover-change-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.92); color: #212832; border: none; border-radius: 100px; padding: 8px 14px; font-size: 11.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: .15s; }
+  .trip-cover-change-btn:hover { background: #fff; }
+  .trip-hero-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; }
   .trip-dates { font-size: 13px; font-weight: 600; color: #D42759; background: #FCE7F0; padding: 6px 12px; border-radius: 100px; display: inline-flex; align-items: center; gap: 8px; width: max-content;}
 
   .gen-btn { display:inline-flex;align-items:center;gap:7px;background:#D42759;color:#fff;font-size:13.5px;font-weight:700; padding:12px 24px;border-radius:100px;box-shadow:0 8px 18px rgba(212,39,89,.22);cursor:pointer; border:none; transition: 0.2s; }
@@ -177,7 +214,8 @@
          l'emportaient donc à tort sur les valeurs mobiles, même sur petit écran. */
       .trips-main { padding: 90px 16px 40px 16px; }
       .trip-detail-wrapper { padding: 22px 18px; }
-      .trip-hero { flex-direction: column; align-items: stretch; gap: 14px; }
+      .trip-hero-top { flex-direction: column; }
+      .trip-cover-change-btn { align-self: flex-end; }
       .trip-name-input { font-size: 24px; }
       .edit-banner { padding: 16px; }
       .itinerary-box { padding: 16px; }
@@ -229,6 +267,10 @@
 
             <div class="sidebar-scroll-area" style="flex:1; display:flex; flex-direction:column; margin-top: 10px;">
                 <div class="sidebar-title" id="sidebar-title">MY TRIPS (0)</div>
+                <!-- Invitations à rejoindre un voyage (demande du 07/09/2026), tout en haut
+                     de la liste, avant les voyages existants — voir refreshTripInvitesSidebar()
+                     dans script.js et la même logique côté friends.html (tripInvites/{id}). -->
+                <div id="trip-invites-sidebar"></div>
                 <div id="trips-list-container"></div>
                 <div class="new-trip-pill" onclick="openNewTripModal()">+ New trip</div>
             </div>
@@ -292,20 +334,24 @@
 
             <div id="trip-detail-content" class="trip-detail-wrapper">
                 <div class="trip-hero" id="trip-hero">
-                    <div style="display:flex; align-items:flex-start; gap:16px; min-width:0;">
-                        <div id="trip-cover-preview" class="trip-cover-preview hidden" onclick="document.getElementById('trip-cover-input').click()" title=""></div>
-                        <div class="trip-head-info">
-                            <input type="text" id="edit-trip-name" class="trip-name-input" placeholder="Trip Name" onchange="saveTrip()">
+                    <div id="trip-hero-banner" class="trip-hero-banner">
+                        <div class="trip-hero-overlay">
+                            <div class="trip-hero-top">
+                                <input type="text" id="edit-trip-name" class="trip-name-input" placeholder="Trip Name" onchange="saveTrip()">
+                                <button type="button" class="trip-cover-change-btn owner-only" onclick="document.getElementById('trip-cover-input').click()">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                    <span data-i18n="tripChangeCoverBtn">Change cover</span>
+                                </button>
+                                <input type="file" id="trip-cover-input" accept="image/*" style="display:none;">
+                            </div>
                             <div class="trip-access-row">
                                 <div id="trip-buddies-avatars" class="trip-buddies-avatars"></div>
                                 <button type="button" class="trip-share-pill owner-only" onclick="if(currentTrip) openShareTripModal(currentTrip.id, event)" data-i18n="tripShareThis">+ Share this trip</button>
-                                <button type="button" class="trip-share-pill owner-only" onclick="document.getElementById('trip-cover-input').click()" data-i18n="tripAddCoverBtn">+ Cover photo</button>
-                                <input type="file" id="trip-cover-input" accept="image/*" style="display:none;">
                             </div>
-                            <div class="trip-dates" id="dates-display"></div>
                         </div>
                     </div>
-                    <div>
+                    <div class="trip-hero-meta-row">
+                        <div class="trip-dates" id="dates-display"></div>
                         <button class="gen-btn ghost owner-only" style="border-color:#ef4444; color:#ef4444;" onclick="openDeleteModal()" id="i18n-delete-trip">Delete</button>
                     </div>
                 </div>
