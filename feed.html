@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Screen To Street — Feed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20260907">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
+a{text-decoration:none;}
+body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
+.hidden { display: none !important; }
+
+/* FOND ANIMÉ (identique à profile.html/friends.html) */
+.hero-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; background: linear-gradient(135deg, #F5F3FC, #E3DEF5, #D8CFF0, #E3DEF5); background-size: 200% 200%; animation: gradientShift 10s ease infinite; }
+@keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; animation: float 12s infinite ease-in-out alternate; }
+.blob-1 { top: -10%; left: -10%; width: 40vw; height: 40vw; background: #e3d5f8; }
+.blob-2 { bottom: -10%; right: -10%; width: 35vw; height: 35vw; background: #fce7f0; animation-delay: -4s; }
+.blob-3 { top: 40%; left: 60%; width: 25vw; height: 25vw; background: #d9cdee; animation-delay: -8s; }
+@keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.05); } }
+.hero-background { animation-delay: calc(0s - var(--sync-t, 0s)) !important; }
+
+/* Pas de header pleine largeur sur cette page (même parti pris que profile.html) : un
+   petit bouton "réglages" toujours visible, réutilisant les mêmes classes .dropdown-*. */
+.dropdown-container { position: relative; display: inline-block; }
+.header-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: #2E3644; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; font-size: 16px; font-weight: bold; box-shadow: 0 4px 14px rgba(80,60,120,.05); }
+.header-icon-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: #D42759; transform: translateY(-2px);}
+.dropdown-menu { position: absolute; right: 0; top: 52px; background: white; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-width: 190px; padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: block; text-align: left; text-decoration: none;}
+.dropdown-option:hover { background: #f1f5f9; color: #D42759; }
+.dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
+.feed-settings-btn { position: fixed; top: 20px; right: 20px; z-index: 3000; }
+
+.feed-page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 70px 24px 100px 24px; }
+.feed-title { font-size: 18px; font-weight: 800; color: #212832; max-width: 900px; margin: 0 auto 16px auto; }
+
+/* Grille façon Instagram : 3 colonnes, tuiles carrées, gap minime (capture fournie par
+   l'utilisateur le 08/09/2026). */
+.feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; max-width: 900px; margin: 0 auto; }
+.feed-tile { aspect-ratio: 1 / 1; background-size: cover; background-position: center; cursor: pointer; transition: 0.15s; }
+.feed-tile:hover { opacity: 0.85; }
+.feed-empty, .feed-loading { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
+
+/* Post en grand (clic sur une tuile) */
+.feed-post-overlay { position: fixed; inset: 0; z-index: 9700; background: rgba(23,19,49,.65); display: none; align-items: center; justify-content: center; padding: 20px; }
+.feed-post-overlay.open { display: flex; }
+.feed-post-card { width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; background: #fff; border-radius: 20px; overflow: hidden; }
+.feed-post-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
+.feed-post-avatar { width: 32px; height: 32px; border-radius: 50%; color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.feed-post-username { font-size: 13px; font-weight: 700; color: #212832; }
+.feed-post-location { font-size: 11px; color: #94a3b8; }
+.feed-post-close { margin-left: auto; background: #f1f5f9; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 15px; line-height: 1; color: #212832; }
+.feed-post-img { width: 100%; aspect-ratio: 1 / 1; background-size: cover; background-position: center; background-color: #f1f5f9; }
+.feed-post-actions { display: flex; align-items: center; gap: 10px; padding: 12px 16px; }
+.feed-like-btn { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; color: #212832; transition: 0.15s; }
+.feed-like-btn.liked { color: #D42759; }
+.feed-like-btn svg { transition: transform 0.15s; }
+.feed-like-btn.liked svg { transform: scale(1.12); fill: #D42759; }
+.feed-like-count { font-size: 12.5px; font-weight: 700; color: #212832; }
+
+@media (max-width: 760px) {
+  .feed-settings-btn { top: 14px; right: 14px; }
+  .header-icon-btn { width: 36px; height: 36px; }
+  .feed-page { padding: 60px 12px 90px 12px; }
+  .feed-grid { gap: 2px; }
+}
+</style>
+<script>
+    if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
+    document.documentElement.style.setProperty('--sync-t', ((Date.now() - parseInt(sessionStorage.getItem('bgSyncTime'))) / 1000) + 's');
+</script>
+</head>
+<body>
+
+<div class="hero-background">
+    <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+</div>
+
+<div class="dropdown-container feed-settings-btn">
+    <button id="feed-settings-btn" class="header-icon-btn" title="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
+    <div id="feed-settings-menu" class="dropdown-menu hidden">
+        <a href="map.html" class="dropdown-option">Map</a>
+        <a href="profile.html" class="dropdown-option" data-i18n="profileMenuOption">Your Profile</a>
+        <div class="dropdown-divider"></div>
+        <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
+        <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+        <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
+        <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
+        <div class="dropdown-divider"></div>
+        <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
+    </div>
+</div>
+
+<div class="feed-page">
+    <div class="feed-title">Explore</div>
+    <div class="feed-loading" id="feed-loading">Loading…</div>
+    <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
+    <div class="feed-grid" id="feed-grid"></div>
+</div>
+
+<div class="feed-post-overlay" id="feed-post-overlay">
+    <div class="feed-post-card">
+        <div class="feed-post-header">
+            <div class="feed-post-avatar" id="feed-post-avatar">U</div>
+            <div>
+                <div class="feed-post-username" id="feed-post-username"></div>
+                <div class="feed-post-location" id="feed-post-location"></div>
+            </div>
+            <button class="feed-post-close" type="button" id="feed-post-close-btn">&times;</button>
+        </div>
+        <div class="feed-post-img" id="feed-post-img"></div>
+        <div class="feed-post-actions">
+            <button class="feed-like-btn" id="feed-like-btn" type="button" title="Like">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
+            </button>
+            <span class="feed-like-count" id="feed-like-count">0</span>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="firebase-init.js?v=20260907"></script>
+<script src="script.js?v=20260907"></script>
+<script>
+    const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
+    function feedAvatarColor(username) {
+        let sum = 0;
+        for (let i = 0; i < (username || '').length; i++) sum += username.charCodeAt(i);
+        return feedAvatarPalette[sum % feedAvatarPalette.length];
+    }
+
+    let feedPhotos = [];
+    let feedCurrentPhoto = null;
+
+    async function loadFeed() {
+        const loadingEl = document.getElementById('feed-loading');
+        const emptyEl = document.getElementById('feed-empty');
+        const grid = document.getElementById('feed-grid');
+        if (typeof window.fetchGlobalPhotoFeed !== 'function') return;
+        feedPhotos = await window.fetchGlobalPhotoFeed();
+        loadingEl.classList.add('hidden');
+        if (!feedPhotos.length) { emptyEl.classList.remove('hidden'); return; }
+        grid.innerHTML = '';
+        feedPhotos.forEach((p, i) => {
+            const tile = document.createElement('div');
+            tile.className = 'feed-tile';
+            tile.style.backgroundImage = `url('${p.photo}')`;
+            tile.title = p.locationName || '';
+            tile.onclick = () => openFeedPost(i);
+            grid.appendChild(tile);
+        });
+    }
+
+    async function openFeedPost(index) {
+        const p = feedPhotos[index];
+        if (!p) return;
+        feedCurrentPhoto = p;
+        document.getElementById('feed-post-avatar').textContent = (p.username || 'U').charAt(0).toUpperCase();
+        document.getElementById('feed-post-avatar').style.background = feedAvatarColor(p.username);
+        document.getElementById('feed-post-username').textContent = p.username || '';
+        document.getElementById('feed-post-location').textContent = p.locationName || '';
+        document.getElementById('feed-post-img').style.backgroundImage = `url('${p.photo}')`;
+        document.getElementById('feed-post-overlay').classList.add('open');
+
+        const likeBtn = document.getElementById('feed-like-btn');
+        const likeCount = document.getElementById('feed-like-count');
+        likeBtn.classList.remove('liked');
+        likeCount.textContent = '…';
+        if (typeof window.getPhotoLikeState === 'function') {
+            const photoKey = p.uid + '_' + p.locationId;
+            const state = await window.getPhotoLikeState(photoKey);
+            if (feedCurrentPhoto !== p) return;
+            likeCount.textContent = state.count;
+            likeBtn.classList.toggle('liked', state.likedByMe);
+        }
+    }
+
+    document.getElementById('feed-post-close-btn').addEventListener('click', () => {
+        document.getElementById('feed-post-overlay').classList.remove('open');
+        feedCurrentPhoto = null;
+    });
+    document.getElementById('feed-post-overlay').addEventListener('click', (e) => {
+        if (e.target.id === 'feed-post-overlay') {
+            document.getElementById('feed-post-overlay').classList.remove('open');
+            feedCurrentPhoto = null;
+        }
+    });
+    document.getElementById('feed-like-btn').addEventListener('click', async () => {
+        if (!feedCurrentPhoto || typeof window.togglePhotoLike !== 'function') return;
+        const likeBtn = document.getElementById('feed-like-btn');
+        const likeCount = document.getElementById('feed-like-count');
+        const nowLiked = !likeBtn.classList.contains('liked');
+        likeBtn.classList.toggle('liked', nowLiked);
+        likeCount.textContent = Math.max(0, parseInt(likeCount.textContent, 10) || 0) + (nowLiked ? 1 : -1);
+        const photoKey = feedCurrentPhoto.uid + '_' + feedCurrentPhoto.locationId;
+        await window.togglePhotoLike(photoKey, nowLiked);
+    });
+
+    window.addEventListener('firebase-ready', () => { loadFeed(); });
+</script>
+</body>
+</html>
