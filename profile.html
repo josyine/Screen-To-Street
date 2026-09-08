@@ -24,10 +24,11 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.05); } }
 .hero-background { animation-delay: calc(0s - var(--sync-t, 0s)) !important; }
 
-/* HEADER */
-.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 2500; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
-.brand-text { font-size: 19px; font-weight: 700; color: #2E3644; line-height: 1.2; }
-.universal-icons { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; gap: 9px; align-items: center; }
+/* EN-TÊTE — supprimé de cette page (demande du 08/09/2026, "Toujours dans profile, supprime
+   le header") : ni logo ni pilule d'icônes ici, contrairement aux autres pages. Un seul petit
+   bouton "réglages" (.profile-settings-btn plus bas) reste toujours visible pour garder un
+   accès à Compte/Réglages/Voyages/Wishlist/Amis/Déconnexion — les classes .dropdown-*/
+   .header-icon-btn ci-dessous, historiquement celles du header, sont réutilisées pour lui. */
 .dropdown-container { position: relative; display: inline-block; }
 .header-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: #2E3644; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; font-size: 16px; font-weight: bold; box-shadow: 0 4px 14px rgba(80,60,120,.05); }
 .header-icon-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: #D42759; transform: translateY(-2px);}
@@ -36,21 +37,23 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: block; text-align: left; text-decoration: none;}
 .dropdown-option:hover { background: #f1f5f9; color: #D42759; }
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
-.notif-badge { position: absolute; top: -3px; right: -3px; background: #D42759; color: #fff; font-size: 9.5px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 100px; display: flex; align-items: center; justify-content: center; padding: 0 3px; border: 2px solid #fff; }
+.profile-settings-btn { position: fixed; top: 20px; right: 20px; z-index: 3000; }
 
-/* PAGE */
-.page { position: relative; z-index: 2000; width: 100vw; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 120px 20px 80px 20px; }
-.card { background: #fff; border-radius: 20px; padding: 40px 50px; width: 100%; max-width: 780px; box-shadow: 0 15px 40px rgba(80,60,120,.08); }
-.back-link { color: #D42759; font-weight: 700; font-size: 13.5px; display: inline-block; margin-bottom: 20px;}
-.back-link:hover { text-decoration: underline; }
+/* PAGE — demande du 08/09/2026 : plus de bloc blanc/carte étroite, le contenu occupe
+   toute la largeur de la page (juste un padding raisonnable pour le confort de lecture
+   sur grand écran), directement sur le fond dégradé. Pas de header sur cette page (voir
+   plus haut), donc pas d'espace réservé en haut au-delà du bouton réglages. */
+.page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 70px 24px 100px 24px; }
 
 .profile-loading, .profile-not-found { text-align: center; color: #94a3b8; font-size: 14px; padding: 60px 0; }
 
 /* En-tête profil, style Instagram (avatar + pseudo + stats + bouton ami) */
-.profile-header { display: flex; align-items: center; gap: 22px; margin-bottom: 26px; flex-wrap: wrap; }
+.profile-header { display: flex; align-items: center; gap: 22px; margin-bottom: 26px; flex-wrap: wrap; max-width: 780px; margin-left: auto; margin-right: auto; }
 .profile-avatar { width: 76px; height: 76px; border-radius: 50%; color: #fff; font-size: 28px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .profile-header-info { flex: 1; min-width: 180px; }
-.profile-username { font-size: 21px; font-weight: 700; color: #212832; margin-bottom: 8px; word-break: break-word; }
+/* Pseudo plus discret (demande du 08/09/2026) : était trop imposant face au reste de la
+   fiche (stats, onglets). */
+.profile-username { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 8px; word-break: break-word; }
 .profile-stats { display: flex; gap: 22px; flex-wrap: wrap; }
 .profile-stat { font-size: 13px; color: #64748b; }
 .profile-stat b { color: #212832; font-weight: 800; margin-right: 4px; }
@@ -60,8 +63,11 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .profile-friend-status { font-size: 12px; font-weight: 700; color: #94a3b8; background: #f1f5f9; padding: 9px 16px; border-radius: 100px; flex-shrink: 0; }
 .profile-accept-request-btn { background: #212832; color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; flex-shrink: 0; }
 
-/* Onglets */
-.profile-tabs { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; }
+/* Onglets — même largeur max que .profile-header, centrés (demande du 08/09/2026 : pleine
+   largeur de PAGE mais pas de carte étroite, différent d'un contenu vraiment étiré sur
+   toute la largeur d'un grand écran, ce qui serait illisible). */
+.profile-tabs { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; max-width: 780px; margin-left: auto; margin-right: auto; }
+.profile-tab-panel { max-width: 780px; margin-left: auto; margin-right: auto; }
 .profile-tab-btn { flex: 1; background: none; border: none; padding: 13px 6px; font-size: 12.5px; font-weight: 700; color: #94a3b8; cursor: pointer; font-family: 'Poppins', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: 0.2s; text-transform: uppercase; letter-spacing: .03em; }
 .profile-tab-btn:hover { color: #D42759; }
 .profile-tab-btn.active { color: #D42759; border-bottom-color: #D42759; }
@@ -90,18 +96,17 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .profile-review-stars { display: flex; gap: 1px; flex-shrink: 0; }
 .profile-review-text { font-size: 12.5px; color: #475569; line-height: 1.5; }
 
-/* Onglet Map */
-.profile-map-heading { font-size: 13px; font-weight: 700; color: #212832; margin-bottom: 12px; }
+/* Onglet Map — pas de titre "Here's where I've been" (retiré, demande du 08/09/2026) ni de
+   boutons +/- de zoom Leaflet (voir zoomControl:false dans renderProfileMap() plus bas) : le
+   pincement tactile suffit sur mobile, et la molette sur desktop. */
 .profile-mini-map { width: 100%; height: 420px; border-radius: 14px; background: #f1f5f9; }
 
 @media (max-width: 760px) {
-  .universal-logo { top: 14px; left: 14px; gap: 8px; }
-  .universal-logo svg { width: 32px; height: 32px; }
-  .universal-logo .brand-text { font-size: 15px; }
-  .universal-icons { top: 14px; right: 14px; gap: 6px; }
+  .profile-settings-btn { top: 14px; right: 14px; }
   .header-icon-btn { width: 36px; height: 36px; }
-  .page { padding: 92px 0 50px 0; }
-  .card { padding: 26px 16px; border-radius: 0; }
+  /* Espace du bas porté à 90px (demande du 08/09/2026) pour laisser la place à la nav du
+     bas partagée (.mobile-bottom-nav, injectée par script.js) — voir style.css. */
+  .page { padding: 60px 16px 90px 16px; }
   .profile-header { gap: 14px; }
   .profile-avatar { width: 60px; height: 60px; font-size: 22px; }
   .profile-photo-grid { grid-template-columns: repeat(3, 1fr); }
@@ -119,63 +124,28 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
 </div>
 
-<a href="map.html" class="universal-logo">
-    <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
-        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
-        <circle cx="200" cy="150" r="26" fill="#D42759"/>
-    </svg>
-    <div><div class="brand-text">Screen To <b style="color: #D42759;">Street</b></div></div>
-</a>
-
-<div class="universal-icons">
-    <div class="dropdown-container">
-        <button id="lang-btn" class="header-icon-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-        </button>
-        <div id="lang-menu" class="dropdown-menu hidden">
-            <a href="#" class="dropdown-option" onclick="changeLang('en'); return false;">English</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('fr'); return false;">Français</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('es'); return false;">Español</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('it'); return false;">Italiano</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('pt'); return false;">Português</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('ko'); return false;">한국어</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('ja'); return false;">日本語</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
-        </div>
-    </div>
-    <!-- Icone "Ami" : profil public (profile.html) — demande du 08/09/2026, avant
-         elle menait a la messagerie. Voir #message-icon-btn juste apres pour ca. -->
-    <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='profile.html'" title="Your Profile">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+<!-- Pas de header sur cette page (demande du 08/09/2026) : seul un petit bouton "réglages"
+     reste toujours visible, pour garder un accès à Compte/Réglages/Voyages/Wishlist/Amis/
+     Déconnexion malgré l'absence de header (y compris sur desktop). -->
+<div class="dropdown-container profile-settings-btn">
+    <button id="profile-settings-btn" class="header-icon-btn" title="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
     </button>
-    <!-- Icone "Message" (demande du 08/09/2026) : messagerie (friends.html). Porte le
-         badge de notification, voir window.refreshFriendNotifications() dans script.js. -->
-    <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-        <span id="message-icon-badge" class="notif-badge hidden">0</span>
-    </button>
-    <div class="dropdown-container">
-        <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
-        <div id="profile-menu" class="dropdown-menu hidden">
-            <a href="map-destinations.html" class="dropdown-option" data-i18n="exploreDestOption">Explore Destinations</a>
-            <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
-            <div class="dropdown-divider"></div>
-            <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
-            <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
-            <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
-            <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
-            <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
-            <div class="dropdown-divider"></div>
-            <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
-        </div>
+    <div id="profile-settings-menu" class="dropdown-menu hidden">
+        <a href="map.html" class="dropdown-option">Map</a>
+        <div class="dropdown-divider"></div>
+        <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
+        <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+        <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
+        <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+        <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
+        <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
+        <div class="dropdown-divider"></div>
+        <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
     </div>
 </div>
 
 <div class="page">
-    <div class="card">
-        <a href="friends.html" class="back-link" data-i18n="backToFriends">← Back to Friends</a>
-
         <div class="profile-loading" id="profile-loading" data-i18n="profileLoading">Loading profile…</div>
         <div class="profile-not-found hidden" id="profile-not-found" data-i18n="profileNotFound">This user could not be found.</div>
 
@@ -187,7 +157,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                     <div class="profile-stats">
                         <div class="profile-stat"><b id="profile-stat-visited">0</b><span data-i18n="profileStatVisited">visited</span></div>
                         <div class="profile-stat"><b id="profile-stat-photos">0</b><span data-i18n="profileStatPhotos">photos</span></div>
-                        <div class="profile-stat"><b id="profile-stat-reviews">0</b><span data-i18n="profileStatReviews">reviews</span></div>
+                        <div class="profile-stat"><b id="profile-stat-followers">0</b><span data-i18n="profileStatFollowers">followers</span></div>
                     </div>
                 </div>
                 <button id="profile-accept-request-btn" class="profile-accept-request-btn hidden" data-i18n="profileAcceptRequestBtn">Accept request</button>
@@ -218,11 +188,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                 <div class="profile-empty hidden" id="profile-reviews-empty" data-i18n="profileEmptyReviews">No public reviews yet.</div>
             </div>
             <div class="profile-tab-panel hidden" id="profile-panel-map">
-                <div class="profile-map-heading" data-i18n="profileMapHeading">Here's where I've been</div>
                 <div class="profile-mini-map" id="profile-mini-map"></div>
             </div>
         </div>
-    </div>
 </div>
 
 <!-- MODAL LIEU (rempli par window.openLocModal / closeLocModal du script.js partagé) -->
@@ -360,7 +328,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     function renderProfileMap(visitedIds) {
         const mapEl = document.getElementById('profile-mini-map');
         if (!mapEl || typeof L === 'undefined') return;
-        profileMiniMap = L.map(mapEl, { attributionControl: false }).setView([20, 0], 2);
+        profileMiniMap = L.map(mapEl, { attributionControl: false, zoomControl: false }).setView([20, 0], 2);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(profileMiniMap);
         const points = [];
         (visitedIds || []).forEach(id => {
@@ -453,12 +421,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 
         const photosShown = renderProfilePhotos(publicProfile);
         renderProfileVisited(visitedIds);
-        const reviewsShown = renderProfileReviews(publicProfile);
+        renderProfileReviews(publicProfile);
         renderProfileMap(visitedIds);
 
         document.getElementById('profile-stat-visited').textContent = (visitedIds || []).length;
         document.getElementById('profile-stat-photos').textContent = photosShown.length;
-        document.getElementById('profile-stat-reviews').textContent = reviewsShown.length;
+        // Nombre d'abonnés à la place du nombre d'avis (demande du 08/09/2026) — voir
+        // friendCount sur publicProfiles/{uid}, incrémenté/décrémenté par
+        // acceptFriendRequest()/removeFriend() dans firebase-init.js.
+        document.getElementById('profile-stat-followers').textContent = publicProfile.friendCount || 0;
 
         await renderProfileFriendState(username);
 

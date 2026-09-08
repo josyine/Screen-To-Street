@@ -130,7 +130,11 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
      change par rapport à avant. */
   .universal-logo { top: calc(14px + env(safe-area-inset-top)); left: 14px; gap: 8px; }
   .universal-logo svg { width: 32px; height: 32px; }
-  .universal-logo .tagline, .universal-logo .brand-text { display: none; }
+  /* Le wordmark "Screen To Street" était masqué (display:none) sur cette page en mobile,
+     contrairement aux autres pages qui se contentent de le réduire — demande du 08/09/2026
+     "Affiche le logo 'screen to street'". */
+  .universal-logo .tagline { display: none; }
+  .universal-logo .brand-text { font-size: 14px; }
   .universal-icons { top: calc(14px + env(safe-area-inset-top)); right: 14px; gap: 6px; }
   .header-icon-btn { width: 36px; height: 36px; }
   .friends-page { padding: calc(74px + env(safe-area-inset-top)) 0 0 0; }
@@ -141,11 +145,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
   .friends-shell.chat-open .friends-main { display: flex; }
   .convo-back-btn { display: inline-block; }
 
-  /* "Add a friend by username" trop gros sur mobile (demande du 08/09/2026) : le champ
-     reste forcé à 16px par la règle globale anti-zoom iOS (voir style.css) — impossible de
-     baisser la taille du texte sans risquer de réintroduire le zoom au focus — donc on
-     réduit plutôt le volume visuel via le padding/la hauteur, pas la police. */
-  .friend-add-row input { padding: 6px 10px; }
+  /* "Add a friend by username" encore trop gros sur mobile (nouvelle demande du
+     08/09/2026, après un premier ajustement du padding seul jugé insuffisant) : la police
+     reste forcée à 16px par la règle globale anti-zoom iOS (input, textarea { font-size:
+     16px !important; }, voir style.css) — impossible de la baisser sans risquer de
+     réintroduire le zoom au focus déjà corrigé par cette règle. On réduit donc plutôt le
+     volume visuel par la largeur (le champ ne prend plus toute la largeur de l'écran,
+     demande explicite) et un padding encore plus resserré. */
+  .friend-add-row { max-width: 230px; }
+  .friend-add-row input { padding: 4px 9px; }
   .friend-add-row button { padding: 0 12px; font-size: 12px; }
 }
 </style>

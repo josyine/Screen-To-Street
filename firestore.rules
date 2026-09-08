@@ -263,9 +263,20 @@ service cloud.firestore {
     // requête "collection group" sur locationReviews/*/items pour retrouver tous les
     // avis d'UNE personne (non couvert par la règle ci-dessus, qui ne s'applique qu'à
     // un lieu précis à la fois). Ne duplique que ce qui est déjà public par ailleurs.
+    // Le champ friendCount (demande du 08/09/2026, "followers" du profil public) est le
+    // SEUL champ qu'un autre compte que le propriétaire peut modifier — et seulement s'il
+    // est réellement dans la liste d'amis de {uid} (friendIndex), pour empêcher n'importe
+    // qui d'incrémenter arbitrairement le compteur de n'importe quel profil. Voir
+    // acceptFriendRequest()/removeFriend() dans firebase-init.js.
     match /publicProfiles/{uid} {
       allow read: if true;
       allow write: if request.auth != null && request.auth.uid == uid;
+      allow update: if request.auth != null
+        && exists(/databases/$(database)/documents/users/$(uid)/friendIndex/$(request.auth.uid))
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['friendCount']);
+      allow create: if request.auth != null
+        && exists(/databases/$(database)/documents/users/$(uid)/friendIndex/$(request.auth.uid))
+        && request.resource.data.keys().hasOnly(['friendCount']);
     }
 
     // Partage d'un lieu ou d'un voyage à un ami. La condition exists(...) sur
@@ -335,6 +346,20 @@ service cloud.firestore {
       match /reads/{uid} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
       }
+    }
+
+    // ==========================================
+    // FIL D'ACTUALITÉ PUBLIC (feed.html) — demande du 08/09/2026
+    // ==========================================
+    // "J'aime" sur une photo du fil : même schéma que friendIndex/friendShares plus haut
+    // (chaque compte écrit SON PROPRE document, jamais celui d'un autre) — évite d'avoir
+    // à ouvrir une écriture arbitraire sur un compteur partagé. {photoKey} est une clé
+    // déterministe côté client ("<uid du propriétaire de la photo>_<id du lieu>"), voir
+    // feed.html ; le nombre de like affiché est la taille de la sous-collection lue par
+    // n'importe qui (lecture publique, comme le reste du contenu du fil).
+    match /photoLikes/{photoKey}/items/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
     }
 
     // ==========================================

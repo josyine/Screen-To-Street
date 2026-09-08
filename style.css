@@ -232,18 +232,20 @@ body.trip-not-owner .owner-only { display: none !important; }
     .demo-tour-btn { bottom: 90px; left: 14px; font-size: 12px; padding: 8px 14px; }
 }
 
-/* Messages éphémères "nouveau lieu ajouté" — voir showNewLocationToasts() dans script.js */
-.new-location-toast-container { position: fixed; left: 20px; bottom: 20px; z-index: 5000; display: flex; flex-direction: column-reverse; gap: 10px; pointer-events: none; max-width: min(320px, calc(100vw - 40px)); }
-.new-location-toast { background: #fff; border-radius: 14px; padding: 12px 14px; box-shadow: 0 12px 32px rgba(0,0,0,0.18); display: flex; gap: 10px; align-items: flex-start; pointer-events: auto; opacity: 0; transform: translateY(12px); transition: opacity 0.35s ease, transform 0.35s ease; }
+/* Messages éphémères "nouveau lieu ajouté" — voir showNewLocationToasts() dans script.js.
+   En haut de l'écran (demande du 08/09/2026) : en bas, ils se superposaient à la barre
+   d'icônes/nav du bas sur mobile. */
+.new-location-toast-container { position: fixed; left: 20px; top: 20px; z-index: 5000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; max-width: min(320px, calc(100vw - 40px)); }
+.new-location-toast { background: #fff; border-radius: 14px; padding: 12px 14px; box-shadow: 0 12px 32px rgba(0,0,0,0.18); display: flex; gap: 10px; align-items: flex-start; pointer-events: auto; opacity: 0; transform: translateY(-12px); transition: opacity 0.35s ease, transform 0.35s ease; }
 .new-location-toast.show { opacity: 1; transform: translateY(0); }
-.new-location-toast-icon { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-pink); color: var(--primary-magenta); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+.new-location-toast-icon { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-pink); color: var(--primary-magenta); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .new-location-toast-body { min-width: 0; }
 .new-location-toast-label { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--primary-magenta); margin-bottom: 2px; }
 .new-location-toast-title { font-size: 12.5px; font-weight: 700; color: var(--text-main); line-height: 1.3; }
 .new-location-toast-sub { font-size: 11px; color: var(--muted-text); margin-top: 2px; line-height: 1.4; }
 .new-location-toast-close { background: none; border: none; color: var(--muted-text); font-size: 13px; cursor: pointer; line-height: 1; padding: 2px; flex-shrink: 0; }
 @media (max-width: 800px) {
-    .new-location-toast-container { left: 14px; right: 14px; bottom: 14px; max-width: none; }
+    .new-location-toast-container { left: 14px; right: 14px; top: calc(14px + env(safe-area-inset-top)); max-width: none; }
 }
 
 /* Confirmation générique et courte ("Friend request sent", "Username changed"...) —
@@ -547,22 +549,71 @@ body.trip-not-owner .owner-only { display: none !important; }
 .tour-next-btn:hover { transform: translateY(-1px); }
 
 /* ==========================================
-   VERROU MODE PORTRAIT SUR MOBILE (demande du 08/09/2026)
-   L'API Screen Orientation (screen.orientation.lock()) exige le plein écran et n'est de
-   toute façon pas supportée par Safari iOS — la seule protection fiable, cross-navigateur,
-   sans dépendance JS, est ce voile CSS pur : affiché uniquement quand la hauteur de fenêtre
-   disponible est celle d'un téléphone tourné en paysage (un écran d'ordinateur en format
-   "paysage", même dans une petite fenêtre de navigateur, a presque toujours une hauteur
-   bien supérieure à 500px). Sur TOUTES les pages via style.css, sans avoir à toucher le
-   HTML de chacune.
+   VERROU MODE PORTRAIT SUR MOBILE (révisé le 08/09/2026)
+   Ancienne version : un voile "please rotate your device" quand le téléphone est tourné en
+   paysage. Nouvelle demande explicite : ne PAS afficher ce message, l'affichage doit rester
+   TOUJOURS en mode portrait quelle que soit la rotation physique de l'appareil. L'API Screen
+   Orientation (screen.orientation.lock()) exige le plein écran et n'est de toute façon pas
+   supportée par Safari iOS, donc on utilise la technique CSS classique des jeux web mobiles :
+   contre-tourner tout le document de 90° quand la fenêtre passe en paysage, pour que le
+   contenu reste visuellement en portrait. (orientation:landscape) seul se déclencherait aussi
+   sur une fenêtre desktop large — on le restreint donc à une hauteur de fenêtre de téléphone
+   (max-height:500px), comme l'ancien voile. Sur TOUTES les pages via style.css, sans avoir à
+   toucher le HTML de chacune.
    ========================================== */
-@media (orientation: landscape) and (max-height: 500px) {
-    body::before {
-        content: "Please rotate your device back to portrait mode to use Screen To Street.";
-        position: fixed; inset: 0; z-index: 999999;
-        background: #1e1730; color: #fff;
-        display: flex; align-items: center; justify-content: center;
-        text-align: center; padding: 0 40px; font-size: 16px; font-weight: 600;
-        font-family: 'Poppins', sans-serif; line-height: 1.5;
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: left top;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: absolute;
+        top: 100%;
+        left: 0;
     }
 }
+
+/* ==========================================
+   NAV DU BAS PARTAGÉE : Home / Live / + / Search / Avatar (demande du 08/09/2026)
+   Remplace, sur mobile et sur TOUTES les pages, l'ancienne barre d'icônes (.top-nav /
+   .universal-icons, masquées ci-dessous en mobile) par ces 5 icônes communes. Injectée une
+   seule fois par injectMobileBottomNav() dans script.js — pas de duplication HTML par page.
+   Masquée par défaut (desktop) ; seule la media query mobile l'affiche.
+   ========================================== */
+.mobile-bottom-nav { display: none; }
+.mbn-item { background: none; border: none; padding: 6px; margin: 0; cursor: pointer; color: #2E3644; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; text-decoration: none; }
+.mbn-add svg { background: #D42759; border-radius: 50%; padding: 8px; box-sizing: content-box; color: #fff; }
+.mbn-avatar { width: 26px; height: 26px; border-radius: 50%; color: #fff; font-size: 12px; font-weight: 800; }
+
+@media (max-width: 760px) {
+    .top-nav, .universal-icons { display: none !important; }
+    .mobile-bottom-nav {
+        display: flex; align-items: center; justify-content: space-around;
+        position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+        width: calc(100% - 24px); max-width: 480px;
+        background: #fff; padding: 8px 18px; border-radius: 100px; box-shadow: 0 10px 30px rgba(0,0,0,.18);
+        z-index: 3500;
+    }
+    .mobile-bottom-nav.menu-open { display: none !important; }
+}
+
+/* Volet "+" : ajouter une photo / un lieu visité / un avis (task #129) */
+.qa-sheet-overlay { position: fixed; inset: 0; z-index: 9600; background: rgba(23,19,49,.45); display: none; align-items: flex-end; justify-content: center; }
+.qa-sheet-overlay.open { display: flex; }
+.qa-sheet { width: 100%; max-width: 480px; background: #fff; border-radius: 22px 22px 0 0; padding: 10px 18px calc(24px + env(safe-area-inset-bottom)) 18px; box-shadow: 0 -10px 40px rgba(0,0,0,.25); font-family: 'Poppins', sans-serif; }
+.qa-sheet-handle { width: 40px; height: 4px; border-radius: 100px; background: #e2e8f0; margin: 6px auto 16px auto; }
+.qa-sheet-title { font-size: 12px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; padding: 0 8px; }
+.qa-sheet-option { display: flex; align-items: center; gap: 14px; padding: 14px 8px; border-radius: 14px; cursor: pointer; font-size: 14px; font-weight: 700; color: #212832; transition: .2s; }
+.qa-sheet-option:hover, .qa-sheet-option:active { background: #FCE7F0; }
+.qa-sheet-option-icon { width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #D42759; flex-shrink: 0; }
+.qa-sheet-cancel { display: block; width: 100%; text-align: center; margin-top: 8px; padding: 12px; border-radius: 14px; background: #f1f5f9; border: none; font-family: 'Poppins',sans-serif; font-size: 13.5px; font-weight: 700; color: #64748b; cursor: pointer; }
+
+/* Transition "glissement" entre pages sur mobile en tapant la nav du bas (task #132) */
+@media (max-width: 760px) {
+    body.stnav-leaving { animation: stnavSlideOut .16s ease forwards; }
+    body.stnav-entering { animation: stnavSlideIn .22s ease; }
+}
+@keyframes stnavSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-18px); opacity: 0; } }
+@keyframes stnavSlideIn { from { transform: translateX(18px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }

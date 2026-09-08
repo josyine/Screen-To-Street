@@ -433,6 +433,87 @@ window.fetchPublicProfile = async function (uid) {
     }
 };
 
+// Fil d'actualité public façon Instagram (feed.html, demande du 08/09/2026) : agrège les
+// photos publiées par TOUS les comptes. Sans backend/Cloud Function, pas de requête
+// "collection group" possible pour lire toutes les publicProfiles/*.reviews d'un coup (pas
+// de règle {path=**} dessus) — même pattern d'agrégation côté client que
+// loadAllUsernamesCached()/searchUsernamesContaining() ci-dessous : petite échelle acceptée
+// (un site fan, pas des millions de comptes).
+let _globalPhotoFeedCache = null;
+let _globalPhotoFeedCachePromise = null;
+window.fetchGlobalPhotoFeed = async function () {
+    if (_globalPhotoFeedCache) return _globalPhotoFeedCache;
+    if (_globalPhotoFeedCachePromise) return _globalPhotoFeedCachePromise;
+    _globalPhotoFeedCachePromise = (async () => {
+        try {
+            const users = await loadAllUsernamesCached();
+            const profiles = await Promise.all(users.map(async u => {
+                try {
+                    const snap = await getDoc(doc(db, 'publicProfiles', u.uid));
+                    return { u, data: snap.exists() ? snap.data() : null };
+                } catch (e) {
+                    return { u, data: null };
+                }
+            }));
+            const photos = [];
+            profiles.forEach(({ u, data }) => {
+                if (!data || !data.reviews) return;
+                Object.values(data.reviews).forEach(r => {
+                    if (!r.photo) return;
+                    photos.push({
+                        uid: u.uid,
+                        username: u.username,
+                        locationId: r.locationId,
+                        locationName: r.locationName || '',
+                        photo: r.photo,
+                        updatedAt: (r.updatedAt && r.updatedAt.seconds) || 0
+                    });
+                });
+            });
+            photos.sort((a, b) => b.updatedAt - a.updatedAt);
+            _globalPhotoFeedCache = photos;
+            return photos;
+        } catch (e) {
+            console.warn('Chargement du fil de photos échoué :', e);
+            return [];
+        } finally {
+            _globalPhotoFeedCachePromise = null;
+        }
+    })();
+    return _globalPhotoFeedCachePromise;
+};
+
+// "J'aime" d'une photo du fil (photoLikes/{photoKey}/items/{uid}, voir firestore.rules) :
+// chaque compte écrit/efface SON PROPRE document, jamais celui d'un autre — même schéma que
+// friendIndex/friendShares. photoKey est une clé déterministe "<uid propriétaire>_<locationId>".
+window.getPhotoLikeState = async function (photoKey) {
+    const user = auth.currentUser;
+    try {
+        const snap = await getDocs(collection(db, 'photoLikes', photoKey, 'items'));
+        let likedByMe = false;
+        snap.forEach(d => { if (user && d.id === user.uid) likedByMe = true; });
+        return { count: snap.size, likedByMe };
+    } catch (e) {
+        console.warn('Lecture des likes échouée :', e);
+        return { count: 0, likedByMe: false };
+    }
+};
+window.togglePhotoLike = async function (photoKey, liked) {
+    const user = auth.currentUser;
+    if (!user) return false;
+    try {
+        if (liked) {
+            await setDoc(doc(db, 'photoLikes', photoKey, 'items', user.uid), { at: serverTimestamp() });
+        } else {
+            await deleteDoc(doc(db, 'photoLikes', photoKey, 'items', user.uid));
+        }
+        return true;
+    } catch (e) {
+        console.warn('Mise à jour du like échouée :', e);
+        return false;
+    }
+};
+
 // Retrouve le pseudo d'un compte à partir de son uid (sens inverse de
 // lookupUserByUsername ci-dessus) : nécessaire pour afficher l'en-tête d'un profil
 // public ouvert depuis un uid (avatar ami, "a visité ce lieu"...) plutôt qu'un pseudo.
@@ -1123,12 +1204,22 @@ window.listSharedTripsForMe = async function () {
 //   match /publicProfiles/{uid} {
 //     allow read: if true;
 //     allow write: if request.auth != null && request.auth.uid == uid;
+//     allow update: if request.auth != null
+//       && exists(/databases/$(database)/documents/users/$(uid)/friendIndex/$(request.auth.uid))
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['friendCount']);
+//     allow create: if request.auth != null
+//       && exists(/databases/$(database)/documents/users/$(uid)/friendIndex/$(request.auth.uid))
+//       && request.resource.data.keys().hasOnly(['friendCount']);
 //   }
 // friendVisits/{uid} est désormais public en lecture (demande du 07/09/2026, page de
 // profil public façon Instagram) — voir firestore.rules pour le détail de ce
 // changement. publicProfiles/{uid} est un miroir des avis publics d'un compte (voir
 // setLocationReview() plus bas), pour afficher "ses avis"/"ses photos" sur son profil
 // sans avoir besoin d'une requête collection group sur locationReviews/*/items.
+// Le champ friendCount (demande du 08/09/2026, "followers" du profil public) est le SEUL
+// champ qu'un autre compte que le propriétaire peut modifier — et seulement s'il est
+// réellement dans la liste d'amis de {uid} (friendIndex), pour empêcher n'importe qui
+// d'incrémenter arbitrairement le compteur de n'importe quel profil.
 // Limite connue, même famille que celle documentée plus haut pour usernames/trips :
 // pas de vérification serveur qu'un uid "ami" existe vraiment avant l'écriture d'une
 // demande — au pire, une demande fantôme vers un uid inexistant, sans conséquence
@@ -1202,6 +1293,20 @@ window.acceptFriendRequest = async function (requestId, fromUid, fromUsername) {
             setDoc(doc(db, 'users', fromUid, 'friendIndex', user.uid), { username: myUsername, since: serverTimestamp() }),
             deleteDoc(doc(db, 'friendRequests', requestId))
         ]);
+        // Compteur "followers" public de profile.html (publicProfiles/{uid}.friendCount) :
+        // incrémenté des DEUX côtés maintenant que la relation existe réellement dans
+        // friendIndex des deux comptes — la règle Firestore de publicProfiles/{uid} exige
+        // justement cette existence pour autoriser une écriture par quelqu'un d'autre que
+        // le propriétaire du document, restreinte au seul champ friendCount. Ne bloque
+        // jamais l'acceptation elle-même si ce miroir échoue.
+        try {
+            await Promise.all([
+                setDoc(doc(db, 'publicProfiles', user.uid), { friendCount: increment(1) }, { merge: true }),
+                setDoc(doc(db, 'publicProfiles', fromUid), { friendCount: increment(1) }, { merge: true })
+            ]);
+        } catch (countErr) {
+            console.warn('Mise à jour du compteur de followers échouée :', countErr);
+        }
     } catch (e) {
         console.warn('Acceptation de la demande d\'ami échouée :', e);
     }
@@ -1235,6 +1340,18 @@ window.removeFriend = async function (friendUid) {
     const user = auth.currentUser;
     if (!user) return;
     try {
+        // Décrémente le compteur "followers" public AVANT de supprimer les entrées
+        // friendIndex ci-dessous : la règle Firestore de publicProfiles/{uid} exige que la
+        // relation existe encore au moment de l'écriture pour autoriser quelqu'un d'autre
+        // que le propriétaire à modifier son friendCount.
+        try {
+            await Promise.all([
+                setDoc(doc(db, 'publicProfiles', user.uid), { friendCount: increment(-1) }, { merge: true }),
+                setDoc(doc(db, 'publicProfiles', friendUid), { friendCount: increment(-1) }, { merge: true })
+            ]);
+        } catch (countErr) {
+            console.warn('Mise à jour du compteur de followers échouée :', countErr);
+        }
         await Promise.all([
             deleteDoc(doc(db, 'users', user.uid, 'friendIndex', friendUid)),
             deleteDoc(doc(db, 'users', friendUid, 'friendIndex', user.uid))
