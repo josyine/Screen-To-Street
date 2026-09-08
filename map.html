@@ -312,6 +312,23 @@
   .live-panel-empty.hidden { display: none; }
   .live-panel-footer { font-size: 10px; color: #94a3b8; text-align: center; padding: 12px 18px 16px; line-height: 1.5; flex-shrink: 0; border-top: 1px solid #f8fafc; }
 
+  /* Bascule Liste/Calendrier + vue Calendrier (demande du 08/09/2026) */
+  .live-panel-view-tabs { display: flex; gap: 6px; padding: 12px 18px 0 18px; flex-shrink: 0; }
+  .live-panel-view-tab { background: var(--sidebar-bg); border: none; border-radius: 100px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(--muted-text); cursor: pointer; font-family: 'Poppins', sans-serif; transition: .15s; }
+  .live-panel-view-tab.active { background: var(--primary-magenta); color: #fff; }
+  .live-panel-calendar { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 18px 4px 18px; }
+  .live-panel-calendar.hidden { display: none; }
+  .live-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .live-cal-header span { font-size: 12.5px; font-weight: 700; color: var(--text-main); }
+  .live-cal-nav { background: var(--sidebar-bg); border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 16px; line-height: 1; color: var(--text-main); }
+  .live-cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 9.5px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #94a3b8; margin-bottom: 4px; }
+  .live-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .live-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 11.5px; color: var(--text-main); }
+  .live-cal-day.other-month { visibility: hidden; }
+  .live-cal-day.today { box-shadow: inset 0 0 0 1.5px var(--primary-magenta); }
+  .live-cal-day.has-event { background: var(--primary-magenta); color: #fff; font-weight: 700; cursor: pointer; }
+  .live-cal-day.has-event:hover { background: #b81f4a; }
+
   /* Bulle infos concert : apparaît au clic sur un pin de la carte (ou sur une étape du
      rail, qui pointe alors la même bulle vers son pin) — voir tour-mode.js.
      position:fixed (positionnée en JS par rapport à la fenêtre, pas au conteneur de la
@@ -832,9 +849,16 @@
             <!-- Icône "Amis" (voir friends.html) : masquée pour un visiteur non connecté,
                  voir firebase-ready plus bas. Le badge cumule messages non lus + lieux/voyages
                  partagés non vus (voir window.refreshFriendNotifications() dans script.js). -->
-            <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Friends">
+            <!-- Icone "Ami" : profil public (profile.html) — demande du 08/09/2026, avant
+                 elle menait a la messagerie. Voir #message-icon-btn juste apres pour ca. -->
+            <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='profile.html'" title="Your Profile">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                <span id="friend-icon-badge" class="notif-badge hidden">0</span>
+            </button>
+            <!-- Icone "Message" (demande du 08/09/2026) : messagerie (friends.html). Porte le
+                 badge de notification, voir window.refreshFriendNotifications() dans script.js. -->
+            <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                <span id="message-icon-badge" class="notif-badge hidden">0</span>
             </button>
             <div class="dropdown-container">
                 <button id="profile-btn" class="header-icon-btn user-avatar-btn" title="Account">U</button>
@@ -994,9 +1018,28 @@
                 <button class="live-panel-close" onclick="closeLivePanel()" type="button">&times;</button>
             </div>
         </div>
+        <!-- Bascule Liste/Calendrier (demande du 08/09/2026) : voir window.switchLiveView()
+             dans script.js. -->
+        <div class="live-panel-view-tabs">
+            <button class="live-panel-view-tab active" type="button" data-view="list" onclick="window.switchLiveView('list')" data-i18n="liveViewList">List</button>
+            <button class="live-panel-view-tab" type="button" data-view="calendar" onclick="window.switchLiveView('calendar')" data-i18n="liveViewCalendar">Calendar</button>
+        </div>
         <div class="live-panel-avatars" id="live-panel-avatars"></div>
         <div class="live-panel-timeline" id="live-panel-timeline"></div>
         <div class="live-panel-empty hidden" id="live-panel-empty" data-i18n="liveTimelineEmpty">Nothing scheduled right now — check back soon.</div>
+        <!-- Vue Calendrier : un jour est coloré dès qu'un arrêt de tournée/évènement solo le
+             recouvre — voir renderLiveCalendar() dans script.js. -->
+        <div class="live-panel-calendar hidden" id="live-panel-calendar">
+            <div class="live-cal-header">
+                <button class="live-cal-nav" type="button" onclick="window.shiftLiveCalMonth(-1)" aria-label="Previous month">&lsaquo;</button>
+                <span id="live-cal-month-label"></span>
+                <button class="live-cal-nav" type="button" onclick="window.shiftLiveCalMonth(1)" aria-label="Next month">&rsaquo;</button>
+            </div>
+            <div class="live-cal-weekdays">
+                <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+            </div>
+            <div class="live-cal-grid" id="live-cal-grid"></div>
+        </div>
         <div class="live-panel-footer" data-i18n="liveTimelineFooterNote">Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.</div>
     </div>
 </div>
