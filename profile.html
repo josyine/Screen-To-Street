@@ -425,6 +425,10 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         if (!profileUid && profileUsernameParam && typeof window.lookupUserByUsername === 'function') {
             profileUid = await window.lookupUserByUsername(profileUsernameParam);
         }
+        // Ni ?uid= ni ?u= dans l'URL (ex: le lien "Your Profile" du menu compte de
+        // friends.html) : on affiche le profil du compte actuellement connecté plutôt que
+        // "utilisateur introuvable" — demande du 08/09/2026.
+        if (!profileUid && profileCurrentUid) profileUid = profileCurrentUid;
         if (!profileUid) { showProfileNotFound(); return; }
 
         const [username, visitedIds, publicProfile] = await Promise.all([
