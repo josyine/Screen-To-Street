@@ -1026,12 +1026,18 @@ window.friendsWhoVisited = friendsWhoVisited;
 // Portée par l'icône "message" depuis le 08/09/2026 (l'icône "ami" mène maintenant au
 // profil public, voir plus bas) — d'où le renommage friend-icon-badge -> message-icon-badge.
 window.refreshFriendNotifications = async function() {
-    const badge = document.getElementById('message-icon-badge');
-    if (!badge) return;
+    // #message-icon-badge (header desktop) ET #mti-message-badge (icône message partagée
+    // du haut à droite en mobile, voir injectMobileTopIcons() plus haut, demande du
+    // 08/09/2026) : une page peut avoir les deux en même temps, d'où querySelectorAll
+    // plutôt que getElementById qui n'aurait mis à jour que le premier des deux trouvé.
+    const badges = document.querySelectorAll('#message-icon-badge, #mti-message-badge');
+    if (!badges.length) return;
     if (typeof window.countUnreadFriendNotifications !== 'function') return;
     const count = await window.countUnreadFriendNotifications();
-    badge.textContent = count;
-    badge.classList.toggle('hidden', count === 0);
+    badges.forEach(badge => {
+        badge.textContent = count;
+        badge.classList.toggle('hidden', count === 0);
+    });
 };
 
 // Voyages partagés dont JE fais partie (propriétaire qui les a partagés, voir
@@ -1433,6 +1439,61 @@ function injectMobileBottomNav() {
     });
 }
 
+// ==========================================
+// ICÔNES PARTAGÉES DU HAUT À DROITE MOBILE : Message + Engrenage (demande du 08/09/2026)
+// En plus de la nav du bas (Home/Live/+/Search/Avatar), un petit duo reste en haut à
+// droite sur mobile — l'icône engrenage ouvre le même menu "toutes les pages" que sur
+// desktop (Compte/Voyages/Wishlist/Amis/Réglages/Déconnexion), l'icône message mène à
+// friends.html et porte le badge de non-lus (voir window.refreshFriendNotifications()).
+// ==========================================
+function injectMobileTopIcons() {
+    if (document.getElementById('mobile-top-icons')) return;
+    const wrap = document.createElement('div');
+    wrap.id = 'mobile-top-icons';
+    wrap.innerHTML = `
+        <a href="friends.html" class="header-icon-btn" data-stnav title="Messages">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            <span id="mti-message-badge" class="notif-badge hidden">0</span>
+        </a>
+        <div class="dropdown-container">
+            <button id="mti-gear-btn" class="header-icon-btn" type="button" title="Menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+            <div id="mti-gear-menu" class="dropdown-menu hidden">
+                <a href="map-destinations.html" class="dropdown-option" data-i18n="exploreDestOption">Explore Destinations</a>
+                <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
+                <div class="dropdown-divider"></div>
+                <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
+                <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+                <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
+                <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+                <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
+                <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
+                <div class="dropdown-divider"></div>
+                <a href="index.html" class="dropdown-option" id="mti-logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(wrap);
+
+    const gearBtn = document.getElementById('mti-gear-btn');
+    if (gearBtn) gearBtn.addEventListener('click', (e) => {
+        document.querySelectorAll('.dropdown-menu').forEach(m => { if (m.id !== 'mti-gear-menu') m.classList.add('hidden'); });
+        document.getElementById('mti-gear-menu').classList.toggle('hidden');
+        e.stopPropagation();
+    });
+
+    wrap.querySelectorAll('a[data-stnav]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            if (window.matchMedia && !window.matchMedia('(max-width: 760px)').matches) return;
+            e.preventDefault();
+            window.stNavigate(a.getAttribute('href'));
+        });
+    });
+
+    if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
+}
+
 // Anime une sortie glissée avant de naviguer réellement (mobile uniquement) — demande du
 // 08/09/2026 "type glissement quand je change de page". La page d'arrivée relaie l'entrée
 // via sessionStorage (voir plus bas, "stnav-entering").
@@ -1492,6 +1553,7 @@ window.closeQuickAddSheet = function () {
 
 document.addEventListener('DOMContentLoaded', () => {
     injectMobileBottomNav();
+    injectMobileTopIcons();
     // Relais de l'animation d'entrée glissée depuis la page précédente (voir stNavigate
     // ci-dessus) : posé côté page de départ, consommé une seule fois ici.
     try {
@@ -1661,6 +1723,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (topNav) topNav.classList.toggle('menu-open', isOpen);
             const bottomNav = document.getElementById('mobile-bottom-nav');
             if (bottomNav) bottomNav.classList.toggle('menu-open', isOpen);
+            const topIcons = document.getElementById('mobile-top-icons');
+            if (topIcons) topIcons.classList.toggle('menu-open', isOpen);
         }
     };
 
@@ -1706,8 +1770,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
+    // #logout-btn (header desktop) ET #mti-logout-btn (menu engrenage mobile partagé,
+    // voir injectMobileTopIcons() plus haut) : querySelectorAll plutôt que getElementById
+    // pour câbler les DEUX quand une page a les deux à la fois (demande du 08/09/2026).
+    document.querySelectorAll('#logout-btn, #mti-logout-btn').forEach(logoutBtn => {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const finishLogout = () => {
@@ -1730,7 +1796,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 finishLogout();
             }
         });
-    }
+    });
 
     updateUI();
 
@@ -2876,7 +2942,7 @@ const translations = {
         gateResetSent: "Password reset email sent — check your inbox.", gateEnterEmailFirst: "Please enter your email address first.",
         tourModeLiveIn: "Live now — BTS is live in {city}", tourModeSchedule: "Tour Schedule", tourModeLive: "Live", tourModeDone: "Done", tourModeUpcoming: "Upcoming", tourModePrev: "Previous", tourModeNext: "Next",
         tourModeFooterNote: "Dates as announced by the tour — always double-check official ticketing sites before booking travel.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveViewList: "List", liveViewCalendar: "Calendar", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", tripLeaveTitle: "Leave this shared trip?", tripLeaveDesc: "Are you sure you want to leave this trip? You'll need a new invite to rejoin.", tripLeaveCancel: "Cancel", tripLeaveConfirm: "Leave", locationSharesLabel: "Shared with you", locationShareFrom: "{username} shared {location} with you", tabTourMode: "Tour", profileTabPhotos: "Photos", profileTabVisited: "Visited", profileTabReviews: "Reviews", profileTabMap: "Map", profileMapHeading: "Here's where I've been", profileStatVisited: "visited", profileStatPhotos: "photos", profileStatReviews: "reviews", profileStatFollowers: "followers", quickAddTitle: "Add to Screen To Street", quickAddPhoto: "Add a photo", quickAddVisited: "Add a visited place", quickAddReview: "Add a review", quickAddCancel: "Cancel", quickAddPickLocation: "Search for a place below to continue.", quickAddPickLocationPhoto: "Pick a place below to add a photo.", quickAddPickLocationVisited: "Pick a place below to mark it as visited.", quickAddPickLocationReview: "Pick a place below to write a review.", profileAddFriendBtn: "Add friend", profileFriendsLabel: "Friends", profileRequestSentLabel: "Request sent", profileAcceptRequestBtn: "Accept request", profileEmptyPhotos: "No public photos yet.", profileEmptyVisited: "No visited places yet.", profileEmptyReviews: "No public reviews yet.", profileNotFound: "This user could not be found.", profileLoading: "Loading profile…", backToFriends: "← Back to Friends", profileMenuOption: "Your Profile", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
+        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveViewList: "List", liveViewCalendar: "Calendar", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", tripLeaveTitle: "Leave this shared trip?", tripLeaveDesc: "Are you sure you want to leave this trip? You'll need a new invite to rejoin.", tripLeaveCancel: "Cancel", tripLeaveConfirm: "Leave", locationSharesLabel: "Shared with you", locationShareFrom: "{username} shared {location} with you", tabTourMode: "Tour", profileTabPhotos: "Photos", profileTabVisited: "Visited", profileTabReviews: "Reviews", profileTabMap: "Map", profileMapHeading: "Here's where I've been", profileStatVisited: "visited", profileStatPhotos: "photos", profileStatReviews: "reviews", profileStatFollowers: "followers", quickAddTitle: "Add to Screen To Street", quickAddPhoto: "Add a photo", quickAddVisited: "Add a visited place", quickAddReview: "Add a review", quickAddCancel: "Cancel", profileFollowBtn: "Follow", profileFollowingBtn: "Following", profileBioSaved: "Bio saved.", quickAddPickLocation: "Search for a place below to continue.", quickAddPickLocationPhoto: "Pick a place below to add a photo.", quickAddPickLocationVisited: "Pick a place below to mark it as visited.", quickAddPickLocationReview: "Pick a place below to write a review.", profileAddFriendBtn: "Add friend", profileFriendsLabel: "Friends", profileRequestSentLabel: "Request sent", profileAcceptRequestBtn: "Accept request", profileEmptyPhotos: "No public photos yet.", profileEmptyVisited: "No visited places yet.", profileEmptyReviews: "No public reviews yet.", profileNotFound: "This user could not be found.", profileLoading: "Loading profile…", backToFriends: "← Back to Friends", profileMenuOption: "Your Profile", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} is live now — {event} in {city}", tourModeLiveNowOne: "Live now", tourModeLiveNowCount: "{n} live now", tourModeMoreCount: "+{n} more",
         tourModeEyebrow: "Tour Mode", tourModeChooseTour: "Choose a tour", tourModeStep: "Step {n} of {total}",
         tourModeHighlights: "Highlights", tourModeSurpriseSong: "Surprise song:", tourModeNoHighlightsYet: "No highlights added yet for this show.", tourModeNoSurpriseSongYet: "Not announced yet.",
@@ -5162,17 +5228,30 @@ if (memoryPhotoInput) {
     memoryPhotoInput.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async function(event) {
-            pendingMemoryPhoto = await resizeImageDataUrl(event.target.result, 700);
+        // fileToResizedDataUrl() (voir plus haut, déjà utilisée par l'upload photo de
+        // admin.html) gère le format .heic/.heif — celui par défaut de l'appareil photo
+        // iPhone — que l'ancien resizeImageDataUrl() ne savait pas décoder (Image()/canvas
+        // échouent dessus en silence et renvoyaient le dataURL HEIC BRUT, plusieurs Mo,
+        // non compressé). C'est ce qui causait "Your visit was saved, but publishing the
+        // public review failed" pour toute photo publiée depuis un iPhone (bug rapporté le
+        // 08/09/2026, compte "josyine") : le document dépassait la limite de 1 Mo de
+        // Firestore au moment d'écrire l'avis public dans locationReviews.
+        try {
+            pendingMemoryPhoto = await fileToResizedDataUrl(file, 700);
             const preview = document.getElementById('memory-photo-preview');
             const previewImg = document.getElementById('memory-photo-preview-img');
             const removeBtn = document.getElementById('memory-photo-remove');
             if (previewImg) previewImg.src = pendingMemoryPhoto;
             if (preview) preview.classList.remove('hidden');
             if (removeBtn) removeBtn.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            console.warn('Import de la photo échoué :', err);
+            pendingMemoryPhoto = null;
+            alert(currentLang === 'fr'
+                ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)."
+                : "Couldn't import this photo. Try a different file (JPEG/PNG format).");
+        }
+        e.target.value = '';
     });
 }
 const memoryPhotoRemoveBtn = document.getElementById('memory-photo-remove');
@@ -5593,15 +5672,23 @@ if (reviewComposePhotoInput) {
     reviewComposePhotoInput.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async function(event) {
-            pendingReviewComposePhoto = await resizeImageDataUrl(event.target.result, 700);
+        // Voir le commentaire équivalent sur memoryPhotoInput plus haut : fileToResizedDataUrl()
+        // gère le HEIC (photo iPhone), contrairement à l'ancien resizeImageDataUrl() dont le
+        // filet de secours renvoyait la photo brute, trop lourde pour Firestore.
+        try {
+            pendingReviewComposePhoto = await fileToResizedDataUrl(file, 700);
             const preview = document.getElementById('review-compose-photo-preview');
             const previewImg = document.getElementById('review-compose-photo-preview-img');
             if (previewImg) previewImg.src = pendingReviewComposePhoto;
             if (preview) preview.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            console.warn('Import de la photo échoué :', err);
+            pendingReviewComposePhoto = null;
+            alert(currentLang === 'fr'
+                ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)."
+                : "Couldn't import this photo. Try a different file (JPEG/PNG format).");
+        }
+        e.target.value = '';
     });
 }
 
@@ -7254,7 +7341,7 @@ function ensureChangeCoverModal() {
             </div>
             <div id="cover-modal-upload-panel" class="cover-modal-panel">
                 <button type="button" id="cover-modal-upload-btn" class="cover-modal-upload-btn">${isFr ? 'Choisir un fichier' : 'Choose a file'}</button>
-                <input type="file" id="cover-modal-file-input" accept="image/*" class="hidden">
+                <input type="file" id="cover-modal-file-input" accept="image/*,.heic,.heif" class="hidden">
             </div>
             <div id="cover-modal-gradient-panel" class="cover-modal-panel hidden">
                 <div class="cover-gradient-grid">${swatchesHtml}</div>
@@ -7273,15 +7360,21 @@ function ensureChangeCoverModal() {
         });
     });
     modal.querySelector('#cover-modal-upload-btn').addEventListener('click', () => modal.querySelector('#cover-modal-file-input').click());
-    modal.querySelector('#cover-modal-file-input').addEventListener('change', (e) => {
+    modal.querySelector('#cover-modal-file-input').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            coverModalPendingPhoto = await resizeTripCoverDataUrl(event.target.result, 800);
+        // fileToResizedDataUrl() gère le HEIC (photo iPhone) — voir le commentaire détaillé
+        // sur memoryPhotoInput plus haut ; passe aussi par resizeTripCoverDataUrl() en interne.
+        try {
+            coverModalPendingPhoto = await fileToResizedDataUrl(file, 800);
             updateCoverModalPreview();
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            console.warn('Import de la photo de couverture échoué :', err);
+            alert(currentLang === 'fr'
+                ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)."
+                : "Couldn't import this photo. Try a different file (JPEG/PNG format).");
+        }
+        e.target.value = '';
     });
     modal.querySelectorAll('.cover-gradient-swatch').forEach(sw => {
         sw.addEventListener('click', () => {

@@ -362,6 +362,13 @@
       .tour-mode-panel { flex-direction: column; }
       .tour-mode-mapwrap { flex: none; height: 38vh; }
       .tour-mode-rail { width: auto; flex: 1; box-shadow: none; border-left: none; border-top: 1px solid #eee; }
+
+      /* Panneau Live plein écran sur mobile (demande du 08/09/2026, "je ne veux pas voir
+         la page map en dessous") : jusqu'ici une carte centrée avec un fond assombri
+         laissait deviner la carte derrière. Sur mobile, la carte devient elle-même le
+         panneau — plus de fond visible ni de coins arrondis. */
+      .live-panel { background: #fff; backdrop-filter: none; padding: 0; }
+      .live-panel-card { width: 100%; max-width: none; height: 100%; max-height: none; border-radius: 0; }
   }
 
   /* Bulle résumé au survol d'un pin (demande du 05/09/2026) : même style que la bulle du
@@ -672,7 +679,7 @@
                         <span class="sub-label" data-i18n="memoryPhotoLabel">Add a photo (optional)</span>
                         <div style="margin-bottom:14px;">
                             <div id="memory-photo-preview" class="hidden" style="width:100%; height:110px; border-radius:8px; overflow:hidden; margin-bottom:8px; background:#f1f5f9;"><img id="memory-photo-preview-img" style="width:100%; height:100%; object-fit:cover;"></div>
-                            <input type="file" id="memory-photo-input" accept="image/*" style="display:none;">
+                            <input type="file" id="memory-photo-input" accept="image/*,.heic,.heif" style="display:none;">
                             <div style="display:flex; gap:8px;">
                                 <button type="button" onclick="document.getElementById('memory-photo-input').click()" style="flex:1; background:transparent; border:1.5px dashed #cbd5e1; color:#64748b; font-size:11.5px; font-weight:700; padding:9px; border-radius:8px; cursor:pointer; font-family:'Poppins',sans-serif;" data-i18n="memoryPhotoChoose">Choose a photo</button>
                                 <button type="button" id="memory-photo-remove" class="hidden" style="background:transparent; border:1.5px solid #FBD5DC; color:#D42759; font-size:11.5px; font-weight:700; padding:9px 12px; border-radius:8px; cursor:pointer; font-family:'Poppins',sans-serif;" data-i18n="memoryPhotoRemove">Remove</button>
@@ -787,7 +794,7 @@
                     <input type="hidden" id="review-compose-rating-val" value="4">
                     <textarea id="review-compose-notes" class="review-compose-textarea" data-i18n-placeholder="reviewsComposePlaceholder" placeholder="Share what you thought..."></textarea>
                     <div id="review-compose-photo-preview" class="hidden review-compose-photo-preview"><img id="review-compose-photo-preview-img"></div>
-                    <input type="file" id="review-compose-photo-input" accept="image/*" style="display:none;">
+                    <input type="file" id="review-compose-photo-input" accept="image/*,.heic,.heif" style="display:none;">
                     <div class="review-compose-actions">
                         <button type="button" id="review-compose-photo-btn" class="review-compose-photo-btn"><span data-i18n="memoryPhotoChoose">Choose a photo</span></button>
                         <label class="review-compose-public-label">

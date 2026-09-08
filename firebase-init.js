@@ -433,6 +433,69 @@ window.fetchPublicProfile = async function (uid) {
     }
 };
 
+// Abonnement à sens unique façon Instagram (bouton "Follow" du profil public, demande du
+// 08/09/2026) — voir follows/{targetUid}/items/{followerUid} dans firestore.rules.
+// Distinct du système d'amis mutuel (friendIndex/friendCount) existant plus haut : ici,
+// suivre quelqu'un n'exige aucune réciprocité ni acceptation.
+window.isFollowing = async function (targetUid) {
+    const user = auth.currentUser;
+    if (!user || !targetUid) return false;
+    try {
+        const snap = await getDoc(doc(db, 'follows', targetUid, 'items', user.uid));
+        return snap.exists();
+    } catch (e) {
+        console.warn('Lecture du statut d\'abonnement échouée :', e);
+        return false;
+    }
+};
+window.followUser = async function (targetUid) {
+    const user = auth.currentUser;
+    if (!user || !targetUid || targetUid === user.uid) return false;
+    try {
+        await setDoc(doc(db, 'follows', targetUid, 'items', user.uid), { at: serverTimestamp() });
+        return true;
+    } catch (e) {
+        console.warn('Abonnement échoué :', e);
+        return false;
+    }
+};
+window.unfollowUser = async function (targetUid) {
+    const user = auth.currentUser;
+    if (!user || !targetUid) return false;
+    try {
+        await deleteDoc(doc(db, 'follows', targetUid, 'items', user.uid));
+        return true;
+    } catch (e) {
+        console.warn('Désabonnement échoué :', e);
+        return false;
+    }
+};
+window.getFollowerCount = async function (targetUid) {
+    if (!targetUid) return 0;
+    try {
+        const snap = await getDocs(collection(db, 'follows', targetUid, 'items'));
+        return snap.size;
+    } catch (e) {
+        console.warn('Lecture du nombre d\'abonnés échouée :', e);
+        return 0;
+    }
+};
+
+// Biographie éditable du profil public (demande du 08/09/2026) : simple champ texte sur
+// publicProfiles/{uid}, déjà en écriture libre pour son propriétaire (allow write ci-dessous,
+// voir firestore.rules) — pas de règle dédiée nécessaire.
+window.updateMyBio = async function (bio) {
+    const user = auth.currentUser;
+    if (!user) return false;
+    try {
+        await setDoc(doc(db, 'publicProfiles', user.uid), { bio: (bio || '').slice(0, 280) }, { merge: true });
+        return true;
+    } catch (e) {
+        console.warn('Mise à jour de la biographie échouée :', e);
+        return false;
+    }
+};
+
 // Fil d'actualité public façon Instagram (feed.html, demande du 08/09/2026) : agrège les
 // photos publiées par TOUS les comptes. Sans backend/Cloud Function, pas de requête
 // "collection group" possible pour lire toutes les publicProfiles/*.reviews d'un coup (pas
