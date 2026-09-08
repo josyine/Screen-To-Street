@@ -315,10 +315,15 @@ body.trip-not-owner .owner-only { display: none !important; }
 .custom-category-marker:hover div { transform: scale(1.15) translateY(-2px); background-color: var(--marker-color) !important; color: white !important; }
 
 /* Marqueur "point coloré" (un lieu, pas un cluster) : voir addSingleLocationMarker() dans
-   script.js — plus petit qu'un badge d'icône puisqu'il n'y a plus d'icône à contenir à
-   l'intérieur. Le survol/highlight ci-dessus (.custom-category-marker:hover) s'applique
-   sans changement. */
-.location-dot-marker div { width: 16px; height: 16px; border-width: 3px; }
+   script.js. Demande du 08/09/2026 : un tout petit point plein, sans contour blanc/coloré
+   (border retiré) — le survol/highlight ci-dessus (.custom-category-marker:hover)
+   s'applique sans changement. */
+.location-dot-marker div { width: 10px; height: 10px; border: none; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+
+/* Marqueur de cluster (plusieurs lieux regroupés) : même principe qu'un point simple,
+   juste un peu plus grand pour rester cliquable sous le badge "×N" — voir
+   addClusterMarker() dans script.js. */
+.cluster-dot-marker div { width: 14px; height: 14px; border: none; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
 
 /* Badge "×N" en haut à droite d'un marqueur regroupant plusieurs lieux trop proches
    pour être affichés séparément à ce niveau de zoom. */
@@ -423,21 +428,59 @@ body.trip-not-owner .owner-only { display: none !important; }
     .sidebar.expanded { width: 100%; }
     .hamburger-btn { display: flex !important; }
 
-    /* Le bouton hamburger doit rester cliquable AU-DESSUS du menu une fois ouvert,
-       pour pouvoir le refermer et revenir sur la carte : son conteneur (.top-nav)
-       avait un z-index inférieur à celui du menu (.sidebar), ce qui le rendait
-       invisible/incliquable dès que le menu s'ouvrait. */
-    .top-nav { top: 14px; right: 14px; gap: 7px; z-index: 3500; }
+    /* Le bouton hamburger doit rester cliquable AU-DESSUS du menu une fois ouvert, pour
+       pouvoir le refermer et revenir sur la carte. Le z-index élevé ci-dessous ne suffisait
+       PAS à lui seul (bug retrouvé le 08/09/2026, le bouton "croix" était invisible ET
+       incliquable une fois le menu ouvert) : .top-nav vivait alors DANS .map-container, qui
+       déclare son propre z-index:1 (voir plus haut) — un enfant positionné hérite du
+       contexte d'empilement de son parent, donc le z-index:3500 ci-dessous ne comptait que
+       PARMI les autres enfants de .map-container, jamais face à .sidebar (z-index:3000) qui
+       est un voisin de .map-container, pas un de ses enfants. Le vrai correctif a été de
+       sortir .top-nav de .map-container dans le HTML (map.html/trips.html), pour qu'il
+       redevienne un voisin direct de .sidebar plutôt qu'un enfant piégé de .map-container. */
+    .top-nav { z-index: 3500; }
+
+    /* Un champ <16px déclenche un zoom automatique de la page au focus sur iOS Safari —
+       un comportement du NAVIGATEUR qui persiste même avec maximum-scale=1/user-scalable=no
+       dans la balise viewport (iOS l'ignore délibérément pour l'accessibilité depuis iOS 10),
+       donc la balise viewport seule ne suffit pas : la vraie protection est ici, sur chaque
+       champ. Règle globale (demande du 08/09/2026, signalée sur "Search a location" dans le
+       menu de gauche de map.html, après plusieurs correctifs ponctuels page par page). */
+    input, select, textarea { font-size: 16px !important; }
     .nav-btn, .header-icon-btn { width: 38px; height: 38px; }
 
-    /* Menu ouvert : le bouton hamburger devient une croix ("retour à la carte") et les
-       autres icônes du top-nav (langue, panier, amis, profil) sont masquées le temps
-       que le menu occupe tout l'écran, pour ne pas se superposer visuellement à lui. */
+    /* Menu ouvert : le bouton hamburger (maintenant HORS de .top-nav dans le HTML, voir
+       map.html/trips.html) devient une croix ("retour à la carte"), et .top-nav (la barre
+       d'icônes du bas, voir plus bas) est entièrement masquée le temps que le menu occupe
+       tout l'écran. */
     .hamburger-icon-close { display: none; }
     .hamburger-btn.is-open .hamburger-icon-bars { display: none; }
     .hamburger-btn.is-open .hamburger-icon-close { display: block; }
-    .top-nav.menu-open .header-icon-btn:not(.hamburger-btn),
-    .top-nav.menu-open .dropdown-container { display: none; }
+    .top-nav.menu-open { display: none !important; }
+
+    /* Bouton hamburger : indépendant de .top-nav depuis le 08/09/2026 (voir juste au-dessus),
+       reste seul en haut à droite pendant que .top-nav (ci-dessous) passe en bas de l'écran. */
+    #mobile-menu-btn.hamburger-btn { position: fixed; top: 14px; right: 14px; z-index: 3600; }
+
+    /* ==========================================
+       BARRE D'ICÔNES DU BAS FAÇON INSTAGRAM (demande du 08/09/2026)
+       .top-nav (map.html/trips.html) et .universal-icons (toutes les autres pages, définie
+       dans le <style> propre à chaque page — d'où le !important nécessaire ici pour
+       l'emporter malgré un ordre de cascade normalement défavorable à style.css) passent
+       toutes deux du coin haut-droit à une pilule centrée en bas de l'écran. L'icône
+       langue disparaît sur mobile (elle reste changeable depuis Réglages) : ciblée par
+       :has() plutôt qu'une classe dédiée, pour ne pas avoir à toucher chacune des pages
+       qui utilisent .universal-icons.
+       ========================================== */
+    .top-nav, .universal-icons {
+        top: auto !important; left: 50% !important; right: auto !important;
+        bottom: calc(14px + env(safe-area-inset-bottom)) !important;
+        transform: translateX(-50%);
+        background: #fff; padding: 7px 16px; border-radius: 100px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+    .top-nav .dropdown-container:has(#lang-btn),
+    .universal-icons .dropdown-container:has(#lang-btn) { display: none !important; }
 
     .filters-grid { grid-template-columns: 1fr; }
     .stat-pill { top: 14px; left: 14px; padding: 6px 10px; font-size: 11px; gap: 8px; }
