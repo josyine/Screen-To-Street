@@ -43,7 +43,6 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .friends-sidebar { width: 290px; border-right: 1px solid #EFECF6; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
 .friends-sidebar-header { padding: 20px 18px 12px 18px; }
 .friends-sidebar-header h1 { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 12px; }
-.friends-sidebar-header h1.friends-title { display: flex; align-items: center; gap: 8px; }
 .friend-add-row { display: flex; gap: 6px; }
 .friend-add-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 8px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; outline: none; }
 .friend-add-row button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 16px; font-size: 13px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
@@ -141,6 +140,13 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
   .friends-shell.chat-open .friends-sidebar { display: none; }
   .friends-shell.chat-open .friends-main { display: flex; }
   .convo-back-btn { display: inline-block; }
+
+  /* "Add a friend by username" trop gros sur mobile (demande du 08/09/2026) : le champ
+     reste forcé à 16px par la règle globale anti-zoom iOS (voir style.css) — impossible de
+     baisser la taille du texte sans risquer de réintroduire le zoom au focus — donc on
+     réduit plutôt le volume visuel via le padding/la hauteur, pas la police. */
+  .friend-add-row input { padding: 6px 10px; }
+  .friend-add-row button { padding: 0 12px; font-size: 12px; }
 }
 </style>
 <script>
@@ -211,13 +217,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
   <div class="friends-shell" id="friends-shell">
     <div class="friends-sidebar">
         <div class="friends-sidebar-header">
-            <h1 class="friends-title">
-                <!-- Icône "message" (demande du 08/09/2026, page de messagerie) : un SVG
-                     plutôt qu'un emoji, conformément à la préférence du site (voir
-                     CLAUDE.md — jamais d'emoji dans l'UI, une icône SVG ou du texte brut). -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                <span data-i18n="friendsPageTitle">Friends & Messages</span>
-            </h1>
+            <!-- L'icône "message" a été retirée d'ici (demande du 08/09/2026) : elle vit
+                 maintenant dans le header (#message-icon-btn), pas sur cette page elle-même. -->
+            <h1 data-i18n="friendsPageTitle">Friends & Messages</h1>
             <div style="position:relative;">
                 <div class="friend-add-row">
                     <input type="text" id="friend-username-input" autocomplete="off" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">

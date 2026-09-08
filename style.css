@@ -440,14 +440,23 @@ body.trip-not-owner .owner-only { display: none !important; }
        redevienne un voisin direct de .sidebar plutôt qu'un enfant piégé de .map-container. */
     .top-nav { z-index: 3500; }
 
-    /* Un champ <16px déclenche un zoom automatique de la page au focus sur iOS Safari —
-       un comportement du NAVIGATEUR qui persiste même avec maximum-scale=1/user-scalable=no
-       dans la balise viewport (iOS l'ignore délibérément pour l'accessibilité depuis iOS 10),
-       donc la balise viewport seule ne suffit pas : la vraie protection est ici, sur chaque
-       champ. Règle globale (demande du 08/09/2026, signalée sur "Search a location" dans le
-       menu de gauche de map.html, après plusieurs correctifs ponctuels page par page). */
-    input, select, textarea { font-size: 16px !important; }
+    /* Un champ texte <16px déclenche un zoom automatique de la page au focus sur iOS
+       Safari — un comportement du NAVIGATEUR qui persiste même avec
+       maximum-scale=1/user-scalable=no dans la balise viewport (iOS l'ignore délibérément
+       pour l'accessibilité depuis iOS 10), donc la balise viewport seule ne suffit pas :
+       la vraie protection est ici, sur chaque champ. Règle globale (demande du 08/09/2026,
+       signalée sur "Search a location" dans le menu de gauche de map.html). Volontairement
+       PAS de <select> ici : un menu déroulant natif ouvre un picker plutôt qu'un curseur de
+       saisie, donc il ne déclenche pas ce zoom — l'y inclure aurait juste fait grossir les
+       filtres (GROUP/MEMBER/AREA/YEAR) sans raison, ce qui a été signalé le 08/09/2026. */
+    input, textarea { font-size: 16px !important; }
     .nav-btn, .header-icon-btn { width: 38px; height: 38px; }
+
+    /* Filtres (GROUP/MEMBER/AREA/YEAR) : même taille/couleur que les boutons catégorie
+       (.cat-card) juste en dessous, demande du 08/09/2026 — l'ancienne règle 16px !important
+       ci-dessus (avant d'exclure les <select>) les faisait paraître nettement plus gros. */
+    .filter-item-label { font-size: 11.5px; color: #64748b; }
+    .filter-select { font-size: 11.5px; }
 
     /* Menu ouvert : le bouton hamburger (maintenant HORS de .top-nav dans le HTML, voir
        map.html/trips.html) devient une croix ("retour à la carte"), et .top-nav (la barre
@@ -476,7 +485,11 @@ body.trip-not-owner .owner-only { display: none !important; }
         top: auto !important; left: 50% !important; right: auto !important;
         bottom: calc(14px + env(safe-area-inset-bottom)) !important;
         transform: translateX(-50%);
-        background: #fff; padding: 7px 16px; border-radius: 100px;
+        /* Presque toute la largeur de l'écran, icônes réparties uniformément — demande du
+           08/09/2026, "comme sur Instagram" (la pilule resserrée d'origine paraissait trop
+           petite/comprimée en comparaison). */
+        width: calc(100% - 24px); max-width: 480px; justify-content: space-around;
+        background: #fff; padding: 10px 12px; border-radius: 100px;
         box-shadow: 0 10px 30px rgba(0,0,0,.18);
     }
     .top-nav .dropdown-container:has(#lang-btn),
@@ -532,3 +545,24 @@ body.trip-not-owner .owner-only { display: none !important; }
 .tour-back-btn:disabled { opacity: 0; pointer-events: none; }
 .tour-next-btn { background: var(--primary-magenta); color: #fff; box-shadow: 0 6px 14px rgba(212,39,89,.3); }
 .tour-next-btn:hover { transform: translateY(-1px); }
+
+/* ==========================================
+   VERROU MODE PORTRAIT SUR MOBILE (demande du 08/09/2026)
+   L'API Screen Orientation (screen.orientation.lock()) exige le plein écran et n'est de
+   toute façon pas supportée par Safari iOS — la seule protection fiable, cross-navigateur,
+   sans dépendance JS, est ce voile CSS pur : affiché uniquement quand la hauteur de fenêtre
+   disponible est celle d'un téléphone tourné en paysage (un écran d'ordinateur en format
+   "paysage", même dans une petite fenêtre de navigateur, a presque toujours une hauteur
+   bien supérieure à 500px). Sur TOUTES les pages via style.css, sans avoir à toucher le
+   HTML de chacune.
+   ========================================== */
+@media (orientation: landscape) and (max-height: 500px) {
+    body::before {
+        content: "Please rotate your device back to portrait mode to use Screen To Street.";
+        position: fixed; inset: 0; z-index: 999999;
+        background: #1e1730; color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        text-align: center; padding: 0 40px; font-size: 16px; font-weight: 600;
+        font-family: 'Poppins', sans-serif; line-height: 1.5;
+    }
+}
