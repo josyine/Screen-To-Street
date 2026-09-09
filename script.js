@@ -5928,7 +5928,13 @@ window.closeDetailsPanel = function() {
 let popupMap = null;
 let popupMarker = null;
 
-window.openLocModal = function(id) {
+// postContext (optionnel, demande du 09/09/2026) : rempli uniquement par les tuiles de
+// l'onglet Photos de profile.html, pour afficher un en-tête "publication" façon réseau
+// social (avatar/pseudo + like + légende) au-dessus des infos du lieu déjà existantes —
+// {username, avatarColor, photo, caption, photoKey}. Tous les nouveaux éléments DOM
+// qu'il alimente sont if(el)-gardés : absents sur les autres pages (map.html,
+// visited.html...) qui partagent cette même modale, ils n'y ont simplement aucun effet.
+window.openLocModal = function(id, postContext) {
     const loc = celebLocations.find(l => l.id == id);
     if(!loc) return;
 
@@ -5941,7 +5947,60 @@ window.openLocModal = function(id) {
 
     if(modalTitle) modalTitle.textContent = loc.name;
     if(modalMeta) modalMeta.textContent = `${loc.city}, ${loc.country} • ${getCatName(loc.category)}`;
-    if(modalHero) modalHero.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg')}')`;
+    // La photo de la publication (si on vient d'une tuile de profile.html) prime sur
+    // l'image générique du lieu, pour que le hero montre bien LA photo cliquée.
+    const heroImgUrl = (postContext && postContext.photo) || loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg');
+    if(modalHero) modalHero.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
+
+    const modalPostHeader = document.getElementById('modal-post-header');
+    const modalPostCaption = document.getElementById('modal-post-caption');
+    if (modalPostHeader) {
+        if (postContext) {
+            modalPostHeader.classList.remove('hidden');
+            const avatarEl = document.getElementById('modal-post-avatar');
+            const usernameEl = document.getElementById('modal-post-username');
+            if (avatarEl) {
+                avatarEl.textContent = (postContext.username || 'U').charAt(0).toUpperCase();
+                avatarEl.style.background = postContext.avatarColor || '#D42759';
+            }
+            if (usernameEl) usernameEl.textContent = postContext.username || '';
+
+            const likeBtn = document.getElementById('modal-post-like-btn');
+            const likeCount = document.getElementById('modal-post-like-count');
+            if (likeBtn && likeCount && postContext.photoKey) {
+                const photoKey = postContext.photoKey;
+                likeBtn.classList.remove('liked');
+                likeCount.textContent = '…';
+                // Repère la photo affichée au moment de la requête : si une autre photo est
+                // ouverte avant que getPhotoLikeState() ait répondu, on ignore le résultat
+                // périmé (même garde-fou que feed.html/openFeedPost()).
+                modalPostHeader.dataset.photoKey = photoKey;
+                if (typeof window.getPhotoLikeState === 'function') {
+                    window.getPhotoLikeState(photoKey).then(state => {
+                        if (modalPostHeader.dataset.photoKey !== photoKey) return;
+                        likeCount.textContent = state.count;
+                        likeBtn.classList.toggle('liked', state.likedByMe);
+                    });
+                }
+                likeBtn.onclick = async () => {
+                    const nowLiked = !likeBtn.classList.contains('liked');
+                    likeBtn.classList.toggle('liked', nowLiked);
+                    likeCount.textContent = Math.max(0, (parseInt(likeCount.textContent, 10) || 0) + (nowLiked ? 1 : -1));
+                    if (typeof window.togglePhotoLike === 'function') await window.togglePhotoLike(photoKey, nowLiked);
+                };
+            }
+        } else {
+            modalPostHeader.classList.add('hidden');
+        }
+    }
+    if (modalPostCaption) {
+        if (postContext && postContext.caption) {
+            modalPostCaption.textContent = `"${postContext.caption}"`;
+            modalPostCaption.classList.remove('hidden');
+        } else {
+            modalPostCaption.classList.add('hidden');
+        }
+    }
 
     if(modalDesc) {
         const desc = getLocText(loc.fullDescription) || "No description available.";
