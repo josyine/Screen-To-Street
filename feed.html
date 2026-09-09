@@ -282,7 +282,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         likeBtn.classList.remove('liked');
         likeCount.textContent = '…';
         if (typeof window.getPhotoLikeState === 'function') {
-            const photoKey = p.uid + '_' + p.locationId;
+            const photoKey = p.uid + '_' + p.id;
             const state = await window.getPhotoLikeState(photoKey);
             if (feedCurrentPhoto !== p) return;
             likeCount.textContent = state.count;
@@ -307,7 +307,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         const nowLiked = !likeBtn.classList.contains('liked');
         likeBtn.classList.toggle('liked', nowLiked);
         likeCount.textContent = Math.max(0, parseInt(likeCount.textContent, 10) || 0) + (nowLiked ? 1 : -1);
-        const photoKey = feedCurrentPhoto.uid + '_' + feedCurrentPhoto.locationId;
+        const photoKey = feedCurrentPhoto.uid + '_' + feedCurrentPhoto.id;
         await window.togglePhotoLike(photoKey, nowLiked);
     });
 

@@ -77,17 +77,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .profile-follow-btn.following:hover { background: #fff5f6; color: #D42759; border-color: #fbcfe8; }
 .profile-follow-btn:disabled { opacity: 0.6; cursor: default; }
 
-/* Biographie (demande du 08/09/2026) : texte libre, éditable seulement par le propriétaire
-   du profil (voir #profile-bio-edit-wrap, affiché uniquement quand profileUid ===
-   profileCurrentUid), affiché en lecture seule sur les autres profils. */
-.profile-bio { font-size: 13px; color: #475569; line-height: 1.5; margin-top: 10px; max-width: 780px; margin-left: auto; margin-right: auto; white-space: pre-wrap; word-break: break-word; }
-.profile-bio-edit-wrap { max-width: 780px; margin: 10px auto 0 auto; }
-.profile-bio-textarea { width: 100%; resize: vertical; min-height: 54px; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; }
-.profile-bio-textarea:focus { border-color: #D42759; }
-.profile-bio-edit-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
-.profile-bio-count { font-size: 11px; color: #94a3b8; }
-.profile-bio-save-btn { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 7px 16px; font-size: 12px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
-.profile-bio-save-btn:disabled { opacity: 0.6; cursor: default; }
+/* Biographie (demande du 08/09/2026, révisée le 09/09/2026) : toujours en lecture seule
+   ici — posée directement sur le fond de la page, pas de cadre blanc. L'édition se fait
+   sur account.html (voir #profile-edit-btn juste en dessous, "Modifier le profil"). */
+.profile-bio { font-size: 13px; color: #475569; line-height: 1.5; margin-top: 10px; max-width: 780px; margin-left: auto; margin-right: auto; white-space: pre-wrap; word-break: break-word; background: transparent; }
+.profile-edit-btn { display: block; width: fit-content; margin: 14px auto 0 auto; background: #fff; color: #212832; border: 1.5px solid #e2e8f0; border-radius: 100px; padding: 8px 18px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; }
+.profile-edit-btn:hover { border-color: #D42759; color: #D42759; }
 
 /* Onglets — même largeur max que .profile-header, centrés (demande du 08/09/2026 : pleine
    largeur de PAGE mais pas de carte étroite, différent d'un contenu vraiment étiré sur
@@ -126,8 +121,19 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
    boutons +/- de zoom Leaflet (voir zoomControl:false dans renderProfileMap() plus bas) : le
    pincement tactile suffit sur mobile, et la molette sur desktop. */
 .profile-mini-map { width: 100%; height: 420px; border-radius: 14px; background: #f1f5f9; }
+/* KPIs lieux/pays visités (demande du 09/09/2026), même look que .stat-pill de map.html
+   mais en flux normal (pas position:absolute, au-dessus de la mini-carte). */
+.profile-map-stats { display: flex; gap: 22px; margin-bottom: 14px; }
+.profile-map-stat { font-size: 12.5px; font-weight: 700; color: #212832; }
+.profile-map-stat b { color: #D42759; font-weight: 800; margin-right: 5px; }
+
+/* Bouton "+" desktop (demande du 09/09/2026) — équivalent du "+" de la nav du bas mobile,
+   masqué en dessous de 760px (déjà couvert par cette dernière, voir plus bas). */
+.profile-desktop-add-btn { position: fixed; right: 32px; bottom: 32px; width: 54px; height: 54px; border-radius: 50%; background: #D42759; color: #fff; border: none; box-shadow: 0 10px 24px rgba(212,39,89,.35); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2500; transition: 0.2s; }
+.profile-desktop-add-btn:hover { background: #b81f4a; transform: translateY(-2px); }
 
 @media (max-width: 760px) {
+  .profile-desktop-add-btn { display: none !important; }
   /* Mobile : header complet masqué (voir style.css, .universal-icons est caché
      globalement sur mobile), la nav du haut/bas partagée (#mobile-top-icons /
      .mobile-bottom-nav, injectées par script.js) prend le relais — pas de bouton
@@ -237,16 +243,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                 <span id="profile-friend-status" class="profile-friend-status hidden"></span>
             </div>
 
-            <!-- Biographie : texte lecture seule sur le profil d'autrui, formulaire d'édition
-                 sur son propre profil (demande du 08/09/2026) — voir loadProfilePage(). -->
+            <!-- Biographie : toujours en lecture seule ici, y compris sur son propre profil
+                 (demande du 09/09/2026 : plus de cadre blanc/formulaire sur cette page — le
+                 texte est posé directement sur le fond de la page). L'édition se fait
+                 maintenant sur account.html (voir "Modifier le profil" ci-dessous). -->
             <div class="profile-bio hidden" id="profile-bio"></div>
-            <div class="profile-bio-edit-wrap hidden" id="profile-bio-edit-wrap">
-                <textarea class="profile-bio-textarea" id="profile-bio-textarea" maxlength="280" placeholder="Write a short bio..."></textarea>
-                <div class="profile-bio-edit-row">
-                    <span class="profile-bio-count" id="profile-bio-count">0/280</span>
-                    <button class="profile-bio-save-btn" id="profile-bio-save-btn" type="button">Save</button>
-                </div>
-            </div>
+            <a href="account.html" class="profile-edit-btn hidden" id="profile-edit-btn" data-i18n="profileEditBtn">Edit profile</a>
 
             <div class="profile-tabs">
                 <button class="profile-tab-btn active" data-tab="photos" onclick="switchProfileTab('photos')" data-i18n="profileTabPhotos">Photos</button>
@@ -263,10 +265,24 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                 <div class="profile-empty hidden" id="profile-reviews-empty" data-i18n="profileEmptyReviews">No public reviews yet.</div>
             </div>
             <div class="profile-tab-panel hidden" id="profile-panel-map">
+                <!-- Mêmes KPIs que map.html (demande du 09/09/2026), mais sur les lieux
+                     VISITÉS par ce compte plutôt que le total du site. -->
+                <div class="profile-map-stats">
+                    <div class="profile-map-stat"><b id="profile-map-stat-locations">0</b><span data-i18n="locationsCount">LOCATIONS</span></div>
+                    <div class="profile-map-stat"><b id="profile-map-stat-countries">0</b><span data-i18n="statsCountries">COUNTRIES</span></div>
+                </div>
                 <div class="profile-mini-map" id="profile-mini-map"></div>
             </div>
         </div>
 </div>
+
+<!-- Bouton "+" desktop (demande du 09/09/2026, "un peu comme celui de mobile") : ouvre le
+     même volet que la nav du bas mobile (window.openQuickAddSheet(), voir script.js) —
+     n'existait jusqu'ici que sur mobile. Affiché uniquement sur son propre profil (voir
+     loadProfilePage()) ; masqué sur mobile (déjà couvert par le "+" de la nav du bas). -->
+<button type="button" id="profile-desktop-add-btn" class="profile-desktop-add-btn hidden" onclick="window.openQuickAddSheet()" title="Add">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+</button>
 
 <!-- MODAL LIEU (rempli par window.openLocModal / closeLocModal du script.js partagé) -->
 <div id="loc-modal" class="modal hidden">
@@ -303,6 +319,8 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     const profileUsernameParam = profileParams.get('u');
     let profileMiniMap = null;
     let profileCurrentUid = null;
+    let profileVisitedIdsForMap = [];
+    let profileMapPoints = [];
 
     // Couleur d'avatar déterministe à partir du pseudo (même principe que la palette de
     // renderTripBuddiesAvatars()/friend-visit-avatar dans script.js, mais indexée par le
@@ -322,19 +340,36 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     window.switchProfileTab = function(tabName) {
         document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
         document.querySelectorAll('.profile-tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== 'profile-panel-' + tabName));
-        // Un conteneur Leaflet initialisé pendant que son onglet est caché (display:none)
-        // mesure une taille nulle et n'affiche rien tant qu'on ne l'informe pas qu'il vient
-        // de redevenir visible.
-        if (tabName === 'map' && profileMiniMap) {
-            setTimeout(() => profileMiniMap.invalidateSize(), 50);
+        if (tabName === 'map') {
+            // Initialisation PARESSEUSE (demande du 09/09/2026, bug "les lieux visités ne
+            // s'affichent pas sur la carte") : un conteneur Leaflet créé pendant que son
+            // onglet est encore caché (display:none) mesure une taille nulle — L.map()
+            // "réussit" sans erreur, mais fitBounds() calcule alors un zoom/centre faux à
+            // partir de cette taille nulle, et rien de ce qui suit (invalidateSize() en
+            // particulier) ne refait ce calcul. On construit donc la carte seulement
+            // maintenant, une fois l'onglet réellement visible et correctement dimensionné.
+            if (!profileMiniMap) {
+                renderProfileMap(profileVisitedIdsForMap);
+            } else {
+                setTimeout(() => {
+                    profileMiniMap.invalidateSize();
+                    if (profileMapPoints.length > 0) profileMiniMap.fitBounds(profileMapPoints, { padding: [30, 30], maxZoom: 10 });
+                }, 50);
+            }
         }
     };
 
+    // Onglet Photos : avis publics AVEC photo (comme avant) + photos publiées de façon
+    // autonome via "+" -> "Add a photo" (demande du 09/09/2026, voir addProfilePhoto()
+    // dans firebase-init.js, publicProfiles/{uid}.photos) — les deux mélangées, triées
+    // par date de publication.
     function renderProfilePhotos(publicProfile) {
         const grid = document.getElementById('profile-photo-grid');
         const empty = document.getElementById('profile-photos-empty');
         grid.innerHTML = '';
-        const withPhotos = Object.values(publicProfile.reviews || {}).filter(r => r.photo);
+        const fromReviews = Object.values(publicProfile.reviews || {}).filter(r => r.photo);
+        const fromStandalone = Object.values(publicProfile.photos || {}).filter(p => p.photo);
+        const withPhotos = fromReviews.concat(fromStandalone);
         if (withPhotos.length === 0) { empty.classList.remove('hidden'); return withPhotos; }
         empty.classList.add('hidden');
         withPhotos.sort((a, b) => ((b.updatedAt && b.updatedAt.seconds) || 0) - ((a.updatedAt && a.updatedAt.seconds) || 0));
@@ -383,13 +418,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         // connexion mobile ne doivent jamais faire planter loadProfilePage() en plein
         // milieu — sans ça, le reste de la page (stats, onglets, avis) ne s'affichait
         // jamais puisque cette fonction est appelée de façon synchrone, sans await, à
-        // l'intérieur de loadProfilePage().
+        // l'intérieur de loadProfilePage(). Appelée en PARESSEUX par switchProfileTab()
+        // (voir plus haut), pas ici : au premier affichage réel de l'onglet Map.
         try {
             const mapEl = document.getElementById('profile-mini-map');
             if (!mapEl || typeof L === 'undefined') return;
             profileMiniMap = L.map(mapEl, { attributionControl: false, zoomControl: false }).setView([20, 0], 2);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(profileMiniMap);
-            const points = [];
+            const countries = new Set();
+            profileMapPoints = [];
             (visitedIds || []).forEach(id => {
                 const loc = celebLocations.find(l => l.id === id || l.id === Number(id));
                 if (!loc) return;
@@ -397,9 +434,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                 L.circleMarker([loc.lat, loc.lng], { radius: 7, color: '#fff', weight: 2, fillColor: color, fillOpacity: 1 })
                     .bindTooltip(escapeHtml(loc.name))
                     .addTo(profileMiniMap);
-                points.push([loc.lat, loc.lng]);
+                profileMapPoints.push([loc.lat, loc.lng]);
+                if (loc.country) countries.add(loc.country);
             });
-            if (points.length > 0) profileMiniMap.fitBounds(points, { padding: [30, 30], maxZoom: 10 });
+            if (profileMapPoints.length > 0) profileMiniMap.fitBounds(profileMapPoints, { padding: [30, 30], maxZoom: 10 });
+            document.getElementById('profile-map-stat-locations').textContent = profileMapPoints.length;
+            document.getElementById('profile-map-stat-countries').textContent = countries.size;
         } catch (e) {
             console.warn('Affichage de la mini-carte du profil échoué :', e);
         }
@@ -499,40 +539,27 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         }
     }
 
-    // Biographie : lecture seule sur le profil d'autrui, éditable sur le sien (demande du
-    // 08/09/2026). publicProfile.bio n'existe pas encore pour les comptes créés avant
-    // cette fonctionnalité — traité comme une chaîne vide, jamais une erreur.
+    // Biographie : toujours en lecture seule ici (demande du 09/09/2026 — l'édition se
+    // fait maintenant sur account.html). "Edit profile" n'apparaît que sur son propre
+    // profil. publicProfile.bio n'existe pas encore pour les comptes créés avant cette
+    // fonctionnalité — traité comme une chaîne vide, jamais une erreur.
     function renderProfileBio(publicProfile) {
         const bioEl = document.getElementById('profile-bio');
-        const editWrap = document.getElementById('profile-bio-edit-wrap');
+        const editBtn = document.getElementById('profile-edit-btn');
         const bio = (publicProfile.bio || '').trim();
 
-        if (profileCurrentUid && profileCurrentUid === profileUid) {
-            editWrap.classList.remove('hidden');
-            bioEl.classList.add('hidden');
-            const textarea = document.getElementById('profile-bio-textarea');
-            const countEl = document.getElementById('profile-bio-count');
-            const saveBtn = document.getElementById('profile-bio-save-btn');
-            textarea.value = bio;
-            countEl.textContent = bio.length + '/280';
-            textarea.oninput = () => { countEl.textContent = textarea.value.length + '/280'; };
-            saveBtn.onclick = async () => {
-                if (typeof window.updateMyBio !== 'function') return;
-                saveBtn.disabled = true;
-                const ok = await window.updateMyBio(textarea.value.trim());
-                saveBtn.disabled = false;
-                if (ok && typeof window.showSimpleToast === 'function') {
-                    window.showSimpleToast(t('profileBioSaved'));
-                }
-            };
-        } else if (bio) {
+        if (bio) {
             bioEl.textContent = bio;
             bioEl.classList.remove('hidden');
-            editWrap.classList.add('hidden');
         } else {
             bioEl.classList.add('hidden');
-            editWrap.classList.add('hidden');
         }
+        const isOwnProfile = !!(profileCurrentUid && profileCurrentUid === profileUid);
+        editBtn.classList.toggle('hidden', !isOwnProfile);
+        // Bouton "+" desktop (demande du 09/09/2026) : uniquement sur son propre profil,
+        // comme "Edit profile" ci-dessus.
+        const desktopAddBtn = document.getElementById('profile-desktop-add-btn');
+        if (desktopAddBtn) desktopAddBtn.classList.toggle('hidden', !isOwnProfile);
     }
 
     // Empêche un getDoc()/getDocs() qui ne répond jamais (réseau mobile capricieux) de
@@ -577,7 +604,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 
             const photosShown = renderProfilePhotos(publicProfile);
             renderProfileReviews(publicProfile);
-            renderProfileMap(visitedIds);
+            // La mini-carte est construite en paresseux (voir switchProfileTab) : on garde
+            // juste les ids ici pour ce moment-là.
+            profileVisitedIdsForMap = visitedIds || [];
+            if (!document.getElementById('profile-panel-map').classList.contains('hidden')) {
+                renderProfileMap(profileVisitedIdsForMap);
+            }
             renderProfileBio(publicProfile);
 
             document.getElementById('profile-stat-visited').textContent = (visitedIds || []).length;

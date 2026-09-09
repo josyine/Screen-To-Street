@@ -1540,7 +1540,15 @@ window.openQuickAddSheet = function () {
             opt.addEventListener('click', () => {
                 const kind = opt.dataset.qa;
                 window.closeQuickAddSheet();
-                window.location.href = 'map.html?quickadd=' + kind;
+                // "Ajouter une photo" (demande du 09/09/2026) a maintenant son propre volet
+                // (choix du lieu/date/légende, voir window.openAddPhotoModal() ci-dessous) —
+                // "visited"/"review" continuent de renvoyer vers map.html (pas de flux dédié
+                // multi-page pour ceux-ci, le site n'ayant pas de backend/Cloud Functions).
+                if (kind === 'photo' && typeof window.openAddPhotoModal === 'function') {
+                    window.openAddPhotoModal();
+                } else {
+                    window.location.href = 'map.html?quickadd=' + kind;
+                }
             });
         });
     }
@@ -1548,6 +1556,135 @@ window.openQuickAddSheet = function () {
 };
 window.closeQuickAddSheet = function () {
     const overlay = document.getElementById('qa-sheet-overlay');
+    if (overlay) overlay.classList.remove('open');
+};
+
+// Volet "Ajouter une photo" (demande du 09/09/2026) : contrairement à "I visited this
+// place"/"Add a review" (qui restent liés à une fiche lieu précise dans map.html), ceci
+// publie une photo autonome sur le profil — choix du lieu par recherche, date, légende
+// facultative. Stockée dans publicProfiles/{uid}.photos.{id} (voir addProfilePhoto() dans
+// firebase-init.js), lue à la fois par l'onglet Photos de profile.html et par feed.html.
+window.openAddPhotoModal = function () {
+    let overlay = document.getElementById('add-photo-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'add-photo-overlay';
+        overlay.className = 'qa-sheet-overlay';
+        overlay.innerHTML = `
+            <div class="qa-sheet add-photo-sheet">
+                <div class="qa-sheet-handle"></div>
+                <div class="qa-sheet-title">${t('addPhotoTitle')}</div>
+                <div class="add-photo-field">
+                    <label class="add-photo-label">${t('addPhotoLocationLabel')}</label>
+                    <input type="text" id="add-photo-location-input" class="add-photo-input" placeholder="${t('addPhotoLocationPlaceholder')}" autocomplete="off">
+                    <div id="add-photo-location-suggestions" class="add-photo-suggestions hidden"></div>
+                </div>
+                <div class="add-photo-field">
+                    <label class="add-photo-label">${t('addPhotoDateLabel')}</label>
+                    <input type="date" id="add-photo-date-input" class="add-photo-input">
+                </div>
+                <div class="add-photo-field">
+                    <label class="add-photo-label">${t('addPhotoPhotoLabel')}</label>
+                    <input type="file" id="add-photo-file-input" accept="image/*,.heic,.heif" class="hidden">
+                    <div id="add-photo-preview" class="add-photo-preview hidden"><img id="add-photo-preview-img"></div>
+                    <button type="button" id="add-photo-choose-btn" class="add-photo-choose-btn">${t('addPhotoChooseBtn')}</button>
+                </div>
+                <div class="add-photo-field">
+                    <label class="add-photo-label">${t('addPhotoCaptionLabel')}</label>
+                    <textarea id="add-photo-caption-input" class="add-photo-textarea" maxlength="280" placeholder="${t('addPhotoCaptionPlaceholder')}"></textarea>
+                </div>
+                <div id="add-photo-error" class="add-photo-error hidden"></div>
+                <button type="button" id="add-photo-submit-btn" class="add-photo-submit-btn">${t('addPhotoSubmitBtn')}</button>
+                <button type="button" class="qa-sheet-cancel">${t('quickAddCancel')}</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeAddPhotoModal(); });
+        overlay.querySelector('.qa-sheet-cancel').addEventListener('click', window.closeAddPhotoModal);
+
+        const dateInput = overlay.querySelector('#add-photo-date-input');
+        const locInput = overlay.querySelector('#add-photo-location-input');
+        const suggestionsEl = overlay.querySelector('#add-photo-location-suggestions');
+        const fileInput = overlay.querySelector('#add-photo-file-input');
+        const chooseBtn = overlay.querySelector('#add-photo-choose-btn');
+        const errorEl = overlay.querySelector('#add-photo-error');
+        let selectedLocation = null;
+        let pendingPhoto = null;
+
+        locInput.addEventListener('input', () => {
+            selectedLocation = null;
+            const q = locInput.value.trim().toLowerCase();
+            if (!q || typeof celebLocations === 'undefined') { suggestionsEl.classList.add('hidden'); suggestionsEl.innerHTML = ''; return; }
+            const matches = celebLocations.filter(l => l.name.toLowerCase().includes(q)).slice(0, 8);
+            if (!matches.length) { suggestionsEl.classList.add('hidden'); suggestionsEl.innerHTML = ''; return; }
+            suggestionsEl.innerHTML = matches.map(l =>
+                `<div class="add-photo-suggestion" data-id="${l.id}">${escapeHtml(l.name)}<span class="add-photo-suggestion-meta">${escapeHtml([l.city, l.country].filter(Boolean).join(', '))}</span></div>`
+            ).join('');
+            suggestionsEl.classList.remove('hidden');
+            suggestionsEl.querySelectorAll('.add-photo-suggestion').forEach(row => {
+                row.addEventListener('click', () => {
+                    const loc = celebLocations.find(l => l.id === Number(row.dataset.id));
+                    if (loc) { selectedLocation = loc; locInput.value = loc.name; }
+                    suggestionsEl.classList.add('hidden');
+                });
+            });
+        });
+
+        chooseBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            errorEl.classList.add('hidden');
+            try {
+                pendingPhoto = await fileToResizedDataUrl(file, 900);
+                const preview = overlay.querySelector('#add-photo-preview');
+                preview.querySelector('img').src = pendingPhoto;
+                preview.classList.remove('hidden');
+                chooseBtn.textContent = t('addPhotoChangeBtn');
+            } catch (err) {
+                console.warn('Import de la photo échoué :', err);
+                errorEl.textContent = currentLang === 'fr' ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)." : "Couldn't import this photo. Try a different file (JPEG/PNG format).";
+                errorEl.classList.remove('hidden');
+            }
+            e.target.value = '';
+        });
+
+        overlay.querySelector('#add-photo-submit-btn').addEventListener('click', async () => {
+            errorEl.classList.add('hidden');
+            if (!selectedLocation) { errorEl.textContent = t('addPhotoErrorLocation'); errorEl.classList.remove('hidden'); return; }
+            if (!pendingPhoto) { errorEl.textContent = t('addPhotoErrorPhoto'); errorEl.classList.remove('hidden'); return; }
+            if (typeof window.addProfilePhoto !== 'function') return;
+            const submitBtn = overlay.querySelector('#add-photo-submit-btn');
+            submitBtn.disabled = true;
+            const result = await window.addProfilePhoto({
+                locationId: selectedLocation.id,
+                locationName: selectedLocation.name,
+                photo: pendingPhoto,
+                date: dateInput.value,
+                caption: overlay.querySelector('#add-photo-caption-input').value.trim()
+            });
+            submitBtn.disabled = false;
+            if (result && result.success) {
+                window.closeAddPhotoModal();
+                if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('addPhotoSuccess'));
+                selectedLocation = null; pendingPhoto = null;
+                locInput.value = '';
+                dateInput.value = new Date().toISOString().split('T')[0];
+                overlay.querySelector('#add-photo-caption-input').value = '';
+                overlay.querySelector('#add-photo-preview').classList.add('hidden');
+                chooseBtn.textContent = t('addPhotoChooseBtn');
+            } else {
+                errorEl.textContent = t('addPhotoErrorGeneric');
+                errorEl.classList.remove('hidden');
+            }
+        });
+
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    overlay.classList.add('open');
+};
+window.closeAddPhotoModal = function () {
+    const overlay = document.getElementById('add-photo-overlay');
     if (overlay) overlay.classList.remove('open');
 };
 
@@ -2910,7 +3047,7 @@ const translations = {
         addAnotherVisit: "Add another visit",
         tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", accessibilityRating: "Easy to access?", siteQualityRating: "Site quality", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "{count} friends have visited this place", friendsVisitedStatOne: "1 friend has visited this place", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Watch:", lOfficialLink: "Official Link", lFollow: "Follow:", lWatchEpi: "On Screen", lPractical: "Practical information & access", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
         backToMap: "← Back to Map", moreDetails: "More details", openInMaps: "Open in Google Maps", detailsLabel: "Details", aboutPlaceLabel: "About this place",
-        accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address",
+        accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address", accBioLabel: "Bio", accBioPlaceholder: "Write a short bio...", accBioSaveBtn: "Save bio",
         accCountryLabel: "Country you're interested in", accCountryPlaceholder: "Select a country (optional)",
         accActivityTitle: "Your activity", accTrips: "Trips", accVisited: "Visited", accWishlist: "Wishlist", accPasses: "Passes & billing",
         friendsTitle: "Friends", openFriendsMessagesLink: "Open Friends & Messages →", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsErrAlreadySent: "You already sent a friend request to this person.", friendsErrAlreadyFriends: "You're already friends.", friendsErrGeneric: "Couldn't send the request. Please try again.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}", friendsPageTitle: "Friends & Messages", tripGroupsLabel: "Trip groups", directMessagesLabel: "Direct messages", noTripGroups: "No shared trips yet — share one from a conversation.", noFriendsForDm: "Add a friend to start messaging.", selectConversationPrompt: "Select a conversation to start chatting", messagePlaceholder: "Message...", sendBtn: "Send", tripGroupOwner: "You created this trip", tripGroupMember: "Shared with you", shareTripBtn: "Share a trip", shareTripPickTitle: "Choose a trip to share", noOwnedTrips: "You don't have any trips yet.", viewItineraryLink: "View itinerary", chatForTripLabel: "Group chat for this trip", friendRequestSentToast: "Friend request sent", tripInvitesLabel: "Trip invites", tripInviteFrom: '{username} invited you to join "{tripname}"', addTripMemberOption: "Add member", renameTripGroupOption: "Rename group", leaveTripGroupOption: "Leave group", deleteConvoBtn: "Delete conversation", deleteMessageOption: "Delete message", attachLocationTitle: "Share a location", attachPollTitle: "Create a poll", attachPollCreateBtn: "Create poll", attachLocationOption: "Share a location", attachTripOption: "Share a trip", attachPollOption: "Create a poll",
@@ -2942,7 +3079,7 @@ const translations = {
         gateResetSent: "Password reset email sent — check your inbox.", gateEnterEmailFirst: "Please enter your email address first.",
         tourModeLiveIn: "Live now — BTS is live in {city}", tourModeSchedule: "Tour Schedule", tourModeLive: "Live", tourModeDone: "Done", tourModeUpcoming: "Upcoming", tourModePrev: "Previous", tourModeNext: "Next",
         tourModeFooterNote: "Dates as announced by the tour — always double-check official ticketing sites before booking travel.",
-        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveViewList: "List", liveViewCalendar: "Calendar", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", tripLeaveTitle: "Leave this shared trip?", tripLeaveDesc: "Are you sure you want to leave this trip? You'll need a new invite to rejoin.", tripLeaveCancel: "Cancel", tripLeaveConfirm: "Leave", locationSharesLabel: "Shared with you", locationShareFrom: "{username} shared {location} with you", tabTourMode: "Tour", profileTabPhotos: "Photos", profileTabVisited: "Visited", profileTabReviews: "Reviews", profileTabMap: "Map", profileMapHeading: "Here's where I've been", profileStatVisited: "visited", profileStatPhotos: "photos", profileStatReviews: "reviews", profileStatFollowers: "followers", quickAddTitle: "Add to Screen To Street", quickAddPhoto: "Add a photo", quickAddVisited: "Add a visited place", quickAddReview: "Add a review", quickAddCancel: "Cancel", profileFollowBtn: "Follow", profileFollowingBtn: "Following", profileBioSaved: "Bio saved.", quickAddPickLocation: "Search for a place below to continue.", quickAddPickLocationPhoto: "Pick a place below to add a photo.", quickAddPickLocationVisited: "Pick a place below to mark it as visited.", quickAddPickLocationReview: "Pick a place below to write a review.", profileAddFriendBtn: "Add friend", profileFriendsLabel: "Friends", profileRequestSentLabel: "Request sent", profileAcceptRequestBtn: "Accept request", profileEmptyPhotos: "No public photos yet.", profileEmptyVisited: "No visited places yet.", profileEmptyReviews: "No public reviews yet.", profileNotFound: "This user could not be found.", profileLoading: "Loading profile…", backToFriends: "← Back to Friends", profileMenuOption: "Your Profile", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
+        liveBadgeLabel: "Live", liveTimelineTitle: " & upcoming", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveViewList: "List", liveViewCalendar: "Calendar", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", tripLeaveTitle: "Leave this shared trip?", tripLeaveDesc: "Are you sure you want to leave this trip? You'll need a new invite to rejoin.", tripLeaveCancel: "Cancel", tripLeaveConfirm: "Leave", locationSharesLabel: "Shared with you", locationShareFrom: "{username} shared {location} with you", tabTourMode: "Tour", profileTabPhotos: "Photos", profileTabVisited: "Visited", profileTabReviews: "Reviews", profileTabMap: "Map", profileMapHeading: "Here's where I've been", profileStatVisited: "visited", profileStatPhotos: "photos", profileStatReviews: "reviews", profileStatFollowers: "followers", quickAddTitle: "Add to Screen To Street", quickAddPhoto: "Add a photo", quickAddVisited: "Add a visited place", quickAddReview: "Add a review", quickAddCancel: "Cancel", profileFollowBtn: "Follow", profileFollowingBtn: "Following", profileBioSaved: "Bio saved.", profileEditBtn: "Edit profile", addPhotoTitle: "Add a photo", addPhotoLocationLabel: "Location", addPhotoLocationPlaceholder: "Search a location...", addPhotoDateLabel: "Visit date", addPhotoPhotoLabel: "Photo", addPhotoChooseBtn: "Choose a photo", addPhotoChangeBtn: "Change photo", addPhotoCaptionLabel: "Caption (optional)", addPhotoCaptionPlaceholder: "Say something about this photo...", addPhotoSubmitBtn: "Publish", addPhotoErrorLocation: "Please pick a location.", addPhotoErrorPhoto: "Please choose a photo.", addPhotoErrorGeneric: "Couldn't publish this photo. Please try again.", addPhotoSuccess: "Photo published.", quickAddPickLocation: "Search for a place below to continue.", quickAddPickLocationPhoto: "Pick a place below to add a photo.", quickAddPickLocationVisited: "Pick a place below to mark it as visited.", quickAddPickLocationReview: "Pick a place below to write a review.", profileAddFriendBtn: "Add friend", profileFriendsLabel: "Friends", profileRequestSentLabel: "Request sent", profileAcceptRequestBtn: "Accept request", profileEmptyPhotos: "No public photos yet.", profileEmptyVisited: "No visited places yet.", profileEmptyReviews: "No public reviews yet.", profileNotFound: "This user could not be found.", profileLoading: "Loading profile…", backToFriends: "← Back to Friends", profileMenuOption: "Your Profile", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} is live now — {event} in {city}", tourModeLiveNowOne: "Live now", tourModeLiveNowCount: "{n} live now", tourModeMoreCount: "+{n} more",
         tourModeEyebrow: "Tour Mode", tourModeChooseTour: "Choose a tour", tourModeStep: "Step {n} of {total}",
         tourModeHighlights: "Highlights", tourModeSurpriseSong: "Surprise song:", tourModeNoHighlightsYet: "No highlights added yet for this show.", tourModeNoSurpriseSongYet: "Not announced yet.",

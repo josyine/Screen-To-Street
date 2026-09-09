@@ -300,8 +300,16 @@ body.trip-not-owner .owner-only { display: none !important; }
     pointer-events: none;
 }
 
-/* REVISION KPI COUNTRIES (0 en rose, hover rose que sur le texte) */
-.stat-pill { position: absolute; top: 20px; left: 20px; background: #fff; border-radius: 100px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; color: #2E3644; box-shadow: 0 6px 18px rgba(80,60,120,.1); display: flex; gap: 10px; align-items: center; z-index: 1000; }
+/* REVISION KPI COUNTRIES (0 en rose, hover rose que sur le texte).
+   .map-kpi-pill (demande du 09/09/2026) : cette bannière (map.html, "X LOCATIONS | Y
+   COUNTRIES") était positionnée par un style INLINE dans le HTML (position:absolute;
+   top:20px;left:20px), pas par une classe — la règle .stat-pill qui existait ici pour la
+   repositionner sur mobile n'avait donc jamais eu d'effet (aucun élément ne portait
+   littéralement class="stat-pill"), d'où le chevauchement avec le hamburger qui persistait
+   malgré un premier correctif. Renommée en .map-kpi-pill et appliquée réellement au wrapper
+   dans map.html pour que ce correctif (et le suivant, en media query plus bas) marchent
+   enfin. */
+.map-kpi-pill { position: absolute; top: 20px; left: 20px; z-index: 2000; display: flex; gap: 15px; }
 .stat-pill-btn { display:flex; gap:6px; align-items:center; cursor:pointer; transition: 0.2s; }
 .stat-pill-num { color: var(--primary-magenta); font-weight: 800; }
 .stat-pill-text { color: #212832; transition: 0.2s; }
@@ -507,7 +515,6 @@ body.trip-not-owner .owner-only { display: none !important; }
     .universal-icons .dropdown-container:has(#lang-btn) { display: none !important; }
 
     .filters-grid { grid-template-columns: 1fr; }
-    .stat-pill { top: 14px; left: 14px; padding: 6px 10px; font-size: 11px; gap: 8px; }
     .stat-pill-text { display: none; }
 
     /* "Export PDF" / "Save Trip" (Auto-Itinerary Generator) : côte à côte en flex:1 sur un
@@ -525,7 +532,10 @@ body.trip-not-owner .owner-only { display: none !important; }
     .edit-banner { padding: 16px; }
     .trips-main { padding: 90px 16px 40px 16px; }
 
-    .brand-row { padding: 5px 40px 10px 6px; }
+    /* Marge à gauche (demande du 09/09/2026) : le hamburger/croix est maintenant en haut à
+       GAUCHE (voir #mobile-menu-btn.hamburger-btn plus bas) — sans ça, le logo "Screen To
+       Street" de ce bandeau (affiché quand le menu/sidebar est ouvert) passait dessous. */
+    .brand-row { padding: 5px 12px 10px 56px; }
 
     .tour-tooltip { width: calc(100vw - 32px); max-width: 320px; padding: 18px 20px; }
 }
@@ -621,10 +631,12 @@ body.trip-not-owner .owner-only { display: none !important; }
 
     /* map.html/trips.html : l'engrenage partagé ci-dessus prend maintenant la place du
        hamburger en haut à droite (demande du 08/09/2026) — le hamburger passe à gauche,
-       et les pastilles KPI (nombre de lieux/pays) descendent sous lui plutôt que de se
-       chevaucher. */
+       et la bannière KPI (nombre de lieux/pays, .map-kpi-pill) descend sous lui plutôt
+       que de se chevaucher (corrigé pour de bon le 09/09/2026 : cette bannière était
+       positionnée par un style inline, pas par la classe .stat-pill visée jusqu'ici par
+       cette règle, qui n'avait donc jamais eu d'effet réel — voir map.html). */
     #mobile-menu-btn.hamburger-btn { left: 14px; right: auto; top: calc(14px + env(safe-area-inset-top)); }
-    .stat-pill { top: calc(60px + env(safe-area-inset-top)); }
+    .map-kpi-pill { top: calc(60px + env(safe-area-inset-top)); left: 14px; }
 }
 
 /* Volet "+" : ajouter une photo / un lieu visité / un avis (task #129) */
@@ -637,6 +649,25 @@ body.trip-not-owner .owner-only { display: none !important; }
 .qa-sheet-option:hover, .qa-sheet-option:active { background: #FCE7F0; }
 .qa-sheet-option-icon { width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #D42759; flex-shrink: 0; }
 .qa-sheet-cancel { display: block; width: 100%; text-align: center; margin-top: 8px; padding: 12px; border-radius: 14px; background: #f1f5f9; border: none; font-family: 'Poppins',sans-serif; font-size: 13.5px; font-weight: 700; color: #64748b; cursor: pointer; }
+
+/* Volet "Ajouter une photo" (task #147, demande du 09/09/2026) — réutilise .qa-sheet/
+   .qa-sheet-overlay ci-dessus pour l'habillage général. */
+.add-photo-sheet { max-height: 88vh; overflow-y: auto; }
+.add-photo-field { margin-bottom: 14px; position: relative; }
+.add-photo-label { display: block; font-size: 11.5px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; }
+.add-photo-input, .add-photo-textarea { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; }
+.add-photo-input:focus, .add-photo-textarea:focus { border-color: #D42759; }
+.add-photo-textarea { resize: vertical; min-height: 54px; }
+.add-photo-suggestions { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.12); max-height: 220px; overflow-y: auto; z-index: 10; }
+.add-photo-suggestion { padding: 10px 12px; font-size: 13px; font-weight: 600; color: #212832; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+.add-photo-suggestion:hover { background: #FFF7F8; }
+.add-photo-suggestion-meta { font-size: 11px; font-weight: 500; color: #94a3b8; }
+.add-photo-preview { width: 100%; max-height: 180px; border-radius: 12px; overflow: hidden; margin-bottom: 8px; background: #f1f5f9; }
+.add-photo-preview img { width: 100%; max-height: 180px; object-fit: cover; display: block; }
+.add-photo-choose-btn { width: 100%; background: transparent; border: 1.5px dashed #cbd5e1; color: #64748b; font-size: 12.5px; font-weight: 700; padding: 10px; border-radius: 12px; cursor: pointer; font-family: 'Poppins', sans-serif; }
+.add-photo-error { color: #D42759; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+.add-photo-submit-btn { display: block; width: 100%; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 13px; font-size: 13.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; margin-bottom: 8px; }
+.add-photo-submit-btn:disabled { opacity: 0.6; cursor: default; }
 
 /* Transition "glissement" entre pages sur mobile en tapant la nav du bas (task #132).
    IMPORTANT (bug rapporté le 08/09/2026, "la barre du bas bouge pendant la transition") :

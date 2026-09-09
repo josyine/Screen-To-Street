@@ -481,6 +481,33 @@ window.getFollowerCount = async function (targetUid) {
     }
 };
 
+// Photo publiée de façon autonome (bouton "+" -> "Add a photo", demande du 09/09/2026) —
+// distincte des photos attachées à un avis "I visited this place"/"Add a review" : pas de
+// note ni de visite associée, juste un lieu, une date et une légende facultative. Stockée
+// dans publicProfiles/{uid}.photos.{id} (même document que .reviews, déjà en écriture
+// libre pour son propriétaire — pas de règle Firestore dédiée nécessaire), lue à la fois
+// par l'onglet Photos de profile.html et par fetchGlobalPhotoFeed() ci-dessous.
+window.addProfilePhoto = async function ({ locationId, locationName, photo, date, caption }) {
+    const user = auth.currentUser;
+    if (!user) return { success: false, code: 'not-authenticated' };
+    try {
+        const photoId = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        await setDoc(doc(db, 'publicProfiles', user.uid), {
+            photos: {
+                [photoId]: {
+                    locationId, locationName: locationName || null, photo,
+                    date: date || null, caption: (caption || '').slice(0, 280),
+                    updatedAt: serverTimestamp()
+                }
+            }
+        }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Publication de la photo échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Biographie éditable du profil public (demande du 08/09/2026) : simple champ texte sur
 // publicProfiles/{uid}, déjà en écriture libre pour son propriétaire (allow write ci-dessous,
 // voir firestore.rules) — pas de règle dédiée nécessaire.
@@ -520,16 +547,36 @@ window.fetchGlobalPhotoFeed = async function () {
             }));
             const photos = [];
             profiles.forEach(({ u, data }) => {
-                if (!data || !data.reviews) return;
-                Object.values(data.reviews).forEach(r => {
+                if (!data) return;
+                Object.values(data.reviews || {}).forEach(r => {
                     if (!r.photo) return;
                     photos.push({
+                        id: String(r.locationId),
                         uid: u.uid,
                         username: u.username,
                         locationId: r.locationId,
                         locationName: r.locationName || '',
                         photo: r.photo,
+                        caption: r.notes || '',
                         updatedAt: (r.updatedAt && r.updatedAt.seconds) || 0
+                    });
+                });
+                // Photos autonomes (bouton "+" -> "Add a photo", demande du 09/09/2026) —
+                // voir addProfilePhoto() ci-dessus. Plusieurs possibles par lieu et par
+                // personne, contrairement à .reviews (un avis par lieu) : id = clé de
+                // publicProfiles/{uid}.photos, pas locationId, pour ne jamais entrer en
+                // collision entre elles ni avec une photo d'avis au même lieu.
+                Object.entries(data.photos || {}).forEach(([photoId, p]) => {
+                    if (!p.photo) return;
+                    photos.push({
+                        id: photoId,
+                        uid: u.uid,
+                        username: u.username,
+                        locationId: p.locationId,
+                        locationName: p.locationName || '',
+                        photo: p.photo,
+                        caption: p.caption || '',
+                        updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0
                     });
                 });
             });
