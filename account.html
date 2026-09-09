@@ -205,6 +205,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
           <div style="font-size:10px; color:#94a3b8; margin:0 0 12px;" data-i18n="usernameCooldownNote">You can only change this once every 7 days.</div>
           <span class="field-label" data-i18n="accEmailLabel">Email address</span>
           <div class="field-value" id="user-email-input">email@example.com</div>
+          <!-- Biographie (demande du 09/09/2026) : édition déplacée ici depuis profile.html,
+             qui n'affiche plus qu'un texte lecture seule + un bouton "Edit profile" vers
+             cette page. Même champ publicProfiles/{uid}.bio, voir window.updateMyBio()
+             dans firebase-init.js. -->
+          <span class="field-label" style="margin-top:16px;" data-i18n="accBioLabel">Bio</span>
+          <textarea id="account-bio-textarea" class="field-value" style="resize:vertical; min-height:60px; font-family:'Poppins',sans-serif;" maxlength="280" data-i18n-placeholder="accBioPlaceholder" placeholder="Write a short bio..."></textarea>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin:4px 0 4px;">
+            <span id="account-bio-count" style="font-size:10px; color:#94a3b8;">0/280</span>
+            <button id="account-bio-save-btn" type="button" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:6px 16px; font-size:11.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="accBioSaveBtn">Save bio</button>
+          </div>
           <span class="field-label" style="margin-top:16px;" data-i18n="accCountryLabel">Country you're interested in</span>
           <select id="user-country-input" class="field-value">
             <option value="" data-i18n="accCountryPlaceholder">Select a country (optional)</option>
@@ -435,65 +445,14 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         document.getElementById('unlocked-passes').innerHTML = `<span class="pill" style="background:#f1f5f9;color:#64748b;">${t('accNoPasses')}</span>`;
     }
 
-    // Redimensionne/compresse la photo (via canvas) avant de l'enregistrer : une photo de
-    // téléphone à pleine résolution dépasserait largement la limite de 1 Mo par champ
-    // Firestore. 300px de côté et une compression JPEG suffisent largement pour un avatar.
-    // Un fichier .heic/.heif (format par défaut de l'appareil photo iPhone) ne peut être
-    // décodé par Image()/canvas dans la plupart des navigateurs — sans conversion
-    // préalable, le filet de secours (img.onerror) renvoyait le dataURL HEIC BRUT, non
-    // redimensionné, souvent au-delà de la limite Firestore (même bug que celui corrigé
-    // dans script.js pour la photo d'une visite/avis — voir fileToResizedDataUrl() là-bas
-    // — mais account.html est une page autonome, sans script.js, d'où cette copie locale).
-    function isHeicFile(file) {
-        const name = (file.name || '').toLowerCase();
-        return file.type === 'image/heic' || file.type === 'image/heif' || name.endsWith('.heic') || name.endsWith('.heif');
-    }
-    let _heic2anyLoadPromise = null;
-    function loadHeic2AnyScriptOnce() {
-        if (window.heic2any) return Promise.resolve();
-        if (_heic2anyLoadPromise) return _heic2anyLoadPromise;
-        _heic2anyLoadPromise = new Promise((resolve, reject) => {
-            const s = document.createElement('script');
-            s.src = 'https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js';
-            s.onload = resolve;
-            s.onerror = () => reject(new Error('heic2any failed to load'));
-            document.body.appendChild(s);
-        });
-        return _heic2anyLoadPromise;
-    }
-    function resizeImageDataUrl(dataUrl, maxSize) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = function() {
-                const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-                const canvas = document.createElement('canvas');
-                canvas.width = Math.round(img.width * scale);
-                canvas.height = Math.round(img.height * scale);
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                resolve(canvas.toDataURL('image/jpeg', 0.75));
-            };
-            img.onerror = () => reject(new Error('Could not decode image'));
-            img.src = dataUrl;
-        });
-    }
-    async function fileToResizedDataUrl(file, maxSize) {
-        let blob = file;
-        if (isHeicFile(file)) {
-            await loadHeic2AnyScriptOnce();
-            if (!window.heic2any) throw new Error('heic2any unavailable');
-            const converted = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.8 });
-            blob = Array.isArray(converted) ? converted[0] : converted;
-        }
-        const dataUrl = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target.result);
-            reader.onerror = () => reject(new Error('Could not read file'));
-            reader.readAsDataURL(blob);
-        });
-        return resizeImageDataUrl(dataUrl, maxSize);
-    }
-
+    // Redimensionne/compresse la photo (HEIC compris — photo par défaut de l'appareil
+    // photo iPhone) avant de l'enregistrer : une photo de téléphone à pleine résolution
+    // dépasserait largement la limite de 1 Mo par champ Firestore. fileToResizedDataUrl()
+    // vient de script.js (chargé juste au-dessus, cette page n'est PAS autonome malgré ce
+    // qu'un commentaire précédent affirmait à tort) — une copie locale de cette fonction
+    // ici provoquait un SyntaxError ("_heic2anyLoadPromise has already been declared",
+    // les deux <script> classiques du même document partagent leur portée de haut niveau)
+    // qui empêchait TOUT le reste de ce script de s'exécuter (bug découvert le 09/09/2026).
     document.getElementById('upload-pic').addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -843,6 +802,18 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             const friendsSection = document.getElementById('friends-section');
             if (friendsSection) friendsSection.classList.remove('hidden');
             refreshFriendsUI();
+            // Biographie (demande du 09/09/2026) : pré-remplie depuis publicProfiles/{uid},
+            // même champ que celui affiché en lecture seule sur profile.html.
+            if (typeof window.fetchPublicProfile === 'function') {
+                window.fetchPublicProfile(user.uid).then(p => {
+                    const bioTextarea = document.getElementById('account-bio-textarea');
+                    const bioCount = document.getElementById('account-bio-count');
+                    if (bioTextarea) {
+                        bioTextarea.value = (p && p.bio) || '';
+                        if (bioCount) bioCount.textContent = bioTextarea.value.length + '/280';
+                    }
+                });
+            }
         }
         else {
             // Visiteur en "continuer gratuitement" (voir map.html) : il n'y a ni compte ni
@@ -863,6 +834,25 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             if (friendsSection) friendsSection.classList.add('hidden');
         }
     });
+
+    // Biographie (demande du 09/09/2026) — voir le pré-remplissage dans firebase-ready
+    // ci-dessus et window.updateMyBio() dans firebase-init.js.
+    (function wireAccountBio() {
+        const textarea = document.getElementById('account-bio-textarea');
+        const countEl = document.getElementById('account-bio-count');
+        const saveBtn = document.getElementById('account-bio-save-btn');
+        if (!textarea || !saveBtn) return;
+        textarea.addEventListener('input', () => { countEl.textContent = textarea.value.length + '/280'; });
+        saveBtn.addEventListener('click', async () => {
+            if (typeof window.updateMyBio !== 'function') return;
+            saveBtn.disabled = true;
+            const ok = await window.updateMyBio(textarea.value.trim());
+            saveBtn.disabled = false;
+            if (typeof window.showSimpleToast === 'function') {
+                window.showSimpleToast(ok ? t('profileBioSaved') : (currentLang === 'fr' ? "Échec de l'enregistrement." : 'Failed to save.'), { isError: !ok });
+            }
+        });
+    })();
 
     // ==========================================
     // AMIS

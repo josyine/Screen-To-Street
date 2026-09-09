@@ -137,7 +137,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
   .universal-logo .brand-text { font-size: 14px; }
   .universal-icons { top: calc(14px + env(safe-area-inset-top)); right: 14px; gap: 6px; }
   .header-icon-btn { width: 36px; height: 36px; }
-  .friends-page { padding: calc(74px + env(safe-area-inset-top)) 0 0 0; }
+  /* Marge du bas (demande du 09/09/2026, bug "les icônes sont par-dessus la page, la zone
+     de message est cachée") : sans elle, .friends-shell (height:100%) remplissait tout
+     l'espace jusqu'au bord de l'écran, plaçant la ligne de saisie du message exactement
+     derrière la nav du bas partagée (.mobile-bottom-nav, position:fixed — voir style.css),
+     donc invisible et inutilisable. */
+  .friends-page { padding: calc(74px + env(safe-area-inset-top)) 0 calc(84px + env(safe-area-inset-bottom)) 0; }
   .friends-shell { border-radius: 0; max-width: 100%; }
   .friends-sidebar { width: 100%; border-right: none; }
   .friends-main { display: none; }
@@ -145,15 +150,17 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
   .friends-shell.chat-open .friends-main { display: flex; }
   .convo-back-btn { display: inline-block; }
 
-  /* "Add a friend by username" encore trop gros sur mobile (nouvelle demande du
-     08/09/2026, après un premier ajustement du padding seul jugé insuffisant) : la police
-     reste forcée à 16px par la règle globale anti-zoom iOS (input, textarea { font-size:
-     16px !important; }, voir style.css) — impossible de la baisser sans risquer de
-     réintroduire le zoom au focus déjà corrigé par cette règle. On réduit donc plutôt le
-     volume visuel par la largeur (le champ ne prend plus toute la largeur de l'écran,
-     demande explicite) et un padding encore plus resserré. */
-  .friend-add-row { max-width: 230px; }
-  .friend-add-row input { padding: 4px 9px; }
+  /* "Add a friend by username" encore trop gros sur mobile (3e demande du 09/09/2026 —
+     un ajustement du padding puis de la largeur seuls avaient été jugés insuffisants à
+     chaque fois). La police reste forcée à 16px par la règle globale anti-zoom iOS
+     (input, textarea { font-size: 16px !important; }, voir style.css) — impossible de la
+     baisser sans rouvrir le zoom au focus déjà corrigé par cette règle. Cette fois, on
+     réduit la taille VISIBLE de toute la ligne (champ + bouton) via un transform:scale,
+     le seul moyen de vraiment la faire paraître plus petite sans toucher au font-size réel.
+     transform-origin:left évite tout décalage horizontal ; la légère marge vide que le
+     scale laisse en bas/à droite (l'espace réservé dans la mise en page reste celui
+     d'avant le scale) est resserrée par le margin-bottom négatif ci-dessous. */
+  .friend-add-row { max-width: 210px; transform: scale(0.82); transform-origin: left top; margin-bottom: -8px; }
   .friend-add-row button { padding: 0 12px; font-size: 12px; }
 }
 </style>
@@ -497,15 +504,16 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
                 <div class="convo-row-meta${meta.unread ? ' unread' : ''}">${meta.html}</div>
             </div>
             ${meta.unread ? `<div class="convo-unread-badge">${meta.count}</div>` : ''}
-            <button type="button" class="convo-row-delete-btn" data-kind="trip" data-trip-id="${g.id}" title="${t('deleteConvoBtn')}" aria-label="${t('deleteConvoBtn')}">&times;</button>
+            <button type="button" class="convo-row-delete-btn" data-kind="trip" data-trip-id="${g.id}" data-is-owner="${g.isOwner ? '1' : ''}" title="${t('deleteConvoBtn')}" aria-label="${t('deleteConvoBtn')}">&times;</button>
         </div>`;
         }).join('');
         empty.classList.toggle('hidden', groups.length > 0);
         list.querySelectorAll('.convo-row').forEach(row => {
             row.addEventListener('click', () => openTripConversation(row.dataset.tripId, row.dataset.tripName, !!groups.find(g => String(g.id) === row.dataset.tripId && g.isOwner)));
-            row.querySelector('.convo-row-delete-btn').addEventListener('click', (e) => {
+            const delBtn = row.querySelector('.convo-row-delete-btn');
+            delBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                confirmDeleteConversation(window.tripConversationId(row.dataset.tripId), { kind: 'trip' });
+                confirmDeleteConversation(window.tripConversationId(row.dataset.tripId), { kind: 'trip', tripId: row.dataset.tripId, isOwner: delBtn.dataset.isOwner === '1' });
             });
         });
     }
@@ -594,24 +602,44 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const visits = typeof window.loadFriendVisits === 'function' ? await window.loadFriendVisits(friends.map(f => f.uid)) : {};
         window.setFriendsData(friends, visits);
     }
+    // Voyage partagé : la croix supprimait seulement l'HISTORIQUE (conversations/{id}),
+    // jamais l'appartenance au voyage — la ligne "Trip groups" reste alors affichée telle
+    // quelle juste après (elle est reconstruite depuis listMyTripGroups(), basée sur
+    // l'appartenance réelle, pas sur l'existence d'une conversation), donnant l'impression
+    // trompeuse que le clic "ne marche pas" (bug rapporté le 09/09/2026). La croix retire
+    // maintenant aussi la personne du voyage (même retrait que "Leave group" du menu "⋮",
+    // window.removeTripCollaborator — voir firebase-init.js), ce qui le fait disparaître
+    // pour de bon de cette liste ET de trips.html (My Trips, lues depuis la même source).
+    // Un PROPRIÉTAIRE de voyage ne peut pas se retirer lui-même de son propre voyage de
+    // cette façon (même limite déjà en place pour "Leave group", masqué pour lui) : la
+    // croix continue alors à ne supprimer que l'historique pour lui.
     function confirmDeleteConversation(convoId, opts) {
         const kind = (opts && opts.kind) || 'trip';
         const isFr = currentLang === 'fr';
+        const isOwnerTrip = kind === 'trip' && !!(opts && opts.isOwner);
         const modal = ensureDeleteConvoModal();
         modal.querySelector('#delete-convo-title').textContent = kind === 'dm'
             ? (isFr ? 'Retirer cet ami ?' : 'Remove this friend?')
-            : (isFr ? 'Supprimer cette conversation ?' : 'Delete this conversation?');
+            : isOwnerTrip
+                ? (isFr ? 'Supprimer cette conversation ?' : 'Delete this conversation?')
+                : (isFr ? 'Quitter ce voyage partagé ?' : 'Leave this shared trip?');
         modal.querySelector('#delete-convo-desc').textContent = kind === 'dm'
             ? (isFr ? "Vous ne serez plus amis et votre historique de messages sera définitivement supprimé." : "You will no longer be friends and your message history will be permanently deleted.")
-            : (isFr ? "L'historique des messages sera définitivement supprimé." : 'The message history will be permanently deleted.');
+            : isOwnerTrip
+                ? (isFr ? "L'historique des messages sera définitivement supprimé." : 'The message history will be permanently deleted.')
+                : (isFr ? "Vous ne ferez plus partie de ce voyage et votre historique de messages sera définitivement supprimé." : "You'll be removed from this trip and your message history will be permanently deleted.");
         modal.querySelector('#delete-convo-cancel').textContent = isFr ? 'Annuler' : 'Cancel';
-        modal.querySelector('#delete-convo-confirm').textContent = kind === 'dm' ? (isFr ? 'Retirer' : 'Remove') : (isFr ? 'Supprimer' : 'Delete');
+        modal.querySelector('#delete-convo-confirm').textContent = kind === 'dm' || !isOwnerTrip ? (isFr ? 'Retirer' : 'Remove') : (isFr ? 'Supprimer' : 'Delete');
         modal.classList.remove('hidden');
         modal.querySelector('#delete-convo-confirm').onclick = async () => {
             modal.classList.add('hidden');
             if (kind === 'dm' && opts.friendUid && typeof window.removeFriend === 'function') {
                 await window.removeFriend(opts.friendUid);
                 await refreshMyFriendsList();
+            }
+            if (kind === 'trip' && !isOwnerTrip && opts.tripId && typeof window.removeTripCollaborator === 'function') {
+                const myUid = window.firebaseCurrentUser && window.firebaseCurrentUser.uid;
+                if (myUid) await window.removeTripCollaborator(opts.tripId, myUid);
             }
             if (typeof window.deleteConversation === 'function') await window.deleteConversation(convoId);
             closeConvoPanelIfOpen(convoId);
