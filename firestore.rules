@@ -279,6 +279,17 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['friendCount']);
     }
 
+    // Abonnement à sens unique façon Instagram (bouton "Follow" du profil public,
+    // demande du 08/09/2026) — distinct du système d'amis mutuel ci-dessus (friendIndex/
+    // friendCount) : n'importe qui peut suivre n'importe quel compte sans réciprocité, un
+    // simple document par abonné écrit sous le compte suivi. Même schéma que friendIndex/
+    // photoLikes : chaque compte écrit SON PROPRE document (l'id du document EST son
+    // propre uid), jamais celui d'un autre.
+    match /follows/{targetUid}/items/{followerUid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == followerUid;
+    }
+
     // Partage d'un lieu ou d'un voyage à un ami. La condition exists(...) sur
     // allow create empêche de partager à quelqu'un qui n'est pas (encore) un ami.
     // Seul `seen` peut être modifié après création, et seulement par le destinataire

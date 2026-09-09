@@ -24,11 +24,13 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.05); } }
 .hero-background { animation-delay: calc(0s - var(--sync-t, 0s)) !important; }
 
-/* EN-TÊTE — supprimé de cette page (demande du 08/09/2026, "Toujours dans profile, supprime
-   le header") : ni logo ni pilule d'icônes ici, contrairement aux autres pages. Un seul petit
-   bouton "réglages" (.profile-settings-btn plus bas) reste toujours visible pour garder un
-   accès à Compte/Réglages/Voyages/Wishlist/Amis/Déconnexion — les classes .dropdown-*/
-   .header-icon-btn ci-dessous, historiquement celles du header, sont réutilisées pour lui. */
+/* EN-TÊTE — sur ordinateur, identique aux autres pages : logo + icônes de map.html en
+   haut à droite (demande du 08/09/2026, qui revient sur "supprime le header" — clarifié :
+   c'était pour MOBILE, où un simple bouton réglages (.profile-settings-btn plus bas)
+   suffit et reste seul visible). */
+.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 2500; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
+.brand-text { font-size: 19px; font-weight: 700; color: #2E3644; line-height: 1.2; }
+.universal-icons { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; gap: 9px; align-items: center; }
 .dropdown-container { position: relative; display: inline-block; }
 .header-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: #2E3644; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; font-size: 16px; font-weight: bold; box-shadow: 0 4px 14px rgba(80,60,120,.05); }
 .header-icon-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: #D42759; transform: translateY(-2px);}
@@ -37,13 +39,16 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: block; text-align: left; text-decoration: none;}
 .dropdown-option:hover { background: #f1f5f9; color: #D42759; }
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
-.profile-settings-btn { position: fixed; top: 20px; right: 20px; z-index: 3000; }
+.notif-badge { position: absolute; top: -3px; right: -3px; background: #D42759; color: #fff; font-size: 9.5px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 100px; display: flex; align-items: center; justify-content: center; padding: 0 3px; border: 2px solid #fff; }
+/* Bouton "réglages" : réservé au mobile (voir #mobile-top-icons dans style.css, qui
+   fournit déjà l'équivalent sur toutes les pages) — masqué par défaut sur desktop où le
+   header complet ci-dessus prend le relais. */
+.profile-settings-btn { display: none; }
 
 /* PAGE — demande du 08/09/2026 : plus de bloc blanc/carte étroite, le contenu occupe
    toute la largeur de la page (juste un padding raisonnable pour le confort de lecture
-   sur grand écran), directement sur le fond dégradé. Pas de header sur cette page (voir
-   plus haut), donc pas d'espace réservé en haut au-delà du bouton réglages. */
-.page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 70px 24px 100px 24px; }
+   sur grand écran), directement sur le fond dégradé. */
+.page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 120px 24px 100px 24px; }
 
 .profile-loading, .profile-not-found { text-align: center; color: #94a3b8; font-size: 14px; padding: 60px 0; }
 
@@ -62,6 +67,27 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .profile-add-friend-btn:disabled { opacity: 0.6; cursor: default; }
 .profile-friend-status { font-size: 12px; font-weight: 700; color: #94a3b8; background: #f1f5f9; padding: 9px 16px; border-radius: 100px; flex-shrink: 0; }
 .profile-accept-request-btn { background: #212832; color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; flex-shrink: 0; }
+
+/* Bouton "Follow"/"Following" (demande du 08/09/2026) : abonnement à sens unique, voir
+   window.followUser()/unfollowUser() dans firebase-init.js — distinct du bouton "Add
+   friend" ci-dessus (système d'amis mutuel), les deux peuvent s'afficher côte à côte. */
+.profile-follow-btn { background: #212832; color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+.profile-follow-btn:hover { background: #37414f; }
+.profile-follow-btn.following { background: #fff; color: #212832; border: 1.5px solid #e2e8f0; }
+.profile-follow-btn.following:hover { background: #fff5f6; color: #D42759; border-color: #fbcfe8; }
+.profile-follow-btn:disabled { opacity: 0.6; cursor: default; }
+
+/* Biographie (demande du 08/09/2026) : texte libre, éditable seulement par le propriétaire
+   du profil (voir #profile-bio-edit-wrap, affiché uniquement quand profileUid ===
+   profileCurrentUid), affiché en lecture seule sur les autres profils. */
+.profile-bio { font-size: 13px; color: #475569; line-height: 1.5; margin-top: 10px; max-width: 780px; margin-left: auto; margin-right: auto; white-space: pre-wrap; word-break: break-word; }
+.profile-bio-edit-wrap { max-width: 780px; margin: 10px auto 0 auto; }
+.profile-bio-textarea { width: 100%; resize: vertical; min-height: 54px; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; }
+.profile-bio-textarea:focus { border-color: #D42759; }
+.profile-bio-edit-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+.profile-bio-count { font-size: 11px; color: #94a3b8; }
+.profile-bio-save-btn { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 7px 16px; font-size: 12px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.profile-bio-save-btn:disabled { opacity: 0.6; cursor: default; }
 
 /* Onglets — même largeur max que .profile-header, centrés (demande du 08/09/2026 : pleine
    largeur de PAGE mais pas de carte étroite, différent d'un contenu vraiment étiré sur
@@ -102,7 +128,10 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .profile-mini-map { width: 100%; height: 420px; border-radius: 14px; background: #f1f5f9; }
 
 @media (max-width: 760px) {
-  .profile-settings-btn { top: 14px; right: 14px; }
+  /* Mobile : header complet masqué (voir style.css, .universal-icons est caché
+     globalement sur mobile), la nav du haut/bas partagée (#mobile-top-icons /
+     .mobile-bottom-nav, injectées par script.js) prend le relais — pas de bouton
+     réglages propre à cette page en plus. */
   .header-icon-btn { width: 36px; height: 36px; }
   /* Espace du bas porté à 90px (demande du 08/09/2026) pour laisser la place à la nav du
      bas partagée (.mobile-bottom-nav, injectée par script.js) — voir style.css. */
@@ -124,24 +153,63 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
 </div>
 
-<!-- Pas de header sur cette page (demande du 08/09/2026) : seul un petit bouton "réglages"
-     reste toujours visible, pour garder un accès à Compte/Réglages/Voyages/Wishlist/Amis/
-     Déconnexion malgré l'absence de header (y compris sur desktop). -->
-<div class="dropdown-container profile-settings-btn">
-    <button id="profile-settings-btn" class="header-icon-btn" title="Menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+<!-- Header desktop, identique aux autres pages (demande du 08/09/2026) — masqué sur
+     mobile globalement (voir style.css), où #mobile-top-icons/.mobile-bottom-nav
+     (injectées par script.js) prennent le relais. -->
+<a href="map.html" class="universal-logo">
+    <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
+        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+        <circle cx="200" cy="150" r="26" fill="#D42759"/>
+    </svg>
+    <div><div class="brand-text">Screen To <b style="color: #D42759;">Street</b></div></div>
+</a>
+
+<div class="universal-icons">
+    <div class="dropdown-container">
+        <button id="lang-btn" class="header-icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <div id="lang-menu" class="dropdown-menu hidden">
+            <a href="#" class="dropdown-option" onclick="changeLang('en'); return false;">English</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('fr'); return false;">Français</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('es'); return false;">Español</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('it'); return false;">Italiano</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('pt'); return false;">Português</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ko'); return false;">한국어</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ja'); return false;">日本語</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
+        </div>
+    </div>
+    <div class="dropdown-container">
+        <button id="cart-btn" class="header-icon-btn" onclick="openCartModal()" title="Unlock Passes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        </button>
+    </div>
+    <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
     </button>
-    <div id="profile-settings-menu" class="dropdown-menu hidden">
-        <a href="map.html" class="dropdown-option">Map</a>
-        <div class="dropdown-divider"></div>
-        <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-        <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
-        <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
-        <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
-        <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
-        <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
-        <div class="dropdown-divider"></div>
-        <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
+    <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='profile.html'" title="Your Profile">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    </button>
+    <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        <span id="message-icon-badge" class="notif-badge hidden">0</span>
+    </button>
+    <div class="dropdown-container">
+        <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
+        <div id="profile-menu" class="dropdown-menu hidden">
+            <a href="map-destinations.html" class="dropdown-option" data-i18n="exploreDestOption">Explore Destinations</a>
+            <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
+            <div class="dropdown-divider"></div>
+            <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
+            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+            <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
+            <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+            <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
+            <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
+        </div>
     </div>
 </div>
 
@@ -160,6 +228,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                         <div class="profile-stat"><b id="profile-stat-followers">0</b><span data-i18n="profileStatFollowers">followers</span></div>
                     </div>
                 </div>
+                <button id="profile-follow-btn" class="profile-follow-btn hidden" type="button"></button>
                 <button id="profile-accept-request-btn" class="profile-accept-request-btn hidden" data-i18n="profileAcceptRequestBtn">Accept request</button>
                 <button id="profile-add-friend-btn" class="profile-add-friend-btn hidden">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
@@ -168,9 +237,19 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                 <span id="profile-friend-status" class="profile-friend-status hidden"></span>
             </div>
 
+            <!-- Biographie : texte lecture seule sur le profil d'autrui, formulaire d'édition
+                 sur son propre profil (demande du 08/09/2026) — voir loadProfilePage(). -->
+            <div class="profile-bio hidden" id="profile-bio"></div>
+            <div class="profile-bio-edit-wrap hidden" id="profile-bio-edit-wrap">
+                <textarea class="profile-bio-textarea" id="profile-bio-textarea" maxlength="280" placeholder="Write a short bio..."></textarea>
+                <div class="profile-bio-edit-row">
+                    <span class="profile-bio-count" id="profile-bio-count">0/280</span>
+                    <button class="profile-bio-save-btn" id="profile-bio-save-btn" type="button">Save</button>
+                </div>
+            </div>
+
             <div class="profile-tabs">
                 <button class="profile-tab-btn active" data-tab="photos" onclick="switchProfileTab('photos')" data-i18n="profileTabPhotos">Photos</button>
-                <button class="profile-tab-btn" data-tab="visited" onclick="switchProfileTab('visited')" data-i18n="profileTabVisited">Visited</button>
                 <button class="profile-tab-btn" data-tab="reviews" onclick="switchProfileTab('reviews')" data-i18n="profileTabReviews">Reviews</button>
                 <button class="profile-tab-btn" data-tab="map" onclick="switchProfileTab('map')" data-i18n="profileTabMap">Map</button>
             </div>
@@ -178,10 +257,6 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
             <div class="profile-tab-panel" id="profile-panel-photos">
                 <div class="profile-photo-grid" id="profile-photo-grid"></div>
                 <div class="profile-empty hidden" id="profile-photos-empty" data-i18n="profileEmptyPhotos">No public photos yet.</div>
-            </div>
-            <div class="profile-tab-panel hidden" id="profile-panel-visited">
-                <div class="visit-list" id="profile-visited-list"></div>
-                <div class="profile-empty hidden" id="profile-visited-empty" data-i18n="profileEmptyVisited">No visited places yet.</div>
             </div>
             <div class="profile-tab-panel hidden" id="profile-panel-reviews">
                 <div class="profile-review-list" id="profile-review-list"></div>
@@ -274,29 +349,6 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         return withPhotos;
     }
 
-    function renderProfileVisited(visitedIds) {
-        const list = document.getElementById('profile-visited-list');
-        const empty = document.getElementById('profile-visited-empty');
-        list.innerHTML = '';
-        if (!visitedIds || visitedIds.length === 0) { empty.classList.remove('hidden'); return; }
-        empty.classList.add('hidden');
-        visitedIds.forEach(id => {
-            const loc = celebLocations.find(l => l.id === id || l.id === Number(id));
-            if (!loc) return;
-            const row = document.createElement('div');
-            row.className = 'visit-row';
-            row.onclick = () => window.openLocModal(loc.id);
-            row.innerHTML = `
-                <div class="visit-thumb" style="background-image:url('${loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg')}');"></div>
-                <div>
-                    <div class="visit-name">${escapeHtml(loc.name)}</div>
-                    <div class="visit-meta">${escapeHtml(loc.city)}, ${escapeHtml(loc.country)}</div>
-                </div>
-            `;
-            list.appendChild(row);
-        });
-    }
-
     function renderProfileReviews(publicProfile) {
         const list = document.getElementById('profile-review-list');
         const empty = document.getElementById('profile-reviews-empty');
@@ -326,115 +378,227 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     }
 
     function renderProfileMap(visitedIds) {
-        const mapEl = document.getElementById('profile-mini-map');
-        if (!mapEl || typeof L === 'undefined') return;
-        profileMiniMap = L.map(mapEl, { attributionControl: false, zoomControl: false }).setView([20, 0], 2);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(profileMiniMap);
-        const points = [];
-        (visitedIds || []).forEach(id => {
-            const loc = celebLocations.find(l => l.id === id || l.id === Number(id));
-            if (!loc) return;
-            const color = groupColors[loc.group] || '#334e68';
-            L.circleMarker([loc.lat, loc.lng], { radius: 7, color: '#fff', weight: 2, fillColor: color, fillOpacity: 1 })
-                .bindTooltip(escapeHtml(loc.name))
-                .addTo(profileMiniMap);
-            points.push([loc.lat, loc.lng]);
-        });
-        if (points.length > 0) profileMiniMap.fitBounds(points, { padding: [30, 30], maxZoom: 10 });
+        // Enveloppé de try/catch (demande du 08/09/2026, bug "profile ne fonctionne pas,
+        // reste sur Loading profile...") : Leaflet ou les tuiles OSM indisponibles sur une
+        // connexion mobile ne doivent jamais faire planter loadProfilePage() en plein
+        // milieu — sans ça, le reste de la page (stats, onglets, avis) ne s'affichait
+        // jamais puisque cette fonction est appelée de façon synchrone, sans await, à
+        // l'intérieur de loadProfilePage().
+        try {
+            const mapEl = document.getElementById('profile-mini-map');
+            if (!mapEl || typeof L === 'undefined') return;
+            profileMiniMap = L.map(mapEl, { attributionControl: false, zoomControl: false }).setView([20, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(profileMiniMap);
+            const points = [];
+            (visitedIds || []).forEach(id => {
+                const loc = celebLocations.find(l => l.id === id || l.id === Number(id));
+                if (!loc) return;
+                const color = groupColors[loc.group] || '#334e68';
+                L.circleMarker([loc.lat, loc.lng], { radius: 7, color: '#fff', weight: 2, fillColor: color, fillOpacity: 1 })
+                    .bindTooltip(escapeHtml(loc.name))
+                    .addTo(profileMiniMap);
+                points.push([loc.lat, loc.lng]);
+            });
+            if (points.length > 0) profileMiniMap.fitBounds(points, { padding: [30, 30], maxZoom: 10 });
+        } catch (e) {
+            console.warn('Affichage de la mini-carte du profil échoué :', e);
+        }
     }
 
     async function renderProfileFriendState(username) {
-        const addBtn = document.getElementById('profile-add-friend-btn');
-        const statusEl = document.getElementById('profile-friend-status');
-        const acceptBtn = document.getElementById('profile-accept-request-btn');
+        // Même filet de sécurité que renderProfileMap ci-dessus : loadProfilePage()
+        // attend cette fonction (await), donc une exception ici bloquait tout autant
+        // l'affichage du reste de la page.
+        try {
+            const addBtn = document.getElementById('profile-add-friend-btn');
+            const statusEl = document.getElementById('profile-friend-status');
+            const acceptBtn = document.getElementById('profile-accept-request-btn');
 
-        if (!profileCurrentUid || profileCurrentUid === profileUid) return;
-        if (typeof window.listMyFriends !== 'function') return;
+            if (!profileCurrentUid || profileCurrentUid === profileUid) return;
+            if (typeof window.listMyFriends !== 'function') return;
 
-        const [myFriends, requests] = await Promise.all([
-            window.listMyFriends(),
-            typeof window.listMyFriendRequests === 'function' ? window.listMyFriendRequests() : { incoming: [], outgoing: [] }
-        ]);
+            const [myFriends, requests] = await Promise.all([
+                window.listMyFriends(),
+                typeof window.listMyFriendRequests === 'function' ? window.listMyFriendRequests() : { incoming: [], outgoing: [] }
+            ]);
 
-        if (myFriends.some(f => f.uid === profileUid)) {
-            statusEl.textContent = t('profileFriendsLabel');
-            statusEl.classList.remove('hidden');
-            return;
-        }
-
-        const incomingReq = (requests.incoming || []).find(r => r.fromUid === profileUid);
-        if (incomingReq) {
-            acceptBtn.classList.remove('hidden');
-            acceptBtn.onclick = async () => {
-                acceptBtn.disabled = true;
-                await window.acceptFriendRequest(incomingReq.id, incomingReq.fromUid, incomingReq.fromUsername);
-                acceptBtn.classList.add('hidden');
+            if (myFriends.some(f => f.uid === profileUid)) {
                 statusEl.textContent = t('profileFriendsLabel');
                 statusEl.classList.remove('hidden');
-            };
-            return;
-        }
+                return;
+            }
 
-        const outgoingReq = (requests.outgoing || []).find(r => r.toUid === profileUid);
-        if (outgoingReq) {
-            statusEl.textContent = t('profileRequestSentLabel');
-            statusEl.classList.remove('hidden');
-            return;
-        }
+            const incomingReq = (requests.incoming || []).find(r => r.fromUid === profileUid);
+            if (incomingReq) {
+                acceptBtn.classList.remove('hidden');
+                acceptBtn.onclick = async () => {
+                    acceptBtn.disabled = true;
+                    await window.acceptFriendRequest(incomingReq.id, incomingReq.fromUid, incomingReq.fromUsername);
+                    acceptBtn.classList.add('hidden');
+                    statusEl.textContent = t('profileFriendsLabel');
+                    statusEl.classList.remove('hidden');
+                };
+                return;
+            }
 
-        addBtn.classList.remove('hidden');
-        addBtn.onclick = async () => {
-            addBtn.disabled = true;
-            const result = await window.sendFriendRequest(username);
-            if (result && result.success) {
-                addBtn.classList.add('hidden');
+            const outgoingReq = (requests.outgoing || []).find(r => r.toUid === profileUid);
+            if (outgoingReq) {
                 statusEl.textContent = t('profileRequestSentLabel');
                 statusEl.classList.remove('hidden');
-            } else {
-                addBtn.disabled = false;
+                return;
             }
-        };
+
+            addBtn.classList.remove('hidden');
+            addBtn.onclick = async () => {
+                addBtn.disabled = true;
+                const result = await window.sendFriendRequest(username);
+                if (result && result.success) {
+                    addBtn.classList.add('hidden');
+                    statusEl.textContent = t('profileRequestSentLabel');
+                    statusEl.classList.remove('hidden');
+                } else {
+                    addBtn.disabled = false;
+                }
+            };
+        } catch (e) {
+            console.warn('Affichage du statut ami échoué :', e);
+        }
+    }
+
+    // Bouton "Follow"/"Following" (demande du 08/09/2026) : abonnement à sens unique,
+    // séparé du système d'amis mutuel ci-dessus — les deux boutons peuvent coexister.
+    async function renderProfileFollowState() {
+        try {
+            const followBtn = document.getElementById('profile-follow-btn');
+            if (!profileCurrentUid || profileCurrentUid === profileUid) return;
+            if (typeof window.isFollowing !== 'function') return;
+
+            const setLabel = (following) => {
+                followBtn.classList.toggle('following', following);
+                followBtn.textContent = following ? t('profileFollowingBtn') : t('profileFollowBtn');
+            };
+            let following = await window.isFollowing(profileUid);
+            setLabel(following);
+            followBtn.classList.remove('hidden');
+            followBtn.onclick = async () => {
+                followBtn.disabled = true;
+                const ok = following
+                    ? await window.unfollowUser(profileUid)
+                    : await window.followUser(profileUid);
+                if (ok) {
+                    following = !following;
+                    setLabel(following);
+                    if (typeof window.getFollowerCount === 'function') {
+                        document.getElementById('profile-stat-followers').textContent = await window.getFollowerCount(profileUid);
+                    }
+                }
+                followBtn.disabled = false;
+            };
+        } catch (e) {
+            console.warn('Affichage du statut abonnement échoué :', e);
+        }
+    }
+
+    // Biographie : lecture seule sur le profil d'autrui, éditable sur le sien (demande du
+    // 08/09/2026). publicProfile.bio n'existe pas encore pour les comptes créés avant
+    // cette fonctionnalité — traité comme une chaîne vide, jamais une erreur.
+    function renderProfileBio(publicProfile) {
+        const bioEl = document.getElementById('profile-bio');
+        const editWrap = document.getElementById('profile-bio-edit-wrap');
+        const bio = (publicProfile.bio || '').trim();
+
+        if (profileCurrentUid && profileCurrentUid === profileUid) {
+            editWrap.classList.remove('hidden');
+            bioEl.classList.add('hidden');
+            const textarea = document.getElementById('profile-bio-textarea');
+            const countEl = document.getElementById('profile-bio-count');
+            const saveBtn = document.getElementById('profile-bio-save-btn');
+            textarea.value = bio;
+            countEl.textContent = bio.length + '/280';
+            textarea.oninput = () => { countEl.textContent = textarea.value.length + '/280'; };
+            saveBtn.onclick = async () => {
+                if (typeof window.updateMyBio !== 'function') return;
+                saveBtn.disabled = true;
+                const ok = await window.updateMyBio(textarea.value.trim());
+                saveBtn.disabled = false;
+                if (ok && typeof window.showSimpleToast === 'function') {
+                    window.showSimpleToast(t('profileBioSaved'));
+                }
+            };
+        } else if (bio) {
+            bioEl.textContent = bio;
+            bioEl.classList.remove('hidden');
+            editWrap.classList.add('hidden');
+        } else {
+            bioEl.classList.add('hidden');
+            editWrap.classList.add('hidden');
+        }
+    }
+
+    // Empêche un getDoc()/getDocs() qui ne répond jamais (réseau mobile capricieux) de
+    // laisser la page bloquée indéfiniment sur "Loading profile..." — demande du
+    // 08/09/2026 (bug rapporté avec le compte "josyine" sur mobile). withTimeout()
+    // n'annule pas réellement l'appel Firestore sous-jacent, juste l'attente côté UI.
+    function withTimeout(promise, ms) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+        ]);
     }
 
     async function loadProfilePage() {
-        if (!profileUid && profileUsernameParam && typeof window.lookupUserByUsername === 'function') {
-            profileUid = await window.lookupUserByUsername(profileUsernameParam);
+        // Toute la fonction est maintenant protégée par un try/catch englobant (au lieu de
+        // laisser une exception n'importe où — Leaflet, une requête Firestore qui échoue,
+        // un élément introuvable — remonter sans être rattrapée) : la personne voyait
+        // "Loading profile..." rester affiché indéfiniment sans aucune indication d'erreur,
+        // même quand le compte et les données étaient en réalité valides.
+        try {
+            if (!profileUid && profileUsernameParam && typeof window.lookupUserByUsername === 'function') {
+                profileUid = await window.lookupUserByUsername(profileUsernameParam);
+            }
+            // Ni ?uid= ni ?u= dans l'URL (ex: le lien "Your Profile" du menu compte de
+            // friends.html) : on affiche le profil du compte actuellement connecté plutôt que
+            // "utilisateur introuvable" — demande du 08/09/2026.
+            if (!profileUid && profileCurrentUid) profileUid = profileCurrentUid;
+            if (!profileUid) { showProfileNotFound(); return; }
+
+            const [username, visitedIds, publicProfile] = await withTimeout(Promise.all([
+                window.lookupUsernameByUid(profileUid),
+                window.fetchUserVisitedIds(profileUid),
+                window.fetchPublicProfile(profileUid)
+            ]), 15000);
+
+            if (!username) { showProfileNotFound(); return; }
+
+            document.getElementById('profile-avatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('profile-avatar').style.background = profileAvatarColor(username);
+            document.getElementById('profile-username').textContent = username;
+            document.title = 'Screen To Street — ' + username;
+
+            const photosShown = renderProfilePhotos(publicProfile);
+            renderProfileReviews(publicProfile);
+            renderProfileMap(visitedIds);
+            renderProfileBio(publicProfile);
+
+            document.getElementById('profile-stat-visited').textContent = (visitedIds || []).length;
+            document.getElementById('profile-stat-photos').textContent = photosShown.length;
+            // Nombre d'ABONNÉS réels (demande du 08/09/2026, bouton "Follow"/"Following") —
+            // voir window.getFollowerCount()/follows/{uid}/items dans firebase-init.js.
+            // Remplace l'ancien friendCount (basé sur le système d'amis mutuel), gardé par
+            // ailleurs pour ne pas casser acceptFriendRequest()/removeFriend().
+            if (typeof window.getFollowerCount === 'function') {
+                document.getElementById('profile-stat-followers').textContent = await window.getFollowerCount(profileUid);
+            }
+
+            await renderProfileFriendState(username);
+            await renderProfileFollowState();
+
+            document.getElementById('profile-loading').classList.add('hidden');
+            document.getElementById('profile-content').classList.remove('hidden');
+        } catch (e) {
+            console.warn('Chargement du profil échoué :', e);
+            showProfileNotFound();
         }
-        // Ni ?uid= ni ?u= dans l'URL (ex: le lien "Your Profile" du menu compte de
-        // friends.html) : on affiche le profil du compte actuellement connecté plutôt que
-        // "utilisateur introuvable" — demande du 08/09/2026.
-        if (!profileUid && profileCurrentUid) profileUid = profileCurrentUid;
-        if (!profileUid) { showProfileNotFound(); return; }
-
-        const [username, visitedIds, publicProfile] = await Promise.all([
-            window.lookupUsernameByUid(profileUid),
-            window.fetchUserVisitedIds(profileUid),
-            window.fetchPublicProfile(profileUid)
-        ]);
-
-        if (!username) { showProfileNotFound(); return; }
-
-        document.getElementById('profile-avatar').textContent = username.charAt(0).toUpperCase();
-        document.getElementById('profile-avatar').style.background = profileAvatarColor(username);
-        document.getElementById('profile-username').textContent = username;
-        document.title = 'Screen To Street — ' + username;
-
-        const photosShown = renderProfilePhotos(publicProfile);
-        renderProfileVisited(visitedIds);
-        renderProfileReviews(publicProfile);
-        renderProfileMap(visitedIds);
-
-        document.getElementById('profile-stat-visited').textContent = (visitedIds || []).length;
-        document.getElementById('profile-stat-photos').textContent = photosShown.length;
-        // Nombre d'abonnés à la place du nombre d'avis (demande du 08/09/2026) — voir
-        // friendCount sur publicProfiles/{uid}, incrémenté/décrémenté par
-        // acceptFriendRequest()/removeFriend() dans firebase-init.js.
-        document.getElementById('profile-stat-followers').textContent = publicProfile.friendCount || 0;
-
-        await renderProfileFriendState(username);
-
-        document.getElementById('profile-loading').classList.add('hidden');
-        document.getElementById('profile-content').classList.remove('hidden');
     }
 
     window.addEventListener('firebase-ready', (e) => {

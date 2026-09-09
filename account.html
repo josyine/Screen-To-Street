@@ -190,7 +190,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             <a style="font-size:12px;font-weight:700;color:#D42759; cursor:pointer;" onclick="document.getElementById('upload-pic').click()" data-i18n="accChangePhoto">Change Profile Picture</a>
             <a id="reset-photo-link" style="font-size:12px;font-weight:700;color:#94a3b8; cursor:pointer;" onclick="resetProfilePicture()" data-i18n="accResetPhoto">Reset profile picture</a>
         </div>
-        <input type="file" id="upload-pic" accept="image/*" style="display:none;">
+        <input type="file" id="upload-pic" accept="image/*,.heic,.heif" style="display:none;">
         <div style="font-size:11.5px;color:#94a3b8;margin-bottom:24px;" id="member-since-line"></div>
         <div style="text-align:left;">
           <span class="field-label" data-i18n="accNameLabel">Username</span>
@@ -438,8 +438,31 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     // Redimensionne/compresse la photo (via canvas) avant de l'enregistrer : une photo de
     // téléphone à pleine résolution dépasserait largement la limite de 1 Mo par champ
     // Firestore. 300px de côté et une compression JPEG suffisent largement pour un avatar.
+    // Un fichier .heic/.heif (format par défaut de l'appareil photo iPhone) ne peut être
+    // décodé par Image()/canvas dans la plupart des navigateurs — sans conversion
+    // préalable, le filet de secours (img.onerror) renvoyait le dataURL HEIC BRUT, non
+    // redimensionné, souvent au-delà de la limite Firestore (même bug que celui corrigé
+    // dans script.js pour la photo d'une visite/avis — voir fileToResizedDataUrl() là-bas
+    // — mais account.html est une page autonome, sans script.js, d'où cette copie locale).
+    function isHeicFile(file) {
+        const name = (file.name || '').toLowerCase();
+        return file.type === 'image/heic' || file.type === 'image/heif' || name.endsWith('.heic') || name.endsWith('.heif');
+    }
+    let _heic2anyLoadPromise = null;
+    function loadHeic2AnyScriptOnce() {
+        if (window.heic2any) return Promise.resolve();
+        if (_heic2anyLoadPromise) return _heic2anyLoadPromise;
+        _heic2anyLoadPromise = new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js';
+            s.onload = resolve;
+            s.onerror = () => reject(new Error('heic2any failed to load'));
+            document.body.appendChild(s);
+        });
+        return _heic2anyLoadPromise;
+    }
     function resizeImageDataUrl(dataUrl, maxSize) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = function() {
                 const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
@@ -450,17 +473,32 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 resolve(canvas.toDataURL('image/jpeg', 0.75));
             };
-            img.onerror = () => resolve(dataUrl);
+            img.onerror = () => reject(new Error('Could not decode image'));
             img.src = dataUrl;
         });
+    }
+    async function fileToResizedDataUrl(file, maxSize) {
+        let blob = file;
+        if (isHeicFile(file)) {
+            await loadHeic2AnyScriptOnce();
+            if (!window.heic2any) throw new Error('heic2any unavailable');
+            const converted = await window.heic2any({ blob: file, toType: 'image/jpeg', quality: 0.8 });
+            blob = Array.isArray(converted) ? converted[0] : converted;
+        }
+        const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => reject(new Error('Could not read file'));
+            reader.readAsDataURL(blob);
+        });
+        return resizeImageDataUrl(dataUrl, maxSize);
     }
 
     document.getElementById('upload-pic').addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async function(event) {
-            const resized = await resizeImageDataUrl(event.target.result, 300);
+        try {
+            const resized = await fileToResizedDataUrl(file, 300);
             profilePreview.innerHTML = `<img src="${resized}" style="width:100%; height:100%; object-fit:cover;">`;
             localStorage.setItem('userPhoto', resized);
             document.querySelectorAll('.user-avatar-btn').forEach(btn => {
@@ -471,8 +509,13 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             // ça, un autre compte utilisé sur le même navigateur récupérait la photo laissée
             // dans le localStorage partagé de l'appareil au lieu de la sienne.
             if (typeof window.syncUserData === 'function') window.syncUserData({ photo: resized });
+        } catch (err) {
+            console.warn('Import de la photo échoué :', err);
+            alert(currentLang === 'fr'
+                ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)."
+                : "Couldn't import this photo. Try a different file (JPEG/PNG format).");
         }
-        reader.readAsDataURL(file);
+        e.target.value = '';
     });
 
     // Le pays se sauvegarde directement à chaque changement (plus besoin d'un mode

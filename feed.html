@@ -23,19 +23,31 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.05); } }
 .hero-background { animation-delay: calc(0s - var(--sync-t, 0s)) !important; }
 
-/* Pas de header pleine largeur sur cette page (même parti pris que profile.html) : un
-   petit bouton "réglages" toujours visible, réutilisant les mêmes classes .dropdown-*. */
+/* Header desktop, identique aux autres pages (voir profile.html) — masqué sur mobile
+   globalement (voir style.css), où #mobile-top-icons/.mobile-bottom-nav (injectées par
+   script.js) prennent le relais. */
+.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 2500; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
+.brand-text { font-size: 19px; font-weight: 700; color: #2E3644; line-height: 1.2; }
+.universal-icons { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; gap: 9px; align-items: center; }
 .dropdown-container { position: relative; display: inline-block; }
 .header-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: #2E3644; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; font-size: 16px; font-weight: bold; box-shadow: 0 4px 14px rgba(80,60,120,.05); }
 .header-icon-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: #D42759; transform: translateY(-2px);}
+.user-avatar-btn { color: #000000 !important; overflow: hidden; padding: 0;}
 .dropdown-menu { position: absolute; right: 0; top: 52px; background: white; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-width: 190px; padding: 6px; display: flex; flex-direction: column; gap: 2px; }
 .dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: block; text-align: left; text-decoration: none;}
 .dropdown-option:hover { background: #f1f5f9; color: #D42759; }
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
-.feed-settings-btn { position: fixed; top: 20px; right: 20px; z-index: 3000; }
+.notif-badge { position: absolute; top: -3px; right: -3px; background: #D42759; color: #fff; font-size: 9.5px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 100px; display: flex; align-items: center; justify-content: center; padding: 0 3px; border: 2px solid #fff; }
 
-.feed-page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 70px 24px 100px 24px; }
+.feed-page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 120px 24px 100px 24px; }
 .feed-title { font-size: 18px; font-weight: 800; color: #212832; max-width: 900px; margin: 0 auto 16px auto; }
+
+/* Recherche (demande du 08/09/2026) : lieu / groupe / pseudo — voir filterFeed() dans le
+   script plus bas. */
+.feed-search-wrap { position: relative; max-width: 900px; margin: 0 auto 18px auto; }
+.feed-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); }
+.feed-search-input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 100px; background: #fff; padding: 10px 14px 10px 36px; font-size: 13px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; transition: 0.2s; }
+.feed-search-input:focus { border-color: #D42759; }
 
 /* Grille façon Instagram : 3 colonnes, tuiles carrées, gap minime (capture fournie par
    l'utilisateur le 08/09/2026). */
@@ -62,7 +74,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 .feed-like-count { font-size: 12.5px; font-weight: 700; color: #212832; }
 
 @media (max-width: 760px) {
-  .feed-settings-btn { top: 14px; right: 14px; }
   .header-icon-btn { width: 36px; height: 36px; }
   .feed-page { padding: 60px 12px 90px 12px; }
   .feed-grid { gap: 2px; }
@@ -79,25 +90,74 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
 </div>
 
-<div class="dropdown-container feed-settings-btn">
-    <button id="feed-settings-btn" class="header-icon-btn" title="Menu">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+<!-- Header desktop, identique aux autres pages — masqué sur mobile globalement (voir
+     style.css), où #mobile-top-icons/.mobile-bottom-nav (injectées par script.js)
+     prennent le relais. -->
+<a href="map.html" class="universal-logo">
+    <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
+        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+        <circle cx="200" cy="150" r="26" fill="#D42759"/>
+    </svg>
+    <div><div class="brand-text">Screen To <b style="color: #D42759;">Street</b></div></div>
+</a>
+
+<div class="universal-icons">
+    <div class="dropdown-container">
+        <button id="lang-btn" class="header-icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <div id="lang-menu" class="dropdown-menu hidden">
+            <a href="#" class="dropdown-option" onclick="changeLang('en'); return false;">English</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('fr'); return false;">Français</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('es'); return false;">Español</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('it'); return false;">Italiano</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('pt'); return false;">Português</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ko'); return false;">한국어</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ja'); return false;">日本語</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
+        </div>
+    </div>
+    <div class="dropdown-container">
+        <button id="cart-btn" class="header-icon-btn" onclick="openCartModal()" title="Unlock Passes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        </button>
+    </div>
+    <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
     </button>
-    <div id="feed-settings-menu" class="dropdown-menu hidden">
-        <a href="map.html" class="dropdown-option">Map</a>
-        <a href="profile.html" class="dropdown-option" data-i18n="profileMenuOption">Your Profile</a>
-        <div class="dropdown-divider"></div>
-        <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-        <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
-        <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
-        <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
-        <div class="dropdown-divider"></div>
-        <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
+    <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='profile.html'" title="Your Profile">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+    </button>
+    <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        <span id="message-icon-badge" class="notif-badge hidden">0</span>
+    </button>
+    <div class="dropdown-container">
+        <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
+        <div id="profile-menu" class="dropdown-menu hidden">
+            <a href="map-destinations.html" class="dropdown-option" data-i18n="exploreDestOption">Explore Destinations</a>
+            <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
+            <div class="dropdown-divider"></div>
+            <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
+            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+            <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
+            <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
+            <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
+            <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
+        </div>
     </div>
 </div>
 
 <div class="feed-page">
     <div class="feed-title">Explore</div>
+    <!-- Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client
+         sur feedPhotos, déjà chargé en entier — voir filterFeed() plus bas. -->
+    <div class="feed-search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="feed-search-icon"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search a place, a group, a user...">
+    </div>
     <div class="feed-loading" id="feed-loading">Loading…</div>
     <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
     <div class="feed-grid" id="feed-grid"></div>
@@ -136,23 +196,74 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     let feedPhotos = [];
     let feedCurrentPhoto = null;
 
-    async function loadFeed() {
-        const loadingEl = document.getElementById('feed-loading');
-        const emptyEl = document.getElementById('feed-empty');
+    // Empêche la page de rester bloquée sur "Loading..." indéfiniment (demande du
+    // 08/09/2026, bug rapporté avec le compte "josyine" sur mobile) : auparavant, si
+    // window.fetchGlobalPhotoFeed n'était pas encore disponible ou que la requête
+    // Firestore ne répondait jamais, rien ne cachait #feed-loading. Un timeout ne coupe
+    // pas l'appel Firestore sous-jacent, juste l'attente côté UI.
+    function withTimeout(promise, ms) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+        ]);
+    }
+
+    // Affiche une liste de photos (le fil complet, ou un sous-ensemble filtré par
+    // filterFeed() plus bas) — indexée sur feedPhotos (le fil complet) pour que
+    // openFeedPost() retrouve toujours le bon like/uid même après un filtrage.
+    function renderFeedGrid(photos) {
         const grid = document.getElementById('feed-grid');
-        if (typeof window.fetchGlobalPhotoFeed !== 'function') return;
-        feedPhotos = await window.fetchGlobalPhotoFeed();
-        loadingEl.classList.add('hidden');
-        if (!feedPhotos.length) { emptyEl.classList.remove('hidden'); return; }
+        const emptyEl = document.getElementById('feed-empty');
         grid.innerHTML = '';
-        feedPhotos.forEach((p, i) => {
+        if (!photos.length) { emptyEl.textContent = 'No results.'; emptyEl.classList.remove('hidden'); return; }
+        emptyEl.classList.add('hidden');
+        photos.forEach(p => {
             const tile = document.createElement('div');
             tile.className = 'feed-tile';
             tile.style.backgroundImage = `url('${p.photo}')`;
             tile.title = p.locationName || '';
-            tile.onclick = () => openFeedPost(i);
+            tile.onclick = () => openFeedPost(feedPhotos.indexOf(p));
             grid.appendChild(tile);
         });
+    }
+
+    // Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client,
+    // le fil entier est déjà chargé en mémoire.
+    function filterFeed(text) {
+        const q = (text || '').toLowerCase().trim();
+        if (!q) { renderFeedGrid(feedPhotos); return; }
+        renderFeedGrid(feedPhotos.filter(p =>
+            (p.username || '').toLowerCase().includes(q) ||
+            (p.locationName || '').toLowerCase().includes(q) ||
+            (p.group || '').toLowerCase().includes(q)
+        ));
+    }
+    document.getElementById('feed-search-input').addEventListener('input', (e) => filterFeed(e.target.value));
+
+    async function loadFeed() {
+        const loadingEl = document.getElementById('feed-loading');
+        const emptyEl = document.getElementById('feed-empty');
+        try {
+            if (typeof window.fetchGlobalPhotoFeed !== 'function') throw new Error('fetchGlobalPhotoFeed unavailable');
+            feedPhotos = await withTimeout(window.fetchGlobalPhotoFeed(), 15000);
+            // Groupe/artiste (pour la recherche ci-dessus) : pas renvoyé par
+            // fetchGlobalPhotoFeed (firebase-init.js, module Firebase pur, n'a pas accès à
+            // celebLocations, chargée par script.js) — enrichi ici plutôt.
+            if (typeof celebLocations !== 'undefined') {
+                feedPhotos.forEach(p => {
+                    const loc = celebLocations.find(l => l.id === p.locationId || l.id === Number(p.locationId));
+                    p.group = loc ? loc.group : '';
+                });
+            }
+            loadingEl.classList.add('hidden');
+            if (!feedPhotos.length) { document.getElementById('feed-empty').textContent = 'No public photos yet.'; document.getElementById('feed-empty').classList.remove('hidden'); return; }
+            renderFeedGrid(feedPhotos);
+        } catch (e) {
+            console.warn('Chargement du fil de photos échoué :', e);
+            loadingEl.classList.add('hidden');
+            emptyEl.textContent = 'Loading failed — check your connection and try again.';
+            emptyEl.classList.remove('hidden');
+        }
     }
 
     async function openFeedPost(index) {

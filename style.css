@@ -454,6 +454,15 @@ body.trip-not-owner .owner-only { display: none !important; }
     input, textarea { font-size: 16px !important; }
     .nav-btn, .header-icon-btn { width: 38px; height: 38px; }
 
+    /* "Search a location" (Explore, sidebar mobile) encore trop grand (nouvelle demande
+       du 08/09/2026, après un premier correctif qui n'avait touché QUE le zoom iOS, pas la
+       taille visuelle) : padding réduit ET un transform:scale sur le champ lui-même — le
+       SEUL moyen de réduire la taille visible du texte sans repasser sous 16px de
+       font-size réel (ce qui rouvrirait le zoom au focus corrigé juste au-dessus).
+       transform-origin left évite tout décalage horizontal ; la légère marge vide qu'il
+       laisse à droite/en bas est un compromis accepté. */
+    #search-input { padding: 7px 14px 7px 34px; transform: scale(0.9); transform-origin: left center; }
+
     /* Filtres (GROUP/MEMBER/AREA/YEAR) : même taille/couleur que les boutons catégorie
        (.cat-card) juste en dessous, demande du 08/09/2026 — l'ancienne règle 16px !important
        ci-dessus (avant d'exclure les <select>) les faisait paraître nettement plus gros. */
@@ -599,6 +608,25 @@ body.trip-not-owner .owner-only { display: none !important; }
     .mobile-bottom-nav.menu-open { display: none !important; }
 }
 
+/* Duo Message + Engrenage du haut à droite, mobile uniquement (demande du 08/09/2026) —
+   voir injectMobileTopIcons() dans script.js. Masqué par défaut (desktop). */
+#mobile-top-icons { display: none; }
+@media (max-width: 760px) {
+    #mobile-top-icons {
+        display: flex; align-items: center; gap: 8px;
+        position: fixed; top: calc(14px + env(safe-area-inset-top)); right: 14px; z-index: 3600;
+    }
+    #mobile-top-icons .header-icon-btn { width: 36px; height: 36px; }
+    #mobile-top-icons.menu-open { display: none !important; }
+
+    /* map.html/trips.html : l'engrenage partagé ci-dessus prend maintenant la place du
+       hamburger en haut à droite (demande du 08/09/2026) — le hamburger passe à gauche,
+       et les pastilles KPI (nombre de lieux/pays) descendent sous lui plutôt que de se
+       chevaucher. */
+    #mobile-menu-btn.hamburger-btn { left: 14px; right: auto; top: calc(14px + env(safe-area-inset-top)); }
+    .stat-pill { top: calc(60px + env(safe-area-inset-top)); }
+}
+
 /* Volet "+" : ajouter une photo / un lieu visité / un avis (task #129) */
 .qa-sheet-overlay { position: fixed; inset: 0; z-index: 9600; background: rgba(23,19,49,.45); display: none; align-items: flex-end; justify-content: center; }
 .qa-sheet-overlay.open { display: flex; }
@@ -610,10 +638,16 @@ body.trip-not-owner .owner-only { display: none !important; }
 .qa-sheet-option-icon { width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #D42759; flex-shrink: 0; }
 .qa-sheet-cancel { display: block; width: 100%; text-align: center; margin-top: 8px; padding: 12px; border-radius: 14px; background: #f1f5f9; border: none; font-family: 'Poppins',sans-serif; font-size: 13.5px; font-weight: 700; color: #64748b; cursor: pointer; }
 
-/* Transition "glissement" entre pages sur mobile en tapant la nav du bas (task #132) */
+/* Transition "glissement" entre pages sur mobile en tapant la nav du bas (task #132).
+   IMPORTANT (bug rapporté le 08/09/2026, "la barre du bas bouge pendant la transition") :
+   l'animation ne doit JAMAIS être posée sur <body> lui-même — un <body> avec un `transform`
+   actif devient le "containing block" de tout descendant en position:fixed (nav du bas,
+   icônes du haut), qui se met alors à bouger AVEC lui au lieu de rester ancré à l'écran.
+   On l'applique donc à chaque enfant direct de <body>, sauf la nav du bas et les icônes
+   du haut (elles restent des frères, pas transformés, donc parfaitement immobiles). */
 @media (max-width: 760px) {
-    body.stnav-leaving { animation: stnavSlideOut .16s ease forwards; }
-    body.stnav-entering { animation: stnavSlideIn .22s ease; }
+    body.stnav-leaving > *:not(#mobile-bottom-nav):not(#mobile-top-icons) { animation: stnavSlideOut .16s ease forwards; }
+    body.stnav-entering > *:not(#mobile-bottom-nav):not(#mobile-top-icons) { animation: stnavSlideIn .22s ease; }
 }
 @keyframes stnavSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-18px); opacity: 0; } }
 @keyframes stnavSlideIn { from { transform: translateX(18px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
