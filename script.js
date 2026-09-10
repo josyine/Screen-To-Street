@@ -1241,43 +1241,6 @@ window.syncTrips = syncTrips;
 // Au chargement de la page, une fois que Firebase a déterminé si quelqu'un est
 // connecté (ou non) : si oui, on va chercher sa wishlist et ses pass réels dans
 // Firestore pour remplacer les valeurs locales (qui pourraient être vides, ou celles
-// GARDE-FOU : si firebase-init.js n'a jamais réussi à se charger/s'initialiser
-// (bug rapporté le 10/09/2026 : "seul mon compte fonctionne, rien ne se sauvegarde
-// avec les autres") — ce module importe le SDK Firebase depuis un CDN externe
-// (www.gstatic.com, voir le haut de firebase-init.js), sans repli si ce domaine est
-// injoignable (réseau d'entreprise, bloqueur de contenu, panne CDN...). Dans ce cas,
-// AUCUNE fonction window.* de firebase-init.js n'existe jamais, et chaque site
-// d'appel du site les protège déjà par `if (typeof window.xxx === 'function')` —
-// ce qui évite un crash, mais échoue alors EN SILENCE : les données restent
-// enregistrées en local (localStorage, toujours écrit en premier) et semblent donc
-// fonctionner sur CET appareil, sans jamais atteindre Firestore ni apparaître pour
-// un autre compte/appareil. Si l'événement "firebase-ready" (déclenché par
-// onAuthStateChanged, voir firebase-init.js) n'est toujours pas arrivé après un
-// délai large, quelque chose a empêché tout le module de s'exécuter : on le signale
-// clairement plutôt que de laisser deviner.
-(function () {
-    let firebaseInitObserved = false;
-    window.addEventListener('firebase-ready', () => { firebaseInitObserved = true; }, { once: true });
-    setTimeout(() => {
-        if (firebaseInitObserved || document.getElementById('st-connection-banner')) return;
-        const isFr = (typeof currentLang !== 'undefined' && currentLang === 'fr') || document.documentElement.lang === 'fr';
-        const banner = document.createElement('div');
-        banner.id = 'st-connection-banner';
-        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#D42759;color:#fff;font-family:"Poppins",sans-serif;font-size:12.5px;font-weight:600;text-align:center;padding:10px 16px;box-shadow:0 2px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;';
-        const span = document.createElement('span');
-        span.textContent = isFr
-            ? "Connexion à nos serveurs impossible — messages, photos, voyages et autres sauvegardes ne fonctionneront pas tant que ça persiste."
-            : "Couldn't connect to our servers — messages, photos, trips and other saves won't work until this is resolved.";
-        const btn = document.createElement('button');
-        btn.textContent = isFr ? 'Actualiser' : 'Refresh';
-        btn.style.cssText = 'background:#fff;color:#D42759;border:none;border-radius:100px;padding:5px 16px;font-weight:700;font-family:"Poppins",sans-serif;font-size:12px;cursor:pointer;flex-shrink:0;';
-        btn.onclick = () => window.location.reload();
-        banner.appendChild(span);
-        banner.appendChild(btn);
-        document.body.prepend(banner);
-    }, 10000);
-})();
-
 // d'un autre compte testé plus tôt sur ce même appareil). NOTE : le voile de
 // connexion et la fenêtre "aucun pass débloqué" de map.html sont gérés entièrement
 // par le script inline de map.html lui-même (voir ce fichier) — pas ici, pour éviter
@@ -1293,6 +1256,12 @@ window.addEventListener('firebase-ready', async (e) => {
     // dans son HTML (ex: page de login).
     const friendIconBtn = document.getElementById('friend-icon-btn');
     if (friendIconBtn) friendIconBtn.classList.remove('hidden');
+    // Icône "Feed" (demande du 10/09/2026, "ajoute un icone de redirection vers la page
+    // Feed sur ordinateur" — jusqu'ici, feed.html n'était atteignable que via la nav du
+    // bas mobile, aucun lien desktop n'existait). Même bouton que friend-icon-btn/
+    // message-icon-btn (masqué par défaut, affiché une fois connecté).
+    const feedIconBtn = document.getElementById('feed-icon-btn');
+    if (feedIconBtn) feedIconBtn.classList.remove('hidden');
     const messageIconBtn = document.getElementById('message-icon-btn');
     if (messageIconBtn) {
         messageIconBtn.classList.remove('hidden');
@@ -1429,6 +1398,54 @@ window.addEventListener('firebase-ready', async (e) => {
         }
     }
 });
+
+// GARDE-FOU : si firebase-init.js n'a jamais réussi à se charger/s'initialiser (bug
+// rapporté le 10/09/2026 : "seul mon compte fonctionne, rien ne se sauvegarde avec les
+// autres") — ce module importe le SDK Firebase depuis un CDN externe (www.gstatic.com,
+// voir le haut de firebase-init.js), sans repli si ce domaine est injoignable (réseau
+// d'entreprise, bloqueur de contenu, panne CDN...). Dans ce cas, AUCUNE fonction
+// window.* de firebase-init.js n'existe jamais, et chaque site d'appel du site les
+// protège déjà par `if (typeof window.xxx === 'function')` — ce qui évite un crash,
+// mais échoue alors EN SILENCE. Si "firebase-ready" n'est toujours pas arrivé après un
+// long délai, on le signale plutôt que de laisser deviner.
+//
+// Correctif du 10/09/2026 (régression rapportée : un faux positif déclenché sur mobile
+// juste après une publication de photo réussie) : l'ancien seuil fixe de 10s était bien
+// trop court pour un mobile réel (connexion cellulaire + un gros bundle Firebase minifié
+// à parser, contrairement à ce test local/rapide) — le SDK finissait par charger, mais
+// après le délai, déclenchant la bannière alors que tout fonctionnait. Remplacé par un
+// sondage répété (toutes les 3s, jusqu'à 30s) qui vérifie AUSSI l'existence réelle d'une
+// fonction clé de firebase-init.js (pas seulement l'événement, qui a pu être manqué par
+// un souci de timing d'attache d'écouteur) — un faux positif est donc beaucoup plus
+// difficile à déclencher, sans perdre la détection d'un vrai échec de chargement.
+(function () {
+    let resolved = false;
+    window.addEventListener('firebase-ready', () => { resolved = true; }, { once: true });
+    let elapsed = 0;
+    const interval = 3000, maxWait = 30000;
+    const poll = setInterval(() => {
+        elapsed += interval;
+        if (resolved || typeof window.syncUserData === 'function') { clearInterval(poll); return; }
+        if (elapsed < maxWait) return;
+        clearInterval(poll);
+        if (document.getElementById('st-connection-banner')) return;
+        const isFr = (typeof currentLang !== 'undefined' && currentLang === 'fr') || document.documentElement.lang === 'fr';
+        const banner = document.createElement('div');
+        banner.id = 'st-connection-banner';
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#D42759;color:#fff;font-family:"Poppins",sans-serif;font-size:12.5px;font-weight:600;text-align:center;padding:10px 16px;box-shadow:0 2px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;';
+        const span = document.createElement('span');
+        span.textContent = isFr
+            ? "Connexion à nos serveurs impossible — messages, photos, voyages et autres sauvegardes ne fonctionneront pas tant que ça persiste."
+            : "Couldn't connect to our servers — messages, photos, trips and other saves won't work until this is resolved.";
+        const btn = document.createElement('button');
+        btn.textContent = isFr ? 'Actualiser' : 'Refresh';
+        btn.style.cssText = 'background:#fff;color:#D42759;border:none;border-radius:100px;padding:5px 16px;font-weight:700;font-family:"Poppins",sans-serif;font-size:12px;cursor:pointer;flex-shrink:0;';
+        btn.onclick = () => window.location.reload();
+        banner.appendChild(span);
+        banner.appendChild(btn);
+        document.body.prepend(banner);
+    }, interval);
+})();
 
 // ==========================================
 // NAV DU BAS PARTAGÉE MOBILE : Home / Live / + / Search / Avatar (demande du 08/09/2026)
@@ -4171,8 +4188,74 @@ window.switchMainTab = function(tabName) {
         const p = document.getElementById('sidebar-itinerary');
         if(p) { p.classList.remove('hidden'); p.classList.add('active'); }
         loadItineraryTabOptions();
+    } else if (tabName === 'visited') {
+        // Onglet "My Visited Places" (demande du 10/09/2026), à côté de "My Itinerary" :
+        // filtre la carte pour n'afficher QUE les lieux visités, et les liste dans le
+        // menu — voir renderVisitedTabList() plus bas.
+        document.getElementById('tab-visited-btn').classList.add('active');
+        const p = document.getElementById('sidebar-visited');
+        if(p) { p.classList.remove('hidden'); p.classList.add('active'); }
+        clearTripFromMainMap();
+        renderVisitedTabList();
     }
 }
+
+// Liste + filtrage carte de l'onglet "My Visited Places" (demande du 10/09/2026) : même
+// principe que renderLocations() pour Explore, mais sans les filtres (Group/Member/Area/
+// Year) — juste les lieux déjà marqués visités (getVisitedLocs(), voir plus haut),
+// affichés à la fois dans le menu et comme SEULS marqueurs sur la carte tant que cet
+// onglet reste actif (renderMapMarkers() remplace entièrement les marqueurs précédents).
+function renderVisitedTabList() {
+    const listEl = document.getElementById('visited-tab-list');
+    const emptyEl = document.getElementById('visited-tab-empty');
+    const countEl = document.getElementById('visited-tab-count');
+    if (!listEl) return;
+
+    const visitedData = getVisitedLocs();
+    const visitedIds = visitedData.map(v => (v && typeof v === 'object') ? v.id : v);
+    const visitedLocations = celebLocations.filter(loc => visitedIds.includes(loc.id));
+    visitedLocations.sort((a, b) => a.name.localeCompare(b.name));
+
+    if (countEl) countEl.textContent = visitedLocations.length + (visitedLocations.length === 1 ? ' location' : ' locations');
+
+    listEl.innerHTML = '';
+    if (visitedLocations.length === 0) {
+        if (emptyEl) emptyEl.classList.remove('hidden');
+        renderMapMarkers([], { fitBounds: false });
+        return;
+    }
+    if (emptyEl) emptyEl.classList.add('hidden');
+
+    visitedLocations.forEach(loc => {
+        const catIconSvg = iconsSVG[loc.category] || iconsSVG["Default"];
+        const baseColor = groupColors[loc.group] || '#334e68';
+        const commAvg = communityRatingAvg(loc.id);
+        const ratingBadgeHtml = commAvg !== null
+            ? `<div class="loc-rating" style="margin-left:auto; flex-shrink:0; display:flex; align-items:center; gap:3px; font-size:11.5px; font-weight:700; color:#D42759;">
+                 <svg width="12" height="12" viewBox="0 0 24 24" fill="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                 ${commAvg.toFixed(1)}
+               </div>`
+            : '';
+        const card = document.createElement('div');
+        card.className = 'loc-item';
+        card.style.background = `${baseColor}15`;
+        card.innerHTML = `
+            <div class="loc-icon-box" style="color:${baseColor}; background:${baseColor}1A;">${catIconSvg}</div>
+            <div class="loc-info">
+                <div class="loc-cat">${getCatName(loc.category)} &middot; ${loc.city || ''}</div>
+                <div class="loc-name">${loc.name}</div>
+            </div>
+            ${ratingBadgeHtml}
+        `;
+        card.addEventListener('click', () => {
+            map.flyTo([loc.lat, loc.lng], 16); window.openDetailsPanel(loc.id);
+        });
+        listEl.appendChild(card);
+    });
+
+    renderMapMarkers(visitedLocations, { fitBounds: true });
+}
+window.renderVisitedTabList = renderVisitedTabList;
 
 // LISTE ÉPURÉE DES VOYAGES DE L'ONGLET "MY ITINERARY" (remplace l'ancien menu
 // déroulant — demande du 06/09/2026). Un simple filtre texte côté client sur le nom du
@@ -6045,6 +6128,34 @@ window.openLocModal = function(id, postContext) {
         } else {
             modalPostCaption.classList.add('hidden');
         }
+    }
+
+    // Modale plein-écran mobile + icône crayon "modifier" (demande du 10/09/2026,
+    // profile.html) : `.post-modal` déclenche le style plein écran mobile (voir le CSS
+    // local de profile.html/feed.html) pour TOUTE publication (postContext présent),
+    // qu'elle soit modifiable ou non. `postContext.editable` (uniquement pour ses
+    // propres photos autonomes, voir renderProfilePhotos() dans profile.html) bascule en
+    // plus la croix de fermeture vers un bouton crayon (#modal-post-edit-btn) — la
+    // fermeture reste possible via le bouton retour (#modal-back-btn, chevron, affiché
+    // uniquement pour une publication). Éléments absents sur les autres pages/modales
+    // (comme d'habitude, if(el)-gardé) : aucun effet ailleurs.
+    const modalOverlayEl = document.getElementById('loc-modal');
+    const modalCloseBtn = document.querySelector('#loc-modal .close-btn');
+    const modalBackBtn = document.getElementById('modal-back-btn');
+    const modalEditBtn = document.getElementById('modal-post-edit-btn');
+    if (modalOverlayEl) modalOverlayEl.classList.toggle('post-modal', !!postContext);
+    if (modalBackBtn) modalBackBtn.classList.toggle('hidden', !postContext);
+    if (postContext && postContext.editable) {
+        if (modalCloseBtn) modalCloseBtn.classList.add('hidden');
+        if (modalEditBtn) {
+            modalEditBtn.classList.remove('hidden');
+            modalEditBtn.onclick = () => {
+                if (typeof window.openPostEditSheet === 'function') window.openPostEditSheet(postContext);
+            };
+        }
+    } else {
+        if (modalCloseBtn) modalCloseBtn.classList.remove('hidden');
+        if (modalEditBtn) modalEditBtn.classList.add('hidden');
     }
 
     if(modalDesc) {

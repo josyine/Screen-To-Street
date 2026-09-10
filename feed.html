@@ -97,9 +97,19 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 }
 
 @media (max-width: 760px) {
+  /* Logo "Screen To Street" retiré sur mobile (demande du 10/09/2026) — comme sur
+     profile.html, .universal-logo n'est PAS couvert par la règle globale de style.css
+     qui ne masque que .top-nav/.universal-icons, donc un retrait explicite est
+     nécessaire ici. */
+  .universal-logo { display: none !important; }
   .header-icon-btn { width: 36px; height: 36px; }
   .feed-page { padding: 60px 12px 90px 12px; }
   .feed-grid { gap: 2px; }
+  /* Barre de recherche réduite (demande du 10/09/2026 : "réduit la taille") — via
+     transform:scale() sur le conteneur plutôt qu'en baissant le font-size réel de
+     l'input, qui resterait sous 16px et redéclencherait le zoom automatique iOS au
+     focus (même bug déjà rencontré et corrigé sur friends.html/.friend-add-row). */
+  .feed-search-wrap { max-width: 270px; margin: 0 auto 14px auto; transform: scale(0.82); transform-origin: top center; }
 }
 </style>
 <script>
@@ -147,6 +157,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     </div>
     <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+    </button>
+    <button id="feed-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='feed.html'" title="Explore feed">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
     </button>
     <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='profile.html'" title="Your Profile">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
