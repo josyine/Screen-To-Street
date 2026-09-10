@@ -48,6 +48,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 .feed-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); }
 .feed-search-input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 100px; background: #fff; padding: 10px 14px 10px 36px; font-size: 13px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; transition: 0.2s; }
 .feed-search-input:focus { border-color: #D42759; }
+/* Suggestions de comptes (demande du 10/09/2026) : en plus du filtrage de la grille de
+   photos déjà en place (filterFeed), la recherche propose maintenant aussi les COMPTES
+   correspondants — cliquer en ouvre le profil (voir openUserSuggestion() plus bas). */
+.feed-user-suggestions { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.12); max-height: 260px; overflow-y: auto; z-index: 30; }
+.feed-user-suggestion-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; transition: 0.15s; }
+.feed-user-suggestion-row:hover { background: #FFF7F8; }
+.feed-user-suggestion-avatar { width: 28px; height: 28px; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.feed-user-suggestion-name { font-size: 12.5px; font-weight: 700; color: #212832; }
 
 /* Grille façon Instagram : 3 colonnes, tuiles carrées, gap minime (capture fournie par
    l'utilisateur le 08/09/2026). */
@@ -56,22 +64,37 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 .feed-tile:hover { opacity: 0.85; }
 .feed-empty, .feed-loading { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
 
-/* Post en grand (clic sur une tuile) */
-.feed-post-overlay { position: fixed; inset: 0; z-index: 9700; background: rgba(23,19,49,.65); display: none; align-items: center; justify-content: center; padding: 20px; }
-.feed-post-overlay.open { display: flex; }
-.feed-post-card { width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; background: #fff; border-radius: 20px; overflow: hidden; }
-.feed-post-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; }
-.feed-post-avatar { width: 32px; height: 32px; border-radius: 50%; color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.feed-post-username { font-size: 13px; font-weight: 700; color: #212832; }
-.feed-post-location { font-size: 11px; color: #94a3b8; }
-.feed-post-close { margin-left: auto; background: #f1f5f9; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 15px; line-height: 1; color: #212832; }
-.feed-post-img { width: 100%; aspect-ratio: 1 / 1; background-size: cover; background-position: center; background-color: #f1f5f9; }
-.feed-post-actions { display: flex; align-items: center; gap: 10px; padding: 12px 16px; }
-.feed-like-btn { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; color: #212832; transition: 0.15s; }
-.feed-like-btn.liked { color: #D42759; }
-.feed-like-btn svg { transition: transform 0.15s; }
-.feed-like-btn.liked svg { transform: scale(1.12); fill: #D42759; }
-.feed-like-count { font-size: 12.5px; font-weight: 700; color: #212832; }
+/* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
+   "publication" que profile.html — voir #loc-modal plus bas — plutôt que l'ancien
+   #feed-post-overlay propre à cette page. SANS la mini-carte Leaflet ("supprime la map
+   de cette fenêtre") : #modal-map n'existe simplement pas ici, et openLocModal() (voir
+   script.js) s'en passe déjà proprement (if(!mapEl) return;). Même charte que
+   visited.html/profile.html pour la modale elle-même. */
+.modal-content { padding: 0; }
+.close-btn { top: 12px; right: 18px; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.4); z-index: 10; }
+#modal-hero { height: 320px; background-size: cover; background-position: center; border-radius: 16px 16px 0 0; display: flex; align-items: flex-end; padding: 20px; }
+#modal-title { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.modal-body { padding: 20px 26px 28px 26px; }
+#modal-meta { font-size: 12.5px; color: #D42759; font-weight: 700; margin-bottom: 16px; }
+.modal-sub-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+#modal-meta-box { background: #f8fafc; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; font-size: 12.5px; line-height: 2; color: #334155; }
+#modal-desc { font-size: 13px; line-height: 1.8; color: #3f495c; margin-bottom: 18px; }
+.modal-map-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #2E3644; font-size: 12.5px; font-weight: 600; transition: .2s; }
+.modal-map-link:hover { border-color: #D42759; color: #D42759; }
+.modal-post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.modal-post-avatar { width: 34px; height: 34px; border-radius: 50%; color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.modal-post-username { font-size: 13.5px; font-weight: 700; color: #212832; flex: 1; }
+.modal-post-like-btn { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; color: #212832; transition: 0.15s; }
+.modal-post-like-btn.liked { color: #D42759; }
+.modal-post-like-btn svg { transition: transform 0.15s; }
+.modal-post-like-btn.liked svg { transform: scale(1.12); fill: #D42759; }
+.modal-post-like-count { font-size: 12.5px; font-weight: 700; color: #212832; margin-left: 4px; }
+.modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
+@media (max-width: 760px) {
+  .modal-content { width: 97%; border-radius: 12px; }
+  .modal-body { padding: 18px 18px 22px 18px; }
+  #modal-hero { height: 220px; border-radius: 12px 12px 0 0; }
+}
 
 @media (max-width: 760px) {
   .header-icon-btn { width: 36px; height: 36px; }
@@ -157,28 +180,45 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     <div class="feed-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="feed-search-icon"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search a place, a group, a user...">
+        <div id="feed-user-suggestions" class="feed-user-suggestions hidden"></div>
     </div>
     <div class="feed-loading" id="feed-loading">Loading…</div>
     <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
     <div class="feed-grid" id="feed-grid"></div>
 </div>
 
-<div class="feed-post-overlay" id="feed-post-overlay">
-    <div class="feed-post-card">
-        <div class="feed-post-header">
-            <div class="feed-post-avatar" id="feed-post-avatar">U</div>
-            <div>
-                <div class="feed-post-username" id="feed-post-username"></div>
-                <div class="feed-post-location" id="feed-post-location"></div>
+<!-- MODAL PUBLICATION (rempli par window.openLocModal(id, postContext) du script.js
+     partagé) — même structure que profile.html, SANS mini-carte (demande du 10/09/2026,
+     capture d'écran fournie : "supprime la map de cette fenêtre"). -->
+<div id="loc-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeLocModal()">&times;</span>
+        <div id="modal-hero"><div id="modal-title"></div></div>
+        <div class="modal-body">
+            <div id="modal-post-header" class="modal-post-header hidden">
+                <div class="modal-post-avatar" id="modal-post-avatar">U</div>
+                <div class="modal-post-username" id="modal-post-username"></div>
+                <button class="modal-post-like-btn" id="modal-post-like-btn" type="button" title="Like">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
+                </button>
+                <span class="modal-post-like-count" id="modal-post-like-count">0</span>
             </div>
-            <button class="feed-post-close" type="button" id="feed-post-close-btn">&times;</button>
-        </div>
-        <div class="feed-post-img" id="feed-post-img"></div>
-        <div class="feed-post-actions">
-            <button class="feed-like-btn" id="feed-like-btn" type="button" title="Like">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
-            </button>
-            <span class="feed-like-count" id="feed-like-count">0</span>
+            <div id="modal-post-caption" class="modal-post-caption hidden"></div>
+            <div id="modal-meta"></div>
+            <span class="modal-sub-label" id="modal-details-label">Details</span>
+            <div id="modal-meta-box"></div>
+            <span class="modal-sub-label" id="modal-about-label">About this place</span>
+            <div id="modal-desc"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span id="modal-map-link-text">Open in Google Maps</span>
+                </a>
+                <a id="modal-more-details" href="map.html" class="modal-map-link" style="border-color:#D42759; color:#D42759;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    More details
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -194,7 +234,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     }
 
     let feedPhotos = [];
-    let feedCurrentPhoto = null;
 
     // Empêche la page de rester bloquée sur "Loading..." indéfiniment (demande du
     // 08/09/2026, bug rapporté avec le compte "josyine" sur mobile) : auparavant, si
@@ -240,6 +279,45 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     }
     document.getElementById('feed-search-input').addEventListener('input', (e) => filterFeed(e.target.value));
 
+    // Suggestions de comptes (demande du 10/09/2026) : recherche "contient" (comme
+    // friends.html, ajout d'ami), pour retrouver un pseudo tapé au milieu — pas
+    // seulement en préfixe. Cliquer une suggestion ouvre le profil public de ce compte.
+    let userSuggestDebounce = null;
+    const suggestBox = document.getElementById('feed-user-suggestions');
+    function openUserSuggestion(username) {
+        window.location.href = 'profile.html?u=' + encodeURIComponent(username);
+    }
+    document.getElementById('feed-search-input').addEventListener('input', (e) => {
+        clearTimeout(userSuggestDebounce);
+        const q = e.target.value.trim();
+        if (!q || typeof window.searchUsernamesContaining !== 'function') {
+            suggestBox.classList.add('hidden');
+            suggestBox.innerHTML = '';
+            return;
+        }
+        userSuggestDebounce = setTimeout(async () => {
+            const matches = await window.searchUsernamesContaining(q, 6);
+            if (document.getElementById('feed-search-input').value.trim() !== q) return;
+            if (!matches.length) { suggestBox.classList.add('hidden'); suggestBox.innerHTML = ''; return; }
+            suggestBox.innerHTML = matches.map(m => `
+                <div class="feed-user-suggestion-row" data-username="${escapeHtml(m.username)}">
+                    <div class="feed-user-suggestion-avatar" style="background:${feedAvatarColor(m.username)};">${escapeHtml((m.username || 'U').charAt(0).toUpperCase())}</div>
+                    <span class="feed-user-suggestion-name">${escapeHtml(m.username)}</span>
+                </div>
+            `).join('');
+            suggestBox.querySelectorAll('.feed-user-suggestion-row').forEach(row => {
+                row.addEventListener('click', () => openUserSuggestion(row.dataset.username));
+            });
+            suggestBox.classList.remove('hidden');
+        }, 250);
+    });
+    document.getElementById('feed-search-input').addEventListener('blur', () => {
+        setTimeout(() => suggestBox.classList.add('hidden'), 150);
+    });
+    document.getElementById('feed-search-input').addEventListener('focus', (e) => {
+        if (suggestBox.innerHTML.trim()) suggestBox.classList.remove('hidden');
+    });
+
     async function loadFeed() {
         const loadingEl = document.getElementById('feed-loading');
         const emptyEl = document.getElementById('feed-empty');
@@ -266,50 +344,22 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         }
     }
 
-    async function openFeedPost(index) {
+    // Ouvre la modale "publication" partagée (voir #loc-modal ci-dessus et
+    // window.openLocModal() dans script.js) — demande du 10/09/2026 : remplace l'ancien
+    // #feed-post-overlay propre à cette page par la même popup que profile.html. Ne fait
+    // rien si p.locationId ne correspond à aucun lieu connu (même garde qu'ailleurs sur
+    // le site, voir openLocModal()).
+    function openFeedPost(index) {
         const p = feedPhotos[index];
-        if (!p) return;
-        feedCurrentPhoto = p;
-        document.getElementById('feed-post-avatar').textContent = (p.username || 'U').charAt(0).toUpperCase();
-        document.getElementById('feed-post-avatar').style.background = feedAvatarColor(p.username);
-        document.getElementById('feed-post-username').textContent = p.username || '';
-        document.getElementById('feed-post-location').textContent = p.locationName || '';
-        document.getElementById('feed-post-img').style.backgroundImage = `url('${p.photo}')`;
-        document.getElementById('feed-post-overlay').classList.add('open');
-
-        const likeBtn = document.getElementById('feed-like-btn');
-        const likeCount = document.getElementById('feed-like-count');
-        likeBtn.classList.remove('liked');
-        likeCount.textContent = '…';
-        if (typeof window.getPhotoLikeState === 'function') {
-            const photoKey = p.uid + '_' + p.id;
-            const state = await window.getPhotoLikeState(photoKey);
-            if (feedCurrentPhoto !== p) return;
-            likeCount.textContent = state.count;
-            likeBtn.classList.toggle('liked', state.likedByMe);
-        }
+        if (!p || typeof window.openLocModal !== 'function') return;
+        window.openLocModal(p.locationId, {
+            username: p.username,
+            avatarColor: feedAvatarColor(p.username),
+            photo: p.photo,
+            caption: p.caption,
+            photoKey: p.uid + '_' + p.id
+        });
     }
-
-    document.getElementById('feed-post-close-btn').addEventListener('click', () => {
-        document.getElementById('feed-post-overlay').classList.remove('open');
-        feedCurrentPhoto = null;
-    });
-    document.getElementById('feed-post-overlay').addEventListener('click', (e) => {
-        if (e.target.id === 'feed-post-overlay') {
-            document.getElementById('feed-post-overlay').classList.remove('open');
-            feedCurrentPhoto = null;
-        }
-    });
-    document.getElementById('feed-like-btn').addEventListener('click', async () => {
-        if (!feedCurrentPhoto || typeof window.togglePhotoLike !== 'function') return;
-        const likeBtn = document.getElementById('feed-like-btn');
-        const likeCount = document.getElementById('feed-like-count');
-        const nowLiked = !likeBtn.classList.contains('liked');
-        likeBtn.classList.toggle('liked', nowLiked);
-        likeCount.textContent = Math.max(0, parseInt(likeCount.textContent, 10) || 0) + (nowLiked ? 1 : -1);
-        const photoKey = feedCurrentPhoto.uid + '_' + feedCurrentPhoto.id;
-        await window.togglePhotoLike(photoKey, nowLiked);
-    });
 
     window.addEventListener('firebase-ready', () => { loadFeed(); });
 </script>

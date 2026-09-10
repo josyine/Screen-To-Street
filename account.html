@@ -844,7 +844,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         if (!textarea || !saveBtn) return;
         textarea.addEventListener('input', () => { countEl.textContent = textarea.value.length + '/280'; });
         saveBtn.addEventListener('click', async () => {
-            if (typeof window.updateMyBio !== 'function') return;
+            if (typeof window.updateMyBio !== 'function') {
+                if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "Non connecté, réessayez dans un instant." : 'Not connected, please try again in a moment.', { isError: true });
+                return;
+            }
             saveBtn.disabled = true;
             const ok = await window.updateMyBio(textarea.value.trim());
             saveBtn.disabled = false;
@@ -906,7 +909,12 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             const errBox = document.getElementById('friend-add-error');
             errBox.classList.add('hidden');
             const username = input.value.trim();
-            if (!username || typeof window.sendFriendRequest !== 'function') return;
+            if (!username) return;
+            if (typeof window.sendFriendRequest !== 'function') {
+                errBox.textContent = currentLang === 'fr' ? "Non connecté, réessayez dans un instant." : 'Not connected, please try again in a moment.';
+                errBox.classList.remove('hidden');
+                return;
+            }
             const result = await window.sendFriendRequest(username);
             if (result.error === 'not-found') {
                 errBox.textContent = t('friendsErrNotFound');

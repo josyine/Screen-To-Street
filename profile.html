@@ -52,12 +52,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 
 .profile-loading, .profile-not-found { text-align: center; color: #94a3b8; font-size: 14px; padding: 60px 0; }
 
-/* En-tête profil (refonte du 09/09/2026, capture d'écran fournie) : bannière dégradée
-   pleine largeur avec avatar cerclé de blanc qui déborde en bas à gauche, pseudo + stats
-   + bouton d'action (pill sombre) alignés sous la bannière. */
-.profile-cover-header { position: relative; max-width: 780px; margin: 0 auto 26px auto; }
-.profile-cover-banner { height: 190px; border-radius: 22px; background: linear-gradient(120deg, #D42759 0%, #A93FD1 55%, #7C4DE0 100%); }
-.profile-header-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 0 28px; margin-top: -48px; }
+/* En-tête profil (refonte du 09/09/2026, capture d'écran fournie ; révisé le 10/09/2026 :
+   "j'aime pas l'affichage, la bande de couleur doit prendre toute la largeur en
+   ordinateur" — la bannière déborde maintenant jusqu'aux bords réels de l'écran, en
+   compensant le padding latéral de .page (24px desktop), alors que la ligne
+   avatar/pseudo/stats en dessous reste centrée à la même largeur de lecture (780px)
+   qu'avant : seul le fond coloré est plein écran, pas le contenu par-dessus. */
+.profile-cover-header { position: relative; margin: 0 -24px 26px -24px; }
+.profile-cover-banner { height: 190px; background: linear-gradient(120deg, #D42759 0%, #A93FD1 55%, #7C4DE0 100%); }
+.profile-header-row { max-width: 780px; margin: -48px auto 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 0 28px; }
 .profile-avatar-wrap { position: relative; flex-shrink: 0; }
 .profile-avatar { width: 108px; height: 108px; border-radius: 50%; color: #fff; font-size: 36px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 5px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,.18); }
 .profile-header-info { flex: 1; min-width: 180px; padding-bottom: 8px; }
@@ -194,8 +197,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
   .page { padding: 60px 16px 90px 16px; }
   /* Bannière dégradée retirée sur mobile (capture d'écran du 09/09/2026 : juste
      avatar + pseudo/stats, pas de bannière) — on revient à une ligne simple. */
+  .profile-cover-header { margin: 0 0 26px 0; }
   .profile-cover-banner { display: none; }
-  .profile-header-row { margin-top: 0; padding: 0; gap: 14px; }
+  .profile-header-row { max-width: none; margin: 0; padding: 0; gap: 14px; }
   .profile-avatar { width: 64px; height: 64px; font-size: 24px; border-width: 3px; }
   /* Bouton "Edit profile" texte remplacé par l'icône crayon sur l'avatar (voir
      .profile-avatar-edit-badge) */
