@@ -1125,9 +1125,13 @@ const shareFriendListEl = document.getElementById('share-friend-list');
 if (shareFriendListEl) {
     shareFriendListEl.addEventListener('click', async (e) => {
         const opt = e.target.closest('.share-friend-option');
-        if (!opt || typeof window.shareLocationWithFriend !== 'function') return;
+        if (!opt) return;
         const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
         if (!loc) return;
+        if (typeof window.shareLocationWithFriend !== 'function') {
+            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "Connexion indisponible, réessayez." : 'Not connected, please try again.', { isError: true });
+            return;
+        }
         await window.shareLocationWithFriend(opt.getAttribute('data-friend-uid'), loc.id, loc.name);
         const menu = document.getElementById('share-location-menu');
         if (menu) menu.classList.add('hidden');
@@ -1237,6 +1241,43 @@ window.syncTrips = syncTrips;
 // Au chargement de la page, une fois que Firebase a déterminé si quelqu'un est
 // connecté (ou non) : si oui, on va chercher sa wishlist et ses pass réels dans
 // Firestore pour remplacer les valeurs locales (qui pourraient être vides, ou celles
+// GARDE-FOU : si firebase-init.js n'a jamais réussi à se charger/s'initialiser
+// (bug rapporté le 10/09/2026 : "seul mon compte fonctionne, rien ne se sauvegarde
+// avec les autres") — ce module importe le SDK Firebase depuis un CDN externe
+// (www.gstatic.com, voir le haut de firebase-init.js), sans repli si ce domaine est
+// injoignable (réseau d'entreprise, bloqueur de contenu, panne CDN...). Dans ce cas,
+// AUCUNE fonction window.* de firebase-init.js n'existe jamais, et chaque site
+// d'appel du site les protège déjà par `if (typeof window.xxx === 'function')` —
+// ce qui évite un crash, mais échoue alors EN SILENCE : les données restent
+// enregistrées en local (localStorage, toujours écrit en premier) et semblent donc
+// fonctionner sur CET appareil, sans jamais atteindre Firestore ni apparaître pour
+// un autre compte/appareil. Si l'événement "firebase-ready" (déclenché par
+// onAuthStateChanged, voir firebase-init.js) n'est toujours pas arrivé après un
+// délai large, quelque chose a empêché tout le module de s'exécuter : on le signale
+// clairement plutôt que de laisser deviner.
+(function () {
+    let firebaseInitObserved = false;
+    window.addEventListener('firebase-ready', () => { firebaseInitObserved = true; }, { once: true });
+    setTimeout(() => {
+        if (firebaseInitObserved || document.getElementById('st-connection-banner')) return;
+        const isFr = (typeof currentLang !== 'undefined' && currentLang === 'fr') || document.documentElement.lang === 'fr';
+        const banner = document.createElement('div');
+        banner.id = 'st-connection-banner';
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#D42759;color:#fff;font-family:"Poppins",sans-serif;font-size:12.5px;font-weight:600;text-align:center;padding:10px 16px;box-shadow:0 2px 10px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;';
+        const span = document.createElement('span');
+        span.textContent = isFr
+            ? "Connexion à nos serveurs impossible — messages, photos, voyages et autres sauvegardes ne fonctionneront pas tant que ça persiste."
+            : "Couldn't connect to our servers — messages, photos, trips and other saves won't work until this is resolved.";
+        const btn = document.createElement('button');
+        btn.textContent = isFr ? 'Actualiser' : 'Refresh';
+        btn.style.cssText = 'background:#fff;color:#D42759;border:none;border-radius:100px;padding:5px 16px;font-weight:700;font-family:"Poppins",sans-serif;font-size:12px;cursor:pointer;flex-shrink:0;';
+        btn.onclick = () => window.location.reload();
+        banner.appendChild(span);
+        banner.appendChild(btn);
+        document.body.prepend(banner);
+    }, 10000);
+})();
+
 // d'un autre compte testé plus tôt sur ce même appareil). NOTE : le voile de
 // connexion et la fenêtre "aucun pass débloqué" de map.html sont gérés entièrement
 // par le script inline de map.html lui-même (voir ce fichier) — pas ici, pour éviter
@@ -1653,7 +1694,11 @@ window.openAddPhotoModal = function () {
             errorEl.classList.add('hidden');
             if (!selectedLocation) { errorEl.textContent = t('addPhotoErrorLocation'); errorEl.classList.remove('hidden'); return; }
             if (!pendingPhoto) { errorEl.textContent = t('addPhotoErrorPhoto'); errorEl.classList.remove('hidden'); return; }
-            if (typeof window.addProfilePhoto !== 'function') return;
+            if (typeof window.addProfilePhoto !== 'function') {
+                errorEl.textContent = t('addPhotoErrorGeneric');
+                errorEl.classList.remove('hidden');
+                return;
+            }
             const submitBtn = overlay.querySelector('#add-photo-submit-btn');
             submitBtn.disabled = true;
             const result = await window.addProfilePhoto({

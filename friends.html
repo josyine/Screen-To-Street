@@ -838,7 +838,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     async function sendCurrentMessage() {
         const input = document.getElementById('convo-message-input');
         const text = input.value;
-        if (!text.trim() || !currentConvoId || typeof window.sendMessage !== 'function') return;
+        if (!text.trim() || !currentConvoId) return;
+        if (typeof window.sendMessage !== 'function') {
+            const isFr = currentLang === 'fr';
+            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(isFr ? "Non connecté, réessayez dans un instant." : 'Not connected, please try again in a moment.', { isError: true });
+            return;
+        }
         const result = await window.sendMessage(currentConvoId, text);
         if (!result || result.error) {
             const isFr = currentLang === 'fr';
@@ -1008,7 +1013,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             const errorEl = modal.querySelector('#add-member-error');
             const username = input.value.trim();
             errorEl.classList.add('hidden');
-            if (!username || !currentConvoTripId || typeof window.sendTripInvite !== 'function') return;
+            if (!username || !currentConvoTripId) return;
+            if (typeof window.sendTripInvite !== 'function') {
+                errorEl.textContent = isFr ? "Non connecté, réessayez dans un instant." : 'Not connected, please try again in a moment.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
             btn.disabled = true;
             // Auto-répare le document trips/{id} AVANT d'envoyer l'invitation (comme les
             // autres points d'entrée de partage dans script.js) : sans ça, un voyage jamais
@@ -1152,7 +1162,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         const errBox = document.getElementById('friend-add-error');
         errBox.classList.add('hidden');
         const username = input.value.trim();
-        if (!username || typeof window.sendFriendRequest !== 'function') return;
+        if (!username) return;
+        if (typeof window.sendFriendRequest !== 'function') {
+            errBox.textContent = currentLang === 'fr' ? "Non connecté, réessayez dans un instant." : 'Not connected, please try again in a moment.';
+            errBox.classList.remove('hidden');
+            return;
+        }
         const result = await window.sendFriendRequest(username);
         if (result.success) {
             input.value = '';

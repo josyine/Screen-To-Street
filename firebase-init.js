@@ -189,13 +189,37 @@ window.firebaseChangePassword = async function (currentPassword, newPassword) {
 // document Firestore de l'utilisateur actuellement connecté. Ne fait rien si
 // personne n'est connecté (visiteur non authentifié → wishlist locale uniquement,
 // comme avant).
+//
+// Bug corrigé le 10/09/2026 : c'est LA fonction derrière la sauvegarde cloud des
+// voyages/wishlist/lieux visités (voir syncVisited()/openTripModal()/toggleWishlist()
+// dans script.js, tous des appels "fire and forget" sans vérifier de retour) — mais
+// elle avalait silencieusement toute erreur Firestore (juste un console.warn). Le
+// localStorage local était TOUJOURS écrit avant l'appel (ailleurs dans script.js),
+// donc la sauvegarde avait l'air de marcher sur cet appareil même quand elle
+// n'atteignait jamais Firestore (règles refusées, hors-ligne, requête bloquée...) —
+// invisible pour qui ne garde pas la console ouverte, et donc absente pour tout
+// autre appareil/compte qui consulterait les mêmes données ensuite. Retourne
+// maintenant {success,code} ET affiche un toast d'erreur (limité à un seul à la
+// fois, pour ne pas spammer si plusieurs sync échouent d'affilée hors-ligne).
+let _syncUserDataErrorToastShown = false;
 window.syncUserData = async function (fields) {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) return { success: false, code: 'not-authenticated' };
     try {
         await setDoc(doc(db, 'users', user.uid), fields, { merge: true });
+        return { success: true };
     } catch (e) {
         console.warn('Synchronisation Firestore échouée :', e);
+        if (!_syncUserDataErrorToastShown && typeof window.showSimpleToast === 'function') {
+            _syncUserDataErrorToastShown = true;
+            const isFr = document.documentElement.lang === 'fr' || (window.currentLang === 'fr');
+            window.showSimpleToast(
+                isFr ? "Problème de connexion : vos changements sont enregistrés sur cet appareil mais pas encore dans le cloud." : "Connection issue: your changes are saved on this device but not yet synced to the cloud.",
+                { isError: true }
+            );
+            setTimeout(() => { _syncUserDataErrorToastShown = false; }, 15000);
+        }
+        return { success: false, code: e && e.code || 'unknown' };
     }
 };
 
