@@ -17,7 +17,17 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
-body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
+/* BUG rapporté le 12/09/2026 : "sur mobile, quand j'ouvre une discussion, la zone de
+   texte est masquée par la nav du bas". 100vh reste la hauteur du plus GRAND viewport
+   possible (clavier fermé) sur la plupart des navigateurs mobiles — quand le clavier
+   virtuel s'ouvre au focus du champ de message, cette hauteur ne rétrécit pas, alors que
+   la zone RÉELLEMENT visible au-dessus du clavier, si. Avec overflow:hidden ci-dessous
+   (pas de scroll pour compenser), le bas de .friends-main — la ligne de saisie — se
+   retrouve hors de cette zone visible, masquée par le clavier (et donc par la nav du bas
+   partagée, restée affichée au-dessus de lui). 100dvh (hauteur du viewport DYNAMIQUE, qui
+   suit l'ouverture/fermeture du clavier) corrige ça sans JS — ignoré silencieusement par
+   les navigateurs qui ne le supportent pas encore, d'où le repli 100vh juste avant. */
+body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;}
 .hidden { display: none !important; }
 
 .hero-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; background: linear-gradient(135deg, #F5F3FC, #E3DEF5, #D8CFF0, #E3DEF5); background-size: 200% 200%; animation: gradientShift 10s ease infinite; }
@@ -44,7 +54,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
    visible que dans la bande d'en-tête (110px réservés en haut pour le logo/icônes fixes,
    voir .universal-logo/.universal-icons) — ni marge latérale, ni largeur maximale, ni
    coins arrondis (qui laisseraient deviner le fond violet dans les angles). */
-.friends-page { position: relative; z-index: 2000; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 110px 0 0 0; }
+.friends-page { position: relative; z-index: 2000; width: 100vw; height: 100vh; height: 100dvh; display: flex; justify-content: center; align-items: center; padding: 110px 0 0 0; }
 .friends-shell { width: 100%; max-width: 100%; height: 100%; background: #fff; border-radius: 0; box-shadow: none; display: flex; overflow: hidden; }
 
 .friends-sidebar { width: 290px; border-right: 1px solid #EFECF6; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
@@ -969,6 +979,16 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     document.getElementById('convo-send-btn').addEventListener('click', sendCurrentMessage);
     document.getElementById('convo-message-input').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') sendCurrentMessage();
+    });
+    // Filet de sécurité mobile (voir le commentaire 100dvh dans <style> plus haut, la
+    // correction principale) : sur un navigateur qui ignorerait encore 100dvh, l'ouverture
+    // du clavier virtuel au focus peut repousser ce champ hors de l'écran visible. Un
+    // scrollIntoView() juste après laisse le temps au clavier de s'animer avant de recadrer.
+    document.getElementById('convo-message-input').addEventListener('focus', () => {
+        setTimeout(() => {
+            const input = document.getElementById('convo-message-input');
+            if (input) input.scrollIntoView({ block: 'end', behavior: 'smooth' });
+        }, 300);
     });
     async function sendCurrentMessage() {
         const input = document.getElementById('convo-message-input');

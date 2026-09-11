@@ -5258,19 +5258,61 @@ function injectLocVisitorsChevron() {
     tab.setAttribute('aria-label', 'Visitor photos for the selected location');
     tab.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
     document.body.appendChild(tab);
-    tab.addEventListener('click', () => {
-        const loc = (typeof celebLocations !== 'undefined') ? celebLocations.find(l => l.id === currentLocationIdForMemory) : null;
-        if (!loc) {
-            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "Sélectionnez d'abord un lieu sur la carte." : 'Select a location on the map first.');
-            return;
-        }
-        const posts = window.getLocPosts(loc.id);
-        if (!posts.length) {
-            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Pas encore de photo de visiteur pour ce lieu.' : 'No visitor photos for this location yet.');
-            return;
-        }
-        openLocVisitorsDrawer(loc);
+    tab.addEventListener('click', async () => {
+        // Fonctionne n'importe où sur la carte (demande du 12/09/2026 : "il faut qu'on
+        // puisse cliquer sur la flèche n'importe où, sans devoir cliquer sur un lieu") —
+        // avant ce correctif, un clic sans lieu sélectionné n'affichait qu'un message
+        // "sélectionnez d'abord un lieu". Le comportement dépend maintenant de ce qui est
+        // effectivement visible/centré à l'écran, voir findNearbyOrAreaVisitorContent().
+        await ensureLocPostsIndex();
+        findNearbyOrAreaVisitorContent();
     });
+}
+
+// Détermine quoi ouvrir au clic sur le chevron (demande du 12/09/2026) : soit un lieu
+// précis si le centre de la carte en frôle un, soit une liste groupée de tout ce qui est
+// publié dans le pays le plus représenté parmi les lieux actuellement visibles à l'écran
+// (ex: centré sur la France -> tout ce que les utilisateurs ont publié en France).
+// currentFilteredLocations (pas celebLocations) pour rester cohérent avec les marqueurs
+// RÉELLEMENT affichés (filtres Groupe/Membre/Année... déjà appliqués, voir renderMarkers()).
+function findNearbyOrAreaVisitorContent() {
+    if (!map || !Array.isArray(currentFilteredLocations) || currentFilteredLocations.length === 0) return;
+    const bounds = map.getBounds();
+    const visibleLocs = currentFilteredLocations.filter(l => bounds.contains([l.lat, l.lng]));
+    if (!visibleLocs.length) {
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Aucun lieu visible sur cette portion de carte.' : 'No locations visible in this part of the map.');
+        return;
+    }
+    // "Proche d'un lieu en particulier" : distance à l'écran (pixels), pas en degrés de
+    // latitude/longitude — sans ça, un lieu au même point géographique mais hors zoom
+    // paraîtrait "loin" ou l'inverse selon le niveau de zoom.
+    const centerPt = map.latLngToContainerPoint(map.getCenter());
+    let nearest = null, nearestDist = Infinity;
+    visibleLocs.forEach(loc => {
+        const pt = map.latLngToContainerPoint([loc.lat, loc.lng]);
+        const dist = pt.distanceTo(centerPt);
+        if (dist < nearestDist) { nearestDist = dist; nearest = loc; }
+    });
+    const NEARBY_PX_THRESHOLD = 70;
+    if (nearest && nearestDist <= NEARBY_PX_THRESHOLD) {
+        const posts = window.getLocPosts(nearest.id);
+        if (posts.length) { openLocVisitorsDrawer(nearest); return; }
+    }
+    // Sinon : pays le plus représenté parmi les lieux visibles à l'écran.
+    const countryCounts = {};
+    visibleLocs.forEach(l => { if (l.country) countryCounts[l.country] = (countryCounts[l.country] || 0) + 1; });
+    const topCountry = Object.keys(countryCounts).sort((a, b) => countryCounts[b] - countryCounts[a])[0];
+    if (!topCountry) {
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Aucun lieu visible sur cette portion de carte.' : 'No locations visible in this part of the map.');
+        return;
+    }
+    const countryLocs = visibleLocs.filter(l => l.country === topCountry);
+    const hasAnyPost = countryLocs.some(l => window.getLocPosts(l.id).length > 0);
+    if (!hasAnyPost) {
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? `Pas encore de photo de visiteur publiée en ${topCountry}.` : `No visitor photos published in ${topCountry} yet.`);
+        return;
+    }
+    openAreaVisitorsDrawer(topCountry, countryLocs);
 }
 
 // Mini-aperçu (bandeau juste au-dessus de la nav du bas, mobile uniquement comme la nav
@@ -5286,7 +5328,12 @@ async function updateLocVisitorsBar(loc) {
     if (currentLocationIdForMemory !== loc.id) return;
     const posts = window.getLocPosts(loc.id);
     const chevronTab = document.getElementById('loc-visitors-chevron-tab');
-    if (chevronTab) chevronTab.classList.toggle('has-posts', posts.length > 0);
+    if (chevronTab) {
+        chevronTab.classList.toggle('has-posts', posts.length > 0);
+        // Le bandeau .loc-visitors-bar s'ouvre à la même hauteur que ce chevron quand il y a
+        // des photos (voir .bar-open dans style.css) — sans ça, les deux se superposeraient.
+        chevronTab.classList.toggle('bar-open', posts.length > 0);
+    }
     let bar = document.getElementById('loc-visitors-bar');
     if (!posts.length) {
         if (bar) bar.classList.remove('open');
@@ -5320,8 +5367,11 @@ window.updateLocVisitorsBar = updateLocVisitorsBar;
 // cohérent avec le reste du site plutôt que d'inventer un nouveau composant. Chaque
 // tuile ouvre la publication complète via openLocModal() (même modale que
 // feed.html/profile.html).
-function openLocVisitorsDrawer(loc) {
-    const posts = window.getLocPosts(loc.id);
+// Rendu partagé du tiroir "photos des visiteurs" (demande du 12/09/2026, extrait de
+// l'ancien openLocVisitorsDrawer) — accepte maintenant des publications de PLUSIEURS lieux
+// (postsWithLoc: [{post, locId}]), pas juste un seul lieu, pour servir aussi bien
+// openLocVisitorsDrawer() (un lieu précis) que openAreaVisitorsDrawer() (tout un pays).
+function renderVisitorsDrawerContent(title, postsWithLoc) {
     let overlay = document.getElementById('loc-visitors-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -5337,19 +5387,18 @@ function openLocVisitorsDrawer(loc) {
         document.body.appendChild(overlay);
         overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeLocVisitorsDrawer(); });
     }
-    document.getElementById('loc-visitors-sheet-title').textContent =
-        (currentLang === 'fr' ? 'Photos des visiteurs — ' : 'Visitor photos — ') + loc.name;
+    document.getElementById('loc-visitors-sheet-title').textContent = title;
     const grid = document.getElementById('loc-visitors-grid');
-    grid.innerHTML = posts.map((p, i) => `
+    grid.innerHTML = postsWithLoc.map(({ post: p }, i) => `
         <div class="loc-visitors-tile" data-i="${i}" style="background-image:url('${p.photo}');">
             <div class="loc-visitors-tile-avatar" style="background:${window.avatarColorForUsername(p.username)};">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
         </div>
     `).join('');
     grid.querySelectorAll('.loc-visitors-tile').forEach(tile => {
         tile.addEventListener('click', () => {
-            const p = posts[Number(tile.dataset.i)];
+            const { post: p, locId } = postsWithLoc[Number(tile.dataset.i)];
             window.closeLocVisitorsDrawer();
-            window.openLocModal(loc.id, {
+            window.openLocModal(locId, {
                 username: p.username,
                 uid: p.uid,
                 avatarColor: window.avatarColorForUsername(p.username),
@@ -5361,6 +5410,26 @@ function openLocVisitorsDrawer(loc) {
         });
     });
     overlay.classList.add('open');
+}
+
+function openLocVisitorsDrawer(loc) {
+    const posts = window.getLocPosts(loc.id);
+    const title = (currentLang === 'fr' ? 'Photos des visiteurs — ' : 'Visitor photos — ') + loc.name;
+    renderVisitorsDrawerContent(title, posts.map(post => ({ post, locId: loc.id })));
+}
+
+// Tiroir "tout un pays" (demande du 12/09/2026, clic sur le chevron sans lieu précis
+// à proximité) : agrège les publications de plusieurs lieux, triées des plus récentes
+// aux plus anciennes (comme le fil global, voir fetchGlobalPhotoFeed() dans
+// firebase-init.js), chaque vignette ouvrant son propre lieu au clic (locId par post).
+function openAreaVisitorsDrawer(countryName, locs) {
+    const postsWithLoc = [];
+    locs.forEach(loc => {
+        window.getLocPosts(loc.id).forEach(post => postsWithLoc.push({ post, locId: loc.id }));
+    });
+    postsWithLoc.sort((a, b) => (b.post.updatedAt || 0) - (a.post.updatedAt || 0));
+    const title = (currentLang === 'fr' ? 'Publications — ' : 'Posts — ') + countryName;
+    renderVisitorsDrawerContent(title, postsWithLoc);
 }
 window.closeLocVisitorsDrawer = function () {
     const overlay = document.getElementById('loc-visitors-overlay');
