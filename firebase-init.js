@@ -1575,6 +1575,15 @@ window.sendFriendRequest = async function (username) {
         return { success: true };
     } catch (e) {
         console.warn('Envoi de la demande d\'ami échoué :', e);
+        // BUG rapporté le 11/09/2026 ("j'ai envoyé une demande d'ami, mais le destinataire
+        // ne la reçoit pas") : le code d'écriture/lecture ci-dessus et la règle Firestore
+        // correspondante (voir le commentaire plus haut) sont corrects dans CE fichier —
+        // mais ce dépôt ne déploie jamais firestore.rules automatiquement (voir
+        // CLAUDE.md/admin-scripts/README.md), donc les règles réellement en ligne dans la
+        // console Firebase peuvent avoir pris du retard sur ce fichier. Un code
+        // 'permission-denied' ici en est le symptôme direct — distingué de 'failed' pour
+        // que l'UI puisse pointer vers la cause probable plutôt qu'un message générique.
+        if (e && e.code === 'permission-denied') return { error: 'permission-denied' };
         return { error: 'failed' };
     }
 };
@@ -1599,8 +1608,15 @@ window.listMyFriendRequests = async function () {
         outgoingSnap.forEach(d => outgoing.push(Object.assign({ id: d.id }, d.data())));
         return { incoming, outgoing };
     } catch (e) {
+        // BUG rapporté le 11/09/2026 ("demande d'ami envoyée mais jamais reçue côté
+        // destinataire") : si cette lecture échoue avec 'permission-denied' (règles
+        // Firestore en ligne pas à jour avec ce dépôt, voir le commentaire de
+        // sendFriendRequest() ci-dessus), l'appelant recevait jusqu'ici un simple tableau
+        // vide, indiscernable d'un "vraiment aucune demande" — _error permet à
+        // friends.html de distinguer les deux et d'avertir plutôt que de rester
+        // silencieusement à zéro pour toujours.
         console.warn('Lecture des demandes d\'ami échouée :', e);
-        return { incoming: [], outgoing: [] };
+        return { incoming: [], outgoing: [], _error: (e && e.code) || 'failed' };
     }
 };
 

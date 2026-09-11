@@ -396,6 +396,19 @@
   .map-hover-tip-artist { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
   .map-hover-tip-title { font-size: 12.5px; font-weight: 800; color: var(--text-main); line-height: 1.3; }
   .map-hover-tip-meta { font-size: 10.5px; color: var(--muted-text); margin-top: 2px; }
+
+  /* Bulle "qu'est-ce qui s'est passé ce jour-là" du calendrier Live (demande du
+     11/09/2026) — même principe que .map-hover-tip ci-dessus (carte + petite flèche),
+     mais position:fixed (positionnée par rapport à la fenêtre, pas à .map-container : le
+     calendrier vit dans #live-panel, pas au-dessus de la carte) et injectée une seule
+     fois par showLiveCalDayBubble() dans script.js. */
+  .live-cal-day-bubble { position: fixed; z-index: 9700; pointer-events: none; display: none; transform: translate(-50%, calc(-100% - 12px)); }
+  .live-cal-day-bubble.open { display: block; }
+  .live-cal-day-bubble-card { background: #212832; border-radius: 12px; padding: 10px 14px; box-shadow: 0 12px 28px rgba(0,0,0,.3); max-width: 220px; position: relative; }
+  .live-cal-day-bubble-arrow { position: absolute; width: 11px; height: 11px; background: #212832; transform: rotate(45deg); bottom: -5px; left: 50%; margin-left: -5.5px; }
+  .live-cal-day-bubble-row + .live-cal-day-bubble-row { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15); }
+  .live-cal-day-bubble-title { font-size: 12px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .live-cal-day-bubble-date { font-size: 10.5px; color: rgba(255,255,255,.7); margin-top: 2px; }
 </style>
 </head>
 <body class="auth-gate-active">

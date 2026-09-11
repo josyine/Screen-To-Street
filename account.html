@@ -926,16 +926,27 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
                 return;
             }
             const result = await window.sendFriendRequest(username);
-            if (result.error === 'not-found') {
-                errBox.textContent = t('friendsErrNotFound');
-                errBox.classList.remove('hidden');
-            } else if (result.error === 'self') {
-                errBox.textContent = t('friendsErrSelf');
-                errBox.classList.remove('hidden');
-            } else if (result.success) {
+            if (result.success) {
                 input.value = '';
                 refreshFriendsUI();
+                return;
             }
+            // BUG rapporté le 11/09/2026 ("demande d'ami envoyée mais jamais reçue") :
+            // seuls 'not-found'/'self' affichaient un message ici — tout autre échec
+            // (already-sent, already-friends, permission-denied, failed...) ne faisait
+            // RIEN de visible, laissant croire que la demande était bel et bien partie.
+            // Même correctif déjà appliqué à friends.html le 06/09/2026, jamais reporté
+            // ici.
+            const errKey = {
+                'not-found': 'friendsErrNotFound',
+                'self': 'friendsErrSelf',
+                'already-sent': 'friendsErrAlreadySent',
+                'already-friends': 'friendsErrAlreadyFriends'
+            }[result.error];
+            errBox.textContent = errKey ? t(errKey) : (result.error === 'permission-denied'
+                ? (currentLang === 'fr' ? "Erreur serveur — réessayez dans un instant." : 'Server error — please try again in a moment.')
+                : t('friendsErrGeneric'));
+            errBox.classList.remove('hidden');
         });
     }
 

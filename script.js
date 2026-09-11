@@ -785,6 +785,10 @@ function renderLiveCalendar() {
     const grid = document.getElementById('live-cal-grid');
     const label = document.getElementById('live-cal-month-label');
     if (!grid) return;
+    // Ferme une bulle éventuellement encore ouverte (voir showLiveCalDayBubble) — sinon
+    // changer de mois la laisse pointer vers une case qui n'existe plus.
+    const openBubble = document.getElementById('live-cal-day-bubble');
+    if (openBubble) openBubble.classList.remove('open');
     const now = getTourNow();
     const base = new Date(now.getFullYear(), now.getMonth() + liveCalMonthOffset, 1);
     const year = base.getFullYear(), month = base.getMonth();
@@ -835,16 +839,52 @@ function renderLiveCalendar() {
         cell.textContent = day;
         if (dayEvents) {
             cell.title = dayEvents.map(e => e.title).join(', ');
-            cell.onclick = () => window.switchLiveView('list');
+            // Demande du 11/09/2026 : cliquer une date colorée expliquait jusqu'ici
+            // seulement au survol (cell.title, invisible sur tactile) et redirigeait vers
+            // la liste complète plutôt que de répondre directement "qu'est-ce qui s'est
+            // passé ce jour-là" — remplacé par une bulle très brève, voir
+            // showLiveCalDayBubble() plus bas.
+            cell.onclick = (evt) => { evt.stopPropagation(); showLiveCalDayBubble(cell, dayEvents); };
         }
         grid.appendChild(cell);
     }
+}
+
+// Bulle "qu'est-ce qui s'est passé ce jour-là" (demande du 11/09/2026) : très brève
+// (titre + date de l'évènement, rien de plus), positionnée juste au-dessus de la date
+// cliquée façon bulle de message, avec une petite flèche pointant vers elle. Se ferme
+// toute seule après quelques secondes, ou dès qu'on clique ailleurs/une autre date.
+let liveCalBubbleHideTimeout = null;
+function showLiveCalDayBubble(cell, dayEvents) {
+    let bubble = document.getElementById('live-cal-day-bubble');
+    if (!bubble) {
+        bubble = document.createElement('div');
+        bubble.id = 'live-cal-day-bubble';
+        bubble.className = 'live-cal-day-bubble';
+        bubble.innerHTML = '<div class="live-cal-day-bubble-card"><div class="live-cal-day-bubble-arrow"></div><div class="live-cal-day-bubble-rows"></div></div>';
+        document.body.appendChild(bubble);
+        document.addEventListener('click', () => bubble.classList.remove('open'));
+    }
+    bubble.querySelector('.live-cal-day-bubble-rows').innerHTML = dayEvents.map(e => `
+        <div class="live-cal-day-bubble-row">
+            <div class="live-cal-day-bubble-title">${escapeHtml(e.title)}</div>
+            <div class="live-cal-day-bubble-date">${fmtLiveDate(e.dateStart, e.dateEnd)}</div>
+        </div>
+    `).join('');
+    const rect = cell.getBoundingClientRect();
+    bubble.style.left = (rect.left + rect.width / 2) + 'px';
+    bubble.style.top = rect.top + 'px';
+    bubble.classList.add('open');
+    clearTimeout(liveCalBubbleHideTimeout);
+    liveCalBubbleHideTimeout = setTimeout(() => bubble.classList.remove('open'), 4000);
 }
 window.closeLivePanel = function() {
     const panel = document.getElementById('live-panel');
     if (!panel) return;
     panel.classList.remove('open');
     setTimeout(() => panel.classList.add('hidden'), 200);
+    const openBubble = document.getElementById('live-cal-day-bubble');
+    if (openBubble) openBubble.classList.remove('open');
 };
 
 // Petit point rouge sur l'icône "Live" du header dès qu'un arrêt de tournée ou un
