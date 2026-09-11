@@ -1939,6 +1939,7 @@ window.closeAddPhotoModal = function () {
 document.addEventListener('DOMContentLoaded', () => {
     injectMobileBottomNav();
     injectMobileTopIcons();
+    injectLocVisitorsChevron();
     // Relais de l'animation d'entrée glissée depuis la page précédente (voir stNavigate
     // ci-dessus) : posé côté page de départ, consommé une seule fois ici.
     try {
@@ -4674,8 +4675,18 @@ window.loadItineraryTabOptions = function() {
 
 // Clic sur une ligne de la liste : sélectionne ce voyage pour l'afficher sur la carte,
 // ou le désélectionne s'il l'était déjà (recliquer un voyage déjà actif le retire de la
-// carte — demande du 06/09/2026).
+// carte — demande du 06/09/2026). Sur mobile (demande du 12/09/2026) : redirige plutôt
+// directement vers la fiche du voyage sur trips.html — l'aperçu superposé sur la petite
+// carte mobile a moins de sens que sur desktop, où la place ne manque pas pour la liste
+// ET la carte en même temps. trips.html lit déjà activeTripId au chargement
+// (window.initTrips(), voir script.js) pour savoir quel voyage ouvrir en premier — poser
+// cette même clé avant de naviguer suffit, sans avoir besoin d'un nouveau paramètre d'URL.
 window.toggleItineraryTripSelection = function(tripId) {
+    if (window.matchMedia && window.matchMedia('(max-width: 760px)').matches) {
+        localStorage.setItem('activeTripId', tripId);
+        window.location.href = 'trips.html';
+        return;
+    }
     if(localStorage.getItem('activeTripId') === tripId) {
         window.deselectItineraryTrip();
     } else {
@@ -5110,17 +5121,57 @@ function applyLocPostBadges() {
     });
 }
 
+// Chevron PERMANENT intégré à la nav du bas (demande du 11/09/2026, redemandé le
+// 12/09/2026 : "tu n'as pas ajouté le chevron sur mobile... j'avais même envoyé une
+// capture d'écran") — contrairement au bandeau collage+compteur ci-dessous (qui n'existe
+// dans le DOM que lorsque le lieu ouvert a des photos, donc invisible tant qu'aucun lieu
+// avec photos n'a jamais été sélectionné), ce petit onglet est un vrai élément permanent
+// de l'interface, injecté une fois au chargement de la page et visible en continu,
+// superposé au bord haut de la nav du bas — jamais absent, pour qu'il soit toujours
+// repérable comme demandé, même avant d'avoir consulté un lieu avec photos.
+function injectLocVisitorsChevron() {
+    if (document.getElementById('loc-visitors-chevron-tab')) return;
+    // map.html uniquement : le tiroir a besoin de celebLocations/getLocPosts (voir
+    // ensureLocPostsIndex), sans objet ailleurs — #live-panel n'existe que sur cette
+    // page (même repère déjà utilisé pour le bouton "Live" de la nav, plus haut).
+    if (!document.getElementById('live-panel')) return;
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.id = 'loc-visitors-chevron-tab';
+    tab.className = 'loc-visitors-chevron-tab';
+    tab.title = 'Visitor photos';
+    tab.setAttribute('aria-label', 'Visitor photos for the selected location');
+    tab.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+    document.body.appendChild(tab);
+    tab.addEventListener('click', () => {
+        const loc = (typeof celebLocations !== 'undefined') ? celebLocations.find(l => l.id === currentLocationIdForMemory) : null;
+        if (!loc) {
+            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "Sélectionnez d'abord un lieu sur la carte." : 'Select a location on the map first.');
+            return;
+        }
+        const posts = window.getLocPosts(loc.id);
+        if (!posts.length) {
+            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Pas encore de photo de visiteur pour ce lieu.' : 'No visitor photos for this location yet.');
+            return;
+        }
+        openLocVisitorsDrawer(loc);
+    });
+}
+
 // Mini-aperçu (bandeau juste au-dessus de la nav du bas, mobile uniquement comme la nav
 // elle-même) : collage de jusqu'à 3 photos superposées + nombre de publications, affiché
 // quand le lieu sélectionné (marqueur cliqué OU carte de la liste — les deux passent par
 // openDetailsPanel) a au moins une photo. Le bandeau entier ouvre le tiroir complet (voir
-// openLocVisitorsDrawer plus bas).
+// openLocVisitorsDrawer plus bas). Complète le chevron permanent ci-dessus (toujours
+// visible) sans le remplacer : celui-ci reste l'indicateur "il y a quelque chose ici".
 async function updateLocVisitorsBar(loc) {
     await ensureLocPostsIndex();
     // Le lieu affiché a pu changer pendant l'attente Firestore (clic rapide sur un autre
     // lieu juste après) — n'affiche l'aperçu que s'il correspond toujours au lieu ouvert.
     if (currentLocationIdForMemory !== loc.id) return;
     const posts = window.getLocPosts(loc.id);
+    const chevronTab = document.getElementById('loc-visitors-chevron-tab');
+    if (chevronTab) chevronTab.classList.toggle('has-posts', posts.length > 0);
     let bar = document.getElementById('loc-visitors-bar');
     if (!posts.length) {
         if (bar) bar.classList.remove('open');
@@ -7120,9 +7171,17 @@ function computeDayTimeline(dayLocs, homeBase) {
 function buildDayPlans(orderedLocs, days, homeBase) {
     let pool = orderedLocs.slice();
     const dayPlans = [];
+    // BUG rapporté le 12/09/2026 ("j'ai précisé 3 jours mais un seul jour généré") : sans
+    // plafond, cette boucle remplissait chaque journée au MAXIMUM que le budget horaire
+    // autorise avant de passer à la suivante — avec peu de lieux (qui tiennent tous, en
+    // temps, dans une seule journée), tout finissait sur le Jour 1 et `days` était
+    // ignoré. maxPerDay répartit plutôt le total sur le nombre de jours demandé (part
+    // égale, arrondie au-dessus) ; le budget horaire (computeDayTimeline) reste
+    // prioritaire et peut toujours placer MOINS qu'un jour plein, jamais plus.
+    const maxPerDay = Math.max(1, Math.ceil(orderedLocs.length / days));
     for (let d = 0; d < days && pool.length > 0; d++) {
         const dayLocs = [];
-        while (pool.length > 0) {
+        while (pool.length > 0 && dayLocs.length < maxPerDay) {
             const trial = dayLocs.concat([pool[0]]);
             const timeline = computeDayTimeline(trial, homeBase);
             const lastItem = timeline[timeline.length - 1];
@@ -7687,11 +7746,11 @@ function ensureShareTripModal() {
             <div id="share-trip-buddies"></div>
             <div id="share-trip-error" class="hidden" style="font-size:11px; color:#D42759; margin-bottom:8px;"></div>
             <div style="position:relative;">
-                <div style="display:flex; gap:8px; margin-top:6px;">
-                    <input id="share-trip-invite-input" autocomplete="off" placeholder="${currentLang === 'fr' ? 'Leur pseudo' : 'Their username'}" style="flex:1; border:1.5px solid #cbd5e1; border-radius:100px; padding:10px 14px; font-size:12px; font-family:'Poppins',sans-serif;">
+                <div class="share-trip-invite-row" style="display:flex; gap:8px; margin-top:6px;">
+                    <input id="share-trip-invite-input" autocomplete="off" placeholder="${currentLang === 'fr' ? 'Leur pseudo' : 'Their username'}" style="flex:1; min-width:0; border:1.5px solid #cbd5e1; border-radius:100px; padding:10px 14px; font-size:12px; font-family:'Poppins',sans-serif;">
                     <button id="share-trip-invite-btn" style="background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 18px; font-size:12px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;" data-i18n="shareTripInvite">Invite</button>
                 </div>
-                <div id="share-trip-suggestions" class="hidden" style="position:absolute; top:calc(100% + 4px); left:0; right:66px; background:#fff; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.12); max-height:180px; overflow-y:auto; z-index:20;"></div>
+                <div id="share-trip-suggestions" class="hidden" style="position:fixed; background:#fff; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 10px 24px rgba(0,0,0,.12); max-height:180px; overflow-y:auto; z-index:10600;"></div>
             </div>
             <div style="font-size:9.5px; color:#94a3b8; text-align:center; margin-top:10px;" data-i18n="shareTripHint">Tap the icon next to a name to switch between edit and view-only access.</div>
         </div>`;
@@ -7730,6 +7789,17 @@ window.openShareTripModal = async function(tripId, event) {
                 const matches = (await window.searchUsernamesByPrefix(q, 6)).filter(m => m.uid !== myUid);
                 if (inviteInput.value.trim() !== q) return; // la personne a continué à taper entre-temps
                 if (matches.length === 0) { suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
+                // BUG rapporté le 12/09/2026 ("ça ne propose pas l'user dans la liste") :
+                // ce menu était positionné en absolute par rapport à .modal-content, qui a
+                // overflow-y:auto — tout ce qui débordait de sa hauteur visible (quasi
+                // toujours le cas ici, ce champ étant proche du bas de la modale) était
+                // donc généré dans le DOM mais invisible, rogné par ce conteneur. En fixed,
+                // recalculé ici à partir des coordonnées réelles du champ, le menu échappe
+                // à cet overflow et reste toujours visible à l'écran.
+                const inputRect = inviteInput.getBoundingClientRect();
+                suggestionsBox.style.top = (inputRect.bottom + 4) + 'px';
+                suggestionsBox.style.left = inputRect.left + 'px';
+                suggestionsBox.style.width = inputRect.width + 'px';
                 suggestionsBox.innerHTML = matches.map(m => `<div class="share-suggestion-row" data-username="${escapeHtml(m.username)}" style="padding:9px 14px; font-size:12px; font-weight:600; color:#212832; cursor:pointer;">${escapeHtml(m.username)}</div>`).join('');
                 suggestionsBox.querySelectorAll('.share-suggestion-row').forEach(row => {
                     row.addEventListener('mouseenter', () => row.style.background = '#FFF7F8');

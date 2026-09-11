@@ -293,24 +293,41 @@
   .mobile-logo-text { font-size: 14px; font-weight: 700; color: #2E3644; }
 
   @media (max-width: 800px) {
-      /* L'ancienne règle flex-direction:row ci-dessus contredisait le tiroir mobile
-         partagé (style.css) qui attend flex-direction:column ; elle est retirée pour
-         laisser le tiroir/plein-écran standard s'appliquer normalement. */
-      .mobile-logo { display: flex; }
+      /* Logo "Screen To Street" retiré sur mobile (demande du 12/09/2026) — même
+         traitement que les autres pages (feed.html/profile.html...), où ce doublon
+         hors-sidebar n'existe pas non plus sur mobile : display:flex ci-dessous a été
+         retiré, .mobile-logo reste donc masqué (display:none, règle de base plus haut). */
 
-      /* Ces valeurs reprennent celles déjà prévues pour mobile dans style.css, mais
-         doivent être redéclarées ici : les règles définies plus haut dans ce même
-         fichier (sans media query) passent après style.css dans la cascade et
-         l'emportaient donc à tort sur les valeurs mobiles, même sur petit écran. */
-      .trips-main { padding: 90px 16px 40px 16px; }
-      .trip-detail-wrapper { padding: 22px 18px; }
-      .trip-hero { margin: -22px -18px 24px; }
-      .trip-hero-top { flex-direction: column; }
+      /* Pleine largeur, sans marge (demande du 12/09/2026, "je veux que le trip prenne
+         toute la largeur de l'écran, sans marge") : .trips-main et .trip-detail-wrapper
+         ajoutaient chacun leur propre padding latéral (16px + 18px), laissant une bande
+         vide de chaque côté de TOUT le contenu du voyage (hero, cartes comprises). Mis à
+         0 ici — le padding INTERNE de chaque carte (.itinerary-box/.day-card/
+         .edit-banner, inchangé plus bas) garde leur texte lisible malgré tout, seul
+         l'espace autour d'elles disparaît. */
+      .trips-main { padding: 90px 0 40px 0; max-width: 100%; }
+      .trip-detail-wrapper { padding: 22px 0; border-radius: 0; border: none; box-shadow: none; }
+      .trip-hero { margin: -22px 0 24px; border-radius: 0; }
+      .trip-hero-top { flex-direction: column; padding-left: 16px; padding-right: 16px; }
       .trip-cover-change-btn { align-self: flex-end; }
       .trip-name-input { font-size: 24px; }
       .edit-banner { padding: 16px; }
       .itinerary-box { padding: 16px; }
       .day-card { padding: 14px 16px; }
+
+      /* BUG rapporté le 12/09/2026 : le popup "Invite" (#share-trip-modal, voir
+         ensureShareTripModal() dans script.js) débordait sur mobile — padding fixe de
+         30px (.modal-content, style.css) trop généreux sur un écran étroit, ne laissant
+         presque plus de place à la ligne pseudo+bouton "Invite", dont le texte se
+         retrouvait tronqué. Réduit le padding et empile input/bouton verticalement au
+         lieu de les mettre côte à côte. */
+      #share-trip-modal .modal-content { padding: 20px 16px; }
+      #share-trip-modal #share-trip-invite-input,
+      #share-trip-modal #share-trip-invite-btn { font-size: 13px; }
+      @media (max-width: 360px) {
+          #share-trip-modal .share-trip-invite-row { flex-direction: column; }
+          #share-trip-modal #share-trip-invite-btn { width: 100%; }
+      }
   }
 </style>
 <script>
