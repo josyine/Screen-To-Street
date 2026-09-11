@@ -717,19 +717,27 @@ body.trip-not-owner .owner-only { display: none !important; }
     .loc-visitors-chevron { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: none; background: #FCE7F0; color: #D42759; display: flex; align-items: center; justify-content: center; }
 
     /* Chevron permanent (demande du 11/09/2026, redemandé le 12/09/2026 "tu n'as pas
-       ajouté le chevron") : superposé au bord haut de la nav du bas, TOUJOURS visible
-       (contrairement au bandeau ci-dessus, conditionné aux photos disponibles) — pour
-       qu'il soit repérable comme un vrai élément d'interface, pas quelque chose qui
-       n'apparaît que dans un scénario précis. bottom aligné pour que son centre touche
-       le bord haut de la nav (nav : bottom 14px, hauteur ~52px -> bord haut à 66px ;
-       cercle de 34px -> bottom 66-17=49px). */
+       ajouté le chevron") : TOUJOURS visible (contrairement au bandeau ci-dessus,
+       conditionné aux photos disponibles). BUG corrigé le 12/09/2026 ("la flèche
+       chevauche le +, mal alignée") : un bottom de 49px avec une hauteur de 34px faisait
+       déborder le bas du chevron DANS la nav (haut de la nav ~66px depuis le bas), donc
+       en plein sur le bouton "+" au centre. Repris à 74px — même valeur que
+       .loc-visitors-bar juste au-dessus, qui dégage déjà proprement la nav — pour un
+       vrai espace au-dessus de la barre d'icônes plutôt qu'un chevauchement. Horizontal
+       déjà correct par construction : "+" est le 3e des 5 icônes (space-around), donc
+       pile au centre (50%) comme ce chevron. */
     .loc-visitors-chevron-tab {
         display: flex; align-items: center; justify-content: center;
-        position: fixed; left: 50%; bottom: calc(49px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+        position: fixed; left: 50%; bottom: calc(74px + env(safe-area-inset-bottom)); transform: translateX(-50%);
         width: 34px; height: 34px; border-radius: 50%; border: none;
         background: #fff; color: #64748b; box-shadow: 0 4px 14px rgba(0,0,0,.15);
         z-index: 3600; cursor: pointer; padding: 0;
+        transition: bottom .2s ease;
     }
+    /* Le bandeau .loc-visitors-bar (44px de haut) s'ouvre à la MÊME hauteur (74px) quand le
+       lieu sélectionné a des photos — sans ce décalage, les deux se superposeraient. Classe
+       posée par updateLocVisitorsBar() (script.js), en même temps que .has-posts. */
+    .loc-visitors-chevron-tab.bar-open { bottom: calc(126px + env(safe-area-inset-bottom)); }
     .loc-visitors-chevron-tab.has-posts { color: #D42759; }
     .loc-visitors-chevron-tab.has-posts::after {
         content: ''; position: absolute; top: 2px; right: 2px; width: 8px; height: 8px;
@@ -748,7 +756,8 @@ body.trip-not-owner .owner-only { display: none !important; }
     .locate-country-btn { bottom: 92px; }
     .tab-panel { padding-bottom: calc(102px + env(safe-area-inset-bottom)); }
     .loc-visitors-bar { bottom: calc(86px + env(safe-area-inset-bottom)); }
-    .loc-visitors-chevron-tab { bottom: calc(61px + env(safe-area-inset-bottom)); }
+    .loc-visitors-chevron-tab { bottom: calc(86px + env(safe-area-inset-bottom)); }
+    .loc-visitors-chevron-tab.bar-open { bottom: calc(138px + env(safe-area-inset-bottom)); }
 }
 
 /* Tiroir "photos des visiteurs" (demande du 11/09/2026) — réutilise .qa-sheet-overlay/

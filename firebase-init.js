@@ -213,10 +213,23 @@ window.syncUserData = async function (fields) {
         if (!_syncUserDataErrorToastShown && typeof window.showSimpleToast === 'function') {
             _syncUserDataErrorToastShown = true;
             const isFr = document.documentElement.lang === 'fr' || (window.currentLang === 'fr');
-            window.showSimpleToast(
-                isFr ? "Problème de connexion : vos changements sont enregistrés sur cet appareil mais pas encore dans le cloud." : "Connection issue: your changes are saved on this device but not yet synced to the cloud.",
-                { isError: true }
-            );
+            // Distingue 'permission-denied' du reste (demande du 11/09/2026, "pourquoi
+            // j'ai ce message ?") : ce toast générique couvrait aussi bien une vraie
+            // coupure réseau qu'un refus serveur — deux causes très différentes pour la
+            // personne qui le lit. La règle users/{uid} elle-même (allow read, write: if
+            // request.auth.uid == uid) est déjà aussi permissive que possible dans ce
+            // dépôt ; un 'permission-denied' ici pointe donc presque toujours vers des
+            // règles Firestore DÉPLOYÉES (console Firebase) en retard sur ce fichier —
+            // jamais auto-déployées, voir CLAUDE.md — plutôt qu'une vraie règle qui
+            // bloquerait ce compte.
+            const message = e && e.code === 'permission-denied'
+                ? (isFr
+                    ? "Erreur de permission serveur : vos changements sont enregistrés sur cet appareil, mais le serveur les refuse pour l'instant. Réessayez plus tard ou contactez l'administrateur du site."
+                    : "Server permission error: your changes are saved on this device, but the server is refusing them right now. Try again later or contact the site admin.")
+                : (isFr
+                    ? "Problème de connexion : vos changements sont enregistrés sur cet appareil mais pas encore dans le cloud."
+                    : "Connection issue: your changes are saved on this device but not yet synced to the cloud.");
+            window.showSimpleToast(message, { isError: true });
             setTimeout(() => { _syncUserDataErrorToastShown = false; }, 15000);
         }
         return { success: false, code: e && e.code || 'unknown' };
