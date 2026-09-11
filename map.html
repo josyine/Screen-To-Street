@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Screen To Street - Map</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Screen To Street">
+<meta name="theme-color" content="#2E3644">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -435,14 +442,14 @@
                 </div>
             </a>
 
-            <!-- Les onglets (Explore / My Itinerary / My Visited Places) -->
+            <!-- Les onglets (Explore / My Itinerary / Visited) -->
             <div class="sidebar-top-tabs" style="margin-top: 15px;">
                 <button id="tab-explore-btn" class="top-tab-btn active" onclick="switchMainTab('explore')" data-i18n="tabExplore">Explore</button>
                 <button id="tab-itinerary-btn" class="top-tab-btn" onclick="switchMainTab('itinerary')" data-i18n="tabMyItinerary">My Itinerary</button>
                 <!-- Nouvel onglet (demande du 10/09/2026), à côté de "My Itinerary" : filtre la
                      carte pour n'afficher QUE les lieux visités, et liste ces mêmes lieux dans
                      le menu — voir renderVisitedTabList() dans script.js. -->
-                <button id="tab-visited-btn" class="top-tab-btn" onclick="switchMainTab('visited')" data-i18n="tabMyVisited">My Visited Places</button>
+                <button id="tab-visited-btn" class="top-tab-btn" onclick="switchMainTab('visited')" data-i18n="tabMyVisited">Visited</button>
                 <!-- Anciennement un bouton flottant séparé au-dessus de la carte (demande du
                      07/09/2026) : déplacé ici, à droite de "My Itinerary" — un clic ouvre le
                      panneau Tour Mode en plein écran directement (openTourModePanel(),
@@ -540,7 +547,7 @@
                 <!-- ONGLET 3 : MY VISITED PLACES (demande du 10/09/2026) -->
                 <div id="sidebar-visited" class="sidebar-main-panel hidden" style="overflow-y:auto;">
                     <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 14px;">
-                        <div style="font-size:16px; font-weight:700; color:#212832;" data-i18n="tabMyVisited">My Visited Places</div>
+                        <div style="font-size:16px; font-weight:700; color:#212832;" data-i18n="tabMyVisited">Visited</div>
                         <div id="visited-tab-count" style="font-size:11px; font-weight:700; color:#D42759;">0 locations</div>
                     </div>
                     <div id="visited-tab-list" class="location-list" style="flex:1;"></div>
@@ -582,8 +589,18 @@
                                 <span data-i18n="shareWithFriendBtn">Share</span>
                             </button>
                             <div id="share-location-menu" class="dropdown-menu share-picker-menu hidden">
+                                <!-- Partage natif OS (demande du 11/09/2026) : AirDrop/Messages/Mail/
+                                     WhatsApp etc. via navigator.share() — repli sur une copie du lien
+                                     dans le presse-papier si l'API n'est pas supportée (desktop la
+                                     plupart du temps). Toujours en premier, au-dessus de la liste
+                                     d'amis, qu'il y en ait ou non. -->
+                                <div id="share-native-option" class="dropdown-option">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+                                    <span data-i18n="shareViaOption">Share via...</span>
+                                </div>
+                                <div class="dropdown-divider"></div>
                                 <div id="share-friend-list"></div>
-                                <div id="share-no-friends" class="hidden" style="padding:10px 14px; font-size:12px; color:#94a3b8;" data-i18n="shareNoFriends">Add a friend first to share locations.</div>
+                                <div id="share-no-friends" class="hidden" style="padding:10px 14px; font-size:12px; color:#94a3b8; white-space:normal;" data-i18n="shareNoFriends">Add a friend first to share locations.</div>
                             </div>
                         </div>
                         <!-- Note du lieu : moyenne des notes que CET utilisateur a attribuées lors de
@@ -895,7 +912,7 @@
                     <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
                     <div class="dropdown-divider"></div>
                     <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-                    <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+                    <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">Visited</a>
                     <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
                     <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
                     <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
@@ -1309,6 +1326,14 @@
                     if (hiddenIds.has(String(celebLocations[i].id))) celebLocations.splice(i, 1);
                 }
             }
+        }
+
+        // Évènements Live/Upcoming approuvés via l'onglet admin (demande du 11/09/2026,
+        // voir approveLiveEventSubmission() dans firebase-init.js) : bulk-fetchés une seule
+        // fois par visite, comme newLocations ci-dessus — lus par getLiveTimelineEntries()
+        // dans script.js (panneau Live : liste + vue Calendrier).
+        if (typeof window.fetchLiveEvents === 'function') {
+            window.__liveEventsFromFirestore = await window.fetchLiveEvents();
         }
 
         if (window.__demoMode) {

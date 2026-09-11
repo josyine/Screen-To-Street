@@ -152,6 +152,26 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // Onglet admin "Live & Upcoming" (demande du 11/09/2026) : file de relecture des
+    // prochains évènements BTS (groupe ou solo) proposés, même principe que
+    // locationSubmissions ci-dessus mais réservée à l'admin des deux côtés (pas de
+    // proposition publique pour l'instant, contrairement aux lieux) — voir
+    // submitLiveEvent()/approveLiveEventSubmission()/rejectLiveEventSubmission() dans
+    // firebase-init.js.
+    match /liveEventSubmissions/{submissionId} {
+      allow read, write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Évènements approuvés (fusionnés dans getLiveTimelineEntries() côté client, voir
+    // script.js — même principe que newLocations ci-dessus) : lisibles par tous, écrits
+    // uniquement par un admin.
+    match /liveEvents/{eventId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
     // Un seul document (siteConfig/hiddenLocations, { ids: [...] }) listant les lieux
     // "supprimés" depuis l'onglet admin "Existing locations" — un vrai supprimer étant
     // impossible pour un lieu codé en dur dans script.js sans modifier le code du site,

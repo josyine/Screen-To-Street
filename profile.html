@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Screen To Street — Profile</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Screen To Street">
+<meta name="theme-color" content="#2E3644">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -95,6 +102,27 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
    09/09/2026) — remplace l'ancien bouton clair centré sous la bio. */
 .profile-edit-btn { display: inline-block; background: #212832; color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; }
 .profile-edit-btn:hover { background: #37414f; }
+
+/* Édition en ligne mobile (demande du 11/09/2026) : le crayon (.profile-avatar-edit-badge)
+   n'envoie plus vers account.html sur mobile — il bascule cette page en "mode édition"
+   directement, bio + photo, avec un bouton Save. Seul le bouton "Edit profile" desktop
+   continue de renvoyer vers account.html (inchangé). */
+.profile-bio-edit-textarea { display: none; width: 100%; max-width: 780px; margin: 10px auto 0 auto; font-size: 13px; color: #212832; line-height: 1.5; font-family: 'Poppins', sans-serif; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; resize: vertical; min-height: 64px; }
+body.profile-editing .profile-bio-edit-textarea { display: block; }
+body.profile-editing .profile-bio { display: none; }
+.profile-edit-actions { display: none; gap: 8px; max-width: 780px; margin: 10px auto 0 auto; }
+body.profile-editing .profile-edit-actions { display: flex; }
+.profile-edit-save-btn, .profile-edit-cancel-btn { border: none; border-radius: 100px; padding: 9px 18px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.profile-edit-save-btn { background: #D42759; color: #fff; }
+.profile-edit-save-btn:hover { background: #b81f4a; }
+.profile-edit-save-btn:disabled { opacity: 0.6; cursor: default; }
+.profile-edit-cancel-btn { background: #f1f5f9; color: #64748b; }
+.profile-edit-cancel-btn:hover { background: #e2e8f0; }
+/* Superposition "changer la photo" sur l'avatar, visible seulement en mode édition —
+   cache l'avatar (photo ou initiale) derrière une icône appareil photo cliquable. */
+.profile-avatar-photo-overlay { display: none; position: absolute; inset: 0; border-radius: 50%; background: rgba(23,19,49,.55); color: #fff; align-items: center; justify-content: center; cursor: pointer; }
+body.profile-editing .profile-avatar-photo-overlay { display: flex; }
+body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 
 /* Onglets — même largeur max que .profile-header, centrés (demande du 08/09/2026 : pleine
    largeur de PAGE mais pas de carte étroite, différent d'un contenu vraiment étiré sur
@@ -313,7 +341,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
             <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
             <div class="dropdown-divider"></div>
             <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">Visited</a>
             <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
             <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
             <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
@@ -339,9 +367,18 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                 <div class="profile-header-row">
                     <div class="profile-avatar-wrap">
                         <div class="profile-avatar" id="profile-avatar">U</div>
-                        <a href="account.html" class="profile-avatar-edit-badge hidden" id="profile-avatar-edit-badge" title="Edit profile">
+                        <!-- Superposition "changer la photo", mode édition seulement (demande du
+                             11/09/2026) — voir wireProfileEditMode() plus bas. -->
+                        <div class="profile-avatar-photo-overlay" id="profile-avatar-photo-overlay" title="Change photo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </div>
+                        <input type="file" id="profile-avatar-file-input" accept="image/*,.heic,.heif" class="hidden">
+                        <!-- Sur mobile, bascule cette page en mode édition (bio + photo) au lieu
+                             de renvoyer vers account.html — desktop garde "Edit profile" ci-dessous
+                             inchangé, qui continue d'y renvoyer. -->
+                        <button type="button" class="profile-avatar-edit-badge hidden" id="profile-avatar-edit-badge" title="Edit profile">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
-                        </a>
+                        </button>
                     </div>
                     <div class="profile-header-info">
                         <div class="profile-username" id="profile-username"></div>
@@ -369,6 +406,11 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                  texte est posé directement sur le fond de la page). L'édition se fait
                  maintenant sur account.html (voir "Edit profile" ci-dessus). -->
             <div class="profile-bio hidden" id="profile-bio"></div>
+            <textarea class="profile-bio-edit-textarea" id="profile-bio-edit-textarea" maxlength="280" placeholder="Write a short bio..."></textarea>
+            <div class="profile-edit-actions">
+                <button type="button" class="profile-edit-save-btn" id="profile-edit-save-btn">Save</button>
+                <button type="button" class="profile-edit-cancel-btn" id="profile-edit-cancel-btn">Cancel</button>
+            </div>
 
             <div class="profile-tabs">
                 <button class="profile-tab-btn active" data-tab="photos" onclick="switchProfileTab('photos')" data-i18n="profileTabPhotos">Photos</button>
@@ -559,6 +601,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
             if (r.locationId != null) {
                 tile.onclick = () => window.openLocModal(r.locationId, {
                     username: viewedUsername,
+                    uid: profileUid,
                     avatarColor: profileAvatarColor(viewedUsername),
                     photo: r.photo,
                     caption: r._caption,
@@ -731,10 +774,16 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     // fait maintenant sur account.html). "Edit profile" n'apparaît que sur son propre
     // profil. publicProfile.bio n'existe pas encore pour les comptes créés avant cette
     // fonctionnalité — traité comme une chaîne vide, jamais une erreur.
+    // Bio actuellement affichée (demande du 11/09/2026) : gardée à part pour pré-remplir
+    // le textarea du mode édition sans avoir à relire Firestore à l'ouverture.
+    let profileCurrentBio = '';
+    let profilePendingPhotoDataUrl = null;
+
     function renderProfileBio(publicProfile) {
         const bioEl = document.getElementById('profile-bio');
         const editBtn = document.getElementById('profile-edit-btn');
         const bio = (publicProfile.bio || '').trim();
+        profileCurrentBio = bio;
 
         if (bio) {
             bioEl.textContent = bio;
@@ -753,6 +802,87 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         const desktopAddBtn = document.getElementById('profile-desktop-add-btn');
         if (desktopAddBtn) desktopAddBtn.classList.toggle('hidden', !isOwnProfile);
     }
+
+    // Mode édition en ligne mobile (demande du 11/09/2026) : bio + photo directement sur
+    // cette page, sans passer par account.html — voir .profile-editing dans le <style>
+    // ci-dessus (bascule bio div <-> textarea, affiche Save/Cancel + la superposition
+    // photo sur l'avatar). Le bouton "Edit profile" desktop (#profile-edit-btn) garde son
+    // comportement d'origine (lien vers account.html), inchangé.
+    function enterProfileEditMode() {
+        document.getElementById('profile-bio-edit-textarea').value = profileCurrentBio;
+        profilePendingPhotoDataUrl = null;
+        document.body.classList.add('profile-editing');
+    }
+    function exitProfileEditMode() {
+        document.body.classList.remove('profile-editing');
+        profilePendingPhotoDataUrl = null;
+    }
+    (function wireProfileEditMode() {
+        const badge = document.getElementById('profile-avatar-edit-badge');
+        const overlay = document.getElementById('profile-avatar-photo-overlay');
+        const fileInput = document.getElementById('profile-avatar-file-input');
+        const saveBtn = document.getElementById('profile-edit-save-btn');
+        const cancelBtn = document.getElementById('profile-edit-cancel-btn');
+        if (badge) badge.addEventListener('click', (e) => { e.preventDefault(); enterProfileEditMode(); });
+        if (overlay && fileInput) overlay.addEventListener('click', () => fileInput.click());
+        if (fileInput) {
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                try {
+                    // fileToResizedDataUrl vient de script.js (HEIC compris — voir
+                    // account.html pour la même conversion sur le même champ conceptuel).
+                    const resized = await fileToResizedDataUrl(file, 300);
+                    profilePendingPhotoDataUrl = resized;
+                    const avatarEl = document.getElementById('profile-avatar');
+                    avatarEl.innerHTML = `<img src="${resized}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    avatarEl.style.background = 'transparent';
+                } catch (err) {
+                    console.warn('Import de la photo échoué :', err);
+                    alert(currentLang === 'fr'
+                        ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)."
+                        : "Couldn't import this photo. Try a different file (JPEG/PNG format).");
+                }
+                e.target.value = '';
+            });
+        }
+        if (cancelBtn) cancelBtn.addEventListener('click', () => {
+            exitProfileEditMode();
+            loadProfilePage(); // revient à l'état enregistré (annule aussi un aperçu photo non sauvegardé)
+        });
+        if (saveBtn) {
+            saveBtn.addEventListener('click', async () => {
+                saveBtn.disabled = true;
+                const bioText = document.getElementById('profile-bio-edit-textarea').value.trim();
+                try {
+                    const tasks = [];
+                    if (typeof window.updateMyBio === 'function') tasks.push(window.updateMyBio(bioText));
+                    if (profilePendingPhotoDataUrl) {
+                        if (typeof window.updateMyProfilePhoto === 'function') tasks.push(window.updateMyProfilePhoto(profilePendingPhotoDataUrl));
+                        // Miroir vers le document privé + le localStorage de cet appareil (même
+                        // champ que account.html/le reste du site pour l'avatar de l'en-tête) —
+                        // n'empêche jamais la sauvegarde du profil public si ça échoue.
+                        if (typeof window.syncUserData === 'function') window.syncUserData({ photo: profilePendingPhotoDataUrl }).catch(() => {});
+                        localStorage.setItem('userPhoto', profilePendingPhotoDataUrl);
+                        document.querySelectorAll('.user-avatar-btn, .mbn-avatar').forEach(el => {
+                            el.innerHTML = `<img src="${profilePendingPhotoDataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                        });
+                    }
+                    const results = await Promise.all(tasks);
+                    const ok = results.every(r => r !== false);
+                    if (ok) {
+                        exitProfileEditMode();
+                        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Profil mis à jour !' : 'Profile updated!');
+                        loadProfilePage();
+                    } else if (typeof window.showSimpleToast === 'function') {
+                        window.showSimpleToast(currentLang === 'fr' ? "Échec de l'enregistrement." : 'Failed to save.', { isError: true });
+                    }
+                } finally {
+                    saveBtn.disabled = false;
+                }
+            });
+        }
+    })();
 
     // Empêche un getDoc()/getDocs() qui ne répond jamais (réseau mobile capricieux) de
     // laisser la page bloquée indéfiniment sur "Loading profile..." — demande du
@@ -801,8 +931,19 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 
             if (!username) { showProfileNotFound(); return; }
 
-            document.getElementById('profile-avatar').textContent = username.charAt(0).toUpperCase();
-            document.getElementById('profile-avatar').style.background = profileAvatarColor(username);
+            // Photo de profil publique (demande du 11/09/2026) : publicProfile.photo, un
+            // champ distinct de localStorage.userPhoto (privé à CET appareil) — sans lui,
+            // cette page ne pouvait montrer QUE l'initiale, même sur son propre profil,
+            // puisque syncUserData() n'écrit la photo que dans users/{uid} (privé). Repli
+            // sur l'initiale si absent (compte sans photo, ou pas encore migré).
+            const avatarEl = document.getElementById('profile-avatar');
+            if (publicProfile.photo) {
+                avatarEl.innerHTML = `<img src="${publicProfile.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                avatarEl.style.background = 'transparent';
+            } else {
+                avatarEl.textContent = username.charAt(0).toUpperCase();
+                avatarEl.style.background = profileAvatarColor(username);
+            }
             document.getElementById('profile-username').textContent = username;
             document.title = 'Screen To Street — ' + username;
 

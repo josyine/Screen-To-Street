@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Screen To Street — Location submissions</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Screen To Street">
+<meta name="theme-color" content="#2E3644">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=20260907">
@@ -64,6 +71,26 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-result.ok{color:#10b981;}
 .sub-result.err{color:#ef4444;}
 
+/* Onglet "Live & Upcoming" (demande du 11/09/2026) : mêmes gabarits que les cartes de
+   soumission ci-dessus (.submission-card, .sub-actions, .btn-approve/.btn-reject,
+   .sub-result), juste un formulaire d'ajout en plus — c'est l'admin lui-même qui saisit
+   l'évènement, puis l'approuve, deux étapes distinctes pour rester cohérent avec le
+   principe "rien n'est visible sur le site avant validation explicite" déjà en place pour
+   les lieux (voir submitLiveEvent()/approveLiveEventSubmission() dans firebase-init.js).*/
+.live-form{background:#fff;border:1px solid #ECE7F3;border-radius:16px;padding:22px 24px;margin-bottom:24px;}
+.live-form h2{font-size:15px;color:#212832;margin-bottom:14px;}
+.live-form-row{display:flex;gap:10px;margin-bottom:10px;}
+.live-form-row > div{flex:1;}
+.live-field-label{display:block;font-size:11px;font-weight:700;color:#64748b;margin-bottom:4px;}
+.live-field{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:'Poppins',sans-serif;}
+.live-submit-btn{background:#D42759;color:#fff;border:none;border-radius:100px;padding:11px 22px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;margin-top:6px;}
+.live-submit-btn:hover{background:#b81f4a;}
+.live-submit-btn:disabled{opacity:0.6;cursor:default;}
+.live-form-result{font-size:12px;font-weight:600;margin-top:8px;}
+.live-form-result.ok{color:#10b981;}
+.live-form-result.err{color:#ef4444;}
+.live-status-pill{display:inline-block;background:#FCE7F0;color:#D42759;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;text-transform:uppercase;}
+
 .admin-tabs{display:flex;gap:24px;margin-bottom:20px;border-bottom:1.5px solid #ECE7F3;}
 .admin-tab-btn{background:none;border:none;padding:10px 0;font-size:13.5px;font-weight:600;color:#94a3b8;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;font-family:'Poppins',sans-serif;}
 .admin-tab-btn.active{color:#D42759;border-bottom-color:#D42759;}
@@ -91,6 +118,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         <div class="admin-tabs">
             <button type="button" id="admin-tab-submissions-btn" class="admin-tab-btn active" onclick="window.switchAdminTab('submissions')">Location submissions</button>
             <button type="button" id="admin-tab-locations-btn" class="admin-tab-btn" onclick="window.switchAdminTab('locations')">Existing locations</button>
+            <button type="button" id="admin-tab-live-btn" class="admin-tab-btn" onclick="window.switchAdminTab('live')">Live &amp; Upcoming</button>
         </div>
 
         <div id="admin-panel-submissions" class="admin-tab-panel active">
@@ -106,6 +134,77 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <input type="text" id="existing-loc-search" class="existing-loc-search" oninput="window.renderExistingLocationsList()" placeholder="Search by name, city, or country…">
             <div id="existing-loc-empty" class="state-box">Type at least 2 characters to search.</div>
             <div id="existing-locations-list"></div>
+        </div>
+
+        <div id="admin-panel-live" class="admin-tab-panel">
+            <h1>Live &amp; Upcoming</h1>
+            <p class="sub">Add an upcoming BTS event (group tour stop or a member's solo appearance) and approve it to make it appear in the site's Live panel and calendar. Never invent a date — only add events you can actually verify.</p>
+
+            <div class="live-form">
+                <h2>Add an event</h2>
+                <div class="live-form-row">
+                    <div>
+                        <label class="live-field-label">Type</label>
+                        <select id="live-form-kind" class="live-field" onchange="document.getElementById('live-form-member-row').classList.toggle('hidden', this.value !== 'solo')">
+                            <option value="group">Group (whole tour stop)</option>
+                            <option value="solo">Solo (one member)</option>
+                        </select>
+                    </div>
+                    <div id="live-form-member-row" class="hidden">
+                        <label class="live-field-label">Member</label>
+                        <select id="live-form-member" class="live-field">
+                            <option value="RM">RM</option>
+                            <option value="Jin">Jin</option>
+                            <option value="SUGA">SUGA</option>
+                            <option value="j-hope">j-hope</option>
+                            <option value="Jimin">Jimin</option>
+                            <option value="V">V</option>
+                            <option value="Jungkook">Jungkook</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="live-form-row">
+                    <div>
+                        <label class="live-field-label">Title</label>
+                        <input type="text" id="live-form-title" class="live-field" placeholder="e.g. World Tour — London">
+                    </div>
+                </div>
+                <div class="live-form-row">
+                    <div>
+                        <label class="live-field-label">City</label>
+                        <input type="text" id="live-form-city" class="live-field" placeholder="London">
+                    </div>
+                    <div>
+                        <label class="live-field-label">Country</label>
+                        <input type="text" id="live-form-country" class="live-field" placeholder="UK">
+                    </div>
+                </div>
+                <div class="live-form-row">
+                    <div>
+                        <label class="live-field-label">Latitude</label>
+                        <input type="number" step="any" id="live-form-lat" class="live-field" placeholder="51.5074">
+                    </div>
+                    <div>
+                        <label class="live-field-label">Longitude</label>
+                        <input type="number" step="any" id="live-form-lng" class="live-field" placeholder="-0.1278">
+                    </div>
+                </div>
+                <div class="live-form-row">
+                    <div>
+                        <label class="live-field-label">Date start</label>
+                        <input type="date" id="live-form-date-start" class="live-field">
+                    </div>
+                    <div>
+                        <label class="live-field-label">Date end (optional — same as start if a single day)</label>
+                        <input type="date" id="live-form-date-end" class="live-field">
+                    </div>
+                </div>
+                <button type="button" id="live-form-submit-btn" class="live-submit-btn">Add to review queue</button>
+                <div id="live-form-result" class="live-form-result hidden"></div>
+            </div>
+
+            <div id="live-empty-state" class="state-box hidden">No pending events right now.</div>
+            <div id="live-submissions-list"></div>
         </div>
     </div>
 </div>
@@ -467,8 +566,11 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     window.switchAdminTab = function (tab) {
         document.getElementById('admin-tab-submissions-btn').classList.toggle('active', tab === 'submissions');
         document.getElementById('admin-tab-locations-btn').classList.toggle('active', tab === 'locations');
+        document.getElementById('admin-tab-live-btn').classList.toggle('active', tab === 'live');
         document.getElementById('admin-panel-submissions').classList.toggle('active', tab === 'submissions');
         document.getElementById('admin-panel-locations').classList.toggle('active', tab === 'locations');
+        document.getElementById('admin-panel-live').classList.toggle('active', tab === 'live');
+        if (tab === 'live' && typeof window.loadLiveEventSubmissions === 'function') window.loadLiveEventSubmissions();
     };
 
     let allSiteLocationsCache = null;
@@ -659,6 +761,114 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         }
         submissions.forEach(sub => listEl.appendChild(renderCard(sub)));
     }
+
+    // ==========================================
+    // Onglet "Live & Upcoming" (demande du 11/09/2026) : voir submitLiveEvent()/
+    // listPendingLiveEventSubmissions()/approveLiveEventSubmission()/
+    // rejectLiveEventSubmission() dans firebase-init.js. Chargé au premier passage sur cet
+    // onglet (voir window.switchAdminTab plus haut), pas au chargement initial de la page —
+    // même logique paresseuse que "Existing locations" ci-dessus.
+    // ==========================================
+    function renderLiveEventCard(sub) {
+        const card = document.createElement('div');
+        card.className = 'submission-card';
+        const dateLabel = sub.dateStart === sub.dateEnd || !sub.dateEnd
+            ? escapeHtml(sub.dateStart || '')
+            : `${escapeHtml(sub.dateStart || '')} → ${escapeHtml(sub.dateEnd)}`;
+        card.innerHTML = `
+            <div class="sub-header">
+                <div>
+                    <div class="sub-name">${escapeHtml(sub.title || '')}</div>
+                    <span class="live-status-pill">${sub.kind === 'solo' ? escapeHtml(sub.member || 'Solo') : 'Group'}</span>
+                </div>
+            </div>
+            <div class="sub-meta">${escapeHtml(sub.city || '')}${sub.city && sub.country ? ', ' : ''}${escapeHtml(sub.country || '')} &middot; ${dateLabel}</div>
+            <div class="sub-actions">
+                <button class="btn-approve">✓ Approve &amp; publish</button>
+                <button class="btn-reject">✕ Reject</button>
+            </div>
+            <div class="sub-result hidden"></div>
+        `;
+        const resultEl = card.querySelector('.sub-result');
+        const approveBtn = card.querySelector('.btn-approve');
+        const rejectBtn = card.querySelector('.btn-reject');
+        approveBtn.onclick = async () => {
+            approveBtn.disabled = true; rejectBtn.disabled = true;
+            const res = await window.approveLiveEventSubmission(sub);
+            resultEl.classList.remove('hidden');
+            if (res.success) {
+                resultEl.textContent = '✓ Published. It will appear in the Live panel for visitors from their next page load.';
+                resultEl.className = 'sub-result ok';
+                setTimeout(() => { card.remove(); window.loadLiveEventSubmissions(); }, 1200);
+            } else {
+                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.className = 'sub-result err';
+                approveBtn.disabled = false; rejectBtn.disabled = false;
+            }
+        };
+        rejectBtn.onclick = async () => {
+            approveBtn.disabled = true; rejectBtn.disabled = true;
+            const res = await window.rejectLiveEventSubmission(sub.id);
+            resultEl.classList.remove('hidden');
+            if (res.success) {
+                resultEl.textContent = 'Rejected.';
+                resultEl.className = 'sub-result ok';
+                setTimeout(() => card.remove(), 600);
+            } else {
+                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.className = 'sub-result err';
+                approveBtn.disabled = false; rejectBtn.disabled = false;
+            }
+        };
+        return card;
+    }
+
+    window.loadLiveEventSubmissions = async function () {
+        const listEl = document.getElementById('live-submissions-list');
+        const emptyEl = document.getElementById('live-empty-state');
+        if (!listEl || typeof window.listPendingLiveEventSubmissions !== 'function') return;
+        const submissions = await window.listPendingLiveEventSubmissions();
+        listEl.innerHTML = '';
+        emptyEl.classList.toggle('hidden', submissions.length > 0);
+        submissions.forEach(sub => listEl.appendChild(renderLiveEventCard(sub)));
+    };
+
+    (function wireLiveEventForm() {
+        const submitBtn = document.getElementById('live-form-submit-btn');
+        if (!submitBtn) return;
+        submitBtn.addEventListener('click', async () => {
+            const kind = document.getElementById('live-form-kind').value;
+            const member = kind === 'solo' ? document.getElementById('live-form-member').value : null;
+            const title = document.getElementById('live-form-title').value.trim();
+            const city = document.getElementById('live-form-city').value.trim();
+            const country = document.getElementById('live-form-country').value.trim();
+            const lat = parseFloat(document.getElementById('live-form-lat').value);
+            const lng = parseFloat(document.getElementById('live-form-lng').value);
+            const dateStart = document.getElementById('live-form-date-start').value;
+            const dateEnd = document.getElementById('live-form-date-end').value || dateStart;
+            const resultEl = document.getElementById('live-form-result');
+            resultEl.classList.remove('hidden');
+            if (!title || !city || !country || !dateStart || isNaN(lat) || isNaN(lng)) {
+                resultEl.textContent = 'Please fill in title, city, country, latitude, longitude, and a start date.';
+                resultEl.className = 'live-form-result err';
+                return;
+            }
+            submitBtn.disabled = true;
+            const res = await window.submitLiveEvent({ kind, member, title, city, country, lat, lng, dateStart, dateEnd });
+            submitBtn.disabled = false;
+            if (res.success) {
+                resultEl.textContent = 'Added to the review queue below.';
+                resultEl.className = 'live-form-result ok';
+                ['live-form-title', 'live-form-city', 'live-form-country', 'live-form-lat', 'live-form-lng', 'live-form-date-start', 'live-form-date-end'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+                window.loadLiveEventSubmissions();
+            } else {
+                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.className = 'live-form-result err';
+            }
+        });
+    })();
 
     window.addEventListener('firebase-ready', async (e) => {
         const user = e.detail && e.detail.user;

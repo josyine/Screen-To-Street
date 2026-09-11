@@ -135,7 +135,18 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .friend-row button { background: #fff; color: #334155; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 6px 14px; font-size: 11.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap; }
 .friend-row .friend-accept-btn { background: #D42759; color: #fff; border-color: #D42759; }
 
-.share-picker-menu { top: calc(100% + 8px); right: auto; left: 0; min-width: 200px; }
+.share-picker-menu { top: calc(100% + 8px); right: auto; left: 0; min-width: 200px; max-width: min(260px, calc(100vw - 40px)); }
+@media (max-width: 760px) {
+    /* BUG rapporté le 11/09/2026 : "Add a friend first to share locations." coupé sur
+       le côté — #share-location-container n'est pas ancré à un bord fixe de l'écran
+       (il suit le flux normal de la fiche lieu), donc left:0 pouvait pousser ce menu
+       (200px de large minimum) hors de l'écran sur un viewport étroit, avec le
+       débordement rogné par le overflow-y:auto de #sidebar-details (qui rend aussi
+       overflow-x implicitement non "visible", donc rogné plutôt que scrollable).
+       Ancré à droite avec une largeur plafonnée à la fenêtre, ça reste toujours
+       visible entièrement quelle que soit la position du bouton. */
+    .share-picker-menu { left: auto; right: 0; min-width: 0; width: max-content; max-width: min(230px, calc(100vw - 40px)); }
+}
 .notif-badge { position: absolute; top: 2px; right: 2px; background: #D42759; color: #fff; font-size: 9.5px; font-weight: 700; line-height: 1; padding: 3px 5px; border-radius: 100px; min-width: 14px; text-align: center; }
 #share-location-btn.share-sent-flash { color: #16a34a; }
 
@@ -243,8 +254,15 @@ body.trip-not-owner .owner-only { display: none !important; }
 }
 .locate-country-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: var(--primary-magenta); transform: translateY(-2px); }
 @media (max-width: 760px) {
-    /* Remonté au-dessus de la nav du bas mobile (~14px + ~52px de haut) en plus du zoom. */
-    .locate-country-btn { bottom: 160px; right: 14px; width: 38px; height: 38px; }
+    /* Descendu (demande du 11/09/2026) : le zoom Leaflet +/- est maintenant masqué sur
+       mobile (voir .leaflet-control-zoom plus bas — pincer pour zoomer reste possible),
+       donc plus besoin de lui réserver de la place au-dessus ; seule la nav du bas
+       (~14px + ~52px de haut) doit encore être dégagée. */
+    .locate-country-btn { bottom: 80px; right: 14px; width: 38px; height: 38px; }
+    /* Boutons +/- Leaflet masqués sur mobile (demande du 11/09/2026) : le pincement
+       (pinch-to-zoom) reste le geste naturel sur tactile, ces boutons ne faisaient que
+       prendre de la place et chevaucher d'autres contrôles en bas à droite. */
+    .leaflet-control-zoom { display: none !important; }
 }
 
 /* Messages éphémères "nouveau lieu ajouté" — voir showNewLocationToasts() dans script.js.
