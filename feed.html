@@ -168,15 +168,27 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
      12/09/2026) : .feed-page passe en flex-column sur mobile seulement, juste pour que
      order:-1 puisse faire remonter .feed-search-wrap avant .feed-tabs dans l'affichage
      sans toucher au HTML (order n'a aucun effet hors flex/grid) — .feed-grid garde son
-     propre display:grid, indépendant du conteneur parent. Fond teinté au lieu de blanc
-     ("j'aime pas le blanc"), police et barre réduites (nouvelle demande, un premier
-     passage n'avait réduit QUE via transform:scale, pas la taille réelle des éléments) —
-     le padding vertical réduit reste bien accompagné du transform:scale existant pour ne
-     jamais repasser sous 16px de font-size réel (zoom iOS au focus). */
+     propre display:grid, indépendant du conteneur parent.
+     Barre allongée sur toute la largeur de la PAGE (demande du 13/09/2026) : l'ancien
+     max-width:220px + transform:scale(0.82) (qui réduisait visuellement la boîte ENTIÈRE,
+     largeur comprise, tout en gardant une vraie font-size >=16px sous le capot pour éviter
+     le zoom iOS au focus — voir "input, textarea { font-size: 16px !important; }" dans
+     style.css) est retiré : la boîte occupe maintenant 100% de la largeur disponible
+     (stretch par défaut d'un enfant flex-column), donc la vraie taille de police (16px,
+     imposée par cette même règle globale) s'affiche sans distorsion ni espace vide à
+     droite. Fond blanc remplacé par un effet transparent/verre dépoli ("j'aime pas le
+     fond blanc ... effet transparent") qui laisse deviner le dégradé animé de la page
+     derrière la barre. */
   .feed-page { display: flex; flex-direction: column; }
-  .feed-search-wrap { order: -1; max-width: 220px; margin: 0 0 12px 0; align-self: flex-start; transform: scale(0.82); transform-origin: top left; }
-  .feed-search-input { background: #f1f5f9; border-color: transparent; padding: 7px 12px 7px 30px; }
-  .feed-search-icon { left: 11px; }
+  .feed-search-wrap { order: -1; margin: 0 0 12px 0; }
+  .feed-search-input { background: rgba(255,255,255,.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,.6); padding: 10px 16px 10px 38px; }
+  .feed-search-icon { left: 14px; }
+  /* Onglets Explore/Saved étirés jusqu'aux bords de l'ÉCRAN (demande du 13/09/2026,
+     distincte de la barre de recherche ci-dessus qui reste "à la largeur de la page") :
+     marge négative égale au padding horizontal de .feed-page (12px) pour déborder
+     jusqu'aux bords réels, même mécanisme de bleed que .profile-mini-map sur
+     profile.html. */
+  .feed-tabs { max-width: none; width: calc(100% + 24px); margin: 0 -12px 18px -12px; }
 }
 </style>
 <script>
