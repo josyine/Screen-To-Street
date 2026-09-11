@@ -79,15 +79,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 /* Icône crayon sur l'avatar (mobile uniquement, voir media query plus bas) — remplace le
    bouton "Edit profile" en dessous de 760px (demande du 09/09/2026, capture d'écran). */
 .profile-avatar-edit-badge { display: none; position: absolute; right: -2px; bottom: -2px; width: 28px; height: 28px; border-radius: 50%; background: #212832; color: #fff; align-items: center; justify-content: center; border: 2.5px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
-.profile-add-friend-btn { display: flex; align-items: center; gap: 7px; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
-.profile-add-friend-btn:hover { background: #b81f4a; }
-.profile-add-friend-btn:disabled { opacity: 0.6; cursor: default; }
-.profile-friend-status { font-size: 12px; font-weight: 700; color: #94a3b8; background: #f1f5f9; padding: 9px 16px; border-radius: 100px; flex-shrink: 0; }
-.profile-accept-request-btn { background: #212832; color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; flex-shrink: 0; }
-
-/* Bouton "Follow"/"Following" (demande du 08/09/2026) : abonnement à sens unique, voir
-   window.followUser()/unfollowUser() dans firebase-init.js — distinct du bouton "Add
-   friend" ci-dessus (système d'amis mutuel), les deux peuvent s'afficher côte à côte. */
+/* Bouton "Follow"/"Following" (demande du 08/09/2026, seul bouton de connexion à un
+   profil depuis le 11/09/2026 — voir la note dans le HTML ci-dessous) : abonnement à
+   sens unique, voir window.followUser()/unfollowUser() dans firebase-init.js. */
 .profile-follow-btn { background: #212832; color: #fff; border: none; border-radius: 100px; padding: 10px 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
 .profile-follow-btn:hover { background: #37414f; }
 .profile-follow-btn.following { background: #fff; color: #212832; border: 1.5px solid #e2e8f0; }
@@ -134,6 +128,13 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 .profile-tab-btn.active { color: #D42759; border-bottom-color: #D42759; }
 
 .profile-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 50px 0; }
+
+/* Compte privé, visiteur non-ami (demande du 11/09/2026) : remplace .profile-tabs +
+   panneaux, même largeur max centrée que le reste du contenu. */
+.profile-private-notice { max-width: 780px; margin: 10px auto 40px; text-align: center; color: #64748b; padding: 40px 20px; border-top: 2px solid #e2e8f0; }
+.profile-private-notice svg { color: #94a3b8; margin-bottom: 10px; }
+.profile-private-notice-title { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 6px; }
+.profile-private-notice-desc { font-size: 12.5px; max-width: 320px; margin: 0 auto; line-height: 1.5; }
 
 /* Onglet Photos : grille dominante façon Instagram */
 .profile-photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
@@ -401,13 +402,15 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                         </div>
                     </div>
                     <div class="profile-header-actions">
+                        <!-- Un seul bouton de "connexion" à ce profil (demande du 11/09/2026,
+                             "friends et follow veulent dire la même chose") : Follow
+                             remplace maintenant entièrement l'ancien système Ami (Add
+                             friend / Accept request), qui avait aussi un bug — les deux
+                             pouvaient s'accepter en parallèle et gonfler artificiellement
+                             le compteur "followers" via deux mécanismes différents. Le
+                             système Amis mutuel (nécessaire aux messages directs/partage
+                             de voyage) reste géré depuis friends.html, juste retiré d'ici. -->
                         <button id="profile-follow-btn" class="profile-follow-btn hidden" type="button"></button>
-                        <button id="profile-accept-request-btn" class="profile-accept-request-btn hidden" data-i18n="profileAcceptRequestBtn">Accept request</button>
-                        <button id="profile-add-friend-btn" class="profile-add-friend-btn hidden">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
-                            <span data-i18n="profileAddFriendBtn">Add friend</span>
-                        </button>
-                        <span id="profile-friend-status" class="profile-friend-status hidden"></span>
                         <a href="account.html" class="profile-edit-btn hidden" id="profile-edit-btn" data-i18n="profileEditBtn">Edit profile</a>
                     </div>
                 </div>
@@ -424,7 +427,16 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                 <button type="button" class="profile-edit-cancel-btn" id="profile-edit-cancel-btn">Cancel</button>
             </div>
 
-            <div class="profile-tabs">
+            <!-- Compte privé, visiteur non-ami (demande du 11/09/2026) : remplace tabs +
+                 panneaux ci-dessous — seuls avatar + bio (au-dessus) restent visibles. Voir
+                 applyProfilePrivacyGate() plus bas. -->
+            <div class="profile-private-notice hidden" id="profile-private-notice">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                <div class="profile-private-notice-title" data-i18n="profilePrivateTitle">This account is private</div>
+                <div class="profile-private-notice-desc" data-i18n="profilePrivateDesc">Send a friend request to see their photos, map and reviews.</div>
+            </div>
+
+            <div class="profile-tabs" id="profile-tabs">
                 <button class="profile-tab-btn active" data-tab="photos" onclick="switchProfileTab('photos')" data-i18n="profileTabPhotos">Photos</button>
                 <button class="profile-tab-btn" data-tab="reviews" onclick="switchProfileTab('reviews')" data-i18n="profileTabReviews">Reviews</button>
                 <button class="profile-tab-btn" data-tab="map" onclick="switchProfileTab('map')" data-i18n="profileTabMap">Map</button>
@@ -688,116 +700,135 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
         }
     }
 
-    async function renderProfileFriendState(username) {
-        // Même filet de sécurité que renderProfileMap ci-dessus : loadProfilePage()
-        // attend cette fonction (await), donc une exception ici bloquait tout autant
-        // l'affichage du reste de la page.
-        try {
-            const addBtn = document.getElementById('profile-add-friend-btn');
-            const statusEl = document.getElementById('profile-friend-status');
-            const acceptBtn = document.getElementById('profile-accept-request-btn');
-
-            if (!profileCurrentUid || profileCurrentUid === profileUid) return;
-            if (typeof window.listMyFriends !== 'function') return;
-
-            const [myFriends, requests] = await Promise.all([
-                window.listMyFriends(),
-                typeof window.listMyFriendRequests === 'function' ? window.listMyFriendRequests() : { incoming: [], outgoing: [] }
-            ]);
-
-            if (myFriends.some(f => f.uid === profileUid)) {
-                statusEl.textContent = t('profileFriendsLabel');
-                statusEl.classList.remove('hidden');
-                return;
-            }
-
-            const incomingReq = (requests.incoming || []).find(r => r.fromUid === profileUid);
-            if (incomingReq) {
-                acceptBtn.classList.remove('hidden');
-                acceptBtn.onclick = async () => {
-                    acceptBtn.disabled = true;
-                    await window.acceptFriendRequest(incomingReq.id, incomingReq.fromUid, incomingReq.fromUsername);
-                    acceptBtn.classList.add('hidden');
-                    statusEl.textContent = t('profileFriendsLabel');
-                    statusEl.classList.remove('hidden');
-                };
-                return;
-            }
-
-            const outgoingReq = (requests.outgoing || []).find(r => r.toUid === profileUid);
-            if (outgoingReq) {
-                statusEl.textContent = t('profileRequestSentLabel');
-                statusEl.classList.remove('hidden');
-                return;
-            }
-
-            addBtn.classList.remove('hidden');
-            addBtn.onclick = async () => {
-                addBtn.disabled = true;
-                const result = await window.sendFriendRequest(username);
-                if (result && result.success) {
-                    addBtn.classList.add('hidden');
-                    statusEl.textContent = t('profileRequestSentLabel');
-                    statusEl.style.color = '';
-                    statusEl.style.background = '';
-                    statusEl.classList.remove('hidden');
-                } else {
-                    // BUG rapporté le 11/09/2026 ("demande d'ami envoyée mais jamais
-                    // reçue") : cliquer "Add" ici réactivait le bouton EN SILENCE sur tout
-                    // échec (déjà ami, pseudo introuvable, erreur serveur...) — rien ne
-                    // distinguait "ça a marché mais tu le sais pas" de "ça a vraiment
-                    // échoué", donnant l'impression trompeuse que la demande était partie.
-                    addBtn.disabled = false;
-                    const errCode = result && result.error;
-                    const msg = errCode === 'permission-denied'
-                        ? (currentLang === 'fr' ? "Erreur serveur — réessayez dans un instant." : 'Server error — please try again in a moment.')
-                        : errCode === 'already-sent'
-                            ? t('friendsErrAlreadySent')
-                            : errCode === 'already-friends'
-                                ? t('friendsErrAlreadyFriends')
-                                : (currentLang === 'fr' ? "Impossible d'envoyer la demande." : "Couldn't send the request.");
-                    statusEl.textContent = msg;
-                    statusEl.style.color = '#D42759';
-                    statusEl.style.background = '#FFF7F8';
-                    statusEl.classList.remove('hidden');
-                }
-            };
-        } catch (e) {
-            console.warn('Affichage du statut ami échoué :', e);
-        }
-    }
 
     // Bouton "Follow"/"Following" (demande du 08/09/2026) : abonnement à sens unique,
-    // séparé du système d'amis mutuel ci-dessus — les deux boutons peuvent coexister.
-    async function renderProfileFollowState() {
+    // séparé du système d'amis mutuel — utilisé UNIQUEMENT pour les comptes publics
+    // (demande du 11/09/2026 : pour un compte privé, Follow n'a pas de sens puisqu'il
+    // n'exige aucune acceptation — voir renderProfileFriendGateButton ci-dessous, qui
+    // affiche à la place le vrai système d'amis, seul à donner accès au contenu privé).
+    async function renderProfileFollowButton(followBtn) {
+        if (typeof window.isFollowing !== 'function') return;
+        const setLabel = (following) => {
+            followBtn.classList.toggle('following', following);
+            followBtn.textContent = following ? t('profileFollowingBtn') : t('profileFollowBtn');
+        };
+        let following = await window.isFollowing(profileUid);
+        setLabel(following);
+        followBtn.classList.remove('hidden');
+        followBtn.onclick = async () => {
+            followBtn.disabled = true;
+            const ok = following
+                ? await window.unfollowUser(profileUid)
+                : await window.followUser(profileUid);
+            if (ok) {
+                following = !following;
+                setLabel(following);
+                if (typeof window.getFollowerCount === 'function') {
+                    document.getElementById('profile-stat-followers').textContent = await window.getFollowerCount(profileUid);
+                }
+            }
+            followBtn.disabled = false;
+        };
+    }
+
+    // Compte privé (demande du 11/09/2026) : remplace le bouton Follow par le vrai
+    // système d'amis mutuel (friendIndex/friendRequests, voir firebase-init.js) —
+    // seule relation qui donne accès aux photos/carte/avis d'un compte privé.
+    async function renderProfileFriendGateButton(followBtn) {
+        if (typeof window.getFriendRequestStatusWith !== 'function') return;
+        const refresh = async () => {
+            const info = await window.getFriendRequestStatusWith(profileUid);
+            followBtn.classList.remove('hidden');
+            followBtn.disabled = false;
+            if (info.status === 'friends') {
+                followBtn.classList.add('following');
+                followBtn.textContent = t('profileFriendsLabel');
+                followBtn.onclick = null;
+            } else if (info.status === 'pending-outgoing') {
+                followBtn.classList.add('following');
+                followBtn.textContent = t('profileRequestSentLabel');
+                followBtn.onclick = async () => {
+                    followBtn.disabled = true;
+                    await window.declineFriendRequest(info.requestId);
+                    await refresh();
+                };
+            } else if (info.status === 'pending-incoming') {
+                followBtn.classList.remove('following');
+                followBtn.textContent = t('profileAcceptRequestBtn');
+                followBtn.onclick = async () => {
+                    followBtn.disabled = true;
+                    await window.acceptFriendRequest(info.requestId, profileUid, info.fromUsername || '');
+                    loadProfilePage(); // révèle immédiatement le contenu désormais visible
+                };
+            } else {
+                followBtn.classList.remove('following');
+                followBtn.textContent = t('profileAddFriendBtn');
+                followBtn.onclick = async () => {
+                    followBtn.disabled = true;
+                    const username = document.getElementById('profile-username').textContent;
+                    const result = await window.sendFriendRequest(username);
+                    if (result && result.success) {
+                        await refresh();
+                    } else {
+                        const errKey = {
+                            'already-sent': 'friendsErrAlreadySent',
+                            'already-friends': 'friendsErrAlreadyFriends',
+                            'not-found': 'friendsErrNotFound'
+                        }[result && result.error];
+                        if (typeof window.showSimpleToast === 'function') {
+                            window.showSimpleToast(errKey ? t(errKey) : t('friendsErrGeneric'), { isError: true });
+                        }
+                        followBtn.disabled = false;
+                    }
+                };
+            }
+        };
+        await refresh();
+    }
+
+    async function renderProfileFollowState(publicProfile) {
         try {
             const followBtn = document.getElementById('profile-follow-btn');
             if (!profileCurrentUid || profileCurrentUid === profileUid) return;
-            if (typeof window.isFollowing !== 'function') return;
-
-            const setLabel = (following) => {
-                followBtn.classList.toggle('following', following);
-                followBtn.textContent = following ? t('profileFollowingBtn') : t('profileFollowBtn');
-            };
-            let following = await window.isFollowing(profileUid);
-            setLabel(following);
-            followBtn.classList.remove('hidden');
-            followBtn.onclick = async () => {
-                followBtn.disabled = true;
-                const ok = following
-                    ? await window.unfollowUser(profileUid)
-                    : await window.followUser(profileUid);
-                if (ok) {
-                    following = !following;
-                    setLabel(following);
-                    if (typeof window.getFollowerCount === 'function') {
-                        document.getElementById('profile-stat-followers').textContent = await window.getFollowerCount(profileUid);
-                    }
-                }
-                followBtn.disabled = false;
-            };
+            if (publicProfile && publicProfile.isPrivate) {
+                await renderProfileFriendGateButton(followBtn);
+            } else {
+                await renderProfileFollowButton(followBtn);
+            }
         } catch (e) {
-            console.warn('Affichage du statut abonnement échoué :', e);
+            console.warn('Affichage du statut de connexion au profil échoué :', e);
+        }
+    }
+
+    // Compte privé, visiteur non-ami (demande du 11/09/2026) : seuls avatar + bio restent
+    // visibles — photos/carte/avis sont masqués derrière profile-private-notice. isFriend
+    // n'est vérifié que si nécessaire (compte privé ET pas son propre profil) pour éviter
+    // une lecture Firestore inutile sur l'immense majorité des profils, publics.
+    async function computeProfileGate(publicProfile) {
+        const isOwnProfile = !!(profileCurrentUid && profileCurrentUid === profileUid);
+        const isPrivate = !!(publicProfile && publicProfile.isPrivate);
+        if (!isPrivate || isOwnProfile) return false;
+        if (typeof window.isFriendWith !== 'function') return true;
+        try {
+            const isFriend = await window.isFriendWith(profileUid);
+            return !isFriend;
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function applyProfileGateUI(gated) {
+        const tabs = document.getElementById('profile-tabs');
+        const notice = document.getElementById('profile-private-notice');
+        const statsRow = document.querySelector('.profile-stats');
+        if (tabs) tabs.classList.toggle('hidden', gated);
+        if (notice) notice.classList.toggle('hidden', !gated);
+        if (statsRow) statsRow.classList.toggle('hidden', gated);
+        if (gated) {
+            ['profile-panel-photos', 'profile-panel-reviews', 'profile-panel-map'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
         }
     }
 
@@ -985,12 +1016,21 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             document.getElementById('profile-username').textContent = username;
             document.title = 'Screen To Street — ' + username;
 
-            const photosShown = renderProfilePhotos(publicProfile);
-            renderProfileReviews(publicProfile);
+            // Compte privé, visiteur non-ami (demande du 11/09/2026) : seuls avatar + bio
+            // restent visibles ci-dessous — on ne peuple même pas photos/avis/carte dans ce
+            // cas (déjà masqués par applyProfileGateUI(), inutile de faire le travail).
+            const gated = await computeProfileGate(publicProfile);
+            applyProfileGateUI(gated);
+
+            let photosShown = [];
+            if (!gated) {
+                photosShown = renderProfilePhotos(publicProfile);
+                renderProfileReviews(publicProfile);
+            }
             // La mini-carte est construite en paresseux (voir switchProfileTab) : on garde
             // juste les ids ici pour ce moment-là.
             profileVisitedIdsForMap = visitedIds || [];
-            if (!document.getElementById('profile-panel-map').classList.contains('hidden')) {
+            if (!gated && !document.getElementById('profile-panel-map').classList.contains('hidden')) {
                 renderProfileMap(profileVisitedIdsForMap);
             }
             renderProfileBio(publicProfile);
@@ -1005,8 +1045,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                 document.getElementById('profile-stat-followers').textContent = await window.getFollowerCount(profileUid);
             }
 
-            await renderProfileFriendState(username);
-            await renderProfileFollowState();
+            await renderProfileFollowState(publicProfile);
 
             document.getElementById('profile-loading').classList.add('hidden');
             document.getElementById('profile-content').classList.remove('hidden');

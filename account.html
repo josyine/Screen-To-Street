@@ -82,6 +82,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 .receipt-row:last-child { border-bottom: none; }
 .box-container { border: 1px solid #ECE7F3; border-radius: 16px; padding: 24px 26px; margin-bottom: 24px; background: #fff; }
 
+/* Confidentialité du compte (demande du 11/09/2026) — même habillage "carte radio" que
+   le choix équivalent à l'inscription (voir welcome-style.css / index.html). */
+.privacy-choice-group { display: flex; flex-direction: column; gap: 10px; }
+.privacy-choice-option { position: relative; display: flex; flex-direction: column; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px 14px 12px 40px; cursor: pointer; transition: 0.2s ease; }
+.privacy-choice-option input { position: absolute; left: 14px; top: 14px; width: 16px; height: 16px; accent-color: #D42759; cursor: pointer; margin: 0; }
+.privacy-choice-option:has(input:checked) { background: #FCE7F0; border-color: #D42759; }
+.privacy-choice-title { font-size: 13px; font-weight: 700; color: #1e293b; }
+.privacy-choice-option:has(input:checked) .privacy-choice-title { color: #D42759; }
+.privacy-choice-desc { font-size: 11.5px; color: #64748b; margin-top: 2px; }
+
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: auto; }
 .modal-box { background: white; width: 90%; max-width: 500px; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative;}
 
@@ -229,6 +239,22 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
           <select id="user-country-input" class="field-value">
             <option value="" data-i18n="accCountryPlaceholder">Select a country (optional)</option>
           </select>
+          <!-- Confidentialité du compte (demande du 11/09/2026) : voir setAccountPrivacy()
+               dans firebase-init.js, et le choix équivalent à l'inscription (index.html). -->
+          <span class="field-label" style="margin-top:16px;" data-i18n="privacyLabel">Account privacy</span>
+          <div class="privacy-choice-group">
+            <label class="privacy-choice-option">
+              <input type="radio" name="account-privacy-setting" id="acc-privacy-public" value="public">
+              <span class="privacy-choice-title" data-i18n="privacyPublicLabel">Public</span>
+              <span class="privacy-choice-desc" data-i18n="privacyPublicDesc">Anyone can follow you and see your posts.</span>
+            </label>
+            <label class="privacy-choice-option">
+              <input type="radio" name="account-privacy-setting" id="acc-privacy-private" value="private">
+              <span class="privacy-choice-title" data-i18n="privacyPrivateLabel">Private</span>
+              <span class="privacy-choice-desc" data-i18n="privacyPrivateDesc">Only friends you accept can see your posts.</span>
+            </label>
+          </div>
+          <div id="acc-privacy-saved-msg" class="hidden" style="font-size:11px; font-weight:600; color:#10b981; margin-top:6px;" data-i18n="accPrivacySaved">Privacy setting saved.</div>
         </div>
       </div>
 
@@ -822,6 +848,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
                         bioTextarea.value = (p && p.bio) || '';
                         if (bioCount) bioCount.textContent = bioTextarea.value.length + '/280';
                     }
+                    // Confidentialité du compte (demande du 11/09/2026) : pré-remplie depuis
+                    // publicProfiles/{uid}.isPrivate, même champ que profile.html/feed.html
+                    // consultent pour décider de la visibilité — voir setAccountPrivacy().
+                    const isPrivateNow = !!(p && p.isPrivate);
+                    const publicRadio = document.getElementById('acc-privacy-public');
+                    const privateRadio = document.getElementById('acc-privacy-private');
+                    if (publicRadio && privateRadio) {
+                        publicRadio.checked = !isPrivateNow;
+                        privateRadio.checked = isPrivateNow;
+                    }
                 });
             }
         }
@@ -864,6 +900,31 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             if (typeof window.showSimpleToast === 'function') {
                 window.showSimpleToast(ok ? t('profileBioSaved') : (currentLang === 'fr' ? "Échec de l'enregistrement." : 'Failed to save.'), { isError: !ok });
             }
+        });
+    })();
+
+    // Confidentialité du compte (demande du 11/09/2026) : sauvegarde immédiate au clic,
+    // comme le pays d'intérêt — pas besoin d'un bouton "Save" séparé pour un simple choix
+    // à 2 options. Voir le pré-remplissage dans firebase-ready ci-dessus.
+    (function wireAccountPrivacy() {
+        const radios = document.querySelectorAll('input[name="account-privacy-setting"]');
+        const savedMsg = document.getElementById('acc-privacy-saved-msg');
+        if (!radios.length) return;
+        radios.forEach(radio => {
+            radio.addEventListener('change', async () => {
+                if (typeof window.setAccountPrivacy !== 'function') {
+                    if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "Non connecté, réessayez dans un instant." : 'Not connected, please try again in a moment.', { isError: true });
+                    return;
+                }
+                const isPrivate = document.getElementById('acc-privacy-private').checked;
+                const ok = await window.setAccountPrivacy(isPrivate);
+                if (ok && savedMsg) {
+                    savedMsg.classList.remove('hidden');
+                    setTimeout(() => savedMsg.classList.add('hidden'), 2500);
+                } else if (!ok && typeof window.showSimpleToast === 'function') {
+                    window.showSimpleToast(currentLang === 'fr' ? "Échec de l'enregistrement." : 'Failed to save.', { isError: true });
+                }
+            });
         });
     })();
 

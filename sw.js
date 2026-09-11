@@ -14,7 +14,15 @@
 // IMPORTANT : ne touche jamais aux requêtes cross-origin (Firebase/Firestore, polices
 // Google, tuiles Leaflet...) — seuls les fichiers statiques du même domaine sont
 // concernés, jamais les données live du compte.
-const CACHE_VERSION = 'stns-static-v20260911';
+const CACHE_VERSION = 'stns-static-v20260912';
+
+// Bibliothèques externes figées par version dans leur URL (unpkg pour Leaflet,
+// gstatic pour le SDK Firebase) : contrairement à Firestore/Auth (données live,
+// jamais mises en cache), ces fichiers ne changent jamais tant que la version
+// dans l'URL ne change pas, donc cache-first sans risque de servir du périmé.
+const CACHEABLE_CDN_HOSTS = ['unpkg.com', 'www.gstatic.com'];
+const isCacheableCdnRequest = (url) =>
+    CACHEABLE_CDN_HOSTS.includes(url.hostname) && /\.(js|css)(\?.*)?$/.test(url.pathname);
 
 // Pas de préchargement à l'install : les fichiers réels sont demandés avec leur
 // query-string de version (ex. "script.js?v=20260907"), le cache se remplit donc tout
@@ -34,13 +42,37 @@ self.addEventListener('fetch', (event) => {
     if (req.method !== 'GET') return;
 
     const url = new URL(req.url);
-    if (url.origin !== self.location.origin) return;
+    if (url.origin !== self.location.origin) {
+        // Seules les bibliothèques JS/CSS figées par version (Leaflet, SDK Firebase) sont
+        // concernées ici — jamais les tuiles de carte, ni Firestore/Auth (données live).
+        if (isCacheableCdnRequest(url)) {
+            event.respondWith(
+                caches.open(CACHE_VERSION).then(async (cache) => {
+                    const cached = await cache.match(req);
+                    if (cached) return cached;
+                    const res = await fetch(req);
+                    if (res && res.ok) cache.put(req, res.clone());
+                    return res;
+                })
+            );
+        }
+        return;
+    }
 
+    // BUG CRITIQUE corrigé le 12/09/2026 : cette condition référençait STATIC_ASSETS, un
+    // tableau supprimé lors d'une simplification précédente de ce fichier (le
+    // préchargement à l'install s'appuyait dessus, mais plus rien d'autre) — sans lui, CE
+    // service worker levait une ReferenceError à CHAQUE requête réseau interceptée sur
+    // tout le site, cassant potentiellement le chargement de bien plus que les seuls
+    // fichiers statiques visés ici. Explique probablement une bonne partie du "le site
+    // met énormément de temps à charger" rapporté juste après l'introduction de ce
+    // fichier.
+    //
     // Fichiers statiques (JS/CSS/manifest/icônes) : cache d'abord, réseau en secours,
     // puis on rafraîchit le cache en tâche de fond (stale-while-revalidate) pour que la
     // prochaine navigation profite déjà d'une éventuelle mise à jour sans jamais faire
     // attendre l'utilisateur dessus.
-    const isStaticAsset = /\.(js|css|png|jpg|jpeg|svg|webp|json)(\?.*)?$/.test(url.pathname) || STATIC_ASSETS.includes(url.pathname.replace(/^\//, ''));
+    const isStaticAsset = /\.(js|css|png|jpg|jpeg|svg|webp|json)(\?.*)?$/.test(url.pathname);
     if (isStaticAsset) {
         event.respondWith(
             caches.open(CACHE_VERSION).then(async (cache) => {

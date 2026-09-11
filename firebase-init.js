@@ -641,6 +641,11 @@ window.fetchGlobalPhotoFeed = async function () {
             const photos = [];
             profiles.forEach(({ u, data }) => {
                 if (!data) return;
+                // Compte privé (demande du 11/09/2026) : ses publications ne doivent jamais
+                // apparaître dans le fil global, même pour un visiteur qui serait ami avec
+                // lui — le fil est volontairement "public only", contrairement à
+                // profile.html qui, lui, autorise les amis à voir le contenu.
+                if (data.isPrivate) return;
                 Object.values(data.reviews || {}).forEach(r => {
                     if (!r.photo) return;
                     photos.push({
@@ -1670,6 +1675,69 @@ window.listMyFriends = async function () {
     } catch (e) {
         console.warn('Lecture de la liste d\'amis échouée :', e);
         return [];
+    }
+};
+
+// Compte privé (demande du 11/09/2026) : profile.html a besoin de savoir "suis-je ami
+// avec le propriétaire de ce profil" pour décider s'il faut afficher photos/carte/avis
+// ou les masquer derrière l'avatar+bio. On ne lit QUE friendIndex/{moi}/... du visiteur
+// (jamais celui du propriétaire, illisible pour un tiers par la règle Firestore), ce qui
+// suffit : la relation est écrite des deux côtés à l'acceptation (voir acceptFriendRequest
+// ci-dessus), donc mon propre friendIndex contient déjà l'entrée si on est amis.
+window.isFriendWith = async function (targetUid) {
+    const user = auth.currentUser;
+    if (!user || !targetUid) return false;
+    try {
+        const snap = await getDoc(doc(db, 'users', user.uid, 'friendIndex', targetUid));
+        return snap.exists();
+    } catch (e) {
+        console.warn('Vérification du statut ami échouée :', e);
+        return false;
+    }
+};
+
+// État de la relation avec UN compte donné (pas la liste complète) : utilisé par le
+// bouton "Ajouter en ami" du profil public d'un compte privé (remplace le bouton Follow
+// pour ces comptes-là, voir profile.html). Retourne aussi l'id de la demande en attente
+// pour permettre de l'accepter/annuler directement depuis le bouton.
+window.getFriendRequestStatusWith = async function (targetUid) {
+    const user = auth.currentUser;
+    if (!user || !targetUid) return { status: 'none' };
+    if (user.uid === targetUid) return { status: 'self' };
+    try {
+        const friendSnap = await getDoc(doc(db, 'users', user.uid, 'friendIndex', targetUid));
+        if (friendSnap.exists()) return { status: 'friends' };
+    } catch (e) { /* ignore, on retombe sur "none" */ }
+    try {
+        const outgoingSnap = await getDocs(query(collection(db, 'friendRequests'), where('fromUid', '==', user.uid), where('toUid', '==', targetUid)));
+        if (!outgoingSnap.empty) return { status: 'pending-outgoing', requestId: outgoingSnap.docs[0].id };
+    } catch (e) { /* ignore */ }
+    try {
+        const incomingSnap = await getDocs(query(collection(db, 'friendRequests'), where('fromUid', '==', targetUid), where('toUid', '==', user.uid)));
+        if (!incomingSnap.empty) {
+            const reqDoc = incomingSnap.docs[0];
+            return { status: 'pending-incoming', requestId: reqDoc.id, fromUsername: reqDoc.data().fromUsername };
+        }
+    } catch (e) { /* ignore */ }
+    return { status: 'none' };
+};
+
+// Bascule Public/Privé (demande du 11/09/2026, création de compte + account.html) : écrit
+// sur les DEUX documents — users/{uid} (privé, lu par le propriétaire uniquement) ET
+// publicProfiles/{uid} (public en lecture), puisque c'est CE dernier que consultent
+// fetchGlobalPhotoFeed() et profile.html pour décider si le contenu doit être masqué.
+window.setAccountPrivacy = async function (isPrivate) {
+    const user = auth.currentUser;
+    if (!user) return false;
+    try {
+        await Promise.all([
+            setDoc(doc(db, 'users', user.uid), { isPrivate: !!isPrivate }, { merge: true }),
+            setDoc(doc(db, 'publicProfiles', user.uid), { isPrivate: !!isPrivate }, { merge: true })
+        ]);
+        return true;
+    } catch (e) {
+        console.warn('Mise à jour de la confidentialité du compte échouée :', e);
+        return false;
     }
 };
 
