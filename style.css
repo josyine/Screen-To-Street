@@ -242,6 +242,10 @@ body.trip-view-only .edit-only { display: none !important; }
    lecture seule) : les actions réservées au propriétaire (ex: supprimer tout le voyage)
    restent masquées même pour un rôle "edit". */
 body.trip-not-owner .owner-only { display: none !important; }
+/* Pendant inverse (demande du 12/09/2026) : un bouton "Leave trip" dans l'en-tête,
+   visible seulement pour un collaborateur (jamais pour le propriétaire, qui a déjà
+   "Delete" juste à côté via .owner-only ci-dessus). */
+body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 
 /* Bouton "(re)lancer le guide de démo" — visible seulement sur map.html?demo=1, voir map-tour.js */
 .demo-tour-btn {
@@ -799,7 +803,16 @@ body.trip-not-owner .owner-only { display: none !important; }
         position: fixed; top: calc(14px + env(safe-area-inset-top)); left: 60px; right: 100px;
         z-index: 3400;
         background: #fff; border: 1.5px solid #e2e8f0; border-radius: 100px;
-        padding: 8px 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        padding: 6px 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        /* Encore réduite (demande du 12/09/2026) : le padding réduit ci-dessus ne suffisait
+           plus, et l'input lui-même reste bloqué à 16px de font-size réel (règle globale
+           anti-zoom iOS "input, textarea { font-size: 16px !important; }" plus haut dans ce
+           fichier, qui l'emporte toujours sur .mobile-map-search input ci-dessous malgré sa
+           spécificité — un !important bat n'importe quelle règle non-!important). Un
+           transform:scale sur tout le conteneur est donc le seul moyen de réduire la taille
+           VISIBLE sans repasser sous 16px réels et rouvrir ce zoom. transform-origin left
+           évite tout décalage horizontal par rapport à sa position fixed. */
+        transform: scale(0.85); transform-origin: left center;
     }
     .mobile-map-search.menu-open { display: none !important; }
     .mobile-map-search-icon { color: #94a3b8; flex-shrink: 0; }

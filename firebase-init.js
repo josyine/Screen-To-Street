@@ -527,6 +527,21 @@ window.getFollowerCount = async function (targetUid) {
     }
 };
 
+// Liste des UID qui suivent targetUid (demande du 12/09/2026, "je veux voir qui me suit,
+// comme sur Instagram") — l'ID de chaque document de follows/{targetUid}/items EST le
+// UID de la personne qui suit (voir followUser() plus haut, setDoc(...items, followerUid)),
+// pas de champ séparé à relire.
+window.listFollowers = async function (targetUid) {
+    if (!targetUid) return [];
+    try {
+        const snap = await getDocs(collection(db, 'follows', targetUid, 'items'));
+        return snap.docs.map((d) => d.id);
+    } catch (e) {
+        console.warn('Lecture de la liste des abonnés échouée :', e);
+        return [];
+    }
+};
+
 // Photo publiée de façon autonome (bouton "+" -> "Add a photo", demande du 09/09/2026) —
 // distincte des photos attachées à un avis "I visited this place"/"Add a review" : pas de
 // note ni de visite associée, juste un lieu, une date et une légende facultative. Stockée
