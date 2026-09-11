@@ -393,6 +393,51 @@ const ARIRANG_TOUR = {
     ].map(s => Object.assign(s, { dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1] }))
 };
 
+// Deux tournées manquaient encore ici (demande du 11/09/2026 : "colore toutes les dates
+// où BTS ont eu de l'activité depuis leur début en 2013") — les toutes premières, avant
+// Wings ci-dessous. Dates vérifiées par recherche web (Wikipedia/Billboard/btssetlist.com
+// via WebSearch, sources listées dans le message envoyé à l'utilisateur), pas transmises
+// par toi comme les tournées suivantes — à corriger si une date s'avère inexacte.
+const RED_BULLET_TOUR_2014 = {
+    id: 'redbullet2014',
+    tourName: "BTS Live Trilogy Episode II: The Red Bullet",
+    group: "BTS",
+    stops: [
+        { id: 'rb14-seoul',   city: 'Seoul',         country: 'South Korea', venue: 'Olympic Hall',        lat: 37.5219, lng: 126.9312,  showDates: ['2014-10-17', '2014-10-18', '2014-10-19'] },
+        { id: 'rb14-kobe',    city: 'Kobe',          country: 'Japan',       venue: 'Kobe',                 lat: 34.6901, lng: 135.1955,  showDates: ['2014-11-13', '2014-11-14'] },
+        { id: 'rb14-tokyo',   city: 'Tokyo',         country: 'Japan',       venue: 'Tokyo',                lat: 35.6762, lng: 139.6503,  showDates: ['2014-11-16'] },
+        { id: 'rb14-manila',  city: 'Manila',        country: 'Philippines', venue: 'Manila',               lat: 14.5995, lng: 120.9842,  showDates: ['2014-12-07'] },
+        { id: 'rb14-sg',      city: 'Singapore',     country: 'Singapore',   venue: 'Singapore',            lat: 1.3521,  lng: 103.8198,  showDates: ['2014-12-13'] },
+        { id: 'rb15-bangkok', city: 'Bangkok',       country: 'Thailand',    venue: 'Bangkok',              lat: 13.7563, lng: 100.5018,  showDates: ['2014-12-20'] },
+        { id: 'rb15-kl',      city: 'Kuala Lumpur',  country: 'Malaysia',    venue: 'Mega Star Arena',      lat: 3.1390,  lng: 101.6869,  showDates: ['2015-06-06'] },
+        { id: 'rb15-sydney',  city: 'Sydney',        country: 'Australia',   venue: 'Roundhouse',           lat: -33.8688, lng: 151.2093, showDates: ['2015-07-10'] },
+        { id: 'rb15-melb',    city: 'Melbourne',     country: 'Australia',   venue: 'Plenary 1',            lat: -37.8136, lng: 144.9631, showDates: ['2015-07-12'] },
+        { id: 'rb15-ny',      city: 'New York',      country: 'USA',        venue: 'Best Buy Theater',      lat: 40.7580, lng: -73.9855,  showDates: ['2015-07-16'] },
+        { id: 'rb15-dallas',  city: 'Dallas',        country: 'USA',        venue: 'Verizon Theatre at Grand Prairie', lat: 32.7767, lng: -96.7970, showDates: ['2015-07-18'] },
+        { id: 'rb15-chicago', city: 'Chicago',       country: 'USA',        venue: 'Rosemont Theatre',      lat: 41.8781, lng: -87.6298,  showDates: ['2015-07-24'] },
+        { id: 'rb15-la',      city: 'Los Angeles',   country: 'USA',        venue: 'Club Nokia',            lat: 34.0522, lng: -118.2437, showDates: ['2015-07-26'] },
+        { id: 'rb15-mexico',  city: 'Mexico City',   country: 'Mexico',     venue: 'Pabellon Oeste',        lat: 19.4326, lng: -99.1332,  showDates: ['2015-07-29'] },
+        { id: 'rb15-saopaulo',city: 'São Paulo',     country: 'Brazil',     venue: 'Espaço das Américas',   lat: -23.5990, lng: -46.6910,  showDates: ['2015-07-31'] },
+        { id: 'rb15-santiago',city: 'Santiago',      country: 'Chile',      venue: 'Movistar Arena',        lat: -33.4672, lng: -70.6323,  showDates: ['2015-08-02'] },
+        { id: 'rb15-hk',      city: 'Hong Kong',     country: 'Hong Kong',  venue: 'AsiaWorld-Arena',       lat: 22.3213, lng: 113.9412,  showDates: ['2015-08-29'] }
+    ].map(s => Object.assign(s, { dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1] }))
+};
+
+const MOTS_ON_STAGE_TOUR_2015 = {
+    id: 'mots2015',
+    tourName: "BTS Live The Most Beautiful Moment in Life On Stage",
+    group: "BTS",
+    stops: [
+        { id: 'mots15-seoul',    city: 'Seoul',    country: 'South Korea', venue: 'SK Olympic Handball Gymnasium', lat: 37.5219, lng: 126.9312, showDates: ['2015-11-27', '2015-11-28', '2015-11-29'] },
+        { id: 'mots15-yokohama', city: 'Yokohama', country: 'Japan',       venue: 'Yokohama Arena',                lat: 35.5085, lng: 139.6175, showDates: ['2015-12-08', '2015-12-09'] },
+        // Concerts de Kobe reportés du 27-28/12/2015 au 22-23/03/2016 (annulation pour raisons médicales).
+        { id: 'mots16-kobe',     city: 'Kobe',     country: 'Japan',       venue: 'Kobe World Memorial Hall',      lat: 34.6901, lng: 135.1955, showDates: ['2016-03-22', '2016-03-23'] },
+        // Extension "Epilogue" : dates de début/fin confirmées, tournée complète (9 villes) non détaillée ici.
+        { id: 'mots16-epi-seoul', city: 'Seoul', country: 'South Korea', venue: 'Epilogue — début de tournée', lat: 37.5219, lng: 126.9312, showDates: ['2016-05-07'] },
+        { id: 'mots16-epi-tokyo', city: 'Tokyo', country: 'Japan',       venue: 'Epilogue — fin de tournée',   lat: 35.6762, lng: 139.6503, showDates: ['2016-08-14'] }
+    ].map(s => Object.assign(s, { dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1] }))
+};
+
 // Tournées historiques, transmises directement par toi le 30/08/2026. Entièrement
 // terminées (toujours "Terminé" dans le Mode Tournée), consultables via le sélecteur
 // pour le plaisir de parcourir le parcours du groupe — jamais prises en compte pour le
@@ -485,7 +530,7 @@ const PTD_TOUR_2021 = {
     ].map(s => Object.assign(s, { dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1] }))
 };
 
-const ALL_TOURS = [ARIRANG_TOUR, WINGS_TOUR_2017, LOVE_YOURSELF_TOUR_2018, SPEAK_YOURSELF_TOUR_2019, PTD_TOUR_2021];
+const ALL_TOURS = [ARIRANG_TOUR, RED_BULLET_TOUR_2014, MOTS_ON_STAGE_TOUR_2015, WINGS_TOUR_2017, LOVE_YOURSELF_TOUR_2018, SPEAK_YOURSELF_TOUR_2019, PTD_TOUR_2021];
 const LIVE_TOUR_ID = 'arirang';
 let selectedTourId = LIVE_TOUR_ID;
 function getSelectedTour() { return ALL_TOURS.find(t => t.id === selectedTourId) || ALL_TOURS[0]; }
@@ -500,6 +545,41 @@ Object.defineProperty(window, 'TOUR_MODE_DATA', { get() { return getSelectedTour
 // avec un champ "member" et "eventName" à la place de "venue" :
 // { id: 'ex', member: 'Jimin', eventName: 'Paris Fashion Week', city: 'Paris', country: 'France', lat: 48.8566, lng: 2.3522, showDates: ['2026-XX-XX'] }
 const MEMBER_EVENTS_DATA = [];
+
+// Jalons hors-tournée (demande du 11/09/2026 : "colore toutes les dates où BTS ont eu de
+// l'activité depuis leur début en 2013") — sorties d'albums/singles, cérémonies de
+// récompenses, discours à l'ONU, concerts en ligne (ère pandémie), le concert gratuit de
+// Busan, et le service militaire de chaque membre (dates d'incorporation/libération).
+// Dates vérifiées par recherche web (Billboard, Wikipedia, Reuters/AP, WWD... sources
+// listées dans le message envoyé à l'utilisateur), pas une liste exhaustive de CHAQUE jour
+// d'activité en 12 ans (impossible à garantir sans une base de données dédiée) mais les
+// jalons majeurs, publics et bien documentés. member=null pour les événements de groupe.
+const BTS_MILESTONES_DATA = [
+    { id: 'debut',        member: null,  eventName: 'Debut showcase — "2 Cool 4 Skool"',        city: 'Seoul',      country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2013-06-13'] },
+    { id: 'bbma17',       member: null,  eventName: 'Billboard Music Awards — Top Social Artist', city: 'Las Vegas',  country: 'USA', lat: 36.0908, lng: -115.1833, showDates: ['2017-05-21'] },
+    { id: 'bbma18',       member: null,  eventName: 'Billboard Music Awards — Top Social Artist', city: 'Las Vegas',  country: 'USA', lat: 36.0908, lng: -115.1833, showDates: ['2018-05-20'] },
+    { id: 'un2018',       member: null,  eventName: 'UN General Assembly speech — Generation Unlimited', city: 'New York', country: 'USA', lat: 40.7128, lng: -74.0060, showDates: ['2018-09-24'] },
+    { id: 'bbma19',       member: null,  eventName: 'Billboard Music Awards — Top Duo/Group',    city: 'Las Vegas',  country: 'USA', lat: 36.0908, lng: -115.1833, showDates: ['2019-05-01'] },
+    { id: 'dynamite',     member: null,  eventName: '"Dynamite" release',                        city: 'Seoul',      country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2020-08-21'] },
+    { id: 'motsone',      member: null,  eventName: 'Map of the Soul ON:E — online concert',      city: 'Seoul',      country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2020-10-10', '2020-10-11'] },
+    { id: 'butter',       member: null,  eventName: '"Butter" release',                           city: 'Seoul',      country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2021-05-21'] },
+    { id: 'bbma21',       member: null,  eventName: 'Billboard Music Awards — performance',       city: 'Los Angeles', country: 'USA', lat: 34.0522, lng: -118.2437, showDates: ['2021-05-23'] },
+    { id: 'grammy22',     member: null,  eventName: 'Grammy Awards — "Butter" performance',       city: 'Las Vegas',  country: 'USA', lat: 36.0908, lng: -115.1833, showDates: ['2022-04-03'] },
+    { id: 'proof',        member: null,  eventName: '"Proof" album release',                      city: 'Seoul',      country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2022-06-10'] },
+    { id: 'yettocome',    member: null,  eventName: '"Yet To Come in Busan" — free concert (World Expo bid)', city: 'Busan', country: 'South Korea', lat: 35.1796, lng: 129.0756, showDates: ['2022-10-15'] },
+    { id: 'jimin-dior23', member: 'Jimin', eventName: 'Paris Fashion Week — Dior debut as ambassador', city: 'Paris', country: 'France', lat: 48.8566, lng: 2.3522, showDates: ['2023-01-20'] },
+    { id: 'suga-val23',   member: 'SUGA',  eventName: 'Paris Fashion Week — Valentino Haute Couture', city: 'Paris', country: 'France', lat: 48.8566, lng: 2.3522, showDates: ['2023-01-25'] },
+    { id: 'jin-enlist',   member: 'Jin',   eventName: 'Military service begins',  city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2022-12-13'] },
+    { id: 'jhope-enlist', member: 'j-hope',eventName: 'Military service begins', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2023-04-18'] },
+    { id: 'suga-enlist',  member: 'SUGA',  eventName: 'Military service begins (social service)', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2023-09-22'] },
+    { id: 'rmv-enlist',   member: null,   eventName: 'RM & V — military service begins', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2023-12-11'] },
+    { id: 'jjk-enlist',   member: null,   eventName: 'Jimin & Jungkook — military service begins', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2023-12-12'] },
+    { id: 'jin-discharge',   member: 'Jin',   eventName: 'Military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2024-06-12'] },
+    { id: 'jhope-discharge', member: 'j-hope',eventName: 'Military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2024-10-16'] },
+    { id: 'rmv-discharge',   member: null,   eventName: 'RM & V — military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2025-06-10'] },
+    { id: 'jjk-discharge',   member: null,   eventName: 'Jimin & Jungkook — military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2025-06-11'] },
+    { id: 'suga-discharge',  member: 'SUGA', eventName: 'Military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2025-06-21'] }
+];
 
 // window.__tourModeNowOverride (chaîne ISO, ex: '2026-09-03') permet aux tests
 // automatisés de simuler une autre date sans jamais toucher à Date() global ni aux
@@ -609,25 +689,42 @@ window.changeTourLiveGroup = function(group) {
 function getLiveTimelineEntries(includePast) {
     if (window.selectedTourLiveGroup && window.selectedTourLiveGroup !== 'BTS') return [];
     const now = getTourNow();
-    const groupEntries = getLiveTour().stops.map(s => ({
+    // Toutes les tournées (demande du 11/09/2026 : "colore toutes les dates où BTS ont eu
+    // de l'activité depuis leur début en 2013"), pas seulement getLiveTour() (la tournée
+    // EN COURS, arirang) comme avant — ce filtre ne servait qu'à Tour Mode/le badge "en
+    // direct", jamais à distinguer "cette tournée a existé". Les tournées terminées ont de
+    // toute façon status:'done', donc déjà exclues ailleurs par le filtre includePast
+    // ci-dessous — aucun changement pour le badge Live / Tour Mode, seulement pour le
+    // Calendrier (qui appelle avec includePast=true).
+    const groupEntries = ALL_TOURS.flatMap(tour => tour.stops.map(s => ({
         kind: 'group', member: null, id: s.id,
-        title: `${getLiveTour().tourName} — ${s.city}`,
+        title: `${tour.tourName} — ${s.city}`,
         city: s.city, country: s.country, lat: s.lat, lng: s.lng,
-        dateStart: s.dateStart, dateEnd: s.dateEnd,
+        dateStart: s.dateStart, dateEnd: s.dateEnd, dates: s.showDates ? s.showDates.slice() : undefined,
         status: getTourStopStatus(s, now)
-    }));
+    })));
     const soloEntries = MEMBER_EVENTS_DATA.map(s => ({
         kind: 'solo', member: s.member, id: s.id,
         title: `${s.member} — ${s.eventName}`, eventName: s.eventName,
         city: s.city, country: s.country, lat: s.lat, lng: s.lng,
-        dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1],
+        dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1], dates: s.showDates.slice(),
+        status: getTourStopStatus({ dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1] }, now)
+    }));
+    // Jalons hors-tournée (BTS_MILESTONES_DATA, voir plus haut) : sorties, récompenses,
+    // discours, concerts en ligne, service militaire — même traitement que soloEntries.
+    const milestoneEntries = BTS_MILESTONES_DATA.map(s => ({
+        kind: s.member ? 'solo' : 'group', member: s.member || null, id: 'ms-' + s.id,
+        title: s.member ? `${s.member} — ${s.eventName}` : `BTS — ${s.eventName}`, eventName: s.eventName,
+        city: s.city, country: s.country, lat: s.lat, lng: s.lng,
+        dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1], dates: s.showDates.slice(),
         status: getTourStopStatus({ dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1] }, now)
     }));
     // Évènements approuvés via l'onglet admin "Live & Upcoming" (demande du 11/09/2026) :
     // bulk-fetchés une seule fois par visite dans map.html (window.__liveEventsFromFirestore,
     // même principe que newLocations pour les lieux) — jamais republiés dans script.js/
     // MEMBER_EVENTS_DATA ci-dessus, voir liveEvents/{id} et approveLiveEventSubmission()
-    // dans firebase-init.js.
+    // dans firebase-init.js. Pas de champ "dates" détaillé (schéma Firestore : seulement
+    // dateStart/dateEnd) — renderLiveCalendar() retombe sur ces deux bornes pour celles-ci.
     const approvedEntries = (window.__liveEventsFromFirestore || []).map(s => ({
         kind: s.kind || 'solo', member: s.member || null, id: 'live-' + s.id,
         title: s.title || (s.member ? `${s.member} — ${s.eventName || ''}` : (s.eventName || '')),
@@ -636,7 +733,7 @@ function getLiveTimelineEntries(includePast) {
         dateStart: s.dateStart, dateEnd: s.dateEnd || s.dateStart,
         status: getTourStopStatus({ dateStart: s.dateStart, dateEnd: s.dateEnd || s.dateStart }, now)
     }));
-    return groupEntries.concat(soloEntries, approvedEntries)
+    return groupEntries.concat(soloEntries, milestoneEntries, approvedEntries)
         .filter(e => includePast || e.status !== 'done')
         .sort((a, b) => new Date(a.dateStart) - new Date(b.dateStart));
 }
@@ -806,14 +903,26 @@ function renderLiveCalendar() {
     // BUG rapporté le 11/09/2026 : "Concert Oct 14 - Oct 17" ne doit colorer QUE le 14 et
     // le 17 (les dates listées dans Live), pas les jours entre les deux — avant ce
     // correctif, TOUS les jours de dateStart à dateEnd inclus étaient marqués.
+    //
+    // Complété le 11/09/2026 ("colore toutes les dates où BTS ont eu de l'activité") :
+    // quand l'évènement connaît chaque date précise (e.dates, ex. les 4 soirs d'une étape
+    // de tournée), on colore CES dates-là plutôt que seulement dateStart/dateEnd — un
+    // concert du 27, 28, 1er et 2 doit colorer les 4 soirs, pas juste le 27 et le 2. Sans
+    // e.dates (ex. les évènements approuvés côté admin, qui n'ont que dateStart/dateEnd),
+    // on retombe sur le même comportement qu'avant : seulement les deux bornes.
     const eventDaysMap = {};
     entries.forEach(e => {
-        const d1 = new Date(e.dateStart + 'T00:00:00');
-        const d2 = new Date(e.dateEnd + 'T00:00:00');
-        // Set plutôt qu'un simple [d1, d2] : un évènement d'un seul jour (dateStart ===
-        // dateEnd) ne doit compter qu'une fois, pas apparaître deux fois dans la liste des
-        // évènements du jour (et donc pas deux fois dans le title="" au survol).
-        const uniqueDates = d1.getTime() === d2.getTime() ? [d1] : [d1, d2];
+        let uniqueDates;
+        if (e.dates && e.dates.length) {
+            uniqueDates = e.dates.map(ds => new Date(ds + 'T00:00:00'));
+        } else {
+            const d1 = new Date(e.dateStart + 'T00:00:00');
+            const d2 = new Date(e.dateEnd + 'T00:00:00');
+            // Set plutôt qu'un simple [d1, d2] : un évènement d'un seul jour (dateStart ===
+            // dateEnd) ne doit compter qu'une fois, pas apparaître deux fois dans la liste
+            // des évènements du jour (et donc pas deux fois dans le title="" au survol).
+            uniqueDates = d1.getTime() === d2.getTime() ? [d1] : [d1, d2];
+        }
         uniqueDates.forEach(d => {
             if (d.getFullYear() === year && d.getMonth() === month) {
                 const key = d.getDate();
@@ -3456,7 +3565,8 @@ const translations = {
         cardNum: "Card Number", expiry: "Expiry Date", cvc: "CVC", paySecurely: "Pay securely", processing: "Processing securely…", paymentBackLink: "← Back to map",
         paymentNoAccountWarning: "You don't seem to be logged in — ", paymentNoAccountLink: "sign up first",
         privacyLabel: "Account privacy", privacyPublicLabel: "Public", privacyPublicDesc: "Anyone can follow you and see your posts.", privacyPrivateLabel: "Private", privacyPrivateDesc: "Only friends you accept can see your posts.", accPrivacySaved: "Privacy setting saved.",
-        profilePrivateTitle: "This account is private", profilePrivateDesc: "Send a friend request to see their photos, map and reviews.", profileFollowingBtnShort: "Friends"
+        profilePrivateTitle: "This account is private", profilePrivateDesc: "Send a friend request to see their photos, map and reviews.", profileFollowingBtnShort: "Friends",
+        friendsTabMessages: "Messages", friendsTabNotifications: "Notifications", friendsTabGroups: "Groups", notificationsEmpty: "Nothing new right now."
     },
     fr: {
         btnGenerateIti: "Générateur Itinéraire", filterGroup: "GROUPE", filterMember: "MEMBRE", filterArea: "RÉGION", filterYear: "ANNÉE", filterCategories: "CATÉGORIES", 
@@ -3522,7 +3632,8 @@ const translations = {
         cardNum: "Numéro de carte", expiry: "Date d'expiration", cvc: "CVC", paySecurely: "Payer en toute sécurité", processing: "Traitement sécurisé en cours…", paymentBackLink: "← Retour à la carte",
         paymentNoAccountWarning: "Vous ne semblez pas connecté(e) — ", paymentNoAccountLink: "inscrivez-vous d'abord",
         privacyLabel: "Confidentialité du compte", privacyPublicLabel: "Public", privacyPublicDesc: "Tout le monde peut vous suivre et voir vos publications.", privacyPrivateLabel: "Privé", privacyPrivateDesc: "Seuls les amis que vous acceptez peuvent voir vos publications.", accPrivacySaved: "Confidentialité enregistrée.",
-        profilePrivateTitle: "Ce compte est privé", profilePrivateDesc: "Envoyez une demande d'ami pour voir ses photos, sa carte et ses avis."
+        profilePrivateTitle: "Ce compte est privé", profilePrivateDesc: "Envoyez une demande d'ami pour voir ses photos, sa carte et ses avis.",
+        friendsTabMessages: "Messages", friendsTabNotifications: "Notifications", friendsTabGroups: "Groupes", notificationsEmpty: "Rien de nouveau pour le moment."
     },
     es: {
         btnGenerateIti: "Generador de Itinerarios", filterGroup: "GRUPO", filterMember: "MIEMBRO", filterArea: "ZONA", filterYear: "AÑO", filterCategories: "CATEGORÍAS",

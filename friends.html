@@ -47,13 +47,25 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 .friends-page { position: relative; z-index: 2000; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 110px 0 0 0; }
 .friends-shell { width: 100%; max-width: 100%; height: 100%; background: #fff; border-radius: 0; box-shadow: none; display: flex; overflow: hidden; }
 
-.friends-sidebar { width: 290px; border-right: 1px solid #EFECF6; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-.friends-sidebar-header { padding: 20px 18px 12px 18px; }
+.friends-sidebar { width: 290px; border-right: 1px solid #EFECF6; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+.friends-sidebar-header { padding: 20px 18px 12px 18px; flex-shrink: 0; }
 .friends-sidebar-header h1 { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 12px; }
 .friend-add-row { display: flex; gap: 6px; }
 .friend-add-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 8px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; outline: none; }
 .friend-add-row button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 16px; font-size: 13px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
 #friend-add-error { margin: 8px 18px 0 18px; background: #FFF1F3; border: 1px solid #FBD5DC; color: #D42759; font-size: 11px; font-weight: 600; padding: 7px 10px; border-radius: 8px; }
+
+/* 3 onglets Messages/Notifications/Groupes (demande du 11/09/2026, remplace l'ancienne
+   liste unique empilant demandes d'ami/invitations/partages/voyages/messages les uns sous
+   les autres) — même idée que .profile-tabs/.profile-tab-btn dans profile.html (soulignement
+   rose au survol/actif), mais resserré pour tenir 3 libellés dans une sidebar de 290px, et
+   avec un badge de compteur par onglet. */
+.friends-tabs { display: flex; border-bottom: 1px solid #EFECF6; padding: 0 8px; flex-shrink: 0; }
+.friends-tab-btn { flex: 1; background: none; border: none; padding: 12px 2px; font-size: 10px; font-weight: 700; color: #94a3b8; cursor: pointer; font-family: 'Poppins', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: .2s; text-transform: uppercase; letter-spacing: .02em; display: flex; align-items: center; justify-content: center; gap: 5px; }
+.friends-tab-btn:hover { color: #D42759; }
+.friends-tab-btn.active { color: #D42759; border-bottom-color: #D42759; }
+.friends-tab-badge { background: #D42759; color: #fff; font-size: 9px; font-weight: 700; border-radius: 100px; min-width: 15px; height: 15px; padding: 0 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.friends-tab-panel { flex: 1; overflow-y: auto; padding-top: 4px; }
 
 .sidebar-section-title { font-size: 10px; font-weight: 700; letter-spacing: .6px; color: #94a3b8; text-transform: uppercase; padding: 14px 18px 6px 18px; }
 .convo-row { display: flex; align-items: center; gap: 10px; padding: 9px 18px; cursor: pointer; transition: .15s; }
@@ -268,41 +280,62 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
              demandes d'ami échoue avec permission-denied — voir listMyFriendRequests()
              dans firebase-init.js et refreshFriendRequests() plus bas. Une vraie liste
              vide (aucune demande) n'affiche jamais ce bandeau. -->
-        <div id="friend-requests-sync-warning" class="hidden" style="background:#FFF7F8; border:1px solid #FBD5DC; color:#D42759; font-size:12px; font-weight:600; border-radius:12px; padding:10px 14px; margin-bottom:14px;"></div>
+        <div id="friend-requests-sync-warning" class="hidden" style="background:#FFF7F8; border:1px solid #FBD5DC; color:#D42759; font-size:12px; font-weight:600; border-radius:12px; padding:10px 14px; margin:0 18px 14px 18px;"></div>
 
-        <div id="friend-requests-section" class="hidden">
-            <div class="sidebar-section-title" data-i18n="friendsRequestsLabel">Friend requests</div>
-            <div id="friend-requests-list"></div>
+        <!-- 3 onglets (demande du 11/09/2026) : Messages (conversations 1-1), Notifications
+             (demandes d'ami + invitations de voyage + lieux partagés — tout ce qui n'est ni
+             une conversation ni un groupe), Groups (voyages partagés). Voir
+             switchFriendsTab()/updateFriendsTabBadges() plus bas, et refreshSidebar() qui
+             peuple les 3 panneaux puis recalcule les badges. -->
+        <div class="friends-tabs" id="friends-tabs">
+            <button class="friends-tab-btn active" data-tab="messages" onclick="switchFriendsTab('messages')">
+                <span data-i18n="friendsTabMessages">Messages</span>
+                <span class="friends-tab-badge hidden" id="friends-tab-badge-messages"></span>
+            </button>
+            <button class="friends-tab-btn" data-tab="notifications" onclick="switchFriendsTab('notifications')">
+                <span data-i18n="friendsTabNotifications">Notifications</span>
+                <span class="friends-tab-badge hidden" id="friends-tab-badge-notifications"></span>
+            </button>
+            <button class="friends-tab-btn" data-tab="groups" onclick="switchFriendsTab('groups')">
+                <span data-i18n="friendsTabGroups">Groups</span>
+                <span class="friends-tab-badge hidden" id="friends-tab-badge-groups"></span>
+            </button>
         </div>
 
-        <!-- Invitations à rejoindre un voyage (demande du 06/09/2026) : même principe que
-             les demandes d'ami ci-dessus — accepter fait apparaître le voyage dans "Trip
-             groups" (voir listMyTripGroups(), qui ne lit que trips/{id}.members, rempli
-             uniquement par acceptTripInvite() dans firebase-init.js). -->
-        <div id="trip-invites-section" class="hidden">
-            <div class="sidebar-section-title" data-i18n="tripInvitesLabel">Trip invites</div>
-            <div id="trip-invites-list"></div>
+        <div class="friends-tab-panel" id="friends-panel-messages">
+            <div id="dm-list"></div>
+            <div id="dm-empty" class="sidebar-empty-note hidden" data-i18n="noFriendsForDm">Add a friend to start messaging.</div>
         </div>
 
-        <!-- Lieux partagés par un ami (bouton "Partager" d'une fiche lieu, voir
-             shareLocationWithFriend() dans firebase-init.js) : cette section n'existait
-             plus du tout depuis la refonte de cette page en messagerie (demande du
-             24/08/2026), alors que countUnreadFriendNotifications() comptait toujours ces
-             partages dans le badge de l'icône "Amis" — un partage reçu allumait donc le
-             badge pour toujours, sans jamais rien à voir en ouvrant la page (bug rapporté
-             le 07/09/2026). -->
-        <div id="location-shares-section" class="hidden">
-            <div class="sidebar-section-title" data-i18n="locationSharesLabel">Shared with you</div>
-            <div id="location-shares-list"></div>
+        <div class="friends-tab-panel hidden" id="friends-panel-notifications">
+            <div id="friend-requests-section" class="hidden">
+                <div class="sidebar-section-title" data-i18n="friendsRequestsLabel">Friend requests</div>
+                <div id="friend-requests-list"></div>
+            </div>
+
+            <!-- Invitations à rejoindre un voyage (demande du 06/09/2026) : même principe que
+                 les demandes d'ami ci-dessus — accepter fait apparaître le voyage dans "Trip
+                 groups" (voir listMyTripGroups(), qui ne lit que trips/{id}.members, rempli
+                 uniquement par acceptTripInvite() dans firebase-init.js). -->
+            <div id="trip-invites-section" class="hidden">
+                <div class="sidebar-section-title" data-i18n="tripInvitesLabel">Trip invites</div>
+                <div id="trip-invites-list"></div>
+            </div>
+
+            <!-- Lieux partagés par un ami (bouton "Partager" d'une fiche lieu, voir
+                 shareLocationWithFriend() dans firebase-init.js). -->
+            <div id="location-shares-section" class="hidden">
+                <div class="sidebar-section-title" data-i18n="locationSharesLabel">Shared with you</div>
+                <div id="location-shares-list"></div>
+            </div>
+
+            <div id="notifications-empty" class="sidebar-empty-note hidden" data-i18n="notificationsEmpty">Nothing new right now.</div>
         </div>
 
-        <div class="sidebar-section-title" data-i18n="tripGroupsLabel">Trip groups</div>
-        <div id="trip-groups-list"></div>
-        <div id="trip-groups-empty" class="sidebar-empty-note hidden" data-i18n="noTripGroups">No shared trips yet — share one from a conversation.</div>
-
-        <div class="sidebar-section-title" data-i18n="directMessagesLabel">Direct messages</div>
-        <div id="dm-list"></div>
-        <div id="dm-empty" class="sidebar-empty-note hidden" data-i18n="noFriendsForDm">Add a friend to start messaging.</div>
+        <div class="friends-tab-panel hidden" id="friends-panel-groups">
+            <div id="trip-groups-list"></div>
+            <div id="trip-groups-empty" class="sidebar-empty-note hidden" data-i18n="noTripGroups">No shared trips yet — share one from a conversation.</div>
+        </div>
     </div>
 
     <div class="friends-main">
@@ -423,6 +456,52 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         await refreshLocationShares();
         await refreshTripGroupsList();
         await refreshDmListUI();
+        updateFriendsNotificationsEmptyState();
+        updateFriendsTabBadges();
+    }
+
+    // 3 onglets de la sidebar (demande du 11/09/2026) : bascule .friends-tab-panel/.
+    // friends-tab-btn.active, même principe que switchProfileTab() dans profile.html.
+    window.switchFriendsTab = function (tabName) {
+        document.querySelectorAll('.friends-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+        document.querySelectorAll('.friends-tab-panel').forEach(panel => {
+            panel.classList.toggle('hidden', panel.id !== `friends-panel-${tabName}`);
+        });
+    };
+
+    // L'onglet Notifications combine 3 sections indépendantes (demandes d'ami, invitations
+    // de voyage, lieux partagés) — chacune se masque déjà individuellement si vide, mais il
+    // faut aussi un message "rien de nouveau" quand LES TROIS le sont en même temps.
+    function updateFriendsNotificationsEmptyState() {
+        const sectionIds = ['friend-requests-section', 'trip-invites-section', 'location-shares-section'];
+        const allEmpty = sectionIds.every(id => {
+            const el = document.getElementById(id);
+            return !el || el.classList.contains('hidden');
+        });
+        const emptyNote = document.getElementById('notifications-empty');
+        if (emptyNote) emptyNote.classList.toggle('hidden', !allEmpty);
+    }
+
+    // Badge de compteur par onglet (demande du 11/09/2026) — Messages/Groups comptent les
+    // conversations avec un message non lu (pas le nombre total de messages, cohérent avec
+    // .convo-row-meta.unread déjà posé par refreshDmListUI()/refreshTripGroupsList()) ;
+    // Notifications compte chaque ligne affichée dans les 3 sections combinées.
+    function updateFriendsTabBadges() {
+        const setBadge = (tabName, count) => {
+            const el = document.getElementById(`friends-tab-badge-${tabName}`);
+            if (!el) return;
+            el.textContent = count > 9 ? '9+' : String(count);
+            el.classList.toggle('hidden', count === 0);
+        };
+        const countUnreadRows = (containerId) => document.querySelectorAll(`#${containerId} .convo-row-meta.unread`).length;
+        setBadge('messages', countUnreadRows('dm-list'));
+        setBadge('groups', countUnreadRows('trip-groups-list'));
+        const notifCount = document.querySelectorAll('#friend-requests-list .friend-request-row').length
+            + document.querySelectorAll('#trip-invites-list .trip-invite-row').length
+            + document.querySelectorAll('#location-shares-list .friend-request-row').length;
+        setBadge('notifications', notifCount);
     }
 
     // Voir la note plus haut sur #location-shares-section : marque chaque partage comme vu
