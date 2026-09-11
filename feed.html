@@ -67,8 +67,19 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 /* Grille façon Instagram : 3 colonnes, tuiles carrées, gap minime (capture fournie par
    l'utilisateur le 08/09/2026). */
 .feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; max-width: 900px; margin: 0 auto; }
-.feed-tile { aspect-ratio: 1 / 1; background-size: cover; background-position: center; cursor: pointer; transition: 0.15s; }
+.feed-tile { position: relative; aspect-ratio: 1 / 1; background-size: cover; background-position: center; cursor: pointer; transition: 0.15s; overflow: hidden; }
 .feed-tile:hover { opacity: 0.85; }
+/* Avatar + likes en overlay par tuile (demande du 11/09/2026, capture d'écran fournie :
+   "petit avatar en overlay + nombre de likes"). L'avatar redirige vers le profil de
+   l'auteur — stopPropagation pour ne pas aussi ouvrir la publication (le reste de la
+   tuile garde ce comportement, voir openFeedPost() plus bas). Le nombre de likes est un
+   simple badge d'affichage ici (l'interaction "j'aime" reste dans la modale, comme sur
+   profile.html) — chargé en tâche de fond après le premier rendu de la grille, pour ne
+   jamais retarder son affichage initial. */
+.feed-tile-avatar { position: absolute; left: 6px; bottom: 6px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); color: #fff; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,.3); cursor: pointer; z-index: 2; }
+.feed-tile-likes { position: absolute; top: 6px; right: 6px; display: flex; align-items: center; gap: 3px; background: rgba(20,16,30,.5); color: #fff; font-size: 10.5px; font-weight: 700; padding: 3px 7px 3px 6px; border-radius: 100px; z-index: 2; }
+.feed-tile-likes svg { width: 11px; height: 11px; flex-shrink: 0; }
+.feed-tile-likes.liked svg { fill: #D42759; stroke: #D42759; }
 .feed-empty, .feed-loading { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
 
 /* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
@@ -285,14 +296,43 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         grid.innerHTML = '';
         if (!photos.length) { emptyEl.textContent = 'No results.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');
+        const heartSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>';
         photos.forEach(p => {
             const tile = document.createElement('div');
             tile.className = 'feed-tile';
             tile.style.backgroundImage = `url('${p.photo}')`;
             tile.title = p.locationName || '';
             tile.onclick = () => openFeedPost(feedPhotos.indexOf(p));
+            tile.innerHTML = `
+                <div class="feed-tile-avatar" style="background:${feedAvatarColor(p.username)};" title="${escapeHtml(p.username || '')}">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
+                <div class="feed-tile-likes" data-photo-key="${p.uid}_${p.id}">${heartSvg}<span>${p.likeCount != null ? p.likeCount : '·'}</span></div>
+            `;
+            tile.querySelector('.feed-tile-avatar').onclick = (e) => {
+                e.stopPropagation();
+                if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username);
+            };
             grid.appendChild(tile);
         });
+        loadFeedTileLikes(photos);
+    }
+
+    // Charge le nombre de likes de chaque tuile visible EN TÂCHE DE FOND (jamais avant le
+    // premier rendu de la grille) — un badge par photo, mis en cache sur l'objet `p` lui-
+    // même pour ne pas re-consulter Firestore à chaque filtrage/re-rendu de la même photo.
+    async function loadFeedTileLikes(photos) {
+        if (typeof window.getPhotoLikeState !== 'function') return;
+        await Promise.all(photos.map(async (p) => {
+            const photoKey = p.uid + '_' + p.id;
+            if (p.likeCount == null) {
+                const state = await window.getPhotoLikeState(photoKey);
+                p.likeCount = state.count;
+                p.likedByMe = state.likedByMe;
+            }
+            const badge = document.querySelector(`.feed-tile-likes[data-photo-key="${CSS.escape(photoKey)}"]`);
+            if (!badge) return;
+            badge.querySelector('span').textContent = p.likeCount;
+            badge.classList.toggle('liked', !!p.likedByMe);
+        }));
     }
 
     // Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client,

@@ -92,6 +92,17 @@ function escapeHtml(str) {
 }
 window.escapeHtml = escapeHtml;
 
+// Couleur d'avatar déterministe à partir d'un pseudo — même palette/algorithme que les
+// copies locales de feed.html (feedAvatarColor) et profile.html (profileAvatarColor),
+// extrait ici en version partagée pour le tiroir "photos des visiteurs" d'un lieu (voir
+// openLocVisitorsDrawer plus bas) sans dupliquer une troisième fois la même palette.
+window.avatarColorForUsername = function (username) {
+    const palette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
+    let sum = 0;
+    for (let i = 0; i < (username || '').length; i++) sum += username.charCodeAt(i);
+    return palette[sum % palette.length];
+};
+
 // Service Worker (demande du 11/09/2026, "via l'application, changement de page trop
 // lent") : cache les fichiers statiques (script.js, style.css...) pour éviter de les
 // re-télécharger/re-valider en réseau à chaque navigation — voir sw.js. Enregistré après
@@ -4366,9 +4377,20 @@ function addSingleLocationMarker(loc) {
     const baseColor = groupColors[loc.group] || '#334e68';
     const inlineStyle = `background-color: ${baseColor}; --marker-color: ${baseColor};`;
 
-    const customIcon = L.divIcon({ className: 'custom-category-marker location-dot-marker', html: `<div style="${inlineStyle}"></div>`, iconSize: [12,12], iconAnchor: [6,6] });
+    // Badge "×N publications" (demande du 11/09/2026) : appliqué dès la création si
+    // l'index photos/lieu (voir ensureLocPostsIndex plus bas) est déjà prêt — sinon un
+    // marqueur sans photos aujourd'hui n'en aura pas tant que la carte n'est pas
+    // re-rendue (changement de filtre) après coup ; applyLocPostBadges() rattrape ce cas
+    // une fois l'index chargé pour la première fois.
+    const postCount = locPostsIndexSync ? (locPostsIndexSync.get(Number(loc.id)) || []).length : 0;
+    const html = postCount > 0
+        ? `<span style="position:relative; display:inline-block;"><div style="${inlineStyle}"></div><span class="loc-post-badge">${postCount > 9 ? '9+' : postCount}</span></span>`
+        : `<div style="${inlineStyle}"></div>`;
+
+    const customIcon = L.divIcon({ className: 'custom-category-marker location-dot-marker', html, iconSize: [12,12], iconAnchor: [6,6] });
     const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markerGroup);
     marker.__locId = loc.id;
+    marker.__baseColor = baseColor;
     marker.on('click', () => window.openDetailsPanel(loc.id));
     marker.on('mouseover', () => showMapHoverTip(loc, marker));
     marker.on('mouseout', () => hideMapHoverTip());
@@ -4423,6 +4445,15 @@ function renderMapMarkers(locations, opts) {
         if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0]);
         else addClusterMarker(cluster);
     });
+
+    // Badges "×N publications" (demande du 11/09/2026) : ne bloque jamais ce rendu —
+    // ensureLocPostsIndex() ne fait une vraie lecture Firestore qu'une seule fois (mise en
+    // cache par fetchGlobalPhotoFeed), les rendus suivants (changement de filtre, zoom)
+    // profitent alors immédiatement de l'index déjà chargé via locPostsIndexSync (voir
+    // addSingleLocationMarker ci-dessus) — ce .then() ne fait qu'un rattrapage pour les
+    // marqueurs déjà affichés avant que l'index n'ait fini de charger la toute première
+    // fois.
+    if (typeof ensureLocPostsIndex === 'function') ensureLocPostsIndex().then(applyLocPostBadges);
 
     // Le fitBounds initial doit couvrir les vraies coordonnées de chaque lieu (pas les
     // centres de cluster, qui donneraient un cadrage trop serré) — seulement au premier
@@ -4980,6 +5011,155 @@ function highlightSelectedLocationMarker(loc) {
     }, 3500);
 }
 window.highlightSelectedLocationMarker = highlightSelectedLocationMarker;
+
+// ==========================================
+// "Photos des visiteurs" par lieu (demande du 11/09/2026, captures d'écran fournies) :
+// badge "×N" sur chaque pastille de la carte, mini-aperçu (collage de 3 photos + nombre
+// de publications) juste au-dessus de la nav du bas quand on sélectionne un lieu, et
+// chevron qui ouvre un tiroir listant toutes les photos des visiteurs de ce lieu.
+// Réutilise fetchGlobalPhotoFeed() (firebase-init.js) — déjà l'agrégat de TOUTES les
+// photos (autonomes + avis avec photo) de TOUS les comptes — plutôt qu'une nouvelle
+// requête Firestore dédiée par lieu.
+// ==========================================
+let locPostsIndexPromise = null;
+let locPostsIndexSync = null; // rempli une fois la promesse résolue — lu de façon synchrone par addSingleLocationMarker() aux rendus suivants
+function ensureLocPostsIndex() {
+    // BUG évité : firebase-init.js est un <script type="module">, donc différé — il peut
+    // s'exécuter APRÈS ce script.js classique (non différé). Un premier appel trop
+    // précoce (avant que window.fetchGlobalPhotoFeed n'existe) ne doit JAMAIS mettre en
+    // cache un résultat vide pour de bon : seul un appel qui a RÉELLEMENT pu lire
+    // Firestore met locPostsIndexPromise en cache ; sinon on retente au prochain appel
+    // (voir renderMapMarkers, qui rappelle ensureLocPostsIndex() à chaque rendu).
+    if (locPostsIndexPromise) return locPostsIndexPromise;
+    if (typeof window.fetchGlobalPhotoFeed !== 'function') return Promise.resolve(new Map());
+    locPostsIndexPromise = (async () => {
+        const map = new Map();
+        let photos = [];
+        try { photos = await window.fetchGlobalPhotoFeed(); } catch (e) { photos = []; }
+        photos.forEach(p => {
+            if (p.locationId == null) return;
+            const key = Number(p.locationId);
+            if (Number.isNaN(key)) return;
+            if (!map.has(key)) map.set(key, []);
+            map.get(key).push(p);
+        });
+        locPostsIndexSync = map;
+        return map;
+    })();
+    return locPostsIndexPromise;
+}
+window.getLocPosts = function (locId) {
+    if (!locPostsIndexSync) return [];
+    return locPostsIndexSync.get(Number(locId)) || [];
+};
+
+// Badge "×N" sur la pastille d'un lieu — même principe visuel que le badge "×N" des
+// clusters (.cluster-badge), mais compte les PUBLICATIONS déposées à ce lieu plutôt que
+// le nombre de lieux regroupés. Patch les marqueurs déjà affichés une fois l'index prêt,
+// sans attendre un changement de filtre — reconstruit l'icône avec la même couleur que
+// addSingleLocationMarker() lui avait posée à sa création (marker.__baseColor).
+function applyLocPostBadges() {
+    if (!markerGroup || !locPostsIndexSync || typeof L === 'undefined') return;
+    markerGroup.eachLayer(marker => {
+        if (marker.__locId == null || !marker.__baseColor) return;
+        const count = (locPostsIndexSync.get(Number(marker.__locId)) || []).length;
+        if (!count) return;
+        const inlineStyle = `background-color: ${marker.__baseColor}; --marker-color: ${marker.__baseColor};`;
+        const html = `<span style="position:relative; display:inline-block;"><div style="${inlineStyle}"></div><span class="loc-post-badge">${count > 9 ? '9+' : count}</span></span>`;
+        marker.setIcon(L.divIcon({ className: 'custom-category-marker location-dot-marker', html, iconSize: [12,12], iconAnchor: [6,6] }));
+    });
+}
+
+// Mini-aperçu (bandeau juste au-dessus de la nav du bas, mobile uniquement comme la nav
+// elle-même) : collage de jusqu'à 3 photos superposées + nombre de publications, affiché
+// quand le lieu sélectionné (marqueur cliqué OU carte de la liste — les deux passent par
+// openDetailsPanel) a au moins une photo. Le bandeau entier ouvre le tiroir complet (voir
+// openLocVisitorsDrawer plus bas).
+async function updateLocVisitorsBar(loc) {
+    await ensureLocPostsIndex();
+    // Le lieu affiché a pu changer pendant l'attente Firestore (clic rapide sur un autre
+    // lieu juste après) — n'affiche l'aperçu que s'il correspond toujours au lieu ouvert.
+    if (currentLocationIdForMemory !== loc.id) return;
+    const posts = window.getLocPosts(loc.id);
+    let bar = document.getElementById('loc-visitors-bar');
+    if (!posts.length) {
+        if (bar) bar.classList.remove('open');
+        return;
+    }
+    if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'loc-visitors-bar';
+        bar.className = 'loc-visitors-bar';
+        document.body.appendChild(bar);
+    }
+    const collage = posts.slice(0, 3).map((p, i) => `<div class="loc-visitors-thumb" style="background-image:url('${p.photo}'); z-index:${3 - i};"></div>`).join('');
+    const label = posts.length === 1
+        ? (currentLang === 'fr' ? '1 publication' : '1 post')
+        : `${posts.length} ${currentLang === 'fr' ? 'publications' : 'posts'}`;
+    bar.innerHTML = `
+        <div class="loc-visitors-collage">${collage}</div>
+        <span class="loc-visitors-count">${label}</span>
+        <button type="button" class="loc-visitors-chevron" aria-label="Show visitor photos">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+    `;
+    bar.onclick = () => openLocVisitorsDrawer(loc);
+    bar.classList.add('open');
+}
+window.updateLocVisitorsBar = updateLocVisitorsBar;
+
+// Tiroir plein ("chevron intégré à la nav ... ouvre un menu déroulant vers le haut") :
+// liste toutes les photos des visiteurs du lieu sélectionné. Réutilise le même
+// habillage que le volet "+" (.qa-sheet-overlay/.qa-sheet, voir style.css) pour rester
+// cohérent avec le reste du site plutôt que d'inventer un nouveau composant. Chaque
+// tuile ouvre la publication complète via openLocModal() (même modale que
+// feed.html/profile.html).
+function openLocVisitorsDrawer(loc) {
+    const posts = window.getLocPosts(loc.id);
+    let overlay = document.getElementById('loc-visitors-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'loc-visitors-overlay';
+        overlay.className = 'qa-sheet-overlay';
+        overlay.innerHTML = `
+            <div class="qa-sheet loc-visitors-sheet">
+                <div class="qa-sheet-handle"></div>
+                <div class="loc-visitors-sheet-title" id="loc-visitors-sheet-title"></div>
+                <div class="loc-visitors-grid" id="loc-visitors-grid"></div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeLocVisitorsDrawer(); });
+    }
+    document.getElementById('loc-visitors-sheet-title').textContent =
+        (currentLang === 'fr' ? 'Photos des visiteurs — ' : 'Visitor photos — ') + loc.name;
+    const grid = document.getElementById('loc-visitors-grid');
+    grid.innerHTML = posts.map((p, i) => `
+        <div class="loc-visitors-tile" data-i="${i}" style="background-image:url('${p.photo}');">
+            <div class="loc-visitors-tile-avatar" style="background:${window.avatarColorForUsername(p.username)};">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
+        </div>
+    `).join('');
+    grid.querySelectorAll('.loc-visitors-tile').forEach(tile => {
+        tile.addEventListener('click', () => {
+            const p = posts[Number(tile.dataset.i)];
+            window.closeLocVisitorsDrawer();
+            window.openLocModal(loc.id, {
+                username: p.username,
+                uid: p.uid,
+                avatarColor: window.avatarColorForUsername(p.username),
+                photo: p.photo,
+                caption: p.caption,
+                photoKey: p.uid + '_' + p.id,
+                photoId: p.standalone ? p.id : null
+            });
+        });
+    });
+    overlay.classList.add('open');
+}
+window.closeLocVisitorsDrawer = function () {
+    const overlay = document.getElementById('loc-visitors-overlay');
+    if (overlay) overlay.classList.remove('open');
+};
 
 // Story, infos pratiques, vidéo et conseils d'un lieu — regroupés ici pour pouvoir être
 // rendus une première fois avec les données locales de script.js (immédiat, jamais de
@@ -5620,6 +5800,7 @@ window.openDetailsPanel = function(id) {
 
     currentLocationIdForMemory = loc.id;
     highlightSelectedLocationMarker(loc);
+    if (typeof updateLocVisitorsBar === 'function') updateLocVisitorsBar(loc);
 
     renderLocationHeroBg(loc);
 
@@ -6415,6 +6596,8 @@ window.closeDetailsPanel = function() {
         dDetails.classList.add('hidden');
         dDetails.style.display = 'none';
     }
+    const visitorsBar = document.getElementById('loc-visitors-bar');
+    if (visitorsBar) visitorsBar.classList.remove('open');
     const dMain = document.getElementById('sidebar-main');
     if(dMain) dMain.style.display = 'flex'; 
     
