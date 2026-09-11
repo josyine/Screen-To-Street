@@ -532,6 +532,37 @@ window.addProfilePhoto = async function ({ locationId, locationName, photo, date
     }
 };
 
+// Modifier/supprimer une publication autonome (demande du 10/09/2026, icône crayon dans
+// la modale plein-écran mobile de profile.html) — SEULEMENT les photos autonomes
+// (publicProfiles/{uid}.photos.{photoId}, voir addProfilePhoto() ci-dessus), pas les
+// photos attachées à un avis "I visited this place" (celles-ci font partie d'un avis
+// complet avec note/visite, modifiées via ce flux existant, pas celui-ci).
+window.updateProfilePhoto = async function (photoId, { photo, caption }) {
+    const user = auth.currentUser;
+    if (!user || !photoId) return { success: false, code: 'not-authenticated' };
+    try {
+        const fields = { updatedAt: serverTimestamp() };
+        if (photo !== undefined) fields.photo = photo;
+        if (caption !== undefined) fields.caption = (caption || '').slice(0, 280);
+        await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: fields } }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Modification de la photo échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+window.deleteProfilePhoto = async function (photoId) {
+    const user = auth.currentUser;
+    if (!user || !photoId) return { success: false, code: 'not-authenticated' };
+    try {
+        await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Suppression de la photo échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Biographie éditable du profil public (demande du 08/09/2026) : simple champ texte sur
 // publicProfiles/{uid}, déjà en écriture libre pour son propriétaire (allow write ci-dessous,
 // voir firestore.rules) — pas de règle dédiée nécessaire.

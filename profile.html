@@ -178,11 +178,51 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 .modal-post-like-btn.liked svg { transform: scale(1.12); fill: #D42759; }
 .modal-post-like-count { font-size: 12.5px; font-weight: 700; color: #212832; margin-left: 4px; }
 .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
+/* Boutons retour (chevron)/modifier (crayon) de la modale publication (demande du
+   10/09/2026) — mêmes emplacements que .close-btn (haut de la photo hero), affichés
+   uniquement via les classes basculées par openLocModal() dans script.js. */
+.modal-back-btn, .modal-post-edit-btn { position: absolute; top: 12px; background: rgba(0,0,0,.35); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; }
+.modal-back-btn { left: 14px; }
+.modal-post-edit-btn { right: 14px; }
+.modal-back-btn:hover, .modal-post-edit-btn:hover { background: rgba(0,0,0,.55); }
+
+/* Volet "Modifier la publication" + confirmation de suppression (demande du 10/09/2026)
+   — .post-edit-delete-btn réutilise l'habillage .qa-sheet/.add-photo-* partagé
+   (style.css) pour le reste du volet, juste ce bouton rouge en plus. */
+.post-edit-delete-btn { display: block; width: 100%; background: #fff; color: #D42759; border: 1.5px solid #fbcfe8; border-radius: 100px; padding: 12px; font-size: 13px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; margin-bottom: 8px; }
+.post-edit-delete-btn:hover { background: #FFF7F8; }
+/* z-index élevés (demande implicite, bug trouvé au test) : .qa-sheet-overlay (réutilisée
+   pour #post-edit-overlay) vaut 9600 dans style.css — plus bas que .modal (#loc-modal,
+   9999), donc le volet d'édition se rendait EN DESSOUS de la modale encore ouverte
+   derrière lui, rendant "Delete post" totalement incliquable (la modale interceptait le
+   clic). #post-edit-overlay doit passer au-dessus de #loc-modal, et la confirmation de
+   suppression au-dessus du volet d'édition. */
+#post-edit-overlay { z-index: 10500; }
+.post-delete-confirm-overlay { position: fixed; inset: 0; z-index: 10600; background: rgba(23,19,49,.55); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; padding: 20px; }
+.post-delete-confirm-overlay.open { display: flex; }
+.post-delete-confirm-box { width: 100%; max-width: 360px; background: #fff; border-radius: 20px; padding: 26px 22px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.25); }
+.post-delete-confirm-box h3 { font-size: 15.5px; font-weight: 800; color: #212832; margin-bottom: 8px; }
+.post-delete-confirm-box p { font-size: 12.5px; color: #64748b; line-height: 1.5; margin-bottom: 20px; }
+.post-delete-confirm-actions { display: flex; gap: 10px; }
+.post-delete-cancel-btn, .post-delete-confirm-btn { flex: 1; border: none; border-radius: 100px; padding: 11px; font-size: 13px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.post-delete-cancel-btn { background: #f1f5f9; color: #64748b; }
+.post-delete-cancel-btn:hover { background: #e2e8f0; }
+.post-delete-confirm-btn { background: #D42759; color: #fff; }
+.post-delete-confirm-btn:hover { background: #b81f4a; }
+.post-delete-confirm-btn:disabled, .post-edit-delete-btn:disabled { opacity: 0.6; cursor: default; }
 
 @media (max-width: 760px) {
   .modal-content { width: 97%; border-radius: 12px; }
   .modal-body { padding: 18px 18px 22px 18px; }
   #modal-hero { height: 220px; border-radius: 12px 12px 0 0; }
+  /* Plein écran (demande du 10/09/2026, "il faut que ça prenne tout l'écran") —
+     uniquement pour une publication (.post-modal, basculée par openLocModal() selon
+     qu'un postContext est passé) : le clic sur une tuile de Reviews (pas de
+     postContext) garde le popup classique ci-dessus. */
+  #loc-modal.post-modal { padding: 0; align-items: stretch; }
+  #loc-modal.post-modal .modal-content { width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 0; display: flex; flex-direction: column; }
+  #loc-modal.post-modal #modal-hero { flex-shrink: 0; height: 42vh; border-radius: 0; }
+  #loc-modal.post-modal .modal-body { flex: 1; overflow-y: auto; }
   .profile-desktop-add-btn { display: none !important; }
   /* Mobile : header complet masqué (voir style.css, .universal-icons est caché
      globalement sur mobile), la nav du haut/bas partagée (#mobile-top-icons /
@@ -255,6 +295,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
     </div>
     <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+    </button>
+    <button id="feed-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='feed.html'" title="Explore feed">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
     </button>
     <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='profile.html'" title="Your Profile">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
@@ -365,6 +408,20 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 <div id="loc-modal" class="modal hidden">
     <div class="modal-content">
         <span class="close-btn" onclick="closeLocModal()">&times;</span>
+        <!-- Bouton retour (chevron, demande du 10/09/2026) : affiché uniquement pour une
+             publication (postContext, voir openLocModal() dans script.js) — plein écran
+             sur mobile, où c'est la seule façon de fermer une fois la croix remplacée par
+             le crayon "modifier" pour ses propres publications. -->
+        <button type="button" id="modal-back-btn" class="modal-back-btn hidden" onclick="closeLocModal()" title="Back" aria-label="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <!-- Icône crayon "modifier" (demande du 10/09/2026) : remplace la croix
+             uniquement pour ses PROPRES publications autonomes (postContext.editable,
+             voir renderProfilePhotos() plus bas) — ouvre openPostEditSheet() défini plus
+             bas dans ce fichier. -->
+        <button type="button" id="modal-post-edit-btn" class="modal-post-edit-btn hidden" title="Edit post" aria-label="Edit post">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        </button>
         <div id="modal-hero"><div id="modal-title"></div></div>
         <div class="modal-body">
             <!-- En-tête publication + légende (demande du 09/09/2026, capture d'écran
@@ -423,9 +480,25 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         return palette[sum % palette.length];
     }
 
-    function showProfileNotFound() {
+    // isConnectionIssue (demande du 10/09/2026, bug rapporté : "This user could not be
+    // found" sur desktop pour perrine4058, qui s'ouvre pourtant normalement sur mobile
+    // avec le même compte) : le message générique "compte introuvable" (traduit via
+    // data-i18n, déjà appliqué au chargement de la page) était affiché indifféremment
+    // pour un pseudo qui n'existe vraiment pas ET pour un simple raté réseau/timeout sur
+    // l'une des requêtes Firestore — trompeur dans ce second cas, qui ressemble plutôt à
+    // un aléa ponctuel (CDN, connexion) qu'à un vrai problème de compte. Un message
+    // différent est affiché uniquement pour ce cas (voir loadProfilePage(), qui retente
+    // une fois avant d'abandonner).
+    function showProfileNotFound(isConnectionIssue) {
         document.getElementById('profile-loading').classList.add('hidden');
-        document.getElementById('profile-not-found').classList.remove('hidden');
+        const el = document.getElementById('profile-not-found');
+        if (isConnectionIssue) {
+            const isFr = currentLang === 'fr';
+            el.textContent = isFr
+                ? "Impossible de charger ce profil — vérifiez votre connexion et réessayez."
+                : "Couldn't load this profile — check your connection and try again.";
+        }
+        el.classList.remove('hidden');
     }
 
     window.switchProfileTab = function(tabName) {
@@ -464,15 +537,20 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         // autonome (plusieurs possibles par lieu, donc jamais le locationId seul).
         const fromReviews = Object.values(publicProfile.reviews || {})
             .filter(r => r.photo)
-            .map(r => Object.assign({}, r, { _photoId: String(r.locationId), _caption: r.notes || '' }));
+            .map(r => Object.assign({}, r, { _photoId: String(r.locationId), _caption: r.notes || '', _standalone: false }));
         const fromStandalone = Object.entries(publicProfile.photos || {})
             .filter(([, p]) => p.photo)
-            .map(([photoId, p]) => Object.assign({}, p, { _photoId: photoId, _caption: p.caption || '' }));
+            .map(([photoId, p]) => Object.assign({}, p, { _photoId: photoId, _caption: p.caption || '', _standalone: true }));
         const withPhotos = fromReviews.concat(fromStandalone);
         if (withPhotos.length === 0) { empty.classList.remove('hidden'); return withPhotos; }
         empty.classList.add('hidden');
         withPhotos.sort((a, b) => ((b.updatedAt && b.updatedAt.seconds) || 0) - ((a.updatedAt && a.updatedAt.seconds) || 0));
         const viewedUsername = document.getElementById('profile-username').textContent;
+        // Modifiable (icône crayon, demande du 10/09/2026) : uniquement ses PROPRES
+        // publications autonomes (pas les photos attachées à un avis, éditées via le
+        // flux "I visited this place" existant — voir openLocModal()/openPostEditSheet()
+        // plus bas).
+        const isOwnProfile = !!(profileCurrentUid && profileCurrentUid === profileUid);
         withPhotos.forEach(r => {
             const tile = document.createElement('div');
             tile.className = 'profile-photo-tile';
@@ -484,7 +562,9 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
                     avatarColor: profileAvatarColor(viewedUsername),
                     photo: r.photo,
                     caption: r._caption,
-                    photoKey: profileUid + '_' + r._photoId
+                    photoKey: profileUid + '_' + r._photoId,
+                    editable: isOwnProfile && r._standalone,
+                    photoId: r._standalone ? r._photoId : null
                 });
             }
             grid.appendChild(tile);
@@ -685,7 +765,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
         ]);
     }
 
-    async function loadProfilePage() {
+    async function loadProfilePage(isRetry) {
         // Toute la fonction est maintenant protégée par un try/catch englobant (au lieu de
         // laisser une exception n'importe où — Leaflet, une requête Firestore qui échoue,
         // un élément introuvable — remonter sans être rattrapée) : la personne voyait
@@ -701,11 +781,23 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
             if (!profileUid && profileCurrentUid) profileUid = profileCurrentUid;
             if (!profileUid) { showProfileNotFound(); return; }
 
-            const [username, visitedIds, publicProfile] = await withTimeout(Promise.all([
-                window.lookupUsernameByUid(profileUid),
-                window.fetchUserVisitedIds(profileUid),
-                window.fetchPublicProfile(profileUid)
-            ]), 15000);
+            let username, visitedIds, publicProfile;
+            try {
+                [username, visitedIds, publicProfile] = await withTimeout(Promise.all([
+                    window.lookupUsernameByUid(profileUid),
+                    window.fetchUserVisitedIds(profileUid),
+                    window.fetchPublicProfile(profileUid)
+                ]), 15000);
+            } catch (fetchErr) {
+                // Un raté réseau/timeout sur l'une de ces trois requêtes n'est pas la même
+                // chose qu'un compte qui n'existe vraiment pas — un seul re-essai
+                // automatique avant d'abandonner (demande du 10/09/2026, voir
+                // showProfileNotFound() plus haut pour le message différent dans ce cas).
+                if (!isRetry) { await new Promise(r => setTimeout(r, 1200)); return loadProfilePage(true); }
+                console.warn('Chargement du profil échoué (réseau) :', fetchErr);
+                showProfileNotFound(true);
+                return;
+            }
 
             if (!username) { showProfileNotFound(); return; }
 
@@ -744,6 +836,151 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
             showProfileNotFound();
         }
     }
+
+    // Volet "Modifier la publication" (demande du 10/09/2026, icône crayon dans la
+    // modale plein-écran mobile) — réutilise l'habillage .qa-sheet/.add-photo-* déjà
+    // utilisé par window.openAddPhotoModal() dans script.js pour rester dans la charte
+    // graphique, sans dupliquer tout ce CSS ici. Uniquement pour ses propres photos
+    // autonomes (voir postContext.editable dans renderProfilePhotos() plus haut) — jamais
+    // appelée pour une photo d'avis, ni pour le profil de quelqu'un d'autre.
+    let postEditPendingPhoto = null;
+    window.openPostEditSheet = function (postContext) {
+        let overlay = document.getElementById('post-edit-overlay');
+        if (!overlay) {
+            const isFr = currentLang === 'fr';
+            overlay = document.createElement('div');
+            overlay.id = 'post-edit-overlay';
+            overlay.className = 'qa-sheet-overlay';
+            overlay.innerHTML = `
+                <div class="qa-sheet add-photo-sheet">
+                    <div class="qa-sheet-handle"></div>
+                    <div class="qa-sheet-title">${isFr ? 'Modifier la publication' : 'Edit post'}</div>
+                    <div class="add-photo-field">
+                        <label class="add-photo-label">${isFr ? 'Photo' : 'Photo'}</label>
+                        <input type="file" id="post-edit-file-input" accept="image/*,.heic,.heif" class="hidden">
+                        <div id="post-edit-preview" class="add-photo-preview"><img id="post-edit-preview-img"></div>
+                        <button type="button" id="post-edit-choose-btn" class="add-photo-choose-btn">${isFr ? 'Changer la photo' : 'Change photo'}</button>
+                    </div>
+                    <div class="add-photo-field">
+                        <label class="add-photo-label">${isFr ? 'Légende' : 'Caption'}</label>
+                        <textarea id="post-edit-caption-input" class="add-photo-textarea" maxlength="280"></textarea>
+                    </div>
+                    <div id="post-edit-error" class="add-photo-error hidden"></div>
+                    <button type="button" id="post-edit-save-btn" class="add-photo-submit-btn">${isFr ? 'Enregistrer' : 'Save'}</button>
+                    <button type="button" id="post-edit-delete-btn" class="post-edit-delete-btn">${isFr ? 'Supprimer la publication' : 'Delete post'}</button>
+                    <button type="button" class="qa-sheet-cancel">${isFr ? 'Annuler' : 'Cancel'}</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closePostEditSheet(); });
+            overlay.querySelector('.qa-sheet-cancel').addEventListener('click', window.closePostEditSheet);
+
+            const fileInput = overlay.querySelector('#post-edit-file-input');
+            const chooseBtn = overlay.querySelector('#post-edit-choose-btn');
+            const errorEl = overlay.querySelector('#post-edit-error');
+            chooseBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                errorEl.classList.add('hidden');
+                try {
+                    postEditPendingPhoto = await fileToResizedDataUrl(file, 900);
+                    overlay.querySelector('#post-edit-preview-img').src = postEditPendingPhoto;
+                } catch (err) {
+                    console.warn('Import de la photo échoué :', err);
+                    errorEl.textContent = currentLang === 'fr' ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)." : "Couldn't import this photo. Try a different file (JPEG/PNG format).";
+                    errorEl.classList.remove('hidden');
+                }
+                e.target.value = '';
+            });
+
+            overlay.querySelector('#post-edit-save-btn').addEventListener('click', async () => {
+                errorEl.classList.add('hidden');
+                const ctx = overlay.__postContext;
+                if (!ctx || !ctx.photoId || typeof window.updateProfilePhoto !== 'function') return;
+                const saveBtn = overlay.querySelector('#post-edit-save-btn');
+                saveBtn.disabled = true;
+                const fields = { caption: overlay.querySelector('#post-edit-caption-input').value.trim() };
+                if (postEditPendingPhoto) fields.photo = postEditPendingPhoto;
+                const result = await window.updateProfilePhoto(ctx.photoId, fields);
+                saveBtn.disabled = false;
+                if (result && result.success) {
+                    window.closePostEditSheet();
+                    window.closeLocModal();
+                    if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Publication mise à jour.' : 'Post updated.');
+                    loadProfilePage();
+                } else {
+                    errorEl.textContent = currentLang === 'fr' ? "Échec de l'enregistrement. Réessayez." : 'Failed to save. Please try again.';
+                    errorEl.classList.remove('hidden');
+                }
+            });
+
+            overlay.querySelector('#post-edit-delete-btn').addEventListener('click', () => {
+                window.openPostDeleteConfirm(overlay.__postContext);
+            });
+        }
+        overlay.__postContext = postContext;
+        postEditPendingPhoto = null;
+        overlay.querySelector('#post-edit-preview-img').src = postContext.photo || '';
+        overlay.querySelector('#post-edit-caption-input').value = postContext.caption || '';
+        overlay.querySelector('#post-edit-error').classList.add('hidden');
+        overlay.classList.add('open');
+    };
+    window.closePostEditSheet = function () {
+        const overlay = document.getElementById('post-edit-overlay');
+        if (overlay) overlay.classList.remove('open');
+    };
+
+    // Confirmation de suppression "en respectant la charte graphique" (demande du
+    // 10/09/2026, remplace un window.confirm() natif) — même structure que
+    // #delete-trip-modal/#leave-trip-modal dans trips.html (titre + description + Annuler
+    // / bouton rouge), reconstruite ici en JS pur puisque profile.html ne partage pas le
+    // CSS .gen-btn de trips.html.
+    window.openPostDeleteConfirm = function (postContext) {
+        let overlay = document.getElementById('post-delete-confirm-overlay');
+        if (!overlay) {
+            const isFr = currentLang === 'fr';
+            overlay = document.createElement('div');
+            overlay.id = 'post-delete-confirm-overlay';
+            overlay.className = 'post-delete-confirm-overlay';
+            overlay.innerHTML = `
+                <div class="post-delete-confirm-box">
+                    <h3>${isFr ? 'Supprimer cette publication ?' : 'Delete this post?'}</h3>
+                    <p>${isFr ? 'Êtes-vous sûr de vouloir supprimer cette publication ? Cette action est irréversible.' : "Are you sure you want to delete this post? This can't be undone."}</p>
+                    <div class="post-delete-confirm-actions">
+                        <button type="button" id="post-delete-cancel-btn" class="post-delete-cancel-btn">${isFr ? 'Annuler' : 'Cancel'}</button>
+                        <button type="button" id="post-delete-confirm-btn" class="post-delete-confirm-btn">${isFr ? 'Supprimer' : 'Delete'}</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closePostDeleteConfirm(); });
+            overlay.querySelector('#post-delete-cancel-btn').addEventListener('click', window.closePostDeleteConfirm);
+            overlay.querySelector('#post-delete-confirm-btn').addEventListener('click', async () => {
+                const ctx = overlay.__postContext;
+                if (!ctx || !ctx.photoId || typeof window.deleteProfilePhoto !== 'function') return;
+                const btn = overlay.querySelector('#post-delete-confirm-btn');
+                btn.disabled = true;
+                const result = await window.deleteProfilePhoto(ctx.photoId);
+                btn.disabled = false;
+                if (result && result.success) {
+                    window.closePostDeleteConfirm();
+                    window.closePostEditSheet();
+                    window.closeLocModal();
+                    if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Publication supprimée.' : 'Post deleted.');
+                    loadProfilePage();
+                } else if (typeof window.showSimpleToast === 'function') {
+                    window.showSimpleToast(currentLang === 'fr' ? 'Échec de la suppression. Réessayez.' : 'Failed to delete. Please try again.', { isError: true });
+                }
+            });
+        }
+        overlay.__postContext = postContext;
+        overlay.classList.add('open');
+    };
+    window.closePostDeleteConfirm = function () {
+        const overlay = document.getElementById('post-delete-confirm-overlay');
+        if (overlay) overlay.classList.remove('open');
+    };
 
     window.addEventListener('firebase-ready', (e) => {
         profileCurrentUid = (e.detail && e.detail.user && e.detail.user.uid) || null;
