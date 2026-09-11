@@ -601,6 +601,8 @@ if(btnToStep3) {
         const lnameVal = document.getElementById('lname').value.trim();
         const countryVal = document.getElementById('interest-country').value;
         const reasonVal = document.getElementById('user-reason').value;
+        const privacyRadio = document.querySelector('input[name="account-privacy"]:checked');
+        const isPrivateVal = !!privacyRadio && privacyRadio.value === 'private';
 
         localStorage.setItem('userName', usernameVal);
         if (fnameVal) localStorage.setItem('userFirstName', fnameVal);
@@ -632,12 +634,18 @@ if(btnToStep3) {
                     email: user.email,
                     interestCountry: countryVal,
                     reason: reasonVal,
+                    isPrivate: isPrivateVal,
                     unlockedGroups: [],
                     wishlistLocs: [],
                     visitedLocs: [],
                     myTrips: [],
                     createdAt: serverTimestamp()
                 }, { merge: true });
+                // publicProfiles/{uid} est normalement créé au fil de l'eau (premier avis,
+                // première photo...) mais isPrivate doit exister dès l'inscription : c'est
+                // ce document, public en lecture, que fetchGlobalPhotoFeed() et profile.html
+                // consultent pour décider si le compte est privé.
+                batch.set(doc(db, 'publicProfiles', user.uid), { isPrivate: isPrivateVal }, { merge: true });
                 if (!taken) {
                     batch.set(doc(db, 'usernames', usernameKey), { uid: user.uid, username: usernameVal }, { merge: true });
                     // Permet de se connecter par pseudo plus tard (voir resolveLoginEmail

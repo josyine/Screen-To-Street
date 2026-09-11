@@ -3454,9 +3454,11 @@ const translations = {
         freeViewsCounter: "{remaining}/3 free locations left",
         paymentTitle: "Complete your purchase", paymentDesc: "Enter your payment details to unlock the full guide.", paymentSummaryLabel: "Selected pass:", paymentTotalLabel: "Total due:",
         cardNum: "Card Number", expiry: "Expiry Date", cvc: "CVC", paySecurely: "Pay securely", processing: "Processing securely…", paymentBackLink: "← Back to map",
-        paymentNoAccountWarning: "You don't seem to be logged in — ", paymentNoAccountLink: "sign up first"
+        paymentNoAccountWarning: "You don't seem to be logged in — ", paymentNoAccountLink: "sign up first",
+        privacyLabel: "Account privacy", privacyPublicLabel: "Public", privacyPublicDesc: "Anyone can follow you and see your posts.", privacyPrivateLabel: "Private", privacyPrivateDesc: "Only friends you accept can see your posts.", accPrivacySaved: "Privacy setting saved.",
+        profilePrivateTitle: "This account is private", profilePrivateDesc: "Send a friend request to see their photos, map and reviews.", profileFollowingBtnShort: "Friends"
     },
-    fr: { 
+    fr: {
         btnGenerateIti: "Générateur Itinéraire", filterGroup: "GROUPE", filterMember: "MEMBRE", filterArea: "RÉGION", filterYear: "ANNÉE", filterCategories: "CATÉGORIES", 
         locationsCount: "LIEUX", statsCountries: "PAYS", cookieText: "Nous utilisons des cookies pour améliorer votre expérience.", cookiePolicy: "Politique de cookies", 
         cookieManage: "Gérer", cookieReject: "Refuser", cookieAccept: "Accepter",
@@ -3518,7 +3520,9 @@ const translations = {
         freeViewsCounter: "{remaining}/3 lieux gratuits restants",
         paymentTitle: "Finaliser votre achat", paymentDesc: "Renseignez vos informations de paiement pour débloquer le guide complet.", paymentSummaryLabel: "Pass sélectionné :", paymentTotalLabel: "Total dû :",
         cardNum: "Numéro de carte", expiry: "Date d'expiration", cvc: "CVC", paySecurely: "Payer en toute sécurité", processing: "Traitement sécurisé en cours…", paymentBackLink: "← Retour à la carte",
-        paymentNoAccountWarning: "Vous ne semblez pas connecté(e) — ", paymentNoAccountLink: "inscrivez-vous d'abord"
+        paymentNoAccountWarning: "Vous ne semblez pas connecté(e) — ", paymentNoAccountLink: "inscrivez-vous d'abord",
+        privacyLabel: "Confidentialité du compte", privacyPublicLabel: "Public", privacyPublicDesc: "Tout le monde peut vous suivre et voir vos publications.", privacyPrivateLabel: "Privé", privacyPrivateDesc: "Seuls les amis que vous acceptez peuvent voir vos publications.", accPrivacySaved: "Confidentialité enregistrée.",
+        profilePrivateTitle: "Ce compte est privé", profilePrivateDesc: "Envoyez une demande d'ami pour voir ses photos, sa carte et ses avis."
     },
     es: {
         btnGenerateIti: "Generador de Itinerarios", filterGroup: "GRUPO", filterMember: "MIEMBRO", filterArea: "ZONA", filterYear: "AÑO", filterCategories: "CATEGORÍAS",

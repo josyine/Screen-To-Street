@@ -139,6 +139,14 @@ select.field-input { appearance: none; background-image: url("data:image/svg+xml
 .pass-card input { position: absolute; opacity: 0; cursor: pointer; }
 .pass-card:has(input:checked), .pass-card.selected { background: #FCE7F0; border-color: #D42759; color: #D42759; }
 
+.privacy-choice-group { display: flex; flex-direction: column; gap: 10px; }
+.privacy-choice-option { position: relative; display: flex; flex-direction: column; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 12px 14px 12px 40px; cursor: pointer; transition: 0.2s ease; }
+.privacy-choice-option input { position: absolute; left: 14px; top: 14px; width: 16px; height: 16px; accent-color: #D42759; cursor: pointer; margin: 0; }
+.privacy-choice-option:has(input:checked) { background: #FCE7F0; border-color: #D42759; }
+.privacy-choice-title { font-size: 13px; font-weight: 700; color: var(--text-main); }
+.privacy-choice-option:has(input:checked) .privacy-choice-title { color: #D42759; }
+.privacy-choice-desc { font-size: 11.5px; color: #64748b; margin-top: 2px; }
+
 .total-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0;}
 .total-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
 .total-price { font-size: 22px; font-weight: 800; color: #D42759; }

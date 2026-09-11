@@ -202,6 +202,21 @@
                     <label data-i18n="reasonLabel">Why are you using Screen To Street?</label>
                     <select id="user-reason" class="field-input"><option value="" data-i18n="reasonPlaceholder">Select an option (optional)</option><option value="discover" data-i18n="reason1">To discover new places</option><option value="travel" data-i18n="reason2">To plan a trip</option><option value="addresses" data-i18n="reason3">To get good addresses</option><option value="idols" data-i18n="reason4">To follow my idol's footsteps</option><option value="other" data-i18n="reason5">Other</option></select>
                 </div>
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label data-i18n="privacyLabel">Account privacy</label>
+                    <div class="privacy-choice-group">
+                        <label class="privacy-choice-option">
+                            <input type="radio" name="account-privacy" id="privacy-public" value="public" checked>
+                            <span class="privacy-choice-title" data-i18n="privacyPublicLabel">Public</span>
+                            <span class="privacy-choice-desc" data-i18n="privacyPublicDesc">Anyone can follow you and see your posts.</span>
+                        </label>
+                        <label class="privacy-choice-option">
+                            <input type="radio" name="account-privacy" id="privacy-private" value="private">
+                            <span class="privacy-choice-title" data-i18n="privacyPrivateLabel">Private</span>
+                            <span class="privacy-choice-desc" data-i18n="privacyPrivateDesc">Only friends you accept can see your posts.</span>
+                        </label>
+                    </div>
+                </div>
                 <button class="pay-btn" id="btn-to-step3" data-i18n="btnContinue">Continue</button>
             </div>
 
