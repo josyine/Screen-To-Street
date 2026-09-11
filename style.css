@@ -381,6 +381,12 @@ body.trip-not-owner .owner-only { display: none !important; }
    pour être affichés séparément à ce niveau de zoom. */
 .cluster-badge { position: absolute; top: -6px; right: -6px; background: var(--primary-magenta); color: #fff; font-size: 9.5px; font-weight: 800; line-height: 1; border-radius: 100px; min-width: 18px; height: 18px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
 
+/* Badge "×N publications" sur la pastille d'un lieu ayant au moins une photo postée par
+   un visiteur (demande du 11/09/2026) — même style que .cluster-badge ci-dessus, en plus
+   petit (la pastille elle-même est plus petite qu'un cluster). Voir applyLocPostBadges()/
+   addSingleLocationMarker() dans script.js. */
+.loc-post-badge { position: absolute; top: -5px; right: -5px; background: var(--primary-magenta); color: #fff; font-size: 8px; font-weight: 800; line-height: 1; border-radius: 100px; min-width: 14px; height: 14px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
+
 /* Repère temporaire affiché sur le marqueur du lieu qu'on vient d'ouvrir (clic sur une
    fiche, un point de timeline, un résultat de recherche...) — voir
    highlightSelectedLocationMarker() dans script.js. Sans ça, dans une zone dense, rien
@@ -648,6 +654,11 @@ body.trip-not-owner .owner-only { display: none !important; }
    Masquée par défaut (desktop) ; seule la media query mobile l'affiche.
    ========================================== */
 .mobile-bottom-nav { display: none; }
+/* Masqué par défaut (desktop) ; seule la media query mobile ci-dessous l'affiche via
+   .open — sans cette règle de base, le <div> injecté par updateLocVisitorsBar()
+   (script.js) apparaîtrait comme un bloc brut en bas de page sur desktop, faute de
+   `display:none` par défaut hors media query. */
+.loc-visitors-bar { display: none; }
 .mbn-item { background: none; border: none; padding: 6px; margin: 0; cursor: pointer; color: #2E3644; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; text-decoration: none; }
 .mbn-add svg { background: #D42759; border-radius: 50%; padding: 8px; box-sizing: content-box; color: #fff; }
 /* BUG rapporté le 11/09/2026 : ".mbn-item" (padding:6px, hérité par ".mbn-avatar") ne
@@ -676,6 +687,25 @@ body.trip-not-owner .owner-only { display: none !important; }
        la dégager. On réserve l'espace réellement occupé par la nav (hauteur ~52px +
        son offset bottom de 14px + la zone de sécurité iOS, avec une marge). */
     .tab-panel { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+
+    /* Bandeau "photos des visiteurs" (demande du 11/09/2026, captures d'écran fournies) :
+       juste au-dessus de la nav du bas (mobile uniquement, comme la nav elle-même) —
+       masqué par défaut, affiché via .open quand le lieu sélectionné a au moins une
+       photo (voir updateLocVisitorsBar() dans script.js). Le bandeau ENTIER ouvre le
+       tiroir complet (openLocVisitorsDrawer). */
+    .loc-visitors-bar {
+        display: none; align-items: center; gap: 10px; cursor: pointer;
+        position: fixed; left: 50%; bottom: calc(74px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+        width: calc(100% - 24px); max-width: 480px;
+        background: #fff; padding: 8px 14px; border-radius: 100px; box-shadow: 0 10px 30px rgba(0,0,0,.18);
+        z-index: 3450;
+    }
+    .loc-visitors-bar.open { display: flex; }
+    .loc-visitors-collage { display: flex; flex-shrink: 0; }
+    .loc-visitors-thumb { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; background-size: cover; background-position: center; margin-left: -10px; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+    .loc-visitors-thumb:first-child { margin-left: 0; }
+    .loc-visitors-count { flex: 1; font-size: 12.5px; font-weight: 700; color: #212832; }
+    .loc-visitors-chevron { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: none; background: #FCE7F0; color: #D42759; display: flex; align-items: center; justify-content: center; }
 }
 
 /* PWA installée (mode standalone) : bug rapporté le 11/09/2026 — sans le footer du
@@ -688,7 +718,17 @@ body.trip-not-owner .owner-only { display: none !important; }
     .mobile-bottom-nav { bottom: calc(26px + env(safe-area-inset-bottom)); }
     .locate-country-btn { bottom: 92px; }
     .tab-panel { padding-bottom: calc(102px + env(safe-area-inset-bottom)); }
+    .loc-visitors-bar { bottom: calc(86px + env(safe-area-inset-bottom)); }
 }
+
+/* Tiroir "photos des visiteurs" (demande du 11/09/2026) — réutilise .qa-sheet-overlay/
+   .qa-sheet (voir plus bas) pour l'habillage général, ouvert par le bandeau ci-dessus.
+   Voir openLocVisitorsDrawer() dans script.js. */
+.loc-visitors-sheet { max-height: 78vh; overflow-y: auto; }
+.loc-visitors-sheet-title { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 14px; padding: 0 8px; }
+.loc-visitors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+.loc-visitors-tile { position: relative; aspect-ratio: 1 / 1; background-size: cover; background-position: center; cursor: pointer; border-radius: 8px; overflow: hidden; }
+.loc-visitors-tile-avatar { position: absolute; left: 5px; bottom: 5px; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); color: #fff; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
 
 /* Duo Message + Engrenage du haut à droite, mobile uniquement (demande du 08/09/2026) —
    voir injectMobileTopIcons() dans script.js. Masqué par défaut (desktop). */

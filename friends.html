@@ -263,6 +263,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             </div>
         </div>
         <div id="friend-add-error" class="hidden"></div>
+        <!-- Avertissement "règles Firestore pas à jour" (demande du 11/09/2026, bug
+             "demande d'ami envoyée mais jamais reçue") : n'apparaît QUE si la lecture des
+             demandes d'ami échoue avec permission-denied — voir listMyFriendRequests()
+             dans firebase-init.js et refreshFriendRequests() plus bas. Une vraie liste
+             vide (aucune demande) n'affiche jamais ce bandeau. -->
+        <div id="friend-requests-sync-warning" class="hidden" style="background:#FFF7F8; border:1px solid #FBD5DC; color:#D42759; font-size:12px; font-weight:600; border-radius:12px; padding:10px 14px; margin-bottom:14px;"></div>
 
         <div id="friend-requests-section" class="hidden">
             <div class="sidebar-section-title" data-i18n="friendsRequestsLabel">Friend requests</div>
@@ -439,7 +445,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
 
     async function refreshFriendRequests() {
         if (typeof window.listMyFriendRequests !== 'function') return;
-        const { incoming } = await window.listMyFriendRequests();
+        const { incoming, _error } = await window.listMyFriendRequests();
         const section = document.getElementById('friend-requests-section');
         const list = document.getElementById('friend-requests-list');
         list.innerHTML = incoming.map(r => `<div class="friend-request-row">
@@ -448,6 +454,16 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             <button class="friend-decline-btn" data-request-id="${r.id}">${t('friendsDecline')}</button>
         </div>`).join('');
         section.classList.toggle('hidden', incoming.length === 0);
+        const warningEl = document.getElementById('friend-requests-sync-warning');
+        if (warningEl) {
+            const showWarning = _error === 'permission-denied';
+            warningEl.textContent = showWarning
+                ? (currentLang === 'fr'
+                    ? "Impossible de vérifier les demandes d'ami en attente (erreur de permission serveur) — si vous attendez une demande, réessayez plus tard ou contactez l'administrateur du site."
+                    : "Couldn't check for pending friend requests (server permission error) — if you're expecting one, try again later or contact the site admin.")
+                : '';
+            warningEl.classList.toggle('hidden', !showWarning);
+        }
     }
 
     async function refreshTripInvites() {

@@ -738,9 +738,28 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                 if (result && result.success) {
                     addBtn.classList.add('hidden');
                     statusEl.textContent = t('profileRequestSentLabel');
+                    statusEl.style.color = '';
+                    statusEl.style.background = '';
                     statusEl.classList.remove('hidden');
                 } else {
+                    // BUG rapporté le 11/09/2026 ("demande d'ami envoyée mais jamais
+                    // reçue") : cliquer "Add" ici réactivait le bouton EN SILENCE sur tout
+                    // échec (déjà ami, pseudo introuvable, erreur serveur...) — rien ne
+                    // distinguait "ça a marché mais tu le sais pas" de "ça a vraiment
+                    // échoué", donnant l'impression trompeuse que la demande était partie.
                     addBtn.disabled = false;
+                    const errCode = result && result.error;
+                    const msg = errCode === 'permission-denied'
+                        ? (currentLang === 'fr' ? "Erreur serveur — réessayez dans un instant." : 'Server error — please try again in a moment.')
+                        : errCode === 'already-sent'
+                            ? t('friendsErrAlreadySent')
+                            : errCode === 'already-friends'
+                                ? t('friendsErrAlreadyFriends')
+                                : (currentLang === 'fr' ? "Impossible d'envoyer la demande." : "Couldn't send the request.");
+                    statusEl.textContent = msg;
+                    statusEl.style.color = '#D42759';
+                    statusEl.style.background = '#FFF7F8';
+                    statusEl.classList.remove('hidden');
                 }
             };
         } catch (e) {
