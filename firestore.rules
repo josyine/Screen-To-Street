@@ -141,6 +141,17 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // Corrections "squelette" (Group/Members/Country/City/Date) d'un lieu DÉJÀ publié,
+    // faites via l'icône crayon de sa fiche (demande du 11/09/2026, voir
+    // adminUpdateLocationSkeleton()/saveLocationEdit() dans script.js) — même principe que
+    // newLocations ci-dessus (fusionné côté client au chargement), mais pour un lieu qui
+    // existe déjà dans celebLocations plutôt qu'un tout nouveau lieu.
+    match /locationSkeletonOverrides/{locationId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
     // Un seul document (siteConfig/hiddenLocations, { ids: [...] }) listant les lieux
     // "supprimés" depuis l'onglet admin "Existing locations" — un vrai supprimer étant
     // impossible pour un lieu codé en dur dans script.js sans modifier le code du site,

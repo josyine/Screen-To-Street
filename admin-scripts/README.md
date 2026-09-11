@@ -53,8 +53,8 @@ Safe to re-run: it writes with `{merge: true}`, so running it again after editin
 See the comment block above `window.submitLocationForReview` in `firebase-init.js`
 for the full review-before-publish workflow: an AI agent (or anyone else) proposes
 a location by writing a `locationSubmissions` doc. `example-ai-submission.js` is
-the actual running agent: it calls Gemini (`@google/generative-ai`) to propose 5
-new BTS locations, filters out anything too close to a known location (see
+the actual running agent: it calls Gemini (`@google/generative-ai`) to propose 20
+new BTS locations per run, filters out anything too close to a known location (see
 "Anti-duplicate check" below), and writes the rest to `locationSubmissions` using
 the Admin SDK (a service account key, same as `migrate-location-content.js` —
 because this script also *reads* Firestore before it can decide what's new, and
@@ -70,10 +70,13 @@ in `firebase-init.js` for how to add yourself as one, from the Firebase console)
 ### Running it automatically (GitHub Actions)
 
 `.github/workflows/ai-agent.yml` runs `example-ai-submission.js` on a schedule
-(daily by default — edit the `cron` line to change that) using GitHub's own
-servers, so it works even when your Mac is off. You can also trigger it by hand
-any time from the repo's **Actions** tab → "Agent IA — propositions de lieux
-BTS" → **Run workflow**.
+(4 times a day by default, every 6 hours — edit the `cron` line to change that)
+using GitHub's own servers, so it works even when your Mac is off. At 20
+proposals per run × 4 runs/day, expect up to ~80 raw proposals a day before
+anti-duplicate filtering — comfortably enough to build and maintain a 50-100
+item backlog on `/admin.html`. You can also trigger it by hand any time from the
+repo's **Actions** tab → "Agent IA — propositions de lieux BTS" → **Run
+workflow**.
 
 One-time setup — the script needs the same two secrets it needs locally
 (`GEMINI_API_KEY` and your service account), but neither can be committed to the

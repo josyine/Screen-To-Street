@@ -73,7 +73,7 @@ async function runAgent() {
         const existingLocations = combineExistingLocations(scriptJsPath, locationsFromSnapshot(newLocationsSnapshot));
         console.log(`   ${existingLocations.length} lieux existants chargés.`);
 
-        console.log("🤖 L'IA génère 5 propositions pour BTS...");
+        console.log("🤖 L'IA génère 20 propositions pour BTS...");
         // La liste des noms déjà connus est donnée à l'IA pour limiter d'emblée les
         // propositions redondantes (moins d'appels gaspillés) — findDuplicate() reste le
         // vrai filet de sécurité après coup, l'IA peut très bien se tromper ou reformuler
@@ -92,14 +92,14 @@ async function runAgent() {
 Lieux déjà connus (NE PROPOSE AUCUN de ceux-ci, même reformulé différemment) :
 ${existingNames.join(', ')}
 
-Trouve 5 lieux réels, différents et emblématiques liés à BTS, absents de la liste ci-dessus.
+Trouve 20 lieux réels, différents et emblématiques liés à BTS, absents de la liste ci-dessus.
 Pour chacun, rédige un contenu complet et soigné, dans le même esprit que les fiches déjà
 publiées sur le site (récit narratif sur 2 paragraphes minimum, infos pratiques concrètes,
 une astuce de visite). Règle absolue : ne jamais inventer une adresse, un lien ou une URL
 de photo — si tu n'es pas certain à 100% qu'une information est réelle et vérifiable,
 laisse le champ correspondant vide ("") plutôt que d'en inventer une.
 
-Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 5 objets avec cette structure exacte :
+Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette structure exacte :
 [{
   "name": "Nom du lieu",
   "group": "BTS",
@@ -117,7 +117,12 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 5 objets avec cette 
   "episodeLink": "https://source-verifiable-reelle.com (laisse vide si aucune source certaine)"
 }]`;
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash' });
+        // maxOutputTokens explicite (demande du 11/09/2026, "plus de lieux par jour") :
+        // avec 20 fiches complètes demandées par appel au lieu de 5, la réponse est
+        // nettement plus longue — sans ce plafond relevé, une réponse tronquée en plein
+        // milieu d'un objet ferait échouer le JSON.parse() plus bas et perdrait TOUTE la
+        // génération (même les lieux valides avant la coupure).
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash', generationConfig: { maxOutputTokens: 16384 } });
         const result = await model.generateContent(prompt);
         const text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
         const locations = JSON.parse(text);

@@ -908,6 +908,17 @@
 
     <main class="map-container">
         
+        <!-- Barre de recherche rapide, mobile uniquement (demande du 11/09/2026) : à droite
+             du hamburger, tout en haut — pour chercher un lieu sans ouvrir le menu complet.
+             Masquée par défaut (desktop), voir la media query dans style.css. Résultats
+             filtrés directement dans celebLocations (nom/ville/pays/groupe/membre), fermée
+             au clic sur un résultat (ouvre la fiche + centre la carte) ou en dehors. -->
+        <div id="mobile-map-search" class="mobile-map-search">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mobile-map-search-icon"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            <input type="text" id="mobile-map-search-input" placeholder="Search a location..." autocomplete="off">
+            <div id="mobile-map-search-results" class="mobile-map-search-results hidden"></div>
+        </div>
+
         <!-- BANNIERE DE MAP STATS (En haut à gauche) -->
         <div class="map-kpi-pill">
             <div style="background: #fff; border-radius: 100px; padding: 10px 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 13px; font-weight: 700;">
@@ -947,6 +958,16 @@
             <span class="tour-mode-live-dot"></span>
             <span id="tour-mode-badge-text"></span>
             <span id="tour-mode-badge-more" class="tour-mode-badge-more hidden"></span>
+        </button>
+
+        <!-- Bouton "localiser" (demande du 11/09/2026) : recentre la carte sur le pays
+             renseigné dans "Country you're interested in" (account.html), même lookup
+             que le centrage automatique au chargement (window.getMapCenterForCountry,
+             countries.js) — au-dessus du zoom Leaflet (lui aussi en bas à droite) pour ne
+             pas le chevaucher, et remonté encore plus haut sur mobile pour ne pas passer
+             sous la nav du bas (voir la media query dans style.css). -->
+        <button id="locate-country-btn" class="locate-country-btn" type="button" title="Center on your country" onclick="if(window.locateOnInterestCountry) window.locateOnInterestCountry();">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path><circle cx="12" cy="12" r="8"></circle></svg>
         </button>
 
         <div id="map"></div>
@@ -1263,6 +1284,17 @@
             const newLocs = await window.fetchNewLocations();
             const existingIds = new Set(celebLocations.map(l => l.id));
             newLocs.forEach(l => { if (l && l.id && !existingIds.has(l.id)) celebLocations.push(l); });
+        }
+
+        // Corrections "squelette" (Group/Members/Country/City/Date) d'un lieu déjà publié,
+        // faites via l'icône crayon (demande du 11/09/2026, voir saveLocationEdit() dans
+        // script.js) : fusionnées dans l'entrée existante de celebLocations, avant le
+        // premier rendu — une seule lecture Firestore de plus, pas une par lieu modifié.
+        if (typeof window.fetchLocationSkeletonOverrides === 'function' && typeof celebLocations !== 'undefined') {
+            const overrides = await window.fetchLocationSkeletonOverrides();
+            if (overrides && Object.keys(overrides).length > 0) {
+                celebLocations.forEach(l => { if (overrides[String(l.id)]) Object.assign(l, overrides[String(l.id)]); });
+            }
         }
 
         // Lieux "supprimés" depuis l'onglet admin "Existing locations" (voir
