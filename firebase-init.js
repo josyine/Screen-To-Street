@@ -563,6 +563,26 @@ window.deleteProfilePhoto = async function (photoId) {
     }
 };
 
+// Modération admin (demande du 11/09/2026, "en mode admin, je veux avoir la possibilité
+// de supprimer des publications qui me déplaisent") — même document que deleteProfilePhoto
+// ci-dessus, mais pour le compte d'un AUTRE utilisateur (feed.html liste des photos de
+// tout le monde). La règle Firestore (publicProfiles/{uid}) n'autorise cette écriture
+// que si le compte connecté est dans la collection admins/ ET qu'elle ne touche que la
+// clé "photos" — voir firestore.rules.
+window.adminDeleteProfilePhoto = async function (ownerUid, photoId) {
+    const user = auth.currentUser;
+    if (!user || !ownerUid || !photoId) return { success: false, code: 'not-authenticated' };
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        await setDoc(doc(db, 'publicProfiles', ownerUid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Suppression admin de la photo échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Biographie éditable du profil public (demande du 08/09/2026) : simple champ texte sur
 // publicProfiles/{uid}, déjà en écriture libre pour son propriétaire (allow write ci-dessous,
 // voir firestore.rules) — pas de règle dédiée nécessaire.
@@ -631,7 +651,8 @@ window.fetchGlobalPhotoFeed = async function () {
                         locationName: r.locationName || '',
                         photo: r.photo,
                         caption: r.notes || '',
-                        updatedAt: (r.updatedAt && r.updatedAt.seconds) || 0
+                        updatedAt: (r.updatedAt && r.updatedAt.seconds) || 0,
+                        standalone: false
                     });
                 });
                 // Photos autonomes (bouton "+" -> "Add a photo", demande du 09/09/2026) —
@@ -649,7 +670,8 @@ window.fetchGlobalPhotoFeed = async function () {
                         locationName: p.locationName || '',
                         photo: p.photo,
                         caption: p.caption || '',
-                        updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0
+                        updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0,
+                        standalone: true
                     });
                 });
             });
@@ -838,7 +860,7 @@ window.approveLocationSubmission = async function (submission) {
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         const targetId = submission.matchedLocId ? String(submission.matchedLocId) : 'new-' + submission.id;
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl'];
+        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), contentDoc, { merge: true });

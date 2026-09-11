@@ -35,6 +35,17 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .submissions-count{font-size:16px;font-weight:600;color:#D42759;}
 .sub{font-size:13px;color:#64748b;margin-bottom:28px;}
 
+.submissions-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.refresh-submissions-btn{display:flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #e2e8f0;border-radius:100px;padding:8px 16px;font-size:12.5px;font-weight:700;color:#212832;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;flex-shrink:0;margin-top:2px;transition:.2s;}
+.refresh-submissions-btn:hover{border-color:#D42759;color:#D42759;}
+.refresh-submissions-btn:disabled{opacity:.6;cursor:default;}
+.refresh-submissions-btn.is-refreshing svg{animation:refreshSpin .8s linear infinite;}
+@keyframes refreshSpin{to{transform:rotate(360deg);}}
+.refresh-submissions-status{font-size:12.5px;font-weight:600;color:#64748b;background:#faf9fc;border:1px solid #ECE7F3;border-radius:10px;padding:10px 14px;margin:-14px 0 20px 0;}
+.refresh-submissions-status a{color:#D42759;font-weight:700;}
+.refresh-submissions-status.ok{color:#10b981;background:#f0fdf9;border-color:#c7f0e3;}
+.refresh-submissions-status.err{color:#D42759;background:#FFF7F8;border-color:#FBD5DC;}
+
 .state-box{background:#fff;border:1px solid #ECE7F3;border-radius:16px;padding:40px;text-align:center;color:#64748b;font-size:14px;}
 .state-box.denied{border-color:#FBD5DC;background:#FFF7F8;color:#D42759;font-weight:600;}
 
@@ -122,8 +133,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         </div>
 
         <div id="admin-panel-submissions" class="admin-tab-panel active">
-            <h1>Location submissions <span id="submissions-count" class="submissions-count hidden"></span></h1>
-            <p class="sub">New locations and corrections proposed for review — nothing here is visible on the site until approved.</p>
+            <div class="submissions-header-row">
+                <h1>Location submissions <span id="submissions-count" class="submissions-count hidden"></span></h1>
+                <button type="button" id="refresh-submissions-btn" class="refresh-submissions-btn" onclick="window.refreshSubmissions()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
+                    Refresh
+                </button>
+            </div>
+            <p class="sub">New locations and corrections proposed for review — nothing here is visible on the site until approved. An AI agent proposes new ones automatically every few hours; "Refresh" checks for anything it's found since you last looked.</p>
+            <div id="refresh-submissions-status" class="refresh-submissions-status hidden"></div>
             <div id="empty-state" class="state-box hidden">No pending submissions right now.</div>
             <div id="submissions-list"></div>
         </div>
@@ -348,14 +366,18 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-tweet-preview hidden"></div>
             <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)" value="${escapeHtml(sub.tweetUrl || '')}">
             <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
+            <div class="sub-tweet-extra" style="margin-bottom:6px;"></div>
 
             <div class="sub-instagram-preview hidden"></div>
             <input type="url" class="sub-social-input" data-platform="instagram" placeholder="Instagram URL (optional) — a specific post/reel link embeds a preview" value="${escapeHtml(sub.instagramUrl || '')}">
             <div class="sub-social-error hidden" data-platform="instagram" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like an instagram.com URL.</div>
+            <div class="sub-social-extra" data-platform="instagram" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional)" value="${escapeHtml(sub.facebookUrl || '')}">
             <div class="sub-social-error hidden" data-platform="facebook" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a facebook.com URL.</div>
+            <div class="sub-social-extra" data-platform="facebook" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)" value="${escapeHtml(sub.tiktokUrl || '')}">
             <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
+            <div class="sub-social-extra" data-platform="tiktok" style="margin-bottom:6px;"></div>
 
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)" value="${sub.ytId ? 'https://www.youtube.com/watch?v=' + escapeHtml(sub.ytId) : ''}">
             <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:12px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
@@ -392,6 +414,21 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const tweetError = card.querySelector('.sub-tweet-error');
         const videoInput = card.querySelector('.sub-video-input');
         const videoStatus = card.querySelector('.sub-video-status');
+
+        // Liens supplémentaires par réseau (demande du 11/09/2026, "+") : le champ
+        // ci-dessus reste le lien "principal" (aperçu embarqué, inchangé) ; ceux-ci sont
+        // stockés à part (sub.tweetUrls[], etc) et n'ont pas d'aperçu, juste une validation
+        // de domaine — voir window.createMultiUrlField() dans script.js.
+        const extraFieldWidgets = {};
+        if (typeof window.createMultiUrlField === 'function') {
+            const tweetExtraEl = card.querySelector('.sub-tweet-extra');
+            if (tweetExtraEl) extraFieldWidgets.tweetUrls = window.createMultiUrlField(tweetExtraEl, { values: sub.tweetUrls || [], placeholder: 'Additional Tweet / X post URL' });
+            card.querySelectorAll('.sub-social-extra').forEach(el => {
+                const platform = el.dataset.platform;
+                extraFieldWidgets[platform + 'Urls'] = window.createMultiUrlField(el, { values: sub[platform + 'Urls'] || [], placeholder: `Additional ${platform.charAt(0).toUpperCase() + platform.slice(1)} URL` });
+            });
+        }
+        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl };
 
         // Modifie directement `sub` (fermé par les callbacks d'approbation/rejet ci-dessous) :
         // approuver publie donc la valeur éditée ici, pas la proposition d'origine de l'IA.
@@ -523,6 +560,12 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         }
 
         approveBtn.onclick = async () => {
+            let extraHasError = false;
+            Object.keys(extraFieldWidgets).forEach(field => {
+                const { values, hasError } = extraFieldWidgets[field].collect(extraValidators[field]);
+                if (hasError) extraHasError = true; else sub[field] = values;
+            });
+            if (extraHasError) return;
             approveBtn.disabled = true; rejectBtn.disabled = true;
             const res = await window.approveLocationSubmission(sub);
             resultEl.classList.remove('hidden');
@@ -611,12 +654,16 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
             <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)">
             <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
+            <div class="sub-tweet-extra" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-social-input" data-platform="instagram" placeholder="Instagram URL (optional)">
             <div class="sub-social-error hidden" data-platform="instagram" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like an instagram.com URL.</div>
+            <div class="sub-social-extra" data-platform="instagram" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional)">
             <div class="sub-social-error hidden" data-platform="facebook" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a facebook.com URL.</div>
+            <div class="sub-social-extra" data-platform="facebook" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)">
             <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
+            <div class="sub-social-extra" data-platform="tiktok" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)">
             <div class="sub-video-status" style="font-size:11px;color:#94a3b8;margin-bottom:14px;">Loading…</div>
 
@@ -637,6 +684,11 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const resultEl = card.querySelector('.sub-result');
         let mergedFullDescription = loc.fullDescription || {};
 
+        // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
+        // logique côté fiche de review d'une proposition, plus haut dans ce fichier.
+        const extraFieldWidgets = {};
+        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl };
+
         // Pré-remplit avec les données locales (immédiat), puis avec le contenu Firestore
         // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
         // logique qu'openLocationEditModal()/openDetailsPanel() dans script.js.
@@ -649,6 +701,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             videoInput.value = data.ytId ? 'https://www.youtube.com/watch?v=' + data.ytId : '';
             videoStatus.textContent = data.ytId ? 'YouTube video: ' + data.ytId : 'No YouTube video';
             mergedFullDescription = data.fullDescription || {};
+            if (typeof window.createMultiUrlField === 'function') {
+                const tweetExtraEl = card.querySelector('.sub-tweet-extra');
+                if (tweetExtraEl) extraFieldWidgets.tweetUrls = window.createMultiUrlField(tweetExtraEl, { values: data.tweetUrls || [], placeholder: 'Additional Tweet / X post URL' });
+                card.querySelectorAll('.sub-social-extra').forEach(el => {
+                    const platform = el.dataset.platform;
+                    extraFieldWidgets[platform + 'Urls'] = window.createMultiUrlField(el, { values: data[platform + 'Urls'] || [], placeholder: `Additional ${platform.charAt(0).toUpperCase() + platform.slice(1)} URL` });
+                });
+            }
         };
         fillFields(loc);
         if (typeof window.fetchLocationContent === 'function') {
@@ -681,12 +741,18 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const ytId = videoVal ? extractYouTubeId(videoVal) : null;
             if (videoVal && !ytId) { videoStatus.textContent = "Doesn't look like a YouTube URL"; hasError = true; }
 
+            const extraCollected = {};
+            Object.keys(extraFieldWidgets).forEach(field => {
+                const { values, hasError: extraErr } = extraFieldWidgets[field].collect(extraValidators[field]);
+                if (extraErr) hasError = true; else extraCollected[field] = values;
+            });
+
             if (hasError) { saveBtn.disabled = false; return; }
 
             const fullDescription = Object.assign({}, mergedFullDescription, {
                 en: typeof plainTextToHtmlParagraphs === 'function' ? plainTextToHtmlParagraphs(storyInput.value) : storyInput.value
             });
-            const fields = { fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '' };
+            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '' }, extraCollected);
             const res = await window.adminUpdateLocationContent(loc.id, fields);
             resultEl.classList.remove('hidden');
             if (res.success) {
@@ -746,6 +812,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         matches.forEach(loc => listEl.appendChild(renderExistingLocationCard(loc)));
     };
 
+    let knownSubmissionIds = null; // null = pas encore chargé une première fois
     async function loadSubmissions() {
         const listEl = document.getElementById('submissions-list');
         // Pas de limite ici : window.listPendingSubmissions() (firebase-init.js) interroge
@@ -760,7 +827,50 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             countEl.classList.toggle('hidden', submissions.length === 0);
         }
         submissions.forEach(sub => listEl.appendChild(renderCard(sub)));
+        knownSubmissionIds = new Set(submissions.map(s => s.id));
+        return submissions;
     }
+
+    // Bouton "Refresh" (demande du 11/09/2026) : l'agent IA (example-ai-submission.js,
+    // voir admin-scripts/README.md) ne tourne PAS dans le navigateur — c'est un script Node
+    // qui appelle Gemini via une clé API, exécuté par un workflow GitHub Actions planifié
+    // (.github/workflows/ai-agent.yml, toutes les 6h) ou déclenché à la main depuis l'onglet
+    // Actions du dépôt. L'exposer ici nécessiterait un token GitHub avec droits d'écriture
+    // sur le dépôt embarqué dans le JS client — lisible par n'importe quel visiteur de cette
+    // page, donc une faille de sécurité sérieuse (n'importe qui pourrait alors déclencher
+    // n'importe quel workflow du dépôt). "Refresh" fait donc ce qu'un bouton client peut
+    // faire honnêtement : re-vérifier Firestore pour tout ce que l'agent (planifié ou
+    // déclenché à la main par le propriétaire du site) a déjà proposé depuis le dernier
+    // chargement de cette page, avec un état de chargement et un message explicite si rien
+    // de nouveau n'est encore là — plutôt que de simuler une génération qui n'aurait pas
+    // vraiment lieu.
+    window.refreshSubmissions = async function () {
+        const btn = document.getElementById('refresh-submissions-btn');
+        const statusEl = document.getElementById('refresh-submissions-status');
+        if (!btn || !statusEl) return;
+        const previousIds = knownSubmissionIds;
+        btn.disabled = true;
+        btn.classList.add('is-refreshing');
+        statusEl.classList.remove('hidden');
+        statusEl.className = 'refresh-submissions-status';
+        statusEl.textContent = 'Checking for new locations from the AI agent…';
+        try {
+            const submissions = await loadSubmissions();
+            const newOnes = previousIds ? submissions.filter(s => !previousIds.has(s.id)) : [];
+            if (newOnes.length > 0) {
+                statusEl.textContent = `${newOnes.length} new location${newOnes.length === 1 ? '' : 's'} found — see ${newOnes.length === 1 ? 'it' : 'them'} below.`;
+                statusEl.classList.add('ok');
+            } else {
+                statusEl.innerHTML = 'No new locations right now. The AI agent runs automatically every few hours — or <a href="https://github.com/josyine/Screen-To-Street/actions/workflows/ai-agent.yml" target="_blank" rel="noopener">run it now from GitHub Actions</a> (repo access required).';
+            }
+        } catch (e) {
+            console.warn('Rafraîchissement des soumissions échoué :', e);
+            statusEl.textContent = 'Could not check for new locations — check your connection and try again.';
+            statusEl.classList.add('err');
+        }
+        btn.disabled = false;
+        btn.classList.remove('is-refreshing');
+    };
 
     // ==========================================
     // Onglet "Live & Upcoming" (demande du 11/09/2026) : voir submitLiveEvent()/
