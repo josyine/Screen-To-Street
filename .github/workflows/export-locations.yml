@@ -1,0 +1,46 @@
+name: Publier le catalogue de lieux (export statique)
+
+# Régénère locations-data.js à partir de Firestore (voir admin-scripts/export-locations.js)
+# et le commite si son contenu a changé. C'est ÇA qui rend visible sur le site public un
+# lieu approuvé (agent IA) ou une modification faite via l'icône crayon — les écritures
+# Firestore elles-mêmes restent instantanées, mais le site public ne les affiche qu'après
+# ce "publish". Réutilise le même secret que l'agent IA (voir ai-agent.yml).
+on:
+  workflow_dispatch:       # bouton "Run workflow" manuel dans l'onglet Actions de GitHub
+  schedule:
+    - cron: '30 1,7,13,19 * * *'   # 30 min après chaque passage de l'agent IA (ai-agent.yml)
+
+permissions:
+  contents: write   # nécessaire pour commit+push le fichier régénéré
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Installe les dépendances
+        working-directory: admin-scripts
+        run: npm install
+
+      - name: Régénère locations-data.js
+        working-directory: admin-scripts
+        run: node export-locations.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Commit si changé
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- locations-data.js; then
+            echo "Rien de nouveau à publier."
+          else
+            git add locations-data.js
+            git commit -m "chore: republish location catalog (automated)"
+            git push
+          fi

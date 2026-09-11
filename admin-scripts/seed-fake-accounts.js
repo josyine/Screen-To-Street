@@ -43,23 +43,12 @@ const increment = admin.firestore.FieldValue.increment;
 const serverTimestamp = admin.firestore.FieldValue.serverTimestamp;
 
 // ------------------------------------------------------------------
-// Extraction de celebLocations depuis script.js (même technique que les scripts d'audit
-// précédents : ce fichier est la seule source de vérité pour les ids/catégories/groupes,
-// pas de duplication de données à maintenir à deux endroits).
+// Extraction de celebLocations : depuis le 13/09/2026, les 184 lieux historiques vivent
+// dans historical-locations.json (instantané figé), plus dans script.js — voir
+// export-locations.js pour l'explication complète de la nouvelle architecture statique.
 // ------------------------------------------------------------------
 function loadCelebLocations() {
-    const src = fs.readFileSync(path.join(__dirname, '..', 'script.js'), 'utf8');
-    const startMarker = 'let celebLocations = [';
-    const start = src.indexOf(startMarker);
-    if (start === -1) throw new Error('celebLocations introuvable dans script.js');
-    let depth = 0, i = start + startMarker.length - 1, end = -1;
-    for (; i < src.length; i++) {
-        if (src[i] === '[') depth++;
-        else if (src[i] === ']') { depth--; if (depth === 0) { end = i; break; } }
-    }
-    if (end === -1) throw new Error('Fin de celebLocations introuvable');
-    const arrayText = src.slice(start + startMarker.length - 1, end + 1);
-    return new Function('return ' + arrayText)();
+    return JSON.parse(fs.readFileSync(path.join(__dirname, 'historical-locations.json'), 'utf8'));
 }
 
 const FOOD_RELATED_CATEGORIES = ['Cafe', 'Restaurants'];

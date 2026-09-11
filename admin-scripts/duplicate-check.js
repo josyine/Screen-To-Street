@@ -7,19 +7,21 @@
 //
 // Ce module combine les DEUX sources de vérité du site pour obtenir la liste complète
 // des lieux déjà connus, avec leurs coordonnées :
-//   1. Les 184 lieux "historiques" : ils vivent dans script.js (tableau celebLocations),
-//      PAS dans Firestore — la collection `locationContent` ne contient que le texte
-//      riche (description, infos pratiques...), jamais lat/lng ni le nom.
+//   1. Les 184 lieux "historiques" : depuis le 13/09/2026 (voir export-locations.js), ils
+//      ne vivent plus dans script.js mais dans historical-locations.json (instantané figé,
+//      extrait une fois pour toutes de l'ancien tableau `celebLocations` de script.js) —
+//      PAS dans Firestore non plus : la collection `locationContent` ne contient que le
+//      texte riche (description, infos pratiques...), jamais lat/lng ni le nom.
 //   2. Les lieux approuvés depuis via admin.html : ceux-là sont dans Firestore, collection
 //      `newLocations` (lecture publique, voir firebase-init.js), et ONT lat/lng.
 //
 // Deux façons de récupérer la partie "approuvés" (2) selon le SDK Firebase déjà utilisé
 // par votre script :
 //   - SDK client (pas de compte de service) : loadApprovedLocations(firebaseConfig) ou
-//     loadAllExistingLocations(scriptJsPath, firebaseConfig) font tout en un appel.
+//     loadAllExistingLocations(historicalDataPath, firebaseConfig) font tout en un appel.
 //   - SDK Admin (compte de service, ex: un agent qui écrit aussi dans Firestore) :
 //     réutilisez votre `db` déjà initialisé — locationsFromSnapshot(await
-//     db.collection('newLocations').get()) puis combineExistingLocations(scriptJsPath,
+//     db.collection('newLocations').get()) puis combineExistingLocations(historicalDataPath,
 //     ce résultat). Voir example-ai-submission.js pour un exemple complet.
 //
 //   npm install firebase   // seulement pour loadApprovedLocations / loadAllExistingLocations
@@ -39,28 +41,11 @@ function haversineMeters(lat1, lng1, lat2, lng2) {
     return EARTH_RADIUS_M * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// script.js n'est pas du JSON (c'est un fichier de navigateur avec `let celebLocations =
-// [...]`) : on isole juste le texte du littéral tableau (en comptant la profondeur des
-// crochets pour trouver son `]` fermant), puis on l'évalue en scope global isolé
-// (indirect eval — pas d'accès aux variables locales de ce fichier).
-function loadStaticLocations(scriptJsPath) {
-    const src = fs.readFileSync(scriptJsPath, 'utf8');
-    const marker = 'let celebLocations = [';
-    const start = src.indexOf(marker);
-    if (start === -1) throw new Error(`"${marker}" introuvable dans ${scriptJsPath}`);
-    let i = start + marker.length - 1;
-    let depth = 0;
-    let end = -1;
-    for (; i < src.length; i++) {
-        if (src[i] === '[') depth++;
-        else if (src[i] === ']') {
-            depth--;
-            if (depth === 0) { end = i; break; }
-        }
-    }
-    if (end === -1) throw new Error('Crochet fermant introuvable (script.js a-t-il changé de structure ?)');
-    const arrayLiteral = src.slice(start + marker.length - 1, end + 1);
-    return (0, eval)(arrayLiteral); // eslint-disable-line no-eval
+// Depuis le 13/09/2026, les 184 lieux historiques sont un instantané JSON figé
+// (historical-locations.json) plutôt qu'un tableau JS littéral dans script.js — voir
+// export-locations.js pour l'explication complète de la nouvelle architecture statique.
+function loadStaticLocations(historicalDataPath) {
+    return JSON.parse(fs.readFileSync(historicalDataPath, 'utf8'));
 }
 
 // Marche avec un QuerySnapshot du SDK Admin (`db.collection('x').get()`) OU du SDK
@@ -75,8 +60,8 @@ function locationsFromSnapshot(snapshot) {
 
 // Combine les 184 lieux historiques avec une liste déjà récupérée de lieux approuvés
 // (typiquement `locationsFromSnapshot(await db.collection('newLocations').get())`).
-function combineExistingLocations(scriptJsPath, approvedLocations) {
-    return loadStaticLocations(scriptJsPath)
+function combineExistingLocations(historicalDataPath, approvedLocations) {
+    return loadStaticLocations(historicalDataPath)
         .concat(approvedLocations || [])
         .filter((l) => typeof l.lat === 'number' && typeof l.lng === 'number');
 }
@@ -98,9 +83,9 @@ async function loadApprovedLocations(firebaseConfig) {
 }
 
 // Liste complète (historiques + approuvés) contre laquelle vérifier une nouvelle proposition.
-async function loadAllExistingLocations(scriptJsPath, firebaseConfig) {
+async function loadAllExistingLocations(historicalDataPath, firebaseConfig) {
     const [staticLocs, approvedLocs] = await Promise.all([
-        Promise.resolve(loadStaticLocations(scriptJsPath)),
+        Promise.resolve(loadStaticLocations(historicalDataPath)),
         loadApprovedLocations(firebaseConfig),
     ]);
     return staticLocs
@@ -183,9 +168,9 @@ if (require.main === module) {
         messagingSenderId: '48854939735',
         appId: '1:48854939735:web:4f6264a5589ebbf5a70b12',
     };
-    const scriptJsPath = path.join(__dirname, '..', 'script.js');
+    const historicalDataPath = path.join(__dirname, 'historical-locations.json');
 
-    loadAllExistingLocations(scriptJsPath, firebaseConfig)
+    loadAllExistingLocations(historicalDataPath, firebaseConfig)
         .then((existing) => {
             console.log(`${existing.length} lieux existants chargés (historiques + approuvés).`);
             const testPoint = { lat: 37.5255, lng: 127.0375 }; // = Cafe Camptong (id 1)
