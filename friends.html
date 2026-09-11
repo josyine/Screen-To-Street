@@ -275,7 +275,7 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
             <h1 data-i18n="friendsPageTitle">Friends & Messages</h1>
             <div style="position:relative;">
                 <div class="friend-add-row">
-                    <input type="text" id="friend-username-input" autocomplete="off" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">
+                    <input type="text" id="friend-username-input" name="stns-friend-search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n-placeholder="friendsAddPlaceholder" placeholder="Add a friend by username">
                     <button id="friend-add-btn" data-i18n="friendsAddBtn">Add</button>
                 </div>
                 <!-- Suggestions "pseudos ressemblants" (contient le texte tapé, pas seulement en
@@ -1412,7 +1412,13 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
             // 07/09/2026 — voir le correctif dans sendTripInvite(), firebase-init.js).
             if (result && result.error) {
                 if (typeof window.showSimpleToast === 'function') {
-                    window.showSimpleToast(currentLang === 'fr' ? "Échec de l'acceptation. Réessayez." : 'Failed to accept. Please try again.', { isError: true });
+                    // Distingue 'permission-denied' du reste (demande du 13/09/2026), même
+                    // schéma que refreshFriendRequests() plus haut — voir acceptTripInvite()
+                    // dans firebase-init.js.
+                    const msg = result.error === 'permission-denied'
+                        ? (currentLang === 'fr' ? "Erreur serveur — réessayez dans un instant, ou contactez l'administrateur si ça persiste." : 'Server error — please try again in a moment, or contact the site admin if it persists.')
+                        : (currentLang === 'fr' ? "Échec de l'acceptation. Réessayez." : 'Failed to accept. Please try again.');
+                    window.showSimpleToast(msg, { isError: true });
                 }
                 return;
             }

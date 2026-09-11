@@ -5267,6 +5267,34 @@ function injectLocVisitorsChevron() {
         await ensureLocPostsIndex();
         findNearbyOrAreaVisitorContent();
     });
+    positionLocVisitorsChevron();
+    window.addEventListener('resize', positionLocVisitorsChevron);
+    window.addEventListener('orientationchange', () => setTimeout(positionLocVisitorsChevron, 300));
+}
+
+// BUG rapporté deux fois de suite (11 et 12/09/2026) : "la flèche chevauche le +, mal
+// alignée" — malgré un ajustement des valeurs bottom en CSS (49px puis 74px), le problème
+// persistait sur l'appareil réel de la personne. Cause probable : la hauteur RÉELLEMENT
+// rendue de la nav du bas (padding + icônes, potentiellement affectée par la taille de
+// police système, l'accessibilité, ou simplement une estimation de départ fausse) ne
+// correspondait pas à la valeur devinée en CSS. Plutôt que re-deviner une nouvelle
+// constante, on mesure la position RÉELLE de la nav (ou du bandeau .loc-visitors-bar quand
+// il est ouvert, puisqu'il passe alors au-dessus) avec getBoundingClientRect() et on pose
+// le bottom du chevron en JS, directement à partir de cette mesure — impossible à faire
+// dévier d'un vrai élément affiché. Appelé à l'injection, à chaque resize/rotation, et par
+// updateLocVisitorsBar() (script.js) à chaque fois que .loc-visitors-bar s'ouvre/se ferme.
+function positionLocVisitorsChevron() {
+    const tab = document.getElementById('loc-visitors-chevron-tab');
+    const nav = document.getElementById('mobile-bottom-nav');
+    if (!tab || !nav) return;
+    if (window.matchMedia && !window.matchMedia('(max-width: 760px)').matches) return;
+    const GAP = 10;
+    let ceilingTop = nav.getBoundingClientRect().top;
+    const bar = document.getElementById('loc-visitors-bar');
+    if (bar && bar.classList.contains('open')) {
+        ceilingTop = bar.getBoundingClientRect().top;
+    }
+    tab.style.bottom = Math.round(window.innerHeight - ceilingTop + GAP) + 'px';
 }
 
 // Détermine quoi ouvrir au clic sur le chevron (demande du 12/09/2026) : soit un lieu
@@ -5330,13 +5358,11 @@ async function updateLocVisitorsBar(loc) {
     const chevronTab = document.getElementById('loc-visitors-chevron-tab');
     if (chevronTab) {
         chevronTab.classList.toggle('has-posts', posts.length > 0);
-        // Le bandeau .loc-visitors-bar s'ouvre à la même hauteur que ce chevron quand il y a
-        // des photos (voir .bar-open dans style.css) — sans ça, les deux se superposeraient.
-        chevronTab.classList.toggle('bar-open', posts.length > 0);
     }
     let bar = document.getElementById('loc-visitors-bar');
     if (!posts.length) {
         if (bar) bar.classList.remove('open');
+        positionLocVisitorsChevron();
         return;
     }
     if (!bar) {
@@ -5358,6 +5384,7 @@ async function updateLocVisitorsBar(loc) {
     `;
     bar.onclick = () => openLocVisitorsDrawer(loc);
     bar.classList.add('open');
+    positionLocVisitorsChevron();
 }
 window.updateLocVisitorsBar = updateLocVisitorsBar;
 
@@ -6978,6 +7005,26 @@ window.openLocModal = function(id, postContext) {
                     if (typeof window.togglePhotoLike === 'function') await window.togglePhotoLike(photoKey, nowLiked);
                 };
             }
+
+            // Enregistrement (demande du 13/09/2026, onglet "Saved" de feed.html) : même
+            // schéma que le bouton like juste au-dessus, à côté de lui.
+            const saveBtn = document.getElementById('modal-post-save-btn');
+            if (saveBtn && postContext.photoKey) {
+                const photoKey = postContext.photoKey;
+                saveBtn.classList.remove('saved');
+                if (typeof window.isPhotoSaved === 'function') {
+                    window.isPhotoSaved(photoKey).then(saved => {
+                        if (modalPostHeader.dataset.photoKey !== photoKey) return;
+                        saveBtn.classList.toggle('saved', saved);
+                    });
+                }
+                saveBtn.onclick = async () => {
+                    const nowSaved = !saveBtn.classList.contains('saved');
+                    saveBtn.classList.toggle('saved', nowSaved);
+                    if (typeof window.togglePhotoSave === 'function') await window.togglePhotoSave(photoKey, nowSaved);
+                    if (typeof window.onPhotoSaveToggled === 'function') window.onPhotoSaveToggled(photoKey, nowSaved);
+                };
+            }
         } else {
             modalPostHeader.classList.add('hidden');
         }
@@ -7723,15 +7770,81 @@ window.flyMapToCountry = function(countryName) {
     map.flyTo([c[0], c[1]], c[2], { duration: 0.6 });
 };
 
-// Bouton "localiser" bas-droite de la carte (demande du 11/09/2026) : recentre sur le
-// pays d'intérêt du compte (même source que le centrage automatique au chargement, voir
-// userCountry plus haut dans ce fichier) — si rien n'est renseigné, getMapCenterForCountry()
-// retombe sur DEFAULT_MAP_CENTER (Séoul), jamais d'échec silencieux.
-window.locateOnInterestCountry = function() {
-    if (!map || typeof window.getMapCenterForCountry !== 'function') return;
-    const c = window.getMapCenterForCountry(localStorage.getItem('userCountry'));
-    map.flyTo([c[0], c[1]], c[2], { duration: 0.6 });
+// Bouton "localiser" bas-droite de la carte : recentrait sur le pays d'intérêt du compte
+// (demande du 11/09/2026) — remplacé le 13/09/2026 par la VRAIE position de l'appareil,
+// mise à jour en temps réel, pour voir les lieux à proximité immédiate plutôt qu'un simple
+// centrage sur un pays entier. Le premier appel à getCurrentPosition() déclenche la demande
+// de permission NATIVE du navigateur (Safari/iOS affiche alors son propre dialogue
+// "Autoriser une fois"/"Toujours autoriser lors de l'utilisation de l'app" — entièrement
+// géré par le système, rien à construire côté site pour cette partie-là).
+let myLocationMarker = null;
+let myLocationAccuracyCircle = null;
+let myLocationWatchId = null;
+
+window.locateMyPosition = function() {
+    if (!map || !navigator.geolocation) {
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "La géolocalisation n'est pas disponible sur cet appareil." : 'Geolocation is not available on this device.');
+        return;
+    }
+    // Le suivi (watchPosition) ne doit démarrer qu'une fois : un second clic sur le bouton
+    // recentre simplement sur la dernière position connue au lieu de relancer une demande.
+    if (myLocationWatchId !== null && myLocationMarker) {
+        map.flyTo(myLocationMarker.getLatLng(), Math.max(map.getZoom(), 14), { duration: 0.6 });
+        return;
+    }
+    const btn = document.getElementById('locate-country-btn');
+    if (btn) btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            if (btn) btn.disabled = false;
+            updateMyLocationMarker(pos);
+            map.flyTo([pos.coords.latitude, pos.coords.longitude], 15, { duration: 0.8 });
+            startWatchingMyLocation();
+        },
+        (err) => {
+            if (btn) btn.disabled = false;
+            console.warn('Géolocalisation refusée/échouée :', err);
+            const isFr = currentLang === 'fr';
+            const msg = err.code === err.PERMISSION_DENIED
+                ? (isFr ? "Localisation refusée. Autorisez-la dans les réglages de votre navigateur pour voir votre position." : 'Location access denied. Enable it in your browser settings to see your position.')
+                : (isFr ? "Impossible d'obtenir votre position pour le moment." : "Couldn't get your position right now.");
+            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(msg, { isError: true });
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
 };
+
+function startWatchingMyLocation() {
+    if (myLocationWatchId !== null || !navigator.geolocation) return;
+    myLocationWatchId = navigator.geolocation.watchPosition(
+        updateMyLocationMarker,
+        (err) => console.warn('Suivi de position interrompu :', err),
+        { enableHighAccuracy: true, maximumAge: 5000 }
+    );
+}
+
+// Point bleu "vous êtes ici" + cercle de précision, convention établie (Google/Apple
+// Plans) — mis à jour à chaque évènement watchPosition plutôt que recréé, pour un
+// déplacement fluide sur la carte au lieu d'un marqueur qui clignote/disparaît.
+function updateMyLocationMarker(pos) {
+    if (!map || typeof L === 'undefined') return;
+    const latlng = [pos.coords.latitude, pos.coords.longitude];
+    if (!myLocationMarker) {
+        myLocationMarker = L.circleMarker(latlng, {
+            radius: 8, color: '#fff', weight: 3, fillColor: '#4285F4', fillOpacity: 1, interactive: false
+        }).addTo(map);
+    } else {
+        myLocationMarker.setLatLng(latlng);
+    }
+    if (pos.coords.accuracy) {
+        if (!myLocationAccuracyCircle) {
+            myLocationAccuracyCircle = L.circle(latlng, { radius: pos.coords.accuracy, color: '#4285F4', weight: 1, fillColor: '#4285F4', fillOpacity: 0.12, interactive: false }).addTo(map);
+        } else {
+            myLocationAccuracyCircle.setLatLng(latlng);
+            myLocationAccuracyCircle.setRadius(pos.coords.accuracy);
+        }
+    }
+}
 
 window.openFilteredListModal = function(type) {
     const modal = document.getElementById('list-modal');
@@ -7832,7 +7945,12 @@ window.refreshTripInvitesSidebar = async function() {
             // restait affichée sans le moindre indice que "Accept" n'avait servi à rien.
             if (result && result.error) {
                 if (typeof window.showSimpleToast === 'function') {
-                    window.showSimpleToast(currentLang === 'fr' ? "Échec de l'acceptation. Réessayez." : 'Failed to accept. Please try again.', { isError: true });
+                    // Distingue 'permission-denied' du reste (demande du 13/09/2026), même
+                    // schéma que friends.html — voir acceptTripInvite() dans firebase-init.js.
+                    const msg = result.error === 'permission-denied'
+                        ? (currentLang === 'fr' ? "Erreur serveur — réessayez dans un instant, ou contactez l'administrateur si ça persiste." : 'Server error — please try again in a moment, or contact the site admin if it persists.')
+                        : (currentLang === 'fr' ? "Échec de l'acceptation. Réessayez." : 'Failed to accept. Please try again.');
+                    window.showSimpleToast(msg, { isError: true });
                 }
                 return;
             }

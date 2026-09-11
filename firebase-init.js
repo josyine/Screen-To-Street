@@ -222,7 +222,16 @@ window.syncUserData = async function (fields) {
             // règles Firestore DÉPLOYÉES (console Firebase) en retard sur ce fichier —
             // jamais auto-déployées, voir CLAUDE.md — plutôt qu'une vraie règle qui
             // bloquerait ce compte.
-            const message = e && e.code === 'permission-denied'
+            // BUG signalé à nouveau le 13/09/2026 malgré ce qui précède : e.code n'est pas
+            // toujours 'permission-denied' à la lettre pour un refus serveur (le SDK
+            // Firestore peut aussi renvoyer un code générique selon le contexte). On
+            // s'appuie donc en plus sur navigator.onLine, qui répond IMMÉDIATEMENT sans
+            // aller-retour réseau : si l'appareil se sait connecté à internet mais que
+            // l'écriture échoue quand même, ce n'est presque jamais un "problème de
+            // connexion" au sens propre — plus probablement encore les règles Firestore
+            // déployées (console Firebase), en retard sur ce fichier (voir CLAUDE.md).
+            const looksLikeServerRefusal = (e && e.code === 'permission-denied') || navigator.onLine;
+            const message = looksLikeServerRefusal
                 ? (isFr
                     ? "Erreur de permission serveur : vos changements sont enregistrés sur cet appareil, mais le serveur les refuse pour l'instant. Réessayez plus tard ou contactez l'administrateur du site."
                     : "Server permission error: your changes are saved on this device, but the server is refusing them right now. Try again later or contact the site admin.")
@@ -734,6 +743,51 @@ window.togglePhotoLike = async function (photoKey, liked) {
     } catch (e) {
         console.warn('Mise à jour du like échouée :', e);
         return false;
+    }
+};
+
+// Publications enregistrées (demande du 13/09/2026, onglet "Saved" de feed.html) : simple
+// liste de clés (photoKey, même format "<uid propriétaire>_<id>" que les likes) sur le
+// document PRIVÉ users/{uid} — déjà utilisé de la même façon pour wishlistLocs/visitedLocs,
+// donc AUCUNE nouvelle règle Firestore n'est nécessaire ici (déjà `allow read, write: if
+// request.auth.uid == uid`), contrairement à photoLikes qui a sa propre collection/règle.
+// Volontairement pas de collection séparée ni de requête collectionGroup pour lister "mes
+// publications enregistrées" : feed.html reconstruit cette liste en filtrant
+// fetchGlobalPhotoFeed() (déjà chargé pour l'onglet Explore) sur ces clés.
+window.isPhotoSaved = async function (photoKey) {
+    const user = auth.currentUser;
+    if (!user) return false;
+    try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        const saved = (snap.exists() && snap.data().savedPostKeys) || [];
+        return saved.includes(photoKey);
+    } catch (e) {
+        console.warn('Lecture des publications enregistrées échouée :', e);
+        return false;
+    }
+};
+window.togglePhotoSave = async function (photoKey, saved) {
+    const user = auth.currentUser;
+    if (!user) return false;
+    try {
+        await setDoc(doc(db, 'users', user.uid), {
+            savedPostKeys: saved ? arrayUnion(photoKey) : arrayRemove(photoKey)
+        }, { merge: true });
+        return true;
+    } catch (e) {
+        console.warn('Mise à jour de l\'enregistrement échouée :', e);
+        return false;
+    }
+};
+window.listMySavedPhotoKeys = async function () {
+    const user = auth.currentUser;
+    if (!user) return [];
+    try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        return (snap.exists() && snap.data().savedPostKeys) || [];
+    } catch (e) {
+        console.warn('Lecture des publications enregistrées échouée :', e);
+        return [];
     }
 };
 
@@ -1467,6 +1521,13 @@ window.acceptTripInvite = async function (inviteId, tripId, role) {
         return { success: true };
     } catch (e) {
         console.warn('Acceptation de l\'invitation au voyage échouée :', e);
+        // Distingue 'permission-denied' (demande du 13/09/2026, "j'accepte et ça affiche
+        // failed") du reste, même schéma que sendFriendRequest()/syncUserData() : la règle
+        // firestore.rules elle-même (trips/{id}, clause d'auto-ajout dans `update`) est déjà
+        // correcte dans CE fichier, donc un refus serveur ici pointe très probablement vers
+        // les règles réellement PUBLIÉES dans la console Firebase, en retard sur ce fichier
+        // (jamais déployées automatiquement, voir CLAUDE.md) — pas un vrai bug de logique.
+        if (e && e.code === 'permission-denied') return { error: 'permission-denied' };
         return { error: 'failed' };
     }
 };

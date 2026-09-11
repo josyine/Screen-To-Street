@@ -206,6 +206,10 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 .modal-post-like-btn svg { transition: transform 0.15s; }
 .modal-post-like-btn.liked svg { transform: scale(1.12); fill: #D42759; }
 .modal-post-like-count { font-size: 12.5px; font-weight: 700; color: #212832; margin-left: 4px; }
+.modal-post-save-btn { background: none; border: none; cursor: pointer; padding: 4px; margin-left: 6px; display: flex; align-items: center; color: #212832; transition: 0.15s; }
+.modal-post-save-btn.saved { color: #D42759; }
+.modal-post-save-btn svg { transition: transform 0.15s; }
+.modal-post-save-btn.saved svg { transform: scale(1.1); fill: #D42759; }
 .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
 /* Boutons retour (chevron)/modifier (crayon) de la modale publication (demande du
    10/09/2026) — mêmes emplacements que .close-btn (haut de la photo hero), affichés
@@ -502,6 +506,11 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
                 </button>
                 <span class="modal-post-like-count" id="modal-post-like-count">0</span>
+                <!-- Enregistrement (demande du 13/09/2026, onglet "Saved" de feed.html) : à
+                     côté du bouton like, voir window.togglePhotoSave() dans firebase-init.js. -->
+                <button class="modal-post-save-btn" id="modal-post-save-btn" type="button" title="Save">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21 12 16.5 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"></path></svg>
+                </button>
             </div>
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
             <div id="modal-meta"></div>
@@ -567,6 +576,28 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
         el.classList.remove('hidden');
     }
 
+    // Hauteur de la mini-carte sur mobile (demande du 13/09/2026 : "que la carte prenne la
+    // longueur de l'écran jusqu'à la barre des icônes, avec une petite marge") — la hauteur
+    // fixe (320px, voir style.css) ne s'adaptait pas à l'espace réellement disponible sous
+    // les stats/onglets. Mesurée en JS (même principe que positionLocVisitorsChevron() dans
+    // script.js) car la position de départ de la carte dépend du contenu au-dessus, variable
+    // — impossible à deviner en CSS seul. Ne s'applique qu'en mobile : le bureau garde sa
+    // hauteur fixe (420px), sans nav du bas à éviter.
+    function resizeProfileMiniMap() {
+        const panel = document.getElementById('profile-panel-map');
+        const mapEl = document.getElementById('profile-mini-map');
+        if (!panel || !mapEl || panel.classList.contains('hidden')) return;
+        if (!(window.matchMedia && window.matchMedia('(max-width: 760px)').matches)) return;
+        const nav = document.getElementById('mobile-bottom-nav');
+        const GAP = 12;
+        const top = mapEl.getBoundingClientRect().top;
+        const navTop = nav ? nav.getBoundingClientRect().top : window.innerHeight;
+        mapEl.style.height = Math.max(200, Math.round(navTop - top - GAP)) + 'px';
+        if (profileMiniMap) profileMiniMap.invalidateSize();
+    }
+    window.addEventListener('resize', resizeProfileMiniMap);
+    window.addEventListener('orientationchange', () => setTimeout(resizeProfileMiniMap, 300));
+
     window.switchProfileTab = function(tabName) {
         document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
         document.querySelectorAll('.profile-tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== 'profile-panel-' + tabName));
@@ -577,12 +608,15 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             // "réussit" sans erreur, mais fitBounds() calcule alors un zoom/centre faux à
             // partir de cette taille nulle, et rien de ce qui suit (invalidateSize() en
             // particulier) ne refait ce calcul. On construit donc la carte seulement
-            // maintenant, une fois l'onglet réellement visible et correctement dimensionné.
+            // maintenant, une fois l'onglet réellement visible et correctement dimensionné —
+            // resizeProfileMiniMap() D'ABORD, pour que le conteneur ait déjà sa hauteur
+            // finale avant que L.map() ne la mesure.
+            resizeProfileMiniMap();
             if (!profileMiniMap) {
                 renderProfileMap(profileVisitedIdsForMap);
             } else {
                 setTimeout(() => {
-                    profileMiniMap.invalidateSize();
+                    resizeProfileMiniMap();
                     if (profileMapPoints.length > 0) profileMiniMap.fitBounds(profileMapPoints, { padding: [30, 30], maxZoom: 10 });
                 }, 50);
             }

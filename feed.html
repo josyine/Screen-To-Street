@@ -49,6 +49,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 .feed-page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 120px 24px 100px 24px; }
 .feed-title { font-size: 18px; font-weight: 800; color: #212832; max-width: 900px; margin: 0 auto 16px auto; }
 
+/* Onglets Explore/Saved (demande du 13/09/2026) — même idée que .profile-tabs de
+   profile.html (soulignement rose au survol/actif), reprise ici localement puisque
+   feed.html n'importe pas la feuille de style de cette page-là. */
+.feed-tabs { display: flex; gap: 6px; border-bottom: 2px solid #e2e8f0; max-width: 900px; margin: 0 auto 18px auto; }
+.feed-tab-btn { flex: 1; background: none; border: none; padding: 10px 6px; font-size: 12.5px; font-weight: 700; color: #94a3b8; cursor: pointer; font-family: 'Poppins', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: 0.2s; text-transform: uppercase; letter-spacing: .03em; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.feed-tab-btn:hover { color: #D42759; }
+.feed-tab-btn.active { color: #D42759; border-bottom-color: #D42759; }
+
 /* Recherche (demande du 08/09/2026) : lieu / groupe / pseudo — voir filterFeed() dans le
    script plus bas. */
 .feed-search-wrap { position: relative; max-width: 900px; margin: 0 auto 18px auto; }
@@ -107,6 +115,10 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 .modal-post-like-btn svg { transition: transform 0.15s; }
 .modal-post-like-btn.liked svg { transform: scale(1.12); fill: #D42759; }
 .modal-post-like-count { font-size: 12.5px; font-weight: 700; color: #212832; margin-left: 4px; }
+.modal-post-save-btn { background: none; border: none; cursor: pointer; padding: 4px; margin-left: 6px; display: flex; align-items: center; color: #212832; transition: 0.15s; }
+.modal-post-save-btn.saved { color: #D42759; }
+.modal-post-save-btn svg { transition: transform 0.15s; }
+.modal-post-save-btn.saved svg { transform: scale(1.1); fill: #D42759; }
 .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
 @media (max-width: 760px) {
   .modal-content { width: 97%; border-radius: 12px; }
@@ -215,9 +227,21 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 
 <div class="feed-page">
     <div class="feed-title">Explore</div>
+
+    <!-- Onglets Explore/Saved (demande du 13/09/2026) : "Saved" liste les publications où
+         l'utilisateur a cliqué l'icône d'enregistrement (voir modal-post-save-btn/
+         window.togglePhotoSave() dans script.js/firebase-init.js) — voir switchFeedTab()
+         plus bas. -->
+    <div class="feed-tabs" id="feed-tabs">
+        <button class="feed-tab-btn active" data-tab="explore" onclick="switchFeedTab('explore')">Explore</button>
+        <button class="feed-tab-btn" data-tab="saved" onclick="switchFeedTab('saved')">Saved</button>
+    </div>
+
     <!-- Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client
-         sur feedPhotos, déjà chargé en entier — voir filterFeed() plus bas. -->
-    <div class="feed-search-wrap">
+         sur feedPhotos, déjà chargé en entier — voir filterFeed() plus bas. Masquée sur
+         l'onglet Saved (demande du 13/09/2026) : peu de publications enregistrées, la
+         recherche n'y a pas grand intérêt et complique inutilement l'écran. -->
+    <div class="feed-search-wrap" id="feed-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="feed-search-icon"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search a place, a group, a user...">
         <div id="feed-user-suggestions" class="feed-user-suggestions hidden"></div>
@@ -242,6 +266,11 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
                 </button>
                 <span class="modal-post-like-count" id="modal-post-like-count">0</span>
+                <!-- Enregistrement (demande du 13/09/2026, onglet "Saved" de feed.html) : à
+                     côté du bouton like, voir window.togglePhotoSave() dans firebase-init.js. -->
+                <button class="modal-post-save-btn" id="modal-post-save-btn" type="button" title="Save">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21 12 16.5 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"></path></svg>
+                </button>
             </div>
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
             <div id="modal-meta"></div>
@@ -290,11 +319,11 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     // Affiche une liste de photos (le fil complet, ou un sous-ensemble filtré par
     // filterFeed() plus bas) — indexée sur feedPhotos (le fil complet) pour que
     // openFeedPost() retrouve toujours le bon like/uid même après un filtrage.
-    function renderFeedGrid(photos) {
+    function renderFeedGrid(photos, emptyMessage) {
         const grid = document.getElementById('feed-grid');
         const emptyEl = document.getElementById('feed-empty');
         grid.innerHTML = '';
-        if (!photos.length) { emptyEl.textContent = 'No results.'; emptyEl.classList.remove('hidden'); return; }
+        if (!photos.length) { emptyEl.textContent = emptyMessage || 'No results.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');
         const heartSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>';
         photos.forEach(p => {
@@ -347,6 +376,46 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         ));
     }
     document.getElementById('feed-search-input').addEventListener('input', (e) => filterFeed(e.target.value));
+
+    // Onglets Explore/Saved (demande du 13/09/2026). "Saved" filtre feedPhotos (déjà
+    // chargé pour Explore) sur les clés renvoyées par window.listMySavedPhotoKeys() —
+    // pas de second fetch réseau des publications elles-mêmes.
+    let currentFeedTab = 'explore';
+    window.switchFeedTab = function (tab) {
+        currentFeedTab = tab;
+        document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+        document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved');
+        if (tab === 'saved') {
+            loadSavedFeed();
+        } else {
+            filterFeed(document.getElementById('feed-search-input').value);
+        }
+    };
+
+    async function loadSavedFeed() {
+        const loadingEl = document.getElementById('feed-loading');
+        if (typeof window.listMySavedPhotoKeys !== 'function') { renderFeedGrid([], 'No saved posts yet.'); return; }
+        loadingEl.classList.remove('hidden');
+        try {
+            const savedKeys = await withTimeout(window.listMySavedPhotoKeys(), 15000);
+            const savedSet = new Set(savedKeys);
+            const savedPhotos = feedPhotos.filter(p => savedSet.has(p.uid + '_' + p.id));
+            loadingEl.classList.add('hidden');
+            renderFeedGrid(savedPhotos, 'No saved posts yet — tap the bookmark icon on a post to save it here.');
+        } catch (e) {
+            console.warn('Chargement des publications enregistrées échoué :', e);
+            loadingEl.classList.add('hidden');
+            renderFeedGrid([], 'No saved posts yet.');
+        }
+    }
+
+    // Reflète immédiatement un enregistrement/retrait fait depuis la modale (voir
+    // openLocModal() dans script.js) si l'onglet Saved est celui actuellement affiché —
+    // sans ça, une publication retirée y resterait visible jusqu'au prochain changement
+    // d'onglet.
+    window.onPhotoSaveToggled = function () {
+        if (currentFeedTab === 'saved') loadSavedFeed();
+    };
 
     // Suggestions de comptes (demande du 10/09/2026) : recherche "contient" (comme
     // friends.html, ajout d'ami), pour retrouver un pseudo tapé au milieu — pas
