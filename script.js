@@ -5272,17 +5272,18 @@ function injectLocVisitorsChevron() {
     window.addEventListener('orientationchange', () => setTimeout(positionLocVisitorsChevron, 300));
 }
 
-// BUG rapporté deux fois de suite (11 et 12/09/2026) : "la flèche chevauche le +, mal
-// alignée" — malgré un ajustement des valeurs bottom en CSS (49px puis 74px), le problème
-// persistait sur l'appareil réel de la personne. Cause probable : la hauteur RÉELLEMENT
-// rendue de la nav du bas (padding + icônes, potentiellement affectée par la taille de
-// police système, l'accessibilité, ou simplement une estimation de départ fausse) ne
-// correspondait pas à la valeur devinée en CSS. Plutôt que re-deviner une nouvelle
-// constante, on mesure la position RÉELLE de la nav (ou du bandeau .loc-visitors-bar quand
-// il est ouvert, puisqu'il passe alors au-dessus) avec getBoundingClientRect() et on pose
-// le bottom du chevron en JS, directement à partir de cette mesure — impossible à faire
-// dévier d'un vrai élément affiché. Appelé à l'injection, à chaque resize/rotation, et par
-// updateLocVisitorsBar() (script.js) à chaque fois que .loc-visitors-bar s'ouvre/se ferme.
+// BUG rapporté à plusieurs reprises (11, 12 et 13/09/2026) : "la flèche chevauche le +,
+// mal alignée". Le vertical (chevauchement) a été corrigé le 12/09/2026 en mesurant la
+// position RÉELLE de la nav plutôt qu'une constante CSS devinée — voir ceilingTop
+// ci-dessous. L'horizontal restait cependant mal aligné malgré left:50%/translateX(-50%)
+// identique sur les deux éléments : les 5 icônes de la nav n'ont pas toutes la même
+// largeur (l'avatar en particulier a une largeur EXPLICITE de 26px qui, avec le
+// box-sizing:border-box global, absorbe le padding de .mbn-item au lieu de s'y ajouter —
+// voir le commentaire sur .mbn-avatar plus haut), donc le centre géométrique de la nav
+// n'est PAS exactement au-dessus du bouton "+" malgré les apparences. Plutôt que recalculer
+// ces largeurs à la main, on centre maintenant le chevron sur le vrai bouton #mbn-add-btn,
+// mesuré avec getBoundingClientRect() — impossible de dévier d'un élément réellement
+// affiché, quel que soit le nombre/la largeur des icônes voisines.
 function positionLocVisitorsChevron() {
     const tab = document.getElementById('loc-visitors-chevron-tab');
     const nav = document.getElementById('mobile-bottom-nav');
@@ -5295,6 +5296,13 @@ function positionLocVisitorsChevron() {
         ceilingTop = bar.getBoundingClientRect().top;
     }
     tab.style.bottom = Math.round(window.innerHeight - ceilingTop + GAP) + 'px';
+
+    const addBtn = document.getElementById('mbn-add-btn');
+    if (addBtn) {
+        const addRect = addBtn.getBoundingClientRect();
+        tab.style.left = Math.round(addRect.left + addRect.width / 2) + 'px';
+        tab.style.transform = 'translateX(-50%)';
+    }
 }
 
 // Détermine quoi ouvrir au clic sur le chevron (demande du 12/09/2026) : soit un lieu
@@ -6801,42 +6809,15 @@ document.querySelectorAll('#review-compose-stars .star').forEach(star => {
     star.addEventListener('click', function() { window.setReviewComposeStars(parseInt(this.getAttribute('data-val'))); });
 });
 
-let pendingReviewComposePhoto = null;
-const reviewComposePhotoBtn = document.getElementById('review-compose-photo-btn');
-if (reviewComposePhotoBtn) {
-    reviewComposePhotoBtn.addEventListener('click', () => document.getElementById('review-compose-photo-input').click());
-}
-const reviewComposePhotoInput = document.getElementById('review-compose-photo-input');
-if (reviewComposePhotoInput) {
-    reviewComposePhotoInput.addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-        // Voir le commentaire équivalent sur memoryPhotoInput plus haut : fileToResizedDataUrl()
-        // gère le HEIC (photo iPhone), contrairement à l'ancien resizeImageDataUrl() dont le
-        // filet de secours renvoyait la photo brute, trop lourde pour Firestore.
-        try {
-            pendingReviewComposePhoto = await fileToResizedDataUrl(file, 700);
-            const preview = document.getElementById('review-compose-photo-preview');
-            const previewImg = document.getElementById('review-compose-photo-preview-img');
-            if (previewImg) previewImg.src = pendingReviewComposePhoto;
-            if (preview) preview.classList.remove('hidden');
-        } catch (err) {
-            console.warn('Import de la photo échoué :', err);
-            pendingReviewComposePhoto = null;
-            alert(currentLang === 'fr'
-                ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)."
-                : "Couldn't import this photo. Try a different file (JPEG/PNG format).");
-        }
-        e.target.value = '';
-    });
-}
-
 window.postQuickReview = async function() {
     const notesEl = document.getElementById('review-compose-notes');
     const notes = notesEl ? notesEl.value.trim() : '';
     const rating = Number((document.getElementById('review-compose-rating-val') || {}).value) || 0;
     if (!notes && !rating) return;
-    const photo = pendingReviewComposePhoto || null;
+    // Option "ajouter une photo" retirée du formulaire d'avis (demande du 13/09/2026) —
+    // setLocationReview()/la visite elle-même acceptent toujours un champ `photo` (des avis
+    // plus anciens en ont), donc null ici plutôt que supprimer le paramètre partout.
+    const photo = null;
     const isPublic = !!(document.getElementById('review-compose-public-check') && document.getElementById('review-compose-public-check').checked);
     const date = new Date().toISOString().split('T')[0];
     const locId = currentLocationIdForMemory;
@@ -6879,11 +6860,6 @@ window.postQuickReview = async function() {
 
     if (notesEl) notesEl.value = '';
     window.setReviewComposeStars(4);
-    pendingReviewComposePhoto = null;
-    const preview = document.getElementById('review-compose-photo-preview');
-    if (preview) preview.classList.add('hidden');
-    const photoInput = document.getElementById('review-compose-photo-input');
-    if (photoInput) photoInput.value = '';
     const publicCheck = document.getElementById('review-compose-public-check');
     if (publicCheck) publicCheck.checked = true;
 
