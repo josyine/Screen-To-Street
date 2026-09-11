@@ -37,10 +37,15 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- locations-data.js; then
+          git add locations-data.js
+          # --cached : indispensable au tout premier export, où locations-data.js n'est
+          # encore ni suivi ni committé — un `git diff` (sans --cached) sur un fichier non
+          # suivi le trouve toujours "sans différence" et ne le voit donc JAMAIS comme un
+          # changement à publier, même fraîchement créé. `git add` juste au-dessus le fait
+          # rentrer dans l'index pour de bon, --cached compare alors cet index à HEAD.
+          if git diff --cached --quiet -- locations-data.js; then
             echo "Rien de nouveau à publier."
           else
-            git add locations-data.js
             git commit -m "chore: republish location catalog (automated)"
             git push
           fi
