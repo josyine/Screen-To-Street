@@ -14,7 +14,15 @@
 // IMPORTANT : ne touche jamais aux requêtes cross-origin (Firebase/Firestore, polices
 // Google, tuiles Leaflet...) — seuls les fichiers statiques du même domaine sont
 // concernés, jamais les données live du compte.
-const CACHE_VERSION = 'stns-static-v20260911';
+const CACHE_VERSION = 'stns-static-v20260912';
+
+// Bibliothèques externes figées par version dans leur URL (unpkg pour Leaflet,
+// gstatic pour le SDK Firebase) : contrairement à Firestore/Auth (données live,
+// jamais mises en cache), ces fichiers ne changent jamais tant que la version
+// dans l'URL ne change pas, donc cache-first sans risque de servir du périmé.
+const CACHEABLE_CDN_HOSTS = ['unpkg.com', 'www.gstatic.com'];
+const isCacheableCdnRequest = (url) =>
+    CACHEABLE_CDN_HOSTS.includes(url.hostname) && /\.(js|css)(\?.*)?$/.test(url.pathname);
 
 // Pas de préchargement à l'install : les fichiers réels sont demandés avec leur
 // query-string de version (ex. "script.js?v=20260907"), le cache se remplit donc tout
@@ -34,7 +42,22 @@ self.addEventListener('fetch', (event) => {
     if (req.method !== 'GET') return;
 
     const url = new URL(req.url);
-    if (url.origin !== self.location.origin) return;
+    if (url.origin !== self.location.origin) {
+        // Seules les bibliothèques JS/CSS figées par version (Leaflet, SDK Firebase) sont
+        // concernées ici — jamais les tuiles de carte, ni Firestore/Auth (données live).
+        if (isCacheableCdnRequest(url)) {
+            event.respondWith(
+                caches.open(CACHE_VERSION).then(async (cache) => {
+                    const cached = await cache.match(req);
+                    if (cached) return cached;
+                    const res = await fetch(req);
+                    if (res && res.ok) cache.put(req, res.clone());
+                    return res;
+                })
+            );
+        }
+        return;
+    }
 
     // BUG CRITIQUE corrigé le 12/09/2026 : cette condition référençait STATIC_ASSETS, un
     // tableau supprimé lors d'une simplification précédente de ce fichier (le
