@@ -206,8 +206,19 @@ service cloud.firestore {
       // lecture avec permission-denied au lieu de simplement renvoyer "n'existe pas" —
       // bug rapporté le 07/09/2026 : "Failed to send the invite" pour un voyage tout
       // juste créé (jamais encore synchronisé côté serveur au moment de l'invitation).
+      // BUG probable corrigé le 13/09/2026 ("accepter une invitation affiche 'server
+      // error'") : `resource.data.members` en accès direct (point/crochet) déclenche une
+      // ERREUR d'évaluation — pas juste `null` — quand le champ `members` n'existe carrément
+      // pas sur le document, ce qui arrive pour tout voyage créé localement puis partagé
+      // SANS jamais avoir eu de collaborateur avant (createSharedTrip()/l'auto-réparation de
+      // sendTripInvite() dans firebase-init.js n'initialisent pas `members` à {} — seul
+      // acceptTripInvite() l'ajoute, à la toute première acceptation). Une erreur
+      // d'évaluation de règle est traitée comme un refus (permission-denied) par Firestore,
+      // ce qui explique un refus SYSTÉMATIQUE sur la toute première invitation d'un voyage
+      // donné, quelles que soient les règles réellement déployées. resource.data.get(...)
+      // renvoie la valeur par défaut au lieu de lever une erreur si le champ est absent.
       allow read: if request.auth != null
-        && (resource == null || resource.data.ownerUid == request.auth.uid || request.auth.uid in resource.data.members);
+        && (resource == null || resource.data.ownerUid == request.auth.uid || request.auth.uid in resource.data.get('members', {}));
       // Deuxième cas (demande du 07/09/2026) : accepter une invitation à un voyage dont le
       // document trips/{id} n'existe TOUJOURS pas (ex: invitation envoyée avant le correctif
       // d'auto-réparation de sendTripInvite() — voir la note sur `resource == null` plus
@@ -225,12 +236,15 @@ service cloud.firestore {
       );
       allow update: if request.auth != null && (
         resource.data.ownerUid == request.auth.uid
-        || resource.data.members[request.auth.uid] == 'edit'
+        // .get('members', {}) partout ci-dessous (voir le commentaire sur `allow read` plus
+        // haut) : un accès direct resource.data.members lève une erreur d'évaluation — donc
+        // un refus systématique — dès que le voyage n'a encore jamais eu de collaborateur.
+        || resource.data.get('members', {})[request.auth.uid] == 'edit'
         // "Leave group" (friends.html) : un collaborateur, même en lecture seule, peut se
         // retirer lui-même de members/memberNames — mais seulement lui-même, et seulement
         // ces deux champs. Sans cette clause, un collaborateur "view" n'avait aucun moyen
         // de quitter un voyage partagé (la règle précédente ne l'autorisait qu'en 'edit').
-        || (request.auth.uid in resource.data.members
+        || (request.auth.uid in resource.data.get('members', {})
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberNames'])
             && !(request.auth.uid in request.resource.data.members))
         // Accepter une invitation à un voyage (demande du 06/09/2026, tripInvites/{id} plus
@@ -242,7 +256,7 @@ service cloud.firestore {
         // fichier pour usernames/friendRequests : au pire quelqu'un qui connaît déjà un id
         // de voyage s'y ajoute sans invitation, sans conséquence grave sur un site sans
         // données sensibles dans un voyage).
-        || (!(request.auth.uid in resource.data.members)
+        || (!(request.auth.uid in resource.data.get('members', {}))
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members', 'memberNames'])
             && request.resource.data.members[request.auth.uid] in ['view', 'edit'])
       );

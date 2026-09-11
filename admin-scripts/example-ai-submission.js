@@ -32,8 +32,9 @@
 // lue ci-dessous dans une version antérieure de ce script) ne contient JAMAIS le nom d'un
 // lieu, seulement son texte riche : un filtre par nom basé dessus ne peut donc jamais rien
 // détecter. Un lieu physique ne bouge jamais : on compare donc d'abord la DISTANCE entre
-// chaque proposition et les lieux déjà connus (184 lieux historiques de script.js + ceux
-// déjà approuvés dans Firestore). Mais la distance seule peut manquer un vrai doublon si
+// chaque proposition et les lieux déjà connus (184 lieux historiques de
+// historical-locations.json + ceux déjà approuvés dans Firestore). Mais la distance seule
+// peut manquer un vrai doublon si
 // l'IA ne donne que des coordonnées approximatives pour un lieu qu'elle reformule
 // différemment (ex: "Magnate Cafe" proposé alors que la base a déjà "Cafe Magnate", à des
 // coordonnées trop éloignées pour matcher) — findDuplicate() ajoute donc une deuxième
@@ -68,9 +69,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 async function runAgent() {
     try {
         console.log('🔍 Chargement des lieux déjà connus (historiques + approuvés)...');
-        const scriptJsPath = path.join(__dirname, '..', 'script.js');
+        const historicalDataPath = path.join(__dirname, 'historical-locations.json');
         const newLocationsSnapshot = await db.collection('newLocations').get();
-        const existingLocations = combineExistingLocations(scriptJsPath, locationsFromSnapshot(newLocationsSnapshot));
+        const existingLocations = combineExistingLocations(historicalDataPath, locationsFromSnapshot(newLocationsSnapshot));
         console.log(`   ${existingLocations.length} lieux existants chargés.`);
 
         console.log("🤖 L'IA génère 20 propositions pour BTS...");

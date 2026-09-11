@@ -844,10 +844,7 @@
                     </div>
                     <input type="hidden" id="review-compose-rating-val" value="4">
                     <textarea id="review-compose-notes" class="review-compose-textarea" data-i18n-placeholder="reviewsComposePlaceholder" placeholder="Share what you thought..."></textarea>
-                    <div id="review-compose-photo-preview" class="hidden review-compose-photo-preview"><img id="review-compose-photo-preview-img"></div>
-                    <input type="file" id="review-compose-photo-input" accept="image/*,.heic,.heif" style="display:none;">
                     <div class="review-compose-actions">
-                        <button type="button" id="review-compose-photo-btn" class="review-compose-photo-btn"><span data-i18n="memoryPhotoChoose">Choose a photo</span></button>
                         <label class="review-compose-public-label">
                             <input type="checkbox" id="review-compose-public-check" checked>
                             <span data-i18n="reviewsComposeMakePublic">Make this public</span>
@@ -1257,7 +1254,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="countries.js?v=20260907"></script>
 <script type="module" src="firebase-init.js?v=20260907"></script>
-<script src="script.js?v=20260907"></script>
+<script src="locations-data.js?v=20260911"></script>
+<script src="script.js?v=20260911"></script>
 <script src="tour-mode.js"></script>
 <script src="map-tour.js?v=20260907"></script>
 <script>
@@ -1309,40 +1307,12 @@
             window.setFriendsData(friends, visits);
         }
 
-        // Nouveaux lieux approuvés via la file de relecture (voir approveLocationSubmission()
-        // dans firebase-init.js) : fusionnés dans celebLocations AVANT le premier rendu, pour
-        // qu'un lieu approuvé apparaisse sur la carte sans jamais avoir besoin de modifier
-        // script.js. Lus une seule fois ici, comme les notes communautaires juste au-dessus.
-        if (typeof window.fetchNewLocations === 'function' && typeof celebLocations !== 'undefined') {
-            const newLocs = await window.fetchNewLocations();
-            const existingIds = new Set(celebLocations.map(l => l.id));
-            newLocs.forEach(l => { if (l && l.id && !existingIds.has(l.id)) celebLocations.push(l); });
-        }
-
-        // Corrections "squelette" (Group/Members/Country/City/Date) d'un lieu déjà publié,
-        // faites via l'icône crayon (demande du 11/09/2026, voir saveLocationEdit() dans
-        // script.js) : fusionnées dans l'entrée existante de celebLocations, avant le
-        // premier rendu — une seule lecture Firestore de plus, pas une par lieu modifié.
-        if (typeof window.fetchLocationSkeletonOverrides === 'function' && typeof celebLocations !== 'undefined') {
-            const overrides = await window.fetchLocationSkeletonOverrides();
-            if (overrides && Object.keys(overrides).length > 0) {
-                celebLocations.forEach(l => { if (overrides[String(l.id)]) Object.assign(l, overrides[String(l.id)]); });
-            }
-        }
-
-        // Lieux "supprimés" depuis l'onglet admin "Existing locations" (voir
-        // adminSetLocationHidden() dans firebase-init.js — demande du 06/09/2026) : un vrai
-        // supprimer étant impossible pour un lieu codé en dur dans script.js, on le retire
-        // ici de celebLocations avant le premier rendu, pour TOUS les visiteurs (une seule
-        // lecture Firestore de plus, jamais une par lieu masqué).
-        if (typeof window.fetchHiddenLocationIds === 'function' && typeof celebLocations !== 'undefined') {
-            const hiddenIds = new Set((await window.fetchHiddenLocationIds()).map(String));
-            if (hiddenIds.size > 0) {
-                for (let i = celebLocations.length - 1; i >= 0; i--) {
-                    if (hiddenIds.has(String(celebLocations[i].id))) celebLocations.splice(i, 1);
-                }
-            }
-        }
+        // Nouveaux lieux approuvés, corrections "squelette" (icône crayon) et lieux masqués
+        // depuis l'admin : depuis le 13/09/2026, celebLocations vient déjà de
+        // locations-data.js (voir tout en haut de script.js) qui contient l'instantané déjà
+        // fusionné/filtré — plus besoin de trois lectures Firestore supplémentaires ici à
+        // chaque visite (voir admin-scripts/export-locations.js pour où cette fusion a
+        // lieu désormais, et l'ancien historique git de ce fichier pour le bloc retiré).
 
         // Évènements Live/Upcoming approuvés via l'onglet admin (demande du 11/09/2026,
         // voir approveLiveEventSubmission() dans firebase-init.js) : bulk-fetchés une seule

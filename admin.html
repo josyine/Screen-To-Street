@@ -229,7 +229,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
 <script type="module" src="firebase-init.js?v=20260907"></script>
 <script src="countries.js?v=20260907"></script>
-<script src="script.js?v=20260907"></script>
+<script src="locations-data.js?v=20260911"></script>
+<script src="script.js?v=20260911"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -619,11 +620,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     let allSiteLocationsCache = null;
     let hiddenLocationIdsCache = [];
 
-    // Squelette (script.js, gratuit — voir celebLocations) + lieux approuvés via la file
-    // de soumissions (Firestore newLocations/) : mêmes deux sources que map.html, voir la
-    // stratégie hybride documentée ailleurs sur ce site. Chargé une seule fois : script.js
-    // est déjà entièrement chargé sur cette page (celebLocations est donc immédiatement
-    // disponible, sans lecture Firestore), seul newLocations nécessite un aller-retour.
+    // Squelette (celebLocations, chargé depuis locations-data.js — voir script.js, gratuit :
+    // déjà en mémoire, aucune lecture Firestore) + lieux tout juste approuvés via la file de
+    // soumissions (Firestore newLocations/, lue ici en direct pour ne pas attendre le
+    // prochain export avant qu'un admin les voie dans "Existing locations").
     async function loadAllSiteLocationsOnce() {
         if (allSiteLocationsCache) return allSiteLocationsCache;
         const skeleton = typeof celebLocations !== 'undefined' ? celebLocations.slice() : [];
