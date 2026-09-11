@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Screen To Street — Friends</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Screen To Street">
+<meta name="theme-color" content="#2E3644">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=20260907">
@@ -226,7 +233,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
             <div class="dropdown-divider"></div>
             <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">Visited</a>
             <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
             <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
             <a href="friends.html" class="dropdown-option" style="color: #D42759; font-weight: bold;" data-i18n="friendsOption">Friends</a>
@@ -382,6 +389,24 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     // fois, jamais un par conversation : il faut le couper à chaque changement/fermeture de
     // conversation, sinon d'anciens abonnements continueraient de tourner en arrière-plan.
     let currentMessagesUnsubscribe = null;
+    // BUG rapporté le 11/09/2026 ("le site ne fonctionne plus après avoir un peu navigué
+    // dessus", sur mobile) : un tap rapide sur une deuxième conversation avant que la
+    // première ait fini de s'ouvrir (openDmConversation/openTripConversation -> await
+    // ensureDmConversation/ensureTripConversation -> openConvoPanel -> await
+    // loadAndRenderMessages) laissait DEUX ouvertures en vol en même temps. stopListeningToMessages()
+    // en tête d'openConvoPanel() ne coupait que l'abonnement déjà EN PLACE au moment de
+    // l'appel (souvent aucun, la première ouverture n'ayant pas encore posé le sien) — les
+    // deux ouvertures posaient donc chacune leur propre listenForMessages(), et laquelle
+    // finissait EN DERNIER écrasait juste la référence currentMessagesUnsubscribe de
+    // l'autre dans le module, orphelinant son abonnement Firestore sans jamais le couper.
+    // Chaque abonnement orphelin continue de reconstruire toute la liste de messages
+    // (innerHTML complet) à chaque évènement — ouvrir/refermer quelques conversations sur
+    // mobile (où les taps sont plus facilement rapprochés) en empilait plusieurs, d'où un
+    // ralentissement progressif qui finissait par ressembler à un site "cassé". Un jeton
+    // croissant identifie l'ouverture la plus récente ; toute ouverture plus ancienne qui
+    // se termine après coup abandonne avant de poser son listener (et donc ne le laisse
+    // jamais orphelin).
+    let convoOpenToken = 0;
     function stopListeningToMessages() {
         if (currentMessagesUnsubscribe) { currentMessagesUnsubscribe(); currentMessagesUnsubscribe = null; }
     }
@@ -665,6 +690,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
     }
 
     async function openDmConversation(friendUid, friendUsername) {
+        const myToken = ++convoOpenToken;
         currentConvoType = 'dm';
         currentConvoFriendUid = friendUid;
         currentConvoFriendUsername = friendUsername;
@@ -678,6 +704,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-options-btn').classList.add('hidden');
         document.getElementById('convo-options-menu').classList.add('hidden');
         currentConvoId = await window.ensureDmConversation(friendUid, friendUsername);
+        if (myToken !== convoOpenToken) return; // une ouverture plus récente a pris le relais entre-temps
         if (!currentConvoId) {
             const isFr = currentLang === 'fr';
             if (typeof window.showSimpleToast === 'function') {
@@ -685,10 +712,11 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             }
             return;
         }
-        await openConvoPanel();
+        await openConvoPanel(myToken);
     }
 
     async function openTripConversation(tripId, tripName, isOwner) {
+        const myToken = ++convoOpenToken;
         currentConvoType = 'trip';
         currentConvoTripId = tripId;
         currentConvoTripName = tripName;
@@ -707,6 +735,7 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
         document.getElementById('convo-rename-option').classList.toggle('hidden', !isOwner);
         document.getElementById('convo-leave-option').classList.toggle('hidden', isOwner);
         currentConvoId = await window.ensureTripConversation(tripId, tripName);
+        if (myToken !== convoOpenToken) return; // une ouverture plus récente a pris le relais entre-temps
         if (!currentConvoId) {
             const isFr = currentLang === 'fr';
             if (typeof window.showSimpleToast === 'function') {
@@ -714,25 +743,33 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow:hidden;}
             }
             return;
         }
-        await openConvoPanel();
+        await openConvoPanel(myToken);
     }
 
-    async function openConvoPanel() {
+    async function openConvoPanel(myToken) {
         document.getElementById('convo-empty-state').classList.add('hidden');
         const panel = document.getElementById('convo-panel');
         panel.classList.remove('hidden');
         panel.style.display = 'flex';
         document.getElementById('friends-shell').classList.add('chat-open');
         stopListeningToMessages();
+        // Capturé ICI, avant le prochain await : à ce stade, currentConvoId vient tout
+        // juste d'être posé par l'appelant (openDmConversation/openTripConversation) sans
+        // aucun autre await entre les deux, donc c'est forcément la bonne valeur POUR CET
+        // appel précis — même si une ouverture plus récente écrase currentConvoId pendant
+        // qu'on attend loadAndRenderMessages() juste en dessous.
+        const convoIdForThisOpen = currentConvoId;
         await loadAndRenderMessages();
+        if (myToken !== convoOpenToken) return; // supplantée pendant le chargement des messages — abandon avant de poser le listener (c'est lui qui restait orphelin)
         // Temps réel (demande du 07/09/2026) : tant que cette conversation reste ouverte,
         // tout nouveau message (envoyé par l'autre personne depuis un autre appareil/onglet)
         // apparaît sans recharger la page — un seul abonnement actif à la fois, coupé par
         // stopListeningToMessages() ci-dessus à chaque changement de conversation.
         if (typeof window.listenForMessages === 'function') {
-            currentMessagesUnsubscribe = window.listenForMessages(currentConvoId, renderMessagesList);
+            currentMessagesUnsubscribe = window.listenForMessages(convoIdForThisOpen, renderMessagesList);
         }
-        if (typeof window.markConversationRead === 'function') await window.markConversationRead(currentConvoId);
+        if (typeof window.markConversationRead === 'function') await window.markConversationRead(convoIdForThisOpen);
+        if (myToken !== convoOpenToken) return; // supplantée pendant markConversationRead — le prochain openConvoPanel() a déjà refait son propre rafraîchissement de liste
         if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
         // Sans ça, la ligne de la sidebar gardait "Nouveau message" jusqu'au prochain
         // rafraîchissement complet — markConversationRead() ci-dessus écrit bien la lecture

@@ -534,7 +534,20 @@ function getLiveTimelineEntries() {
         dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1],
         status: getTourStopStatus({ dateStart: s.showDates[0], dateEnd: s.showDates[s.showDates.length - 1] }, now)
     }));
-    return groupEntries.concat(soloEntries)
+    // Évènements approuvés via l'onglet admin "Live & Upcoming" (demande du 11/09/2026) :
+    // bulk-fetchés une seule fois par visite dans map.html (window.__liveEventsFromFirestore,
+    // même principe que newLocations pour les lieux) — jamais republiés dans script.js/
+    // MEMBER_EVENTS_DATA ci-dessus, voir liveEvents/{id} et approveLiveEventSubmission()
+    // dans firebase-init.js.
+    const approvedEntries = (window.__liveEventsFromFirestore || []).map(s => ({
+        kind: s.kind || 'solo', member: s.member || null, id: 'live-' + s.id,
+        title: s.title || (s.member ? `${s.member} — ${s.eventName || ''}` : (s.eventName || '')),
+        eventName: s.eventName || '',
+        city: s.city, country: s.country, lat: s.lat, lng: s.lng,
+        dateStart: s.dateStart, dateEnd: s.dateEnd || s.dateStart,
+        status: getTourStopStatus({ dateStart: s.dateStart, dateEnd: s.dateEnd || s.dateStart }, now)
+    }));
+    return groupEntries.concat(soloEntries, approvedEntries)
         .filter(e => e.status !== 'done')
         .sort((a, b) => new Date(a.dateStart) - new Date(b.dateStart));
 }
@@ -692,16 +705,23 @@ function renderLiveCalendar() {
     // Jours du mois affiché recouverts par au moins un évènement (une tournée dure souvent
     // plusieurs jours : chaque jour de dateStart à dateEnd inclus compte, pas seulement le
     // premier).
+    // BUG rapporté le 11/09/2026 : "Concert Oct 14 - Oct 17" ne doit colorer QUE le 14 et
+    // le 17 (les dates listées dans Live), pas les jours entre les deux — avant ce
+    // correctif, TOUS les jours de dateStart à dateEnd inclus étaient marqués.
     const eventDaysMap = {};
     entries.forEach(e => {
         const d1 = new Date(e.dateStart + 'T00:00:00');
         const d2 = new Date(e.dateEnd + 'T00:00:00');
-        for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
+        // Set plutôt qu'un simple [d1, d2] : un évènement d'un seul jour (dateStart ===
+        // dateEnd) ne doit compter qu'une fois, pas apparaître deux fois dans la liste des
+        // évènements du jour (et donc pas deux fois dans le title="" au survol).
+        const uniqueDates = d1.getTime() === d2.getTime() ? [d1] : [d1, d2];
+        uniqueDates.forEach(d => {
             if (d.getFullYear() === year && d.getMonth() === month) {
                 const key = d.getDate();
                 (eventDaysMap[key] = eventDaysMap[key] || []).push(e);
             }
-        }
+        });
     });
 
     const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7; // lundi = 0
@@ -1121,6 +1141,29 @@ if (shareLocationBtn) {
         menu.classList.remove('hidden');
     });
 }
+// "Share via..." (demande du 11/09/2026) : ouvre la fenêtre de partage native de l'OS
+// (AirDrop, Messages, Mail, WhatsApp... sur mobile) via l'API Web Share — cette API exige
+// un contexte HTTPS et n'existe pas partout (desktop la plupart du temps), d'où le repli
+// sur une copie du lien dans le presse-papier avec confirmation par toast.
+const shareNativeOptionEl = document.getElementById('share-native-option');
+if (shareNativeOptionEl) {
+    shareNativeOptionEl.addEventListener('click', async () => {
+        const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
+        if (!loc) return;
+        const menu = document.getElementById('share-location-menu');
+        if (menu) menu.classList.add('hidden');
+        const shareUrl = new URL(`map.html?loc=${loc.id}`, window.location.href).href;
+        const shareData = { title: loc.name, text: currentLang === 'fr' ? `Découvre ce lieu sur Screen To Street : ${loc.name}` : `Check out this place on Screen To Street: ${loc.name}`, url: shareUrl };
+        if (navigator.share) {
+            try { await navigator.share(shareData); } catch (e) { /* annulé par la personne — rien à faire */ }
+        } else if (navigator.clipboard && navigator.clipboard.writeText) {
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Lien copié !' : 'Link copied!');
+            } catch (e) { /* presse-papier indisponible (permission refusée) — rien d'autre à proposer ici */ }
+        }
+    });
+}
 const shareFriendListEl = document.getElementById('share-friend-list');
 if (shareFriendListEl) {
     shareFriendListEl.addEventListener('click', async (e) => {
@@ -1522,7 +1565,7 @@ function injectMobileTopIcons() {
                 <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
                 <div class="dropdown-divider"></div>
                 <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-                <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+                <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">Visited</a>
                 <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
                 <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
                 <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
@@ -1761,6 +1804,19 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => document.body.classList.remove('stnav-entering'), 250);
         }
     } catch (e) {}
+});
+
+// Filet de sécurité bfcache (demande du 11/09/2026, piste secondaire du bug "le site ne
+// fonctionne plus après avoir un peu navigué") : stnav-leaving est posée AVANT de quitter
+// la page (voir stNavigate ci-dessus) avec une animation en fill-mode:forwards (voir
+// .stnavSlideOut dans style.css), donc l'état "glissé hors écran / opacité 0" PERSISTE une
+// fois l'animation finie. Elle n'est normalement retirée QUE par le DOMContentLoaded de la
+// page suivante — qui ne se déclenche jamais si le retour en arrière (geste natif, bouton
+// précédent) restaure cette même page depuis le bfcache du navigateur plutôt que de la
+// recharger. Résultat possible : revenir sur une page mobile où tout le contenu reste
+// invisible/inerte, qui a tout l'air d'un site "cassé" sans la moindre erreur JS.
+window.addEventListener('pageshow', (e) => {
+    if (e.persisted) document.body.classList.remove('stnav-leaving', 'stnav-entering');
 });
 
 // Bouton "Log out" de la fenêtre de précaution "aucun pass débloqué" (map.html).
@@ -2053,10 +2109,10 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileSearchResults.classList.add('hidden');
             mobileSearchInput.value = '';
             mobileSearchInput.blur();
-            if (loc) {
-                window.openDetailsPanel(locId);
-                if (map) map.flyTo([loc.lat, loc.lng], 16);
-            }
+            // Juste un raccourci pour retrouver un lieu sur la carte (demande du
+            // 11/09/2026), pas une manière d'ouvrir sa fiche — même choix que la
+            // recherche de la sidebar (#search-input) juste au-dessus dans ce fichier.
+            if (loc && map) map.flyTo([loc.lat, loc.lng], 16);
         });
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#mobile-map-search')) mobileSearchResults.classList.add('hidden');
@@ -3165,7 +3221,7 @@ const translations = {
         locationsCount: "LOCATIONS", statsCountries: "COUNTRIES", cookieText: "We use cookies to enhance your experience.", cookiePolicy: "Cookie Policy", 
         cookieManage: "Manage", cookieReject: "Reject", cookieAccept: "Accept",
         exploreDestOption: "Explore Destinations", exploreArtistsOption: "Explore Artists", accountOption: "Your Account",
-        visitedOption: "My Visited Places", wishlistOption: "My Wishlist", tripsOption: "My Trips", friendsOption: "Friends", settingsOption: "Settings", logoutOption: "Logout",
+        visitedOption: "Visited", wishlistOption: "My Wishlist", tripsOption: "My Trips", friendsOption: "Friends", settingsOption: "Settings", logoutOption: "Logout",
         footerText: "Screen To Street is an independent fan-made guide.", footerMentions: "Legal Notice", footerAbout: "About Us", footerTOS: "Terms of Service", footerPrivacy: "Privacy Policy",
         allGroups: "All Groups", allMembers: "All Members", allAreas: "All Areas", allYears: "All Years", allCategories: "All Categories",
         checkVisited: "I visited this place", checkWishlist: "Add to Wishlist", tripWhich: "Which trip is this for?",
@@ -3178,7 +3234,7 @@ const translations = {
         accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address", accBioLabel: "Bio", accBioPlaceholder: "Write a short bio...", accBioSaveBtn: "Save bio",
         accCountryLabel: "Country you're interested in", accCountryPlaceholder: "Select a country (optional)",
         accActivityTitle: "Your activity", accTrips: "Trips", accVisited: "Visited", accWishlist: "Wishlist", accPasses: "Passes & billing",
-        friendsTitle: "Friends", openFriendsMessagesLink: "Open Friends & Messages →", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsErrAlreadySent: "You already sent a friend request to this person.", friendsErrAlreadyFriends: "You're already friends.", friendsErrGeneric: "Couldn't send the request. Please try again.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}", friendsPageTitle: "Friends & Messages", tripGroupsLabel: "Trip groups", directMessagesLabel: "Direct messages", noTripGroups: "No shared trips yet — share one from a conversation.", noFriendsForDm: "Add a friend to start messaging.", selectConversationPrompt: "Select a conversation to start chatting", messagePlaceholder: "Message...", sendBtn: "Send", tripGroupOwner: "You created this trip", tripGroupMember: "Shared with you", shareTripBtn: "Share a trip", shareTripPickTitle: "Choose a trip to share", noOwnedTrips: "You don't have any trips yet.", viewItineraryLink: "View itinerary", chatForTripLabel: "Group chat for this trip", friendRequestSentToast: "Friend request sent", tripInvitesLabel: "Trip invites", tripInviteFrom: '{username} invited you to join "{tripname}"', addTripMemberOption: "Add member", renameTripGroupOption: "Rename group", leaveTripGroupOption: "Leave group", deleteConvoBtn: "Delete conversation", deleteMessageOption: "Delete message", attachLocationTitle: "Share a location", attachPollTitle: "Create a poll", attachPollCreateBtn: "Create poll", attachLocationOption: "Share a location", attachTripOption: "Share a trip", attachPollOption: "Create a poll",
+        friendsTitle: "Friends", openFriendsMessagesLink: "Open Friends & Messages →", friendsAddPlaceholder: "Add a friend by username", friendsAddBtn: "Add", friendsRequestsLabel: "Friend requests", friendsListLabel: "Your friends", friendsEmpty: "No friends yet — add one by their username above.", friendsAccept: "Accept", friendsDecline: "Decline", friendsCancel: "Cancel", friendsRemove: "Remove", friendsErrNotFound: "No user found with that username.", friendsErrSelf: "You can't add yourself.", friendsErrAlreadySent: "You already sent a friend request to this person.", friendsErrAlreadyFriends: "You're already friends.", friendsErrGeneric: "Couldn't send the request. Please try again.", friendsSentLabel: "Sent — waiting for a response", friendsRequestFrom: "{username} wants to be friends", shareWithFriendBtn: "Share", shareViaOption: "Share via...", shareNoFriends: "Add a friend first to share locations.", sharesEmpty: "Nothing shared with you yet.", sharedByLabel: "{username} shared {location}", friendsPageTitle: "Friends & Messages", tripGroupsLabel: "Trip groups", directMessagesLabel: "Direct messages", noTripGroups: "No shared trips yet — share one from a conversation.", noFriendsForDm: "Add a friend to start messaging.", selectConversationPrompt: "Select a conversation to start chatting", messagePlaceholder: "Message...", sendBtn: "Send", tripGroupOwner: "You created this trip", tripGroupMember: "Shared with you", shareTripBtn: "Share a trip", shareTripPickTitle: "Choose a trip to share", noOwnedTrips: "You don't have any trips yet.", viewItineraryLink: "View itinerary", chatForTripLabel: "Group chat for this trip", friendRequestSentToast: "Friend request sent", tripInvitesLabel: "Trip invites", tripInviteFrom: '{username} invited you to join "{tripname}"', addTripMemberOption: "Add member", renameTripGroupOption: "Rename group", leaveTripGroupOption: "Leave group", deleteConvoBtn: "Delete conversation", deleteMessageOption: "Delete message", attachLocationTitle: "Share a location", attachPollTitle: "Create a poll", attachPollCreateBtn: "Create poll", attachLocationOption: "Share a location", attachTripOption: "Share a trip", attachPollOption: "Create a poll",
         accEditBtn: "Edit Profile", accSaveBtn: "Save Changes", accSaved: "✓ Saved Successfully", accNoPasses: "No active passes", accAmountPaid: "Amount paid", accGuestUsername: "Not signed in",
         accDangerZone: "Danger zone",
         accDeleteConfirmTitle: "Are you sure you want to delete your account?",
@@ -3193,7 +3249,7 @@ const translations = {
         setManage: "Manage", setNotifConfirmTitle: "Enable email notifications?", setNotifConfirmBody: "By enabling this, you agree to receive an email whenever new locations are added — at an interval that depends on how active the artist currently is (more frequent during a comeback or tour, quieter otherwise). Choose which groups and countries you care about below.", setNotifEnableBtn: "Enable", setPushNotifConfirmTitle: "Enable push notifications?", setPushNotifConfirmBody: "By enabling this, you agree to receive a push notification whenever new locations are added — at an interval that depends on how active the artist currently is (more frequent during a comeback or tour, quieter otherwise). Choose which groups and countries you care about below.", setNotifGroupsLabel: "Notify me for these groups", setNotifCountryLabel: "Notify me for these countries", setNotifAllCountries: "All countries", setNotifSearchCountry: "Search countries...", setCookiePrefsTitle: "Cookie Preferences", setCookiePrefsBody: "Necessary cookies keep the site working (login, saved wishlist) and can't be turned off. You choose whether we also use cookies to remember your preferences across visits.", setCookieNecessary: "Necessary", setCookieNecessarySub: "Always active", setCookieAnalytics: "Preferences & analytics", setCookieAnalyticsSub: "Remember your choices between visits", setSavePreferences: "Save preferences",
         setDanger: "Danger zone", setDeleteAccTitle: "Delete account", setDeleteAccSub: "This permanently deletes your trips, wishlist and unlocked passes.", setDeleteAccBtn: "Delete Account",
         wishTitle: "My Wishlist", wishEmpty: "You haven't saved any places yet. Explore the map and click \"Add to Wishlist\"!", wishSomeday: "Someday / No trip yet",
-        visitTitle: "My Visited Places", visitEmpty: "You haven't marked any place as visited yet. Explore the map and check \"I visited this place\"!",
+        visitTitle: "Visited", visitEmpty: "You haven't marked any place as visited yet. Explore the map and check \"I visited this place\"!",
         destTitle: "Explore Destinations", destSub: "Browse every country and city featured on Screen To Street", destCountries: "Countries", destCities: "Cities", destLocations: "Locations", destViewMap: "View on Map →",
         artTitle: "Explore Artists", artSub: "Discover every group featured on Screen To Street", artGroups: "Groups", artFeatured: "Featured group",
 
@@ -4052,7 +4108,12 @@ function renderLocations(skipFitBounds) {
         `;
         card.addEventListener('click', () => {
             if (isNew) dismissNewLocationBadge(loc.id);
-            map.flyTo([loc.lat, loc.lng], 16); window.openDetailsPanel(loc.id);
+            map.flyTo([loc.lat, loc.lng], 16);
+            // Recherche active (demande du 11/09/2026) : "juste une aide pour rediriger
+            // vers le lieu sur la map", donc PAS d'ouverture de la fiche détail dans ce
+            // cas précis — seulement quand on clique depuis la liste normale (parcours
+            // par filtres, champ de recherche vide), comportement inchangé.
+            if (!searchInput.value.trim()) window.openDetailsPanel(loc.id);
         });
         locationListElement.appendChild(card);
     });
@@ -4255,7 +4316,7 @@ window.switchMainTab = function(tabName) {
         if(p) { p.classList.remove('hidden'); p.classList.add('active'); }
         loadItineraryTabOptions();
     } else if (tabName === 'visited') {
-        // Onglet "My Visited Places" (demande du 10/09/2026), à côté de "My Itinerary" :
+        // Onglet "Visited" (demande du 10/09/2026), à côté de "My Itinerary" :
         // filtre la carte pour n'afficher QUE les lieux visités, et les liste dans le
         // menu — voir renderVisitedTabList() plus bas.
         document.getElementById('tab-visited-btn').classList.add('active');
@@ -4266,7 +4327,7 @@ window.switchMainTab = function(tabName) {
     }
 }
 
-// Liste + filtrage carte de l'onglet "My Visited Places" (demande du 10/09/2026) : même
+// Liste + filtrage carte de l'onglet "Visited" (demande du 10/09/2026) : même
 // principe que renderLocations() pour Explore, mais sans les filtres (Group/Member/Area/
 // Year) — juste les lieux déjà marqués visités (getVisitedLocs(), voir plus haut),
 // affichés à la fois dans le menu et comme SEULS marqueurs sur la carte tant que cet
@@ -6230,6 +6291,18 @@ window.openLocModal = function(id, postContext) {
                 avatarEl.style.background = postContext.avatarColor || '#D42759';
             }
             if (usernameEl) usernameEl.textContent = postContext.username || '';
+            // Avatar/pseudo -> profil public de l'auteur (demande du 11/09/2026) : posé sur
+            // les deux (même cible cliquable), seulement quand postContext transporte un uid
+            // (feed.html/profile.html le fournissent désormais ; les autres appelants de
+            // openLocModal, ex: fiche d'avis sans auteur identifié, ne l'ont pas — pas de
+            // lien dans ce cas plutôt qu'un lien cassé).
+            [avatarEl, usernameEl].forEach(el => {
+                if (!el) return;
+                el.style.cursor = postContext.uid ? 'pointer' : '';
+                el.onclick = postContext.uid
+                    ? (e) => { e.stopPropagation(); window.location.href = 'profile.html?uid=' + encodeURIComponent(postContext.uid); }
+                    : null;
+            });
 
             const likeBtn = document.getElementById('modal-post-like-btn');
             const likeCount = document.getElementById('modal-post-like-count');

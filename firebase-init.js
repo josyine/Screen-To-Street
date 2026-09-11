@@ -578,6 +578,24 @@ window.updateMyBio = async function (bio) {
     }
 };
 
+// Photo de profil PUBLIQUE (demande du 11/09/2026, édition en ligne sur profile.html) :
+// syncUserData({photo}) (script.js/account.html) n'écrit que users/{uid}, un document
+// privé (lisible seulement par son propriétaire) — insuffisant pour l'afficher sur la
+// page de profil publique, consultable par n'importe qui. Même champ/même collection que
+// updateMyBio() ci-dessus (publicProfiles/{uid}), déjà en écriture libre pour son
+// propriétaire.
+window.updateMyProfilePhoto = async function (photoDataUrl) {
+    const user = auth.currentUser;
+    if (!user) return false;
+    try {
+        await setDoc(doc(db, 'publicProfiles', user.uid), { photo: photoDataUrl || '' }, { merge: true });
+        return true;
+    } catch (e) {
+        console.warn('Mise à jour de la photo de profil publique échouée :', e);
+        return false;
+    }
+};
+
 // Fil d'actualité public façon Instagram (feed.html, demande du 08/09/2026) : agrège les
 // photos publiées par TOUS les comptes. Sans backend/Cloud Function, pas de requête
 // "collection group" possible pour lire toutes les publicProfiles/*.reviews d'un coup (pas
@@ -849,6 +867,90 @@ window.rejectLocationSubmission = async function (submissionId, note) {
     } catch (e) {
         console.warn('Rejet de la proposition échoué :', e);
         return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+// Onglet admin "Live & Upcoming" (demande du 11/09/2026) : même principe que la file
+// locationSubmissions ci-dessus (relecture avant publication), pour les prochains
+// évènements BTS — groupe (kind:'group') ou membre seul (kind:'solo', member renseigné).
+// `data` attend { kind, member, title, eventName, city, country, lat, lng, dateStart,
+// dateEnd } — voir getLiveTimelineEntries() dans script.js pour la forme exacte attendue
+// une fois approuvé. Réservée à l'admin des deux côtés (pas de proposition publique pour
+// l'instant, contrairement aux lieux) : c'est l'admin lui-même qui saisit l'évènement
+// depuis admin.html, puis l'approuve — deux étapes distinctes malgré tout, pour rester
+// cohérent avec le principe "rien n'est visible sur le site avant validation explicite"
+// déjà en place pour les lieux.
+window.submitLiveEvent = async function (data) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const ref = doc(collection(db, 'liveEventSubmissions'));
+        await setDoc(ref, Object.assign({}, data, {
+            status: 'pending',
+            submittedAt: serverTimestamp()
+        }));
+        return { success: true, id: ref.id };
+    } catch (e) {
+        console.warn('Soumission d\'un évènement Live échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+window.listPendingLiveEventSubmissions = async function () {
+    try {
+        const q = query(collection(db, 'liveEventSubmissions'), where('status', '==', 'pending'));
+        const snap = await getDocs(q);
+        const result = [];
+        snap.forEach(d => result.push(Object.assign({ id: d.id }, d.data())));
+        return result;
+    } catch (e) {
+        console.warn('Lecture des évènements Live en attente échouée :', e);
+        return [];
+    }
+};
+
+// Publie l'évènement : liveEvents/{id}, bulk-fetché UNE fois par visite dans map.html (même
+// principe que newLocations pour les lieux) et fusionné dans getLiveTimelineEntries() —
+// jamais republié dans script.js lui-même, ni republication du site nécessaire.
+window.approveLiveEventSubmission = async function (submission) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const fields = ['kind', 'member', 'title', 'eventName', 'city', 'country', 'lat', 'lng', 'dateStart', 'dateEnd'];
+        const eventDoc = { id: submission.id };
+        fields.forEach(f => { if (submission[f] !== undefined) eventDoc[f] = submission[f]; });
+        await setDoc(doc(db, 'liveEvents', submission.id), eventDoc);
+        await setDoc(doc(db, 'liveEventSubmissions', submission.id), { status: 'approved', reviewedAt: serverTimestamp() }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Approbation de l\'évènement Live échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+window.rejectLiveEventSubmission = async function (submissionId) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        await setDoc(doc(db, 'liveEventSubmissions', submissionId), { status: 'rejected', reviewedAt: serverTimestamp() }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Rejet de l\'évènement Live échoué :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+// Lu par TOUT visiteur (voir map.html, bulk-fetch au chargement) — jamais par lieu/évènement,
+// une seule lecture Firestore par visite pour toute la liste.
+window.fetchLiveEvents = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'liveEvents'));
+        const result = [];
+        snap.forEach(d => result.push(Object.assign({ id: d.id }, d.data())));
+        return result;
+    } catch (e) {
+        console.warn('Lecture des évènements Live approuvés échouée :', e);
+        return [];
     }
 };
 

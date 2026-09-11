@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Screen To Street — Feed</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Screen To Street">
+<meta name="theme-color" content="#2E3644">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=20260907">
@@ -94,6 +101,15 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
   .modal-content { width: 97%; border-radius: 12px; }
   .modal-body { padding: 18px 18px 22px 18px; }
   #modal-hero { height: 220px; border-radius: 12px 12px 0 0; }
+  /* Plein écran (demande du 11/09/2026) : même règle que profile.html pour ce même
+     modal réutilisé (#loc-modal + .post-modal, basculée par openLocModal() dans
+     script.js selon qu'un postContext est passé) — n'existait jusqu'ici que dans le
+     <style> propre à profile.html, donc sans effet ici sur feed.html malgré la classe
+     posée correctement par le JS partagé. */
+  #loc-modal.post-modal { padding: 0; align-items: stretch; }
+  #loc-modal.post-modal .modal-content { width: 100%; height: 100%; max-width: 100%; max-height: 100%; border-radius: 0; display: flex; flex-direction: column; }
+  #loc-modal.post-modal #modal-hero { flex-shrink: 0; height: 42vh; border-radius: 0; }
+  #loc-modal.post-modal .modal-body { flex: 1; overflow-y: auto; }
 }
 
 @media (max-width: 760px) {
@@ -175,7 +191,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
             <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
             <div class="dropdown-divider"></div>
             <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
+            <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">Visited</a>
             <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
             <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
             <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
@@ -367,6 +383,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         if (!p || typeof window.openLocModal !== 'function') return;
         window.openLocModal(p.locationId, {
             username: p.username,
+            uid: p.uid,
             avatarColor: feedAvatarColor(p.username),
             photo: p.photo,
             caption: p.caption,
