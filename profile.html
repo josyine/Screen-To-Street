@@ -275,7 +275,19 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
   .profile-avatar-edit-badge.hidden { display: none !important; }
   .profile-avatar-edit-badge:not(.hidden) { display: flex; }
   .profile-photo-grid { grid-template-columns: repeat(3, 1fr); }
-  .profile-mini-map { height: 320px; }
+  /* Pleine largeur + océan couleur du fond de page (demande du 11/09/2026) : la carte
+     vivait jusqu'ici dans .page (padding horizontal 16px, voir plus haut), d'où les
+     marges visibles de chaque côté — une marge négative égale à ce padding l'étend
+     jusqu'aux bords de l'écran, comme la bannière plein-largeur de la page. Espace sous
+     la carte porté à 28px (au-dessus des 90px déjà réservés par .page pour la nav du
+     bas) pour qu'elle s'arrête visiblement avant les icônes, pas collée dessus.
+     #profile-mini-map .leaflet-tile-pane::after : même mécanisme de teinte que TOUT le
+     site (voir .leaflet-tile-pane::after dans style.css, mix-blend-mode:"color"), mais
+     ciblé UNIQUEMENT à cette carte pour remplacer le violet pâle habituel par la couleur
+     de fond de CETTE page (#E7E9EC, voir body ci-dessus) — sans toucher à map.html ni aux
+     autres cartes du site. */
+  .profile-mini-map { height: 320px; width: calc(100% + 32px); margin: 0 -16px 28px -16px; border-radius: 0; }
+  #profile-mini-map .leaflet-tile-pane::after { background: #E7E9EC; }
 }
 </style>
 <script>
@@ -864,8 +876,15 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                         // n'empêche jamais la sauvegarde du profil public si ça échoue.
                         if (typeof window.syncUserData === 'function') window.syncUserData({ photo: profilePendingPhotoDataUrl }).catch(() => {});
                         localStorage.setItem('userPhoto', profilePendingPhotoDataUrl);
+                        // position:absolute+inset:0 (demande du 11/09/2026, "cercle coloré
+                        // autour de l'avatar") : .mbn-item a un padding de 6px, une image en
+                        // 100%/100% ne remplissait donc que sa boîte de contenu, laissant la
+                        // couleur de fond visible en anneau tout autour — voir la même
+                        // correction dans script.js (bloc DOMContentLoaded qui pose l'avatar
+                        // au chargement de la page).
                         document.querySelectorAll('.user-avatar-btn, .mbn-avatar').forEach(el => {
-                            el.innerHTML = `<img src="${profilePendingPhotoDataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                            if (el.classList.contains('mbn-avatar')) el.style.background = 'none';
+                            el.innerHTML = `<img src="${profilePendingPhotoDataUrl}" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
                         });
                     }
                     const results = await Promise.all(tasks);

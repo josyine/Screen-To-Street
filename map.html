@@ -469,7 +469,10 @@
                         <input type="text" id="search-input" class="input-field" style="padding-left:36px; background: transparent; border: 1.5px solid #cbd5e1; box-shadow: none;" placeholder="Search a location...">
                     </div>
 
-                    <div class="card-box">
+                    <div class="card-box" style="position:relative;">
+                        <button type="button" id="reset-filters-btn" class="reset-filters-btn" title="Reset filters" onclick="if(window.resetMapFilters) window.resetMapFilters();">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H9L4.5 15.5a2 2 0 0 1 0-2.8L13.7 3.5a2 2 0 0 1 2.8 0l5.5 5.5a2 2 0 0 1 0 2.8L14 20"/><path d="M18 13.5 8.5 4"/></svg>
+                        </button>
                         <div class="filters-grid">
                             <div>
                                 <div class="filter-item-label" data-i18n="filterGroup">GROUP</div>

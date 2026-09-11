@@ -22,12 +22,86 @@ const OSM_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright
 // Échappe du texte fourni par un·e utilisateur·rice (message de chat, pseudo, nom de
 // voyage...) avant de l'insérer via innerHTML — sans ça, un message de la messagerie
 // amis (voir friends.html) contenant du HTML/JS s'exécuterait chez qui le lit.
+// Widget "liens supplémentaires" (demande du 11/09/2026, "je veux pouvoir ajouter
+// plusieurs liens twitter, instagram, facebook, tiktok... ajoute un + si je veux ajouter
+// un nouveau lien") — réutilisé par la fiche de review d'une proposition (admin.html) ET
+// la modale crayon "Edit location" (voir ensureLocationEditModal plus bas) pour les 4
+// réseaux sociaux. Le lien "principal" de chaque réseau garde son champ + son aperçu
+// embarqué existants, inchangés ; ce widget gère UNIQUEMENT les liens EN PLUS (stockés à
+// part, ex. tweetUrls[]) — pas d'aperçu embarqué pour ceux-ci, une simple liste de champs
+// validés, pour rester raisonnable en complexité.
+window.createMultiUrlField = function (container, opts) {
+    opts = opts || {};
+    const placeholder = opts.placeholder || 'https://...';
+    const fieldStyle = opts.fieldStyle || "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:8px 10px; font-size:12px; font-family:'Poppins',sans-serif;";
+    const errStyle = opts.errStyle || 'font-size:10.5px; color:#D42759;';
+    const initialValues = Array.isArray(opts.values) ? opts.values.filter(Boolean) : [];
+
+    function rowHtml(value) {
+        return `<div class="mu-row" style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+            <input type="url" class="mu-input" value="${escapeHtml(value || '')}" placeholder="${escapeHtml(placeholder)}" style="${fieldStyle} margin-bottom:0; flex:1;">
+            <button type="button" class="mu-remove" title="Remove this link" style="flex-shrink:0; width:32px; height:32px; border:1.5px solid #e2e8f0; background:#fff; border-radius:8px; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer;">&times;</button>
+        </div>
+        <div class="mu-error" style="${errStyle} display:none; margin:-4px 0 8px 0;"></div>`;
+    }
+
+    container.innerHTML = initialValues.map(rowHtml).join('') +
+        `<button type="button" class="mu-add-btn" style="background:none; border:none; color:#D42759; font-size:11.5px; font-weight:700; cursor:pointer; padding:2px 0 8px 0; font-family:'Poppins',sans-serif;">+ Add another link</button>`;
+
+    container.querySelector('.mu-add-btn').addEventListener('click', () => {
+        container.querySelector('.mu-add-btn').insertAdjacentHTML('beforebegin', rowHtml(''));
+    });
+    container.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('mu-remove')) return;
+        const row = e.target.closest('.mu-row');
+        const errorEl = row.nextElementSibling && row.nextElementSibling.classList.contains('mu-error') ? row.nextElementSibling : null;
+        if (errorEl) errorEl.remove();
+        row.remove();
+    });
+
+    return {
+        // validateFn(url) -> cleaned URL string, or null/false if invalid. Champs vides
+        // ignorés silencieusement (pas une erreur) ; un champ rempli mais invalide est
+        // signalé sur sa propre ligne et fait échouer hasError.
+        collect: function (validateFn) {
+            let hasError = false;
+            const values = [];
+            container.querySelectorAll('.mu-row').forEach(row => {
+                const input = row.querySelector('.mu-input');
+                const errorEl = row.nextElementSibling;
+                const val = input.value.trim();
+                if (!val) { if (errorEl) errorEl.style.display = 'none'; return; }
+                const clean = validateFn ? validateFn(val) : val;
+                if (clean) {
+                    values.push(clean);
+                    if (errorEl) errorEl.style.display = 'none';
+                } else {
+                    hasError = true;
+                    if (errorEl) { errorEl.textContent = "Doesn't look like a valid URL for this platform."; errorEl.style.display = 'block'; }
+                }
+            });
+            return { values, hasError };
+        }
+    };
+};
+
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str == null ? '' : String(str);
     return div.innerHTML;
 }
 window.escapeHtml = escapeHtml;
+
+// Service Worker (demande du 11/09/2026, "via l'application, changement de page trop
+// lent") : cache les fichiers statiques (script.js, style.css...) pour éviter de les
+// re-télécharger/re-valider en réseau à chaque navigation — voir sw.js. Enregistré après
+// le "load" pour ne jamais retarder l'affichage de la page en cours, et sans danger pour
+// la version navigateur classique (accélère aussi les visites suivantes là-bas).
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+}
 
 // Confirmation générique et courte, réutilisable depuis n'importe quelle page (friend
 // request envoyée, username changé...) — voir .simple-toast-container dans style.css.
@@ -517,7 +591,11 @@ window.changeTourLiveGroup = function(group) {
     }
 };
 
-function getLiveTimelineEntries() {
+// `includePast` (demande du 11/09/2026, vue Calendrier) : par défaut (liste, badge Live),
+// seuls les évènements pas encore terminés comptent — "Live & Upcoming" n'a pas vocation à
+// lister l'historique. Le Calendrier fait exception : coloré aussi sur le passé pour garder
+// une vue d'ensemble du mois, même une fois une date dépassée (voir renderLiveCalendar()).
+function getLiveTimelineEntries(includePast) {
     if (window.selectedTourLiveGroup && window.selectedTourLiveGroup !== 'BTS') return [];
     const now = getTourNow();
     const groupEntries = getLiveTour().stops.map(s => ({
@@ -548,7 +626,7 @@ function getLiveTimelineEntries() {
         status: getTourStopStatus({ dateStart: s.dateStart, dateEnd: s.dateEnd || s.dateStart }, now)
     }));
     return groupEntries.concat(soloEntries, approvedEntries)
-        .filter(e => e.status !== 'done')
+        .filter(e => includePast || e.status !== 'done')
         .sort((a, b) => new Date(a.dateStart) - new Date(b.dateStart));
 }
 
@@ -642,7 +720,7 @@ function renderLiveTimeline() {
         return `<div class="live-tl-item ${statusCls}">
             <div class="live-tl-dot"></div>
             <div class="live-tl-tag">${tag}</div>
-            <div class="live-tl-title" onclick="map.flyTo([${e.lat}, ${e.lng}], 6); closeLivePanel();">${e.title}</div>
+            <div class="live-tl-title" onclick="map.flyTo([${e.lat}, ${e.lng}], 6, { duration: 0.6 }); closeLivePanel();">${e.title}</div>
             <div class="live-tl-kind">${e.city}, ${e.country} &middot; ${kindLabel}</div>
         </div>`;
     }).join('') + '</div>';
@@ -701,7 +779,12 @@ function renderLiveCalendar() {
     const year = base.getFullYear(), month = base.getMonth();
     if (label) label.textContent = base.toLocaleDateString(currentLang || 'en', { month: 'long', year: 'numeric' });
 
-    const entries = getLiveTimelineEntries();
+    // true (demande du 11/09/2026, "je veux avoir aussi la visibilité sur le passé") : à
+    // la différence de la vue Liste et du badge Live (toujours "à venir" uniquement, voir
+    // includePast dans getLiveTimelineEntries()), le Calendrier garde aussi les dates déjà
+    // passées colorées — naviguer vers un mois antérieur montrait sinon une grille
+    // totalement vide dès qu'un évènement était terminé.
+    const entries = getLiveTimelineEntries(true);
     // Jours du mois affiché recouverts par au moins un évènement (une tournée dure souvent
     // plusieurs jours : chaque jour de dateStart à dateEnd inclus compte, pas seulement le
     // premier).
@@ -1072,10 +1155,20 @@ window.listMyTripGroups = async function() {
     return owned.concat(collaborator);
 };
 
-// Additionne les deux sources de notifications "amis" : partages (lieu/voyage) non vus,
-// et conversations (DM + groupes de voyage) avec au moins un message non lu.
+// Additionne les sources de notifications "amis" : demandes d'ami reçues, partages
+// (lieu/voyage) non vus, et conversations (DM + groupes de voyage) avec au moins un
+// message non lu.
 window.countUnreadFriendNotifications = async function() {
     let count = 0;
+    // BUG rapporté le 11/09/2026 : envoyer une demande d'ami n'avertissait la personne
+    // visée nulle part — ni badge sur l'icône message, ni aucun autre signal — avant
+    // qu'elle n'aille consulter friends.html de sa propre initiative. listMyFriendRequests()
+    // (déjà utilisée par friends.html/profile.html pour AFFICHER la liste) donne aussi le
+    // décompte qui manquait ici.
+    if (typeof window.listMyFriendRequests === 'function') {
+        const { incoming } = await window.listMyFriendRequests();
+        count += incoming.length;
+    }
     if (typeof window.listSharesForMe === 'function') {
         const shares = await window.listSharesForMe();
         count += shares.filter(s => !s.seen).length;
@@ -1856,11 +1949,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarColor = avatarPalette[avatarColorSum % avatarPalette.length];
 
         userAvatarEls.forEach(avatarEl => {
-            if (avatarEl.classList.contains('mbn-avatar')) avatarEl.style.background = avatarColor;
+            const isMbn = avatarEl.classList.contains('mbn-avatar');
             if (savedPhoto && savedPhoto.trim() !== '') {
-                avatarEl.innerHTML = `<img src="${savedPhoto}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:none;">`;
+                // BUG rapporté le 11/09/2026 ("cercle coloré autour de l'avatar") :
+                // .mbn-item porte un padding de 6px, donc une <img> à 100%/100% ne
+                // remplissait que la boîte de CONTENU (14x14px sur les 26x26px de
+                // l'avatar), laissant l'avatarColor de fond visible tout autour comme un
+                // anneau. position:absolute + inset:0 ignore ce padding et fait
+                // vraiment remplir tout le cercle par la photo — voir position:relative
+                // sur .mbn-avatar dans style.css. Fond retiré : plus besoin derrière une
+                // vraie photo, et il resterait sinon visible dans les coins du carré
+                // avant le rognage en cercle par border-radius.
+                if (isMbn) avatarEl.style.background = 'none';
+                avatarEl.innerHTML = `<img src="${savedPhoto}" alt="Profile" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:50%; border:none;">`;
                 avatarEl.style.color = 'transparent';
             } else {
+                if (isMbn) avatarEl.style.background = avatarColor;
                 avatarEl.innerHTML = '';
                 avatarEl.textContent = avatarInitial;
             }
@@ -2112,7 +2216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Juste un raccourci pour retrouver un lieu sur la carte (demande du
             // 11/09/2026), pas une manière d'ouvrir sa fiche — même choix que la
             // recherche de la sidebar (#search-input) juste au-dessus dans ce fichier.
-            if (loc && map) map.flyTo([loc.lat, loc.lng], 16);
+            if (loc && map) map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
         });
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#mobile-map-search')) mobileSearchResults.classList.add('hidden');
@@ -2122,15 +2226,35 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
 
     // Si on arrive sur map.html avec ?loc=ID (depuis le bouton "More details" de
-    // visited.html / wishlist.html), on ouvre directement la fiche du lieu concerné.
+    // visited.html / wishlist.html, ou un lien partagé — bouton "Share via..." de la
+    // fiche lieu), on ouvre directement la fiche du lieu concerné.
     if(document.getElementById('map')) {
         const params = new URLSearchParams(window.location.search);
         const locParam = params.get('loc');
         if(locParam) {
-            setTimeout(() => {
-                if(typeof window.switchMainTab === 'function') window.switchMainTab('explore');
-                window.openDetailsPanel(Number(locParam));
-            }, 700);
+            // BUG rapporté le 11/09/2026 (lien partagé vers un lieu, ouvert sur un appareil
+            // qui n'a pas encore de session — le cas le plus lent à charger) : un délai FIXE
+            // de 700ms ne suffisait pas toujours avant que celebLocations ait fini de
+            // recevoir les fusions Firestore (newLocations/locationSkeletonOverrides/
+            // liveEvents, voir map.html) et que la fenêtre de connexion (#auth-gate-overlay)
+            // ait fini de se refermer — la fiche s'ouvrait alors dans le vide (ou pas du
+            // tout), donnant l'impression d'une page cassée/figée. On réessaie plutôt
+            // jusqu'à ce que le lieu soit réellement trouvable ET que la fenêtre de connexion
+            // ne bloque plus l'interaction, avec un plafond de 12s pour ne jamais attendre
+            // indéfiniment (connexion Firebase qui ne répond jamais).
+            const targetLocId = Number(locParam);
+            const tryOpenSharedLocation = (attemptsLeft) => {
+                const gateBlocking = document.body.classList.contains('auth-gate-active');
+                const locExists = typeof celebLocations !== 'undefined' && celebLocations.some(l => l.id === targetLocId);
+                if (!gateBlocking && locExists) {
+                    if (typeof window.switchMainTab === 'function') window.switchMainTab('explore');
+                    window.openDetailsPanel(targetLocId);
+                    return;
+                }
+                if (attemptsLeft <= 0) return; // plafond atteint — abandon silencieux (comme avant ce correctif)
+                setTimeout(() => tryOpenSharedLocation(attemptsLeft - 1), 300);
+            };
+            setTimeout(() => tryOpenSharedLocation(40), 300); // 40 x 300ms = 12s de plafond
         }
         // ?live=1 : icône "Live" de la nav du bas mobile (injectMobileBottomNav) quand on
         // n'est pas déjà sur map.html — ouvre le panneau Live/Tour dès que la page a fini
@@ -4005,6 +4129,20 @@ function initializeFilters() {
     }
 }
 
+// Icône gomme du bloc filtres (demande du 11/09/2026) : réinitialise Group/Member/Year/
+// Area en un clic. initializeFilters() régénère les listes MEMBER/AREA pour group="All"
+// (comportement déjà utilisé au changement de groupe, voir ci-dessus) et remet aussi la
+// catégorie active à "All".
+window.resetMapFilters = function () {
+    const groupSelect = document.getElementById('group-select');
+    const yearSelect = document.getElementById('year-select');
+    if (!groupSelect) return;
+    groupSelect.value = 'All';
+    if (yearSelect) yearSelect.value = 'All';
+    initializeFilters();
+    renderLocations();
+};
+
 // Pastille "NEW" sur les lieux récemment ajoutés au catalogue (menu de gauche) : sans
 // date de création par lieu, l'id (assigné dans l'ordre d'ajout) est le seul repère
 // fiable de nouveauté — les NEW_BADGE_COUNT ids les plus élevés sont considérés récents.
@@ -4108,7 +4246,7 @@ function renderLocations(skipFitBounds) {
         `;
         card.addEventListener('click', () => {
             if (isNew) dismissNewLocationBadge(loc.id);
-            map.flyTo([loc.lat, loc.lng], 16);
+            map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
             // Recherche active (demande du 11/09/2026) : "juste une aide pour rediriger
             // vers le lieu sur la map", donc PAS d'ouverture de la fiche détail dans ce
             // cas précis — seulement quand on clique depuis la liste normale (parcours
@@ -4375,7 +4513,11 @@ function renderVisitedTabList() {
             ${ratingBadgeHtml}
         `;
         card.addEventListener('click', () => {
-            map.flyTo([loc.lat, loc.lng], 16); window.openDetailsPanel(loc.id);
+            // duration:0.6 (demande du 11/09/2026, "la redirection est trop lente") : sans
+            // options, Leaflet calcule sa propre durée de vol en fonction de la distance —
+            // souvent 1.5 à 4s pour un lieu éloigné du centre actuel. Même valeur fixe
+            // partout où flyTo() est appelé sur ce fichier, pour une sensation cohérente.
+            map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 }); window.openDetailsPanel(loc.id);
         });
         listEl.appendChild(card);
     });
@@ -4527,7 +4669,7 @@ window.loadItineraryView = function(tripId) {
                 const loc = celebLocations.find(l => Number(l.id) === Number(id));
                 if(loc) {
                     timelineHtml += `
-                        <div class="timeline-loc" onclick="map.flyTo([${loc.lat}, ${loc.lng}], 16); window.openDetailsPanel(${loc.id});" style="cursor:pointer;">
+                        <div class="timeline-loc" onclick="map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 }); window.openDetailsPanel(${loc.id});" style="cursor:pointer;">
                             <span class="timeline-loc-name">${loc.name}</span>
                             <span class="timeline-loc-city">${loc.city || ''}</span>
                         </div>
@@ -4995,6 +5137,31 @@ function renderLocationRichContent(loc) {
             else { el.classList.add('hidden'); }
         });
         socialCont.classList.toggle('hidden', !anySocial);
+
+        // Liens supplémentaires par réseau (demande du 11/09/2026, "+", voir admin.html et
+        // la modale crayon) : injectés en JS après les liens "principaux" ci-dessus plutôt
+        // que codés en dur dans le HTML de chaque page (leur NOMBRE varie d'un lieu à
+        // l'autre) — même approche que le reste des éléments injectés dynamiquement sur ce
+        // site (nav du bas, etc). Le tweet "principal" a déjà son embed plus haut ; ses
+        // liens en plus n'ont pas d'embed, juste un lien texte, comme Facebook/TikTok.
+        let extraCont = document.getElementById('details-social-extra-links');
+        if (!extraCont) {
+            extraCont = document.createElement('span');
+            extraCont.id = 'details-social-extra-links';
+            socialCont.insertAdjacentElement('afterend', extraCont);
+        }
+        const extraLinkDefs = [
+            ['tweetUrls', 'X/Twitter'],
+            ['instagramUrls', 'Instagram'],
+            ['facebookUrls', 'Facebook'],
+            ['tiktokUrls', 'TikTok']
+        ];
+        const extraHtml = extraLinkDefs.map(([field, label]) => {
+            const urls = Array.isArray(loc[field]) ? loc[field] : [];
+            return urls.map((url, i) => `<a href="${url}" target="_blank" rel="noopener">${label}${urls.length > 1 ? ' (' + (i + 1) + ')' : ''}</a>`).join(' ');
+        }).filter(Boolean).join(' ');
+        extraCont.innerHTML = extraHtml;
+        extraCont.classList.toggle('hidden', !extraHtml);
     }
 }
 
@@ -5090,18 +5257,22 @@ function ensureLocationEditModal() {
             <label style="${labelStyle}">Twitter / X post URL</label>
             <input type="url" id="location-edit-tweet" style="${fieldStyle}" placeholder="https://x.com/.../status/...">
             <div id="location-edit-tweet-error" class="hidden" style="${errStyle}">Doesn't look like a twitter.com/x.com status URL.</div>
+            <div id="location-edit-tweet-extra" style="margin-bottom:8px;"></div>
 
             <label style="${labelStyle}">Instagram URL</label>
             <input type="url" id="location-edit-instagram" style="${fieldStyle}" placeholder="https://instagram.com/...">
             <div id="location-edit-instagram-error" class="hidden" style="${errStyle}">Doesn't look like an instagram.com URL.</div>
+            <div id="location-edit-instagram-extra" style="margin-bottom:8px;"></div>
 
             <label style="${labelStyle}">Facebook URL</label>
             <input type="url" id="location-edit-facebook" style="${fieldStyle}" placeholder="https://facebook.com/...">
             <div id="location-edit-facebook-error" class="hidden" style="${errStyle}">Doesn't look like a facebook.com URL.</div>
+            <div id="location-edit-facebook-extra" style="margin-bottom:8px;"></div>
 
             <label style="${labelStyle}">TikTok URL</label>
             <input type="url" id="location-edit-tiktok" style="${fieldStyle}" placeholder="https://tiktok.com/...">
-            <div id="location-edit-tiktok-error" class="hidden" style="${errStyle} margin-bottom:14px;">Doesn't look like a tiktok.com URL.</div>
+            <div id="location-edit-tiktok-error" class="hidden" style="${errStyle}">Doesn't look like a tiktok.com URL.</div>
+            <div id="location-edit-tiktok-extra" style="margin-bottom:14px;"></div>
 
             <button id="location-edit-save-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:11px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Save changes</button>
             <div id="location-edit-result" class="hidden" style="font-size:12px; font-weight:600; margin-top:10px; text-align:center;"></div>
@@ -5220,6 +5391,7 @@ function wireLocationEditPhotoInputOnce(modal) {
 let locationEditCurrentId = null;
 let locationEditExistingFullDescription = {};
 let locationEditExistingImg = '';
+let locationEditExtraWidgets = {};
 window.openLocationEditModal = async function (locId) {
     if (!window.__isAdminUser || locId === null || locId === undefined) return;
     const loc = celebLocations.find(l => l.id === locId);
@@ -5258,6 +5430,14 @@ window.openLocationEditModal = async function (locId) {
         // convention que admin.html pour ce même champ.
         document.getElementById('location-edit-photo-url').value = locationEditExistingImg.startsWith('data:') ? '' : locationEditExistingImg;
         updateLocationEditPhotoPreview(locationEditExistingImg || null);
+        // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
+        // logique côté admin.html (fiches de review/édition).
+        if (typeof window.createMultiUrlField === 'function') {
+            ['tweet', 'instagram', 'facebook', 'tiktok'].forEach(k => {
+                const el = document.getElementById(`location-edit-${k}-extra`);
+                if (el) locationEditExtraWidgets[k + 'Urls'] = window.createMultiUrlField(el, { values: data[k + 'Urls'] || [], placeholder: `Additional ${k.charAt(0).toUpperCase() + k.slice(1)} URL`, fieldStyle: "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:9px 12px; font-size:12.5px; font-family:'Poppins',sans-serif;" });
+            });
+        }
     };
     fillForm(loc);
 
@@ -5324,19 +5504,31 @@ async function saveLocationEdit(locId, modal) {
     const tiktokUrl = tiktokVal ? extractSocialUrlForEdit(tiktokVal, 'tiktok\\.com') : null;
     checkField(tiktokVal, tiktokUrl, 'location-edit-tiktok-error');
 
+    const extraValidators = {
+        tweetUrls: extractTweetUrlForEdit,
+        instagramUrls: (v) => extractSocialUrlForEdit(v, 'instagram\\.com'),
+        facebookUrls: (v) => extractSocialUrlForEdit(v, 'facebook\\.com'),
+        tiktokUrls: (v) => extractSocialUrlForEdit(v, 'tiktok\\.com')
+    };
+    const extraCollected = {};
+    Object.keys(locationEditExtraWidgets).forEach(field => {
+        const { values, hasError: extraErr } = locationEditExtraWidgets[field].collect(extraValidators[field]);
+        if (extraErr) hasError = true; else extraCollected[field] = values;
+    });
+
     if (hasError) { saveBtn.disabled = false; return; }
 
     // Ne remplace QUE la clé "en" de fullDescription, jamais les autres langues déjà
     // traduites (locationEditExistingFullDescription posé par openLocationEditModal).
     const fullDescription = Object.assign({}, locationEditExistingFullDescription, { en: plainTextToHtmlParagraphs(storyText) });
-    const fields = {
+    const fields = Object.assign({
         fullDescription,
         ytId: ytId || '',
         tweetUrl: tweetUrl || '',
         instagramUrl: instagramUrl || '',
         facebookUrl: facebookUrl || '',
         tiktokUrl: tiktokUrl || ''
-    };
+    }, extraCollected);
     // Priorité de la photo d'en-tête (demande du 07/09/2026) : URL ou import — tous deux
     // suivis via locationEditPendingImg/locationEditImgTouched (voir
     // wireLocationEditPhotoInputOnce), le dernier des deux champs modifié gagnant — sinon,
@@ -6369,6 +6561,54 @@ window.openLocModal = function(id, postContext) {
         if (modalEditBtn) modalEditBtn.classList.add('hidden');
     }
 
+    // Modération admin (demande du 11/09/2026, "en mode admin, je veux avoir la
+    // possibilité de supprimer des publications qui me déplaisent") : bouton "corbeille"
+    // injecté en JS (pas de HTML dédié par page, contrairement à modal-back-btn/
+    // modal-post-edit-btn ci-dessus) pour fonctionner sur toute page partageant #loc-modal
+    // sans avoir à dupliquer son balisage partout — même look que ces deux boutons. Réservé
+    // aux publications autonomes identifiables (postContext.photoId, même périmètre que
+    // deleteProfilePhoto/openPostEditSheet) et jamais affiché sur ses PROPRES publications
+    // (déjà couvertes par le volet crayon -> Supprimer existant, voir openPostEditSheet).
+    (function () {
+        let btn = document.getElementById('modal-post-admin-delete-btn');
+        if (postContext && postContext.uid && postContext.photoId && !postContext.editable && modalOverlayEl) {
+            if (typeof window.isCurrentUserAdmin !== 'function') return;
+            window.isCurrentUserAdmin().then(isAdmin => {
+                // Le clic sur un autre lieu / la fermeture de la modale pendant l'attente
+                // du round-trip admin doit annuler l'affichage — sinon le bouton peut
+                // apparaître sur une publication qui n'est plus celle affichée.
+                if (modalOverlayEl.classList.contains('hidden') || !isAdmin) {
+                    if (btn) btn.classList.add('hidden');
+                    return;
+                }
+                if (!btn) {
+                    btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.id = 'modal-post-admin-delete-btn';
+                    btn.title = 'Delete post (admin)';
+                    btn.setAttribute('aria-label', 'Delete post (admin)');
+                    btn.style.cssText = 'position:absolute; top:12px; right:14px; background:rgba(0,0,0,.35); border:none; color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10;';
+                    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+                    (document.querySelector('#loc-modal .modal-content') || modalOverlayEl).appendChild(btn);
+                }
+                btn.classList.remove('hidden');
+                btn.onclick = async () => {
+                    const msg = currentLang === 'fr' ? 'Supprimer définitivement cette publication ?' : 'Permanently delete this post?';
+                    if (!confirm(msg)) return;
+                    const result = await window.adminDeleteProfilePhoto(postContext.uid, postContext.photoId);
+                    if (result && result.success) {
+                        window.closeLocModal();
+                        window.location.reload();
+                    } else {
+                        alert(currentLang === 'fr' ? 'Suppression impossible.' : 'Could not delete this post.');
+                    }
+                };
+            });
+        } else if (btn) {
+            btn.classList.add('hidden');
+        }
+    })();
+
     if(modalDesc) {
         const desc = getLocText(loc.fullDescription) || "No description available.";
         modalDesc.innerHTML = desc;
@@ -7014,7 +7254,7 @@ window.flyMapToCountry = function(countryName) {
     window.closeModal('list-modal');
     if (!map || typeof window.getMapCenterForCountry !== 'function') return;
     const c = window.getMapCenterForCountry(countryName);
-    map.flyTo([c[0], c[1]], c[2]);
+    map.flyTo([c[0], c[1]], c[2], { duration: 0.6 });
 };
 
 // Bouton "localiser" bas-droite de la carte (demande du 11/09/2026) : recentre sur le
@@ -7024,7 +7264,7 @@ window.flyMapToCountry = function(countryName) {
 window.locateOnInterestCountry = function() {
     if (!map || typeof window.getMapCenterForCountry !== 'function') return;
     const c = window.getMapCenterForCountry(localStorage.getItem('userCountry'));
-    map.flyTo([c[0], c[1]], c[2]);
+    map.flyTo([c[0], c[1]], c[2], { duration: 0.6 });
 };
 
 window.openFilteredListModal = function(type) {
@@ -7039,7 +7279,7 @@ window.openFilteredListModal = function(type) {
         title.textContent = currentLang === 'fr' ? "Lieux filtrés" : "Filtered Locations";
         currentFilteredLocations.forEach(loc => {
             content.innerHTML += `
-                <div style="padding: 12px; background: #faf9fc; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#D42759'" onmouseout="this.style.borderColor='#e2e8f0'" onclick="closeModal('list-modal'); window.openDetailsPanel(${loc.id}); map.flyTo([${loc.lat}, ${loc.lng}], 16);">
+                <div style="padding: 12px; background: #faf9fc; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#D42759'" onmouseout="this.style.borderColor='#e2e8f0'" onclick="closeModal('list-modal'); window.openDetailsPanel(${loc.id}); map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 });">
                     <div style="font-weight: 700; color: #2E3644; font-size:14px; margin-bottom:2px;">${loc.name}</div>
                     <div style="font-size: 11px; color: #64748b; text-transform:uppercase; font-weight:600;">${loc.city}, ${loc.country} &middot; <span style="color:#D42759;">${getCatName(loc.category)}</span></div>
                 </div>

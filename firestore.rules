@@ -308,6 +308,13 @@ service cloud.firestore {
       allow create: if request.auth != null
         && exists(/databases/$(database)/documents/users/$(uid)/friendIndex/$(request.auth.uid))
         && request.resource.data.keys().hasOnly(['friendCount']);
+      // Admin : supprimer une publication (feed.html, demande du 11/09/2026 "en mode admin,
+      // je veux avoir la possibilité de supprimer des publications qui me déplaisent") —
+      // limité à la clé "photos" (jamais bio/reviews/autre champ d'un profil qui n'est pas
+      // le sien). Voir window.adminDeleteProfilePhoto() dans firebase-init.js.
+      allow update: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photos']);
     }
 
     // Abonnement à sens unique façon Instagram (bouton "Follow" du profil public,
