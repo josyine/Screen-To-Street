@@ -12,7 +12,12 @@ name: Agent IA — propositions de lieux BTS
 #                                 service > Générer une nouvelle clé privée)
 on:
   schedule:
-    - cron: '0 7 * * *'   # tous les jours à 7h UTC (demande du 06/09/2026) — ajuste selon ta préférence
+    # 4 fois par jour (demande du 11/09/2026 : "plus de lieux par jour, au moins 50/100
+    # dans la backlog") au lieu d'une fois — combiné aux 20 propositions par appel
+    # (au lieu de 5, voir example-ai-submission.js), ça donne jusqu'à 80
+    # propositions/jour avant filtrage anti-doublon, largement de quoi atteindre et
+    # maintenir 50-100 lieux en attente de relecture sur admin.html.
+    - cron: '0 1,7,13,19 * * *'   # toutes les 6h (UTC) — ajuste selon ta préférence
   workflow_dispatch:       # + bouton "Run workflow" manuel dans l'onglet Actions de GitHub
 
 jobs:

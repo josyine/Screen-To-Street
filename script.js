@@ -1525,7 +1525,6 @@ function injectMobileTopIcons() {
                 <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">My Visited Places</a>
                 <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
                 <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
-                <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
                 <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
                 <div class="dropdown-divider"></div>
                 <a href="index.html" class="dropdown-option" id="mti-logout-btn" style="color:#D42759; font-weight:bold;" data-i18n="logoutOption">Logout</a>
@@ -1771,8 +1770,14 @@ document.addEventListener('DOMContentLoaded', () => {
         gateLogoutLink.addEventListener('click', (e) => {
             e.preventDefault();
             const finish = () => { localStorage.clear(); window.location.href = 'index.html'; };
-            if (typeof window.firebaseSignOut === 'function') window.firebaseSignOut().then(finish).catch(finish);
-            else finish();
+            if (typeof window.firebaseSignOut === 'function') {
+                let settled = false;
+                const settleOnce = () => { if (!settled) { settled = true; finish(); } };
+                window.firebaseSignOut().then(settleOnce).catch(settleOnce);
+                setTimeout(settleOnce, 2500);
+            } else {
+                finish();
+            }
         });
     }
 });
@@ -1924,6 +1929,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (bottomNav) bottomNav.classList.toggle('menu-open', isOpen);
             const topIcons = document.getElementById('mobile-top-icons');
             if (topIcons) topIcons.classList.toggle('menu-open', isOpen);
+            const mobileSearch = document.getElementById('mobile-map-search');
+            if (mobileSearch) mobileSearch.classList.toggle('menu-open', isOpen);
         }
     };
 
@@ -1989,13 +1996,72 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ferme réellement la session Firebase (avant, ce bouton ne faisait que
             // vider le localStorage : la session restait active côté Firebase, donc
             // la personne restait connectée malgré elle en revenant sur le site).
+            // BUG rapporté le 11/09/2026 ("le bouton logout ne fonctionne pas sur
+            // mobile") : sur un réseau mobile lent/instable, signOut(auth) peut rester
+            // en attente sans jamais résoudre ni rejeter — le .then/.catch ne se
+            // déclenche alors jamais et rien ne se passe, sans le moindre message
+            // d'erreur. Un filet de secours à 2.5s garantit que finishLogout()
+            // s'exécute de toute façon (localStorage vidé + redirection), même si la
+            // session Firebase elle-même n'a pas eu le temps de se fermer proprement.
             if (typeof window.firebaseSignOut === 'function') {
-                window.firebaseSignOut().then(finishLogout).catch(finishLogout);
+                let settled = false;
+                const settleOnce = () => { if (!settled) { settled = true; finishLogout(); } };
+                window.firebaseSignOut().then(settleOnce).catch(settleOnce);
+                setTimeout(settleOnce, 2500);
             } else {
                 finishLogout();
             }
         });
     });
+
+    // Barre de recherche rapide mobile de map.html (demande du 11/09/2026, #mobile-map-search
+    // dans map.html) : recherche directement dans celebLocations (nom/ville/pays/groupe/
+    // membre) sans passer par le menu complet, avec un petit menu de résultats cliquables.
+    // N'existe que sur map.html — pas d'effet ailleurs (querySelector renvoie null).
+    const mobileSearchInput = document.getElementById('mobile-map-search-input');
+    const mobileSearchResults = document.getElementById('mobile-map-search-results');
+    if (mobileSearchInput && mobileSearchResults) {
+        const renderMobileSearchResults = () => {
+            const q = mobileSearchInput.value.trim().toLowerCase();
+            if (!q) { mobileSearchResults.classList.add('hidden'); mobileSearchResults.innerHTML = ''; return; }
+            const matches = (typeof celebLocations !== 'undefined' ? celebLocations : []).filter(l =>
+                (l.name || '').toLowerCase().includes(q) ||
+                (l.city || '').toLowerCase().includes(q) ||
+                (l.country || '').toLowerCase().includes(q) ||
+                (l.group || '').toLowerCase().includes(q) ||
+                (l.member || '').toLowerCase().includes(q)
+            ).slice(0, 8);
+            if (matches.length === 0) {
+                mobileSearchResults.innerHTML = `<div class="mobile-map-search-empty">No location found</div>`;
+            } else {
+                mobileSearchResults.innerHTML = matches.map(l => `
+                    <div class="mobile-map-search-result" data-loc-id="${l.id}">
+                        <div class="mobile-map-search-result-name">${escapeHtml(l.name)}</div>
+                        <div class="mobile-map-search-result-meta">${escapeHtml(l.city)}, ${escapeHtml(l.country)}</div>
+                    </div>
+                `).join('');
+            }
+            mobileSearchResults.classList.remove('hidden');
+        };
+        mobileSearchInput.addEventListener('input', renderMobileSearchResults);
+        mobileSearchInput.addEventListener('focus', () => { if (mobileSearchInput.value.trim()) renderMobileSearchResults(); });
+        mobileSearchResults.addEventListener('click', (e) => {
+            const row = e.target.closest('.mobile-map-search-result');
+            if (!row) return;
+            const locId = Number(row.getAttribute('data-loc-id'));
+            const loc = celebLocations.find(l => l.id === locId);
+            mobileSearchResults.classList.add('hidden');
+            mobileSearchInput.value = '';
+            mobileSearchInput.blur();
+            if (loc) {
+                window.openDetailsPanel(locId);
+                if (map) map.flyTo([loc.lat, loc.lng], 16);
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#mobile-map-search')) mobileSearchResults.classList.add('hidden');
+        });
+    }
 
     updateUI();
 
@@ -4938,6 +5004,24 @@ function ensureLocationEditModal() {
             <label style="${labelStyle}">Story (English)</label>
             <textarea id="location-edit-story" rows="6" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="One paragraph per blank line"></textarea>
 
+            <!-- Group/Members/Country/City/Date (demande du 11/09/2026) : contrairement aux
+                 champs au-dessus, ceux-ci ne vivent pas dans locationContent mais dans
+                 locationSkeletonOverrides (voir saveLocationEdit() plus bas) — un lieu
+                 existant a ces champs codés en dur dans script.js, jamais éditables avant
+                 ce correctif. Doivent correspondre EXACTEMENT à une valeur déjà utilisée
+                 ailleurs (ex: le nom d'un groupe) pour que les filtres Explore continuent de
+                 fonctionner — pas de validation stricte ici, panneau réservé aux admins. -->
+            <div style="display:flex; gap:8px;">
+                <div style="flex:1;"><label style="${labelStyle}">Group</label><input type="text" id="location-edit-group" style="${fieldStyle}"></div>
+                <div style="flex:1;"><label style="${labelStyle}">Member(s)</label><input type="text" id="location-edit-member" style="${fieldStyle}"></div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <div style="flex:1;"><label style="${labelStyle}">Country</label><input type="text" id="location-edit-country" style="${fieldStyle}"></div>
+                <div style="flex:1;"><label style="${labelStyle}">City</label><input type="text" id="location-edit-city" style="${fieldStyle}"></div>
+            </div>
+            <label style="${labelStyle}">Date</label>
+            <input type="text" id="location-edit-year" style="${fieldStyle} margin-bottom:14px;" placeholder="e.g. 2020">
+
             <label style="${labelStyle}">YouTube video URL</label>
             <input type="url" id="location-edit-youtube" style="${fieldStyle}" placeholder="https://www.youtube.com/watch?v=...">
             <div id="location-edit-youtube-error" class="hidden" style="${errStyle}">Doesn't look like a YouTube URL.</div>
@@ -4960,6 +5044,12 @@ function ensureLocationEditModal() {
 
             <button id="location-edit-save-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:11px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Save changes</button>
             <div id="location-edit-result" class="hidden" style="font-size:12px; font-weight:600; margin-top:10px; text-align:center;"></div>
+
+            <!-- Supprimer le lieu (demande du 11/09/2026) : un lieu codé en dur ne peut pas
+                 être réellement effacé (script.js n'est pas réécrit en direct) — même
+                 mécanisme de "soft delete" que le bouton "Remove from map" d'admin.html
+                 (adminSetLocationHidden), avec la même confirmation window.confirm() native. -->
+            <button type="button" id="location-edit-delete-btn" style="width:100%; background:none; color:#94a3b8; border:1.5px solid #e2e8f0; border-radius:100px; padding:10px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; margin-top:10px;">Delete location</button>
         </div>`;
     document.body.appendChild(modal);
     wireLocationEditPhotoInputOnce(modal);
@@ -5093,6 +5183,11 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-instagram').value = data.instagramUrl || '';
         document.getElementById('location-edit-facebook').value = data.facebookUrl || '';
         document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
+        document.getElementById('location-edit-group').value = data.group || '';
+        document.getElementById('location-edit-member').value = data.member || '';
+        document.getElementById('location-edit-country').value = data.country || '';
+        document.getElementById('location-edit-city').value = data.city || '';
+        document.getElementById('location-edit-year').value = data.year || '';
         locationEditExistingFullDescription = data.fullDescription || {};
         locationEditExistingImg = data.img || '';
         locationEditPendingImg = null;
@@ -5112,7 +5207,27 @@ window.openLocationEditModal = async function (locId) {
 
     const saveBtn = document.getElementById('location-edit-save-btn');
     saveBtn.onclick = () => saveLocationEdit(locId, modal);
+
+    const deleteBtn = document.getElementById('location-edit-delete-btn');
+    deleteBtn.onclick = () => deleteLocationFromEditModal(locId, modal);
 };
+
+async function deleteLocationFromEditModal(locId, modal) {
+    const loc = celebLocations.find(l => l.id === locId);
+    if (!loc) return;
+    if (!window.confirm(`Remove "${loc.name}" from the map? This can be undone later from admin.html.`)) return;
+    const deleteBtn = document.getElementById('location-edit-delete-btn');
+    deleteBtn.disabled = true;
+    const res = await window.adminSetLocationHidden(locId, true);
+    if (res && res.success) {
+        modal.classList.add('hidden');
+        if (typeof window.closeDetailsPanel === 'function') window.closeDetailsPanel();
+        if (typeof renderLocations === 'function') renderLocations(true);
+    } else {
+        window.alert('Could not delete this location. Please try again.');
+        deleteBtn.disabled = false;
+    }
+}
 
 async function saveLocationEdit(locId, modal) {
     const saveBtn = document.getElementById('location-edit-save-btn');
@@ -5125,6 +5240,11 @@ async function saveLocationEdit(locId, modal) {
     const instagramVal = document.getElementById('location-edit-instagram').value.trim();
     const facebookVal = document.getElementById('location-edit-facebook').value.trim();
     const tiktokVal = document.getElementById('location-edit-tiktok').value.trim();
+    const groupVal = document.getElementById('location-edit-group').value.trim();
+    const memberVal = document.getElementById('location-edit-member').value.trim();
+    const countryVal = document.getElementById('location-edit-country').value.trim();
+    const cityVal = document.getElementById('location-edit-city').value.trim();
+    const yearVal = document.getElementById('location-edit-year').value.trim();
 
     let hasError = false;
     const checkField = (val, extracted, errId) => {
@@ -5168,21 +5288,39 @@ async function saveLocationEdit(locId, modal) {
         fields.img = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
     }
 
+    // group/member/country/city/year : hors de locationContent (voir la note dans
+    // ensureLocationEditModal) — écrits dans locationSkeletonOverrides via un second appel,
+    // uniquement pour les champs réellement remplis (un champ laissé vide ne doit pas
+    // écraser la valeur codée en dur dans celebLocations).
+    const skeletonFields = {};
+    if (groupVal) skeletonFields.group = groupVal;
+    if (memberVal) skeletonFields.member = memberVal;
+    if (countryVal) skeletonFields.country = countryVal;
+    if (cityVal) skeletonFields.city = cityVal;
+    if (yearVal) skeletonFields.year = yearVal;
+    const hasSkeletonChanges = Object.keys(skeletonFields).length > 0;
+
     const res = await window.adminUpdateLocationContent(locId, fields);
+    const skeletonRes = (hasSkeletonChanges && typeof window.adminUpdateLocationSkeleton === 'function')
+        ? await window.adminUpdateLocationSkeleton(locId, skeletonFields)
+        : { success: true };
     resultEl.classList.remove('hidden');
-    if (res.success) {
+    if (res.success && skeletonRes.success) {
         resultEl.textContent = '✓ Saved.';
         resultEl.style.color = '#10b981';
         // Reflète immédiatement le changement dans la fiche déjà ouverte, sans recharger
         // la page ni attendre le prochain fetchLocationContent().
         const loc = celebLocations.find(l => l.id === locId);
         if (loc) {
-            Object.assign(loc, fields);
+            Object.assign(loc, fields, skeletonFields);
             if (currentLocationIdForMemory === locId) renderLocationRichContent(loc);
+            // group/city/country affectent aussi la liste/les marqueurs (pas seulement le
+            // panneau de détail ouvert) — même convention que adminSetLocationHidden.
+            if (hasSkeletonChanges && typeof renderLocations === 'function') renderLocations(true);
         }
         setTimeout(() => modal.classList.add('hidden'), 900);
     } else {
-        resultEl.textContent = 'Failed: ' + res.code;
+        resultEl.textContent = 'Failed: ' + (res.code || skeletonRes.code);
         resultEl.style.color = '#ef4444';
     }
     saveBtn.disabled = false;
@@ -6795,6 +6933,27 @@ window.exportItineraryPDF = function() {
 // ==========================================
 // 10. GESTION DES MODALES "LIST" (Depuis KPI)
 // ==========================================
+// Clic sur un pays dans le KPI "Countries" (demande du 11/09/2026) : centre la carte sur
+// ce pays plutôt que de se contenter d'afficher son décompte — même lookup
+// (window.getMapCenterForCountry, countries.js) que le centrage automatique sur le pays
+// d'intérêt du compte, voir plus haut dans ce fichier.
+window.flyMapToCountry = function(countryName) {
+    window.closeModal('list-modal');
+    if (!map || typeof window.getMapCenterForCountry !== 'function') return;
+    const c = window.getMapCenterForCountry(countryName);
+    map.flyTo([c[0], c[1]], c[2]);
+};
+
+// Bouton "localiser" bas-droite de la carte (demande du 11/09/2026) : recentre sur le
+// pays d'intérêt du compte (même source que le centrage automatique au chargement, voir
+// userCountry plus haut dans ce fichier) — si rien n'est renseigné, getMapCenterForCountry()
+// retombe sur DEFAULT_MAP_CENTER (Séoul), jamais d'échec silencieux.
+window.locateOnInterestCountry = function() {
+    if (!map || typeof window.getMapCenterForCountry !== 'function') return;
+    const c = window.getMapCenterForCountry(localStorage.getItem('userCountry'));
+    map.flyTo([c[0], c[1]], c[2]);
+};
+
 window.openFilteredListModal = function(type) {
     const modal = document.getElementById('list-modal');
     const title = document.getElementById('list-modal-title');
@@ -6820,7 +6979,7 @@ window.openFilteredListModal = function(type) {
             const count = currentFilteredLocations.filter(l => l.country === c).length;
             const textLoc = count > 1 ? (currentLang === 'fr' ? "lieux" : "locations") : (currentLang === 'fr' ? "lieu" : "location");
             content.innerHTML += `
-                <div style="padding: 12px; background: #faf9fc; border-radius: 8px; border: 1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+                <div style="padding: 12px; background: #faf9fc; border-radius: 8px; border: 1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; cursor:pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#D42759'" onmouseout="this.style.borderColor='#e2e8f0'" onclick="window.flyMapToCountry('${c.replace(/'/g, "\\'")}');">
                     <div style="font-weight: 700; color: #D42759; font-size:15px;">${c}</div>
                     <div style="font-size: 12px; color: #64748b; font-weight:600;">${count} ${textLoc}</div>
                 </div>

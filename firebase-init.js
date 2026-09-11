@@ -875,6 +875,38 @@ window.adminUpdateLocationContent = async function (locationId, fields) {
     }
 };
 
+// Champs "squelette" (Group/Members/Country/City/Date) d'un lieu DÉJÀ publié (demande du
+// 11/09/2026, même modale "crayon" que ci-dessus) : contrairement à locationContent
+// ci-dessus, ces champs vivent normalement en dur dans script.js/celebLocations (stratégie
+// hybride documentée plus haut), jamais réécrits pour un lieu existant. Plutôt que
+// d'inventer un nouveau mécanisme, on réutilise exactement le même principe déjà en place
+// pour newLocations (une collection entière lue UNE SEULE FOIS par visite, voir map.html) :
+// un document ici par lieu MODIFIÉ, fusionné dans celebLocations au chargement — pas de
+// lecture supplémentaire par lieu affiché. Collection séparée de newLocations (qui, elle,
+// ne concerne que les tout nouveaux lieux) pour ne jamais mélanger les deux sémantiques.
+window.fetchLocationSkeletonOverrides = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'locationSkeletonOverrides'));
+        const result = {};
+        snap.forEach(d => { result[d.id] = d.data(); });
+        return result;
+    } catch (e) {
+        console.warn('Lecture des corrections de fiches échouée :', e);
+        return {};
+    }
+};
+window.adminUpdateLocationSkeleton = async function (locationId, fields) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        await setDoc(doc(db, 'locationSkeletonOverrides', String(locationId)), fields, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Correction de la fiche échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // "Supprimer" un lieu depuis l'onglet admin "Existing locations" (demande du 06/09/2026) :
 // pour un lieu du squelette (celebLocations, codé en dur dans script.js), une vraie
 // suppression nécessiterait de modifier ET publier le code du site — impossible depuis un
