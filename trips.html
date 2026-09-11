@@ -3,6 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<style>
+/* Ecran de chargement (demande du 12/09/2026, "affiche l'animation de chargement sur
+   toutes les pages") - meme composant que index.html (voir #page-loader la-bas), copie
+   ici a l'identique : CSS inline juste apres la balise viewport, avant tout <link>
+   externe (polices, feuille de style), pour s'afficher des le tout premier rendu sans
+   attendre un fichier externe. Masque par hidePageLoader() juste apres <body>. */
+#page-loader { position: fixed; inset: 0; z-index: 99999; background: linear-gradient(135deg, #F5F3FC, #E3DEF5, #D8CFF0, #E3DEF5); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; transition: opacity .4s ease; }
+#page-loader.page-loader-hidden { opacity: 0; pointer-events: none; }
+.page-loader-pin { width: 44px; height: 44px; }
+.page-loader-dots { display: flex; gap: 9px; }
+.page-loader-dot { width: 10px; height: 10px; border-radius: 50%; background: #D42759; animation: pageLoaderBounce 1.1s ease-in-out infinite; }
+.page-loader-dot:nth-child(2) { background: #B9A8DA; animation-delay: .15s; }
+.page-loader-dot:nth-child(3) { background: #D42759; opacity: .65; animation-delay: .3s; }
+@keyframes pageLoaderBounce { 0%, 80%, 100% { transform: translateY(0); opacity: .5; } 40% { transform: translateY(-10px); opacity: 1; } }
+</style>
 <title>Screen To Street — My Trips</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
@@ -328,6 +343,15 @@
           #share-trip-modal .share-trip-invite-row { flex-direction: column; }
           #share-trip-modal #share-trip-invite-btn { width: 100%; }
       }
+
+      /* BUG rapporté le 12/09/2026 : "le bouton New trip est masqué" — confirmé par capture
+         d'écran (DevTools, viewport mobile réel) : margin-top:auto le pousse tout en bas de
+         .sidebar-scroll-area, à ras du bord de l'écran, sans tenir compte de la zone home-
+         indicator sur un iPhone à encoche (aucune notion de safe-area réservée jusqu'ici pour
+         ce bouton précis). Une marge basse mesurée sur env(safe-area-inset-bottom) (0 sur un
+         appareil sans encoche, donc aucun changement visuel là où ça marchait déjà) le
+         remonte au-dessus de cette zone. */
+      .new-trip-pill { margin-bottom: max(14px, env(safe-area-inset-bottom)); }
   }
 </style>
 <script>
@@ -337,6 +361,35 @@
 </script>
 </head>
 <body>
+<!-- Ecran de chargement (voir le commentaire CSS dans <head>) : retire des que la page a
+     fini de charger (window 'load') ou apres 8s au maximum dans tous les cas, pour ne
+     jamais rester bloque si l'evenement ne se declenche jamais. -->
+<div id="page-loader">
+    <svg class="page-loader-pin" viewBox="0 0 400 400">
+      <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+      <circle cx="200" cy="150" r="26" fill="#D42759"/>
+    </svg>
+    <div class="page-loader-dots">
+        <span class="page-loader-dot"></span>
+        <span class="page-loader-dot"></span>
+        <span class="page-loader-dot"></span>
+    </div>
+</div>
+<script>
+    (function () {
+        var hidden = false;
+        function hidePageLoader() {
+            if (hidden) return;
+            hidden = true;
+            var el = document.getElementById('page-loader');
+            if (!el) return;
+            el.classList.add('page-loader-hidden');
+            setTimeout(function () { el.remove(); }, 450);
+        }
+        window.addEventListener('load', hidePageLoader);
+        setTimeout(hidePageLoader, 8000);
+    })();
+</script>
 
 <div class="hero-background">
     <div class="blob blob-1"></div>
@@ -477,6 +530,12 @@
                     <div class="trip-hero-meta-row">
                         <div class="trip-dates" id="dates-display"></div>
                         <button class="trip-delete-btn owner-only" onclick="openDeleteModal()" id="i18n-delete-trip">Delete</button>
+                        <!-- Pendant discret du "Delete" du propriétaire, pour un collaborateur non
+                             propriétaire (demande du 12/09/2026) : même style léger, réutilise le
+                             flux leaveSharedTrip()/confirmLeaveSharedTrip() déjà en place (jusqu'ici
+                             accessible uniquement depuis la sidebar) — juste un nouveau point
+                             d'entrée directement dans l'en-tête du voyage ouvert. -->
+                        <button class="trip-delete-btn non-owner-only" onclick="if(currentTrip) leaveSharedTrip(currentTrip.id, event)" data-i18n="tripLeaveBtn">Leave trip</button>
                     </div>
                 </div>
 
@@ -535,6 +594,14 @@
                     </div>
                 </div>
 
+                <!-- Bouton pour le Générateur d'itinéraire (demande du 12/09/2026 : repositionné
+                     juste après les filtres, au lieu de tout en bas de page où il fallait
+                     scroller past l'itinéraire + les lieux non-assignés pour le trouver). -->
+                <div style="text-align:center; margin-top:20px; margin-bottom:30px;">
+                    <p style="font-size:12px; color:#64748b; margin-bottom:10px;" id="i18n-need-magic">Need some magic?</p>
+                    <button class="gen-btn ghost" onclick="openItineraryModal()" id="i18n-open-iti">Open Auto-Itinerary Generator</button>
+                </div>
+
                 <div class="section-label" id="i18n-your-iti">YOUR ITINERARY</div>
                 <div class="itinerary-box" id="itinerary-box">
                     <button class="add-day-btn" onclick="addDay()">
@@ -553,12 +620,6 @@
                 <div id="reco-section" style="display: none; margin-top: 30px;">
                     <div class="section-label" style="color:#D42759;" id="i18n-reco">RECOMMENDED FOR THIS TRIP (SAME COUNTRY)</div>
                     <div id="reco-list"></div>
-                </div>
-
-                <!-- Bouton pour le Générateur d'itinéraire -->
-                <div style="text-align:center; margin-top: 60px;">
-                    <p style="font-size:12px; color:#64748b; margin-bottom:10px;" id="i18n-need-magic">Need some magic?</p>
-                    <button class="gen-btn ghost" onclick="openItineraryModal()" id="i18n-open-iti">Open Auto-Itinerary Generator</button>
                 </div>
             </div>
         </div>
