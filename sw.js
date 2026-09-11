@@ -36,11 +36,20 @@ self.addEventListener('fetch', (event) => {
     const url = new URL(req.url);
     if (url.origin !== self.location.origin) return;
 
+    // BUG CRITIQUE corrigé le 12/09/2026 : cette condition référençait STATIC_ASSETS, un
+    // tableau supprimé lors d'une simplification précédente de ce fichier (le
+    // préchargement à l'install s'appuyait dessus, mais plus rien d'autre) — sans lui, CE
+    // service worker levait une ReferenceError à CHAQUE requête réseau interceptée sur
+    // tout le site, cassant potentiellement le chargement de bien plus que les seuls
+    // fichiers statiques visés ici. Explique probablement une bonne partie du "le site
+    // met énormément de temps à charger" rapporté juste après l'introduction de ce
+    // fichier.
+    //
     // Fichiers statiques (JS/CSS/manifest/icônes) : cache d'abord, réseau en secours,
     // puis on rafraîchit le cache en tâche de fond (stale-while-revalidate) pour que la
     // prochaine navigation profite déjà d'une éventuelle mise à jour sans jamais faire
     // attendre l'utilisateur dessus.
-    const isStaticAsset = /\.(js|css|png|jpg|jpeg|svg|webp|json)(\?.*)?$/.test(url.pathname) || STATIC_ASSETS.includes(url.pathname.replace(/^\//, ''));
+    const isStaticAsset = /\.(js|css|png|jpg|jpeg|svg|webp|json)(\?.*)?$/.test(url.pathname);
     if (isStaticAsset) {
         event.respondWith(
             caches.open(CACHE_VERSION).then(async (cache) => {
