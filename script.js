@@ -3456,7 +3456,8 @@ const translations = {
         cardNum: "Card Number", expiry: "Expiry Date", cvc: "CVC", paySecurely: "Pay securely", processing: "Processing securely…", paymentBackLink: "← Back to map",
         paymentNoAccountWarning: "You don't seem to be logged in — ", paymentNoAccountLink: "sign up first",
         privacyLabel: "Account privacy", privacyPublicLabel: "Public", privacyPublicDesc: "Anyone can follow you and see your posts.", privacyPrivateLabel: "Private", privacyPrivateDesc: "Only friends you accept can see your posts.", accPrivacySaved: "Privacy setting saved.",
-        profilePrivateTitle: "This account is private", profilePrivateDesc: "Send a friend request to see their photos, map and reviews.", profileFollowingBtnShort: "Friends"
+        profilePrivateTitle: "This account is private", profilePrivateDesc: "Send a friend request to see their photos, map and reviews.", profileFollowingBtnShort: "Friends",
+        friendsTabMessages: "Messages", friendsTabNotifications: "Notifications", friendsTabGroups: "Groups", notificationsEmpty: "Nothing new right now."
     },
     fr: {
         btnGenerateIti: "Générateur Itinéraire", filterGroup: "GROUPE", filterMember: "MEMBRE", filterArea: "RÉGION", filterYear: "ANNÉE", filterCategories: "CATÉGORIES", 
@@ -3522,7 +3523,8 @@ const translations = {
         cardNum: "Numéro de carte", expiry: "Date d'expiration", cvc: "CVC", paySecurely: "Payer en toute sécurité", processing: "Traitement sécurisé en cours…", paymentBackLink: "← Retour à la carte",
         paymentNoAccountWarning: "Vous ne semblez pas connecté(e) — ", paymentNoAccountLink: "inscrivez-vous d'abord",
         privacyLabel: "Confidentialité du compte", privacyPublicLabel: "Public", privacyPublicDesc: "Tout le monde peut vous suivre et voir vos publications.", privacyPrivateLabel: "Privé", privacyPrivateDesc: "Seuls les amis que vous acceptez peuvent voir vos publications.", accPrivacySaved: "Confidentialité enregistrée.",
-        profilePrivateTitle: "Ce compte est privé", profilePrivateDesc: "Envoyez une demande d'ami pour voir ses photos, sa carte et ses avis."
+        profilePrivateTitle: "Ce compte est privé", profilePrivateDesc: "Envoyez une demande d'ami pour voir ses photos, sa carte et ses avis.",
+        friendsTabMessages: "Messages", friendsTabNotifications: "Notifications", friendsTabGroups: "Groupes", notificationsEmpty: "Rien de nouveau pour le moment."
     },
     es: {
         btnGenerateIti: "Generador de Itinerarios", filterGroup: "GRUPO", filterMember: "MIEMBRO", filterArea: "ZONA", filterYear: "AÑO", filterCategories: "CATEGORÍAS",
