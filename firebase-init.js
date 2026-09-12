@@ -21,7 +21,7 @@ import {
     EmailAuthProvider,
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, limitToLast, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -428,6 +428,69 @@ window.fetchLocationContent = async function (locationId) {
 // console (code 'permission-denied'), auquel cas la publication échouait jusqu'ici
 // TOUJOURS en silence : la case restait cochée dans l'interface, mais rien n'était
 // réellement publié, donnant l'impression trompeuse que ça avait marché.
+// ==========================================
+// INDEX DU FIL GLOBAL (feedPosts) — optimisation perf du 13/09/2026
+// ==========================================
+// Symptôme rapporté : feed.html mettait un temps "infini" à s'afficher avec seulement 2
+// publications réelles en base. Cause : fetchGlobalPhotoFeed() (plus bas) téléchargeait
+// jusqu'ici la collection usernames/ ENTIÈRE (léger) PUIS, pour CHAQUE compte, le
+// document publicProfiles/{uid} COMPLET (un getDoc() par compte, jamais une seule requête
+// groupée) — un document qui peut peser plusieurs Mo, puisque les photos y sont stockées
+// en base64 directement dans le champ `photo` (voir resizeImageDataUrl() dans script.js).
+// Un site avec ne serait-ce qu'une poignée de comptes ayant chacun quelques photos
+// suffisait donc à transférer des Mo de données rien que pour en afficher deux.
+//
+// feedPosts/{uid}_{itemId} est un index dénormalisé, tenu à jour en écriture (fan-out)
+// par setLocationReview()/deleteLocationReview() ci-dessous et
+// addProfilePhoto()/updateProfilePhoto()/deleteProfilePhoto()/adminDeleteProfilePhoto()
+// plus bas — chaque document ne contient QUE ce qu'une tuile du fil affiche (jamais les
+// autres lieux/avis de ce compte). fetchGlobalPhotoFeed() n'a alors plus qu'UNE seule
+// requête à faire, peu importe le nombre de comptes du site. Le nombre de "J'aime" est lui
+// aussi dénormalisé (champ likeCount, tenu à jour par increment() dans togglePhotoLike())
+// au lieu de télécharger toute la sous-collection photoLikes/{key}/items pour la compter
+// (voir getPhotoLikeState() plus bas) — deuxième symptôme signalé par l'utilisateur.
+//
+// Règle Firestore (voir firestore.rules) : lisible par tous, un compte ne peut créer/
+// modifier/supprimer que SES PROPRES documents (uid == auth.uid) — SAUF le champ
+// likeCount, que n'importe quel compte connecté peut modifier (aimer la publication d'un
+// autre), et la suppression, qu'un admin peut aussi faire (modération, voir
+// adminDeleteProfilePhoto()).
+//
+// Migration : ce fan-out ne couvre que les écritures FUTURES. Les publications déjà
+// existantes avant ce correctif n'ont pas de document feedPosts tant qu'un admin n'a pas
+// lancé window.adminBackfillFeedPosts() une fois (voir plus bas, bouton dans admin.html)
+// — see également le fallback de fetchGlobalPhotoFeed() si la collection est encore vide.
+function feedPostKey(uid, itemId) { return uid + '_' + itemId; }
+let _myUsernameCache = null;
+async function _getMyUsernameCached(uid) {
+    if (_myUsernameCache && _myUsernameCache.uid === uid) return _myUsernameCache.username;
+    try {
+        const snap = await getDoc(doc(db, 'users', uid));
+        const username = (snap.exists() && snap.data().username) || '';
+        _myUsernameCache = { uid, username };
+        return username;
+    } catch (e) {
+        return '';
+    }
+}
+async function _upsertFeedPost(uid, itemId, fields) {
+    try {
+        await setDoc(doc(db, 'feedPosts', feedPostKey(uid, itemId)), Object.assign({ uid, itemId }, fields), { merge: true });
+    } catch (e) {
+        // Ne bloque jamais l'action principale (publier une photo/un avis) : au pire, la
+        // publication n'apparaît pas tout de suite dans le fil global, mais reste visible
+        // partout ailleurs (profil, fiche du lieu).
+        console.warn('Mise à jour de l\'index du fil échouée :', e);
+    }
+}
+async function _deleteFeedPost(uid, itemId) {
+    try {
+        await deleteDoc(doc(db, 'feedPosts', feedPostKey(uid, itemId)));
+    } catch (e) {
+        console.warn('Suppression de l\'index du fil échouée :', e);
+    }
+}
+
 window.setLocationReview = async function (locationId, reviewData) {
     const user = auth.currentUser;
     if (!user) return { success: false, code: 'not-authenticated' };
@@ -447,6 +510,18 @@ window.setLocationReview = async function (locationId, reviewData) {
         } catch (mirrorErr) {
             console.warn('Miroir public de l\'avis échoué :', mirrorErr);
         }
+        // Index du fil global (voir la note au-dessus) : seuls les avis AVEC photo
+        // apparaissent dans feed.html, comme avant côté lecture.
+        if (reviewData.photo) {
+            const username = await _getMyUsernameCached(user.uid);
+            await _upsertFeedPost(user.uid, String(locationId), {
+                username, locationId: String(locationId), locationName: reviewData.locationName || '',
+                photo: reviewData.photo, caption: reviewData.notes || '', updatedAt: serverTimestamp(), standalone: false
+            });
+        } else {
+            // Avis republié sans photo (photo retirée) : ne doit plus apparaître dans le fil.
+            await _deleteFeedPost(user.uid, String(locationId));
+        }
         return { success: true };
     } catch (e) {
         console.warn('Publication de l\'avis échouée :', e);
@@ -462,6 +537,7 @@ window.deleteLocationReview = async function (locationId) {
         await setDoc(doc(db, 'publicProfiles', user.uid), {
             reviews: { [String(locationId)]: deleteField() }
         }, { merge: true });
+        await _deleteFeedPost(user.uid, String(locationId));
     } catch (e) {
         console.warn('Suppression de l\'avis échouée :', e);
     }
@@ -562,6 +638,12 @@ window.addProfilePhoto = async function ({ locationId, locationName, photo, date
                 }
             }
         }, { merge: true });
+        // Index du fil global (voir la note au-dessus de setLocationReview()).
+        const username = await _getMyUsernameCached(user.uid);
+        await _upsertFeedPost(user.uid, photoId, {
+            username, locationId: locationId || null, locationName: locationName || '',
+            photo, caption: (caption || '').slice(0, 280), updatedAt: serverTimestamp(), standalone: true
+        });
         return { success: true };
     } catch (e) {
         console.warn('Publication de la photo échouée :', e);
@@ -582,6 +664,13 @@ window.updateProfilePhoto = async function (photoId, { photo, caption }) {
         if (photo !== undefined) fields.photo = photo;
         if (caption !== undefined) fields.caption = (caption || '').slice(0, 280);
         await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: fields } }, { merge: true });
+        // Index du fil global : jamais likeCount ici (merge ne touche que les champs
+        // fournis), pour ne pas remettre le compteur de "J'aime" à zéro sur une simple
+        // modification de légende/photo.
+        const feedFields = { updatedAt: serverTimestamp() };
+        if (photo !== undefined) feedFields.photo = photo;
+        if (caption !== undefined) feedFields.caption = (caption || '').slice(0, 280);
+        await _upsertFeedPost(user.uid, photoId, feedFields);
         return { success: true };
     } catch (e) {
         console.warn('Modification de la photo échouée :', e);
@@ -593,6 +682,7 @@ window.deleteProfilePhoto = async function (photoId) {
     if (!user || !photoId) return { success: false, code: 'not-authenticated' };
     try {
         await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        await _deleteFeedPost(user.uid, photoId);
         return { success: true };
     } catch (e) {
         console.warn('Suppression de la photo échouée :', e);
@@ -613,9 +703,73 @@ window.adminDeleteProfilePhoto = async function (ownerUid, photoId) {
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         await setDoc(doc(db, 'publicProfiles', ownerUid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        // La règle feedPosts autorise un admin à supprimer le document de n'importe qui
+        // (pas seulement le sien) — voir firestore.rules.
+        await _deleteFeedPost(ownerUid, photoId);
         return { success: true };
     } catch (e) {
         console.warn('Suppression admin de la photo échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+// Contenu éditorial des pages "Explore Destinations"/"Explore Artists" (demande du
+// 13/09/2026) — map-destinations.html/map-artists.html sont, comme celebLocations dans
+// script.js, du contenu codé en dur dans le HTML plutôt qu'en base. Un document
+// {photo, text} par pays/groupe dans destinationOverrides/artistOverrides (voir
+// firestore.rules) remplace, quand il existe, la valeur codée en dur côté client — voir
+// applyDestinationOverrides()/applyArtistOverrides() dans les fichiers respectifs.
+// Toute la collection est chargée en une fois (une poignée de documents, comme
+// loadAllUsernamesCached() plus bas), jamais un getDoc() par entrée.
+window.getDestinationOverrides = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'destinationOverrides'));
+        const out = {};
+        snap.forEach(d => { out[d.id] = d.data(); });
+        return out;
+    } catch (e) {
+        console.warn('Lecture des surcharges de destinations échouée :', e);
+        return {};
+    }
+};
+window.adminSetDestinationOverride = async function (key, { photo, text } = {}) {
+    if (!key) return { success: false, code: 'missing-key' };
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const fields = {};
+        if (photo !== undefined) fields.photo = photo;
+        if (text !== undefined) fields.text = text;
+        await setDoc(doc(db, 'destinationOverrides', key), fields, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Écriture de la surcharge de destination échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+window.getArtistOverrides = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'artistOverrides'));
+        const out = {};
+        snap.forEach(d => { out[d.id] = d.data(); });
+        return out;
+    } catch (e) {
+        console.warn('Lecture des surcharges d\'artistes échouée :', e);
+        return {};
+    }
+};
+window.adminSetArtistOverride = async function (key, { photo, text } = {}) {
+    if (!key) return { success: false, code: 'missing-key' };
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const fields = {};
+        if (photo !== undefined) fields.photo = photo;
+        if (text !== undefined) fields.text = text;
+        await setDoc(doc(db, 'artistOverrides', key), fields, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Écriture de la surcharge d\'artiste échouée :', e);
         return { success: false, code: e && e.code || 'unknown' };
     }
 };
@@ -654,11 +808,9 @@ window.updateMyProfilePhoto = async function (photoDataUrl) {
 };
 
 // Fil d'actualité public façon Instagram (feed.html, demande du 08/09/2026) : agrège les
-// photos publiées par TOUS les comptes. Sans backend/Cloud Function, pas de requête
-// "collection group" possible pour lire toutes les publicProfiles/*.reviews d'un coup (pas
-// de règle {path=**} dessus) — même pattern d'agrégation côté client que
-// loadAllUsernamesCached()/searchUsernamesContaining() ci-dessous : petite échelle acceptée
-// (un site fan, pas des millions de comptes).
+// photos publiées par TOUS les comptes. Optimisé le 13/09/2026 (voir la grande note
+// au-dessus de setLocationReview()) : UNE SEULE requête sur l'index dénormalisé
+// feedPosts/, au lieu d'un getDoc() par compte du site.
 let _globalPhotoFeedCache = null;
 let _globalPhotoFeedCachePromise = null;
 window.fetchGlobalPhotoFeed = async function () {
@@ -666,58 +818,24 @@ window.fetchGlobalPhotoFeed = async function () {
     if (_globalPhotoFeedCachePromise) return _globalPhotoFeedCachePromise;
     _globalPhotoFeedCachePromise = (async () => {
         try {
-            const users = await loadAllUsernamesCached();
-            const profiles = await Promise.all(users.map(async u => {
-                try {
-                    const snap = await getDoc(doc(db, 'publicProfiles', u.uid));
-                    return { u, data: snap.exists() ? snap.data() : null };
-                } catch (e) {
-                    return { u, data: null };
-                }
-            }));
+            const snap = await getDocs(query(collection(db, 'feedPosts'), orderBy('updatedAt', 'desc')));
             const photos = [];
-            profiles.forEach(({ u, data }) => {
-                if (!data) return;
-                // Compte privé (demande du 11/09/2026) : ses publications ne doivent jamais
-                // apparaître dans le fil global, même pour un visiteur qui serait ami avec
-                // lui — le fil est volontairement "public only", contrairement à
-                // profile.html qui, lui, autorise les amis à voir le contenu.
-                if (data.isPrivate) return;
-                Object.values(data.reviews || {}).forEach(r => {
-                    if (!r.photo) return;
-                    photos.push({
-                        id: String(r.locationId),
-                        uid: u.uid,
-                        username: u.username,
-                        locationId: r.locationId,
-                        locationName: r.locationName || '',
-                        photo: r.photo,
-                        caption: r.notes || '',
-                        updatedAt: (r.updatedAt && r.updatedAt.seconds) || 0,
-                        standalone: false
-                    });
-                });
-                // Photos autonomes (bouton "+" -> "Add a photo", demande du 09/09/2026) —
-                // voir addProfilePhoto() ci-dessus. Plusieurs possibles par lieu et par
-                // personne, contrairement à .reviews (un avis par lieu) : id = clé de
-                // publicProfiles/{uid}.photos, pas locationId, pour ne jamais entrer en
-                // collision entre elles ni avec une photo d'avis au même lieu.
-                Object.entries(data.photos || {}).forEach(([photoId, p]) => {
-                    if (!p.photo) return;
-                    photos.push({
-                        id: photoId,
-                        uid: u.uid,
-                        username: u.username,
-                        locationId: p.locationId,
-                        locationName: p.locationName || '',
-                        photo: p.photo,
-                        caption: p.caption || '',
-                        updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0,
-                        standalone: true
-                    });
+            snap.forEach(d => {
+                const p = d.data();
+                if (!p.photo) return;
+                photos.push({
+                    id: p.itemId,
+                    uid: p.uid,
+                    username: p.username || '',
+                    locationId: p.locationId,
+                    locationName: p.locationName || '',
+                    photo: p.photo,
+                    caption: p.caption || '',
+                    updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0,
+                    standalone: !!p.standalone,
+                    likeCount: p.likeCount || 0
                 });
             });
-            photos.sort((a, b) => b.updatedAt - a.updatedAt);
             _globalPhotoFeedCache = photos;
             return photos;
         } catch (e) {
@@ -732,14 +850,23 @@ window.fetchGlobalPhotoFeed = async function () {
 
 // "J'aime" d'une photo du fil (photoLikes/{photoKey}/items/{uid}, voir firestore.rules) :
 // chaque compte écrit/efface SON PROPRE document, jamais celui d'un autre — même schéma que
-// friendIndex/friendShares. photoKey est une clé déterministe "<uid propriétaire>_<locationId>".
+// friendIndex/friendShares. photoKey est une clé déterministe "<uid propriétaire>_<id>",
+// identique à l'id du document feedPosts correspondant (voir feedPostKey() plus haut).
+// Optimisé le 13/09/2026 (deuxième symptôme signalé, "le compteur de J'aime télécharge
+// les documents au lieu d'un compteur côté serveur") : le NOMBRE de likes vient
+// maintenant de feedPosts/{photoKey}.likeCount (dénormalisé, tenu à jour par
+// togglePhotoLike() ci-dessous), pas d'un décompte de toute la sous-collection items/.
+// likedByMe reste une lecture dédiée (un seul document, pas toute la sous-collection).
 window.getPhotoLikeState = async function (photoKey) {
     const user = auth.currentUser;
     try {
-        const snap = await getDocs(collection(db, 'photoLikes', photoKey, 'items'));
-        let likedByMe = false;
-        snap.forEach(d => { if (user && d.id === user.uid) likedByMe = true; });
-        return { count: snap.size, likedByMe };
+        const [postSnap, mySnap] = await Promise.all([
+            getDoc(doc(db, 'feedPosts', photoKey)),
+            user ? getDoc(doc(db, 'photoLikes', photoKey, 'items', user.uid)) : Promise.resolve(null)
+        ]);
+        const count = (postSnap.exists() && postSnap.data().likeCount) || 0;
+        const likedByMe = !!(mySnap && mySnap.exists());
+        return { count, likedByMe };
     } catch (e) {
         console.warn('Lecture des likes échouée :', e);
         return { count: 0, likedByMe: false };
@@ -754,10 +881,85 @@ window.togglePhotoLike = async function (photoKey, liked) {
         } else {
             await deleteDoc(doc(db, 'photoLikes', photoKey, 'items', user.uid));
         }
+        // Compteur dénormalisé (voir la note au-dessus) — n'échoue jamais l'action de
+        // like elle-même si cette partie échoue (ex: le document feedPosts n'existe pas
+        // encore, migration pas encore lancée, voir adminBackfillFeedPosts() plus bas).
+        try {
+            await setDoc(doc(db, 'feedPosts', photoKey), { likeCount: increment(liked ? 1 : -1) }, { merge: true });
+        } catch (counterErr) {
+            console.warn('Mise à jour du compteur de likes échouée :', counterErr);
+        }
+        // Miroir sur users/{uid} (même schéma que savedPostKeys ci-dessous) : permet à
+        // feed.html de savoir en UNE lecture quelles tuiles visibles j'ai aimées, plutôt
+        // qu'un getPhotoLikeState() par tuile juste pour l'état "likedByMe" — voir
+        // listMyLikedPhotoKeys() plus bas.
+        try {
+            await setDoc(doc(db, 'users', user.uid), {
+                likedPostKeys: liked ? arrayUnion(photoKey) : arrayRemove(photoKey)
+            }, { merge: true });
+        } catch (mirrorErr) {
+            console.warn('Mise à jour du miroir des likes échouée :', mirrorErr);
+        }
         return true;
     } catch (e) {
         console.warn('Mise à jour du like échouée :', e);
         return false;
+    }
+};
+window.listMyLikedPhotoKeys = async function () {
+    const user = auth.currentUser;
+    if (!user) return [];
+    try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        return (snap.exists() && snap.data().likedPostKeys) || [];
+    } catch (e) {
+        console.warn('Lecture des publications aimées échouée :', e);
+        return [];
+    }
+};
+
+// Reconstruction ponctuelle de l'index (demande du 13/09/2026) : feedPosts/ ne couvre que
+// les écritures FAITES APRÈS ce correctif (voir la grande note plus haut) — les
+// publications déjà existantes n'y ont pas de document tant qu'un admin n'a pas lancé
+// cette fonction une fois (bouton dédié dans admin.html). Fait volontairement le même
+// scan complet que l'ancien fetchGlobalPhotoFeed() (un getDoc() par compte) : coûteux,
+// mais UNE SEULE FOIS pour un admin plutôt qu'à CHAQUE chargement de feed.html par
+// N'IMPORTE QUEL visiteur — exactement le problème que cette optimisation corrige.
+window.adminBackfillFeedPosts = async function () {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const users = await loadAllUsernamesCached();
+        let written = 0;
+        for (const u of users) {
+            let snap;
+            try { snap = await getDoc(doc(db, 'publicProfiles', u.uid)); } catch (e) { continue; }
+            if (!snap.exists()) continue;
+            const data = snap.data();
+            if (data.isPrivate) continue;
+            const writes = [];
+            Object.values(data.reviews || {}).forEach(r => {
+                if (!r.photo) return;
+                writes.push(_upsertFeedPost(u.uid, String(r.locationId), {
+                    username: u.username, locationId: r.locationId, locationName: r.locationName || '',
+                    photo: r.photo, caption: r.notes || '', updatedAt: r.updatedAt || serverTimestamp(), standalone: false
+                }));
+            });
+            Object.entries(data.photos || {}).forEach(([photoId, p]) => {
+                if (!p.photo) return;
+                writes.push(_upsertFeedPost(u.uid, photoId, {
+                    username: u.username, locationId: p.locationId || null, locationName: p.locationName || '',
+                    photo: p.photo, caption: p.caption || '', updatedAt: p.updatedAt || serverTimestamp(), standalone: true
+                }));
+            });
+            await Promise.all(writes);
+            written += writes.length;
+        }
+        _globalPhotoFeedCache = null; // force un rechargement au prochain fetchGlobalPhotoFeed()
+        return { success: true, written };
+    } catch (e) {
+        console.warn('Reconstruction de l\'index du fil échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
     }
 };
 
@@ -1823,6 +2025,30 @@ window.setAccountPrivacy = async function (isPrivate) {
             setDoc(doc(db, 'users', user.uid), { isPrivate: !!isPrivate }, { merge: true }),
             setDoc(doc(db, 'publicProfiles', user.uid), { isPrivate: !!isPrivate }, { merge: true })
         ]);
+        // Index du fil global (feedPosts/, voir la grande note au-dessus de
+        // setLocationReview()) : lisible par TOUT LE MONDE, contrairement à
+        // publicProfiles.isPrivate qui, lui, est déjà filtré par fetchGlobalPhotoFeed()
+        // — passer un compte en privé doit donc RETIRER ses documents feedPosts (sinon
+        // ses publications restent visibles dans le fil public malgré le compte privé),
+        // et les restaurer si le compte redevient public. N'échoue jamais le changement
+        // de confidentialité lui-même si cette partie échoue.
+        try {
+            if (isPrivate) {
+                const snap = await getDoc(doc(db, 'publicProfiles', user.uid));
+                if (snap.exists()) {
+                    const data = snap.data();
+                    const deletes = [];
+                    Object.keys(data.reviews || {}).forEach(locId => deletes.push(_deleteFeedPost(user.uid, locId)));
+                    Object.keys(data.photos || {}).forEach(photoId => deletes.push(_deleteFeedPost(user.uid, photoId)));
+                    await Promise.all(deletes);
+                }
+            } else {
+                localStorage.removeItem('feedPostsSynced_' + user.uid);
+                await ensureFeedPostsSynced(user);
+            }
+        } catch (feedErr) {
+            console.warn('Synchronisation de l\'index du fil (confidentialité) échouée :', feedErr);
+        }
         return true;
     } catch (e) {
         console.warn('Mise à jour de la confidentialité du compte échouée :', e);
@@ -1981,7 +2207,7 @@ window.markShareSeen = async function (shareId) {
 //     allow create: if request.auth != null && isConvoMember(request.resource.data);
 //     allow update: if request.auth != null && isConvoMember(resource.data)
 //       && request.resource.data.diff(resource.data).affectedKeys()
-//            .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid']);
+//            .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid', 'unreadCount']);
 //     allow delete: if request.auth != null && isConvoMember(resource.data);
 //     match /messages/{messageId} {
 //       allow read: if request.auth != null
@@ -2083,6 +2309,35 @@ window.sendMessage = async function (convoId, text) {
 // sondage). Aucune restriction de champs côté règles Firestore sur la création d'un
 // message — seule la mise à jour ultérieure de `votes` (vote dans un sondage) est
 // contrainte.
+// Destinataires d'une conversation, hors moi-même — utilisé UNIQUEMENT à l'ENVOI d'un
+// message (voir sendRichMessage() ci-dessous) pour incrémenter le compteur de non-lus de
+// chacun (optimisation perf du 13/09/2026, voir la note plus haut) : un getDoc() de plus
+// par MESSAGE ENVOYÉ (rare) est un coût négligeable comparé à ce qu'il évite à CHAQUE
+// CHARGEMENT de la sidebar par CHAQUE participant (voir countUnreadMessagesInConversation(),
+// qui téléchargeait les messages eux-mêmes juste pour les compter).
+async function _getOtherConvoMemberUids(convoId, myUid) {
+    try {
+        const snap = await getDoc(doc(db, 'conversations', convoId));
+        if (!snap.exists()) return [];
+        const data = snap.data();
+        if (data.type === 'dm') {
+            return (data.members || []).filter(u => u !== myUid);
+        }
+        if (data.type === 'trip' && data.tripId) {
+            const tripSnap = await getDoc(doc(db, 'trips', data.tripId));
+            if (!tripSnap.exists()) return [];
+            const t = tripSnap.data();
+            const uids = new Set();
+            if (t.ownerUid) uids.add(t.ownerUid);
+            Object.keys(t.members || {}).forEach(u => uids.add(u));
+            uids.delete(myUid);
+            return Array.from(uids);
+        }
+        return [];
+    } catch (e) {
+        return [];
+    }
+}
 window.sendRichMessage = async function (convoId, extraFields, previewText) {
     const user = auth.currentUser;
     if (!user) return { error: 'not-signed-in' };
@@ -2090,9 +2345,22 @@ window.sendRichMessage = async function (convoId, extraFields, previewText) {
     try {
         const msgRef = doc(collection(db, 'conversations', convoId, 'messages'));
         await setDoc(msgRef, Object.assign({ fromUid: user.uid, fromUsername: myUsername, createdAt: serverTimestamp() }, extraFields));
-        await setDoc(doc(db, 'conversations', convoId), {
+        const convoUpdate = {
             lastMessageAt: serverTimestamp(), lastMessageText: (previewText || '').slice(0, 140), lastMessageFromUid: user.uid,
-        }, { merge: true });
+        };
+        // Compteur de non-lus dénormalisé PAR DESTINATAIRE (unreadCount.{uid}, voir la
+        // note dans getConversationPreview() plus bas) — remis à zéro pour le lecteur
+        // dans markConversationRead() ci-dessous. {merge:true} sur setDoc() fusionne les
+        // champs imbriqués (déjà le comportement utilisé pour publicProfiles.photos plus
+        // haut dans ce fichier) : seules LES CLÉS listées ici sont touchées, jamais tout
+        // le reste de la carte unreadCount.
+        const otherUids = await _getOtherConvoMemberUids(convoId, user.uid);
+        if (otherUids.length) {
+            const unreadUpdates = {};
+            otherUids.forEach(uid => { unreadUpdates[uid] = increment(1); });
+            convoUpdate.unreadCount = unreadUpdates;
+        }
+        await setDoc(doc(db, 'conversations', convoId), convoUpdate, { merge: true });
         return { success: true, id: msgRef.id };
     } catch (e) {
         console.warn('Envoi du message échoué :', e);
@@ -2146,12 +2414,19 @@ window.voteInPoll = async function (convoId, messageId, optionIndex) {
     }
 };
 
+// Optimisé le 13/09/2026 (perf, troisième symptôme signalé : "si tu ouvres une
+// conversation qui contient 500 messages ... Firestore télécharge les 500 d'un coup") —
+// limité aux MAX_MESSAGES_LOADED plus récents via limitToLast(), au lieu de la collection
+// entière. orderBy('createdAt','asc') + limitToLast() (plutôt que
+// orderBy('createdAt','desc') + limit() puis inverser côté client) renvoie déjà les
+// messages dans l'ordre chronologique attendu par renderMessagesList().
+const MAX_MESSAGES_LOADED = 50;
 window.loadMessages = async function (convoId) {
     try {
-        const snap = await getDocs(collection(db, 'conversations', convoId, 'messages'));
+        const q = query(collection(db, 'conversations', convoId, 'messages'), orderBy('createdAt', 'asc'), limitToLast(MAX_MESSAGES_LOADED));
+        const snap = await getDocs(q);
         const msgs = [];
         snap.forEach(d => msgs.push(Object.assign({ id: d.id }, d.data())));
-        msgs.sort((a, b) => ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0));
         return msgs;
     } catch (e) {
         console.warn('Lecture des messages échouée :', e);
@@ -2169,12 +2444,16 @@ window.loadMessages = async function (convoId) {
 // regarde activement une conversation. `callback(msgs)` est rappelé à chaque changement
 // (même tri par createdAt que loadMessages ci-dessus) ; la fonction retournée se désabonne
 // (à appeler quand on change de conversation ou qu'on ferme le panneau).
+// Même limite que loadMessages() ci-dessus (voir MAX_MESSAGES_LOADED) — un abonnement
+// temps réel sans limite téléchargeait, lui aussi, la collection entière au premier
+// déclenchement (et à chaque changement, puisque le callback reconstruit `msgs` en
+// entier à partir de `snap` — voir le commentaire au-dessus de cette fonction).
 window.listenForMessages = function (convoId, callback) {
     try {
-        return onSnapshot(collection(db, 'conversations', convoId, 'messages'), (snap) => {
+        const q = query(collection(db, 'conversations', convoId, 'messages'), orderBy('createdAt', 'asc'), limitToLast(MAX_MESSAGES_LOADED));
+        return onSnapshot(q, (snap) => {
             const msgs = [];
             snap.forEach(d => msgs.push(Object.assign({ id: d.id }, d.data())));
-            msgs.sort((a, b) => ((a.createdAt && a.createdAt.seconds) || 0) - ((b.createdAt && b.createdAt.seconds) || 0));
             callback(msgs);
         }, (e) => {
             console.warn('Écoute des messages échouée :', e);
@@ -2182,29 +2461,6 @@ window.listenForMessages = function (convoId, callback) {
     } catch (e) {
         console.warn('Abonnement aux messages échoué :', e);
         return () => {};
-    }
-};
-
-// Nombre RÉEL de messages non lus dans une conversation (demande du 07/09/2026 : le badge
-// de la sidebar affichait toujours "1", jamais le vrai total) — tous les messages créés
-// après la dernière lecture (reads/{uid}, voir markConversationRead), moins les nôtres
-// (on ne compte jamais ses propres messages comme "non lus" pour soi-même). Une seule
-// inégalité (`createdAt >`) : jamais besoin d'index composite, contrairement à un filtre
-// combiné sur fromUid — le tri par expéditeur se fait donc côté client après lecture.
-window.countUnreadMessagesInConversation = async function (convoId) {
-    const user = auth.currentUser;
-    if (!user) return 0;
-    try {
-        const readSnap = await getDoc(doc(db, 'conversations', convoId, 'reads', user.uid));
-        const readAt = readSnap.exists() ? readSnap.data().lastReadAt : null;
-        const messagesRef = collection(db, 'conversations', convoId, 'messages');
-        const snap = await getDocs(readAt ? query(messagesRef, where('createdAt', '>', readAt)) : messagesRef);
-        let count = 0;
-        snap.forEach(d => { if (d.data().fromUid !== user.uid) count++; });
-        return count;
-    } catch (e) {
-        console.warn('Comptage des messages non lus échoué :', e);
-        return 0;
     }
 };
 
@@ -2227,6 +2483,13 @@ window.markConversationRead = async function (convoId) {
     if (!user) return;
     try {
         await setDoc(doc(db, 'conversations', convoId, 'reads', user.uid), { lastReadAt: serverTimestamp() }, { merge: true });
+        // Remet à zéro MON compteur de non-lus dénormalisé (voir sendRichMessage() plus
+        // haut) — ne bloque jamais le marquage "lu" lui-même si ça échoue.
+        try {
+            await setDoc(doc(db, 'conversations', convoId), { unreadCount: { [user.uid]: 0 } }, { merge: true });
+        } catch (counterErr) {
+            console.warn('Remise à zéro du compteur de non-lus échouée :', counterErr);
+        }
     } catch (e) {
         console.warn('Marquage de la conversation comme lue échoué :', e);
     }
@@ -2248,28 +2511,82 @@ window.loadConversationMeta = async function (convoId) {
 // seul appel ce que loadConversationMeta() (aperçu) et countUnreadConversations() (juste
 // un compteur global) faisaient séparément, pour ne pas dupliquer la logique de
 // comparaison lastMessageAt/lastReadAt à chaque ligne de la liste.
+//
+// Optimisé le 13/09/2026 (perf) : le nombre de non-lus vient maintenant du compteur
+// dénormalisé unreadCount.{monUid} sur le document conversations/{id} lui-même (tenu à
+// jour par sendRichMessage()/markConversationRead() plus haut), au lieu de comparer
+// lastMessageAt à reads/{uid}.lastReadAt (nécessitait une DEUXIÈME lecture par
+// conversation, ici comme dans countUnreadConversations() ci-dessous) — et surtout au
+// lieu de countUnreadMessagesInConversation() (retiré), qui téléchargeait les messages
+// eux-mêmes juste pour les compter (deuxième symptôme signalé : "le compteur de J'aime
+// télécharge les documents au lieu d'un compteur côté serveur", même défaut ici pour les
+// messages non lus).
 window.getConversationPreview = async function (convoId) {
     const user = auth.currentUser;
     if (!user) return null;
     try {
-        const [convoSnap, readSnap] = await Promise.all([
-            getDoc(doc(db, 'conversations', convoId)),
-            getDoc(doc(db, 'conversations', convoId, 'reads', user.uid)),
-        ]);
+        const convoSnap = await getDoc(doc(db, 'conversations', convoId));
         if (!convoSnap.exists()) return null;
         const data = convoSnap.data();
         const lastMsgSeconds = (data.lastMessageAt && data.lastMessageAt.seconds) || 0;
-        const readData = readSnap.exists() ? readSnap.data() : null;
-        const readSeconds = (readData && readData.lastReadAt && readData.lastReadAt.seconds) || 0;
         const mine = data.lastMessageFromUid === user.uid;
+        const count = (data.unreadCount && data.unreadCount[user.uid]) || 0;
         return {
             lastMessageText: data.lastMessageText || '',
             lastMessageAt: lastMsgSeconds || null,
             mine,
-            unread: !mine && lastMsgSeconds > 0 && lastMsgSeconds > readSeconds
+            unread: count > 0,
+            count
         };
     } catch (e) {
         return null;
+    }
+};
+
+// Aperçus de TOUTES mes conversations DM en UNE SEULE requête (demande du 13/09/2026,
+// optimisation perf) — remplace le "getConversationPreview() par ami" de
+// refreshDmListUI() (friends.html), qui lisait une conversation par AMI même pour ceux
+// n'ayant jamais échangé le moindre message. Les conversations DM portent directement
+// members:[uidA,uidB] (voir la note plus haut) : requête query()+where('array-contains')
+// possible, contrairement aux conversations de groupe (trip_*, qui consultent
+// trips/{tripId} plutôt que de dupliquer une liste de membres — voir isConvoMember() dans
+// firestore.rules) — la liste des voyages elle vient déjà de listMyTripGroups() côté
+// script.js, un nombre de groupes généralement bien plus petit que le nombre d'amis.
+// Volontairement PAS de where('type','==','dm') en plus de l'array-contains : seules les
+// conversations DM ont jamais un champ `members`, ce filtre serait donc redondant — mais
+// combiner égalité + array-contains sur deux champs différents exigerait un INDEX
+// COMPOSITE Firestore (à créer manuellement dans la console, ce site n'ayant pas de
+// Firebase CLI/CI pour le déployer, voir l'en-tête de firestore.rules) ; l'éviter permet
+// à cette requête de fonctionner avec les index automatiques du site, sans étape
+// supplémentaire pour l'utilisateur.
+// Renvoie un objet {otherUid: preview}, indexé par le CORRESPONDANT (pas l'id de la
+// conversation) pour un lookup direct depuis myFriendsList côté friends.html.
+window.listMyDmConversationPreviews = async function () {
+    const user = auth.currentUser;
+    if (!user) return {};
+    try {
+        const q = query(collection(db, 'conversations'), where('members', 'array-contains', user.uid));
+        const snap = await getDocs(q);
+        const out = {};
+        snap.forEach(d => {
+            const data = d.data();
+            const otherUid = (data.members || []).find(u => u !== user.uid);
+            if (!otherUid) return;
+            const lastMsgSeconds = (data.lastMessageAt && data.lastMessageAt.seconds) || 0;
+            const mine = data.lastMessageFromUid === user.uid;
+            const count = (data.unreadCount && data.unreadCount[user.uid]) || 0;
+            out[otherUid] = {
+                lastMessageText: data.lastMessageText || '',
+                lastMessageAt: lastMsgSeconds || null,
+                mine,
+                unread: count > 0,
+                count
+            };
+        });
+        return out;
+    } catch (e) {
+        console.warn('Chargement des aperçus de conversations échoué :', e);
+        return {};
     }
 };
 
@@ -2279,25 +2596,27 @@ window.getConversationPreview = async function (convoId) {
 // partagés (une conversation de groupe potentielle par voyage), plutôt qu'une requête
 // sur toute la collection `conversations` (que la règle ci-dessus refuserait de toute
 // façon sans where(), voir le commentaire de listMyFriendRequests()).
+// Optimisé le 13/09/2026 (perf) : UNE requête where(documentId(),'in',...) (limite
+// Firestore : 30 ids par requête, donc traité par lots) au lieu d'un getDoc() PAR
+// CONVERSATION dans une boucle séquentielle — et le compteur dénormalisé unreadCount
+// (voir getConversationPreview() plus haut) évite la deuxième lecture reads/{uid} par
+// conversation qu'il fallait avant.
 window.countUnreadConversations = async function (convoIds) {
     const user = auth.currentUser;
     if (!user || !convoIds || convoIds.length === 0) return 0;
     let count = 0;
-    for (const convoId of convoIds) {
-        try {
-            const [convoSnap, readSnap] = await Promise.all([
-                getDoc(doc(db, 'conversations', convoId)),
-                getDoc(doc(db, 'conversations', convoId, 'reads', user.uid)),
-            ]);
-            if (!convoSnap.exists() || !convoSnap.data().lastMessageAt) continue;
-            if (convoSnap.data().lastMessageFromUid === user.uid) continue;
-            const lastMsgSeconds = convoSnap.data().lastMessageAt.seconds || 0;
-            const readData = readSnap.exists() ? readSnap.data() : null;
-            const readSeconds = (readData && readData.lastReadAt && readData.lastReadAt.seconds) || 0;
-            if (lastMsgSeconds > readSeconds) count++;
-        } catch (e) {
-            console.warn('Vérification des messages non lus échouée pour ' + convoId + ' :', e);
+    try {
+        for (let i = 0; i < convoIds.length; i += 30) {
+            const batch = convoIds.slice(i, i + 30);
+            const q = query(collection(db, 'conversations'), where(documentId(), 'in', batch));
+            const snap = await getDocs(q);
+            snap.forEach(d => {
+                const data = d.data();
+                if ((data.unreadCount && data.unreadCount[user.uid]) > 0) count++;
+            });
         }
+    } catch (e) {
+        console.warn('Vérification des messages non lus échouée :', e);
     }
     return count;
 };
@@ -2331,8 +2650,51 @@ async function ensureUsernameLoginIndexed(user) {
     }
 }
 
+// Auto-répare l'index feedPosts/ (voir la grande note au-dessus de setLocationReview())
+// pour LE PROPRE compte de la personne qui se connecte — complète
+// adminBackfillFeedPosts() (qui couvre tous les comptes mais doit être lancé à la main
+// par un admin) pour les comptes qui se reconnectent avant que ça arrive. Un compte ne
+// peut écrire QUE ses propres documents feedPosts (voir firestore.rules), donc cette
+// réparation-ci est la seule à pouvoir s'exécuter automatiquement, sans admin — mais ne
+// couvre pas les comptes qui ne se reconnectent jamais (ex: les comptes de démonstration
+// créés par script, voir adminBackfillFeedPosts()). Un drapeau localStorage évite de
+// refaire ce travail à chaque chargement de page une fois fait une première fois.
+async function ensureFeedPostsSynced(user) {
+    const flagKey = 'feedPostsSynced_' + user.uid;
+    if (localStorage.getItem(flagKey)) return;
+    try {
+        const snap = await getDoc(doc(db, 'publicProfiles', user.uid));
+        if (snap.exists()) {
+            const data = snap.data();
+            if (!data.isPrivate) {
+                const username = await _getMyUsernameCached(user.uid);
+                const writes = [];
+                Object.values(data.reviews || {}).forEach(r => {
+                    if (!r.photo) return;
+                    writes.push(_upsertFeedPost(user.uid, String(r.locationId), {
+                        username, locationId: r.locationId, locationName: r.locationName || '',
+                        photo: r.photo, caption: r.notes || '', updatedAt: r.updatedAt || serverTimestamp(), standalone: false
+                    }));
+                });
+                Object.entries(data.photos || {}).forEach(([photoId, p]) => {
+                    if (!p.photo) return;
+                    writes.push(_upsertFeedPost(user.uid, photoId, {
+                        username, locationId: p.locationId || null, locationName: p.locationName || '',
+                        photo: p.photo, caption: p.caption || '', updatedAt: p.updatedAt || serverTimestamp(), standalone: true
+                    }));
+                });
+                await Promise.all(writes);
+            }
+        }
+        localStorage.setItem(flagKey, '1');
+    } catch (e) {
+        // Pas de drapeau posé si ça échoue : retentera à la prochaine connexion.
+        console.warn('Synchronisation ponctuelle de l\'index du fil échouée :', e);
+    }
+}
+
 onAuthStateChanged(auth, (user) => {
     window.firebaseCurrentUser = user || null;
     window.dispatchEvent(new CustomEvent('firebase-ready', { detail: { user: user || null } }));
-    if (user) ensureUsernameLoginIndexed(user);
+    if (user) { ensureUsernameLoginIndexed(user); ensureFeedPostsSynced(user); }
 });

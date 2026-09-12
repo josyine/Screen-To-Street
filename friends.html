@@ -465,7 +465,7 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
   </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260907"></script>
+<script type="module" src="firebase-init.js?v=20260913"></script>
 <script src="locations-data.js?v=20260911"></script>
 <script src="script.js?v=20260911"></script>
 <script>
@@ -670,9 +670,11 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
     // nôtre, sinon le texte du dernier message reçu (tronqué) suivi de l'heure relative.
     // `fallback` est le sous-titre statique déjà utilisé quand la conversation n'a encore
     // aucun message (ex: "Shared with you"/"Add a friend to start messaging").
-    // `count` vient de countUnreadMessagesInConversation() (firebase-init.js, demande du
-    // 07/09/2026) : avant ce correctif, le badge affichait toujours "1" quel que soit le
-    // nombre réel de messages non lus (preview.unread n'est qu'un booléen).
+    // `count` vient directement de preview.count (getConversationPreview()/
+    // listMyDmConversationPreviews() dans firebase-init.js, compteur dénormalisé
+    // unreadCount.{monUid} sur le document de la conversation — optimisation perf du
+    // 13/09/2026, remplace un countUnreadMessagesInConversation() séparé qui
+    // téléchargeait les messages eux-mêmes juste pour les compter).
     function renderConvoPreviewMeta(preview, fallback, count) {
         const isFr = currentLang === 'fr';
         if (!preview || !preview.lastMessageAt) return { html: escapeHtml(fallback || ''), unread: false, count: 0 };
@@ -694,14 +696,18 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
 
     async function refreshTripGroupsList() {
         const groups = typeof window.listMyTripGroups === 'function' ? await window.listMyTripGroups() : [];
+        // Un getConversationPreview() par voyage (contrairement aux DM ci-dessous, une
+        // conversation de groupe n'a pas de champ `members` interrogeable — voir la note
+        // dans firebase-init.js) — mais ce seul appel embarque déjà le compteur de
+        // non-lus (unreadCount), plus besoin d'un countUnreadMessagesInConversation()
+        // séparé qui téléchargeait les messages eux-mêmes (optimisation perf du
+        // 13/09/2026).
         const previews = await Promise.all(groups.map(g => typeof window.getConversationPreview === 'function' ? window.getConversationPreview(window.tripConversationId(g.id)) : null));
-        const counts = await Promise.all(previews.map((p, i) => (p && p.unread && typeof window.countUnreadMessagesInConversation === 'function')
-            ? window.countUnreadMessagesInConversation(window.tripConversationId(groups[i].id)) : Promise.resolve(0)));
         const list = document.getElementById('trip-groups-list');
         const empty = document.getElementById('trip-groups-empty');
         list.innerHTML = groups.map((g, i) => {
             const fallback = g.isOwner ? t('tripGroupOwner') : t('tripGroupMember');
-            const meta = renderConvoPreviewMeta(previews[i], fallback, counts[i]);
+            const meta = renderConvoPreviewMeta(previews[i], fallback, previews[i] && previews[i].count);
             return `<div class="convo-row" data-kind="trip" data-trip-id="${g.id}" data-trip-name="${escapeHtml(g.name || (currentLang === 'fr' ? 'Voyage partagé' : 'Shared trip'))}">
             <div class="convo-thumb-icon"${g.coverImage ? ` style="background-image:url('${g.coverImage}'); background-size:cover; background-position:center;"` : ''}>${g.coverImage ? '' : tripThumbFallbackIcon}</div>
             <div class="convo-row-info">
@@ -725,13 +731,17 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
 
     async function refreshDmListUI() {
         const user = window.firebaseCurrentUser;
-        const previews = await Promise.all(myFriendsList.map(f => (user && typeof window.getConversationPreview === 'function') ? window.getConversationPreview(window.dmConversationId(user.uid, f.uid)) : null));
-        const counts = await Promise.all(previews.map((p, i) => (p && p.unread && user && typeof window.countUnreadMessagesInConversation === 'function')
-            ? window.countUnreadMessagesInConversation(window.dmConversationId(user.uid, myFriendsList[i].uid)) : Promise.resolve(0)));
+        // UNE requête pour TOUS mes aperçus de DM (optimisation perf du 13/09/2026, voir
+        // window.listMyDmConversationPreviews() dans firebase-init.js) — avant ce
+        // correctif, chaque ami de myFriendsList déclenchait sa propre lecture
+        // Firestore ici, même les amis n'ayant jamais échangé le moindre message.
+        const previewsByUid = (user && typeof window.listMyDmConversationPreviews === 'function')
+            ? await window.listMyDmConversationPreviews() : {};
+        const previews = myFriendsList.map(f => previewsByUid[f.uid] || null);
         const list = document.getElementById('dm-list');
         const empty = document.getElementById('dm-empty');
         list.innerHTML = myFriendsList.map((f, i) => {
-            const meta = renderConvoPreviewMeta(previews[i], t('noFriendsForDm'), counts[i]);
+            const meta = renderConvoPreviewMeta(previews[i], t('noFriendsForDm'), previews[i] && previews[i].count);
             return `<div class="convo-row" data-kind="dm" data-friend-uid="${f.uid}" data-friend-username="${escapeHtml(f.username)}">
             <div class="convo-thumb-icon convo-thumb-icon-clickable" data-profile-uid="${f.uid}" title="${escapeHtml(f.username)}">${escapeHtml((f.username || '?').charAt(0).toUpperCase())}</div>
             <div class="convo-row-info">

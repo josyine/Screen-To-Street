@@ -152,6 +152,60 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // Contenu éditorial des pages "Explore Destinations"/"Explore Artists" (demande du
+    // 13/09/2026, "je veux également pouvoir modifier les pages Explore Destinations et
+    // Explore Artists ... changer la photo et le texte") — ces deux pages sont, comme
+    // celebLocations dans script.js, du contenu codé en dur dans le HTML plutôt qu'en
+    // base ; même principe que locationSkeletonOverrides ci-dessus : un document
+    // {photo, text} par pays/groupe qui, s'il existe, remplace la valeur codée en dur
+    // côté client (voir applyDestinationOverrides()/applyArtistOverrides() dans les
+    // fichiers respectifs). Lisible par tous, écrit uniquement par un admin.
+    match /destinationOverrides/{countryKey} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    match /artistOverrides/{groupKey} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Index dénormalisé du fil global (demande du 13/09/2026, optimisation perf) — voir
+    // la grande note au-dessus de setLocationReview() dans firebase-init.js pour le
+    // diagnostic complet. Document {uid, itemId, username, locationId, locationName,
+    // photo, caption, updatedAt, standalone, likeCount} par publication, id =
+    // "<uid>_<itemId>" (même format que photoKey déjà utilisé pour photoLikes/
+    // savedPostKeys). Lisible par tous (c'est le fil PUBLIC). Écriture : le propriétaire
+    // peut créer/modifier/supprimer son propre document ; un admin peut créer/modifier/
+    // supprimer N'IMPORTE LEQUEL (reconstruction ponctuelle via adminBackfillFeedPosts(),
+    // et modération via adminDeleteProfilePhoto()) ; N'IMPORTE QUEL compte connecté peut
+    // modifier UNIQUEMENT le champ likeCount d'un document existant (aimer la publication
+    // d'un autre) — jamais le contenu de la publication elle-même.
+    match /feedPosts/{postId} {
+      allow read: if true;
+      // Troisième clause de create/update : togglePhotoLike() (firebase-init.js) écrit
+      // le compteur likeCount en merge:true AVANT toute garantie que le document
+      // "complet" (créé par le propriétaire) existe déjà — ex: quelqu'un aime une
+      // publication dont l'index n'a pas encore été reconstruit par
+      // adminBackfillFeedPosts(). Sans cette clause, ce cas précis (resource == null,
+      // donc ni un update ni "mon propre uid") serait refusé. hasOnly(['likeCount'])
+      // limite malgré tout ce qu'un compte tiers peut écrire à CE seul champ — un
+      // document "fantôme" ne contenant qu'un compteur est sans conséquence
+      // (fetchGlobalPhotoFeed() dans firebase-init.js ignore tout document sans champ
+      // `photo`), et fusionne proprement avec le vrai contenu dès qu'il arrive.
+      allow create, update: if request.auth != null && (
+        request.resource.data.uid == request.auth.uid
+        || exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        || (resource == null && request.resource.data.keys().hasOnly(['likeCount']))
+        || (resource != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likeCount']))
+      );
+      allow delete: if request.auth != null && (
+        resource.data.uid == request.auth.uid
+        || exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
     // Onglet admin "Live & Upcoming" (demande du 11/09/2026) : file de relecture des
     // prochains évènements BTS (groupe ou solo) proposés, même principe que
     // locationSubmissions ci-dessus mais réservée à l'admin des deux côtés (pas de
@@ -377,9 +431,19 @@ service cloud.firestore {
       // pas" — bug rapporté le 06/09/2026 : plus aucune conversation ne pouvait s'ouvrir.
       allow read: if request.auth != null && (resource == null || isConvoMember(resource.data));
       allow create: if request.auth != null && isConvoMember(request.resource.data);
+      // unreadCount (demande du 13/09/2026, optimisation perf — voir la note détaillée
+      // dans firebase-init.js au-dessus de sendRichMessage()) : compteur de non-lus PAR
+      // MEMBRE, dénormalisé sur la conversation elle-même pour que la sidebar de
+      // friends.html connaisse le nombre de non-lus de chaque conversation sans
+      // télécharger ses messages. N'importe quel membre peut le modifier (envoyer un
+      // message y incrémente le compteur des AUTRES membres, pas seulement le sien) —
+      // même tolérance déjà documentée en tête de ce fichier pour les autres compteurs
+      // dénormalisés (locationRatings, siteStats...) : au pire un compte malveillant y
+      // écrit un increment() arbitraire, sans conséquence grave sur un site sans données
+      // sensibles dans une conversation.
       allow update: if request.auth != null && isConvoMember(resource.data)
         && request.resource.data.diff(resource.data).affectedKeys()
-             .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid']);
+             .hasOnly(['lastMessageAt', 'lastMessageText', 'lastMessageFromUid', 'unreadCount']);
       // Bouton "×" de friends.html (demande du 06/09/2026) : n'importe quel membre peut
       // effacer l'historique — n'affecte jamais l'amitié ni l'appartenance au voyage
       // (voir deleteConversation() dans firebase-init.js).
