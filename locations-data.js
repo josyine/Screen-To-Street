@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-12T16:26:59.016Z.
+// Généré le 2026-09-12T21:34:18.066Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9166,6 +9166,50 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "address": "Coron Island, Calamian Islands, Palawan, Philippines",
+    "country": "Philippines",
+    "city": "Coron",
+    "name": "Coron Island & Twin Lagoon",
+    "id": "new-0GBu2KZ95jpTtlexQAG1",
+    "group": "BTS",
+    "member": "All",
+    "lat": 11.9547,
+    "img": "https://img.youtube.com/vi/-BZHpyBDZEE/hqdefault.jpg",
+    "lng": 120.2289,
+    "category": "Landmarks",
+    "year": "2017",
+    "tiktokUrls": [],
+    "tweetUrl": "https://x.com/bts_bighit/status/892218402554630145",
+    "instagramUrls": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "ARMY Tip"
+        },
+        "text": {
+          "en": "Rent a private motorized banca boat early in the morning to arrive at Twin Lagoon before crowds, capturing serene photos like those in the 2017 photobook."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "fullDescription": {
+      "en": "<p>Coron Island in Palawan is world-renowned for its dramatic limestone karst cliffs, crystal-clear turquoise lagoons, and vibrant marine life. Twin Lagoon is one of its most famous natural wonders, where freshwater meets saltwater under soaring rock walls.</p><p>BTS spent their summer in Palawan for the <i>BTS Summer Package 2017</i>. They went snorkeling, rode boats through Twin Lagoon, and held photoshoots along the pristine white sand beaches of the Calamian islands.</p>"
+    },
+    "practicalInfo": [
+      {
+        "text": {
+          "en": "Fly into Busuanga Airport (USU) on Coron Island, then book an Island Hopping Tour A or Ultimate Tour from Coron Town harbor."
+        },
+        "title": {
+          "en": "How to get there"
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "ytId": "-BZHpyBDZEE"
   },
   {
     "country": "South Korea",
