@@ -4705,7 +4705,8 @@ function renderLocationRichContent(loc) {
             ['tweetUrls', 'X/Twitter'],
             ['instagramUrls', 'Instagram'],
             ['facebookUrls', 'Facebook'],
-            ['tiktokUrls', 'TikTok']
+            ['tiktokUrls', 'TikTok'],
+            ['youtubeUrls', 'YouTube']
         ];
         const extraHtml = extraLinkDefs.map(([field, label]) => {
             const urls = Array.isArray(loc[field]) ? loc[field] : [];
@@ -4730,6 +4731,12 @@ function extractYouTubeIdForEdit(url) {
     if (!s) return null;
     const m = s.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
     return m ? m[1] : (/^[a-zA-Z0-9_-]{10,15}$/.test(s) ? s : null);
+}
+// Pour les liens YouTube "en plus" (demande du 13/09/2026) : mêmes URLs normalisées que
+// tweetUrls/instagramUrls/etc. ci-dessous, pas un ID brut comme le champ vidéo principal.
+function extractYouTubeUrlForEdit(url) {
+    const id = extractYouTubeIdForEdit(url);
+    return id ? `https://www.youtube.com/watch?v=${id}` : null;
 }
 function extractTweetUrlForEdit(url) {
     const s = (url || '').trim();
@@ -4804,6 +4811,7 @@ function ensureLocationEditModal() {
             <label style="${labelStyle}">YouTube video URL</label>
             <input type="url" id="location-edit-youtube" style="${fieldStyle}" placeholder="https://www.youtube.com/watch?v=...">
             <div id="location-edit-youtube-error" class="hidden" style="${errStyle}">Doesn't look like a YouTube URL.</div>
+            <div id="location-edit-youtube-extra" style="margin-bottom:8px;"></div>
 
             <label style="${labelStyle}">Twitter / X post URL</label>
             <input type="url" id="location-edit-tweet" style="${fieldStyle}" placeholder="https://x.com/.../status/...">
@@ -4984,7 +4992,7 @@ window.openLocationEditModal = async function (locId) {
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté admin.html (fiches de review/édition).
         if (typeof window.createMultiUrlField === 'function') {
-            ['tweet', 'instagram', 'facebook', 'tiktok'].forEach(k => {
+            ['youtube', 'tweet', 'instagram', 'facebook', 'tiktok'].forEach(k => {
                 const el = document.getElementById(`location-edit-${k}-extra`);
                 if (el) locationEditExtraWidgets[k + 'Urls'] = window.createMultiUrlField(el, { values: data[k + 'Urls'] || [], placeholder: `Additional ${k.charAt(0).toUpperCase() + k.slice(1)} URL`, fieldStyle: "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:9px 12px; font-size:12.5px; font-family:'Poppins',sans-serif;" });
             });
@@ -5056,6 +5064,7 @@ async function saveLocationEdit(locId, modal) {
     checkField(tiktokVal, tiktokUrl, 'location-edit-tiktok-error');
 
     const extraValidators = {
+        youtubeUrls: extractYouTubeUrlForEdit,
         tweetUrls: extractTweetUrlForEdit,
         instagramUrls: (v) => extractSocialUrlForEdit(v, 'instagram\\.com'),
         facebookUrls: (v) => extractSocialUrlForEdit(v, 'facebook\\.com'),

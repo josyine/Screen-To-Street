@@ -334,6 +334,17 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         return m ? m[1] : (/^[a-zA-Z0-9_-]{10,15}$/.test(s) ? s : null);
     }
 
+    // Pour les liens YouTube "en plus" (demande du 13/09/2026, "+ Add another link") : ces
+    // liens n'ont pas d'aperçu embarqué, juste un lien texte sur la fiche du lieu (voir
+    // extraLinkDefs dans renderLocationRichContent() de script.js) — même principe que les
+    // tableaux tweetUrls/instagramUrls/etc. ci-dessous, donc une URL complète normalisée
+    // plutôt qu'un ID brut comme le champ vidéo principal (sub.ytId), qui lui n'a besoin
+    // que de l'ID pour construire l'iframe/la vignette.
+    function extractYouTubeUrl(url) {
+        const id = extractYouTubeId(url);
+        return id ? `https://www.youtube.com/watch?v=${id}` : null;
+    }
+
     // Reconnaît un lien vers un post Twitter/X (peu importe le domaine historique ou
     // actuel) — utilisé pour proposer un embed réel plutôt que de tenter de le charger
     // comme une image, ce qui échouait toujours (ce n'est pas une image).
@@ -446,7 +457,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-social-extra" data-platform="tiktok" style="margin-bottom:6px;"></div>
 
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)" value="${sub.ytId ? 'https://www.youtube.com/watch?v=' + escapeHtml(sub.ytId) : ''}">
-            <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:12px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
+            <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:6px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
+            <div class="sub-video-extra" style="margin-bottom:12px;"></div>
 
             <div class="sub-story-wrap">
                 <div class="sub-story">${storyHtml(sub)}</div>
@@ -526,8 +538,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 const platform = el.dataset.platform;
                 extraFieldWidgets[platform + 'Urls'] = window.createMultiUrlField(el, { values: sub[platform + 'Urls'] || [], placeholder: `Additional ${platform.charAt(0).toUpperCase() + platform.slice(1)} URL` });
             });
+            const videoExtraEl = card.querySelector('.sub-video-extra');
+            if (videoExtraEl) extraFieldWidgets.youtubeUrls = window.createMultiUrlField(videoExtraEl, { values: sub.youtubeUrls || [], placeholder: 'Additional YouTube video URL' });
         }
-        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl };
+        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl, youtubeUrls: extractYouTubeUrl };
 
         // Modifie directement `sub` (fermé par les callbacks d'approbation/rejet ci-dessous) :
         // approuver publie donc la valeur éditée ici, pas la proposition d'origine de l'IA.
@@ -790,7 +804,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
             <div class="sub-social-extra" data-platform="tiktok" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)">
-            <div class="sub-video-status" style="font-size:11px;color:#94a3b8;margin-bottom:14px;">Loading…</div>
+            <div class="sub-video-status" style="font-size:11px;color:#94a3b8;margin-bottom:6px;">Loading…</div>
+            <div class="sub-video-extra" style="margin-bottom:14px;"></div>
 
             <div class="sub-actions">
                 <button type="button" class="btn-approve loc-save-btn">Save changes</button>
@@ -812,7 +827,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté fiche de review d'une proposition, plus haut dans ce fichier.
         const extraFieldWidgets = {};
-        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl };
+        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl, youtubeUrls: extractYouTubeUrl };
 
         // Pré-remplit avec les données locales (immédiat), puis avec le contenu Firestore
         // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
@@ -833,6 +848,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                     const platform = el.dataset.platform;
                     extraFieldWidgets[platform + 'Urls'] = window.createMultiUrlField(el, { values: data[platform + 'Urls'] || [], placeholder: `Additional ${platform.charAt(0).toUpperCase() + platform.slice(1)} URL` });
                 });
+                const videoExtraEl = card.querySelector('.sub-video-extra');
+                if (videoExtraEl) extraFieldWidgets.youtubeUrls = window.createMultiUrlField(videoExtraEl, { values: data.youtubeUrls || [], placeholder: 'Additional YouTube video URL' });
             }
         };
         fillFields(loc);
