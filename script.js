@@ -6146,7 +6146,12 @@ window.openLocModal = function(id, postContext) {
                     btn.id = 'modal-post-admin-delete-btn';
                     btn.title = 'Delete post (admin)';
                     btn.setAttribute('aria-label', 'Delete post (admin)');
-                    btn.style.cssText = 'position:absolute; top:12px; right:14px; background:rgba(0,0,0,.35); border:none; color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10;';
+                    // Décalé de la croix de fermeture (demande du 13/09/2026, "décale l'icone
+                    // corbeille ... quand ça chevauche l'icone croix") — right:14px atterrissait
+                    // dans le même coin que .close-btn (right:18-25px selon la page, ~32px de
+                    // large), même schéma d'écart (right:60px) que .detail-edit-pencil sur
+                    // map-destinations.html/map-artists.html pour ce même genre de collision.
+                    btn.style.cssText = 'position:absolute; top:12px; right:56px; background:rgba(0,0,0,.35); border:none; color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:10;';
                     btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
                     (document.querySelector('#loc-modal .modal-content') || modalOverlayEl).appendChild(btn);
                 }
