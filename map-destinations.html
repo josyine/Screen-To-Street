@@ -90,6 +90,29 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 .row:hover { box-shadow: 0 16px 40px rgba(80,60,120,.08); transform: translateY(-2px); border-color: #cbd5e1;}
 .row-photo { width: 38%; min-height: 260px; background-size: cover; background-position: center; flex-shrink: 0; position: relative; }
 .row-photo-badge { position: absolute; top: 16px; left: 16px; background: #fff; border-radius: 100px; padding: 7px 14px; font-size: 12px; font-weight: 700; color: #D42759; box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+/* Crayon d'édition admin (demande du 13/09/2026, "je veux également pouvoir modifier
+   les pages Explore Destinations ... changer la photo et le texte") — ajouté
+   dynamiquement en JS (voir wireDestinationEditPencils()) plutôt qu'en dur dans les 9
+   cartes ci-dessous, uniquement si isCurrentUserAdmin() répond vrai. Même style que
+   .profile-avatar-edit-badge (cercle sombre translucide) posé sur .row-photo, qui est
+   déjà position:relative. */
+.row-edit-pencil { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%; background: rgba(23,19,49,.55); color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; transition: .15s; }
+.row-edit-pencil:hover { background: #D42759; }
+/* Petite modale d'édition (photo URL + texte), même charte que les modales du site
+   (carte blanche arrondie centrée). */
+.dest-edit-overlay { position: fixed; inset: 0; background: rgba(23,19,49,.55); z-index: 6000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.dest-edit-overlay.hidden { display: none; }
+.dest-edit-card { background: #fff; border-radius: 18px; padding: 26px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; }
+.dest-edit-title { font-size: 16px; font-weight: 800; color: #212832; margin-bottom: 16px; }
+.dest-edit-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .4px; margin: 14px 0 6px 0; display: block; }
+.dest-edit-label:first-of-type { margin-top: 0; }
+.dest-edit-input, .dest-edit-textarea { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; }
+.dest-edit-input:focus, .dest-edit-textarea:focus { border-color: #D42759; }
+.dest-edit-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+.dest-edit-actions { display: flex; gap: 10px; margin-top: 20px; }
+.dest-edit-save-btn, .dest-edit-cancel-btn { flex: 1; border: none; border-radius: 100px; padding: 11px 16px; font-size: 13px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.dest-edit-save-btn { background: linear-gradient(120deg, #D42759 0%, #A93FD1 100%); color: #fff; }
+.dest-edit-cancel-btn { background: #f1f5f9; color: #64748b; }
 .row-content { flex: 1; padding: 28px 32px; display: flex; flex-direction: column; }
 .row-name { font-size: 22px; font-weight: 700; color: #212832; margin-bottom: 10px; }
 .row-blurb { font-size: 13px; color: #5B6472; line-height: 1.7; margin-bottom: 20px; max-width: 560px; }
@@ -305,7 +328,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             <div class="stat"><div class="stat-num">57</div><div class="stat-label" data-i18n="statsLocs">Locations</div></div>
         </div>
 
-        <div class="row" onclick="openDetail('southkorea')">
+        <div class="row" data-country="southkorea" onclick="openDetail('southkorea')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1538485399081-7191377e8241?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeKr">31 locations</span></div>
             </div>
@@ -332,7 +355,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('france')">
+        <div class="row" data-country="france" onclick="openDetail('france')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeFr">6 locations</span></div>
             </div>
@@ -357,7 +380,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('portugal')">
+        <div class="row" data-country="portugal" onclick="openDetail('portugal')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgePt">2 locations</span></div>
             </div>
@@ -382,7 +405,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('malta')">
+        <div class="row" data-country="malta" onclick="openDetail('malta')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1595776613215-fe04b78de7fc?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeMt">6 locations</span></div>
             </div>
@@ -408,7 +431,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('usa')">
+        <div class="row" data-country="usa" onclick="openDetail('usa')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeUs">4 locations</span></div>
             </div>
@@ -435,7 +458,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('newzealand')">
+        <div class="row" data-country="newzealand" onclick="openDetail('newzealand')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeNz">4 locations</span></div>
             </div>
@@ -460,7 +483,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('norway')">
+        <div class="row" data-country="norway" onclick="openDetail('norway')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1601439678777-b2b3c56fa72e?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeNo">2 locations</span></div>
             </div>
@@ -484,7 +507,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('sweden')">
+        <div class="row" data-country="sweden" onclick="openDetail('sweden')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeSe">1 location</span></div>
             </div>
@@ -508,7 +531,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             </div>
         </div>
 
-        <div class="row" onclick="openDetail('finland')">
+        <div class="row" data-country="finland" onclick="openDetail('finland')">
             <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1508189860359-777d945909ef?w=700');">
                 <div class="row-photo-badge"><span data-i18n="badgeFi">1 location</span></div>
             </div>
@@ -536,6 +559,22 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 
 <div class="overlay" id="overlay" onclick="if(event.target===this) closeDetail()">
   <div class="detail-window" id="detail-window"></div>
+</div>
+
+<!-- Modale d'édition admin photo/texte (demande du 13/09/2026) — voir
+     openDestinationEditModal()/saveDestinationEdit() plus bas. -->
+<div class="dest-edit-overlay hidden" id="dest-edit-overlay" onclick="if(event.target===this) closeDestinationEditModal()">
+  <div class="dest-edit-card">
+    <div class="dest-edit-title">Edit destination</div>
+    <label class="dest-edit-label">Photo URL</label>
+    <input type="text" class="dest-edit-input" id="dest-edit-photo" placeholder="https://...">
+    <label class="dest-edit-label">Text</label>
+    <textarea class="dest-edit-textarea" id="dest-edit-text" placeholder="Short description shown on the card..."></textarea>
+    <div class="dest-edit-actions">
+      <button type="button" class="dest-edit-cancel-btn" onclick="closeDestinationEditModal()">Cancel</button>
+      <button type="button" class="dest-edit-save-btn" id="dest-edit-save-btn" onclick="saveDestinationEdit()">Save</button>
+    </div>
+  </div>
 </div>
 
 <!-- Modal Panier (Cart) — identique à celui de map.html -->
@@ -566,6 +605,14 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      correctDestinationNumbers() plus bas) au lieu des chiffres figés à la création de
      cette page. -->
 <script src="locations-data.js?v=20260912"></script>
+<!-- Firebase (demande du 13/09/2026, "je veux pouvoir modifier les pages Explore
+     Destinations ... depuis le mode admin") : cette page était jusqu'ici 100% statique,
+     sans aucun accès à Firestore ni à isCurrentUserAdmin() — nécessaire pour savoir qui a
+     le droit de voir les crayons d'édition. Chargé seul (sans script.js, qui gère des
+     éléments de page absents ici comme la nav du bas mobile) via le même événement
+     "firebase-ready" que le reste du site (voir onAuthStateChanged tout en bas de
+     firebase-init.js) pour connaître l'état de connexion. -->
+<script type="module" src="firebase-init.js?v=20260913"></script>
 <script>
     function toggleMenu(menuId, evt) {
         document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== menuId) m.classList.add('hidden'); });
@@ -712,7 +759,81 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         if (statNums[2]) statNums[2].textContent = totalLocs;
     }
 
-    document.addEventListener('DOMContentLoaded', () => { applyTranslations(); correctDestinationNumbers(); });
+    // Surcharges admin (photo/texte) — demande du 13/09/2026, voir la note dans
+    // firestore.rules (destinationOverrides) et window.getDestinationOverrides() dans
+    // firebase-init.js. Une seule collection à charger pour les 9 pays, mise en cache en
+    // mémoire pour la session (pas de re-fetch à chaque setLang()/changement d'onglet).
+    let _destOverrides = null;
+    async function applyDestinationOverrides() {
+        if (!window.getDestinationOverrides) return; // firebase-init.js pas encore chargé
+        if (!_destOverrides) _destOverrides = await window.getDestinationOverrides();
+        document.querySelectorAll('.row[data-country]').forEach(row => {
+            const ov = _destOverrides[row.dataset.country];
+            if (!ov) return;
+            if (ov.photo) {
+                const photoEl = row.querySelector('.row-photo');
+                if (photoEl) photoEl.style.backgroundImage = `url('${ov.photo}')`;
+            }
+            if (ov.text) {
+                const blurbEl = row.querySelector('.row-blurb');
+                if (blurbEl) blurbEl.textContent = ov.text;
+            }
+        });
+    }
+    // Crayons d'édition, admin uniquement — voir isCurrentUserAdmin() dans
+    // firebase-init.js. Ajoutés dynamiquement plutôt qu'en dur dans les 9 cartes, une
+    // seule fois (re-vérifie s'ils existent déjà pour ne pas les dupliquer si rappelée).
+    async function wireDestinationEditPencils() {
+        if (!window.isCurrentUserAdmin) return;
+        const isAdmin = await window.isCurrentUserAdmin();
+        if (!isAdmin) return;
+        document.querySelectorAll('.row[data-country]').forEach(row => {
+            const photoEl = row.querySelector('.row-photo');
+            if (!photoEl || photoEl.querySelector('.row-edit-pencil')) return;
+            const key = row.dataset.country;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'row-edit-pencil';
+            btn.title = 'Edit photo/text (admin)';
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>';
+            btn.onclick = (e) => { e.stopPropagation(); openDestinationEditModal(key); };
+            photoEl.appendChild(btn);
+        });
+    }
+    let _destEditKey = null;
+    function openDestinationEditModal(key) {
+        _destEditKey = key;
+        const row = document.querySelector(`.row[data-country="${key}"]`);
+        const ov = (_destOverrides && _destOverrides[key]) || {};
+        const currentPhoto = ov.photo || (row && row.querySelector('.row-photo') ? row.querySelector('.row-photo').style.backgroundImage.replace(/^url\(['"]?/,'').replace(/['"]?\)$/,'') : '');
+        const currentText = ov.text || (row && row.querySelector('.row-blurb') ? row.querySelector('.row-blurb').textContent : '');
+        document.getElementById('dest-edit-photo').value = currentPhoto;
+        document.getElementById('dest-edit-text').value = currentText;
+        document.getElementById('dest-edit-overlay').classList.remove('hidden');
+    }
+    function closeDestinationEditModal() {
+        document.getElementById('dest-edit-overlay').classList.add('hidden');
+        _destEditKey = null;
+    }
+    async function saveDestinationEdit() {
+        if (!_destEditKey) return;
+        const photo = document.getElementById('dest-edit-photo').value.trim();
+        const text = document.getElementById('dest-edit-text').value.trim();
+        const btn = document.getElementById('dest-edit-save-btn');
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+        const res = await window.adminSetDestinationOverride(_destEditKey, { photo, text });
+        btn.disabled = false;
+        btn.textContent = 'Save';
+        if (!res || !res.success) { alert('Save failed — please try again.'); return; }
+        if (!_destOverrides) _destOverrides = {};
+        _destOverrides[_destEditKey] = Object.assign({}, _destOverrides[_destEditKey], { photo, text });
+        closeDestinationEditModal();
+        applyDestinationOverrides();
+    }
+    window.addEventListener('firebase-ready', () => { applyDestinationOverrides(); wireDestinationEditPencils(); });
+
+    document.addEventListener('DOMContentLoaded', () => { applyTranslations(); correctDestinationNumbers(); applyDestinationOverrides(); });
 
     let lastOpenedCountry = null;
     let activeKpi = null;
@@ -721,6 +842,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         localStorage.setItem('lang', lang);
         applyTranslations();
         correctDestinationNumbers();
+        applyDestinationOverrides();
         if (lastOpenedCountry) { openDetail(lastOpenedCountry); }
     }
 
@@ -862,6 +984,9 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
       const d = COUNTRY_DETAILS[key];
       lastOpenedCountry = key;
       activeKpi = null;
+      // Photo admin-éditée (demande du 13/09/2026), si présente — voir
+      // applyDestinationOverrides() plus haut, mêmes surcharges que la carte résumé.
+      const heroPhoto = (_destOverrides && _destOverrides[key] && _destOverrides[key].photo) || c.photo;
 
       const cityRows = c.cities.map(([name,n]) => `<div class="city-row"><span>${name}</span><span>${n} ${n>1 ? (currentLang==='fr'?'lieux':'locations') : (currentLang==='fr'?'lieu':'location')}</span></div>`).join('');
 
@@ -872,7 +997,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
       `).join('');
 
       document.getElementById('detail-window').innerHTML = `
-        <div class="detail-hero" style="background-image:url('${c.photo}');">
+        <div class="detail-hero" style="background-image:url('${heroPhoto}');">
           <div class="detail-hero-overlay"></div>
           <div class="detail-close" onclick="closeDetail()">✕</div>
           <div class="detail-hero-bottom">

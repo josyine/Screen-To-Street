@@ -120,6 +120,32 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 .detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg,rgba(20,16,30,.1) 10%,rgba(20,16,30,.8)); z-index: 1;}
 .detail-close { position: absolute; top: 16px; right: 18px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; z-index: 3; transition: 0.2s;}
 .detail-close:hover { background: rgba(255,255,255,.5); }
+/* Crayon d'édition admin (demande du 13/09/2026) : contrairement à
+   map-destinations.html, aucune des cartes résumé de cette page n'affiche de photo par
+   groupe (seule .detail-hero, dans cette fenêtre détaillée, en montre une) — c'est donc
+   ici, à côté du bouton fermer, qu'il vit pour TOUS les groupes de façon cohérente. Voir
+   wireArtistEditPencil()/openArtistEditModal() plus bas. */
+.detail-edit-pencil { position: absolute; top: 16px; right: 60px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; z-index: 3; transition: 0.2s; border: none; }
+.detail-edit-pencil:hover { background: rgba(255,255,255,.5); }
+/* Texte de présentation ("blurb") — n'existait jusqu'ici que codé en dur pour BTS
+   (.featured-blurb, sur la page résumé) ; les 5 autres groupes n'avaient AUCUN texte
+   éditorial affiché nulle part. Ajouté ici pour tous, sous le hero de la fenêtre
+   détaillée — donne enfin un usage réel à g.blurb (déjà présent dans GROUPS mais jamais
+   rendu) et un point d'ancrage cohérent pour le crayon ci-dessus. */
+.detail-intro { padding: 20px 30px 0 30px; font-size: 13px; color: #475569; line-height: 1.7; }
+.dest-edit-overlay { position: fixed; inset: 0; background: rgba(23,19,49,.55); z-index: 6000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.dest-edit-overlay.hidden { display: none; }
+.dest-edit-card { background: #fff; border-radius: 18px; padding: 26px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; }
+.dest-edit-title { font-size: 16px; font-weight: 800; color: #212832; margin-bottom: 16px; }
+.dest-edit-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .4px; margin: 14px 0 6px 0; display: block; }
+.dest-edit-label:first-of-type { margin-top: 0; }
+.dest-edit-input, .dest-edit-textarea { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; }
+.dest-edit-input:focus, .dest-edit-textarea:focus { border-color: #D42759; }
+.dest-edit-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+.dest-edit-actions { display: flex; gap: 10px; margin-top: 20px; }
+.dest-edit-save-btn, .dest-edit-cancel-btn { flex: 1; border: none; border-radius: 100px; padding: 11px 16px; font-size: 13px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.dest-edit-save-btn { background: linear-gradient(120deg, #D42759 0%, #A93FD1 100%); color: #fff; }
+.dest-edit-cancel-btn { background: #f1f5f9; color: #64748b; }
 .detail-tag { position: relative; font-size: 10.5px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .7px; opacity: .85; margin-bottom: 4px; z-index: 2;}
 .detail-name { position: relative; font-size: 26px; font-weight: 700; color: #fff; z-index: 2;}
 
@@ -373,6 +399,23 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
   <div class="detail-window" id="detail-window"></div>
 </div>
 
+<!-- Modale d'édition admin photo/texte (demande du 13/09/2026) — voir
+     openArtistEditModal()/saveArtistEdit() plus bas. Même structure/charte que la
+     modale équivalente de map-destinations.html. -->
+<div class="dest-edit-overlay hidden" id="dest-edit-overlay" onclick="if(event.target===this) closeArtistEditModal()">
+  <div class="dest-edit-card">
+    <div class="dest-edit-title">Edit group</div>
+    <label class="dest-edit-label">Photo URL</label>
+    <input type="text" class="dest-edit-input" id="dest-edit-photo" placeholder="https://...">
+    <label class="dest-edit-label">Text</label>
+    <textarea class="dest-edit-textarea" id="dest-edit-text" placeholder="Short intro shown under the photo..."></textarea>
+    <div class="dest-edit-actions">
+      <button type="button" class="dest-edit-cancel-btn" onclick="closeArtistEditModal()">Cancel</button>
+      <button type="button" class="dest-edit-save-btn" id="dest-edit-save-btn" onclick="saveArtistEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Panier (Cart) — identique à celui de map.html -->
 <div id="cart-modal" class="modal hidden">
     <div class="modal-content" style="max-width: 500px;">
@@ -402,6 +445,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      de cette page (voir correctGroupNumbers() plus bas) — le reste du contenu (bios,
      sections narratives) reste écrit à la main, seuls les CHIFFRES sont automatiques. -->
 <script src="locations-data.js?v=20260912"></script>
+<!-- Firebase (demande du 13/09/2026, "je veux également pouvoir modifier les pages
+     Explore Destinations et Explore Artists") — même besoin/mêmes notes que
+     map-destinations.html : cette page était jusqu'ici 100% statique. -->
+<script type="module" src="firebase-init.js?v=20260913"></script>
 <script>
     function toggleMenu(menuId, evt) {
         document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== menuId) m.classList.add('hidden'); });
@@ -533,7 +580,30 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         if (statNums[2]) statNums[2].textContent = totalLocs;
     }
 
-    document.addEventListener('DOMContentLoaded', () => { applyTranslations(); correctGroupNumbers(); });
+    // Surcharges admin (photo/texte) — demande du 13/09/2026, voir la note dans
+    // firestore.rules (artistOverrides) et window.getArtistOverrides() dans
+    // firebase-init.js. Même principe que map-destinations.html : une seule collection
+    // chargée une fois pour les 6 groupes, mise en cache pour la session.
+    let _artistOverrides = null;
+    async function loadArtistOverrides() {
+        if (!window.getArtistOverrides) return {};
+        if (!_artistOverrides) _artistOverrides = await window.getArtistOverrides();
+        return _artistOverrides;
+    }
+    // Seul BTS a un texte éditorial sur la page RÉSUMÉ (.featured-blurb) — les 5 autres
+    // groupes n'affichent leur texte que dans la fenêtre détaillée (voir openDetail()
+    // plus bas), donc rien à synchroniser ici pour eux.
+    async function applyArtistSummaryOverride() {
+        const ov = await loadArtistOverrides();
+        const btsOv = ov.bts;
+        if (btsOv && btsOv.text) {
+            const el = document.querySelector('.featured-blurb');
+            if (el) el.textContent = btsOv.text;
+        }
+    }
+    window.addEventListener('firebase-ready', () => { applyArtistSummaryOverride(); });
+
+    document.addEventListener('DOMContentLoaded', () => { applyTranslations(); correctGroupNumbers(); applyArtistSummaryOverride(); });
 
     let lastOpenedGroup = null;
     function setLang(lang) {
@@ -541,6 +611,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         localStorage.setItem('lang', lang);
         applyTranslations();
         correctGroupNumbers();
+        applyArtistSummaryOverride();
         if (lastOpenedGroup) { openDetail(lastOpenedGroup); }
     }
 
@@ -732,13 +803,18 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
       }
     };
 
-    function openDetail(key) {
+    async function openDetail(key) {
       const g = (GROUPS[currentLang] || GROUPS.en)[key];
       const t = t_artists[currentLang] || t_artists.en;
       // Contenu encyclopédique (sections, membres détaillés, frise) : anglais
       // uniquement pour l'instant, voir la note au-dessus de GROUP_DETAILS.
       const d = GROUP_DETAILS[key];
       lastOpenedGroup = key;
+      // Surcharges admin (demande du 13/09/2026), si présentes — voir
+      // loadArtistOverrides() plus haut.
+      const ov = (await loadArtistOverrides())[key] || {};
+      const heroPhoto = ov.photo || g.photo;
+      const introText = ov.text || g.blurb;
 
       const kpiHtml = `
         <div class="kpi-box"><div class="kpi-label">Agency</div><div class="kpi-value">${d.agency}</div></div>
@@ -771,12 +847,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
       }).join('');
 
       document.getElementById('detail-window').innerHTML = `
-        <div class="detail-hero" style="background-image: url('${g.photo}');">
+        <div class="detail-hero" style="background-image: url('${heroPhoto}');">
           <div class="detail-hero-overlay"></div>
+          <button type="button" class="detail-edit-pencil hidden" id="artist-edit-pencil" title="Edit photo/text (admin)" onclick="event.stopPropagation(); openArtistEditModal('${key}');">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
+          </button>
           <div class="detail-close" onclick="closeDetail()">✕</div>
           <div class="detail-tag">${t.since} ${g.since}</div>
           <div class="detail-name">${g.name}</div>
         </div>
+        ${introText ? `<p class="detail-intro">${introText}</p>` : ''}
         <div class="detail-body">
           <div class="kpi-grid">${kpiHtml}</div>
 
@@ -801,8 +881,48 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         </div>
       `;
       document.getElementById('overlay').classList.add('open');
+      // Crayon admin uniquement — vérifié après coup (async) plutôt que de bloquer
+      // l'affichage de la fenêtre sur cette vérification, même schéma que
+      // wireDestinationEditPencils() dans map-destinations.html.
+      if (window.isCurrentUserAdmin) {
+        window.isCurrentUserAdmin().then(isAdmin => {
+          const pencil = document.getElementById('artist-edit-pencil');
+          if (pencil) pencil.classList.toggle('hidden', !isAdmin);
+        });
+      }
     }
     function closeDetail() { document.getElementById('overlay').classList.remove('open'); lastOpenedGroup = null; }
+
+    function openArtistEditModal(key) {
+        const g = (GROUPS[currentLang] || GROUPS.en)[key];
+        const ov = (_artistOverrides && _artistOverrides[key]) || {};
+        document.getElementById('dest-edit-photo').value = ov.photo || g.photo;
+        document.getElementById('dest-edit-text').value = ov.text || g.blurb;
+        document.getElementById('dest-edit-overlay').dataset.artistKey = key;
+        document.getElementById('dest-edit-overlay').classList.remove('hidden');
+    }
+    function closeArtistEditModal() {
+        document.getElementById('dest-edit-overlay').classList.add('hidden');
+        delete document.getElementById('dest-edit-overlay').dataset.artistKey;
+    }
+    async function saveArtistEdit() {
+        const key = document.getElementById('dest-edit-overlay').dataset.artistKey;
+        if (!key) return;
+        const photo = document.getElementById('dest-edit-photo').value.trim();
+        const text = document.getElementById('dest-edit-text').value.trim();
+        const btn = document.getElementById('dest-edit-save-btn');
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+        const res = await window.adminSetArtistOverride(key, { photo, text });
+        btn.disabled = false;
+        btn.textContent = 'Save';
+        if (!res || !res.success) { alert('Save failed — please try again.'); return; }
+        if (!_artistOverrides) _artistOverrides = {};
+        _artistOverrides[key] = Object.assign({}, _artistOverrides[key], { photo, text });
+        closeArtistEditModal();
+        if (key === 'bts') applyArtistSummaryOverride();
+        if (lastOpenedGroup === key) openDetail(key);
+    }
 
     // --- GESTION DU PANIER "UNLOCK PASSES" (identique visuellement et fonctionnellement à map.html) ---
     function openCartModal() {

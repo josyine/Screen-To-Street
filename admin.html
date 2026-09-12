@@ -174,6 +174,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <button type="button" id="admin-tab-submissions-btn" class="admin-tab-btn active" onclick="window.switchAdminTab('submissions')">Location submissions</button>
             <button type="button" id="admin-tab-locations-btn" class="admin-tab-btn" onclick="window.switchAdminTab('locations')">Existing locations</button>
             <button type="button" id="admin-tab-live-btn" class="admin-tab-btn" onclick="window.switchAdminTab('live')">Live &amp; Upcoming</button>
+            <button type="button" id="admin-tab-maintenance-btn" class="admin-tab-btn" onclick="window.switchAdminTab('maintenance')">Maintenance</button>
         </div>
 
         <div id="admin-panel-submissions" class="admin-tab-panel active">
@@ -268,10 +269,24 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div id="live-empty-state" class="state-box hidden">No pending events right now.</div>
             <div id="live-submissions-list"></div>
         </div>
+
+        <!-- Onglet "Maintenance" (demande du 13/09/2026, optimisation perf du fil global) :
+             actions de fond ponctuelles, une seule pour l'instant — voir
+             window.adminBackfillFeedPosts() dans firebase-init.js. -->
+        <div id="admin-panel-maintenance" class="admin-tab-panel">
+            <h1>Maintenance</h1>
+            <p class="sub">One-off background actions. These are safe to run more than once (they only fill in missing data).</p>
+            <div class="live-form">
+                <h2>Rebuild the feed index</h2>
+                <p class="sub" style="margin-bottom:14px;">Feed.html now reads from a lightweight index (one document per photo) instead of scanning every account's full profile on every visit — much faster. This index is kept up to date automatically for anything published from now on, and each account repairs its own past posts the next time it signs in. Accounts that never sign in again (demo/seed accounts) won't self-repair — run this once to backfill everyone in one pass.</p>
+                <button type="button" id="feed-backfill-btn" class="live-submit-btn" onclick="window.runFeedBackfill()">Rebuild feed index now</button>
+                <div id="feed-backfill-result" class="live-form-result hidden"></div>
+            </div>
+        </div>
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260907"></script>
+<script type="module" src="firebase-init.js?v=20260913"></script>
 <script src="countries.js?v=20260907"></script>
 <script src="locations-data.js?v=20260911"></script>
 <script src="script.js?v=20260911"></script>
@@ -655,10 +670,37 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         document.getElementById('admin-tab-submissions-btn').classList.toggle('active', tab === 'submissions');
         document.getElementById('admin-tab-locations-btn').classList.toggle('active', tab === 'locations');
         document.getElementById('admin-tab-live-btn').classList.toggle('active', tab === 'live');
+        document.getElementById('admin-tab-maintenance-btn').classList.toggle('active', tab === 'maintenance');
         document.getElementById('admin-panel-submissions').classList.toggle('active', tab === 'submissions');
         document.getElementById('admin-panel-locations').classList.toggle('active', tab === 'locations');
         document.getElementById('admin-panel-live').classList.toggle('active', tab === 'live');
+        document.getElementById('admin-panel-maintenance').classList.toggle('active', tab === 'maintenance');
         if (tab === 'live' && typeof window.loadLiveEventSubmissions === 'function') window.loadLiveEventSubmissions();
+    };
+
+    // Reconstruction ponctuelle de l'index du fil global (voir
+    // window.adminBackfillFeedPosts() dans firebase-init.js et la note dans le HTML
+    // ci-dessus) — bouton "Maintenance", demande du 13/09/2026.
+    window.runFeedBackfill = async function () {
+        const btn = document.getElementById('feed-backfill-btn');
+        const result = document.getElementById('feed-backfill-result');
+        btn.disabled = true;
+        btn.textContent = 'Rebuilding…';
+        result.classList.add('hidden');
+        if (typeof window.adminBackfillFeedPosts !== 'function') {
+            btn.disabled = false;
+            btn.textContent = 'Rebuild feed index now';
+            result.textContent = 'Not available — firebase-init.js failed to load.';
+            result.classList.remove('hidden');
+            return;
+        }
+        const res = await window.adminBackfillFeedPosts();
+        btn.disabled = false;
+        btn.textContent = 'Rebuild feed index now';
+        result.textContent = res.success
+            ? `Done — ${res.written} post${res.written === 1 ? '' : 's'} indexed.`
+            : `Failed: ${res.code || 'unknown error'}`;
+        result.classList.remove('hidden');
     };
 
     let allSiteLocationsCache = null;

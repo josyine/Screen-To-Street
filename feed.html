@@ -181,7 +181,12 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
      derrière la barre. */
   .feed-page { display: flex; flex-direction: column; }
   .feed-search-wrap { order: -1; margin: 0 0 12px 0; }
-  .feed-search-input { background: rgba(255,255,255,.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,.6); padding: 10px 16px 10px 38px; }
+  /* Barre plus fine en HAUTEUR seulement (demande du 13/09/2026, capture d'écran fournie) —
+     distinct de "plus fine" au sens largeur (déjà traité juste au-dessus, toute la largeur
+     de la page). Seul le padding vertical baisse ; la vraie font-size reste 16px (aucun
+     changement ici), donc pas de risque de zoom iOS au focus — impossible de descendre le
+     padding vertical plus bas que ça sans que le texte touche visuellement les bords. */
+  .feed-search-input { background: rgba(255,255,255,.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,.6); padding: 6px 16px 6px 38px; }
   .feed-search-icon { left: 14px; }
   /* Onglets Explore/Saved étirés jusqu'aux bords de l'ÉCRAN (demande du 13/09/2026,
      distincte de la barre de recherche ci-dessus qui reste "à la largeur de la page") :
@@ -361,7 +366,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260907"></script>
+<script type="module" src="firebase-init.js?v=20260913"></script>
 <script src="locations-data.js?v=20260911"></script>
 <script src="script.js?v=20260911"></script>
 <script>
@@ -432,23 +437,25 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         loadFeedTileLikes(photos);
     }
 
-    // Charge le nombre de likes de chaque tuile visible EN TÂCHE DE FOND (jamais avant le
-    // premier rendu de la grille) — un badge par photo, mis en cache sur l'objet `p` lui-
-    // même pour ne pas re-consulter Firestore à chaque filtrage/re-rendu de la même photo.
+    // Marque les tuiles déjà aimées par MOI (demande du 13/09/2026, optimisation perf) :
+    // le nombre de likes de chaque tuile vient déjà de fetchGlobalPhotoFeed()
+    // (p.likeCount, dénormalisé côté écriture — voir firebase-init.js), donc il ne reste
+    // que "est-ce que JE l'ai aimée" à déterminer — UNE seule lecture pour tout le fil
+    // (listMyLikedPhotoKeys(), miroir sur users/{uid}) plutôt qu'un getPhotoLikeState()
+    // par tuile comme avant (c'était le deuxième symptôme signalé : "le compteur de
+    // J'aime télécharge les documents au lieu d'un compteur côté serveur").
+    let _myLikedKeysCache = null;
     async function loadFeedTileLikes(photos) {
-        if (typeof window.getPhotoLikeState !== 'function') return;
-        await Promise.all(photos.map(async (p) => {
+        if (typeof window.listMyLikedPhotoKeys !== 'function') return;
+        if (!_myLikedKeysCache) _myLikedKeysCache = new Set(await window.listMyLikedPhotoKeys());
+        photos.forEach(p => {
             const photoKey = p.uid + '_' + p.id;
-            if (p.likeCount == null) {
-                const state = await window.getPhotoLikeState(photoKey);
-                p.likeCount = state.count;
-                p.likedByMe = state.likedByMe;
-            }
+            if (p.likedByMe == null) p.likedByMe = _myLikedKeysCache.has(photoKey);
             const badge = document.querySelector(`.feed-tile-likes[data-photo-key="${CSS.escape(photoKey)}"]`);
             if (!badge) return;
-            badge.querySelector('span').textContent = p.likeCount;
+            badge.querySelector('span').textContent = p.likeCount != null ? p.likeCount : 0;
             badge.classList.toggle('liked', !!p.likedByMe);
-        }));
+        });
     }
 
     // Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client,
