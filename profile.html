@@ -311,6 +311,23 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
   .profile-header-actions .profile-edit-btn { display: none; }
   .profile-avatar-edit-badge.hidden { display: none !important; }
   .profile-avatar-edit-badge:not(.hidden) { display: flex; }
+  /* "visited"/"photos"/"followers" repassaient parfois sur 2 lignes sur les petits écrans
+     (demande du 13/09/2026) : .profile-stats gardait flex-wrap:wrap et une police desktop
+     (13px) alors que sur un profil qui n'est pas le sien, le bouton Follow/Following
+     partage la même ligne que .profile-header-info et lui laisse moins de place. Empêcher
+     le retour à la ligne (nowrap) + police/espacement réduits suffit à faire tenir les 3
+     stats sur une ligne même sur un iPhone SE (320px) — sans toucher à
+     .profile-header-info (un min-width:0 y a été testé mais laisse alors le texte
+     chevaucher le bouton Follow au lieu de passer à la ligne comme avant). */
+  .profile-stats { flex-wrap: nowrap; gap: 10px; }
+  .profile-stat { font-size: 11px; white-space: nowrap; }
+  /* Bouton Follow/Following réduit + recoloré en violet/rose de la charte graphique
+     (demande du 13/09/2026, "j'aime pas" le bleu marine sombre d'origine) — même dégradé
+     que .profile-cover-banner, uniquement sur mobile (desktop garde le style existant). */
+  .profile-follow-btn { padding: 6px 14px; font-size: 11px; background: linear-gradient(120deg, #D42759 0%, #A93FD1 100%); }
+  .profile-follow-btn:hover { background: linear-gradient(120deg, #b81f4a 0%, #8f35b0 100%); }
+  .profile-follow-btn.following { background: #fff; color: #D42759; border: 1.5px solid #fbcfe8; }
+  .profile-follow-btn.following:hover { background: #fff5f6; border-color: #D42759; }
   .profile-photo-grid { grid-template-columns: repeat(3, 1fr); }
   /* Pleine largeur + océan couleur du fond de page (demande du 11/09/2026) : la carte
      vivait jusqu'ici dans .page (padding horizontal 16px, voir plus haut), d'où les

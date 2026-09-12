@@ -191,6 +191,14 @@ select.field-input { appearance: none; background-image: url("data:image/svg+xml
     .login-btn-v5 { padding: 9px 18px; font-size: 13px; }
 
     .hero { min-height: 100svh; }
+    /* Audit visuel du 13/09/2026 : .bg-route (ligne d'itinéraire + points décoratifs) a un
+       viewBox large (1180x600) pensé pour un hero desktop très étiré, et
+       preserveAspectRatio="xMidYMid slice" l'agrandit pour couvrir un écran mobile bien
+       plus haut que large — un des points (dot-g, rose vif, le plus visible) atterrit alors
+       en plein milieu du bouton "See Demo" au lieu de rester une décoration discrète en
+       arrière-plan. Retiré sur mobile plutôt que recalculé : purement décoratif, son
+       absence ne change aucune information ni interaction. */
+    .bg-route { display: none; }
     .copy { margin: auto 6% 10% 6%; max-width: 100%; padding-bottom: 0; }
     .copy h1 { font-size: 34px; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; }
     .copy p { font-size: 15px; margin-bottom: 28px; max-width: 100%; }
