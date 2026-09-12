@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-12T21:39:05.287Z.
+// Généré le 2026-09-12T21:51:12.034Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9332,6 +9332,49 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "group": "BTS",
+    "city": "Goyang",
+    "year": "2020",
+    "lng": 126.7456,
+    "member": "All",
+    "name": "Hyundai Motorstudio Goyang",
+    "id": "new-3UtuxgcNLM7VVKgsgZiG",
+    "img": "https://img.youtube.com/vi/zaXfSCdO69I/hqdefault.jpg",
+    "category": "Variety Show Location",
+    "country": "South Korea",
+    "address": "217 Kintex-ro, Ilsanseo-gu, Goyang-si, Gyeonggi-do, South Korea",
+    "lat": 37.6653,
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "text": {
+          "en": "Take the guided permanent exhibition tour to walk through the exact interactive design spaces where RM, Jin, Suga, J-Hope, Jimin, V, and Jungkook searched for clues."
+        },
+        "title": {
+          "en": "Interactive Experience"
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "fullDescription": {
+      "en": "<p>Located just outside Seoul, Hyundai Motorstudio Goyang is South Korea's premier automotive theme park and mobility experience center. Far beyond a traditional showroom, this architectural landmark immerses visitors in the entire journey of car creation, featuring futuristic interactive exhibits, automated manufacturing displays, and cutting-edge concept car showcases.</p><p>This sprawling, multi-story venue became an exclusive, after-hours playground for the group during Run BTS! Episodes 110 and 111. The sleek and futuristic exhibition zones served as the perfect backdrop for a hilariously chaotic late-night treasure hunt. Members raced across the facility, frantically searching for hidden clues inside the showcased vehicles and tackling automotive trivia challenges, turning this modern corporate space into a memorable arena of pure comedic entertainment.</p>"
+    },
+    "practicalInfo": [
+      {
+        "text": {
+          "en": "Take Subway Line 3 to Daehwa Station (Exit 2) and walk 15 minutes towards the KINTEX complex."
+        },
+        "title": {
+          "en": "How to get there"
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "ytId": "zaXfSCdO69I"
+  },
+  {
     "id": "new-3XGdjRGOFysEfy39UpDo",
     "member": "V",
     "name": "Busan Citizens Park (V Trail)",
@@ -9373,6 +9416,49 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "tiktokUrl": "",
     "ytId": ""
+  },
+  {
+    "category": "Landmarks",
+    "country": "South Korea",
+    "member": "All",
+    "year": "2018",
+    "address": "10 Toegye-ro 36-gil, Jung-gu, Seoul, South Korea",
+    "id": "new-4BJEcfrUGqy68YbNzjQM",
+    "lat": 37.5606,
+    "name": "Korea House",
+    "img": "https://img.youtube.com/vi/ThcZlAqKVmQ/hqdefault.jpg",
+    "lng": 126.9946,
+    "group": "BTS",
+    "city": "Seoul",
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visiting Tip"
+        },
+        "text": {
+          "en": "While access to the main courtyard is generally open, booking a traditional tea service or meal in advance allows you to explore the inner traditional garden areas where the shoot took place."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "fullDescription": {
+      "en": "<p>Korea House is a premier traditional cultural center situated at the foot of Namsan Mountain in Seoul. Built in traditional Joseon Dynasty architectural style, the complex promotes Korean heritage through traditional performing arts, royal cuisine court dining, and cultural workshops.</p><p>In 2018, BTS held their iconic photoshoot with Billboard Magazine at Korea House. Dressed in modern luxury high fashion blended with traditional aesthetic surroundings, the members posed in the elegant outdoor hanok courtyards, making it a celebrated landmark for ARMY interested in traditional Korean architecture.</p>"
+    },
+    "practicalInfo": [
+      {
+        "text": {
+          "en": "Take Seoul Subway Line 3 or 4 to Chungmuro Station and take Exit 3. Korea House is less than a 2-minute walk from the exit."
+        },
+        "title": {
+          "en": "How to get there"
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "ytId": "ThcZlAqKVmQ"
   },
   {
     "category": "Restaurant",
