@@ -3417,6 +3417,18 @@ function dismissNewLocationBadge(locId) {
 // Tous les autres appels (changement de filtre, recherche...) gardent le comportement
 // habituel : recadrer sur ce qui est maintenant affiché.
 function renderLocations(skipFitBounds) {
+    // Si l'onglet "Visited" est actif, c'est renderVisitedTabList() qui doit garder la
+    // main sur les marqueurs affichés (lieux visités uniquement) — sinon, un
+    // rafraîchissement générique sans rapport avec cet onglet (changement de langue, sync
+    // cloud au login, wishlist, marquer/démarquer un lieu visité...) réinjectait
+    // silencieusement TOUS les lieux d'Explore sur la carte, cassant le filtre "Visited"
+    // jusqu'au prochain clic manuel sur l'onglet (demande du 13/09/2026).
+    const visitedTabBtn = document.getElementById('tab-visited-btn');
+    if (visitedTabBtn && visitedTabBtn.classList.contains('active') && typeof renderVisitedTabList === 'function') {
+        renderVisitedTabList();
+        return;
+    }
+
     const groupSelect = document.getElementById('group-select');
     const memberSelect = document.getElementById('member-select');
     const yearSelect = document.getElementById('year-select');
@@ -3610,16 +3622,7 @@ function addSingleLocationMarker(loc) {
     // highlightSelectedLocationMarker()) restent inchangés.
     const baseColor = groupColors[loc.group] || '#334e68';
     const inlineStyle = `background-color: ${baseColor}; --marker-color: ${baseColor};`;
-
-    // Badge "×N publications" (demande du 11/09/2026) : appliqué dès la création si
-    // l'index photos/lieu (voir ensureLocPostsIndex plus bas) est déjà prêt — sinon un
-    // marqueur sans photos aujourd'hui n'en aura pas tant que la carte n'est pas
-    // re-rendue (changement de filtre) après coup ; applyLocPostBadges() rattrape ce cas
-    // une fois l'index chargé pour la première fois.
-    const postCount = locPostsIndexSync ? (locPostsIndexSync.get(Number(loc.id)) || []).length : 0;
-    const html = postCount > 0
-        ? `<span style="position:relative; display:inline-block;"><div style="${inlineStyle}"></div><span class="loc-post-badge">${postCount > 9 ? '9+' : postCount}</span></span>`
-        : `<div style="${inlineStyle}"></div>`;
+    const html = `<div style="${inlineStyle}"></div>`;
 
     const customIcon = L.divIcon({ className: 'custom-category-marker location-dot-marker', html, iconSize: [12,12], iconAnchor: [6,6] });
     const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markerGroup);
@@ -3680,14 +3683,11 @@ function renderMapMarkers(locations, opts) {
         else addClusterMarker(cluster);
     });
 
-    // Badges "×N publications" (demande du 11/09/2026) : ne bloque jamais ce rendu —
-    // ensureLocPostsIndex() ne fait une vraie lecture Firestore qu'une seule fois (mise en
-    // cache par fetchGlobalPhotoFeed), les rendus suivants (changement de filtre, zoom)
-    // profitent alors immédiatement de l'index déjà chargé via locPostsIndexSync (voir
-    // addSingleLocationMarker ci-dessus) — ce .then() ne fait qu'un rattrapage pour les
-    // marqueurs déjà affichés avant que l'index n'ait fini de charger la toute première
-    // fois.
-    if (typeof ensureLocPostsIndex === 'function') ensureLocPostsIndex().then(applyLocPostBadges);
+    // Préchauffe l'index photos/lieu (demande du 13/09/2026 : ne plus afficher le nombre
+    // de publications sur la carte, cette info reste seulement dans le tiroir/chevron —
+    // voir updateLocVisitorsBar()) sans bloquer ce rendu, pour que ce tiroir n'ait déjà
+    // plus qu'à lire le cache au premier clic au lieu d'attendre une lecture Firestore.
+    if (typeof ensureLocPostsIndex === 'function') ensureLocPostsIndex();
 
     // Le fitBounds initial doit couvrir les vraies coordonnées de chaque lieu (pas les
     // centres de cluster, qui donneraient un cadrage trop serré) — seulement au premier
@@ -4296,23 +4296,6 @@ window.getLocPosts = function (locId) {
     if (!locPostsIndexSync) return [];
     return locPostsIndexSync.get(Number(locId)) || [];
 };
-
-// Badge "×N" sur la pastille d'un lieu — même principe visuel que le badge "×N" des
-// clusters (.cluster-badge), mais compte les PUBLICATIONS déposées à ce lieu plutôt que
-// le nombre de lieux regroupés. Patch les marqueurs déjà affichés une fois l'index prêt,
-// sans attendre un changement de filtre — reconstruit l'icône avec la même couleur que
-// addSingleLocationMarker() lui avait posée à sa création (marker.__baseColor).
-function applyLocPostBadges() {
-    if (!markerGroup || !locPostsIndexSync || typeof L === 'undefined') return;
-    markerGroup.eachLayer(marker => {
-        if (marker.__locId == null || !marker.__baseColor) return;
-        const count = (locPostsIndexSync.get(Number(marker.__locId)) || []).length;
-        if (!count) return;
-        const inlineStyle = `background-color: ${marker.__baseColor}; --marker-color: ${marker.__baseColor};`;
-        const html = `<span style="position:relative; display:inline-block;"><div style="${inlineStyle}"></div><span class="loc-post-badge">${count > 9 ? '9+' : count}</span></span>`;
-        marker.setIcon(L.divIcon({ className: 'custom-category-marker location-dot-marker', html, iconSize: [12,12], iconAnchor: [6,6] }));
-    });
-}
 
 // Chevron PERMANENT intégré à la nav du bas (demande du 11/09/2026, redemandé le
 // 12/09/2026 : "tu n'as pas ajouté le chevron sur mobile... j'avais même envoyé une

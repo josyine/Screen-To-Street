@@ -92,6 +92,45 @@
   .stat-card { background: #faf9fc; border-radius: 12px; padding: 14px 16px; border: 1px solid #e2e8f0;}
   .stat-card .num { font-size: 20px; font-weight: 800; color: #212832; }
   .stat-card .lab { font-size: 10.5px; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+
+  /* Fiche artiste enrichie (demande du 12/09/2026, "le contenu de artists.html et
+     map-artists.html doit être le même") : renderArtistDetailHtml(), partagé avec
+     map-artists.html via artists-content.js, produit ce balisage (KPI, sections
+     narratives, membres détaillés, frise chronologique) — ces règles sont copiées à
+     l'identique depuis map-artists.html pour qu'il s'affiche correctement ici aussi. */
+  .detail-edit-pencil { position: absolute; top: 16px; right: 60px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; z-index: 3; transition: 0.2s; border: none; }
+  .detail-edit-pencil:hover { background: rgba(255,255,255,.5); }
+  .detail-intro { padding: 20px 30px 0 30px; font-size: 13px; color: #475569; line-height: 1.7; }
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 24px; }
+  .kpi-box { background: #faf9fc; border-radius: 10px; padding: 9px 4px; text-align: center; }
+  .kpi-label { font-size: 8px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: .3px; }
+  .kpi-value { font-size: 10.5px; font-weight: 700; color: #212832; margin-top: 3px; }
+  .section-sep { border: none; height: 1px; background: #EFECF6; margin: 20px 0; }
+  .blog-heading { font-size: 13px; font-weight: 700; color: #D42759; margin-bottom: 7px; }
+  .para { font-size: 12.5px; line-height: 1.8; color: #3f495c; margin-bottom: 14px; }
+  .para:last-child { margin-bottom: 0; }
+  .member-card { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+  .member-card:last-child { border-bottom: none; padding-bottom: 0; }
+  .member-card .member-avatar { width: 38px; height: 38px; font-size: 11px; flex-shrink: 0; }
+  .member-info .m-name { font-size: 12.5px; font-weight: 700; color: #212832; }
+  .member-info .m-name .real-name { font-weight: 400; color: #94a3b8; }
+  .member-info .m-role { font-size: 10px; font-weight: 600; color: #D42759; margin-bottom: 4px; }
+  .member-info .m-bio { font-size: 11.5px; line-height: 1.6; color: #64748b; }
+  .timeline-wrap { position: relative; padding-left: 20px; margin-bottom: 4px; }
+  .timeline-wrap::before { content: ''; position: absolute; left: 5px; top: 4px; bottom: 4px; width: 2px; background: #f0dbe4; }
+  .tl-item { position: relative; margin-bottom: 13px; }
+  .tl-item:last-child { margin-bottom: 0; }
+  .tl-dot { position: absolute; left: -19px; top: 3px; width: 9px; height: 9px; border-radius: 50%; background: #D42759; box-shadow: 0 0 0 2px #FCE7F0; }
+  .tl-dot.tl-dot-muted { background: #94a3b8; box-shadow: 0 0 0 2px #f1f5f9; }
+  .tl-dot.tl-dot-accent { background: #8B5CF6; box-shadow: 0 0 0 2px #EDE7FB; }
+  .tl-year { font-size: 10.5px; font-weight: 700; color: #D42759; }
+  .tl-year.tl-year-muted { color: #64748b; }
+  .tl-year.tl-year-accent { color: #8B5CF6; }
+  .tl-text { font-size: 11.5px; color: #3f495c; line-height: 1.55; }
+  .map-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .map-stat { background: #faf9fc; border-radius: 12px; padding: 14px; text-align: center; }
+  .map-stat .n { font-size: 19px; font-weight: 800; color: #212832; }
+  .map-stat .l { font-size: 10px; color: #94a3b8; margin-top: 2px; }
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -216,6 +255,17 @@
   <div class="detail-window" id="detail-window"></div>
 </div>
 
+<!-- Catalogue statique des lieux + Firebase + contenu partagé "Explore Artists"
+     (demande du 12/09/2026, "le contenu de artists.html et map-artists.html doit être
+     le même") — mêmes fichiers, mêmes versions et même ordre que sur map-artists.html
+     (voir les balises équivalentes juste avant son script principal) : cette page
+     publique n'avait jusqu'ici aucun accès à Firestore ni aux chiffres réels de
+     locations-data.js, ce qui l'avait laissée geler des chiffres obsolètes pendant que
+     map-artists.html continuait d'évoluer. GROUPS/GROUP_DETAILS/renderArtistDetailHtml
+     viennent maintenant tous les deux de artists-content.js, jamais dupliqués ici. -->
+<script src="locations-data.js?v=20260912"></script>
+<script type="module" src="firebase-init.js?v=20260913"></script>
+<script src="artists-content.js?v=20260913"></script>
 <script>
 // --- I18N SYSTEM ---
 let currentLang = localStorage.getItem('lang') || 'en';
@@ -269,74 +319,51 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLang = this.getAttribute('data-lang');
             localStorage.setItem('lang', currentLang);
             updateLangUI();
+            correctGroupNumbers(currentLang);
+            applyArtistSummaryOverride();
+            if (lastOpenedGroup) openDetail(lastOpenedGroup);
         });
     });
 
-    document.addEventListener('click', () => { 
+    document.addEventListener('click', () => {
         const langMenu = document.getElementById('lang-menu');
-        if (langMenu) langMenu.classList.add('hidden'); 
+        if (langMenu) langMenu.classList.add('hidden');
     });
 
     updateLangUI();
+    correctGroupNumbers(currentLang);
+    applyArtistSummaryOverride();
 });
+window.addEventListener('firebase-ready', () => { applyArtistSummaryOverride(); });
 
-// --- DATA ---
-const GROUPS = {
-  en: {
-      bts: { name: "BTS", photo: "https://images.unsplash.com/photo-1621252179027-94459d278660?w=800", blurb: "From a cramped Gangnam practice room to a custom-built mountain retreat in Chuncheon, BTS's map spans nine years and three countries — the most complete journey on Screen To Street.", members: [["RM","#8B5CF6"],["Jin","#7C4FE0"],["Suga","#8B5CF6"],["J-Hope","#7C4FE0"],["Jimin","#8B5CF6"],["V","#7C4FE0"],["Jungkook","#8B5CF6"]], locations: 12, countries: 3, categories: "Run BTS, Bon Voyage, MV Location, Museums, Restaurants, Cafe, Concerts, Fashion, Landmarks", since: "2013" },
-      blackpink: { name: "Blackpink", photo: "https://images.unsplash.com/photo-1493225457124-a1a2a5f0fa47?w=800", blurb: "Just getting started — the first stop on Blackpink's map is a chic Gangnam cafe spotted on Jennie's Instagram. More locations are added as they're confirmed.", members: [["Jisoo","#D42759"],["Jennie","#B23554"],["Rosé","#D42759"],["Lisa","#B23554"]], locations: 1, countries: 1, categories: "Cafe, Restaurants, MV Location, Pop-up Store, Concerts, Fashion", since: "2016" },
-      twice: { name: "Twice", photo: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800", blurb: "Nine members, no shortage of stories — Twice's map is next in line to be built. Their filming locations and favorite spots are being researched.", members: [["Nayeon","#2E3644"],["Jeongyeon","#5B6472"],["Momo","#2E3644"],["Sana","#5B6472"],["Jihyo","#2E3644"],["Mina","#5B6472"],["Dahyun","#2E3644"],["Chaeyoung","#5B6472"],["Tzuyu","#2E3644"]], locations: 0, countries: 0, categories: "Cafe, Concerts, Fashion", since: "2015" },
-      seventeen: { name: "Seventeen", photo: "https://images.unsplash.com/photo-1540039155732-6134b281165e?w=800", blurb: "Thirteen members and a world tour's worth of stages — Seventeen's footprint on Screen To Street is on the way.", members: [["S.Coups","#C97A9A"],["Jeonghan","#D9A5BE"],["Joshua","#C97A9A"],["Jun","#D9A5BE"],["Hoshi","#C97A9A"],["Wonwoo","#D9A5BE"],["Woozi","#C97A9A"],["DK","#D9A5BE"],["Mingyu","#C97A9A"],["The8","#D9A5BE"],["Seungkwan","#C97A9A"],["Vernon","#D9A5BE"],["Dino","#C97A9A"]], locations: 0, countries: 0, categories: "Concerts, Landmarks", since: "2015" },
-      katseye: { name: "Katseye", photo: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800", blurb: "The newest addition to the roster — pop-up stores and fashion moments are next on the map as Katseye's presence grows.", members: [["Sophia","#5B6472"],["Lara","#8996A3"],["Manon","#5B6472"],["Daniela","#8996A3"],["Yoonchae","#5B6472"],["Megan","#8996A3"]], locations: 0, countries: 0, categories: "Pop-up Store, Fashion", since: "2024" },
-      txt: { name: "TXT", photo: "https://images.unsplash.com/photo-1501612780327-45045538702b?w=800", blurb: "Five members, one story about to begin — TXT's first mapped location is in the works.", members: [["Soobin","#A78BFA"],["Yeonjun","#C4B5FD"],["Beomgyu","#A78BFA"],["Taehyun","#C4B5FD"],["Huening Kai","#A78BFA"]], locations: 0, countries: 0, categories: "MV Location, Concerts", since: "2019" }
-  },
-  fr: {
-      bts: { name: "BTS", photo: "https://images.unsplash.com/photo-1621252179027-94459d278660?w=800", blurb: "D'une petite salle d'entraînement à Gangnam à un refuge majestueux dans les montagnes de Chuncheon, la carte de BTS couvre neuf ans et trois pays — le voyage le plus complet sur Screen To Street.", members: [["RM","#8B5CF6"],["Jin","#7C4FE0"],["Suga","#8B5CF6"],["J-Hope","#7C4FE0"],["Jimin","#8B5CF6"],["V","#7C4FE0"],["Jungkook","#8B5CF6"]], locations: 12, countries: 3, categories: "Run BTS, Bon Voyage, MV Location, Musées, Restaurants, Café, Concerts, Mode, Lieux mythiques", since: "2013" },
-      blackpink: { name: "Blackpink", photo: "https://images.unsplash.com/photo-1493225457124-a1a2a5f0fa47?w=800", blurb: "Un début prometteur — le premier lieu de Blackpink est un café chic de Gangnam repéré sur l'Instagram de Jennie. D'autres lieux seront ajoutés prochainement.", members: [["Jisoo","#D42759"],["Jennie","#B23554"],["Rosé","#D42759"],["Lisa","#B23554"]], locations: 1, countries: 1, categories: "Café, Restaurants, MV Location, Pop-up Store, Concerts, Mode", since: "2016" },
-      twice: { name: "Twice", photo: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800", blurb: "Neuf membres, des histoires à revendre — la carte de Twice est la prochaine sur la liste. Leurs lieux de tournage et endroits favoris sont en cours d'analyse.", members: [["Nayeon","#2E3644"],["Jeongyeon","#5B6472"],["Momo","#2E3644"],["Sana","#5B6472"],["Jihyo","#2E3644"],["Mina","#5B6472"],["Dahyun","#2E3644"],["Chaeyoung","#5B6472"],["Tzuyu","#2E3644"]], locations: 0, countries: 0, categories: "Café, Concerts, Mode", since: "2015" },
-      seventeen: { name: "Seventeen", photo: "https://images.unsplash.com/photo-1540039155732-6134b281165e?w=800", blurb: "Treize membres et l'équivalent d'une tournée mondiale — l'empreinte de Seventeen sur Screen To Street est en route.", members: [["S.Coups","#C97A9A"],["Jeonghan","#D9A5BE"],["Joshua","#C97A9A"],["Jun","#D9A5BE"],["Hoshi","#C97A9A"],["Wonwoo","#D9A5BE"],["Woozi","#C97A9A"],["DK","#D9A5BE"],["Mingyu","#C97A9A"],["The8","#D9A5BE"],["Seungkwan","#C97A9A"],["Vernon","#D9A5BE"],["Dino","#C97A9A"]], locations: 0, countries: 0, categories: "Concerts, Lieux mythiques", since: "2015" },
-      katseye: { name: "Katseye", photo: "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800", blurb: "La petite dernière de la sélection — les pop-up stores et moments de mode seront les prochains sur la carte de Katseye.", members: [["Sophia","#5B6472"],["Lara","#8996A3"],["Manon","#5B6472"],["Daniela","#8996A3"],["Yoonchae","#5B6472"],["Megan","#8996A3"]], locations: 0, countries: 0, categories: "Pop-up Store, Mode", since: "2024" },
-      txt: { name: "TXT", photo: "https://images.unsplash.com/photo-1501612780327-45045538702b?w=800", blurb: "Cinq membres, une histoire qui ne fait que commencer — le premier lieu de TXT est en cours d'ajout.", members: [["Soobin","#A78BFA"],["Yeonjun","#C4B5FD"],["Beomgyu","#A78BFA"],["Taehyun","#C4B5FD"],["Huening Kai","#A78BFA"]], locations: 0, countries: 0, categories: "MV Location, Concerts", since: "2019" }
-  }
-};
+// --- DATA & DETAIL RENDERING ---
+// GROUPS/GROUP_DETAILS/computeGroupLocationStats/correctGroupNumbers/
+// loadArtistOverrides/renderArtistDetailHtml viennent tous de artists-content.js,
+// chargé plus haut — partagé à l'identique avec map-artists.html (demande du
+// 12/09/2026) pour que les deux pages ne puissent plus diverger. Rien de tout ça n'est
+// redéfini ici : voir ce fichier pour la donnée et le rendu de la fiche détaillée.
+let lastOpenedGroup = null;
 
-function openDetail(key) {
-  const g = GROUPS[currentLang][key];
+async function openDetail(key) {
   const t = t_artists[currentLang];
-  
-  const membersHtml = g.members.map(([name,color]) =>
-    `<div class="member-chip"><div class="member-avatar" style="background:${color};">${name.slice(0,2).toUpperCase()}</div><span class="member-name">${name}</span></div>`
-  ).join('');
-
-  document.getElementById('detail-window').innerHTML = `
-    <div class="detail-hero" style="background-image: url('${g.photo}');">
-      <div class="detail-hero-overlay"></div>
-      <div class="detail-close" onclick="closeDetail()">✕</div>
-      <div class="detail-tag">${t.since} ${g.since}</div>
-      <div class="detail-name">${g.name}</div>
-    </div>
-    <div class="detail-body">
-      <p class="detail-blurb">${g.blurb}</p>
-
-      <div class="detail-section-label">${t.detailMembers} (${g.members.length})</div>
-      <div class="members-grid">${membersHtml}</div>
-
-      <div class="detail-section-label">${t.detailGlance}</div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="num">${g.locations}</div><div class="lab">${t.statLocs}</div></div>
-        <div class="stat-card"><div class="num">${g.countries}</div><div class="lab">${t.statCountries}</div></div>
-      </div>
-
-      ${g.locations > 0 ? `
-      <div class="detail-section-label">${t.detailCats}</div>
-      <p class="detail-blurb">${g.categories}</p>
-      ` : ''}
-    </div>
-  `;
+  lastOpenedGroup = key;
+  const overrides = (await loadArtistOverrides())[key] || {};
+  document.getElementById('detail-window').innerHTML = renderArtistDetailHtml(key, currentLang, t, overrides);
   document.getElementById('overlay').classList.add('open');
+  // Crayon admin : cette page publique n'a pas la modale d'édition, mais on vérifie
+  // quand même isCurrentUserAdmin() par cohérence avec map-artists.html — il ne se
+  // passera simplement jamais rien de plus que révéler un bouton dont l'onclick se
+  // protège lui-même (voir renderArtistDetailHtml dans artists-content.js).
+  if (window.isCurrentUserAdmin) {
+    window.isCurrentUserAdmin().then(isAdmin => {
+      const pencil = document.getElementById('artist-edit-pencil');
+      if (pencil) pencil.classList.toggle('hidden', !isAdmin);
+    });
+  }
 }
 function closeDetail() {
   document.getElementById('overlay').classList.remove('open');
+  lastOpenedGroup = null;
 }
 </script>
 
