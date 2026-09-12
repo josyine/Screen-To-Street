@@ -81,9 +81,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-upload-name{font-size:10.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sub-tweet-preview{margin-bottom:8px;}
 .sub-instagram-preview{margin-bottom:8px;}
-.sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;margin-bottom:12px;}
+.sub-story-wrap{position:relative;margin-bottom:12px;}
+.sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;padding-right:44px;}
 .sub-story p{margin-bottom:8px;}
 .sub-story p:last-child{margin-bottom:0;}
+.sub-story-edit-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(23,19,49,.55);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;}
+.sub-story-edit-btn:hover{background:#D42759;}
+.sub-story-textarea{width:100%;min-height:140px;font-size:13px;font-family:'Poppins',sans-serif;color:#334155;line-height:1.6;background:#fff;border:1.5px solid #D42759;border-radius:10px;padding:12px 14px;resize:vertical;}
+.sub-story-save-btn{margin-top:8px;background:#D42759;color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;}
+.sub-story-save-btn:hover{filter:brightness(0.95);}
 .sub-fields{font-size:11.5px;color:#94a3b8;margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap;}
 .sub-source{font-size:12px;margin-bottom:16px;}
 .sub-source a{color:#D42759;font-weight:600;word-break:break-all;}
@@ -442,7 +448,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)" value="${sub.ytId ? 'https://www.youtube.com/watch?v=' + escapeHtml(sub.ytId) : ''}">
             <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:12px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
 
-            <div class="sub-story">${storyHtml(sub)}</div>
+            <div class="sub-story-wrap">
+                <div class="sub-story">${storyHtml(sub)}</div>
+                <button type="button" class="sub-story-edit-btn" title="Edit text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button>
+            </div>
             <div class="sub-fields">
                 <span>${practicalCount} practical info item${practicalCount === 1 ? '' : 's'}</span>
                 <span>${tipsCount} tip${tipsCount === 1 ? '' : 's'}</span>
@@ -474,6 +483,36 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const tweetError = card.querySelector('.sub-tweet-error');
         const videoInput = card.querySelector('.sub-video-input');
         const videoStatus = card.querySelector('.sub-video-status');
+
+        // Crayon pour éditer le texte de la fiche directement (demande du 12/09/2026) —
+        // même conversion HTML<->texte brut que openLocationEditModal() dans script.js
+        // (htmlParagraphsToPlainText/plainTextToHtmlParagraphs), pour garder un seul champ
+        // "fullDescription.en" éditable sans réécrire la logique. Modifie `sub` directement,
+        // comme les autres champs de cette carte : Approve publie donc bien le texte corrigé.
+        const storyWrap = card.querySelector('.sub-story-wrap');
+        const storyPencilSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>';
+        function renderStoryView() {
+            storyWrap.innerHTML = `<div class="sub-story">${storyHtml(sub)}</div><button type="button" class="sub-story-edit-btn" title="Edit text">${storyPencilSvg}</button>`;
+            storyWrap.querySelector('.sub-story-edit-btn').addEventListener('click', renderStoryEdit);
+        }
+        function renderStoryEdit() {
+            storyWrap.innerHTML = '';
+            const textarea = document.createElement('textarea');
+            textarea.className = 'sub-story-textarea';
+            textarea.value = htmlParagraphsToPlainText(sub.fullDescription && sub.fullDescription.en);
+            const saveBtn = document.createElement('button');
+            saveBtn.type = 'button';
+            saveBtn.className = 'sub-story-save-btn';
+            saveBtn.textContent = 'Save text';
+            saveBtn.addEventListener('click', () => {
+                sub.fullDescription = Object.assign({}, sub.fullDescription, { en: plainTextToHtmlParagraphs(textarea.value) });
+                renderStoryView();
+            });
+            storyWrap.appendChild(textarea);
+            storyWrap.appendChild(saveBtn);
+            textarea.focus();
+        }
+        card.querySelector('.sub-story-edit-btn').addEventListener('click', renderStoryEdit);
 
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") : le champ
         // ci-dessus reste le lien "principal" (aperçu embarqué, inchangé) ; ceux-ci sont

@@ -103,6 +103,15 @@ async function runAgent() {
 Lieux déjà connus (NE PROPOSE AUCUN de ceux-ci, même reformulé différemment) :
 ${existingNames.join(', ')}
 
+PRIORITÉ (demande explicite du 13/09/2026, à couvrir dans cette génération si ce n'est pas déjà
+dans la liste des lieux déjà connus ci-dessus) : inclus en premier, s'ils sont vérifiables,
+(1) l'hôtel Le Bristol Paris, visité par Kim Taehyung (V) en juillet 2026, et (2) les lieux
+liés à la Fashion Week de Paris fréquentés par des membres de BTS (défilés, showrooms, event
+spaces...). Même règle absolue que partout ailleurs dans ce prompt : n'invente ni date, ni
+adresse, ni lien — si un de ces deux lieux ne peut pas être confirmé par une source réelle,
+laisse-le de côté plutôt que d'inventer les détails, et complète les 20 propositions avec
+d'autres lieux BTS classiques.
+
 Trouve 20 lieux réels, différents et emblématiques liés à BTS, absents de la liste ci-dessus.
 Pour chacun, rédige un contenu complet et soigné, dans le même esprit que les fiches déjà
 publiées sur le site (récit narratif sur 2 paragraphes minimum, infos pratiques concrètes,

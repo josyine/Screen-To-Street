@@ -394,12 +394,6 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    pour être affichés séparément à ce niveau de zoom. */
 .cluster-badge { position: absolute; top: -6px; right: -6px; background: var(--primary-magenta); color: #fff; font-size: 9.5px; font-weight: 800; line-height: 1; border-radius: 100px; min-width: 18px; height: 18px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
 
-/* Badge "×N publications" sur la pastille d'un lieu ayant au moins une photo postée par
-   un visiteur (demande du 11/09/2026) — même style que .cluster-badge ci-dessus, en plus
-   petit (la pastille elle-même est plus petite qu'un cluster). Voir applyLocPostBadges()/
-   addSingleLocationMarker() dans script.js. */
-.loc-post-badge { position: absolute; top: -5px; right: -5px; background: var(--primary-magenta); color: #fff; font-size: 8px; font-weight: 800; line-height: 1; border-radius: 100px; min-width: 14px; height: 14px; padding: 0 3px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
-
 /* Repère temporaire affiché sur le marqueur du lieu qu'on vient d'ouvrir (clic sur une
    fiche, un point de timeline, un résultat de recherche...) — voir
    highlightSelectedLocationMarker() dans script.js. Sans ça, dans une zone dense, rien

@@ -613,6 +613,12 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      "firebase-ready" que le reste du site (voir onAuthStateChanged tout en bas de
      firebase-init.js) pour connaître l'état de connexion. -->
 <script type="module" src="firebase-init.js?v=20260913"></script>
+<!-- Contenu partagé "Explore Destinations" (demande du 12/09/2026, "le contenu de
+     map-destinations.html et destinations.html doit être le même") : COUNTRIES,
+     COUNTRY_DETAILS et le rendu de la fiche détaillée viennent maintenant tous les deux
+     de destinations-content.js, chargé à l'identique par destinations.html — voir ce
+     fichier pour la donnée et la logique partagées. -->
+<script src="destinations-content.js?v=20260913"></script>
 <script>
     function toggleMenu(menuId, evt) {
         document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== menuId) m.classList.add('hidden'); });
@@ -699,87 +705,19 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         });
     }
 
-    // Nombre de lieux/villes/groupes RÉELS par pays, calculés depuis
-    // window.STATIC_LOCATIONS (demande du 12/09/2026, "mets à jour Explore destination dès
-    // que j'ajoute un nouveau lieu") — remplace les chiffres figés dans COUNTRIES (écrits à
-    // la création de cette page) par le vrai décompte à chaque chargement. Volontairement
-    // limité aux NOMBRES (badge, .row-stat, sous-titre de la fiche détaillée) : les LISTES
-    // de villes (city-pill, tableau détaillé au clic sur le KPI) restent celles écrites à
-    // la main, avec leurs noms déjà traduits (ex: "La Valette" en français) — les
-    // régénérer depuis celebLocations n'aurait que des noms anglais, ce qui casserait cette
-    // traduction. Un pays qui n'existe pas encore dans COUNTRIES (jamais cartographié avant
-    // aujourd'hui) n'apparaît toujours pas ici : limite connue de cette page.
-    const COUNTRY_KEY_MAP = { 'South Korea': 'southkorea', 'France': 'france', 'Portugal': 'portugal', 'Malta': 'malta', 'United States': 'usa', 'New Zealand': 'newzealand', 'Norway': 'norway', 'Sweden': 'sweden', 'Finland': 'finland' };
-
-    function computeCountryStats() {
-        const stats = {};
-        (window.STATIC_LOCATIONS || []).forEach(loc => {
-            const key = COUNTRY_KEY_MAP[loc.country];
-            if (!key) return;
-            if (!stats[key]) stats[key] = { count: 0, cities: new Set(), groups: new Set() };
-            stats[key].count++;
-            if (loc.city) stats[key].cities.add(loc.city);
-            if (loc.group) stats[key].groups.add(loc.group);
-        });
-        return stats;
-    }
-
-    function correctDestinationNumbers() {
-        const stats = computeCountryStats();
-        if (!Object.keys(stats).length) return; // locations-data.js pas encore chargé
-
-        Object.keys(COUNTRIES).forEach(lang => {
-            Object.keys(COUNTRIES[lang]).forEach(key => {
-                const s = stats[key];
-                if (s) COUNTRIES[lang][key].locations = s.count;
-            });
-        });
-
-        const isFr = currentLang === 'fr';
-        document.querySelectorAll('.row[onclick^="openDetail"]').forEach(rowEl => {
-            const m = rowEl.getAttribute('onclick').match(/openDetail\('([^']+)'\)/);
-            const key = m && m[1];
-            const s = key && stats[key];
-            if (!s) return;
-
-            const badge = rowEl.querySelector('.row-photo-badge span');
-            if (badge) badge.textContent = s.count + (isFr ? (s.count > 1 ? ' lieux' : ' lieu') : (s.count === 1 ? ' location' : ' locations'));
-
-            const nums = rowEl.querySelectorAll('.row-stat .n');
-            if (nums[0]) nums[0].textContent = s.count;
-            if (nums[1]) nums[1].textContent = s.cities.size;
-            if (nums[2]) nums[2].textContent = s.groups.size;
-        });
-
-        const totalLocs = Object.values(stats).reduce((sum, s) => sum + s.count, 0);
-        const allCities = new Set();
-        Object.values(stats).forEach(s => s.cities.forEach(c => allCities.add(c)));
-        const statNums = document.querySelectorAll('.stats-bar .stat-num');
-        if (statNums[1]) statNums[1].textContent = allCities.size;
-        if (statNums[2]) statNums[2].textContent = totalLocs;
-    }
+    // COUNTRIES/COUNTRY_DETAILS/COUNTRY_KEY_MAP/computeCountryStats/
+    // correctDestinationNumbers/loadDestinationOverrides/renderDestinationDetailHtml/
+    // toggleKpiShared viennent tous de destinations-content.js, chargé plus haut —
+    // partagé à l'identique avec destinations.html (demande du 12/09/2026) pour que les
+    // deux pages ne puissent plus diverger. Rien de tout ça n'est redéfini ici.
 
     // Surcharges admin (photo/texte) — demande du 13/09/2026, voir la note dans
     // firestore.rules (destinationOverrides) et window.getDestinationOverrides() dans
-    // firebase-init.js. Une seule collection à charger pour les 9 pays, mise en cache en
-    // mémoire pour la session (pas de re-fetch à chaque setLang()/changement d'onglet).
-    let _destOverrides = null;
-    async function applyDestinationOverrides() {
-        if (!window.getDestinationOverrides) return; // firebase-init.js pas encore chargé
-        if (!_destOverrides) _destOverrides = await window.getDestinationOverrides();
-        document.querySelectorAll('.row[data-country]').forEach(row => {
-            const ov = _destOverrides[row.dataset.country];
-            if (!ov) return;
-            if (ov.photo) {
-                const photoEl = row.querySelector('.row-photo');
-                if (photoEl) photoEl.style.backgroundImage = `url('${ov.photo}')`;
-            }
-            if (ov.text) {
-                const blurbEl = row.querySelector('.row-blurb');
-                if (blurbEl) blurbEl.textContent = ov.text;
-            }
-        });
-    }
+    // firebase-init.js. Le CHARGEMENT/CACHE de la collection est partagé (voir
+    // loadDestinationOverrides dans destinations-content.js) ; seule la partie propre à
+    // CETTE page — les crayons d'édition, qui n'existent que sur map-destinations.html —
+    // reste ici.
+    async function applyDestinationOverrides() { return window.applyDestinationOverrides(); }
     // Crayons d'édition, admin uniquement — voir isCurrentUserAdmin() dans
     // firebase-init.js. Ajoutés dynamiquement plutôt qu'en dur dans les 9 cartes, une
     // seule fois (re-vérifie s'ils existent déjà pour ne pas les dupliquer si rappelée).
@@ -801,10 +739,11 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         });
     }
     let _destEditKey = null;
-    function openDestinationEditModal(key) {
+    async function openDestinationEditModal(key) {
         _destEditKey = key;
         const row = document.querySelector(`.row[data-country="${key}"]`);
-        const ov = (_destOverrides && _destOverrides[key]) || {};
+        const overrides = await window.loadDestinationOverrides();
+        const ov = overrides[key] || {};
         const currentPhoto = ov.photo || (row && row.querySelector('.row-photo') ? row.querySelector('.row-photo').style.backgroundImage.replace(/^url\(['"]?/,'').replace(/['"]?\)$/,'') : '');
         const currentText = ov.text || (row && row.querySelector('.row-blurb') ? row.querySelector('.row-blurb').textContent : '');
         document.getElementById('dest-edit-photo').value = currentPhoto;
@@ -826,246 +765,36 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         btn.disabled = false;
         btn.textContent = 'Save';
         if (!res || !res.success) { alert('Save failed — please try again.'); return; }
-        if (!_destOverrides) _destOverrides = {};
-        _destOverrides[_destEditKey] = Object.assign({}, _destOverrides[_destEditKey], { photo, text });
+        window.setDestinationOverrideCacheEntry(_destEditKey, { photo, text });
         closeDestinationEditModal();
         applyDestinationOverrides();
     }
     window.addEventListener('firebase-ready', () => { applyDestinationOverrides(); wireDestinationEditPencils(); });
 
-    document.addEventListener('DOMContentLoaded', () => { applyTranslations(); correctDestinationNumbers(); applyDestinationOverrides(); });
+    document.addEventListener('DOMContentLoaded', () => { applyTranslations(); correctDestinationNumbers(currentLang); applyDestinationOverrides(); });
 
     let lastOpenedCountry = null;
-    let activeKpi = null;
     function setLang(lang) {
         currentLang = lang;
         localStorage.setItem('lang', lang);
         applyTranslations();
-        correctDestinationNumbers();
+        correctDestinationNumbers(currentLang);
         applyDestinationOverrides();
         if (lastOpenedCountry) { openDetail(lastOpenedCountry); }
     }
 
-    // Statistiques réelles, calculées à partir des 57 lieux du site (pas de chiffres
-    // d'usage inventés — uniquement des données que le site peut réellement connaître :
-    // nombre de lieux, de villes, catégorie la plus représentée).
-    const COUNTRIES = {
-      en: {
-          southkorea: { name: "South Korea", photo: "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900", locations: 31, history: "Long before it became a global pop-culture capital, Seoul was already a city of contrasts — centuries-old palaces sitting a few blocks from neon-lit shopping districts. That same contrast is what makes it the backbone of the K-pop map: rookie-era practice rooms in Gangnam sit alongside purpose-built retreats deep in the mountains of Gangwon-do, each telling a different chapter of an artist's story.", cities: [["Seoul",19],["Chuncheon",2],["Gangneung",2],["Yangju",1],["Wanju",1],["Busan",1],["Yongin",1],["Jecheon",1],["Seoul Area",1]], stats: [["31","locations mapped, the most of any country"],["9","distinct cities covered"],["2","groups represented: BTS, Blackpink"]] },
-          france: { name: "France", photo: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900", locations: 6, history: "Paris has long been a stage for K-pop's biggest fashion moments — Fashion Week runways, flagship store openings, and quiet afternoons in Montmartre captured between official schedules. In 2026 it also hosted a stop of the ARIRANG World Tour at the Stade de France, adding a very different kind of location to the map.", cities: [["Paris",5],["Saint-Denis",1]], stats: [["6","locations mapped"],["2","cities covered: Paris, Saint-Denis"],["1","group represented: BTS"]] },
-          portugal: { name: "Portugal", photo: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=900", locations: 2, history: "Portugal's spot on the map exists almost by accident of production choices — a historic estate near Lisbon Airport and the Navy Museum in Belém were both chosen as filming backdrops for a single music video shoot, putting the country on ARMY's radar for the first time.", cities: [["Lisbon",1],["Prior Velho",1]], stats: [["2","locations mapped"],["2","cities covered: Lisbon, Prior Velho"],["1","group represented: BTS"]] },
-          malta: { name: "Malta", photo: "https://images.unsplash.com/photo-1595776613215-fe04b78de7fc?w=900", locations: 6, history: "Bon Voyage Season 3 spent its entire run on this single Mediterranean island — golden limestone, baroque interiors and sweeping harbour views replacing the wood and water of the earlier Nordic seasons entirely. It remains the most thoroughly mapped stop of any Bon Voyage season on the site.", cities: [["Valletta",4],["St Paul's Bay",1],["Mdina",1]], stats: [["6","locations mapped, tied for the most of any single Bon Voyage season"],["3","cities covered"],["1","group represented: BTS"]] },
-          usa: { name: "United States", photo: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900", locations: 4, history: "The United States map spans two very different eras: a 2017 Bon Voyage stop on Oahu's North Shore for a first, chaotic attempt at surfing, and a string of stadium shows years later across Las Vegas, Massachusetts and California during the group's biggest world tours.", cities: [["Las Vegas",1],["Oahu, Hawaii",1],["Foxborough, MA",1],["Inglewood, CA",1]], stats: [["4","locations mapped"],["4","cities covered, the most spread out of any country"],["1","group represented: BTS"]] },
-          newzealand: { name: "New Zealand", photo: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900", locations: 4, history: "Bon Voyage Season 4 leaned harder into adventure than any season before it: camping under a genuinely dark sky at Lake Pukaki, hiking toward Aoraki/Mount Cook's glaciers, and — for the boldest members — a 300-metre freefall on the Nevis Swing outside Queenstown.", cities: [["Canterbury",2],["Queenstown",2]], stats: [["4","locations mapped"],["2","cities covered: Canterbury region, Queenstown"],["1","group represented: BTS"]] },
-          norway: { name: "Norway", photo: "https://images.unsplash.com/photo-1601439678777-b2b3c56fa72e?w=900", locations: 2, history: "Norway opened the very first season of Bon Voyage in 2016, with the group's earliest real off-the-clock trip built around Bergen's colourful Hanseatic wharf and the mountaintop views from Fløyen just above it.", cities: [["Bergen",2]], stats: [["2","locations mapped"],["1","city covered: Bergen"],["1","group represented: BTS"]] },
-          sweden: { name: "Sweden", photo: "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=900", locations: 1, history: "A single, unhurried stop in Stockholm's old town, Gamla Stan, during the Nordic leg of Bon Voyage Season 1 — one of the quietest, least scripted afternoons the show has ever filmed.", cities: [["Stockholm",1]], stats: [["1","location mapped"],["1","city covered: Stockholm"],["1","group represented: BTS"]] },
-          finland: { name: "Finland", photo: "https://images.unsplash.com/photo-1508189860359-777d945909ef?w=900", locations: 1, history: "The final stop of Bon Voyage Season 1's Nordic leg: the sea fortress of Suomenlinna, spread across six islands just off Helsinki, explored on a short ferry ride from the mainland.", cities: [["Helsinki",1]], stats: [["1","location mapped"],["1","city covered: Helsinki"],["1","group represented: BTS"]] }
-      },
-      fr: {
-          southkorea: { name: "Corée du Sud", photo: "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900", locations: 31, history: "Longtemps avant de devenir une capitale mondiale de la pop culture, Séoul était déjà une ville de contrastes — des palais centenaires situés à quelques rues de quartiers commerçants aux néons clignotants. Ce même contraste fait d'elle la colonne vertébrale de la carte K-pop : des salles d'entraînement de Gangnam aux refuges sur mesure dans les montagnes de Gangwon-do.", cities: [["Séoul",19],["Chuncheon",2],["Gangneung",2],["Yangju",1],["Wanju",1],["Busan",1],["Yongin",1],["Jecheon",1],["Seoul Area",1]], stats: [["31","lieux cartographiés, le plus de tous les pays"],["9","villes distinctes couvertes"],["2","groupes représentés : BTS, Blackpink"]] },
-          france: { name: "France", photo: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900", locations: 6, history: "Paris a longtemps été le théâtre des plus grands moments de mode de la K-pop — des défilés de la Fashion Week, des glaces artisanales et des après-midi tranquilles à Montmartre. En 2026, la ville a aussi accueilli une étape de la tournée mondiale ARIRANG au Stade de France, ajoutant un tout autre type de lieu à la carte.", cities: [["Paris",5],["Saint-Denis",1]], stats: [["6","lieux cartographiés"],["2","villes couvertes : Paris, Saint-Denis"],["1","groupe représenté : BTS"]] },
-          portugal: { name: "Portugal", photo: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=900", locations: 2, history: "La place du Portugal sur la carte existe presque par accident de production — un domaine impressionnant près de l'aéroport de Lisbonne et le musée de la marine à Belém ont tous deux été choisis comme décors pour un même tournage de clip.", cities: [["Lisbonne",1],["Prior Velho",1]], stats: [["2","lieux cartographiés"],["2","villes couvertes : Lisbonne, Prior Velho"],["1","groupe représenté : BTS"]] },
-          malta: { name: "Malte", photo: "https://images.unsplash.com/photo-1595776613215-fe04b78de7fc?w=900", locations: 6, history: "La saison 3 de Bon Voyage s'est déroulée entièrement sur cette seule île méditerranéenne — pierre calcaire dorée, intérieurs baroques et vues sur le port remplaçant totalement le bois et l'eau des saisons nordiques précédentes. C'est l'étape la plus richement cartographiée de toutes les saisons de Bon Voyage sur le site.", cities: [["La Valette",4],["St Paul's Bay",1],["Mdina",1]], stats: [["6","lieux cartographiés, à égalité pour le plus grand nombre d'une même saison de Bon Voyage"],["3","villes couvertes"],["1","groupe représenté : BTS"]] },
-          usa: { name: "États-Unis", photo: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900", locations: 4, history: "La carte des États-Unis couvre deux époques très différentes : une étape de Bon Voyage en 2017 sur la côte nord d'Oahu pour un premier essai chaotique de surf, et une série de concerts en stade des années plus tard à Las Vegas, dans le Massachusetts et en Californie lors des plus grandes tournées mondiales du groupe.", cities: [["Las Vegas",1],["Oahu, Hawaï",1],["Foxborough, MA",1],["Inglewood, CA",1]], stats: [["4","lieux cartographiés"],["4","villes couvertes, le pays le plus étendu de la carte"],["1","groupe représenté : BTS"]] },
-          newzealand: { name: "Nouvelle-Zélande", photo: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900", locations: 4, history: "La saison 4 de Bon Voyage a davantage misé sur l'aventure que toutes les précédentes : camper sous un ciel réellement noir au lac Pukaki, randonner vers les glaciers de l'Aoraki/mont Cook et, pour les plus audacieux, une chute libre de 300 mètres sur le Nevis Swing près de Queenstown.", cities: [["Canterbury",2],["Queenstown",2]], stats: [["4","lieux cartographiés"],["2","villes couvertes : région de Canterbury, Queenstown"],["1","groupe représenté : BTS"]] },
-          norway: { name: "Norvège", photo: "https://images.unsplash.com/photo-1601439678777-b2b3c56fa72e?w=900", locations: 2, history: "La Norvège a ouvert la toute première saison de Bon Voyage en 2016, avec le tout premier vrai voyage hors caméra du groupe construit autour du quai hanséatique coloré de Bergen et des vues depuis Fløyen, juste au-dessus.", cities: [["Bergen",2]], stats: [["2","lieux cartographiés"],["1","ville couverte : Bergen"],["1","groupe représenté : BTS"]] },
-          sweden: { name: "Suède", photo: "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=900", locations: 1, history: "Une unique étape tranquille dans la vieille ville de Stockholm, Gamla Stan, durant le passage nordique de la saison 1 de Bon Voyage — l'un des après-midis les plus calmes et les moins scénarisés jamais filmés pour l'émission.", cities: [["Stockholm",1]], stats: [["1","lieu cartographié"],["1","ville couverte : Stockholm"],["1","groupe représenté : BTS"]] },
-          finland: { name: "Finlande", photo: "https://images.unsplash.com/photo-1508189860359-777d945909ef?w=900", locations: 1, history: "La dernière étape du passage nordique de la saison 1 de Bon Voyage : la forteresse maritime de Suomenlinna, répartie sur six îles au large d'Helsinki, explorée lors d'une courte traversée en ferry depuis le continent.", cities: [["Helsinki",1]], stats: [["1","lieu cartographié"],["1","ville couverte : Helsinki"],["1","groupe représenté : BTS"]] }
-      }
-    };
-
-    // Contenu enrichi (sections narratives développées, essentiels de voyage,
-    // répartition par groupe) pour la fiche détaillée de chaque pays. Anglais
-    // uniquement pour l'instant, même logique de repli que GROUP_DETAILS sur
-    // map-artists.html : openDetail() y recourt quel que soit currentLang, en
-    // complément des champs déjà bilingues (name/history/cities/stats) qui restent
-    // affichés dans la langue choisie. Les répartitions par groupe (`groups`) sont
-    // dérivées uniquement des chiffres déjà affichés ailleurs sur cette page (nombre
-    // total de lieux + groupes listés dans `stats`), jamais de chiffres inventés.
-    const COUNTRY_DETAILS = {
-      southkorea: {
-        locationNames: ["Cafe Camptong", "Ossu Seiromushi", "Lotte World Adventure", "Ahwon Museum & Hotel", "Cafe Kitsun\u00e9 Seoul", "Cheonggu Building", "The First BTS Dorm", "Hyangho Beach Bus Stop", "Iryeong Station", "Sunhyewon", "In the SOOP Estate", "Happy Meadow Ranch", "Cafe Magnate", "Oldeugnseu (Oldeugns)", "Cafe Hyuga", "Seoul Olympic Stadium", "HYBE Headquarters", "Yoojung Sikdang", "Gwanghwamun Square", "HiKR Ground", "The Min's", "Giani's Napoli", "MMCA Seoul", "K-Star Road", "Achasan Mountain", "Hakdong Park", "Laundry Pizza", "Yongin Daejanggeum Park", "Eulji Dabang", "Jumunjin Beach Bus Stop", "Jecheon Mosan Airfield"],
-        essentials: { stay: "5–7 days", season: "Spring (Apr–May) or Autumn (Sep–Oct)", transport: "Seoul subway + KTX for countryside stops", timezone: "KST (UTC+9)" },
-        groups: [["BTS", 30], ["Blackpink", 1]],
-        sections: [
-          ["Where it all began", "Long before it became a global pop-culture capital, Seoul was already a city of contrasts — centuries-old palaces sitting a few blocks from neon-lit shopping districts. Rookie-era practice rooms in Gangnam sit alongside purpose-built mountain retreats in Gangwon-do, each telling a different chapter of an artist's story."],
-          ["The scene today", "Nine cities now share space on this map, from dense Seoul neighbourhoods — Gangnam, Songpa-gu, Yongsan — to quieter countryside filming spots hours outside the capital. It remains, by a wide margin, the most mapped country on Screen To Street."],
-          ["Planning a visit", "Most Seoul locations sit within a short subway ride of each other, making a 3–4 day city stay realistic for covering the bulk of them; the countryside spots (Chuncheon, Gangneung) are better treated as separate day trips or overnight stays."]
-        ]
-      },
-      france: {
-        locationNames: ["Pozzetto", "Mus\u00e9e Nissim de Camondo", "Montmartre Stairs", "Wall of Love", "Palais de Tokyo", "Stade de France"],
-        essentials: { stay: "3–4 days", season: "Spring (Apr–Jun) or Autumn (Sep–Oct)", transport: "Paris Métro + RER", timezone: "CET (UTC+1)" },
-        groups: [["BTS", 6]],
-        sections: [
-          ["Where it all began", "Paris has long been a stage for K-pop's biggest fashion moments — Fashion Week runways, flagship store openings, and quiet afternoons in Montmartre captured between official schedules."],
-          ["The scene today", "In 2026 the city also hosted a stop of the ARIRANG World Tour at the Stade de France, adding a very different kind of location — a full stadium show — to a map that had until then been mostly about fashion and quiet street moments."],
-          ["Planning a visit", "The fashion-district and Montmartre stops cluster tightly enough to cover on foot over a single day; the Stade de France sits outside the city centre in Saint-Denis, reachable by RER, and is worth pairing with the Basilica of Saint-Denis nearby."]
-        ]
-      },
-      portugal: {
-        locationNames: ["Quinta da Francelha de Cima", "Museu de Marinha"],
-        essentials: { stay: "2–3 days", season: "Spring (Mar–May) or Autumn (Sep–Oct)", transport: "Lisbon Metro + short taxi/rideshare rides", timezone: "WET (UTC+0)" },
-        groups: [["BTS", 2]],
-        sections: [
-          ["Where it all began", "Portugal's spot on the map exists almost by accident of production choices — a historic estate near Lisbon Airport and the Navy Museum in Belém were both chosen as filming backdrops for a single music video shoot."],
-          ["The scene today", "With just two confirmed locations, Portugal remains one of the smallest footprints on the map — but both stops put the country on ARMY's radar for the first time, and each draws a steady trickle of visiting fans exploring greater Lisbon."],
-          ["Planning a visit", "Both locations sit close enough to central Lisbon to fold into a single day of sightseeing alongside Belém's more famous landmarks — the Tower of Belém and Jerónimos Monastery are a short walk from the Navy Museum stop."]
-        ]
-      },
-      malta: {
-        locationNames: ["Triton Fountain", "Upper Barrakka Gardens", "Cafe del Mar Malta", "Mdina Old City", "St. John's Co-Cathedral", "Valletta"],
-        essentials: { stay: "3–4 days", season: "Spring (Apr–Jun) or Autumn (Sep–Oct)", transport: "Public buses + walking (compact island)", timezone: "CET (UTC+1)" },
-        groups: [["BTS", 6]],
-        sections: [
-          ["Where it all began", "Bon Voyage Season 3 spent its entire run on this single Mediterranean island — golden limestone, baroque interiors and sweeping harbour views replacing the wood and water of the earlier Nordic seasons entirely."],
-          ["The scene today", "It remains the most thoroughly mapped stop of any Bon Voyage season on the site, with locations spread across Valletta, St Paul's Bay and the silent medieval city of Mdina."],
-          ["Planning a visit", "Malta is small enough that all three cities are reachable by public bus within roughly 30–45 minutes of each other, making it realistic to base yourself in Valletta for the whole stay and day-trip out to Mdina and St Paul's Bay."]
-        ]
-      },
-      usa: {
-        locationNames: ["Aha'oulu (Bon Voyage 2)", "Gillette Stadium", "SoFi Stadium", "Allegiant Stadium"],
-        essentials: { stay: "7–10 days for multiple cities", season: "Spring or Autumn generally mildest, varies by region", transport: "Domestic flights + rental car between cities", timezone: "Multiple time zones (Pacific to Eastern)" },
-        groups: [["BTS", 4]],
-        sections: [
-          ["Where it all began", "The United States map spans two very different eras: a 2017 Bon Voyage stop on Oahu's North Shore for a first, chaotic attempt at surfing, and a string of stadium shows years later during the group's biggest world tours."],
-          ["The scene today", "Las Vegas, Massachusetts and California each hold a single stadium-show location, making the US the most geographically spread-out country on the entire map — no two stops are within reasonable driving distance of each other."],
-          ["Planning a visit", "Given the distances involved, most fans treat each US location as a stop tied to a specific trip rather than a single dedicated itinerary — pairing a Las Vegas or Los Angeles visit with the nearest mapped stop makes more sense than trying to cover all four in one trip."]
-        ]
-      },
-      newzealand: {
-        locationNames: ["Lake Pukaki", "Mount Cook National Park", "Queenstown Skyline", "Nevis Swing"],
-        essentials: { stay: "7–10 days", season: "Southern Hemisphere summer (Dec–Feb) for outdoor activities", transport: "Rental car — public transport is limited outside cities", timezone: "NZST/NZDT (UTC+12/+13)" },
-        groups: [["BTS", 4]],
-        sections: [
-          ["Where it all began", "Bon Voyage Season 4 leaned harder into adventure than any season before it: camping under a genuinely dark sky at Lake Pukaki, hiking toward Aoraki/Mount Cook's glaciers, and — for the boldest members — a 300-metre freefall on the Nevis Swing outside Queenstown."],
-          ["The scene today", "The four locations split between the Canterbury region and Queenstown, making this the most physically adventurous Bon Voyage season on the map — most of the stops are outdoor and scenery-driven rather than urban."],
-          ["Planning a visit", "A rental car is close to essential here: the Canterbury and Queenstown locations sit roughly three to four hours apart by road, and several are only reachable via scenic drives with no public transport option."]
-        ]
-      },
-      norway: {
-        locationNames: ["Bryggen", "Fl\u00f8yen"],
-        essentials: { stay: "3–4 days", season: "Summer (Jun–Aug) for long daylight hours", transport: "Bergen Light Rail + Fløibanen funicular", timezone: "CET (UTC+1)" },
-        groups: [["BTS", 2]],
-        sections: [
-          ["Where it all began", "Norway opened the very first season of Bon Voyage in 2016, with the group's earliest real off-the-clock trip built around Bergen's colourful Hanseatic wharf."],
-          ["The scene today", "Both mapped locations sit in and around Bergen — the wharf itself and the mountaintop views from Fløyen just above it, reachable by funicular in a matter of minutes."],
-          ["Planning a visit", "Both stops can comfortably be covered in a single day from central Bergen; the funicular up to Fløyen gets busy in peak summer, so an early-morning ride is worth planning for photos with fewer crowds."]
-        ]
-      },
-      sweden: {
-        locationNames: ["Gamla Stan"],
-        essentials: { stay: "2–3 days", season: "Summer (May–Aug)", transport: "Stockholm Metro + walking in Gamla Stan", timezone: "CET (UTC+1)" },
-        groups: [["BTS", 1]],
-        sections: [
-          ["Where it all began", "A single, unhurried stop in Stockholm's old town, Gamla Stan, during the Nordic leg of Bon Voyage Season 1 — one of the quietest, least scripted afternoons the show has ever filmed."],
-          ["The scene today", "With only one confirmed location, Sweden's footprint on the map is deliberately modest — but Gamla Stan's cobbled lanes remain a popular stop for fans already in Stockholm for other reasons."],
-          ["Planning a visit", "Gamla Stan is walkable from most central Stockholm hotels and pairs naturally with a broader day of sightseeing in the old town rather than standing alone as a dedicated trip."]
-        ]
-      },
-      finland: {
-        locationNames: ["Suomenlinna"],
-        essentials: { stay: "2 days", season: "Summer (Jun–Aug)", transport: "Ferry from Helsinki + city trams", timezone: "EET (UTC+2)" },
-        groups: [["BTS", 1]],
-        sections: [
-          ["Where it all began", "The final stop of Bon Voyage Season 1's Nordic leg: the sea fortress of Suomenlinna, spread across six islands just off Helsinki."],
-          ["The scene today", "Like Sweden, Finland holds a single mapped location — but Suomenlinna's scale as a UNESCO World Heritage site means it draws a full afternoon on its own, well beyond the show's original visit."],
-          ["Planning a visit", "Suomenlinna is reached by a short public ferry from Helsinki's market square, running year-round; plan for at least half a day to explore the fortress islands properly on foot."]
-        ]
-      }
-    };
-
-    function openDetail(key) {
-      const c = (COUNTRIES[currentLang] || COUNTRIES.en)[key];
+    async function openDetail(key) {
       const t = t_dest[currentLang] || t_dest.en;
-      // Contenu enrichi (sections narratives, essentiels de voyage, répartition par
-      // groupe) : anglais uniquement pour l'instant, voir la note au-dessus de
-      // COUNTRY_DETAILS.
-      const d = COUNTRY_DETAILS[key];
       lastOpenedCountry = key;
-      activeKpi = null;
-      // Photo admin-éditée (demande du 13/09/2026), si présente — voir
-      // applyDestinationOverrides() plus haut, mêmes surcharges que la carte résumé.
-      const heroPhoto = (_destOverrides && _destOverrides[key] && _destOverrides[key].photo) || c.photo;
-
-      const cityRows = c.cities.map(([name,n]) => `<div class="city-row"><span>${name}</span><span>${n} ${n>1 ? (currentLang==='fr'?'lieux':'locations') : (currentLang==='fr'?'lieu':'location')}</span></div>`).join('');
-
-      const sectionsHtml = d.sections.map(([heading, text]) => `
-        <div class="blog-heading">${heading}</div>
-        <p class="para">${text}</p>
-        <hr class="section-sep">
-      `).join('');
-
-      document.getElementById('detail-window').innerHTML = `
-        <div class="detail-hero" style="background-image:url('${heroPhoto}');">
-          <div class="detail-hero-overlay"></div>
-          <div class="detail-close" onclick="closeDetail()">✕</div>
-          <div class="detail-hero-bottom">
-            <div class="detail-name">${c.name}</div>
-            <div class="detail-sub">${c.locations} ${t.lLocs.toLowerCase()}</div>
-          </div>
-        </div>
-        <div class="detail-body">
-          <div class="kpi3">
-            <div class="kpi-box" id="kpi-locations" onclick="toggleKpi('locations')"><div class="kpi-n">${c.locations}</div><div class="kpi-l">${t.lLocs}</div></div>
-            <div class="kpi-box" id="kpi-cities" onclick="toggleKpi('cities')"><div class="kpi-n">${c.cities.length}</div><div class="kpi-l">${t.lCities}</div></div>
-            <div class="kpi-box" id="kpi-groups" onclick="toggleKpi('groups')"><div class="kpi-n">${d.groups.length}</div><div class="kpi-l">${t.lGroups}</div></div>
-          </div>
-          <div class="kpi-note">${t.exampleNote}</div>
-          <div class="kpi-detail" id="kpi-detail"><div class="kpi-detail-inner" id="kpi-detail-inner"></div></div>
-
-          <hr class="section-sep">
-
-          <div class="detail-section-label">${t.tripEssentials}</div>
-          <div class="trip-box">
-            <b>${t.lStay}:</b> ${d.essentials.stay}<br>
-            <b>${t.lSeason}:</b> ${d.essentials.season}<br>
-            <b>${t.lTransport}:</b> ${d.essentials.transport}<br>
-            <b>${t.lTimezone}:</b> ${d.essentials.timezone}
-          </div>
-
-          ${sectionsHtml}
-
-          <div class="detail-section-label" style="margin-top:-4px;">${t.citiesTitle}</div>
-          <div class="city-list">${cityRows}</div>
-        </div>
-      `;
+      window.resetDestinationKpiState();
+      const overrides = (await window.loadDestinationOverrides())[key] || {};
+      document.getElementById('detail-window').innerHTML = renderDestinationDetailHtml(key, currentLang, t, overrides);
       document.getElementById('overlay').classList.add('open');
     }
 
-    // Ouvre/ferme la liste détaillée sous une des 3 cartes KPI (lieux / villes /
-    // groupes). Les lieux et villes viennent des vraies données du site (script.js /
-    // COUNTRIES) ; la répartition par groupe est dérivée des chiffres déjà affichés
-    // sur cette même page (jamais de compteur inventé).
-    function toggleKpi(type) {
-      const detail = document.getElementById('kpi-detail');
-      const inner = document.getElementById('kpi-detail-inner');
-      document.querySelectorAll('.kpi-box').forEach(b => b.classList.remove('active'));
+    function toggleKpi(type) { toggleKpiShared(type, currentLang, lastOpenedCountry); }
 
-      if (activeKpi === type) {
-        detail.classList.remove('open');
-        activeKpi = null;
-        return;
-      }
-      activeKpi = type;
-      document.getElementById('kpi-' + type).classList.add('active');
-
-      const c = (COUNTRIES[currentLang] || COUNTRIES.en)[lastOpenedCountry];
-      const d = COUNTRY_DETAILS[lastOpenedCountry];
-      const isFr = currentLang === 'fr';
-      let html = '';
-      if (type === 'locations') {
-        html = d.locationNames.map(name => `<div class="kpi-detail-row"><span>${name}</span></div>`).join('');
-      } else if (type === 'cities') {
-        html = c.cities.map(([name, n]) => `<div class="kpi-detail-row"><span>${name}</span><span>${n} ${n > 1 ? (isFr ? 'lieux' : 'locations') : (isFr ? 'lieu' : 'location')}</span></div>`).join('');
-      } else if (type === 'groups') {
-        html = d.groups.map(([name, n]) => `<div class="kpi-detail-row"><span>${name}</span><span>${n} ${n > 1 ? (isFr ? 'lieux' : 'locations') : (isFr ? 'lieu' : 'location')}</span></div>`).join('');
-      }
-      inner.innerHTML = html;
-      detail.classList.add('open');
-    }
-
-    function closeDetail() { document.getElementById('overlay').classList.remove('open'); lastOpenedCountry = null; activeKpi = null; }
+    function closeDetail() { document.getElementById('overlay').classList.remove('open'); lastOpenedCountry = null; window.resetDestinationKpiState(); }
 
     // --- GESTION DU PANIER "UNLOCK PASSES" (identique visuellement et fonctionnellement à map.html) ---
     function openCartModal() {

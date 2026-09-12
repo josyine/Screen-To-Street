@@ -96,6 +96,33 @@
   .city-row span:last-child { color: #94a3b8; }
 
   .example-note { font-size: 10px; color: #b0a8c4; font-style: italic; margin-bottom: 22px; }
+
+  /* Fiche destination enrichie (demande du 12/09/2026, "le contenu de destinations.html
+     et map-destinations.html doit être le même") : renderDestinationDetailHtml(),
+     partagé avec map-destinations.html via destinations-content.js, produit ce
+     balisage (KPI cliquables, essentiels de voyage, sections narratives) — ces règles
+     sont copiées à l'identique depuis map-destinations.html pour qu'il s'affiche
+     correctement ici aussi. */
+  .kpi3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .kpi-box { background: #faf9fc; border-radius: 10px; padding: 12px 6px; text-align: center; cursor: pointer; border: 1.5px solid transparent; transition: 0.15s; }
+  .kpi-box:hover { border-color: #f0dbe4; }
+  .kpi-box.active { background: #FCE7F0; border-color: #D42759; }
+  .kpi-n { font-size: 18px; font-weight: 800; color: #D42759; }
+  .kpi-l { font-size: 9px; color: #94a3b8; margin-top: 2px; line-height: 1.3; }
+  .kpi-note { font-size: 10.5px; font-style: italic; color: #b0a8c4; margin-bottom: 8px; }
+  .kpi-detail { max-height: 0; overflow: hidden; transition: max-height .25s ease; background: #faf9fc; border-radius: 12px; }
+  .kpi-detail.open { max-height: 320px; overflow-y: auto; margin-bottom: 16px; }
+  .kpi-detail-inner { padding: 12px 14px; }
+  .kpi-detail-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 11.5px; border-bottom: 1px solid #f1f5f9; }
+  .kpi-detail-row:last-child { border-bottom: none; }
+  .kpi-detail-row span:first-child { color: #334155; font-weight: 600; }
+  .kpi-detail-row span:last-child { color: #94a3b8; }
+  .trip-box { background: #faf9fc; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; font-size: 11.5px; line-height: 2; color: #334155; }
+  .trip-box b { color: #212832; display: inline-block; min-width: 118px; }
+  .blog-heading { font-size: 13px; font-weight: 700; color: #D42759; margin-bottom: 7px; }
+  .para { font-size: 12.5px; line-height: 1.8; color: #3f495c; margin-bottom: 14px; }
+  .para:last-child { margin-bottom: 0; }
+  .section-sep { border: none; height: 1px; background: #EFECF6; margin: 18px 0; }
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -148,29 +175,29 @@
       <h1 class="pg-title" data-i18n="title">Destinations</h1>
 
       <div class="stats-bar">
-        <div class="stat"><div class="stat-num">3</div><div class="stat-label" data-i18n="statsCountries">Countries</div></div>
-        <div class="stat"><div class="stat-num">8</div><div class="stat-label" data-i18n="statsCities">Cities</div></div>
-        <div class="stat"><div class="stat-num">19</div><div class="stat-label" data-i18n="statsLocs">Locations</div></div>
+        <div class="stat"><div class="stat-num">9</div><div class="stat-label" data-i18n="statsCountries">Countries</div></div>
+        <div class="stat"><div class="stat-num">25</div><div class="stat-label" data-i18n="statsCities">Cities</div></div>
+        <div class="stat"><div class="stat-num">57</div><div class="stat-label" data-i18n="statsLocs">Locations</div></div>
       </div>
 
       <div class="content" style="padding: 0;">
 
-        <div class="row" onclick="openDetail('southkorea')">
+        <div class="row" data-country="southkorea" onclick="openDetail('southkorea')">
           <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1538485399081-7191377e8241?w=700');">
-            <div class="row-photo-badge"><span data-i18n="badgeKr">12 locations</span></div>
+            <div class="row-photo-badge"><span data-i18n="badgeKr">31 locations</span></div>
           </div>
           <div class="row-content">
             <div class="row-name" data-i18n="nameKr">South Korea</div>
             <p class="row-blurb" data-i18n="krBlurb">From dance-practice basements in Gangnam to a custom-built mountain retreat in Chuncheon — the birthplace of it all, and by far the most mapped destination on Screen To Street.</p>
             <div class="row-stats">
-              <div class="row-stat"><div class="n">12</div><div class="l" data-i18n="lLocs">Locations</div></div>
-              <div class="row-stat"><div class="n">4</div><div class="l" data-i18n="lCities">Cities</div></div>
+              <div class="row-stat"><div class="n">31</div><div class="l" data-i18n="lLocs">Locations</div></div>
+              <div class="row-stat"><div class="n">9</div><div class="l" data-i18n="lCities">Cities</div></div>
               <div class="row-stat"><div class="n">2</div><div class="l" data-i18n="lGroups">Groups mapped</div></div>
             </div>
             <div class="row-cities-grid">
-              <div class="city-pill"><b data-i18n="seoul">Seoul</b><span>8</span></div>
+              <div class="city-pill"><b data-i18n="seoul">Seoul</b><span>19</span></div>
               <div class="city-pill"><b data-i18n="chuncheon">Chuncheon</b><span>2</span></div>
-              <div class="city-pill"><b data-i18n="gangneung">Gangneung</b><span>1</span></div>
+              <div class="city-pill"><b data-i18n="gangneung">Gangneung</b><span>2</span></div>
               <div class="city-pill"><b data-i18n="yangju">Yangju</b><span>1</span></div>
             </div>
             <div class="row-footer">
@@ -182,20 +209,21 @@
           </div>
         </div>
 
-        <div class="row" onclick="openDetail('france')">
+        <div class="row" data-country="france" onclick="openDetail('france')">
           <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=700');">
-            <div class="row-photo-badge"><span data-i18n="badgeFr">5 locations</span></div>
+            <div class="row-photo-badge"><span data-i18n="badgeFr">6 locations</span></div>
           </div>
           <div class="row-content">
             <div class="row-name" data-i18n="nameFr">France</div>
-            <p class="row-blurb" data-i18n="frBlurb">Fashion Week runways, artisanal gelato and the cobbled streets of Montmartre — Paris seen through the eyes of a member on tour, almost entirely built around a single city.</p>
+            <p class="row-blurb" data-i18n="frBlurb">Fashion Week runways, artisanal gelato and a landmark stadium show — Paris seen through the eyes of a member on tour, then the whole group on a world tour stop.</p>
             <div class="row-stats">
-              <div class="row-stat"><div class="n">5</div><div class="l" data-i18n="lLocs">Locations</div></div>
-              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lCities">City</div></div>
+              <div class="row-stat"><div class="n">6</div><div class="l" data-i18n="lLocs">Locations</div></div>
+              <div class="row-stat"><div class="n">2</div><div class="l" data-i18n="lCities">Cities</div></div>
               <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lGroups">Group mapped</div></div>
             </div>
             <div class="row-cities-grid">
               <div class="city-pill"><b data-i18n="paris">Paris</b><span>5</span></div>
+              <div class="city-pill"><b data-i18n="saintdenis">Saint-Denis</b><span>1</span></div>
             </div>
             <div class="row-footer">
               <a class="row-explore" onclick="event.stopPropagation(); openDetail('france')"><span data-i18n="exploreFr">Explore France</span>
@@ -206,13 +234,13 @@
           </div>
         </div>
 
-        <div class="row" onclick="openDetail('portugal')">
+        <div class="row" data-country="portugal" onclick="openDetail('portugal')">
           <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=700');">
             <div class="row-photo-badge"><span data-i18n="badgePt">2 locations</span></div>
           </div>
           <div class="row-content">
             <div class="row-name" data-i18n="namePt">Portugal</div>
-            <p class="row-blurb" data-i18n="ptBlurb">A cinematic estate near Lisbon Airport and a historic naval museum in Belém — two very different sides of a single music video shoot, and the newest country on the map.</p>
+            <p class="row-blurb" data-i18n="ptBlurb">A cinematic estate near Lisbon Airport and a historic naval museum in Belém — two very different sides of a single music video shoot.</p>
             <div class="row-stats">
               <div class="row-stat"><div class="n">2</div><div class="l" data-i18n="lLocs">Locations</div></div>
               <div class="row-stat"><div class="n">2</div><div class="l" data-i18n="lCities">Cities</div></div>
@@ -231,6 +259,156 @@
           </div>
         </div>
 
+        <div class="row" data-country="malta" onclick="openDetail('malta')">
+          <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1595776613215-fe04b78de7fc?w=700');">
+            <div class="row-photo-badge"><span data-i18n="badgeMt">6 locations</span></div>
+          </div>
+          <div class="row-content">
+            <div class="row-name" data-i18n="nameMt">Malta</div>
+            <p class="row-blurb" data-i18n="mtBlurb">Baroque cathedrals, a silent medieval city and a seafront sunset terrace — an entire Bon Voyage season built around a single Mediterranean island.</p>
+            <div class="row-stats">
+              <div class="row-stat"><div class="n">6</div><div class="l" data-i18n="lLocs">Locations</div></div>
+              <div class="row-stat"><div class="n">3</div><div class="l" data-i18n="lCities">Cities</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lGroups">Group mapped</div></div>
+            </div>
+            <div class="row-cities-grid">
+              <div class="city-pill"><b data-i18n="valletta">Valletta</b><span>4</span></div>
+              <div class="city-pill"><b data-i18n="stpaulsbay">St Paul's Bay</b><span>1</span></div>
+              <div class="city-pill"><b data-i18n="mdina">Mdina</b><span>1</span></div>
+            </div>
+            <div class="row-footer">
+              <a class="row-explore" onclick="event.stopPropagation(); openDetail('malta')"><span data-i18n="exploreMt">Explore Malta</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </a>
+              <span class="row-since" data-i18n="since18">Mapped since 2018</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" data-country="usa" onclick="openDetail('usa')">
+          <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=700');">
+            <div class="row-photo-badge"><span data-i18n="badgeUs">4 locations</span></div>
+          </div>
+          <div class="row-content">
+            <div class="row-name" data-i18n="nameUs">United States</div>
+            <p class="row-blurb" data-i18n="usBlurb">From a first attempt at surfing on Oahu's North Shore to sold-out stadiums coast to coast — the most spread-out country on the map.</p>
+            <div class="row-stats">
+              <div class="row-stat"><div class="n">4</div><div class="l" data-i18n="lLocs">Locations</div></div>
+              <div class="row-stat"><div class="n">4</div><div class="l" data-i18n="lCities">Cities</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lGroups">Group mapped</div></div>
+            </div>
+            <div class="row-cities-grid">
+              <div class="city-pill"><b data-i18n="lasvegas">Las Vegas</b><span>1</span></div>
+              <div class="city-pill"><b data-i18n="oahu">Oahu, Hawaii</b><span>1</span></div>
+              <div class="city-pill"><b data-i18n="foxborough">Foxborough, MA</b><span>1</span></div>
+              <div class="city-pill"><b data-i18n="inglewood">Inglewood, CA</b><span>1</span></div>
+            </div>
+            <div class="row-footer">
+              <a class="row-explore" onclick="event.stopPropagation(); openDetail('usa')"><span data-i18n="exploreUs">Explore United States</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </a>
+              <span class="row-since" data-i18n="since17">Mapped since 2017</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" data-country="newzealand" onclick="openDetail('newzealand')">
+          <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=700');">
+            <div class="row-photo-badge"><span data-i18n="badgeNz">4 locations</span></div>
+          </div>
+          <div class="row-content">
+            <div class="row-name" data-i18n="nameNz">New Zealand</div>
+            <p class="row-blurb" data-i18n="nzBlurb">Glacial lakes, alpine hikes and a 300-metre freefall canyon swing — the most physically adventurous Bon Voyage season on the map.</p>
+            <div class="row-stats">
+              <div class="row-stat"><div class="n">4</div><div class="l" data-i18n="lLocs">Locations</div></div>
+              <div class="row-stat"><div class="n">2</div><div class="l" data-i18n="lCities">Cities</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lGroups">Group mapped</div></div>
+            </div>
+            <div class="row-cities-grid">
+              <div class="city-pill"><b data-i18n="canterbury">Canterbury</b><span>2</span></div>
+              <div class="city-pill"><b data-i18n="queenstown">Queenstown</b><span>2</span></div>
+            </div>
+            <div class="row-footer">
+              <a class="row-explore" onclick="event.stopPropagation(); openDetail('newzealand')"><span data-i18n="exploreNz">Explore New Zealand</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </a>
+              <span class="row-since" data-i18n="since19b">Mapped since 2019</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" data-country="norway" onclick="openDetail('norway')">
+          <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1601439678777-b2b3c56fa72e?w=700');">
+            <div class="row-photo-badge"><span data-i18n="badgeNo">2 locations</span></div>
+          </div>
+          <div class="row-content">
+            <div class="row-name" data-i18n="nameNo">Norway</div>
+            <p class="row-blurb" data-i18n="noBlurb">A colourful Hanseatic wharf and a mountaintop view over the fjords — the opening stop of the very first Bon Voyage.</p>
+            <div class="row-stats">
+              <div class="row-stat"><div class="n">2</div><div class="l" data-i18n="lLocs">Locations</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lCities">City</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lGroups">Group mapped</div></div>
+            </div>
+            <div class="row-cities-grid">
+              <div class="city-pill"><b data-i18n="bergen">Bergen</b><span>2</span></div>
+            </div>
+            <div class="row-footer">
+              <a class="row-explore" onclick="event.stopPropagation(); openDetail('norway')"><span data-i18n="exploreNo">Explore Norway</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </a>
+              <span class="row-since" data-i18n="since16">Mapped since 2016</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" data-country="sweden" onclick="openDetail('sweden')">
+          <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=700');">
+            <div class="row-photo-badge"><span data-i18n="badgeSe">1 location</span></div>
+          </div>
+          <div class="row-content">
+            <div class="row-name" data-i18n="nameSe">Sweden</div>
+            <p class="row-blurb" data-i18n="seBlurb">An unhurried afternoon lost in the cobbled lanes of Stockholm's old town, Gamla Stan.</p>
+            <div class="row-stats">
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lLocs">Location</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lCities">City</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lGroups">Group mapped</div></div>
+            </div>
+            <div class="row-cities-grid">
+              <div class="city-pill"><b data-i18n="stockholm">Stockholm</b><span>1</span></div>
+            </div>
+            <div class="row-footer">
+              <a class="row-explore" onclick="event.stopPropagation(); openDetail('sweden')"><span data-i18n="exploreSe">Explore Sweden</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </a>
+              <span class="row-since" data-i18n="since16b">Mapped since 2016</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" data-country="finland" onclick="openDetail('finland')">
+          <div class="row-photo" style="background-image:url('https://images.unsplash.com/photo-1508189860359-777d945909ef?w=700');">
+            <div class="row-photo-badge"><span data-i18n="badgeFi">1 location</span></div>
+          </div>
+          <div class="row-content">
+            <div class="row-name" data-i18n="nameFi">Finland</div>
+            <p class="row-blurb" data-i18n="fiBlurb">A sea fortress spread across six islands just off Helsinki — the quiet final stop of the Nordic leg.</p>
+            <div class="row-stats">
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lLocs">Location</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lCities">City</div></div>
+              <div class="row-stat"><div class="n">1</div><div class="l" data-i18n="lGroups">Group mapped</div></div>
+            </div>
+            <div class="row-cities-grid">
+              <div class="city-pill"><b data-i18n="helsinki">Helsinki</b><span>1</span></div>
+            </div>
+            <div class="row-footer">
+              <a class="row-explore" onclick="event.stopPropagation(); openDetail('finland')"><span data-i18n="exploreFi">Explore Finland</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </a>
+              <span class="row-since" data-i18n="since16c">Mapped since 2016</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 </div>
@@ -239,6 +417,16 @@
   <div class="detail-window" id="detail-window"></div>
 </div>
 
+<!-- Catalogue statique des lieux + Firebase + contenu partagé "Explore Destinations"
+     (demande du 12/09/2026, "le contenu de destinations.html et map-destinations.html
+     doit être le même") — mêmes fichiers, mêmes versions et même ordre que sur
+     map-destinations.html : cette page publique n'avait jusqu'ici aucun accès à
+     Firestore ni aux chiffres réels de locations-data.js. COUNTRIES/COUNTRY_DETAILS/
+     renderDestinationDetailHtml viennent maintenant tous les deux de
+     destinations-content.js, jamais dupliqués ici. -->
+<script src="locations-data.js?v=20260912"></script>
+<script type="module" src="firebase-init.js?v=20260913"></script>
+<script src="destinations-content.js?v=20260913"></script>
 <script>
 // --- I18N SYSTEM ---
 let currentLang = localStorage.getItem('lang') || 'en';
@@ -246,34 +434,52 @@ const t_dest = {
   en: {
     navDest: "Destinations", navArtists: "Artists", navLogin: "Log in",
     title: "Destinations", statsCountries: "Countries", statsCities: "Cities", statsLocs: "Locations",
-    badgeKr: "12 locations", badgeFr: "5 locations", badgePt: "2 locations",
-    nameKr: "South Korea", nameFr: "France", namePt: "Portugal",
+    badgeKr: "31 locations", badgeFr: "6 locations", badgePt: "2 locations", badgeMt: "6 locations", badgeUs: "4 locations", badgeNz: "4 locations", badgeNo: "2 locations", badgeSe: "1 location", badgeFi: "1 location",
+    nameKr: "South Korea", nameFr: "France", namePt: "Portugal", nameMt: "Malta", nameUs: "United States", nameNz: "New Zealand", nameNo: "Norway", nameSe: "Sweden", nameFi: "Finland",
     seoul: "Seoul", chuncheon: "Chuncheon", gangneung: "Gangneung", yangju: "Yangju",
-    paris: "Paris", lisbon: "Lisbon", prior: "Prior Velho",
+    paris: "Paris", lisbon: "Lisbon", prior: "Prior Velho", saintdenis: "Saint-Denis",
+    valletta: "Valletta", stpaulsbay: "St Paul's Bay", mdina: "Mdina",
+    lasvegas: "Las Vegas", oahu: "Oahu, Hawaii", foxborough: "Foxborough, MA", inglewood: "Inglewood, CA",
+    canterbury: "Canterbury", queenstown: "Queenstown", bergen: "Bergen", stockholm: "Stockholm", helsinki: "Helsinki",
     krBlurb: "From dance-practice basements in Gangnam to a custom-built mountain retreat in Chuncheon — the birthplace of it all, and by far the most mapped destination on Screen To Street.",
-    frBlurb: "Fashion Week runways, artisanal gelato and the cobbled streets of Montmartre — Paris seen through the eyes of a member on tour, almost entirely built around a single city.",
-    ptBlurb: "A cinematic estate near Lisbon Airport and a historic naval museum in Belém — two very different sides of a single music video shoot, and the newest country on the map.",
+    frBlurb: "Fashion Week runways, artisanal gelato and a landmark stadium show — Paris seen through the eyes of a member on tour, then the whole group on a world tour stop.",
+    ptBlurb: "A cinematic estate near Lisbon Airport and a historic naval museum in Belém — two very different sides of a single music video shoot.",
+    mtBlurb: "Baroque cathedrals, a silent medieval city and a seafront sunset terrace — an entire Bon Voyage season built around a single Mediterranean island.",
+    usBlurb: "From a first attempt at surfing on Oahu's North Shore to sold-out stadiums coast to coast — the most spread-out country on the map.",
+    nzBlurb: "Glacial lakes, alpine hikes and a 300-metre freefall canyon swing — the most physically adventurous Bon Voyage season on the map.",
+    noBlurb: "A colourful Hanseatic wharf and a mountaintop view over the fjords — the opening stop of the very first Bon Voyage.",
+    seBlurb: "An unhurried afternoon lost in the cobbled lanes of Stockholm's old town, Gamla Stan.",
+    fiBlurb: "A sea fortress spread across six islands just off Helsinki — the quiet final stop of the Nordic leg.",
     lLocs: "Locations", lCities: "Cities", lGroups: "Groups mapped",
-    exploreKr: "Explore South Korea", exploreFr: "Explore France", explorePt: "Explore Portugal",
-    since13: "Mapped since 2013", since19: "Mapped since 2019", since26: "Mapped since 2026",
-    historyTitle: "History & context", statsTitle: "User stats",
-    citiesTitle: "Cities covered", exampleNote: "Example data shown for preview — connect real analytics to populate these figures."
+    exploreKr: "Explore South Korea", exploreFr: "Explore France", explorePt: "Explore Portugal", exploreMt: "Explore Malta", exploreUs: "Explore United States", exploreNz: "Explore New Zealand", exploreNo: "Explore Norway", exploreSe: "Explore Sweden", exploreFi: "Explore Finland",
+    since13: "Mapped since 2013", since19: "Mapped since 2019", since26: "Mapped since 2026", since18: "Mapped since 2018", since17: "Mapped since 2017", since19b: "Mapped since 2019", since16: "Mapped since 2016", since16b: "Mapped since 2016", since16c: "Mapped since 2016",
+    citiesTitle: "Cities covered", exampleNote: "Figures are calculated live from every location currently mapped on Screen To Street.",
+    tripEssentials: "Trip essentials", lStay: "Recommended stay", lSeason: "Best season", lTransport: "Getting around", lTimezone: "Time zone"
   },
   fr: {
     navDest: "Destinations", navArtists: "Artistes", navLogin: "Se connecter",
     title: "Destinations", statsCountries: "Pays", statsCities: "Villes", statsLocs: "Lieux",
-    badgeKr: "12 lieux", badgeFr: "5 lieux", badgePt: "2 lieux",
-    nameKr: "Corée du Sud", nameFr: "France", namePt: "Portugal",
+    badgeKr: "31 lieux", badgeFr: "6 lieux", badgePt: "2 lieux", badgeMt: "6 lieux", badgeUs: "4 lieux", badgeNz: "4 lieux", badgeNo: "2 lieux", badgeSe: "1 lieu", badgeFi: "1 lieu",
+    nameKr: "Corée du Sud", nameFr: "France", namePt: "Portugal", nameMt: "Malte", nameUs: "États-Unis", nameNz: "Nouvelle-Zélande", nameNo: "Norvège", nameSe: "Suède", nameFi: "Finlande",
     seoul: "Séoul", chuncheon: "Chuncheon", gangneung: "Gangneung", yangju: "Yangju",
-    paris: "Paris", lisbon: "Lisbonne", prior: "Prior Velho",
+    paris: "Paris", lisbon: "Lisbonne", prior: "Prior Velho", saintdenis: "Saint-Denis",
+    valletta: "La Valette", stpaulsbay: "St Paul's Bay", mdina: "Mdina",
+    lasvegas: "Las Vegas", oahu: "Oahu, Hawaï", foxborough: "Foxborough, MA", inglewood: "Inglewood, CA",
+    canterbury: "Canterbury", queenstown: "Queenstown", bergen: "Bergen", stockholm: "Stockholm", helsinki: "Helsinki",
     krBlurb: "Des sous-sols de danse à Gangnam à un refuge majestueux dans les montagnes de Chuncheon — le berceau de tout, et de loin la destination la plus cartographiée sur Screen To Street.",
-    frBlurb: "Défilés de Fashion Week, glaces artisanales et rues pavées de Montmartre — Paris vue à travers les yeux d'un membre en tournée.",
-    ptBlurb: "Un domaine impressionnant près de l'aéroport et un musée naval historique à Belém — deux facettes très différentes d'un seul tournage de clip, et le pays le plus récent sur la carte.",
+    frBlurb: "Défilés de Fashion Week, glaces artisanales et un concert historique en stade — Paris vue à travers les yeux d'un membre en tournée, puis tout le groupe lors d'une étape de tournée mondiale.",
+    ptBlurb: "Un domaine impressionnant près de l'aéroport de Lisbonne et un musée naval historique à Belém — deux facettes très différentes d'un seul tournage de clip.",
+    mtBlurb: "Cathédrales baroques, cité médiévale silencieuse et terrasse au coucher de soleil en bord de mer — toute une saison de Bon Voyage bâtie autour d'une seule île méditerranéenne.",
+    usBlurb: "D'un premier essai de surf sur la côte nord d'Oahu à des stades combles d'une côte à l'autre — le pays le plus étendu de la carte.",
+    nzBlurb: "Lacs glaciaires, randonnées alpines et une balançoire en chute libre de 300 mètres — la saison de Bon Voyage la plus sportive de la carte.",
+    noBlurb: "Un quai hanséatique coloré et une vue depuis un sommet sur les fjords — la toute première étape du premier Bon Voyage.",
+    seBlurb: "Un après-midi tranquille perdu dans les ruelles pavées de la vieille ville de Stockholm, Gamla Stan.",
+    fiBlurb: "Une forteresse maritime répartie sur six îles au large d'Helsinki — la dernière étape paisible du passage nordique.",
     lLocs: "Lieux", lCities: "Villes", lGroups: "Groupes",
-    exploreKr: "Explorer la Corée du Sud", exploreFr: "Explorer la France", explorePt: "Explorer le Portugal",
-    since13: "Sur la carte depuis 2013", since19: "Sur la carte depuis 2019", since26: "Sur la carte depuis 2026",
-    historyTitle: "Histoire et contexte", statsTitle: "Statistiques d'utilisateurs",
-    citiesTitle: "Villes couvertes", exampleNote: "Données à titre d'exemple — connectez des données réelles pour alimenter ces chiffres."
+    exploreKr: "Explorer la Corée du Sud", exploreFr: "Explorer la France", explorePt: "Explorer le Portugal", exploreMt: "Explorer Malte", exploreUs: "Explorer les États-Unis", exploreNz: "Explorer la Nouvelle-Zélande", exploreNo: "Explorer la Norvège", exploreSe: "Explorer la Suède", exploreFi: "Explorer la Finlande",
+    since13: "Sur la carte depuis 2013", since19: "Sur la carte depuis 2019", since26: "Sur la carte depuis 2026", since18: "Sur la carte depuis 2018", since17: "Sur la carte depuis 2017", since19b: "Sur la carte depuis 2019", since16: "Sur la carte depuis 2016", since16b: "Sur la carte depuis 2016", since16c: "Sur la carte depuis 2016",
+    citiesTitle: "Villes couvertes", exampleNote: "Ces chiffres sont calculés en direct à partir de tous les lieux actuellement cartographiés sur Screen To Street.",
+    tripEssentials: "Essentiels du voyage", lStay: "Durée recommandée", lSeason: "Meilleure saison", lTransport: "Se déplacer", lTimezone: "Fuseau horaire"
   }
 };
 
@@ -298,63 +504,49 @@ document.addEventListener('DOMContentLoaded', () => {
             currentLang = this.getAttribute('data-lang');
             localStorage.setItem('lang', currentLang);
             updateLangUI();
+            correctDestinationNumbers(currentLang);
+            applyDestinationOverrides();
+            if (lastOpenedCountry) openDetail(lastOpenedCountry);
         });
     });
 
-    document.addEventListener('click', () => { 
+    document.addEventListener('click', () => {
         const langMenu = document.getElementById('lang-menu');
-        if (langMenu) langMenu.classList.add('hidden'); 
+        if (langMenu) langMenu.classList.add('hidden');
     });
 
     updateLangUI();
+    correctDestinationNumbers(currentLang);
+    applyDestinationOverrides();
 });
+window.addEventListener('firebase-ready', () => { applyDestinationOverrides(); });
 
-// --- DATA ---
-const COUNTRIES = {
-  en: {
-      southkorea: { name: "South Korea", photo: "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900", locations: 12, history: "Long before it became a global pop-culture capital, Seoul was already a city of contrasts — centuries-old palaces sitting a few blocks from neon-lit shopping districts. That same contrast is what makes it the backbone of the K-pop map: rookie-era practice rooms in Gangnam sit alongside purpose-built retreats deep in the mountains of Gangwon-do, each telling a different chapter of an artist's story.", cities: [["Seoul",8],["Chuncheon",2],["Gangneung",1],["Yangju",1]], stats: [["68%","of users' itineraries include South Korea"],["4.2","average days planned for a Korea trip"],["3","most-visited cities: Seoul, Chuncheon, Gangneung"]] },
-      france: { name: "France", photo: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900", locations: 5, history: "Paris has long been a stage for K-pop's biggest fashion moments — Fashion Week runways, flagship store openings, and quiet afternoons in Montmartre captured between official schedules. It's the second most-mapped destination on Screen To Street, almost entirely built around Paris itself.", cities: [["Paris",5]], stats: [["31%","of users' itineraries include France"],["2.5","average days planned for a Paris trip"],["1","city covered so far: Paris"]] },
-      portugal: { name: "Portugal", photo: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=900", locations: 2, history: "Portugal's spot on the map exists almost by accident of production choices — a historic estate near Lisbon Airport and the Navy Museum in Belém were both chosen as filming backdrops for a single music video shoot, putting the country on ARMY's radar for the first time.", cities: [["Lisbon",1],["Prior Velho",1]], stats: [["9%","of users' itineraries include Portugal"],["1.5","average days planned for a Portugal trip"],["2","cities covered: Lisbon, Prior Velho"]] }
-  },
-  fr: {
-      southkorea: { name: "Corée du Sud", photo: "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900", locations: 12, history: "Longtemps avant de devenir une capitale mondiale de la pop culture, Séoul était déjà une ville de contrastes — des palais centenaires situés à quelques rues de quartiers commerçants aux néons clignotants. Ce même contraste fait d'elle la colonne vertébrale de la carte K-pop : des salles d'entraînement de Gangnam aux refuges sur mesure dans les montagnes de Gangwon-do.", cities: [["Séoul",8],["Chuncheon",2],["Gangneung",1],["Yangju",1]], stats: [["68%","des itinéraires incluent la Corée du Sud"],["4.2","jours prévus en moyenne pour un voyage en Corée"],["3","villes les plus visitées : Séoul, Chuncheon, Gangneung"]] },
-      france: { name: "France", photo: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900", locations: 5, history: "Paris a longtemps été le théâtre des plus grands moments de mode de la K-pop — des défilés de la Fashion Week, des glaces artisanales et des après-midi tranquilles à Montmartre capturés entre deux événements officiels. C'est la deuxième destination la plus cartographiée.", cities: [["Paris",5]], stats: [["31%","des itinéraires incluent la France"],["2.5","jours prévus en moyenne pour un voyage à Paris"],["1","ville couverte pour le moment : Paris"]] },
-      portugal: { name: "Portugal", photo: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=900", locations: 2, history: "La place du Portugal sur la carte existe presque par accident de production — un domaine impressionnant près de l'aéroport de Lisbonne et le musée de la marine à Belém ont tous deux été choisis comme décors pour un même tournage de clip.", cities: [["Lisbonne",1],["Prior Velho",1]], stats: [["9%","des itinéraires incluent le Portugal"],["1.5","jours prévus en moyenne pour un voyage au Portugal"],["2","villes couvertes : Lisbonne, Prior Velho"]] }
-  }
-};
+// --- DATA & DETAIL RENDERING ---
+// COUNTRIES/COUNTRY_DETAILS/computeCountryStats/correctDestinationNumbers/
+// loadDestinationOverrides/renderDestinationDetailHtml/toggleKpiShared viennent tous de
+// destinations-content.js, chargé plus haut — partagé à l'identique avec
+// map-destinations.html (demande du 12/09/2026) pour que les deux pages ne puissent
+// plus diverger. Rien de tout ça n'est redéfini ici : voir ce fichier pour la donnée et
+// le rendu de la fiche détaillée. Cette page n'a pas de crayon d'édition admin (voir la
+// note en tête de destinations-content.js) — seules les surcharges déjà publiées
+// s'appliquent, en lecture seule.
+let lastOpenedCountry = null;
 
-function openDetail(key) {
-  const c = COUNTRIES[currentLang][key];
-  const t = t_dest[currentLang];
-  
-  const cityRows = c.cities.map(([name,n]) => `<div class="city-row"><span>${name}</span><span>${n} ${n>1 ? 'lieux' : 'lieu'}</span></div>`).join('');
-  const statCards = c.stats.map(([num,lab]) => `<div class="stat-card"><div class="num">${num}</div><div class="lab">${lab}</div></div>`).join('');
-
-  document.getElementById('detail-window').innerHTML = `
-    <div class="detail-hero" style="background-image:url('${c.photo}');">
-      <div class="detail-hero-overlay"></div>
-      <div class="detail-close" onclick="closeDetail()">✕</div>
-      <div class="detail-hero-bottom">
-        <div class="detail-name">${c.name}</div>
-        <div class="detail-sub">${c.locations} ${t.lLocs.toLowerCase()}</div>
-      </div>
-    </div>
-    <div class="detail-body">
-      <div class="detail-section-label">${t.historyTitle}</div>
-      <p class="detail-blurb">${c.history}</p>
-
-      <div class="detail-section-label">${t.statsTitle}</div>
-      <div class="stat-grid">${statCards}</div>
-      <div class="example-note">${t.exampleNote}</div>
-
-      <div class="detail-section-label">${t.citiesTitle}</div>
-      <div class="city-list">${cityRows}</div>
-    </div>
-  `;
+async function openDetail(key) {
+  const t = t_dest[currentLang] || t_dest.en;
+  lastOpenedCountry = key;
+  window.resetDestinationKpiState();
+  const overrides = (await window.loadDestinationOverrides())[key] || {};
+  document.getElementById('detail-window').innerHTML = renderDestinationDetailHtml(key, currentLang, t, overrides);
   document.getElementById('overlay').classList.add('open');
 }
+
+function toggleKpi(type) { toggleKpiShared(type, currentLang, lastOpenedCountry); }
+
 function closeDetail() {
   document.getElementById('overlay').classList.remove('open');
+  lastOpenedCountry = null;
+  window.resetDestinationKpiState();
 }
 </script>
 
