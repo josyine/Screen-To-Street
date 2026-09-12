@@ -50,6 +50,16 @@ const { locationsFromSnapshot, combineExistingLocations, findDuplicate } = requi
 
 const DUPLICATE_THRESHOLD_METERS = 50;
 
+// Même regex que extractYouTubeId() dans admin.html — admin.html lit sub.ytId (un ID
+// court), jamais une URL brute, donc toute youtubeUrl renvoyée par Gemini doit être
+// convertie ici avant l'écriture Firestore.
+function extractYouTubeId(url) {
+    const s = (url || '').trim();
+    if (!s) return null;
+    const m = s.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{6,})/);
+    return m ? m[1] : (/^[a-zA-Z0-9_-]{10,15}$/.test(s) ? s : null);
+}
+
 function loadServiceAccount() {
     const localPath = path.join(__dirname, 'serviceAccountKey.json');
     if (fs.existsSync(localPath)) return require(localPath);
@@ -100,6 +110,13 @@ une astuce de visite). Règle absolue : ne jamais inventer une adresse, un lien 
 de photo — si tu n'es pas certain à 100% qu'une information est réelle et vérifiable,
 laisse le champ correspondant vide ("") plutôt que d'en inventer une.
 
+Pour CHAQUE lieu, cherche aussi tous les liens vers du contenu BTS OFFICIEL qui s'y rapportent
+(chaîne YouTube officielle HYBE LABELS/BANGTANTV, compte Twitter/X officiel @BTS_twt ou @bts_bighit,
+Instagram officiel, Weverse, TikTok officiel...) — mets-en AUTANT que tu en trouves de réels et
+vérifiables parmi youtubeUrl/tweetUrl/instagramUrl/facebookUrl/tiktokUrl ci-dessous, un par type de
+lien maximum. Même règle absolue que ci-dessus : un champ vide ("") vaut toujours mieux qu'un lien
+inventé ou approximatif (jamais un lien qui n'existe pas ou qui ne concerne pas précisément ce lieu).
+
 Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette structure exacte :
 [{
   "name": "Nom du lieu",
@@ -115,7 +132,12 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
   "practicalInfo": [ { "title": { "en": "How to get there" }, "text": { "en": "Indications concrètes pour s'y rendre." } } ],
   "tipsList": [ { "title": { "en": "Astuce" }, "text": { "en": "Un conseil concret et utile pour la visite." } } ],
   "img": "URL réelle d'une photo (Wikimedia Commons ou site officiel) — laisse vide (\\"\\") si tu n'es pas certain qu'elle existe",
-  "episodeLink": "https://source-verifiable-reelle.com (laisse vide si aucune source certaine)"
+  "episodeLink": "https://source-verifiable-reelle.com (laisse vide si aucune source certaine)",
+  "youtubeUrl": "URL complète d'une vidéo YouTube OFFICIELLE (HYBE LABELS/BANGTANTV) montrant ce lieu — laisse vide si aucune",
+  "tweetUrl": "URL d'un post Twitter/X OFFICIEL (@BTS_twt/@bts_bighit) montrant ce lieu — laisse vide si aucun",
+  "instagramUrl": "URL d'un post Instagram OFFICIEL montrant ce lieu — laisse vide si aucun",
+  "facebookUrl": "URL d'un post Facebook OFFICIEL montrant ce lieu — laisse vide si aucun",
+  "tiktokUrl": "URL d'un post TikTok OFFICIEL montrant ce lieu — laisse vide si aucun"
 }]`;
 
         // maxOutputTokens explicite (demande du 11/09/2026, "plus de lieux par jour") :
@@ -148,8 +170,28 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
 
             if (!loc.img) console.log(`⚠️  Pas de photo fournie pour "${loc.name}" — à ajouter manuellement avant d'approuver.`);
 
+            // youtubeUrl est une URL brute renvoyée par Gemini, mais admin.html affiche/lit
+            // sub.ytId (un ID court) — jamais sub.youtubeUrl — d'où cette conversion avant
+            // écriture. Les 4 autres liens (tweet/instagram/facebook/tiktok) sont déjà des
+            // URLs directes, exactement ce qu'attend renderCard() dans admin.html.
+            const ytId = loc.youtubeUrl ? extractYouTubeId(loc.youtubeUrl) : null;
+            const { youtubeUrl, ...locWithoutYoutubeUrl } = loc;
+
+            const foundLinks = [];
+            if (ytId) foundLinks.push('YouTube');
+            if (loc.tweetUrl) foundLinks.push('Twitter/X');
+            if (loc.instagramUrl) foundLinks.push('Instagram');
+            if (loc.facebookUrl) foundLinks.push('Facebook');
+            if (loc.tiktokUrl) foundLinks.push('TikTok');
+            if (foundLinks.length) {
+                console.log(`   🔗 Liens officiels trouvés pour "${loc.name}" : ${foundLinks.join(', ')}`);
+            } else {
+                console.log(`   🔗 Aucun lien officiel trouvé pour "${loc.name}".`);
+            }
+
             await db.collection('locationSubmissions').add({
-                ...loc,
+                ...locWithoutYoutubeUrl,
+                ...(ytId ? { ytId } : {}),
                 status: 'pending',
                 submittedAt: admin.firestore.FieldValue.serverTimestamp(),
                 submittedBy: 'Gemini-AI-Agent',
