@@ -1085,8 +1085,11 @@ window.initLiveBadge = function() {
 // ==========================================
 let map = null;
 let markerGroup = null;
-let currentFilteredLocations = []; 
-let currentLocationIdForMemory = null; 
+let currentFilteredLocations = [];
+let currentLocationIdForMemory = null;
+// Lieux marqués "vérifiés" par un admin (demande du 13/09/2026) — chargé une seule fois,
+// admins uniquement, voir le handler 'firebase-ready' plus bas et renderLocations().
+let verifiedLocationIdsCache = [];
 let currentGeneratedItinerary = [];
 let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -1644,6 +1647,13 @@ window.addEventListener('firebase-ready', async (e) => {
         window.__isAdminUser = true;
         const adminEditBtn = document.getElementById('details-admin-edit-btn');
         if (adminEditBtn) adminEditBtn.classList.remove('hidden');
+        // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) : lue
+        // UNE SEULE FOIS ici, réservée aux admins (jamais chargée pour un visiteur
+        // normal) — voir renderLocations() plus bas, qui s'appuie sur ce cache.
+        if (typeof window.fetchVerifiedLocationIds === 'function') {
+            verifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
+            if (document.getElementById('map') && typeof renderLocations === 'function') renderLocations(true);
+        }
     }
 
     // Voyages partagés par d'autres utilisateurs (voir listSharedTripsForMe() dans
@@ -3608,11 +3618,21 @@ function renderLocations(skipFitBounds) {
         // jamais liée à une session ou une date, purement à l'action de la personne.
         const isNew = newLocationIds.includes(loc.id) && !dismissedNewIds.includes(loc.id);
         const newBadgeHtml = isNew ? `<span class="loc-new-badge">${t('newBadgeLabel')}</span>` : '';
+        // Pastille "vérifié par l'admin" (demande du 13/09/2026) : réservée aux admins
+        // (window.__isAdminUser, voir le handler 'firebase-ready' plus haut) — jamais
+        // visible d'un visiteur normal, purement un pense-bête personnel. Une coche verte
+        // SVG plutôt qu'un vrai emoji (préférence du site, voir CLAUDE.md).
+        const isVerified = window.__isAdminUser && verifiedLocationIdsCache.includes(String(loc.id));
+        const verifiedBadgeHtml = isVerified
+            ? `<span class="loc-verified-badge" title="You verified this location">
+                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+               </span>`
+            : '';
         card.innerHTML = `
             <div class="loc-icon-box" style="color:${baseColor}; background:${baseColor}1A;">${catIconSvg}</div>
             <div class="loc-info">
                 <div class="loc-cat">${getCatName(loc.category)} &middot; ${loc.city || ''}</div>
-                <div class="loc-name">${loc.name}${newBadgeHtml}</div>
+                <div class="loc-name">${loc.name}${newBadgeHtml}${verifiedBadgeHtml}</div>
             </div>
             ${ratingBadgeHtml}
         `;
@@ -4882,6 +4902,16 @@ function ensureLocationEditModal() {
             <label style="${labelStyle}">Photo credit / copyright (optional)</label>
             <input type="text" id="location-edit-img-credit" style="${fieldStyle} margin-bottom:14px;" placeholder="e.g. Photo: @username, or © Official press kit">
 
+            <!-- Bouton "vérifié" (demande du 13/09/2026) : purement un pense-bête personnel
+                 pour l'admin ("juste pour moi, pour que je sache ce que j'ai vérifié") — bascule
+                 immédiatement au clic (comme "Delete location" plus bas), sans passer par "Save
+                 changes". Même donnée (siteConfig/verifiedLocations) que le bouton équivalent
+                 d'admin.html. -->
+            <button type="button" id="location-edit-verify-btn" style="width:100%; background:none; border:1.5px solid #e2e8f0; color:#64748b; border-radius:100px; padding:10px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Mark as verified</span>
+            </button>
+
             <button id="location-edit-save-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:11px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Save changes</button>
             <div id="location-edit-result" class="hidden" style="font-size:12px; font-weight:600; margin-top:10px; text-align:center;"></div>
 
@@ -5071,7 +5101,40 @@ window.openLocationEditModal = async function (locId) {
 
     const deleteBtn = document.getElementById('location-edit-delete-btn');
     deleteBtn.onclick = () => deleteLocationFromEditModal(locId, modal);
+
+    updateLocationEditVerifyBtn(locId);
+    const verifyBtn = document.getElementById('location-edit-verify-btn');
+    if (verifyBtn) verifyBtn.onclick = () => toggleLocationVerifiedFromEditModal(locId);
 };
+
+// Bouton "vérifié" du modal crayon (demande du 13/09/2026) — voir aussi l'équivalent dans
+// admin.html (renderExistingLocationCard). S'appuie sur verifiedLocationIdsCache, déjà
+// chargé une seule fois pour tout admin connecté (voir le handler 'firebase-ready').
+function updateLocationEditVerifyBtn(locId) {
+    const verifyBtn = document.getElementById('location-edit-verify-btn');
+    if (!verifyBtn) return;
+    const isVerified = verifiedLocationIdsCache.includes(String(locId));
+    verifyBtn.style.background = isVerified ? '#10b981' : 'none';
+    verifyBtn.style.borderColor = isVerified ? '#10b981' : '#e2e8f0';
+    verifyBtn.style.color = isVerified ? '#fff' : '#64748b';
+    verifyBtn.querySelector('span').textContent = isVerified ? 'Verified' : 'Mark as verified';
+}
+async function toggleLocationVerifiedFromEditModal(locId) {
+    const verifyBtn = document.getElementById('location-edit-verify-btn');
+    if (!verifyBtn || typeof window.adminSetLocationVerified !== 'function') return;
+    const idStr = String(locId);
+    const nowVerified = !verifiedLocationIdsCache.includes(idStr);
+    verifyBtn.disabled = true;
+    const res = await window.adminSetLocationVerified(locId, nowVerified);
+    verifyBtn.disabled = false;
+    if (res && res.success) {
+        verifiedLocationIdsCache = nowVerified
+            ? verifiedLocationIdsCache.concat([idStr])
+            : verifiedLocationIdsCache.filter(id => id !== idStr);
+        updateLocationEditVerifyBtn(locId);
+        if (map && typeof renderLocations === 'function') renderLocations(true);
+    }
+}
 
 async function deleteLocationFromEditModal(locId, modal) {
     const loc = celebLocations.find(l => l.id === locId);
