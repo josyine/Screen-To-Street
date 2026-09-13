@@ -115,9 +115,19 @@ d'autres lieux BTS classiques.
 Trouve 20 lieux réels, différents et emblématiques liés à BTS, absents de la liste ci-dessus.
 Pour chacun, rédige un contenu complet et soigné, dans le même esprit que les fiches déjà
 publiées sur le site (récit narratif sur 2 paragraphes minimum, infos pratiques concrètes,
-une astuce de visite). Règle absolue : ne jamais inventer une adresse, un lien ou une URL
-de photo — si tu n'es pas certain à 100% qu'une information est réelle et vérifiable,
-laisse le champ correspondant vide ("") plutôt que d'en inventer une.
+plusieurs astuces de visite — voir tipsList ci-dessous). Règle absolue : ne jamais inventer
+une adresse, un lien ou une URL de photo — si tu n'es pas certain à 100% qu'une information
+est réelle et vérifiable, laisse le champ correspondant vide ("") plutôt que d'en inventer une.
+
+Pour tipsList (demande du 13/09/2026, "je veux qu'il ajoute également la rédaction des
+tips") : rédige TOUJOURS au moins 2 à 3 astuces distinctes et concrètes par lieu, jamais une
+seule astuce générique et jamais un tableau vide. Chaque astuce doit couvrir un angle
+pratique différent — par exemple : le meilleur moment de la journée/saison pour y aller,
+comment éviter l'affluence, ce qu'il faut réserver ou vérifier à l'avance (billets, horaires
+d'ouverture, jours de fermeture), une astuce photo, une règle sur place (tenue, interdiction
+de photographier...), ou un lieu à combiner à proximité. Comme pour le reste : une astuce
+non vérifiable ou trop vague vaut mieux absente qu'inventée — dans ce cas rédige uniquement
+les astuces dont tu es certain, même si cela fait moins de 2 à 3.
 
 Pour CHAQUE lieu, cherche aussi tous les liens vers du contenu BTS OFFICIEL qui s'y rapportent
 (chaîne YouTube officielle HYBE LABELS/BANGTANTV, compte Twitter/X officiel @BTS_twt ou @bts_bighit,
@@ -146,7 +156,7 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
   "lat": 0.0, "lng": 0.0,
   "fullDescription": { "en": "<p>Premier paragraphe : le lieu lui-même, son contexte, son histoire.</p><p>Deuxième paragraphe : son lien concret avec BTS/le membre (tournage, évènement, visite...).</p>" },
   "practicalInfo": [ { "title": { "en": "How to get there" }, "text": { "en": "Indications concrètes pour s'y rendre." } } ],
-  "tipsList": [ { "title": { "en": "Astuce" }, "text": { "en": "Un conseil concret et utile pour la visite." } } ],
+  "tipsList": [ { "title": { "en": "Best time to visit" }, "text": { "en": "Un premier conseil concret et utile pour la visite." } }, { "title": { "en": "Avoid the crowds" }, "text": { "en": "Un deuxième conseil, sur un angle différent du premier." } } ],
   "img": "URL réelle d'une photo (Wikimedia Commons ou site officiel) — laisse vide (\\"\\") si tu n'es pas certain qu'elle existe",
   "episodeLink": "https://source-verifiable-reelle.com (laisse vide si aucune source certaine)",
   "officialLink": "URL du site officiel DU LIEU LUI-MÊME (hôtel/musée/salle de concert/café...), pas un lien BTS — laisse vide si aucun site officiel certain",
@@ -186,6 +196,14 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
             }
 
             if (!loc.img) console.log(`⚠️  Pas de photo fournie pour "${loc.name}" — à ajouter manuellement avant d'approuver.`);
+            // tipsList (demande du 13/09/2026, "je veux qu'il ajoute également la rédaction
+            // des tips") : même visibilité que la photo/les liens ci-dessus — le prompt
+            // demande maintenant 2-3 astuces par lieu, ce log signale les fois où l'IA n'en a
+            // fourni aucune malgré la consigne, pour repérer un éventuel oubli en relecture.
+            const tipsCount = Array.isArray(loc.tipsList) ? loc.tipsList.length : 0;
+            console.log(tipsCount > 0
+                ? `   💡 ${tipsCount} astuce${tipsCount > 1 ? 's' : ''} de visite pour "${loc.name}".`
+                : `⚠️  Aucune astuce (tipsList) fournie pour "${loc.name}" — à ajouter manuellement avant d'approuver.`);
 
             // youtubeUrl est une URL brute renvoyée par Gemini, mais admin.html affiche/lit
             // sub.ytId (un ID court) — jamais sub.youtubeUrl — d'où cette conversion avant
