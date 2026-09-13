@@ -1194,7 +1194,7 @@ window.approveLocationSubmission = async function (submission) {
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         const targetId = submission.matchedLocId ? String(submission.matchedLocId) : 'new-' + submission.id;
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
+        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), contentDoc, { merge: true });

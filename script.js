@@ -2313,9 +2313,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Tailles légèrement réduites par rapport aux 16/22/26/32px d'origine (demande
             // du 04/09/2026 : "les boutons de location sont un peu trop gros") — mêmes
             // paliers de zoom, mêmes proportions icône/marqueur (~50%), juste ~12% plus
-            // petit. Garder clusterPixelRadiusForZoom() ci-dessous en phase avec ces
-            // valeurs : le seuil de regroupement des marqueurs proches est calculé à
-            // partir de leur taille réelle en pixels.
+            // petit.
             if (zoom < 4) { markerSize = 14; iconSize = 7; }
             else if (zoom < 6) { markerSize = 19; iconSize = 9; }
             else if (zoom < 9) { markerSize = 22; iconSize = 11; }
@@ -2639,13 +2637,24 @@ function renderNewLocationsSummaryToast(count, group) {
 
 // Purement informatif/public (comme le Mode Tournée) : ne dépend d'aucune donnée de
 // compte, affiché à l'identique pour un visiteur en mode démo ou un compte réel.
+// BUG rapporté le 13/09/2026 ("une fois la notification envoyée, je ne veux plus que tu
+// l'affiches... une fois envoyée tu n'envoies plus l'information pour le lieu") :
+// sessionStorage se réinitialise à chaque fermeture d'onglet/navigateur, donc les MÊMES
+// lieux redéclenchaient le toast à chaque nouvelle session. localStorage + la liste des
+// ids déjà notifiés (pas juste un booléen) règle ça pour de bon, tout en laissant le
+// toast réapparaître normalement le jour où NEW_LOCATION_IDS ci-dessus est mis à jour
+// avec de VRAIS nouveaux ids jamais encore notifiés.
 window.showNewLocationToasts = function () {
-    if (sessionStorage.getItem('newLocationToastsShown')) return;
     const container = document.getElementById('new-location-toast-container');
     if (!container) return;
-    const pool = NEW_LOCATION_IDS.map(id => celebLocations.find(l => l.id === id)).filter(Boolean);
+    let alreadyNotifiedIds = [];
+    try { alreadyNotifiedIds = JSON.parse(localStorage.getItem('newLocationToastsNotifiedIds') || '[]'); } catch (e) { alreadyNotifiedIds = []; }
+    const unnotifiedIds = NEW_LOCATION_IDS.filter(id => !alreadyNotifiedIds.includes(id));
+    const pool = unnotifiedIds.map(id => celebLocations.find(l => l.id === id)).filter(Boolean);
     if (!pool.length) return;
-    sessionStorage.setItem('newLocationToastsShown', '1');
+    try {
+        localStorage.setItem('newLocationToastsNotifiedIds', JSON.stringify(alreadyNotifiedIds.concat(unnotifiedIds)));
+    } catch (e) { /* stockage indisponible (navigation privée...) — pas bloquant */ }
 
     // Regroupées par groupe/artiste concerné plutôt qu'une notification par lieu.
     const byGroup = new Map();
@@ -3202,7 +3211,15 @@ function t(key) {
     if (translations.en && translations.en[key]) return translations.en[key];
     return key;
 }
-function getLocText(field) { return field ? (field[currentLang] || field.en || "") : ""; }
+// BUG rapporté le 13/09/2026 ("j'ai ajouté des tips via l'admin, mais elles ne se sont
+// pas publiées") : cette fonction supposait TOUJOURS un objet multilingue ({en:"...",
+// fr:"..."}), le format historique de l'agent IA. Mais window.createTitledListField()
+// (utilisé par les éditeurs de tipsList/practicalInfo d'admin.html) collecte des chaînes
+// de texte SIMPLES ("How to get there", pas {en:"How to get there"}) — field[currentLang]
+// sur une chaîne fait de l'indexation par clé (toujours undefined), donc field.title/
+// field.text ressortaient systématiquement vides et le tip entier disparaissait au filtre
+// .filter(Boolean) de renderLocationRichContent(). Gère maintenant les deux formats.
+function getLocText(field) { if (typeof field === 'string') return field; return field ? (field[currentLang] || field.en || "") : ""; }
 
 window.changeLang = function(lang) {
     currentLang = lang;
@@ -3619,67 +3636,6 @@ function renderLocations(skipFitBounds) {
     renderMapMarkers(filteredLocations, { fitBounds: !skipFitBounds });
 }
 
-// ==========================================
-// 4bis. REGROUPEMENT DES MARQUEURS TROP PROCHES (CLUSTERING)
-// ==========================================
-// Quand on dézoome (ex: toute la Corée du Sud visible d'un coup), des dizaines de lieux
-// très proches géographiquement finissent en pixels quasi au même endroit et deviennent
-// une bouillie d'icônes illisible. On les regroupe alors en un seul marqueur avec un
-// badge "×N" ; recalculé à chaque changement de zoom (les lieux qui se séparent
-// suffisamment en zoomant redeviennent des marqueurs individuels).
-//
-// Le rayon de fusion suit désormais la taille RÉELLE des marqueurs à ce zoom (mêmes
-// paliers que --marker-size plus haut) au lieu d'un rayon fixe de 45px : avec un rayon
-// fixe plus grand que le plus grand marqueur (32px), deux lieux encore visiblement
-// espacés (un peu d'espace blanc entre les deux icônes) se retrouvaient déjà fusionnés
-// en "×2" — le badge de regroupement doit au contraire n'apparaître que lorsque les
-// marqueurs se chevaucheraient réellement à l'écran.
-function clusterPixelRadiusForZoom(zoom) {
-    if (zoom < 4) return 14;
-    if (zoom < 6) return 19;
-    if (zoom < 9) return 22;
-    return 28;
-}
-// Au zoom maximal (limite de la tuile OSM, voir maxZoom du tileLayer plus bas), deux
-// lieux réellement distincts mais très proches en vrai (ex: deux cafés de la même rue)
-// peuvent encore projeter à moins du rayon ci-dessus l'un de l'autre et rester fusionnés
-// en un cluster "×2" — trompeur puisque l'utilisateur est déjà au niveau de zoom maximum
-// et ne peut pas zoomer davantage pour les séparer. On désactive donc le clustering dès
-// ce niveau : chaque lieu redevient son propre marqueur individuel.
-const MAP_MAX_ZOOM = 19;
-
-function clusterLocationsForZoom(locations, zoom) {
-    if (zoom >= MAP_MAX_ZOOM) return locations.map(loc => ({ locs: [loc], center: [loc.lat, loc.lng] }));
-    // clusterPixelRadiusForZoom() donne le DIAMÈTRE du marqueur à ce zoom : à une
-    // distance centre-à-centre égale à ce diamètre, deux cercles sont seulement
-    // TANGENTS (un unique point de contact, pas un vrai chevauchement visible) — dans
-    // les faits ça donnait quand même l'impression de lieux "collés" fusionnés trop tôt.
-    // On applique donc un facteur < 1 pour n'exiger la fusion qu'en cas de réel
-    // chevauchement des cercles, pas d'un simple contact au dernier pixel.
-    const clusterRadius = clusterPixelRadiusForZoom(zoom) * 0.6;
-
-    const points = locations.map(loc => ({ loc, px: map.project([loc.lat, loc.lng], zoom) }));
-    const used = new Array(points.length).fill(false);
-    const clusters = [];
-
-    for (let i = 0; i < points.length; i++) {
-        if (used[i]) continue;
-        const group = [points[i]];
-        used[i] = true;
-        for (let j = i + 1; j < points.length; j++) {
-            if (used[j]) continue;
-            if (points[i].px.distanceTo(points[j].px) <= clusterRadius) {
-                group.push(points[j]);
-                used[j] = true;
-            }
-        }
-        const avgLat = group.reduce((sum, g) => sum + g.loc.lat, 0) / group.length;
-        const avgLng = group.reduce((sum, g) => sum + g.loc.lng, 0) / group.length;
-        clusters.push({ locs: group.map(g => g.loc), center: [avgLat, avgLng] });
-    }
-    return clusters;
-}
-
 // Bulle résumé au survol d'un pin (demande du 05/09/2026) : très peu d'infos (nom,
 // catégorie, ville/pays), même style visuel que la bulle du Mode Tournée mais purement
 // informative — le clic garde son comportement habituel (ouvre la fiche complète).
@@ -3736,55 +3692,16 @@ function addSingleLocationMarker(loc) {
     marker.on('mouseout', () => hideMapHoverTip());
 }
 
-function addClusterMarker(cluster) {
-    const count = cluster.locs.length;
-
-    // Groupes distincts présents dans ce cluster : un même lieu réel (mêmes coordonnées,
-    // ex: BTS ET Blackpink ayant tous deux tourné au Stade de France) finit dans le même
-    // cluster que "plusieurs lieux proches regroupés au dézoom", donc systématiquement
-    // via addClusterMarker — mais jusqu'ici le marqueur affichait toujours la couleur d'UN
-    // seul groupe "dominant", masquant les autres. On distingue maintenant les deux cas :
-    // un seul groupe -> couleur pleine comme avant ; plusieurs groupes -> le disque du
-    // marqueur est divisé en parts égales, une couleur par groupe présent, pour qu'aucun
-    // des groupes ayant visité ce lieu ne disparaisse visuellement derrière un autre.
-    const distinctGroups = [...new Set(cluster.locs.map(l => l.group))];
-    let discStyle;
-    if (distinctGroups.length === 1) {
-        // Un seul groupe dans ce cluster (ex: 2 lieux BTS superposés) : même traitement
-        // qu'un marqueur individuel de ce groupe.
-        const baseColor = groupColors[distinctGroups[0]] || '#334e68';
-        discStyle = `background-color:${baseColor}; --marker-color:${baseColor};`;
-    } else {
-        const step = 360 / distinctGroups.length;
-        const slices = distinctGroups.map((g, i) => `${groupColors[g] || '#334e68'} ${(i * step).toFixed(2)}deg ${((i + 1) * step).toFixed(2)}deg`).join(', ');
-        discStyle = `--marker-color:#fff; background:conic-gradient(${slices}); box-shadow:0 2px 8px rgba(0,0,0,.3);`;
-    }
-    // Demande du 08/09/2026 : plus d'icône à l'intérieur du disque de cluster (juste un
-    // point coloré, comme un marqueur simple) — seul le badge "×N" ("symbole puissance")
-    // distingue un cluster d'un lieu unique. Le badge (span, pas div) et le conteneur
-    // (span aussi) évitent volontairement le sélecteur CSS ".custom-category-marker div",
-    // qui appliquerait sinon le style rond du marqueur à tout div descendant, y compris le
-    // conteneur et le badge.
-    const html = `
-        <span style="position:relative; display:inline-block;">
-            <div style="${discStyle}"></div>
-            <span class="cluster-badge">×${count}</span>
-        </span>
-    `;
-    const clusterIcon = L.divIcon({ className: 'custom-category-marker cluster-dot-marker', html, iconSize: [16, 16], iconAnchor: [8, 8] });
-    const marker = L.marker(cluster.center, { icon: clusterIcon }).addTo(markerGroup);
-    marker.on('click', () => { map.setView(cluster.center, Math.min(map.getZoom() + 3, 18)); });
-}
-
+// BUG rapporté le 13/09/2026 ("enlève les symboles 'x7' sous forme de puissance, laisse
+// les lieux se superposer c'est pas grave") : ce fichier regroupait jusqu'ici les lieux
+// géographiquement trop proches pour ce niveau de zoom en un seul marqueur "×N"
+// (clusterLocationsForZoom()/addClusterMarker(), retirés) — chaque lieu redevient
+// maintenant TOUJOURS son propre marqueur individuel (addSingleLocationMarker()), quitte
+// à ce que plusieurs se superposent visuellement à l'écran quand ils sont très proches.
 function renderMapMarkers(locations, opts) {
     if (!map || !markerGroup) return;
     markerGroup.clearLayers();
-    const clusters = clusterLocationsForZoom(locations, map.getZoom());
-
-    clusters.forEach(cluster => {
-        if (cluster.locs.length === 1) addSingleLocationMarker(cluster.locs[0]);
-        else addClusterMarker(cluster);
-    });
+    locations.forEach(loc => addSingleLocationMarker(loc));
 
     // Préchauffe l'index photos/lieu (demande du 13/09/2026 : ne plus afficher le nombre
     // de publications sur la carte, cette info reste seulement dans le tiroir/chevron —
@@ -4956,6 +4873,9 @@ function ensureLocationEditModal() {
             <label style="${labelStyle}">Official website (optional)</label>
             <input type="url" id="location-edit-official-link" style="${fieldStyle} margin-bottom:14px;" placeholder="https://... — shown as &quot;Learn more about this place&quot;">
 
+            <label style="${labelStyle}">Photo credit / copyright (optional)</label>
+            <input type="text" id="location-edit-img-credit" style="${fieldStyle} margin-bottom:14px;" placeholder="e.g. Photo: @username, or © Official press kit">
+
             <button id="location-edit-save-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:11px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Save changes</button>
             <div id="location-edit-result" class="hidden" style="font-size:12px; font-weight:600; margin-top:10px; text-align:center;"></div>
 
@@ -5099,6 +5019,7 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-facebook').value = data.facebookUrl || '';
         document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
         document.getElementById('location-edit-official-link').value = data.officialLink || '';
+        document.getElementById('location-edit-img-credit').value = data.imgCredit || '';
         document.getElementById('location-edit-group').value = data.group || '';
         document.getElementById('location-edit-member').value = data.member || '';
         document.getElementById('location-edit-country').value = data.country || '';
@@ -5213,7 +5134,8 @@ async function saveLocationEdit(locId, modal) {
         instagramUrl: instagramUrl || '',
         facebookUrl: facebookUrl || '',
         tiktokUrl: tiktokUrl || '',
-        officialLink: officialLinkVal
+        officialLink: officialLinkVal,
+        imgCredit: document.getElementById('location-edit-img-credit').value.trim()
     }, extraCollected);
     // Priorité de la photo d'en-tête (demande du 07/09/2026) : URL ou import — tous deux
     // suivis via locationEditPendingImg/locationEditImgTouched (voir
@@ -5278,6 +5200,33 @@ function renderLocationHeroBg(loc) {
     if (!heroBg) return;
     const bgImg = loc.img || (loc.ytId ? `https://img.youtube.com/vi/${loc.ytId}/maxresdefault.jpg` : '');
     heroBg.style.backgroundImage = `linear-gradient(180deg, rgba(20,16,30,.15) 0%, rgba(20,16,30,.75) 100%), url('${bgImg}')`;
+
+    // Icône copyright (demande du 13/09/2026) — masquée quand loc.imgCredit n'est pas
+    // renseigné (la plupart des lieux, tant que personne ne l'a rempli depuis le modal
+    // crayon d'admin). Clic pour afficher/masquer le texte, pas de survol seul (mobile).
+    const creditBtn = document.getElementById('detail-hero-copyright-btn');
+    const creditPopover = document.getElementById('detail-hero-copyright-popover');
+    if (creditBtn && creditPopover) {
+        if (loc.imgCredit) {
+            creditBtn.classList.remove('hidden');
+            creditPopover.textContent = loc.imgCredit;
+        } else {
+            creditBtn.classList.add('hidden');
+            creditPopover.classList.add('hidden');
+        }
+        if (!creditBtn.dataset.wired) {
+            creditBtn.dataset.wired = '1';
+            creditBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                creditPopover.classList.toggle('hidden');
+            });
+            document.addEventListener('click', (e) => {
+                if (!creditPopover.classList.contains('hidden') && !creditPopover.contains(e.target) && e.target !== creditBtn) {
+                    creditPopover.classList.add('hidden');
+                }
+            });
+        }
+    }
 }
 
 window.openDetailsPanel = function(id) {
@@ -7121,6 +7070,7 @@ function ensureBadgeUnlockModal() {
     modal.className = 'badge-unlock-modal hidden';
     modal.innerHTML = `
         <div class="badge-unlock-card">
+            <div class="badge-unlock-confetti" id="badge-unlock-confetti"></div>
             <div class="badge-unlock-kicker">${badgeSparkleSvg}<span data-i18n="badgeUnlockKicker">New badge unlocked!</span></div>
             <div class="badge-unlock-photo" id="badge-unlock-photo"></div>
             <div class="badge-unlock-name" id="badge-unlock-name"></div>
@@ -7140,6 +7090,32 @@ function ensureBadgeUnlockModal() {
     return modal;
 }
 
+// Confettis (demande du 13/09/2026, "un peu comme Duolingo") — quelques dizaines de
+// petits rectangles colorés (palette du site, pas de couleurs criardes hors charte),
+// chacun avec sa propre trajectoire/rotation/délai en CSS pur (@keyframes
+// badgeConfettiFall, voir style.css) — pas de librairie externe pour un effet aussi
+// simple. Auto-nettoyés après leur animation, pour ne jamais accumuler des centaines de
+// <span> orphelins si la personne débloque beaucoup de badges dans la même session.
+const BADGE_CONFETTI_COLORS = ['#D42759', '#8b5cf6', '#f5a623', '#fff', '#c9bfe8'];
+function triggerBadgeConfetti(container) {
+    if (!container) return;
+    container.innerHTML = '';
+    const pieceCount = 32;
+    for (let i = 0; i < pieceCount; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'badge-confetti-piece';
+        const color = BADGE_CONFETTI_COLORS[i % BADGE_CONFETTI_COLORS.length];
+        const left = Math.random() * 100;
+        const delay = Math.random() * 0.3;
+        const duration = 1.6 + Math.random() * 0.9;
+        const drift = (Math.random() - 0.5) * 60;
+        const rotation = Math.random() * 360;
+        piece.style.cssText = `background:${color}; left:${left}%; animation-delay:${delay}s; animation-duration:${duration}s; --confetti-drift:${drift}px; --confetti-rotate:${rotation}deg;`;
+        container.appendChild(piece);
+    }
+    setTimeout(() => { container.innerHTML = ''; }, 3000);
+}
+
 function showBadgeUnlockCelebration(loc, rank) {
     const modal = ensureBadgeUnlockModal();
     const photoEl = document.getElementById('badge-unlock-photo');
@@ -7148,6 +7124,12 @@ function showBadgeUnlockCelebration(loc, rank) {
     const rankEl = document.getElementById('badge-unlock-rank');
     rankEl.textContent = rank ? t('badgeUnlockRank').replace('{rank}', rank) : '';
     modal.classList.remove('hidden');
+    triggerBadgeConfetti(document.getElementById('badge-unlock-confetti'));
+    // Vibration mobile façon Duolingo (demande du 13/09/2026) — pure amélioration
+    // progressive : navigator.vibrate n'existe pas sur iOS Safari/desktop, jamais bloquant.
+    if (navigator.vibrate) {
+        try { navigator.vibrate([40, 30, 40]); } catch (e) { /* pas bloquant */ }
+    }
 }
 
 window.openFilteredListModal = function(type) {

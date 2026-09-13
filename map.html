@@ -634,6 +634,13 @@
                             <span id="details-location-sub">City, Country</span>
                         </div>
                     </div>
+                    <!-- Icône copyright (demande du 13/09/2026, "en bas à droite... affiche les
+                         copyrights de l'image") — masquée par défaut, affichée uniquement quand
+                         loc.imgCredit existe (voir renderLocationRichContent() dans script.js). -->
+                    <button type="button" id="detail-hero-copyright-btn" class="detail-hero-copyright-btn hidden" aria-label="Photo credit" title="Photo credit">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M14.83 14.83a4 4 0 1 1 0-5.66"></path></svg>
+                    </button>
+                    <div id="detail-hero-copyright-popover" class="detail-hero-copyright-popover hidden"></div>
                 </div>
 
                 <div class="check-row" style="flex-direction:column; gap:0;">
