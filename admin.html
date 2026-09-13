@@ -997,7 +997,16 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <div class="sub-meta-field"><label>Year</label>${metaFieldSelectHtml('year', loc.year)}</div>
             </div>
 
-            <textarea class="loc-story-input" rows="4" placeholder="Story (English) — one paragraph per blank line" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:10px;resize:vertical;"></textarea>
+            <!-- Sections "story" (demande du 13/09/2026, "reprenne l'affichage de Location
+                 submissions, notamment les 2 sections pour The story of this place et
+                 Following in BTS's footsteps") — même découpe/labels/placeholders que
+                 renderCard(sub) plus haut : splitFullDescriptionForEdit() sépare le 1er
+                 paragraphe de fullDescription.en (le lieu) des suivants (le lien BTS), les
+                 deux se recombinent en un seul fullDescription.en à la sauvegarde. -->
+            <label class="sub-section-label">The story of this place</label>
+            <textarea class="loc-story-place-textarea sub-section-textarea" rows="3" placeholder="Describe the place itself — what it is, where it is."></textarea>
+            <label class="sub-section-label">Following in BTS's footsteps</label>
+            <textarea class="loc-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line."></textarea>
 
             <!-- Tips (demande du 13/09/2026, "ajoute également les tips dans Existing
                  locations") — même éditeur (window.createTitledListField()) et même champ
@@ -1041,7 +1050,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-result hidden"></div>
         `;
 
-        const storyInput = card.querySelector('.loc-story-input');
+        const storyPlaceEl = card.querySelector('.loc-story-place-textarea');
+        const storyBtsEl = card.querySelector('.loc-story-bts-textarea');
         const tweetInput = card.querySelector('.sub-tweet-input');
         const tweetError = card.querySelector('.sub-tweet-error');
         const videoInput = card.querySelector('.sub-video-input');
@@ -1063,7 +1073,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
         // logique qu'openLocationEditModal()/openDetailsPanel() dans script.js.
         const fillFields = (data) => {
-            storyInput.value = typeof htmlParagraphsToPlainText === 'function' ? htmlParagraphsToPlainText(getLocText(data.fullDescription)) : (getLocText(data.fullDescription) || '');
+            const split = splitFullDescriptionForEdit(data.fullDescription && data.fullDescription.en);
+            storyPlaceEl.value = split.placeText;
+            storyBtsEl.value = split.btsText;
             tweetInput.value = data.tweetUrl || '';
             card.querySelector('.sub-social-input[data-platform="instagram"]').value = data.instagramUrl || '';
             card.querySelector('.sub-social-input[data-platform="facebook"]').value = data.facebookUrl || '';
@@ -1130,8 +1142,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
             if (hasError) { saveBtn.disabled = false; return; }
 
+            const combinedStory = [storyPlaceEl.value.trim(), storyBtsEl.value.trim()].filter(Boolean).join('\n\n');
             const fullDescription = Object.assign({}, mergedFullDescription, {
-                en: typeof plainTextToHtmlParagraphs === 'function' ? plainTextToHtmlParagraphs(storyInput.value) : storyInput.value
+                en: plainTextToHtmlParagraphs(combinedStory)
             });
             const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim() }, extraCollected);
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
