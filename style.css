@@ -32,6 +32,9 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .dropdown-option svg { flex-shrink: 0; }
 .dropdown-option:hover { background: #f1f5f9; color: var(--primary-magenta); }
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
+.dropdown-profile-btn { display: flex; align-items: center; gap: 8px; padding: 10px 14px; margin-bottom: 2px; border-radius: 8px; background: linear-gradient(120deg, #D42759 0%, #A93FD1 100%); color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.2s; }
+.dropdown-profile-btn svg { flex-shrink: 0; }
+.dropdown-profile-btn:hover { filter: brightness(1.06); color: #fff; }
 
 /* Sidebar Classique */
 .sidebar { width: 360px; flex-shrink: 0; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: var(--sidebar-bg); position: relative; overflow: hidden; transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1000; border-right: 1px solid rgba(0,0,0,0.05);}
@@ -265,10 +268,10 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    du compte. Placé au-dessus du zoom Leaflet (lui aussi ancré en bas à droite, ~62px de
    haut) pour ne jamais le chevaucher. */
 .locate-country-btn {
-    /* BUG rapporté le 11/09/2026 ("format ordinateur, icônes décalées") : Leaflet centre
-       son contrôle de zoom (.leaflet-control-zoom, 26px de large) à 10px + 26/2 = 23px du
-       bord droit de la carte (margin-right:10px, voir leaflet.css). Un bouton de 40px de
-       large doit donc être décalé de 23 - 40/2 = 3px pour avoir le même axe vertical. */
+    /* Valeur de repli avant que le JS ne mesure la position réelle du control de zoom
+       Leaflet et ne réajuste ce right (voir alignLocateBtnWithZoomControl() dans
+       script.js, ajouté le 13/09/2026 — un calcul fixe supposant des boutons Leaflet de
+       26px cassait dès que .leaflet-touch les passait à 30px). */
     position: absolute; bottom: 90px; right: 3px; z-index: 2000;
     width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
     background: #fff; color: var(--text-main); border: 1.5px solid #e2e8f0; border-radius: 50%;

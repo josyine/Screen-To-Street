@@ -25,7 +25,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Screen To Street">
-<meta name="theme-color" content="#2E3644">
+<meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -948,14 +948,12 @@
             <!-- Icône "Amis" (voir friends.html) : masquée pour un visiteur non connecté,
                  voir firebase-ready plus bas. Le badge cumule messages non lus + lieux/voyages
                  partagés non vus (voir window.refreshFriendNotifications() dans script.js). -->
-            <!-- Icone "Ami" : profil public (profile.html) — demande du 08/09/2026, avant
-                 elle menait a la messagerie. Voir #message-icon-btn juste apres pour ca. -->
+            <!-- Icone "Ami" (profil public) retirée du header (demande du 13/09/2026) : le
+                 profil est desormais accessible via le bouton colore du menu deroulant
+                 (#profile-menu, plus bas), plus besoin d'une icone dediee ici. -->
             <button id="feed-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='feed.html'" title="Explore feed">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
     </button>
-    <button id="friend-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='profile.html'" title="Your Profile">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            </button>
             <!-- Icone "Message" (demande du 08/09/2026) : messagerie (friends.html). Porte le
                  badge de notification, voir window.refreshFriendNotifications() dans script.js. -->
             <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
@@ -965,17 +963,19 @@
             <div class="dropdown-container">
                 <button id="profile-btn" class="header-icon-btn user-avatar-btn" title="Account">U</button>
                 <div id="profile-menu" class="dropdown-menu hidden">
-                    <a href="map-destinations.html" class="dropdown-option" data-i18n="exploreDestOption">Explore Destinations</a>
-                    <a href="map-artists.html" class="dropdown-option" data-i18n="exploreArtistsOption">Explore Artists</a>
+                    <a href="profile.html" class="dropdown-profile-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span data-i18n="profileMenuOption">Your Profile</span></a>
                     <div class="dropdown-divider"></div>
-                    <a href="account.html" class="dropdown-option" data-i18n="accountOption">Your Account</a>
-                    <a href="visited.html" class="dropdown-option" data-i18n="visitedOption">Visited</a>
-                    <a href="wishlist.html" class="dropdown-option" data-i18n="wishlistOption">My Wishlist</a>
-                    <a href="trips.html" class="dropdown-option" data-i18n="tripsOption">My Trips</a>
-                    <a href="friends.html" class="dropdown-option" data-i18n="friendsOption">Friends</a>
-                    <a href="settings.html" class="dropdown-option" data-i18n="settingsOption">Settings</a>
+                    <a href="map-destinations.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg><span data-i18n="exploreDestOption">Explore Destinations</span></a>
+                    <a href="map-artists.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg><span data-i18n="exploreArtistsOption">Explore Artists</span></a>
                     <div class="dropdown-divider"></div>
-                    <a href="index.html" class="dropdown-option" id="logout-btn" style="color:var(--primary-magenta); font-weight:bold;" data-i18n="logoutOption">Logout</a>
+                    <a href="account.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg><span data-i18n="accountOption">Your Account</span></a>
+                    <a href="visited.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-i18n="visitedOption">Visited</span></a>
+                    <a href="wishlist.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"></path></svg><span data-i18n="wishlistOption">My Wishlist</span></a>
+                    <a href="trips.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span data-i18n="tripsOption">My Trips</span></a>
+                    <a href="friends.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span data-i18n="friendsOption">Friends</span></a>
+                    <a href="settings.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span data-i18n="settingsOption">Settings</span></a>
+                    <div class="dropdown-divider"></div>
+                    <a href="index.html" class="dropdown-option" id="logout-btn" style="color:var(--primary-magenta); font-weight:bold;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span data-i18n="logoutOption">Logout</span></a>
                 </div>
             </div>
         </div>
@@ -1128,8 +1128,7 @@
         <div class="live-panel-header">
             <div class="live-panel-title-row">
                 <span class="live-panel-dot" id="live-panel-header-dot"></span>
-                <span data-i18n="liveBadgeLabel">Live</span>
-                <span data-i18n="liveTimelineTitle"> &amp; upcoming</span>
+                <span data-i18n="liveBadgeLabel">Agenda</span>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
                 <div class="group-switcher">
