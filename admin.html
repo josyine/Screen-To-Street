@@ -876,7 +876,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     // Lieux marqués "vérifiés" (demande du 13/09/2026, "bouton de validation... juste pour
     // moi") — même mécanisme que hiddenLocationIdsCache ci-dessus, voir
     // window.adminSetLocationVerified() (firebase-init.js).
-    let verifiedLocationIdsCache = [];
+    let adminVerifiedLocationIdsCache = [];
 
     // Squelette (celebLocations, chargé depuis locations-data.js — voir script.js, gratuit :
     // déjà en mémoire, aucune lecture Firestore) + lieux tout juste approuvés via la file de
@@ -897,7 +897,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
     function renderExistingLocationCard(loc) {
         const isHidden = hiddenLocationIdsCache.includes(String(loc.id));
-        const isVerified = verifiedLocationIdsCache.includes(String(loc.id));
+        const isVerified = adminVerifiedLocationIdsCache.includes(String(loc.id));
         const card = document.createElement('div');
         card.className = 'submission-card';
         card.innerHTML = `
@@ -1111,8 +1111,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 const res = await window.adminSetLocationVerified(loc.id, nowVerified);
                 verifyBtn.disabled = false;
                 if (res.success) {
-                    if (nowVerified) verifiedLocationIdsCache.push(String(loc.id));
-                    else verifiedLocationIdsCache = verifiedLocationIdsCache.filter(id => id !== String(loc.id));
+                    if (nowVerified) adminVerifiedLocationIdsCache.push(String(loc.id));
+                    else adminVerifiedLocationIdsCache = adminVerifiedLocationIdsCache.filter(id => id !== String(loc.id));
                     window.renderExistingLocationsList();
                 } else {
                     resultEl.textContent = 'Failed: ' + res.code;
@@ -1339,7 +1339,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             hiddenLocationIdsCache = (await window.fetchHiddenLocationIds()).map(String);
         }
         if (typeof window.fetchVerifiedLocationIds === 'function') {
-            verifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
+            adminVerifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
         }
         await loadSubmissions();
     });
