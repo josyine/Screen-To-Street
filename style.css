@@ -28,7 +28,7 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .user-avatar-btn { color: #000 !important; overflow: hidden; padding: 0; border: 1px solid #cbd5e1;}
 
 .dropdown-menu { position: absolute; right: 0; top: 52px; background: white; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-width: 190px; padding: 6px; display: flex; flex-direction: column; gap: 2px; z-index: 3000; }
-.dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-main); transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 8px; text-align: left; }
+.dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-main); transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 8px; text-align: left; white-space: nowrap; }
 .dropdown-option svg { flex-shrink: 0; }
 .dropdown-option:hover { background: #f1f5f9; color: var(--primary-magenta); }
 .dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
@@ -266,13 +266,14 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 
 /* Bouton "localiser" (demande du 11/09/2026) : recentre la carte sur le pays d'intérêt
    du compte. Placé au-dessus du zoom Leaflet (lui aussi ancré en bas à droite, ~62px de
-   haut) pour ne jamais le chevaucher. */
+   haut) pour ne jamais le chevaucher — écart volontairement généreux (demande du
+   13/09/2026, "augmente l'espace entre les deux") plutôt que juste au-dessus. */
 .locate-country-btn {
     /* Valeur de repli avant que le JS ne mesure la position réelle du control de zoom
        Leaflet et ne réajuste ce right (voir alignLocateBtnWithZoomControl() dans
        script.js, ajouté le 13/09/2026 — un calcul fixe supposant des boutons Leaflet de
        26px cassait dès que .leaflet-touch les passait à 30px). */
-    position: absolute; bottom: 90px; right: 3px; z-index: 2000;
+    position: absolute; bottom: 116px; right: 3px; z-index: 2000;
     width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
     background: #fff; color: var(--text-main); border: 1.5px solid #e2e8f0; border-radius: 50%;
     cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.2s;
