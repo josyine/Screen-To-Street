@@ -849,7 +849,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                     <span class="sub-badge${isHidden ? ' existing-loc-hidden-badge' : ''}">${isHidden ? 'Hidden from map' : '#' + escapeHtml(String(loc.id))}</span>
                 </div>
             </div>
-            <div class="sub-meta">${escapeHtml(loc.group || '')} · ${escapeHtml(loc.member || '')} &middot; ${escapeHtml(loc.city || '')}, ${escapeHtml(loc.country || '')} &middot; ${escapeHtml(loc.category || '')}</div>
+            <div class="sub-meta-edit">
+                <div class="sub-meta-field"><label>Group</label><input type="text" class="sub-field-input" data-field="group" value="${escapeHtml(loc.group || '')}"></div>
+                <div class="sub-meta-field"><label>Member</label><input type="text" class="sub-field-input" data-field="member" value="${escapeHtml(loc.member || '')}"></div>
+                <div class="sub-meta-field"><label>Country</label><input type="text" class="sub-field-input" data-field="country" value="${escapeHtml(loc.country || '')}"></div>
+                <div class="sub-meta-field"><label>City</label><input type="text" class="sub-field-input" data-field="city" value="${escapeHtml(loc.city || '')}"></div>
+                <div class="sub-meta-field"><label>Category</label><input type="text" class="sub-field-input" data-field="category" value="${escapeHtml(loc.category || '')}"></div>
+                <div class="sub-meta-field"><label>Year</label><input type="text" class="sub-field-input" data-field="year" value="${escapeHtml(loc.year || '')}"></div>
+            </div>
 
             <textarea class="loc-story-input" rows="4" placeholder="Story (English) — one paragraph per blank line" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:10px;resize:vertical;"></textarea>
 
@@ -961,14 +968,32 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 en: typeof plainTextToHtmlParagraphs === 'function' ? plainTextToHtmlParagraphs(storyInput.value) : storyInput.value
             });
             const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim() }, extraCollected);
+
+            // Group/Member/Country/City/Category/Year (demande du 13/09/2026, "ajoute
+            // également la mise en forme de Location submissions") — même mécanisme que le
+            // modal crayon de map.html (voir window.adminUpdateLocationSkeleton() dans
+            // firebase-init.js) : écrits à part de locationContent ci-dessus, uniquement
+            // pour les champs réellement remplis (un champ laissé vide ne doit pas écraser
+            // la valeur codée en dur dans celebLocations).
+            const skeletonFields = {};
+            card.querySelectorAll('.sub-field-input').forEach(input => {
+                const val = input.value.trim();
+                if (val) skeletonFields[input.dataset.field] = val;
+            });
+            const hasSkeletonChanges = Object.keys(skeletonFields).length > 0;
+
             const res = await window.adminUpdateLocationContent(loc.id, fields);
+            const skeletonRes = (hasSkeletonChanges && typeof window.adminUpdateLocationSkeleton === 'function')
+                ? await window.adminUpdateLocationSkeleton(loc.id, skeletonFields)
+                : { success: true };
             resultEl.classList.remove('hidden');
-            if (res.success) {
+            if (res.success && skeletonRes.success) {
                 resultEl.textContent = '✓ Saved.';
                 resultEl.className = 'sub-result ok';
                 mergedFullDescription = fullDescription;
+                if (hasSkeletonChanges) Object.assign(loc, skeletonFields);
             } else {
-                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.textContent = 'Failed: ' + (res.code || skeletonRes.code);
                 resultEl.className = 'sub-result err';
             }
             saveBtn.disabled = false;
