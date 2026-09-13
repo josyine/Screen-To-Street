@@ -100,6 +100,11 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-meta-edit{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .sub-meta-field label{font-size:10px;font-weight:700;color:#94a3b8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.02em;}
 .sub-meta-field input,.sub-meta-field select{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:7px 9px;font-size:12px;font-family:'Poppins',sans-serif;background:#fff;}
+.sub-meta-field-wide{grid-column:1/-1;}
+.member-checkbox-group{display:flex;flex-wrap:wrap;gap:6px;}
+.member-checkbox{display:flex;align-items:center;gap:4px;border:1px solid #e2e8f0;border-radius:100px;padding:5px 10px 5px 8px;font-size:11.5px;font-weight:600;color:#334155;font-family:'Poppins',sans-serif;cursor:pointer;background:#fff;}
+.member-checkbox:has(input:checked){border-color:#D42759;background:#FCE7F0;color:#D42759;}
+.member-checkbox input{margin:0;accent-color:#D42759;}
 
 /* Sections de contenu dédiées (demande du 13/09/2026) : remplace l'ancien bloc unique
    .sub-story-wrap (un seul champ "texte brut" pour toute fullDescription.en, avec un
@@ -473,11 +478,46 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         return `<select class="sub-field-input" data-field="${field}">${optionsHtml}</select>`;
     }
 
+    // Sélection multiple des membres BTS (demande du 13/09/2026, "ne mettes que les 7
+    // membres de BTS en sélection, et ajoute la sélection multiple lorsqu'il y a plusieurs
+    // membre") — remplace, dans la file "Location submissions" UNIQUEMENT (pas "Existing
+    // locations"), le <select> générique de metaFieldSelectHtml() ci-dessus pour le champ
+    // Member : celui-ci proposait TOUS les membres/groupes déjà vus dans celebLocations
+    // (BLACKPINK, TXT...), pas seulement les 7 de BTS, et ne permettait qu'un seul choix —
+    // alors que plusieurs lieux réels concernent plusieurs membres à la fois (ex: "Jimin,
+    // Jungkook, V"). Aucun choix coché = "All" (même convention que le reste du site pour
+    // "concerne tous les membres").
+    const BTS_MEMBER_OPTIONS = ['RM', 'Jin', 'Suga', 'J-Hope', 'Jimin', 'V', 'Jungkook'];
+    // Tolère quelques variantes déjà vues dans des données existantes (vrai prénom, faute
+    // de frappe) pour pré-cocher correctement une valeur déjà enregistrée — n'affecte que
+    // l'affichage initial, jamais ce qui est écrit à la sauvegarde.
+    const BTS_MEMBER_ALIASES = { namjoon: 'RM', jhope: 'J-Hope' };
+    function memberMultiSelectHtml(currentValue) {
+        const raw = (currentValue || '').split(',').map(s => s.trim()).filter(Boolean);
+        const selected = new Set(raw.map(v => {
+            const key = v.toLowerCase().replace(/[^a-z]/g, '');
+            return BTS_MEMBER_ALIASES[key] || v;
+        }));
+        const checkboxes = BTS_MEMBER_OPTIONS.map(m => `
+            <label class="member-checkbox">
+                <input type="checkbox" class="member-checkbox-input" value="${m}"${selected.has(m) ? ' checked' : ''}>
+                ${m}
+            </label>`).join('');
+        return `<div class="member-checkbox-group">${checkboxes}</div>`;
+    }
+
     function renderCard(sub) {
         const isEdit = !!sub.matchedLocId;
         const practicalCount = Array.isArray(sub.practicalInfo) ? sub.practicalInfo.length : 0;
         const tipsCount = Array.isArray(sub.tipsList) ? sub.tipsList.length : 0;
         const submittedAt = sub.submittedAt && sub.submittedAt.toDate ? sub.submittedAt.toDate().toLocaleString() : '';
+        // "Vérifié" (demande du 13/09/2026, "ajoute également le bouton verified... dans
+        // les onglets location submission et Existing Location") — même mécanisme que le
+        // bouton équivalent d'"Existing locations" (adminVerifiedLocationIdsCache,
+        // window.adminSetLocationVerified()), mais indexé par sub.id (id du document de
+        // soumission) plutôt que par l'id du lieu publié : une soumission n'a pas encore
+        // d'id de lieu tant qu'elle n'est pas approuvée.
+        const isVerified = adminVerifiedLocationIdsCache.includes(String(sub.id));
 
         const card = document.createElement('div');
         card.className = 'submission-card';
@@ -490,7 +530,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             </div>
             <div class="sub-meta-edit">
                 <div class="sub-meta-field"><label>Group</label>${metaFieldSelectHtml('group', sub.group)}</div>
-                <div class="sub-meta-field"><label>Member</label>${metaFieldSelectHtml('member', sub.member)}</div>
+                <div class="sub-meta-field sub-meta-field-wide"><label>Member</label>${memberMultiSelectHtml(sub.member)}</div>
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', sub.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', sub.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', sub.category)}</div>
@@ -546,6 +586,16 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 ${sub.sourceNote ? `<span style="color:#64748b;">${escapeHtml(sub.sourceNote)}</span><br>` : ''}
                 <span style="color:#94a3b8;">Submitted by ${escapeHtml(sub.submittedBy || 'unknown')}${submittedAt ? ' — ' + submittedAt : ''}</span>
             </div>
+
+            <!-- Bouton "vérifié" (demande du 13/09/2026, "ajoute également le bouton
+                 verified... dans les onglets location submission et Existing Location") —
+                 même bouton/donnée que la fiche "Existing locations" ci-dessous, mais
+                 indexé par sub.id (voir la note sur isVerified plus haut). -->
+            <button type="button" class="btn-verify${isVerified ? ' is-verified' : ''}" style="margin-bottom:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>${isVerified ? 'Verified' : 'Mark as verified'}</span>
+            </button>
+
             <div class="sub-actions">
                 <button class="btn-approve">✓ Approve &amp; publish</button>
                 <button class="btn-reject">✕ Reject</button>
@@ -556,6 +606,25 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const resultEl = card.querySelector('.sub-result');
         const approveBtn = card.querySelector('.btn-approve');
         const rejectBtn = card.querySelector('.btn-reject');
+        const verifyBtn = card.querySelector('.btn-verify');
+        if (verifyBtn) {
+            verifyBtn.onclick = async () => {
+                const nowVerified = !adminVerifiedLocationIdsCache.includes(String(sub.id));
+                verifyBtn.disabled = true;
+                const res = await window.adminSetLocationVerified(sub.id, nowVerified);
+                verifyBtn.disabled = false;
+                if (res.success) {
+                    if (nowVerified) adminVerifiedLocationIdsCache.push(String(sub.id));
+                    else adminVerifiedLocationIdsCache = adminVerifiedLocationIdsCache.filter(id => id !== String(sub.id));
+                    verifyBtn.classList.toggle('is-verified', nowVerified);
+                    verifyBtn.querySelector('span').textContent = nowVerified ? 'Verified' : 'Mark as verified';
+                } else {
+                    resultEl.textContent = 'Failed: ' + res.code;
+                    resultEl.className = 'sub-result err';
+                    resultEl.classList.remove('hidden');
+                }
+            };
+        }
         const photoInput = card.querySelector('.sub-photo-input');
         const photoPreview = card.querySelector('.sub-photo-preview');
         const photoUploadBtn = card.querySelector('.sub-photo-upload-btn');
@@ -584,6 +653,18 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         // dans la liste skeletonFields d'approveLocationSubmission(), firebase-init.js).
         card.querySelectorAll('.sub-field-input').forEach(input => {
             input.addEventListener('change', () => { sub[input.dataset.field] = input.value.trim(); });
+        });
+
+        // Cases à cocher "Member" (demande du 13/09/2026, sélection multiple parmi les 7
+        // membres de BTS) — même convention "member" que le reste du site : plusieurs
+        // membres cochés sont joints par ", " (déjà utilisé dans les données existantes,
+        // ex: "Jimin, Jungkook, V"), aucun coché retombe sur "All".
+        card.querySelectorAll('.member-checkbox-input').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = BTS_MEMBER_OPTIONS.filter(m =>
+                    card.querySelector(`.member-checkbox-input[value="${m}"]`).checked);
+                sub.member = checked.length ? checked.join(', ') : 'All';
+            });
         });
 
         // Sections de contenu dédiées (demande du 13/09/2026, remplace l'ancien champ
