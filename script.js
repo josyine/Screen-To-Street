@@ -85,6 +85,54 @@ window.createMultiUrlField = function (container, opts) {
     };
 };
 
+// Éditeur de liste titrée (demande du 13/09/2026, "sépare le texte en sections dédiées") —
+// pour practicalInfo/tipsList : deux champs par ligne (titre + texte), au lieu d'un seul
+// champ URL comme createMultiUrlField() ci-dessus. Jusqu'ici, ces deux tableaux n'étaient
+// JAMAIS éditables depuis admin.html (seul un compteur "X practical info items" était
+// affiché, en lecture seule) — la seule façon de les renseigner était l'agent IA.
+window.createTitledListField = function (container, opts) {
+    opts = opts || {};
+    const titlePlaceholder = opts.titlePlaceholder || 'Title';
+    const textPlaceholder = opts.textPlaceholder || 'Text';
+    const addLabel = opts.addLabel || '+ Add another item';
+    const fieldStyle = "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:8px 10px; font-size:12px; font-family:'Poppins',sans-serif; margin-bottom:6px;";
+    const initialValues = Array.isArray(opts.values) ? opts.values.filter(v => v && (v.title || v.text)) : [];
+
+    function rowHtml(item) {
+        item = item || {};
+        return `<div class="tl-row" style="border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; position:relative;">
+            <input type="text" class="tl-title" value="${escapeHtml(item.title || '')}" placeholder="${escapeHtml(titlePlaceholder)}" style="${fieldStyle} font-weight:700;">
+            <textarea class="tl-text" rows="2" placeholder="${escapeHtml(textPlaceholder)}" style="${fieldStyle} margin-bottom:0; resize:vertical;">${escapeHtml(item.text || '')}</textarea>
+            <button type="button" class="tl-remove" title="Remove this item" style="position:absolute; top:6px; right:6px; width:24px; height:24px; border:none; background:none; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer;">&times;</button>
+        </div>`;
+    }
+
+    container.innerHTML = initialValues.map(rowHtml).join('') +
+        `<button type="button" class="tl-add-btn" style="background:none; border:none; color:#D42759; font-size:11.5px; font-weight:700; cursor:pointer; padding:2px 0 8px 0; font-family:'Poppins',sans-serif;">${escapeHtml(addLabel)}</button>`;
+
+    container.querySelector('.tl-add-btn').addEventListener('click', () => {
+        container.querySelector('.tl-add-btn').insertAdjacentHTML('beforebegin', rowHtml());
+    });
+    container.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('tl-remove')) return;
+        e.target.closest('.tl-row').remove();
+    });
+
+    return {
+        // Aucune validation de format (texte libre) — une ligne où titre ET texte sont
+        // vides est simplement ignorée, tout le reste est gardé tel quel.
+        collect: function () {
+            const values = [];
+            container.querySelectorAll('.tl-row').forEach(row => {
+                const title = row.querySelector('.tl-title').value.trim();
+                const text = row.querySelector('.tl-text').value.trim();
+                if (title || text) values.push({ title, text });
+            });
+            return { values };
+        }
+    };
+};
+
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str == null ? '' : String(str);
@@ -3453,9 +3501,21 @@ function renderLocations(skipFitBounds) {
     });
 
     // Tri par ordre de nouveauté (les lieux les plus récemment ajoutés au site en
-    // premier) : l'id d'un lieu suit l'ordre dans lequel il a été ajouté au catalogue,
-    // c'est donc le seul repère de "nouveauté" disponible sans dates factices.
-    filteredLocations.sort((a, b) => b.id - a.id);
+    // premier). BUG corrigé le 13/09/2026 : `b.id - a.id` supposait un id toujours
+    // numérique, mais tout lieu ajouté depuis la file d'approbation a un id "new-xxxxx"
+    // (voir approveLocationSubmission() dans firebase-init.js) — soustraire deux chaînes
+    // renvoie NaN, ce qui cassait silencieusement le tri pour tous les lieux récents.
+    // locationSortKey() utilise le vrai horodatage d'ajout (addedAt, posé par
+    // export-locations.js à partir de locationSubmissions.reviewedAt) quand il existe —
+    // toujours plus grand que n'importe quel id numérique historique, donc les nouveaux
+    // lieux remontent naturellement en premier sans cas particulier ; à défaut (lieu
+    // historique, ou lieu récent sans horodatage retrouvé), on retombe sur l'id numérique.
+    const locationSortKey = (loc) => {
+        if (typeof loc.addedAt === 'number') return loc.addedAt;
+        const n = Number(loc.id);
+        return Number.isNaN(n) ? 0 : n;
+    };
+    filteredLocations.sort((a, b) => locationSortKey(b) - locationSortKey(a));
 
     currentFilteredLocations = filteredLocations;
 
@@ -4758,6 +4818,27 @@ function htmlParagraphsToPlainText(html) {
 }
 function plainTextToHtmlParagraphs(text) {
     return (text || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+}
+// Sépare un fullDescription HTML en texte "story of this place" (1er paragraphe) et texte
+// "BTS's footsteps" (paragraphes suivants, joints par une ligne vide) — demande du
+// 13/09/2026 ("sépare le texte en sections dédiées"), même découpe que
+// renderLocationRichContent() plus haut (descPlaceEl = paragraphs[0], descBtsEl =
+// paragraphs.slice(1)), pour qu'admin.html édite exactement ce que la fiche publique
+// affiche sous chacun des deux titres.
+function splitFullDescriptionForEdit(html) {
+    if (!html) return { placeText: '', btsText: '' };
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    let paragraphs = Array.from(temp.querySelectorAll('p'));
+    if (paragraphs.length === 0) {
+        const onlyP = document.createElement('p');
+        onlyP.innerHTML = html;
+        paragraphs = [onlyP];
+    }
+    return {
+        placeText: paragraphs.length > 0 ? paragraphs[0].textContent.trim() : '',
+        btsText: paragraphs.slice(1).map(p => p.textContent.trim()).join('\n\n')
+    };
 }
 
 function ensureLocationEditModal() {

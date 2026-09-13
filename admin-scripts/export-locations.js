@@ -21,6 +21,13 @@
 //   5. `siteConfig/hiddenLocations` — lieux "supprimés" depuis admin.html (retirés
 //                            du résultat plutôt que vraiment supprimés, un lieu codé
 //                            en dur ne pouvant pas l'être).
+//   6. `locationSubmissions` — lue UNIQUEMENT pour son champ reviewedAt (demande du
+//                            13/09/2026, "classe les locations par ordre d'ajout") : posé
+//                            en horodatage `addedAt` sur chaque nouveau lieu correspondant,
+//                            pour que renderLocations() dans script.js puisse enfin trier
+//                            par vraie date d'ajout plutôt que par id (qui n'est un nombre
+//                            que pour les 184 lieux historiques — un id "new-xxxxx" cassait
+//                            silencieusement ce tri, `b.id - a.id` valant NaN).
 //
 // Le résultat est écrit dans locations-data.js, à la racine du site, sous la forme
 // `window.STATIC_LOCATIONS = [...]` — chargé par un <script> AVANT script.js sur
@@ -68,16 +75,31 @@ async function main() {
     console.log(`  ${staticSkeleton.length} lieux.`);
 
     console.log('Lecture des collections Firestore...');
-    const [newLocsSnap, overridesSnap, contentSnap, hiddenDoc] = await Promise.all([
+    const [newLocsSnap, overridesSnap, contentSnap, hiddenDoc, submissionsSnap] = await Promise.all([
         db.collection('newLocations').get(),
         db.collection('locationSkeletonOverrides').get(),
         db.collection('locationContent').get(),
         db.collection('siteConfig').doc('hiddenLocations').get(),
+        db.collection('locationSubmissions').get(),
     ]);
 
     const newLocs = [];
     newLocsSnap.forEach((d) => newLocs.push(d.data()));
     console.log(`  ${newLocs.length} nouveaux lieux approuvés.`);
+
+    // Horodatage d'approbation (demande du 13/09/2026, "classe les locations par ordre
+    // d'ajout, les plus récents en premier") — newLocations/{id} lui-même ne porte aucune
+    // date (voir approveLocationSubmission() dans firebase-init.js, qui n'y écrit que les
+    // champs "squelette"), donc impossible de savoir quand un lieu a été ajouté à partir de
+    // cette seule collection. Mais son id est TOUJOURS 'new-' + l'id du document
+    // locationSubmissions d'origine, qui lui a bien reviewedAt (posé par ce même
+    // approveLocationSubmission() au moment de l'approbation) — on va donc le rechercher là.
+    const approvedAtById = {};
+    submissionsSnap.forEach((d) => {
+        const data = d.data();
+        const ts = data.reviewedAt && typeof data.reviewedAt.toMillis === 'function' ? data.reviewedAt.toMillis() : null;
+        if (ts) approvedAtById['new-' + d.id] = ts;
+    });
 
     const overrides = {};
     overridesSnap.forEach((d) => { overrides[d.id] = d.data(); });
@@ -94,7 +116,11 @@ async function main() {
     // PUIS corrections de squelette, PUIS contenu riche, PUIS filtrage des masqués.
     const existingIds = new Set(staticSkeleton.map((l) => String(l.id)));
     const merged = staticSkeleton.slice();
-    newLocs.forEach((l) => { if (l && l.id && !existingIds.has(String(l.id))) merged.push(l); });
+    newLocs.forEach((l) => {
+        if (!l || !l.id || existingIds.has(String(l.id))) return;
+        if (approvedAtById[l.id]) l.addedAt = approvedAtById[l.id];
+        merged.push(l);
+    });
 
     merged.forEach((loc) => {
         const idStr = String(loc.id);
