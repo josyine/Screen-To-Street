@@ -1411,6 +1411,37 @@ window.adminSetLocationHidden = async function (locationId, hidden) {
     }
 };
 
+// Pastille "lieu vérifié" (demande du 13/09/2026, "bouton de validation... c'est juste
+// pour moi, pour que je sache ce que j'ai vérifié") — purement un pense-bête personnel
+// pour l'admin, aucun effet sur ce que voient les visiteurs. Même mécanisme qu'un lieu
+// masqué juste au-dessus (siteConfig/verifiedLocations, { ids: [...] }) : un seul
+// document, déjà couvert par la règle générique `match /siteConfig/{configId}`
+// (firestore.rules) — lecture publique, écriture admin uniquement — donc aucune
+// modification des règles n'est nécessaire pour cette fonctionnalité.
+window.fetchVerifiedLocationIds = async function () {
+    try {
+        const snap = await getDoc(doc(db, 'siteConfig', 'verifiedLocations'));
+        return snap.exists() && Array.isArray(snap.data().ids) ? snap.data().ids : [];
+    } catch (e) {
+        console.warn('Lecture des lieux vérifiés échouée :', e);
+        return [];
+    }
+};
+window.adminSetLocationVerified = async function (locationId, verified) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const idStr = String(locationId);
+        await setDoc(doc(db, 'siteConfig', 'verifiedLocations'), {
+            ids: verified ? arrayUnion(idStr) : arrayRemove(idStr)
+        }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Marquage du lieu comme vérifié échoué :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Lu par map.html au chargement (voir firebase-ready) : les nouveaux lieux déjà approuvés
 // (voir approveLocationSubmission ci-dessus) sont fusionnés dans celebLocations à la
 // volée, jamais écrits dans script.js.

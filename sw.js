@@ -14,7 +14,7 @@
 // IMPORTANT : ne touche jamais aux requêtes cross-origin (Firebase/Firestore, polices
 // Google, tuiles Leaflet...) — seuls les fichiers statiques du même domaine sont
 // concernés, jamais les données live du compte.
-const CACHE_VERSION = 'stns-static-v20260913e';
+const CACHE_VERSION = 'stns-static-v20260913f';
 
 // Bibliothèques externes figées par version dans leur URL (unpkg pour Leaflet,
 // gstatic pour le SDK Firebase) : contrairement à Firestore/Auth (données live,

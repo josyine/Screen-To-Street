@@ -154,6 +154,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .btn-hide{flex:1;background:#fff;color:#64748b;border:1.5px solid #e2e8f0;border-radius:100px;padding:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;}
 .btn-hide:hover{background:#f8fafc;}
 .btn-hide.is-hidden{color:#10b981;border-color:#10b981;}
+.btn-verify{flex:1;background:#fff;color:#64748b;border:1.5px solid #e2e8f0;border-radius:100px;padding:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-verify:hover{background:#f8fafc;}
+.btn-verify.is-verified{background:#10b981;color:#fff;border-color:#10b981;}
 </style>
 </head>
 <body>
@@ -870,6 +873,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
     let allSiteLocationsCache = null;
     let hiddenLocationIdsCache = [];
+    // Lieux marqués "vérifiés" (demande du 13/09/2026, "bouton de validation... juste pour
+    // moi") — même mécanisme que hiddenLocationIdsCache ci-dessus, voir
+    // window.adminSetLocationVerified() (firebase-init.js).
+    let verifiedLocationIdsCache = [];
 
     // Squelette (celebLocations, chargé depuis locations-data.js — voir script.js, gratuit :
     // déjà en mémoire, aucune lecture Firestore) + lieux tout juste approuvés via la file de
@@ -890,6 +897,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
     function renderExistingLocationCard(loc) {
         const isHidden = hiddenLocationIdsCache.includes(String(loc.id));
+        const isVerified = verifiedLocationIdsCache.includes(String(loc.id));
         const card = document.createElement('div');
         card.className = 'submission-card';
         card.innerHTML = `
@@ -935,6 +943,16 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <input type="url" class="sub-link-input" placeholder="Link URL (optional)">
             <div class="sub-video-hint" style="margin-bottom:14px;">A source/reference link for this location (episode, article, official post...) — shown as "Link" on the location page, or hidden entirely if left empty.</div>
 
+            <!-- Bouton "vérifié" (demande du 13/09/2026, "prouve que j'ai validé le lieu...
+                 juste pour moi") — bascule immédiatement au clic, indépendant de "Save
+                 changes"/"Remove from map" ci-dessous, même donnée
+                 (siteConfig/verifiedLocations) que le bouton équivalent du modal crayon
+                 (script.js, ensureLocationEditModal). -->
+            <button type="button" class="btn-verify${isVerified ? ' is-verified' : ''}" style="margin-bottom:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>${isVerified ? 'Verified' : 'Mark as verified'}</span>
+            </button>
+
             <div class="sub-actions">
                 <button type="button" class="btn-approve loc-save-btn">Save changes</button>
                 <button type="button" class="btn-hide${isHidden ? ' is-hidden' : ''}">${isHidden ? 'Unhide (show on map)' : 'Remove from map'}</button>
@@ -950,6 +968,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const linkInput = card.querySelector('.sub-link-input');
         const saveBtn = card.querySelector('.loc-save-btn');
         const hideBtn = card.querySelector('.btn-hide');
+        const verifyBtn = card.querySelector('.btn-verify');
         const resultEl = card.querySelector('.sub-result');
         let mergedFullDescription = loc.fullDescription || {};
         let tipsFieldWidget = null;
@@ -1082,6 +1101,26 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 resultEl.classList.remove('hidden');
             }
         };
+
+        // Bouton "vérifié" (demande du 13/09/2026) — bascule immédiatement, pas de
+        // confirmation nécessaire contrairement à "Remove from map" (aucun effet visiteur).
+        if (verifyBtn) {
+            verifyBtn.onclick = async () => {
+                const nowVerified = !isVerified;
+                verifyBtn.disabled = true;
+                const res = await window.adminSetLocationVerified(loc.id, nowVerified);
+                verifyBtn.disabled = false;
+                if (res.success) {
+                    if (nowVerified) verifiedLocationIdsCache.push(String(loc.id));
+                    else verifiedLocationIdsCache = verifiedLocationIdsCache.filter(id => id !== String(loc.id));
+                    window.renderExistingLocationsList();
+                } else {
+                    resultEl.textContent = 'Failed: ' + res.code;
+                    resultEl.className = 'sub-result err';
+                    resultEl.classList.remove('hidden');
+                }
+            };
+        }
 
         return card;
     }
@@ -1298,6 +1337,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         document.getElementById('admin-main-content').classList.remove('hidden');
         if (typeof window.fetchHiddenLocationIds === 'function') {
             hiddenLocationIdsCache = (await window.fetchHiddenLocationIds()).map(String);
+        }
+        if (typeof window.fetchVerifiedLocationIds === 'function') {
+            verifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
         }
         await loadSubmissions();
     });
