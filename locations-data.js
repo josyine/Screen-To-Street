@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-13T14:32:28.765Z.
+// Généré le 2026-09-13T17:01:52.017Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9833,20 +9833,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "tweetUrl": "",
     "episodeLink": "https://artreview.com/bts-presents-gift-from-korean-government-to-met-museum/",
-    "tipsList": [
-      {
-        "text": "[Head up to the Iris and B. Gerald Cantor Roof Garden where BTS stood to deliver their speech. Keep in mind that this spectacular outdoor space is seasonal (usually open from spring through fall), so be sure to check the museum's schedule before your visit!]",
-        "title": "[The Cantor Roof Garden :]"
-      },
-      {
-        "title": "Explore the Korean Art Galleries :",
-        "text": "Since the boys were there to celebrate and share their heritage, take some time to visit The Met's dedicated Arts of Korea gallery to admire both traditional artifacts and contemporary pieces."
-      },
-      {
-        "title": "Pace Yourself :",
-        "text": "The Met is famously massive and virtually impossible to see in a single day. Map out the specific wings you want to explore in advance, and don't forget to snap a classic photo on the iconic front steps before heading inside."
-      }
-    ],
     "facebookUrls": [],
     "instagramUrl": "https://www.instagram.com/p/CUGtka0lhik/",
     "officialLink": "https://www.metmuseum.org/",
@@ -9860,7 +9846,23 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "tweetUrls": []
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": "The Cantor Roof Garden :",
+        "text": "Head up to the Iris and B. Gerald Cantor Roof Garden where BTS stood to deliver their speech. Keep in mind that this spectacular outdoor space is seasonal (usually open from spring through fall), so be sure to check the museum's schedule before your visit!"
+      },
+      {
+        "text": "Since the boys were there to celebrate and share their heritage, take some time to visit The Met's dedicated Arts of Korea gallery to admire both traditional artifacts and contemporary pieces.",
+        "title": "Explore the Korean Art Galleries :"
+      },
+      {
+        "title": "Pace Yourself :",
+        "text": "The Met is famously massive and virtually impossible to see in a single day. Map out the specific wings you want to explore in advance, and don't forget to snap a classic photo on the iconic front steps before heading inside."
+      }
+    ],
+    "ytId": "",
+    "imgCredit": "Brett Beyer / Courtesy of The Metropolitan Museum of Art"
   },
   {
     "category": "Cafe",
