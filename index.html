@@ -147,7 +147,7 @@
       <h1 data-i18n="heroTitle">You have a destination.<br>We have the guide.</h1>
       <p data-i18n="heroSubtitle">Create custom routes instantly, with tools designed to follow your favorite artists.</p>
       <div class="cta-row">
-        <button class="cta-primary open-auth-btn"><span data-i18n="heroCta">Generate my guide</span> <span>→</span></button>
+        <button class="cta-primary open-auth-btn"><span data-i18n="heroCta">Create an account</span> <span>→</span></button>
         <a class="cta-secondary" id="see-demo-btn" href="map.html?demo=1" data-i18n="heroDemo">See Demo</a>
       </div>
     </div>
@@ -169,6 +169,14 @@
 <div id="auth-modal" class="auth-modal hidden">
     <div class="auth-modal-content">
         <button class="close-auth-btn" id="close-auth">&times;</button>
+        <!-- Flèche retour (demande du 13/09/2026 : "quand j'arrive sur Account, je veux
+             pouvoir revenir sur Log in or sign up") — masquée par défaut, affichée
+             uniquement sur l'étape "Account" (showStep(1) dans welcome-script.js), seule
+             étape numérotée sans aucun autre moyen de revenir en arrière (les étapes 2-4
+             ont déjà le stepper cliquable tout en haut). -->
+        <button class="auth-back-btn hidden" id="auth-back-btn" aria-label="Back" title="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
         <div class="auth-left">
             <div id="auth-stepper" class="stepper hidden">
                 <div class="step-container" id="step-btn-1"><div class="step-dot" id="step-dot-1">1</div><span class="step-label" id="step-label-1" data-i18n="step1Title">Account</span></div>

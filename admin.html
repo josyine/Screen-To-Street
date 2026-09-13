@@ -99,7 +99,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
    l'icône crayon d'"Existing locations". */
 .sub-meta-edit{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .sub-meta-field label{font-size:10px;font-weight:700;color:#94a3b8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.02em;}
-.sub-meta-field input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:7px 9px;font-size:12px;font-family:'Poppins',sans-serif;}
+.sub-meta-field input,.sub-meta-field select{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:7px 9px;font-size:12px;font-family:'Poppins',sans-serif;background:#fff;}
 
 /* Sections de contenu dédiées (demande du 13/09/2026) : remplace l'ancien bloc unique
    .sub-story-wrap (un seul champ "texte brut" pour toute fullDescription.en, avec un
@@ -431,6 +431,45 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
     }
 
+    // Champs Group/Member/Country/City/Category/Year en SÉLECTION plutôt qu'en texte libre
+    // (demande du 13/09/2026, "je ne dois pas pouvoir rédiger car je risque de faire des
+    // erreurs") — les valeurs possibles viennent directement des lieux déjà publiés
+    // (celebLocations, chargé via locations-data.js/script.js), donc toujours à jour sans
+    // liste à maintenir à la main ici. Utilisé à la fois par la carte de soumission
+    // (renderCard) et celle d'un lieu déjà publié (renderExistingLocationCard) ci-dessous —
+    // même 6 champs, mêmes noms de classe/attribut, donc une seule fonction suffit pour
+    // les deux. Calculé une seule fois (mémorisé) plutôt qu'à chaque carte affichée : des
+    // dizaines de soumissions/lieux ne doivent pas reparcourir celebLocations à chaque fois.
+    let _locationFieldOptionsCache = null;
+    function getLocationFieldOptions() {
+        if (_locationFieldOptionsCache) return _locationFieldOptionsCache;
+        const fields = ['group', 'member', 'country', 'city', 'category', 'year'];
+        const sets = {};
+        fields.forEach(f => { sets[f] = new Set(); });
+        if (typeof celebLocations !== 'undefined') {
+            celebLocations.forEach(loc => {
+                fields.forEach(f => { if (loc[f]) sets[f].add(String(loc[f])); });
+            });
+        }
+        const result = {};
+        fields.forEach(f => { result[f] = Array.from(sets[f]).sort((a, b) => a.localeCompare(b)); });
+        _locationFieldOptionsCache = result;
+        return result;
+    }
+    // La valeur ACTUELLE du lieu/de la proposition est toujours incluse dans la liste même
+    // si elle n'apparaît nulle part ailleurs (ex: une faute de frappe historique, ou un
+    // champ jamais encore utilisé par aucun autre lieu) — pour ne jamais faire disparaître
+    // silencieusement une valeur existante à l'ouverture de cette carte.
+    function metaFieldSelectHtml(field, currentValue) {
+        const options = getLocationFieldOptions()[field] || [];
+        const current = (currentValue || '').toString();
+        const opts = options.slice();
+        if (current && !opts.includes(current)) opts.unshift(current);
+        const blankOption = current ? '' : '<option value="">—</option>';
+        const optionsHtml = blankOption + opts.map(v => `<option value="${escapeHtml(v)}"${v === current ? ' selected' : ''}>${escapeHtml(v)}</option>`).join('');
+        return `<select class="sub-field-input" data-field="${field}">${optionsHtml}</select>`;
+    }
+
     function renderCard(sub) {
         const isEdit = !!sub.matchedLocId;
         const practicalCount = Array.isArray(sub.practicalInfo) ? sub.practicalInfo.length : 0;
@@ -447,12 +486,12 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 </div>
             </div>
             <div class="sub-meta-edit">
-                <div class="sub-meta-field"><label>Group</label><input type="text" class="sub-field-input" data-field="group" value="${escapeHtml(sub.group || '')}"></div>
-                <div class="sub-meta-field"><label>Member</label><input type="text" class="sub-field-input" data-field="member" value="${escapeHtml(sub.member || '')}"></div>
-                <div class="sub-meta-field"><label>Country</label><input type="text" class="sub-field-input" data-field="country" value="${escapeHtml(sub.country || '')}"></div>
-                <div class="sub-meta-field"><label>City</label><input type="text" class="sub-field-input" data-field="city" value="${escapeHtml(sub.city || '')}"></div>
-                <div class="sub-meta-field"><label>Category</label><input type="text" class="sub-field-input" data-field="category" value="${escapeHtml(sub.category || '')}"></div>
-                <div class="sub-meta-field"><label>Year</label><input type="text" class="sub-field-input" data-field="year" value="${escapeHtml(sub.year || '')}"></div>
+                <div class="sub-meta-field"><label>Group</label>${metaFieldSelectHtml('group', sub.group)}</div>
+                <div class="sub-meta-field"><label>Member</label>${metaFieldSelectHtml('member', sub.member)}</div>
+                <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', sub.country)}</div>
+                <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', sub.city)}</div>
+                <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', sub.category)}</div>
+                <div class="sub-meta-field"><label>Year</label>${metaFieldSelectHtml('year', sub.year)}</div>
             </div>
             <div class="sub-photo-preview">${photoPreviewHtml(sub.img)}</div>
             <input type="url" class="sub-photo-input" placeholder="Photo URL" value="${escapeHtml((sub.img || '').startsWith('data:') ? '' : (sub.img || ''))}">
@@ -850,15 +889,22 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 </div>
             </div>
             <div class="sub-meta-edit">
-                <div class="sub-meta-field"><label>Group</label><input type="text" class="sub-field-input" data-field="group" value="${escapeHtml(loc.group || '')}"></div>
-                <div class="sub-meta-field"><label>Member</label><input type="text" class="sub-field-input" data-field="member" value="${escapeHtml(loc.member || '')}"></div>
-                <div class="sub-meta-field"><label>Country</label><input type="text" class="sub-field-input" data-field="country" value="${escapeHtml(loc.country || '')}"></div>
-                <div class="sub-meta-field"><label>City</label><input type="text" class="sub-field-input" data-field="city" value="${escapeHtml(loc.city || '')}"></div>
-                <div class="sub-meta-field"><label>Category</label><input type="text" class="sub-field-input" data-field="category" value="${escapeHtml(loc.category || '')}"></div>
-                <div class="sub-meta-field"><label>Year</label><input type="text" class="sub-field-input" data-field="year" value="${escapeHtml(loc.year || '')}"></div>
+                <div class="sub-meta-field"><label>Group</label>${metaFieldSelectHtml('group', loc.group)}</div>
+                <div class="sub-meta-field"><label>Member</label>${metaFieldSelectHtml('member', loc.member)}</div>
+                <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', loc.country)}</div>
+                <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', loc.city)}</div>
+                <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', loc.category)}</div>
+                <div class="sub-meta-field"><label>Year</label>${metaFieldSelectHtml('year', loc.year)}</div>
             </div>
 
             <textarea class="loc-story-input" rows="4" placeholder="Story (English) — one paragraph per blank line" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:10px;resize:vertical;"></textarea>
+
+            <!-- Tips (demande du 13/09/2026, "ajoute également les tips dans Existing
+                 locations") — même éditeur (window.createTitledListField()) et même champ
+                 (loc.tipsList, publié via adminUpdateLocationContent()) que la file de
+                 soumissions ci-dessus. -->
+            <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
+            <div class="sub-tips-editor"></div>
 
             <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)">
             <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
@@ -895,6 +941,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const hideBtn = card.querySelector('.btn-hide');
         const resultEl = card.querySelector('.sub-result');
         let mergedFullDescription = loc.fullDescription || {};
+        let tipsFieldWidget = null;
 
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté fiche de review d'une proposition, plus haut dans ce fichier.
@@ -914,6 +961,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             videoStatus.textContent = data.ytId ? 'YouTube video: ' + data.ytId : 'No YouTube video';
             linkInput.value = data.episodeLink || '';
             mergedFullDescription = data.fullDescription || {};
+            if (typeof window.createTitledListField === 'function') {
+                const tipsEditorEl = card.querySelector('.sub-tips-editor');
+                if (tipsEditorEl) {
+                    tipsFieldWidget = window.createTitledListField(tipsEditorEl, {
+                        values: data.tipsList || [], titlePlaceholder: 'Tip title', textPlaceholder: 'Tip text', addLabel: '+ Add a tip'
+                    });
+                }
+            }
             if (typeof window.createMultiUrlField === 'function') {
                 const tweetExtraEl = card.querySelector('.sub-tweet-extra');
                 if (tweetExtraEl) extraFieldWidgets.tweetUrls = window.createMultiUrlField(tweetExtraEl, { values: data.tweetUrls || [], placeholder: 'Additional Tweet / X post URL' });
@@ -968,6 +1023,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 en: typeof plainTextToHtmlParagraphs === 'function' ? plainTextToHtmlParagraphs(storyInput.value) : storyInput.value
             });
             const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim() }, extraCollected);
+            if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
 
             // Group/Member/Country/City/Category/Year (demande du 13/09/2026, "ajoute
             // également la mise en forme de Location submissions") — même mécanisme que le

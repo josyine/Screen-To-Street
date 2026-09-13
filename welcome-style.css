@@ -106,6 +106,12 @@ body { margin: 0; padding: 0; min-height: 100vh; min-height: 100dvh; display: fl
 .close-auth-btn { position: absolute; top: 16px; right: 20px; font-size: 26px; cursor: pointer; color: rgba(255,255,255,.7); z-index: 5; line-height: 1; border: none; background: transparent; outline: none; }
 .close-auth-btn:hover { color: #fff; }
 
+/* Flèche retour de l'étape "Account" (demande du 13/09/2026) — contrairement à
+   .close-auth-btn ci-dessus (coin haut-droit, sur le panneau image de droite, d'où sa
+   couleur blanche), celle-ci vit au-dessus de .auth-left (fond blanc), donc couleur foncée. */
+.auth-back-btn { position: absolute; top: 20px; left: 20px; width: 32px; height: 32px; border-radius: 50%; border: none; background: #f1f5f9; color: #64748b; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; transition: .15s; }
+.auth-back-btn:hover { background: #e2e8f0; color: #212832; }
+
 .auth-left { flex: 1; background: #fff; padding: 40px 46px 40px 46px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
 .auth-left::-webkit-scrollbar { width: 6px; }
 .auth-left::-webkit-scrollbar-thumb { background-color: #e2e8f0; border-radius: 10px; }
@@ -218,4 +224,5 @@ select.field-input { appearance: none; background-image: url("data:image/svg+xml
     .auth-left { padding: 30px 22px 26px 22px; }
     .auth-step h2 { font-size: 20px; }
     .close-auth-btn { color: #94a3b8; top: 14px; right: 16px; }
+    .auth-back-btn { top: 14px; left: 16px; }
 }
