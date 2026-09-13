@@ -91,6 +91,27 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-story-save-btn{margin-top:8px;background:#D42759;color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:12px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;}
 .sub-story-save-btn:hover{filter:brightness(0.95);}
 .sub-fields{font-size:11.5px;color:#94a3b8;margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap;}
+
+/* Champs de squelette (Groupe/Membre/Pays/Ville/Catégorie/Année) rendus éditables
+   directement dans la carte (demande du 13/09/2026, "je veux également pouvoir modifier
+   la partie Group, member, country, city, etc.") — jusqu'ici .sub-meta n'était qu'un
+   texte en lecture seule, ces champs n'étaient modifiables qu'APRÈS approbation via
+   l'icône crayon d'"Existing locations". */
+.sub-meta-edit{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.sub-meta-field label{font-size:10px;font-weight:700;color:#94a3b8;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.02em;}
+.sub-meta-field input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:7px 9px;font-size:12px;font-family:'Poppins',sans-serif;}
+
+/* Sections de contenu dédiées (demande du 13/09/2026) : remplace l'ancien bloc unique
+   .sub-story-wrap (un seul champ "texte brut" pour toute fullDescription.en, avec un
+   crayon à cliquer pour même le voir) par 3 zones toujours visibles et directement
+   éditables — le 1er paragraphe de fullDescription ("story of this place"), les
+   paragraphes suivants ("following in BTS's footsteps"), et tipsList[] (voir
+   window.createTitledListField() dans script.js, jusqu'ici jamais branché nulle part). */
+.sub-section-label{font-size:11px;font-weight:700;color:#64748b;display:block;margin:14px 0 6px 0;text-transform:uppercase;letter-spacing:.02em;}
+.sub-section-label:first-of-type{margin-top:0;}
+.sub-section-textarea{width:100%;min-height:80px;font-size:12.5px;font-family:'Poppins',sans-serif;color:#334155;line-height:1.5;background:#faf9fc;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 12px;resize:vertical;}
+.sub-section-textarea:focus{border-color:#D42759;outline:none;background:#fff;}
+.sub-tips-editor .tl-add-btn{color:#D42759;}
 .sub-source{font-size:12px;margin-bottom:16px;}
 .sub-source a{color:#D42759;font-weight:600;word-break:break-all;}
 .sub-actions{display:flex;gap:10px;}
@@ -303,12 +324,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         return d.innerHTML;
     }
 
-    function storyHtml(sub) {
-        const en = sub.fullDescription && sub.fullDescription.en;
-        return en || '<em>No story text provided.</em>';
-    }
-
-    // Une IA peut fournir une URL de photo qui n'existe pas réellement (hallucination) —
+// Une IA peut fournir une URL de photo qui n'existe pas réellement (hallucination) —
     // plutôt qu'une icône d'image cassée silencieuse, on remplace par un message explicite
     // pour que ce soit visible pendant la relecture, avant d'approuver.
     function handleSubPhotoError(imgEl) {
@@ -430,7 +446,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                     <span class="sub-badge ${isEdit ? 'sub-edit-tag' : ''}">${isEdit ? 'Correction to existing location #' + escapeHtml(sub.matchedLocId) : 'New location'}</span>
                 </div>
             </div>
-            <div class="sub-meta">${escapeHtml(sub.group || '')} · ${escapeHtml(sub.member || '')} &middot; ${escapeHtml(sub.city || '')}, ${escapeHtml(sub.country || '')} &middot; ${escapeHtml(sub.category || '')} &middot; ${escapeHtml(sub.year || '')}</div>
+            <div class="sub-meta-edit">
+                <div class="sub-meta-field"><label>Group</label><input type="text" class="sub-field-input" data-field="group" value="${escapeHtml(sub.group || '')}"></div>
+                <div class="sub-meta-field"><label>Member</label><input type="text" class="sub-field-input" data-field="member" value="${escapeHtml(sub.member || '')}"></div>
+                <div class="sub-meta-field"><label>Country</label><input type="text" class="sub-field-input" data-field="country" value="${escapeHtml(sub.country || '')}"></div>
+                <div class="sub-meta-field"><label>City</label><input type="text" class="sub-field-input" data-field="city" value="${escapeHtml(sub.city || '')}"></div>
+                <div class="sub-meta-field"><label>Category</label><input type="text" class="sub-field-input" data-field="category" value="${escapeHtml(sub.category || '')}"></div>
+                <div class="sub-meta-field"><label>Year</label><input type="text" class="sub-field-input" data-field="year" value="${escapeHtml(sub.year || '')}"></div>
+            </div>
             <div class="sub-photo-preview">${photoPreviewHtml(sub.img)}</div>
             <input type="url" class="sub-photo-input" placeholder="Photo URL" value="${escapeHtml((sub.img || '').startsWith('data:') ? '' : (sub.img || ''))}">
             <div class="sub-photo-upload-row">
@@ -460,13 +483,16 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:6px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
             <div class="sub-video-extra" style="margin-bottom:12px;"></div>
 
-            <div class="sub-story-wrap">
-                <div class="sub-story">${storyHtml(sub)}</div>
-                <button type="button" class="sub-story-edit-btn" title="Edit text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></button>
-            </div>
+            <label class="sub-section-label">The story of this place</label>
+            <textarea class="sub-story-place-textarea sub-section-textarea" rows="3" placeholder="Describe the place itself — what it is, where it is."></textarea>
+            <label class="sub-section-label">Following in BTS's footsteps</label>
+            <textarea class="sub-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line."></textarea>
+            <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
+            <div class="sub-tips-editor"></div>
+            <label class="sub-section-label">Official website (optional)</label>
+            <input type="url" class="sub-official-link-input" placeholder='https://... — shown as "Learn more about this place"' value="${escapeHtml(sub.officialLink || '')}">
             <div class="sub-fields">
                 <span>${practicalCount} practical info item${practicalCount === 1 ? '' : 's'}</span>
-                <span>${tipsCount} tip${tipsCount === 1 ? '' : 's'}</span>
                 <span class="sub-video-status">${sub.ytId ? 'YouTube video: ' + escapeHtml(sub.ytId) : 'No YouTube video'}</span>
                 <span>lat/lng: ${sub.lat != null ? sub.lat : '—'}, ${sub.lng != null ? sub.lng : '—'}</span>
             </div>
@@ -508,35 +534,55 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             linkInput.addEventListener('change', () => { sub.episodeLink = linkInput.value.trim(); });
         }
 
-        // Crayon pour éditer le texte de la fiche directement (demande du 12/09/2026) —
-        // même conversion HTML<->texte brut que openLocationEditModal() dans script.js
-        // (htmlParagraphsToPlainText/plainTextToHtmlParagraphs), pour garder un seul champ
-        // "fullDescription.en" éditable sans réécrire la logique. Modifie `sub` directement,
-        // comme les autres champs de cette carte : Approve publie donc bien le texte corrigé.
-        const storyWrap = card.querySelector('.sub-story-wrap');
-        const storyPencilSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>';
-        function renderStoryView() {
-            storyWrap.innerHTML = `<div class="sub-story">${storyHtml(sub)}</div><button type="button" class="sub-story-edit-btn" title="Edit text">${storyPencilSvg}</button>`;
-            storyWrap.querySelector('.sub-story-edit-btn').addEventListener('click', renderStoryEdit);
+        // Champs de squelette éditables (demande du 13/09/2026) — modifient `sub`
+        // directement, comme les autres champs de cette carte : Approve publie donc bien
+        // les valeurs corrigées ici (group/member/country/city/category/year sont déjà
+        // dans la liste skeletonFields d'approveLocationSubmission(), firebase-init.js).
+        card.querySelectorAll('.sub-field-input').forEach(input => {
+            input.addEventListener('change', () => { sub[input.dataset.field] = input.value.trim(); });
+        });
+
+        // Sections de contenu dédiées (demande du 13/09/2026, remplace l'ancien champ
+        // unique "texte brut" derrière un crayon) — même découpage que
+        // splitFullDescriptionForEdit()/renderLocationRichContent() dans script.js : le
+        // 1er paragraphe de fullDescription.en est "the story of this place", les
+        // paragraphes suivants sont "following in BTS's footsteps". Les deux zones
+        // toujours visibles se recombinent en un seul fullDescription.en à la saisie.
+        const storyPlaceEl = card.querySelector('.sub-story-place-textarea');
+        const storyBtsEl = card.querySelector('.sub-story-bts-textarea');
+        if (storyPlaceEl && storyBtsEl) {
+            const split = splitFullDescriptionForEdit(sub.fullDescription && sub.fullDescription.en);
+            storyPlaceEl.value = split.placeText;
+            storyBtsEl.value = split.btsText;
+            const syncFullDescription = () => {
+                const combined = [storyPlaceEl.value.trim(), storyBtsEl.value.trim()].filter(Boolean).join('\n\n');
+                sub.fullDescription = Object.assign({}, sub.fullDescription, { en: plainTextToHtmlParagraphs(combined) });
+            };
+            storyPlaceEl.addEventListener('change', syncFullDescription);
+            storyBtsEl.addEventListener('change', syncFullDescription);
         }
-        function renderStoryEdit() {
-            storyWrap.innerHTML = '';
-            const textarea = document.createElement('textarea');
-            textarea.className = 'sub-story-textarea';
-            textarea.value = htmlParagraphsToPlainText(sub.fullDescription && sub.fullDescription.en);
-            const saveBtn = document.createElement('button');
-            saveBtn.type = 'button';
-            saveBtn.className = 'sub-story-save-btn';
-            saveBtn.textContent = 'Save text';
-            saveBtn.addEventListener('click', () => {
-                sub.fullDescription = Object.assign({}, sub.fullDescription, { en: plainTextToHtmlParagraphs(textarea.value) });
-                renderStoryView();
+
+        // THE "SCREEN TO STREET" TIPS (demande du 13/09/2026, "+ add a tips") —
+        // window.createTitledListField() était déjà écrit mais jamais branché nulle part
+        // (voir script.js) ; sub.tipsList est déjà dans contentFields
+        // d'approveLocationSubmission(), donc Approve publie bien les tips édités ici.
+        const tipsEditorEl = card.querySelector('.sub-tips-editor');
+        let tipsFieldWidget = null;
+        if (tipsEditorEl && typeof window.createTitledListField === 'function') {
+            tipsEditorEl.classList.add('sub-tips-editor');
+            tipsFieldWidget = window.createTitledListField(tipsEditorEl, {
+                values: sub.tipsList || [], titlePlaceholder: 'Tip title', textPlaceholder: 'Tip text', addLabel: '+ Add a tip'
             });
-            storyWrap.appendChild(textarea);
-            storyWrap.appendChild(saveBtn);
-            textarea.focus();
         }
-        card.querySelector('.sub-story-edit-btn').addEventListener('click', renderStoryEdit);
+
+        // Lien officiel (demande du 13/09/2026, "Learn more about this place") — rendu
+        // dans Practical information & access, voir renderLocationRichContent() dans
+        // script.js. Non validé côté domaine (contrairement aux réseaux sociaux
+        // ci-dessus) : n'importe quel site officiel est valide ici.
+        const officialLinkInput = card.querySelector('.sub-official-link-input');
+        if (officialLinkInput) {
+            officialLinkInput.addEventListener('change', () => { sub.officialLink = officialLinkInput.value.trim(); });
+        }
 
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") : le champ
         // ci-dessus reste le lien "principal" (aperçu embarqué, inchangé) ; ceux-ci sont
@@ -691,6 +737,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 if (hasError) extraHasError = true; else sub[field] = values;
             });
             if (extraHasError) return;
+            // Tips éditées dans cette carte (voir window.createTitledListField() plus
+            // haut) : collectées seulement ici, au clic, plutôt qu'à chaque frappe comme
+            // les autres champs — même principe que extraFieldWidgets ci-dessus.
+            if (tipsFieldWidget) sub.tipsList = tipsFieldWidget.collect().values;
             approveBtn.disabled = true; rejectBtn.disabled = true;
             const res = await window.approveLocationSubmission(sub);
             resultEl.classList.remove('hidden');

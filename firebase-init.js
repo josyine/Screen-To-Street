@@ -1149,16 +1149,30 @@ window.approveLocationSubmission = async function (submission) {
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         const targetId = submission.matchedLocId ? String(submission.matchedLocId) : 'new-' + submission.id;
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
+        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), contentDoc, { merge: true });
 
+        // Champs "squelette" (Groupe/Membre/Pays/Ville/Catégorie/Année, demande du
+        // 13/09/2026, "je veux également pouvoir modifier la partie Group, member,
+        // country, city, etc.") : pour un NOUVEAU lieu ils vont dans newLocations/{id}
+        // (comme avant) ; pour une CORRECTION (matchedLocId posé) le lieu existe déjà
+        // ailleurs (squelette historique ou newLocations), donc on passe par
+        // locationSkeletonOverrides/{id} — le même mécanisme que l'icône crayon
+        // d'"Existing locations" (voir adminUpdateLocationSkeleton() plus bas), plutôt
+        // que d'écraser un document qui n'est peut-être pas le sien.
+        const skeletonFields = ['name', 'group', 'member', 'country', 'city', 'category', 'year', 'episode', 'address', 'lat', 'lng', 'img'];
         if (!submission.matchedLocId) {
-            const lightFields = ['name', 'group', 'member', 'country', 'city', 'category', 'year', 'episode', 'address', 'lat', 'lng', 'img'];
             const lightDoc = { id: targetId };
-            lightFields.forEach(f => { if (submission[f] !== undefined) lightDoc[f] = submission[f]; });
+            skeletonFields.forEach(f => { if (submission[f] !== undefined) lightDoc[f] = submission[f]; });
             await setDoc(doc(db, 'newLocations', targetId), lightDoc);
+        } else {
+            const overrideDoc = {};
+            skeletonFields.forEach(f => { if (submission[f] !== undefined) overrideDoc[f] = submission[f]; });
+            if (Object.keys(overrideDoc).length > 0) {
+                await setDoc(doc(db, 'locationSkeletonOverrides', targetId), overrideDoc, { merge: true });
+            }
         }
 
         await setDoc(doc(db, 'locationSubmissions', submission.id), { status: 'approved', reviewedAt: serverTimestamp() }, { merge: true });

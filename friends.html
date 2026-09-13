@@ -57,7 +57,8 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
 .user-avatar-btn { color: #000000 !important; overflow: hidden; padding: 0;}
 
 .dropdown-menu { position: absolute; right: 0; top: 52px; background: white; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-width: 190px; padding: 6px; display: flex; flex-direction: column; gap: 2px; z-index: 3000; }
-.dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: block; text-align: left; text-decoration: none;}
+.dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 8px; text-align: left; text-decoration: none; white-space: nowrap;}
+.dropdown-option svg { flex-shrink: 0; }
 .dropdown-option:hover { background: #f1f5f9; color: #D42759; }
 /* Options du menu "+" du composeur (icône SVG + libellé) : sans ça, l'icône et le texte
    n'étaient pas alignés (bug rapporté le 06/09/2026) — .dropdown-option de base est en

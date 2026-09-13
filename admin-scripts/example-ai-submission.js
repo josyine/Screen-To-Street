@@ -126,6 +126,13 @@ vérifiables parmi youtubeUrl/tweetUrl/instagramUrl/facebookUrl/tiktokUrl ci-des
 lien maximum. Même règle absolue que ci-dessus : un champ vide ("") vaut toujours mieux qu'un lien
 inventé ou approximatif (jamais un lien qui n'existe pas ou qui ne concerne pas précisément ce lieu).
 
+Cherche également le site officiel DU LIEU LUI-MÊME (demande du 13/09/2026, "Learn more about
+this place" dans Practical information & access) — le site du musée/hôtel/salle de concert/café/
+monument concerné, PAS un lien BTS : par exemple le site officiel d'un hôtel, la page officielle
+d'un musée, le site d'une salle de concert. Mets cette URL dans officialLink ci-dessous. Même règle
+absolue : laisse vide ("") si tu n'es pas certain à 100% que ce site officiel existe et correspond
+bien à ce lieu précis.
+
 Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette structure exacte :
 [{
   "name": "Nom du lieu",
@@ -142,6 +149,7 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
   "tipsList": [ { "title": { "en": "Astuce" }, "text": { "en": "Un conseil concret et utile pour la visite." } } ],
   "img": "URL réelle d'une photo (Wikimedia Commons ou site officiel) — laisse vide (\\"\\") si tu n'es pas certain qu'elle existe",
   "episodeLink": "https://source-verifiable-reelle.com (laisse vide si aucune source certaine)",
+  "officialLink": "URL du site officiel DU LIEU LUI-MÊME (hôtel/musée/salle de concert/café...), pas un lien BTS — laisse vide si aucun site officiel certain",
   "youtubeUrl": "URL complète d'une vidéo YouTube OFFICIELLE (HYBE LABELS/BANGTANTV) montrant ce lieu — laisse vide si aucune",
   "tweetUrl": "URL d'un post Twitter/X OFFICIEL (@BTS_twt/@bts_bighit) montrant ce lieu — laisse vide si aucun",
   "instagramUrl": "URL d'un post Instagram OFFICIEL montrant ce lieu — laisse vide si aucun",
@@ -197,6 +205,12 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
             } else {
                 console.log(`   🔗 Aucun lien officiel trouvé pour "${loc.name}".`);
             }
+            // officialLink : site du LIEU lui-même (hôtel/musée/salle...), distinct des
+            // liens BTS ci-dessus — voir renderLocationRichContent() dans script.js
+            // ("Learn more about this place", Practical information & access).
+            console.log(loc.officialLink
+                ? `   🌐 Site officiel du lieu trouvé pour "${loc.name}" : ${loc.officialLink}`
+                : `   🌐 Aucun site officiel du lieu trouvé pour "${loc.name}".`);
 
             await db.collection('locationSubmissions').add({
                 ...locWithoutYoutubeUrl,
