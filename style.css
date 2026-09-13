@@ -424,6 +424,16 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .modal-content { background: white; width: 90%; max-width: 600px; max-height: 90vh; border-radius: 16px; padding: 30px; overflow-y: auto; position: relative; }
 .close-btn { position: absolute; top: 15px; right: 25px; font-size: 2rem; color: var(--primary-magenta); cursor: pointer; }
 
+/* Cases à cocher "Year" du modal crayon (demande du 13/09/2026, "sélection multiple pour
+   plusieurs années" — voir yearCheckboxGroupHtml() dans script.js). Même apparence que le
+   groupe de cases "Member" d'admin.html (.member-checkbox-group/.member-checkbox, définies
+   localement là-bas), dupliquée ici puisque ce modal est ouvert depuis map.html, qui ne
+   charge que ce fichier-ci, pas le <style> interne d'admin.html. */
+.member-checkbox-group{display:flex;flex-wrap:wrap;gap:6px;}
+.member-checkbox{display:flex;align-items:center;gap:4px;border:1px solid #e2e8f0;border-radius:100px;padding:5px 10px 5px 8px;font-size:11.5px;font-weight:600;color:#334155;font-family:'Poppins',sans-serif;cursor:pointer;background:#fff;}
+.member-checkbox:has(input:checked){border-color:#D42759;background:#FCE7F0;color:#D42759;}
+.member-checkbox input{margin:0;accent-color:#D42759;}
+
 /* Paywall "Pass Guide" — voir #cart-modal dans map.html et openDetailsPanel()/
    buyGuidePass() dans script.js. Deux pass génériques (jamais liés à un artiste). */
 .paywall-modal-content { max-width: 620px; text-align: center; }
