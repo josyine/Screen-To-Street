@@ -73,7 +73,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-preview{margin-bottom:8px;border-radius:10px;overflow:hidden;}
 .sub-photo-preview img{display:block;width:100%;max-height:220px;object-fit:cover;}
 .sub-photo-missing{background:#FFF7F8;border:1px dashed #FBD5DC;border-radius:10px;padding:14px;text-align:center;color:#D42759;font-size:12px;font-weight:600;}
-.sub-photo-input,.sub-tweet-input,.sub-video-input,.sub-social-input,.sub-link-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
+.sub-photo-input,.sub-tweet-input,.sub-video-input,.sub-social-input,.sub-link-input,.sub-official-link-input,.sub-img-credit-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
 .sub-photo-hint{font-size:10.5px;color:#94a3b8;margin-bottom:12px;line-height:1.4;}
 .sub-photo-upload-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
 .sub-photo-upload-btn{background:#faf9fc;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:11.5px;font-weight:700;color:#64748b;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:.15s;}
@@ -529,7 +529,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
             <label class="sub-section-label">Official website (optional)</label>
-            <input type="url" class="sub-official-link-input" placeholder='https://... — shown as "Learn more about this place"' value="${escapeHtml(sub.officialLink || '')}">
+            <input type="url" class="sub-official-link-input" placeholder='https://... — shown as "Learn more"' value="${escapeHtml(sub.officialLink || '')}">
+            <label class="sub-section-label">Photo credit / copyright (optional)</label>
+            <input type="text" class="sub-img-credit-input" placeholder="e.g. Photo: @username, or © Official press kit" value="${escapeHtml(sub.imgCredit || '')}">
             <div class="sub-fields">
                 <span>${practicalCount} practical info item${practicalCount === 1 ? '' : 's'}</span>
                 <span class="sub-video-status">${sub.ytId ? 'YouTube video: ' + escapeHtml(sub.ytId) : 'No YouTube video'}</span>
@@ -621,6 +623,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const officialLinkInput = card.querySelector('.sub-official-link-input');
         if (officialLinkInput) {
             officialLinkInput.addEventListener('change', () => { sub.officialLink = officialLinkInput.value.trim(); });
+        }
+
+        // Copyright / crédit photo (demande du 13/09/2026) — même champ imgCredit que le
+        // modal crayon (script.js) et déjà dans contentFields de approveLocationSubmission
+        // (firebase-init.js), donc Approve publie bien la valeur saisie ici sans changement
+        // côté écriture.
+        const imgCreditInput = card.querySelector('.sub-img-credit-input');
+        if (imgCreditInput) {
+            imgCreditInput.addEventListener('change', () => { sub.imgCredit = imgCreditInput.value.trim(); });
         }
 
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") : le champ
