@@ -85,11 +85,13 @@ service cloud.firestore {
                        'accessibilitySum', 'accessibilityCount', 'siteQualitySum', 'siteQualityCount']);
     }
 
-    // Compteur public "combien de comptes ont ce lieu dans leur wishlist".
+    // Compteur public "combien de comptes ont ce lieu dans leur wishlist" +
+    // "combien de comptes ont débloqué le badge géolocalisé de ce lieu" (checkinCount,
+    // demande du 13/09/2026 — voir window.awardLocationBadge() dans firebase-init.js).
     match /locationStats/{locationId} {
       allow read: if true;
       allow write: if request.auth != null
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['wishlistCount']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['wishlistCount', 'checkinCount']);
     }
 
     // Statistiques globales du site (nombre total de comptes créés). Un seul document

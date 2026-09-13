@@ -877,3 +877,19 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 }
 @keyframes stnavSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-18px); opacity: 0; } }
 @keyframes stnavSlideIn { from { transform: translateX(18px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* Écran de célébration "badge géolocalisé débloqué" (demande du 13/09/2026, "un peu
+   comme Pokemon GO") — voir showBadgeUnlockCelebration() dans script.js, appelée depuis
+   checkBadgeUnlocksNearPosition() dès que la position GPS réelle passe à proximité d'un
+   lieu. Dégradé violet foncé de la charte (voir --sidebar-bg/le featured d'admin.html),
+   pas le mockup gris neutre — reste cohérent avec le reste du site. */
+.badge-unlock-modal { position: fixed; inset: 0; z-index: 12000; background: rgba(20,14,35,.75); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.badge-unlock-modal.hidden { display: none; }
+.badge-unlock-card { width: 100%; max-width: 340px; background: linear-gradient(135deg, #3a2c5c, #1a1530); border-radius: 24px; padding: 36px 24px 28px 24px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.4); animation: badgeUnlockPop .4s cubic-bezier(.34,1.56,.64,1); }
+@keyframes badgeUnlockPop { 0% { transform: scale(.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.badge-unlock-kicker { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #c9bfe8; margin-bottom: 20px; }
+.badge-unlock-photo { width: 112px; height: 112px; border-radius: 50%; margin: 0 auto 16px auto; background-size: cover; background-position: center; background-color: #3a2c5c; border: 4px solid var(--primary-magenta); box-shadow: 0 0 0 8px rgba(212,39,89,.15), 0 0 40px rgba(212,39,89,.5); }
+.badge-unlock-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.badge-unlock-rank { font-size: 12.5px; color: #c9bfe8; margin-bottom: 22px; min-height: 1em; }
+.badge-unlock-btn { background: #fff; color: #212832; border: none; border-radius: 100px; padding: 12px 26px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; }
+.badge-unlock-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
