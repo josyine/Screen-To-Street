@@ -2506,13 +2506,21 @@ document.addEventListener('DOMContentLoaded', () => {
             // jusqu'à ce que le lieu soit réellement trouvable ET que la fenêtre de connexion
             // ne bloque plus l'interaction, avec un plafond de 12s pour ne jamais attendre
             // indéfiniment (connexion Firebase qui ne répond jamais).
-            const targetLocId = Number(locParam);
+            // BUG rapporté le 13/09/2026 ("parfois la redirection ne fonctionne pas, fais en
+            // sorte que ça marche pour tous les lieux") : Number(locParam) ne matchait que les
+            // lieux au squelette codé en dur (id numérique) — tout lieu publié depuis la file
+            // de soumissions admin (approveLocationSubmission(), firebase-init.js) a un id du
+            // genre "new-abc123" (targetId = 'new-' + submission.id), donc Number(...) valait
+            // NaN et ne matchait plus jamais rien. On compare désormais en texte (String(l.id))
+            // des deux côtés, qui fonctionne aussi bien pour un id numérique que pour un id
+            // texte, puis on transmet le VRAI l.id (pas locParam) à openDetailsPanel(), qui
+            // fait un === strict contre celebLocations et a donc besoin du bon type.
             const tryOpenSharedLocation = (attemptsLeft) => {
                 const gateBlocking = document.body.classList.contains('auth-gate-active');
-                const locExists = typeof celebLocations !== 'undefined' && celebLocations.some(l => l.id === targetLocId);
-                if (!gateBlocking && locExists) {
+                const matchedLoc = typeof celebLocations !== 'undefined' ? celebLocations.find(l => String(l.id) === locParam) : null;
+                if (!gateBlocking && matchedLoc) {
                     if (typeof window.switchMainTab === 'function') window.switchMainTab('explore');
-                    window.openDetailsPanel(targetLocId);
+                    window.openDetailsPanel(matchedLoc.id);
                     return;
                 }
                 if (attemptsLeft <= 0) return; // plafond atteint — abandon silencieux (comme avant ce correctif)
@@ -4452,11 +4460,7 @@ function positionLocVisitorsChevron() {
     if (!tab || !nav) return;
     if (window.matchMedia && !window.matchMedia('(max-width: 760px)').matches) return;
     const GAP = 10;
-    let ceilingTop = nav.getBoundingClientRect().top;
-    const bar = document.getElementById('loc-visitors-bar');
-    if (bar && bar.classList.contains('open')) {
-        ceilingTop = bar.getBoundingClientRect().top;
-    }
+    const ceilingTop = nav.getBoundingClientRect().top;
     tab.style.bottom = Math.round(window.innerHeight - ceilingTop + GAP) + 'px';
 
     const addBtn = document.getElementById('mbn-add-btn');
@@ -4513,12 +4517,13 @@ function findNearbyOrAreaVisitorContent() {
     openAreaVisitorsDrawer(topCountry, countryLocs);
 }
 
-// Mini-aperçu (bandeau juste au-dessus de la nav du bas, mobile uniquement comme la nav
-// elle-même) : collage de jusqu'à 3 photos superposées + nombre de publications, affiché
-// quand le lieu sélectionné (marqueur cliqué OU carte de la liste — les deux passent par
-// openDetailsPanel) a au moins une photo. Le bandeau entier ouvre le tiroir complet (voir
-// openLocVisitorsDrawer plus bas). Complète le chevron permanent ci-dessus (toujours
-// visible) sans le remplacer : celui-ci reste l'indicateur "il y a quelque chose ici".
+// Indicateur "il y a des photos ici" (mobile uniquement, comme la nav du bas) : met à
+// jour le chevron permanent (voir injectLocVisitorsChevron() plus haut) quand le lieu
+// sélectionné (marqueur cliqué OU carte de la liste — les deux passent par
+// openDetailsPanel) a au moins une photo. Jusqu'au 13/09/2026 affichait aussi un bandeau
+// "collage de photos + N post(s)" juste au-dessus de la nav ; supprimé sur demande ("la
+// bande où il y a écrit '1 post'") pour ne garder que le chevron — celui-ci ouvre déjà le
+// tiroir complet tout seul (voir injectLocVisitorsChevron/findNearbyOrAreaVisitorContent).
 async function updateLocVisitorsBar(loc) {
     await ensureLocPostsIndex();
     // Le lieu affiché a pu changer pendant l'attente Firestore (clic rapide sur un autre
@@ -4529,31 +4534,6 @@ async function updateLocVisitorsBar(loc) {
     if (chevronTab) {
         chevronTab.classList.toggle('has-posts', posts.length > 0);
     }
-    let bar = document.getElementById('loc-visitors-bar');
-    if (!posts.length) {
-        if (bar) bar.classList.remove('open');
-        positionLocVisitorsChevron();
-        return;
-    }
-    if (!bar) {
-        bar = document.createElement('div');
-        bar.id = 'loc-visitors-bar';
-        bar.className = 'loc-visitors-bar';
-        document.body.appendChild(bar);
-    }
-    const collage = posts.slice(0, 3).map((p, i) => `<div class="loc-visitors-thumb" style="background-image:url('${p.photo}'); z-index:${3 - i};"></div>`).join('');
-    const label = posts.length === 1
-        ? (currentLang === 'fr' ? '1 publication' : '1 post')
-        : `${posts.length} ${currentLang === 'fr' ? 'publications' : 'posts'}`;
-    bar.innerHTML = `
-        <div class="loc-visitors-collage">${collage}</div>
-        <span class="loc-visitors-count">${label}</span>
-        <button type="button" class="loc-visitors-chevron" aria-label="Show visitor photos">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-        </button>
-    `;
-    bar.onclick = () => openLocVisitorsDrawer(loc);
-    bar.classList.add('open');
     positionLocVisitorsChevron();
 }
 window.updateLocVisitorsBar = updateLocVisitorsBar;
@@ -4681,13 +4661,21 @@ function renderLocationRichContent(loc) {
             const directionsText = getLocText(loc.directions);
             practicalList.innerHTML = directionsText ? `<div class="practical-item"><b>${t('lHowToGetThere')}</b> ${directionsText}</div>` : '';
         }
-        // "Learn more about this place" (demande du 13/09/2026) : lien vers la page
-        // officielle du lieu (musée, hôtel, salle de concert...) quand elle est connue —
-        // loc.officialLink, renseigné soit manuellement depuis admin.html soit trouvé par
-        // l'agent IA lui-même pour les nouvelles soumissions (voir son prompt système,
-        // firebase-init.js). Toujours en dernier, après les items de practicalInfo.
+    }
+    // "Learn more about this place" (demande du 13/09/2026, redemandé le 13/09/2026 "sous
+    // forme de bouton à droite de Open in Google Maps") : lien vers la page officielle du
+    // lieu (musée, hôtel, salle de concert...) quand elle est connue — loc.officialLink,
+    // renseigné soit manuellement depuis admin.html soit trouvé par l'agent IA lui-même
+    // pour les nouvelles soumissions (voir son prompt système, firebase-init.js).
+    // Anciennement un lien texte en fin de "Practical information" ; maintenant un bouton
+    // jumeau de #details-map-link (même classe .gmaps-btn), masqué quand le lieu n'en a pas.
+    const learnMoreBtn = document.getElementById('details-learnmore-btn');
+    if (learnMoreBtn) {
         if (loc.officialLink) {
-            practicalList.innerHTML += `<div class="practical-item-titled"><div class="story-heading"><span class="dot"></span><span>${t('lLearnMore')}</span></div><div class="practical-item-text"><a href="${escapeHtml(loc.officialLink)}" target="_blank" rel="noopener noreferrer" style="color:var(--primary-magenta); font-weight:700; word-break:break-word;">${escapeHtml(loc.officialLink)}</a></div></div>`;
+            learnMoreBtn.href = loc.officialLink;
+            learnMoreBtn.classList.remove('hidden');
+        } else {
+            learnMoreBtn.classList.add('hidden');
         }
     }
 
@@ -4775,7 +4763,9 @@ function renderLocationRichContent(loc) {
 
     const dLink = document.getElementById('details-episode-link');
     const dLinkCont = document.getElementById('details-link-container');
-    if (dLink && dLinkCont) { if(loc.episodeLink) { dLink.href = loc.episodeLink; dLinkCont.style.display = 'inline'; } else { dLinkCont.style.display = 'none'; } }
+    // display:block (pas inline, voir la note dans map.html) : évite tout <br> manuel pour
+    // se séparer proprement de la ligne Date/Episode au-dessus, dans tous les cas de figure.
+    if (dLink && dLinkCont) { if(loc.episodeLink) { dLink.href = loc.episodeLink; dLinkCont.style.display = 'block'; } else { dLinkCont.style.display = 'none'; } }
 
     // Liens sociaux (Instagram/Facebook/TikTok, voir admin.html) : chacun n'apparaît que
     // s'il a été renseigné, et redirige simplement vers le réseau au clic — pas d'embed ici
@@ -5407,7 +5397,8 @@ window.openDetailsPanel = function(id) {
 
     const dEpi = document.getElementById('details-episode');
     const dEpiCont = document.getElementById('details-episode-container');
-    if (dEpi && dEpiCont) { if(loc.episode) { dEpi.textContent = loc.episode; dEpiCont.style.display = 'inline'; } else { dEpiCont.style.display = 'none'; } }
+    // display:block, même raison que dLinkCont plus haut (renderLocationRichContent).
+    if (dEpi && dEpiCont) { if(loc.episode) { dEpi.textContent = loc.episode; dEpiCont.style.display = 'block'; } else { dEpiCont.style.display = 'none'; } }
 
     const mapLink = document.getElementById('details-map-link');
     if(mapLink) mapLink.href = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
@@ -7080,13 +7071,39 @@ async function checkBadgeUnlocksNearPosition(pos) {
     });
 }
 
+// Garde-fou localStorage (demande du 13/09/2026, "affiche le pop up qu'une seule fois")
+// EN PLUS du Set myUnlockedBadgeIds ci-dessus : ce dernier ne protège que DANS la même
+// page (il est réinitialisé à chaque chargement) et dépend d'une lecture Firestore
+// fraîche à chaque fois — un léger délai de propagation entre l'écriture du badge et une
+// relecture immédiate sur un rechargement de page pourrait sinon faire réafficher la
+// célébration pour un lieu déjà débloqué. Cette clé locale, elle, ne s'oublie jamais.
+function hasBadgeCelebrationBeenShown(idStr) {
+    try {
+        const raw = localStorage.getItem('stns_celebrated_badges');
+        return raw ? JSON.parse(raw).includes(idStr) : false;
+    } catch (e) { return false; }
+}
+function markBadgeCelebrationShown(idStr) {
+    try {
+        const raw = localStorage.getItem('stns_celebrated_badges');
+        const arr = raw ? JSON.parse(raw) : [];
+        if (!arr.includes(idStr)) {
+            arr.push(idStr);
+            localStorage.setItem('stns_celebrated_badges', JSON.stringify(arr));
+        }
+    } catch (e) { /* stockage indisponible (navigation privée...) — pas bloquant */ }
+}
+
 async function unlockBadgeForLocation(loc) {
     const idStr = String(loc.id);
     try {
         const res = await window.awardLocationBadge(idStr);
         if (res && res.success) {
             myUnlockedBadgeIds.add(idStr);
-            showBadgeUnlockCelebration(loc, res.rank);
+            if (!hasBadgeCelebrationBeenShown(idStr)) {
+                markBadgeCelebrationShown(idStr);
+                showBadgeUnlockCelebration(loc, res.rank);
+            }
         }
     } finally {
         badgeUnlockChecksInFlight.delete(idStr);

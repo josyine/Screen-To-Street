@@ -192,6 +192,11 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 
 .gmaps-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #2E3644; font-size: 12.5px; font-weight: 600; transition: .2s; }
 .gmaps-btn:hover { border-color: var(--primary-magenta); color: var(--primary-magenta); }
+/* "Learn more about this place" à côté de "Open in Google Maps" (demande du 13/09/2026) —
+   les deux se partagent la largeur à égalité ; flex-wrap pour rester lisible si le texte du
+   lien officiel force un retour sur les très petits écrans. */
+.address-actions-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.address-actions-row .gmaps-btn { flex: 1; justify-content: center; text-align: center; }
 
 /* --- Story tab (sous-sections + liste de conseils) --- */
 .story-section { margin-bottom: 22px; }
@@ -665,13 +670,8 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    Masquée par défaut (desktop) ; seule la media query mobile l'affiche.
    ========================================== */
 .mobile-bottom-nav { display: none; }
-/* Masqué par défaut (desktop) ; seule la media query mobile ci-dessous l'affiche via
-   .open — sans cette règle de base, le <div> injecté par updateLocVisitorsBar()
-   (script.js) apparaîtrait comme un bloc brut en bas de page sur desktop, faute de
-   `display:none` par défaut hors media query. */
-.loc-visitors-bar { display: none; }
 /* Chevron PERMANENT intégré à la nav (voir injectLocVisitorsChevron() dans script.js) —
-   masqué par défaut (desktop), même raison que .loc-visitors-bar ci-dessus. */
+   masqué par défaut (desktop), seule la media query mobile ci-dessous l'affiche. */
 .loc-visitors-chevron-tab { display: none; }
 .mbn-item { background: none; border: none; padding: 6px; margin: 0; cursor: pointer; color: #2E3644; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; text-decoration: none; }
 .mbn-add svg { background: #D42759; border-radius: 50%; padding: 8px; box-sizing: content-box; color: #fff; }
@@ -702,32 +702,13 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        son offset bottom de 14px + la zone de sécurité iOS, avec une marge). */
     .tab-panel { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
 
-    /* Bandeau "photos des visiteurs" (demande du 11/09/2026, captures d'écran fournies) :
-       juste au-dessus de la nav du bas (mobile uniquement, comme la nav elle-même) —
-       masqué par défaut, affiché via .open quand le lieu sélectionné a au moins une
-       photo (voir updateLocVisitorsBar() dans script.js). Le bandeau ENTIER ouvre le
-       tiroir complet (openLocVisitorsDrawer). */
-    .loc-visitors-bar {
-        display: none; align-items: center; gap: 10px; cursor: pointer;
-        position: fixed; left: 50%; bottom: calc(74px + env(safe-area-inset-bottom)); transform: translateX(-50%);
-        width: calc(100% - 24px); max-width: 480px;
-        background: #fff; padding: 8px 14px; border-radius: 100px; box-shadow: 0 10px 30px rgba(0,0,0,.18);
-        z-index: 3450;
-    }
-    .loc-visitors-bar.open { display: flex; }
-    .loc-visitors-collage { display: flex; flex-shrink: 0; }
-    .loc-visitors-thumb { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; background-size: cover; background-position: center; margin-left: -10px; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
-    .loc-visitors-thumb:first-child { margin-left: 0; }
-    .loc-visitors-count { flex: 1; font-size: 12.5px; font-weight: 700; color: #212832; }
-    .loc-visitors-chevron { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; border: none; background: #FCE7F0; color: #D42759; display: flex; align-items: center; justify-content: center; }
-
     /* Chevron permanent (demande du 11/09/2026, redemandé le 12 et 13/09/2026 "chevauche
        toujours le +, mal aligné") : deux tentatives de valeur bottom fixe en CSS (49px,
        puis 74px) n'ont pas suffi — la hauteur RÉELLEMENT rendue de la nav du bas sur
        l'appareil de la personne ne correspondait visiblement pas à ce qui était deviné ici.
        Le bottom ci-dessous n'est donc plus qu'un repli pour le tout premier rendu, avant
        que le JS n'ait tourné : positionLocVisitorsChevron() (script.js) mesure la position
-       RÉELLE de la nav (ou de .loc-visitors-bar quand ouvert) avec getBoundingClientRect()
+       RÉELLE de la nav avec getBoundingClientRect()
        et pose le bottom exact en style inline juste après — qui prime toujours sur cette
        valeur CSS. Horizontal déjà correct par construction : même technique de centrage
        (left:50%, translateX(-50%)) que la nav elle-même, donc même centre horizontal. */
@@ -755,7 +736,6 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
     .mobile-bottom-nav { bottom: calc(26px + env(safe-area-inset-bottom)); }
     .locate-country-btn { bottom: 92px; }
     .tab-panel { padding-bottom: calc(102px + env(safe-area-inset-bottom)); }
-    .loc-visitors-bar { bottom: calc(86px + env(safe-area-inset-bottom)); }
     .loc-visitors-chevron-tab { bottom: calc(86px + env(safe-area-inset-bottom)); }
 }
 

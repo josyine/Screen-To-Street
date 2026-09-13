@@ -2589,7 +2589,10 @@ window.getConversationPreview = async function (convoId) {
         const data = convoSnap.data();
         const lastMsgSeconds = (data.lastMessageAt && data.lastMessageAt.seconds) || 0;
         const mine = data.lastMessageFromUid === user.uid;
-        const count = (data.unreadCount && data.unreadCount[user.uid]) || 0;
+        // mine -> jamais "non lu" (voir la même garde dans countUnreadConversations()
+        // ci-dessous) : mon propre dernier message ne peut pas être un message non lu pour
+        // moi, quoi que dise unreadCount.
+        const count = mine ? 0 : ((data.unreadCount && data.unreadCount[user.uid]) || 0);
         return {
             lastMessageText: data.lastMessageText || '',
             lastMessageAt: lastMsgSeconds || null,
@@ -2633,7 +2636,9 @@ window.listMyDmConversationPreviews = async function () {
             if (!otherUid) return;
             const lastMsgSeconds = (data.lastMessageAt && data.lastMessageAt.seconds) || 0;
             const mine = data.lastMessageFromUid === user.uid;
-            const count = (data.unreadCount && data.unreadCount[user.uid]) || 0;
+            // mine -> jamais "non lu" (voir la même garde dans getConversationPreview()
+            // et countUnreadConversations() ci-dessus/dessous).
+            const count = mine ? 0 : ((data.unreadCount && data.unreadCount[user.uid]) || 0);
             out[otherUid] = {
                 lastMessageText: data.lastMessageText || '',
                 lastMessageAt: lastMsgSeconds || null,
@@ -2671,6 +2676,14 @@ window.countUnreadConversations = async function (convoIds) {
             const snap = await getDocs(q);
             snap.forEach(d => {
                 const data = d.data();
+                // Garde-fou (demande du 13/09/2026, "le badge affiche une notification alors
+                // que je n'ai rien à lire") : ne compte jamais une conversation comme non lue
+                // si le DERNIER message est le MIEN — sans ce filet, une dérive du compteur
+                // dénormalisé unreadCount (setDoc({merge:true}) parti en retard, écriture qui
+                // échoue silencieusement...) resterait figée indéfiniment sur "non lu" côté
+                // badge malgré une conversation où il n'y a objectivement rien de neuf pour
+                // moi (mon propre dernier message n'a rien à voir avec un message non lu).
+                if (data.lastMessageFromUid === user.uid) return;
                 if ((data.unreadCount && data.unreadCount[user.uid]) > 0) count++;
             });
         }

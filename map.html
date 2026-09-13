@@ -806,14 +806,69 @@
                         <b data-i18n="lMembers">Members:</b> <span id="details-member"></span><br>
                         <b data-i18n="lCountry">Country:</b> <span id="details-country"></span><br>
                         <b data-i18n="lCity">City:</b> <span id="details-city"></span><br>
-                        <b data-i18n="lDate">Date:</b> <span id="details-date"></span><br>
+                        <b data-i18n="lDate">Date:</b> <span id="details-date"></span>
+                        <!-- BUG rapporté le 13/09/2026 ("il ne faut pas qu'il y ait d'espace entre
+                             Date et Link") : #details-episode-container est vide (display:none) pour
+                             la quasi-totalité des lieux (le champ "Episode" a été remplacé par "Link"
+                             — voir la demande du 34fe05f), mais le <br> qui ouvrait jusqu'ici
+                             #details-link-container restait quand même là, s'ajoutant au <br> qui
+                             terminait la ligne Date ci-dessus pour créer une ligne vide visible entre
+                             les deux. #details-episode-container/#details-link-container passent
+                             maintenant en display:block (au lieu de inline) quand affichés — un
+                             élément bloc entraîne son propre retour à la ligne, plus besoin du moindre
+                             <br> manuel ici pour les séparer proprement, dans tous les cas de figure
+                             (épisode seul, lien seul, les deux, ou ni l'un ni l'autre). -->
                         <span id="details-episode-container"><b data-i18n="lEpisode">Episode:</b> <span id="details-episode"></span></span>
-                        <span id="details-link-container"><br><b data-i18n="lWatch">Link:</b> <a id="details-episode-link" href="#" target="_blank" data-i18n="lOfficialLink">Official Link</a></span>
+                        <span id="details-link-container"><b data-i18n="lWatch">Link:</b> <a id="details-episode-link" href="#" target="_blank" data-i18n="lOfficialLink">Official Link</a></span>
                         <span id="details-social-links" class="hidden"><br><b data-i18n="lFollow">Follow:</b> <a id="details-instagram-link" href="#" target="_blank" class="hidden">Instagram</a> <a id="details-facebook-link" href="#" target="_blank" class="hidden">Facebook</a> <a id="details-tiktok-link" href="#" target="_blank" class="hidden">TikTok</a></span>
                     </div>
 
+                    <!-- "The story of this place" (demande du 13/09/2026 : "je veux que tu mettes
+                         'The story of this place' dans l'onglet Info, juste en dessous de la
+                         section description") — déplacé ici depuis l'onglet Story ci-dessous,
+                         juste après le bloc de faits (Group/Member/...) qui fait office de
+                         description courte du lieu. Toujours rempli par
+                         renderLocationRichContent() (script.js), aucun changement côté JS. -->
+                    <div class="story-section" id="story-section-place">
+                        <div class="story-heading"><span class="dot"></span><span data-i18n="lStoryPlace">The story of this place</span></div>
+                        <div id="details-desc-place"></div>
+                    </div>
+
+                    <span class="sub-label" data-i18n="lPractical">Practical information &amp; access</span>
+                    <div class="practical-box" id="details-practical-list"></div>
+
+                    <div class="address-block">
+                        <div class="address-text"><b data-i18n="lAddress">Address</b><span id="details-full-address"></span></div>
+                    </div>
+                    <div class="address-actions-row">
+                        <a class="gmaps-btn" id="details-map-link" href="#" target="_blank">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span data-i18n="lOpenMap">Open in Google Maps</span>
+                        </a>
+                        <!-- "Learn more about this place" (demande du 13/09/2026 : "je veux que tu
+                             mettes le lien sous forme de bouton à droite de Open in Google Maps") —
+                             jusqu'ici un simple lien texte tout en bas de Practical information
+                             (voir l'ancien code de renderLocationRichContent() dans script.js).
+                             Masqué par défaut, affiché uniquement quand loc.officialLink existe. -->
+                        <a class="gmaps-btn hidden" id="details-learnmore-btn" href="#" target="_blank" rel="noopener noreferrer">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            <span data-i18n="lLearnMore">Learn more about this place</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="tab-story">
+                    <div class="story-section hidden" id="story-section-bts">
+                        <div class="story-heading"><span class="dot"></span><span data-i18n="lStoryBts">Following in BTS's footsteps</span></div>
+                        <div id="details-desc-bts"></div>
+                    </div>
+
+                    <!-- "On Screen" (demande du 13/09/2026 : "mets 'On Screen' dans la section
+                         Story, en dessous de Following in BTS's footsteps") — déplacé ici depuis
+                         l'onglet Info ci-dessus, aucun changement côté JS (toujours rempli par
+                         renderLocationRichContent()/renderTweetEmbedOnDetails() dans script.js). -->
                     <div id="details-video-section" class="media-section hidden">
-                        <span class="sub-label" data-i18n="lWatchEpi">Watch</span>
+                        <span class="sub-label" data-i18n="lWatchEpi">On Screen</span>
                         <div class="video-wrapper" id="details-video-container"></div>
                         <!-- Conteneur DÉDIÉ au post Twitter/X embarqué (voir renderTweetEmbedOnDetails()
                              dans script.js) : .video-wrapper impose un ratio 16:9 fixe + overflow:hidden
@@ -826,29 +881,6 @@
                              précis (instagram.com/p/.../reel/...) — un simple lien de profil reste
                              affiché comme lien "Follow" (voir #details-social-links). -->
                         <div class="tweet-embed-wrapper hidden" id="details-instagram-container"></div>
-                    </div>
-
-                    <span class="sub-label" data-i18n="lPractical">Practical information &amp; access</span>
-                    <div class="practical-box" id="details-practical-list"></div>
-
-                    <div class="address-block">
-                        <div class="address-text"><b data-i18n="lAddress">Address</b><span id="details-full-address"></span></div>
-                    </div>
-                    <a class="gmaps-btn" id="details-map-link" href="#" target="_blank">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span data-i18n="lOpenMap">Open in Google Maps</span>
-                    </a>
-                </div>
-
-                <div class="tab-panel" id="tab-story">
-                    <div class="story-section" id="story-section-place">
-                        <div class="story-heading"><span class="dot"></span><span data-i18n="lStoryPlace">The story of this place</span></div>
-                        <div id="details-desc-place"></div>
-                    </div>
-
-                    <div class="story-section hidden" id="story-section-bts">
-                        <div class="story-heading"><span class="dot"></span><span data-i18n="lStoryBts">Following in BTS's footsteps</span></div>
-                        <div id="details-desc-bts"></div>
                     </div>
 
                     <div class="story-section hidden" id="details-tip-section" style="margin-bottom:0;">

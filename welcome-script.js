@@ -56,7 +56,7 @@ const dict = {
         navDest: "Destinations", navArtists: "Artists", navLogin: "Log in", 
         heroTitle: "You have a destination.<br>We have the guide.", 
         heroSubtitle: "Create custom routes instantly, with tools designed to follow your favorite artists.", 
-        heroCta: "Generate my guide", heroDemo: "See Demo",
+        heroCta: "Create an account", heroDemo: "See Demo",
         authTitle: "Log in or sign up", authDesc: "Use your email or another service to continue with Screen To Street.",
         authGoogle: "Continue with Google", authEmail: "Continue with email",
         authTerms: "By continuing, you agree to Screen To Street's", linkTerms: "Terms of Use", 
@@ -105,13 +105,14 @@ const dict = {
         errEmailInUse: "An account already exists with this email. Please log in instead.",
         resetEmailSent: "Password reset email sent — check your inbox.",
         enterEmailFirst: "Please enter your email address first.",
+        errUsernameLookupFailed: "Couldn't check that username right now — try again in a moment, or log in with your email instead.",
         errDefault: "Something went wrong. Please try again."
     },
     fr: {
         navDest: "Destinations", navArtists: "Artistes", navLogin: "Se connecter", 
         heroTitle: "Vous avez une destination.<br>Nous avons le guide.", 
         heroSubtitle: "Créez des itinéraires sur mesure instantanément, avec des outils conçus pour suivre vos idoles.", 
-        heroCta: "Générer mon guide", heroDemo: "Voir la démo",
+        heroCta: "Créer un compte", heroDemo: "Voir la démo",
         authTitle: "Connectez-vous ou créez un compte", authDesc: "Utilisez votre e-mail ou un autre service pour continuer.",
         authGoogle: "Continuer avec Google", authEmail: "Continuer avec un e-mail",
         authTerms: "En continuant, vous acceptez les", linkTerms: "Conditions d'utilisation", 
@@ -160,6 +161,7 @@ const dict = {
         errEmailInUse: "Un compte existe déjà avec cet e-mail. Connectez-vous plutôt.",
         resetEmailSent: "E-mail de réinitialisation envoyé — vérifiez votre boîte de réception.",
         enterEmailFirst: "Merci d'indiquer d'abord votre adresse e-mail.",
+        errUsernameLookupFailed: "Impossible de vérifier ce nom d'utilisateur pour l'instant — réessayez dans un instant, ou connectez-vous avec votre e-mail.",
         errDefault: "Une erreur est survenue. Réessayez."
     }
 };
@@ -239,6 +241,12 @@ function showStep(step) {
     document.querySelectorAll('.auth-step').forEach(s => s.classList.add('hidden'));
     const targetStep = document.getElementById('auth-step-' + step);
     if(targetStep) targetStep.classList.remove('hidden');
+
+    // Flèche retour (demande du 13/09/2026) : uniquement sur l'étape "Account" (step 1) —
+    // les étapes 2-4 ont déjà le stepper cliquable pour revenir en arrière, et les étapes
+    // "login"/0 sont déjà le point de départ.
+    const backBtn = document.getElementById('auth-back-btn');
+    if (backBtn) backBtn.classList.toggle('hidden', step !== 1);
 
     const stepper = document.getElementById('auth-stepper');
     const isNumberedStep = (typeof step === 'number' && step >= 1 && step <= 4);
@@ -357,15 +365,23 @@ async function isUsernameTakenByOther(key, uid) {
 // (`allow get`) mais interdit toute requête sur la collection entière (`allow list:
 // false`), donc seul quelqu'un qui connaît déjà le pseudo exact peut en retrouver l'e-mail
 // — pas de liste possible pour un tiers.
+// BUG rapporté le 13/09/2026 ("je ne peux pas me connecter via mon username, il y a une
+// erreur") : cette fonction renvoyait `null` aussi bien quand le pseudo n'existe vraiment
+// pas QUE quand la lecture Firestore elle-même échoue (règles pas encore republiées en
+// prod, coupure réseau...) — dans les deux cas l'appelant affichait "E-mail ou mot de
+// passe incorrect", un message trompeur qui fait croire à un pseudo/mot de passe erroné
+// alors que le vrai souci peut être ailleurs. `lookupFailed: true` distingue maintenant
+// ce second cas pour que btn-login-submit puisse afficher un message différent.
 async function resolveLoginEmail(value) {
     const trimmed = (value || '').trim();
-    if (!trimmed) return null;
-    if (trimmed.includes('@')) return trimmed;
+    if (!trimmed) return { email: null };
+    if (trimmed.includes('@')) return { email: trimmed };
     try {
         const snap = await getDoc(doc(db, 'usernameLogin', trimmed.toLowerCase()));
-        return snap.exists() ? (snap.data().email || null) : null;
+        return { email: snap.exists() ? (snap.data().email || null) : null };
     } catch (e) {
-        return null;
+        console.warn('Résolution du pseudo en e-mail échouée :', e);
+        return { email: null, lookupFailed: true };
     }
 }
 
@@ -490,16 +506,18 @@ if (btnLoginSubmit) {
         btnLoginSubmit.disabled = true;
         btnLoginSubmit.textContent = '...';
 
-        const emailVal = await resolveLoginEmail(loginVal);
-        if (!emailVal) {
+        const resolved = await resolveLoginEmail(loginVal);
+        if (!resolved.email) {
             btnLoginSubmit.disabled = false;
             btnLoginSubmit.textContent = originalLabel;
-            showAuthError(curDict().errInvalidLogin);
+            // lookupFailed (échec de LECTURE, pas "pseudo introuvable") : message distinct,
+            // voir la note sur resolveLoginEmail() plus haut.
+            showAuthError(resolved.lookupFailed ? curDict().errUsernameLookupFailed : curDict().errInvalidLogin);
             return;
         }
 
         try {
-            const cred = await signInWithEmailAndPassword(auth, emailVal, passVal);
+            const cred = await signInWithEmailAndPassword(auth, resolved.email, passVal);
             await loadExistingProfileAndRedirect(cred.user);
         } catch (err) {
             btnLoginSubmit.disabled = false;
@@ -526,13 +544,13 @@ if (forgotPasswordLink) {
             emailInput.focus();
             return;
         }
-        const emailVal = await resolveLoginEmail(loginVal);
-        if (!emailVal) {
-            showAuthError(curDict().errInvalidLogin);
+        const resolved = await resolveLoginEmail(loginVal);
+        if (!resolved.email) {
+            showAuthError(resolved.lookupFailed ? curDict().errUsernameLookupFailed : curDict().errInvalidLogin);
             return;
         }
         try {
-            await sendPasswordResetEmail(auth, emailVal);
+            await sendPasswordResetEmail(auth, resolved.email);
             showAuthError(curDict().resetEmailSent);
         } catch (err) {
             showAuthError(friendlyAuthError(err.code));
@@ -545,6 +563,10 @@ if (forgotPasswordLink) {
 // Step 0 -> Step 1 (Email)
 const btnToEmail = document.getElementById('btn-to-email');
 if(btnToEmail) btnToEmail.addEventListener('click', () => { showStep(1); });
+
+// Step 1 -> Step 0 (demande du 13/09/2026, flèche retour vers "Log in or sign up")
+const authBackBtn = document.getElementById('auth-back-btn');
+if(authBackBtn) authBackBtn.addEventListener('click', () => { showStep(0); });
 
 // Step 1 -> Step 2 (Account -> Profile) : création de compte UNIQUEMENT.
 // (La connexion à un compte existant se fait désormais via le formulaire "Se connecter" dédié.)

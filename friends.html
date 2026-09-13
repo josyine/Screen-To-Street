@@ -601,8 +601,15 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
             <span style="flex:1;">${escapeHtml(t('locationShareFrom').replace('{username}', s.fromUsername || '').replace('{location}', s.locationName || ''))}</span>
         </a>`).join('');
         section.classList.toggle('hidden', shares.length === 0);
+        // BUG rapporté le 13/09/2026 ("l'icône affiche une notification alors que je n'ai
+        // rien dans la page") : ces écritures n'étaient jusqu'ici jamais attendues (pas de
+        // await), donc refreshSidebar() ci-dessous pouvait recalculer le badge du header
+        // (window.refreshFriendNotifications(), qui relit listSharesForMe() depuis
+        // Firestore) AVANT que ces marquages "vu" n'aient eu le temps d'atterrir — le badge
+        // affichait alors encore l'ancien compte, un instant après avoir pourtant déjà tout
+        // affiché ici.
         if (typeof window.markShareSeen === 'function') {
-            shares.filter(s => !s.seen).forEach(s => window.markShareSeen(s.id));
+            await Promise.all(shares.filter(s => !s.seen).map(s => window.markShareSeen(s.id)));
         }
     }
 
