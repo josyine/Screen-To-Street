@@ -347,6 +347,51 @@ window.loadAllLocationStats = async function () {
     }
 };
 
+// Badge de collection géolocalisée (demande du 13/09/2026, "un peu comme Pokemon GO") —
+// débloqué automatiquement quand la position GPS réelle de la personne passe à proximité
+// d'un lieu (voir checkBadgeUnlocksNearPosition() dans script.js, appelée à chaque
+// évènement watchPosition tant que la géolocalisation reste active). Stocké dans
+// publicProfiles/{uid}.badges plutôt que dans le document privé users/{uid} : contrairement
+// à visitedLocs (coché manuellement, privé), une collection de badges est faite pour être
+// montrée — même choix que photos/reviews/bio, déjà dans ce même document public — et ça
+// permet à l'onglet "Badges" de profile.html de fonctionner aussi bien sur son propre
+// profil que sur celui d'un(e) ami(e). Aucune nouvelle règle Firestore nécessaire pour ce
+// champ : publicProfiles/{uid} autorise déjà l'écriture complète par son propriétaire.
+//
+// IMPORTANT — nécessite d'ajouter 'checkinCount' à la règle Firestore existante de
+// locationStats/{locationId} (voir updateLocationWishlistCount() ci-dessus pour la règle
+// actuelle, et firestore.rules à la racine du dépôt pour la version à jour) :
+//   match /locationStats/{locationId} {
+//     allow read: if true;
+//     allow write: if request.auth != null
+//       && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['wishlistCount', 'checkinCount']);
+//   }
+//
+// Renvoie le rang (Nième personne) du déblocage pour l'écran de célébration — une seconde
+// lecture juste après l'écriture plutôt qu'une transaction : ce compteur est purement
+// cosmétique (comme wishlistCount), une légère imprécision en cas de déblocages simultanés
+// par deux personnes différentes n'a aucune conséquence réelle.
+window.awardLocationBadge = async function (locationId) {
+    const user = auth.currentUser;
+    if (!user) return { success: false, code: 'not-signed-in' };
+    const idStr = String(locationId);
+    try {
+        await setDoc(doc(db, 'publicProfiles', user.uid), { badges: { [idStr]: { unlockedAt: serverTimestamp() } } }, { merge: true });
+    } catch (e) {
+        console.warn('Déblocage du badge échoué :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+    let rank = null;
+    try {
+        await setDoc(doc(db, 'locationStats', idStr), { checkinCount: increment(1) }, { merge: true });
+        const statsSnap = await getDoc(doc(db, 'locationStats', idStr));
+        rank = (statsSnap.exists() && statsSnap.data().checkinCount) || null;
+    } catch (e) {
+        console.warn('Mise à jour du compteur de badge échouée :', e);
+    }
+    return { success: true, rank };
+};
+
 // Nombre total de comptes créés sur le site — dénominateur du pourcentage ci-dessus.
 // Incrémenté une seule fois par compte, juste après createUserWithEmailAndPassword
 // (voir welcome-script.js). Document public à un seul champ, jamais de données perso.

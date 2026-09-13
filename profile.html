@@ -180,6 +180,27 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 .profile-photo-tile { aspect-ratio: 1 / 1; background-size: cover; background-position: center; border-radius: 4px; cursor: pointer; transition: 0.15s; }
 .profile-photo-tile:hover { opacity: 0.85; }
 
+/* Onglet Badges (demande du 13/09/2026, "un peu comme Pokemon GO") : grille façon
+   Pokédex — débloqué (photo réelle du lieu, en couleur) vs verrouillé (grisé + cadenas).
+   Voir renderProfileBadges() plus bas ; les badges eux-mêmes sont débloqués via la
+   géolocalisation réelle dans script.js (checkBadgeUnlocksNearPosition()), stockés dans
+   publicProfiles/{uid}.badges — ce même document déjà utilisé par Photos/Reviews. */
+.profile-badges-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.profile-badges-title { font-size: 14px; font-weight: 700; color: #212832; }
+.profile-badges-count { background: #FCE7F0; color: #D42759; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 100px; white-space: nowrap; }
+.profile-badge-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px 10px; }
+.profile-badge-item { text-align: center; }
+.profile-badge-circle { width: 58px; height: 58px; border-radius: 50%; background-size: cover; background-position: center; background-color: #ECE7F3; margin: 0 auto 6px auto; border: 3px solid #D42759; box-shadow: 0 4px 10px rgba(212,39,89,.2); position: relative; }
+.profile-badge-circle.locked { border-color: #e2e8f0; filter: grayscale(100%); opacity: .55; }
+.profile-badge-lock { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(255,255,255,.35); border-radius: 50%; color: #64748b; }
+.profile-badge-circle.locked .profile-badge-lock { display: flex; }
+.profile-badge-name { font-size: 9.5px; font-weight: 700; color: #212832; line-height: 1.3; }
+.profile-badge-item.locked .profile-badge-name { color: #cbd5e1; }
+@media (max-width: 760px) {
+    .profile-badge-grid { grid-template-columns: repeat(4, 1fr); gap: 14px 8px; }
+    .profile-badge-circle { width: 52px; height: 52px; }
+}
+
 /* Onglet Visited (mêmes classes que visited.html) */
 .visit-list { display: flex; flex-direction: column; gap: 10px; }
 .visit-row { display: flex; gap: 14px; align-items: center; background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 16px; cursor: pointer; transition: 0.2s; }
@@ -532,6 +553,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                 <button class="profile-tab-btn active" data-tab="photos" onclick="switchProfileTab('photos')" data-i18n="profileTabPhotos">Photos</button>
                 <button class="profile-tab-btn" data-tab="reviews" onclick="switchProfileTab('reviews')" data-i18n="profileTabReviews">Reviews</button>
                 <button class="profile-tab-btn" data-tab="map" onclick="switchProfileTab('map')" data-i18n="profileTabMap">Map</button>
+                <button class="profile-tab-btn" data-tab="badges" onclick="switchProfileTab('badges')" data-i18n="profileTabBadges">Badges</button>
             </div>
 
             <div class="profile-tab-panel" id="profile-panel-photos">
@@ -550,6 +572,13 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                     <div class="profile-map-stat"><b id="profile-map-stat-countries">0</b><span data-i18n="statsCountries">COUNTRIES</span></div>
                 </div>
                 <div class="profile-mini-map" id="profile-mini-map"></div>
+            </div>
+            <div class="profile-tab-panel hidden" id="profile-panel-badges">
+                <div class="profile-badges-header">
+                    <div class="profile-badges-title" data-i18n="profileBadgesTitle">My Badges</div>
+                    <span class="profile-badges-count" id="profile-badges-count">0 / 0</span>
+                </div>
+                <div class="profile-badge-grid" id="profile-badge-grid"></div>
             </div>
         </div>
 </div>
@@ -804,6 +833,39 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             grid.appendChild(tile);
         });
         return withPhotos;
+    }
+
+    // Onglet Badges (demande du 13/09/2026) : une tuile PAR LIEU de celebLocations (même
+    // liste que map.html), débloquée si son id apparaît dans publicProfile.badges (écrit
+    // par window.awardLocationBadge() dans firebase-init.js, appelé depuis
+    // checkBadgeUnlocksNearPosition() dans script.js dès que la position GPS réelle de
+    // cette personne passe à proximité). Volontairement TOUS les lieux affichés, même
+    // verrouillés (façon Pokédex) — pas de pagination, la liste reste de taille
+    // raisonnable (quelques centaines de lieux).
+    function renderProfileBadges(publicProfile) {
+        const grid = document.getElementById('profile-badge-grid');
+        const countEl = document.getElementById('profile-badges-count');
+        if (!grid || typeof celebLocations === 'undefined') return;
+        const badges = publicProfile.badges || {};
+        const unlockedCount = Object.keys(badges).length;
+        if (countEl) countEl.textContent = `${unlockedCount} / ${celebLocations.length}`;
+        grid.innerHTML = '';
+        celebLocations.forEach(loc => {
+            const isUnlocked = !!badges[String(loc.id)];
+            const item = document.createElement('div');
+            item.className = 'profile-badge-item' + (isUnlocked ? '' : ' locked');
+            const circle = document.createElement('div');
+            circle.className = 'profile-badge-circle' + (isUnlocked ? '' : ' locked');
+            if (isUnlocked && loc.img) circle.style.backgroundImage = `url('${loc.img}')`;
+            circle.innerHTML = '<span class="profile-badge-lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>';
+            if (isUnlocked) circle.onclick = () => window.openLocModal(loc.id);
+            const name = document.createElement('div');
+            name.className = 'profile-badge-name';
+            name.textContent = loc.name;
+            item.appendChild(circle);
+            item.appendChild(name);
+            grid.appendChild(item);
+        });
     }
 
     function renderProfileReviews(publicProfile) {
@@ -1193,6 +1255,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             if (!gated) {
                 photosShown = renderProfilePhotos(publicProfile);
                 renderProfileReviews(publicProfile);
+                renderProfileBadges(publicProfile);
             }
             // La mini-carte est construite en paresseux (voir switchProfileTab) : on garde
             // juste les ids ici pour ce moment-là.
@@ -1216,6 +1279,14 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 
             document.getElementById('profile-loading').classList.add('hidden');
             document.getElementById('profile-content').classList.remove('hidden');
+
+            // ?tab=badges (demande du 13/09/2026) : le bouton "View my collection" de
+            // l'écran de déblocage d'un badge (voir script.js) redirige ici pour ouvrir
+            // directement cet onglet, plutôt que de retomber sur Photos par défaut.
+            const requestedTab = profileParams.get('tab');
+            if (!gated && requestedTab && document.getElementById('profile-panel-' + requestedTab)) {
+                window.switchProfileTab(requestedTab);
+            }
         } catch (e) {
             console.warn('Chargement du profil échoué :', e);
             showProfileNotFound();
