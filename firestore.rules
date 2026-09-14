@@ -92,6 +92,15 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['wishlistCount', 'checkinCount']);
+      // Compteur de vues par lieu (demande du 14/09/2026, "ajoute le nombre de vue par
+      // lieu" — mode admin, voir window.incrementLocationViewCount() dans
+      // firebase-init.js). Doit fonctionner SANS compte : openDetailsPanel() (script.js)
+      // laisse les visiteurs non connectés consulter jusqu'à 3 lieux gratuitement, donc
+      // contrairement à wishlistCount/checkinCount ci-dessus cette règle n'exige pas
+      // request.auth != null — seule la portée du champ modifié est restreinte à
+      // 'viewCount', même limite connue (increment() arbitraire) que le reste du fichier.
+      allow write: if (resource == null && request.resource.data.keys().hasOnly(['viewCount']))
+        || (resource != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['viewCount']));
     }
 
     // Statistiques globales du site (nombre total de comptes créés). Un seul document

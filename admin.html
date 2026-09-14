@@ -156,6 +156,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .admin-tab-panel.active{display:block;}
 .existing-loc-search{width:100%;padding:11px 14px;border-radius:100px;border:1.5px solid #cbd5e1;outline:none;font-family:'Poppins',sans-serif;font-size:13px;margin-bottom:16px;}
 .existing-loc-hidden-badge{background:#FFF1F3;color:#D42759;}
+.sub-badge-views{background:#F1F5F9;color:#64748b;margin-left:6px;display:inline-flex;align-items:center;gap:4px;}
+.most-viewed-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #cbd5e1;color:#475569;font-family:'Poppins',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:100px;cursor:pointer;margin-bottom:14px;}
+.most-viewed-btn:hover{border-color:#D42759;color:#D42759;}
 .btn-hide{flex:1;background:#fff;color:#64748b;border:1.5px solid #e2e8f0;border-radius:100px;padding:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;}
 .btn-hide:hover{background:#f8fafc;}
 .btn-hide.is-hidden{color:#10b981;border-color:#10b981;}
@@ -230,7 +233,11 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <h1>Existing locations</h1>
             <p class="sub">Edit the content of any location already live on the site (story, video, social links), or remove it from the map.</p>
             <input type="text" id="existing-loc-search" class="existing-loc-search" oninput="window.renderExistingLocationsList()" placeholder="Search by name, city, or country…">
-            <div id="existing-loc-empty" class="state-box">Type at least 2 characters to search.</div>
+            <button type="button" id="most-viewed-btn" class="most-viewed-btn" onclick="window.renderMostViewedLocationsList()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                Show most viewed locations
+            </button>
+            <div id="existing-loc-empty" class="state-box">Type at least 2 characters to search, or use "Show most viewed locations" above.</div>
             <div id="existing-locations-list"></div>
         </div>
 
@@ -488,24 +495,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     // qu'un seul choix — alors que plusieurs lieux réels concernent plusieurs membres à la fois
     // (ex: "Jimin, Jungkook, V"). Aucun choix coché = "All" (même convention que le reste du
     // site pour "concerne tous les membres").
-    const BTS_MEMBER_OPTIONS = ['RM', 'Jin', 'Suga', 'J-Hope', 'Jimin', 'V', 'Jungkook'];
-    // Tolère quelques variantes déjà vues dans des données existantes (vrai prénom, faute
-    // de frappe) pour pré-cocher correctement une valeur déjà enregistrée — n'affecte que
-    // l'affichage initial, jamais ce qui est écrit à la sauvegarde.
-    const BTS_MEMBER_ALIASES = { namjoon: 'RM', jhope: 'J-Hope' };
-    function memberMultiSelectHtml(currentValue) {
-        const raw = (currentValue || '').split(',').map(s => s.trim()).filter(Boolean);
-        const selected = new Set(raw.map(v => {
-            const key = v.toLowerCase().replace(/[^a-z]/g, '');
-            return BTS_MEMBER_ALIASES[key] || v;
-        }));
-        const checkboxes = BTS_MEMBER_OPTIONS.map(m => `
-            <label class="member-checkbox">
-                <input type="checkbox" class="member-checkbox-input" value="${m}"${selected.has(m) ? ' checked' : ''}>
-                ${m}
-            </label>`).join('');
-        return `<div class="member-checkbox-group">${checkboxes}</div>`;
-    }
+    //
+    // BTS_MEMBER_OPTIONS / BTS_MEMBER_ALIASES / memberMultiSelectHtml() (demande du
+    // 14/09/2026, modal crayon de map.html : "reprend la même forme que dans la page admin
+    // pour 'Submission location', avec aussi la multi sélection des membres") vivent
+    // désormais dans script.js, chargé juste au-dessus (voir <script src="script.js">),
+    // plutôt que déclarés ici — même raison/mécanisme que getYearOptions()/
+    // yearCheckboxGroupHtml() : ce fichier et script.js exécutent leurs <script> dans la
+    // même portée globale, les redéclarer ici referait planter tout ce bloc en silence
+    // (voir le bug de PR #85 documenté dans script.js au-dessus de getYearOptions()).
 
     function renderCard(sub) {
         const isEdit = !!sub.matchedLocId;
@@ -971,6 +969,12 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     // window.adminSetLocationVerified() (firebase-init.js).
     let adminVerifiedLocationIdsCache = [];
 
+    // Compteur "vues" par lieu (demande du 14/09/2026, "ajoute le nombre de vue par lieu,
+    // pour qu'on puisse savoir les lieux les plus consultés") — un seul aller-retour
+    // Firestore pour toute la collection locationStats (window.loadAllLocationStats(),
+    // firebase-init.js), plutôt qu'une lecture par carte affichée. Clé = String(loc.id).
+    let locationStatsCache = {};
+
     // Squelette (celebLocations, chargé depuis locations-data.js — voir script.js, gratuit :
     // déjà en mémoire, aucune lecture Firestore) + lieux tout juste approuvés via la file de
     // soumissions (Firestore newLocations/, lue ici en direct pour ne pas attendre le
@@ -1009,6 +1013,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     function renderExistingLocationCard(loc) {
         const isHidden = hiddenLocationIdsCache.includes(String(loc.id));
         const isVerified = adminVerifiedLocationIdsCache.includes(String(loc.id));
+        const viewCount = (locationStatsCache[String(loc.id)] && locationStatsCache[String(loc.id)].viewCount) || 0;
         const card = document.createElement('div');
         card.className = 'submission-card';
         card.innerHTML = `
@@ -1016,6 +1021,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <div>
                     <div class="sub-name">${escapeHtml(loc.name || '(no name)')}</div>
                     <span class="sub-badge${isHidden ? ' existing-loc-hidden-badge' : ''}">${isHidden ? 'Hidden from map' : '#' + escapeHtml(String(loc.id))}</span>
+                    <span class="sub-badge sub-badge-views" title="Total location page views">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        ${viewCount.toLocaleString()} view${viewCount === 1 ? '' : 's'}
+                    </span>
                 </div>
             </div>
             <div class="sub-meta-edit">
@@ -1395,6 +1404,30 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         matches.forEach(loc => listEl.appendChild(renderExistingLocationCard(loc)));
     };
 
+    // "Show most viewed locations" (demande du 14/09/2026, "pour qu'on puisse savoir les
+    // lieux les plus consultés") — contourne la recherche par nom/ville/pays ci-dessus
+    // (qui exige 2 caractères) pour lister directement le top 20 par locationStatsCache
+    // .viewCount, réutilise renderExistingLocationCard() donc les mêmes cartes éditables.
+    window.renderMostViewedLocationsList = async function () {
+        document.getElementById('existing-loc-search').value = '';
+        const listEl = document.getElementById('existing-locations-list');
+        const emptyEl = document.getElementById('existing-loc-empty');
+        const all = await loadAllSiteLocationsOnce();
+        const ranked = all
+            .map(loc => ({ loc, views: (locationStatsCache[String(loc.id)] && locationStatsCache[String(loc.id)].viewCount) || 0 }))
+            .filter(entry => entry.views > 0)
+            .sort((a, b) => b.views - a.views)
+            .slice(0, 20);
+        listEl.innerHTML = '';
+        if (ranked.length === 0) {
+            emptyEl.textContent = 'No location has recorded views yet.';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
+        emptyEl.classList.add('hidden');
+        ranked.forEach(entry => listEl.appendChild(renderExistingLocationCard(entry.loc)));
+    };
+
     let knownSubmissionIds = null; // null = pas encore chargé une première fois
     async function loadSubmissions() {
         const listEl = document.getElementById('submissions-list');
@@ -1584,6 +1617,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         }
         if (typeof window.fetchVerifiedLocationIds === 'function') {
             adminVerifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
+        }
+        if (typeof window.loadAllLocationStats === 'function') {
+            locationStatsCache = await window.loadAllLocationStats();
         }
         await loadSubmissions();
     });
