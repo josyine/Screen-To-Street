@@ -73,7 +73,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-preview{margin-bottom:8px;border-radius:10px;overflow:hidden;}
 .sub-photo-preview img{display:block;width:100%;max-height:220px;object-fit:cover;}
 .sub-photo-missing{background:#FFF7F8;border:1px dashed #FBD5DC;border-radius:10px;padding:14px;text-align:center;color:#D42759;font-size:12px;font-weight:600;}
-.sub-photo-input,.sub-tweet-input,.sub-video-input,.sub-social-input,.sub-link-input,.sub-official-link-input,.sub-img-credit-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
+.sub-photo-input,.sub-tweet-input,.sub-video-input,.sub-social-input,.sub-link-input,.sub-official-link-input,.sub-img-credit-input,.sub-recreate-photo-input{width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px 10px;font-size:12px;font-family:'Poppins',sans-serif;margin-bottom:4px;}
 .sub-photo-hint{font-size:10.5px;color:#94a3b8;margin-bottom:12px;line-height:1.4;}
 .sub-photo-upload-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
 .sub-photo-upload-btn{background:#faf9fc;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:11.5px;font-weight:700;color:#64748b;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:.15s;}
@@ -1045,6 +1045,25 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
 
+            <!-- "Recreate the Photo" (demande du 14/09/2026, "refaire la photo" : une photo où
+                 le membre BTS d'origine est remplacé par un avatar du site, Iris ou Mei) — déjà
+                 composée/éditée ailleurs par l'admin, uploadée telle quelle. Même
+                 principe/widgets que "Photo URL"/"Upload from device" côté Location submissions
+                 (photoPreviewHtml()/resizeTripCoverDataUrl() plus haut dans ce fichier), champ
+                 distinct (loc.recreatedPhoto), publié via adminUpdateLocationContent(). Affichée
+                 sur la fiche lieu juste en dessous de "The story of this place" (voir
+                 renderLocationRichContent() dans script.js) — masquée entièrement tant qu'aucune
+                 photo n'est fournie. -->
+            <label class="sub-section-label">Recreate the Photo (optional)</label>
+            <div class="sub-recreate-photo-preview"></div>
+            <input type="url" class="sub-recreate-photo-input" placeholder="Recreated photo URL (optional)">
+            <div class="sub-photo-upload-row">
+                <button type="button" class="sub-photo-upload-btn sub-recreate-photo-upload-btn">Upload from device</button>
+                <input type="file" class="sub-recreate-photo-file-input hidden" accept="image/*">
+                <span class="sub-photo-upload-name sub-recreate-photo-upload-name"></span>
+            </div>
+            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place".</div>
+
             <!-- Site officiel (demande du 14/09/2026, "ajoute également le lien de Official
                  website") — champ déjà présent côté "Location submissions" (renderCard
                  ci-dessus), manquait ici. Même champ (officialLink) que le modal crayon
@@ -1095,6 +1114,11 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const videoStatus = card.querySelector('.sub-video-status');
         const linkInput = card.querySelector('.sub-link-input');
         const officialLinkInput = card.querySelector('.sub-official-link-input');
+        const recreatePhotoInput = card.querySelector('.sub-recreate-photo-input');
+        const recreatePhotoPreview = card.querySelector('.sub-recreate-photo-preview');
+        const recreatePhotoUploadBtn = card.querySelector('.sub-recreate-photo-upload-btn');
+        const recreatePhotoFileInput = card.querySelector('.sub-recreate-photo-file-input');
+        const recreatePhotoUploadName = card.querySelector('.sub-recreate-photo-upload-name');
         const saveBtn = card.querySelector('.loc-save-btn');
         const hideBtn = card.querySelector('.btn-hide');
         const verifyBtn = card.querySelector('.btn-verify');
@@ -1110,6 +1134,39 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         let originalLinkValues = {};
         let originalRawLinks = {};
         let tipsFieldWidget = null;
+        // "Recreate the Photo" (demande du 14/09/2026) — même principe que sub.img côté
+        // Location submissions (renderCard ci-dessus) : une variable locale à la carte,
+        // mise à jour par l'URL ou l'upload, lue directement à la sauvegarde.
+        let currentRecreatePhoto = '';
+        const updateRecreatePhotoPreview = () => {
+            recreatePhotoPreview.innerHTML = currentRecreatePhoto
+                ? `<img src="${escapeHtml(currentRecreatePhoto)}" alt="" style="display:block;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:8px;">`
+                : '';
+        };
+        if (recreatePhotoInput) {
+            recreatePhotoInput.addEventListener('change', () => {
+                currentRecreatePhoto = recreatePhotoInput.value.trim();
+                updateRecreatePhotoPreview();
+            });
+        }
+        if (recreatePhotoUploadBtn && recreatePhotoFileInput) {
+            recreatePhotoUploadBtn.addEventListener('click', () => recreatePhotoFileInput.click());
+            recreatePhotoFileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const resized = typeof resizeTripCoverDataUrl === 'function'
+                        ? await resizeTripCoverDataUrl(event.target.result, 1200)
+                        : event.target.result;
+                    currentRecreatePhoto = resized;
+                    if (recreatePhotoInput) recreatePhotoInput.value = '';
+                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = file.name;
+                    updateRecreatePhotoPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
 
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté fiche de review d'une proposition, plus haut dans ce fichier.
@@ -1131,6 +1188,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             videoStatus.textContent = data.ytId ? 'YouTube video: ' + data.ytId : 'No YouTube video';
             linkInput.value = data.episodeLink || '';
             officialLinkInput.value = data.officialLink || '';
+            currentRecreatePhoto = data.recreatedPhoto || '';
+            if (recreatePhotoInput) recreatePhotoInput.value = currentRecreatePhoto.startsWith('data:') ? '' : currentRecreatePhoto;
+            if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = '';
+            updateRecreatePhotoPreview();
             mergedFullDescription = data.fullDescription || {};
             originalLinkValues = {
                 tweet: tweetInput.value,
@@ -1218,7 +1279,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const fullDescription = Object.assign({}, mergedFullDescription, {
                 en: plainTextToHtmlParagraphs(combinedStory)
             });
-            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim() }, extraCollected);
+            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim(), recreatedPhoto: currentRecreatePhoto }, extraCollected);
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
 
             // Group/Member/Country/City/Category/Year (demande du 13/09/2026, "ajoute

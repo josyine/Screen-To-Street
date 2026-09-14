@@ -841,6 +841,18 @@
                         <div id="details-desc-place"></div>
                     </div>
 
+                    <!-- "Recreate the Photo" (demande du 14/09/2026, "refaire la photo" : une photo
+                         où le membre BTS d'origine est remplacé par l'un des avatars du site, Iris
+                         ou Mei) — champ optionnel (loc.recreatedPhoto), une simple image déjà
+                         composée/éditée ailleurs par l'admin, jamais générée par le site lui-même.
+                         Masquée entièrement tant qu'aucune photo n'est fournie (voir
+                         renderLocationRichContent() dans script.js). Upload depuis le modal crayon
+                         (script.js) et admin.html ("Existing locations"). -->
+                    <div class="story-section hidden" id="story-section-recreate">
+                        <div class="story-heading"><span class="dot"></span><span data-i18n="lRecreatePhoto">Recreate the Photo</span></div>
+                        <img id="details-recreate-photo" class="recreate-photo-img" alt="">
+                    </div>
+
                     <span class="sub-label" data-i18n="lPractical">Practical information &amp; access</span>
                     <div class="practical-box" id="details-practical-list"></div>
 
