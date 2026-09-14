@@ -480,13 +480,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
     // Sélection multiple des membres BTS (demande du 13/09/2026, "ne mettes que les 7
     // membres de BTS en sélection, et ajoute la sélection multiple lorsqu'il y a plusieurs
-    // membre") — remplace, dans la file "Location submissions" UNIQUEMENT (pas "Existing
-    // locations"), le <select> générique de metaFieldSelectHtml() ci-dessus pour le champ
-    // Member : celui-ci proposait TOUS les membres/groupes déjà vus dans celebLocations
-    // (BLACKPINK, TXT...), pas seulement les 7 de BTS, et ne permettait qu'un seul choix —
-    // alors que plusieurs lieux réels concernent plusieurs membres à la fois (ex: "Jimin,
-    // Jungkook, V"). Aucun choix coché = "All" (même convention que le reste du site pour
-    // "concerne tous les membres").
+    // membre" — d'abord "Location submissions" seulement, puis étendu à "Existing locations"
+    // le 14/09/2026, "ajoute la sélection multiple pour les Member, comme dans Location
+    // submissions") — remplace le <select> générique de metaFieldSelectHtml() ci-dessus pour
+    // le champ Member, dans les deux files : celui-ci proposait TOUS les membres/groupes déjà
+    // vus dans celebLocations (BLACKPINK, TXT...), pas seulement les 7 de BTS, et ne permettait
+    // qu'un seul choix — alors que plusieurs lieux réels concernent plusieurs membres à la fois
+    // (ex: "Jimin, Jungkook, V"). Aucun choix coché = "All" (même convention que le reste du
+    // site pour "concerne tous les membres").
     const BTS_MEMBER_OPTIONS = ['RM', 'Jin', 'Suga', 'J-Hope', 'Jimin', 'V', 'Jungkook'];
     // Tolère quelques variantes déjà vues dans des données existantes (vrai prénom, faute
     // de frappe) pour pré-cocher correctement une valeur déjà enregistrée — n'affecte que
@@ -1019,7 +1020,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             </div>
             <div class="sub-meta-edit">
                 <div class="sub-meta-field"><label>Group</label>${metaFieldSelectHtml('group', loc.group)}</div>
-                <div class="sub-meta-field"><label>Member</label>${metaFieldSelectHtml('member', loc.member)}</div>
+                <div class="sub-meta-field sub-meta-field-wide"><label>Member</label>${memberMultiSelectHtml(loc.member)}</div>
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', loc.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', loc.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', loc.category)}</div>
@@ -1196,6 +1197,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             if (yearGroupEl) {
                 const yearVal = collectYearCheckboxValue(yearGroupEl);
                 if (yearVal) skeletonFields.year = yearVal;
+            }
+            // Member (demande du 14/09/2026, "ajoute la sélection multiple pour les Member,
+            // comme dans Location submissions") — même case à cocher que renderCard() plus
+            // haut, donc collecté séparément aussi ; "All" si aucun membre coché.
+            const memberGroupEl = card.querySelector('.member-checkbox-group');
+            if (memberGroupEl) {
+                const checked = BTS_MEMBER_OPTIONS.filter(m =>
+                    memberGroupEl.querySelector(`.member-checkbox-input[value="${m}"]`).checked);
+                skeletonFields.member = checked.length ? checked.join(', ') : 'All';
             }
             const hasSkeletonChanges = Object.keys(skeletonFields).length > 0;
 

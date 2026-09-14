@@ -113,21 +113,31 @@ laisse-le de côté plutôt que d'inventer les détails, et complète les 20 pro
 d'autres lieux BTS classiques.
 
 Trouve 20 lieux réels, différents et emblématiques liés à BTS, absents de la liste ci-dessus.
-Pour chacun, rédige un contenu complet et soigné, dans le même esprit que les fiches déjà
-publiées sur le site (récit narratif sur 2 paragraphes minimum, infos pratiques concrètes,
-plusieurs astuces de visite — voir tipsList ci-dessous). Règle absolue : ne jamais inventer
-une adresse, un lien ou une URL de photo — si tu n'es pas certain à 100% qu'une information
-est réelle et vérifiable, laisse le champ correspondant vide ("") plutôt que d'en inventer une.
+Pour chacun, rédige un contenu complet et DÉTAILLÉ, dans le même esprit que les fiches déjà
+publiées sur le site (demande du 14/09/2026, "je veux que l'agent IA rédige plus de texte") :
+fullDescription doit toujours compter 2 paragraphes SUBSTANTIELS d'au moins 4-5 phrases chacun
+(pas 1-2 phrases vagues) — voir le détail exact attendu pour chaque paragraphe dans le champ
+fullDescription ci-dessous —, accompagnés d'infos pratiques concrètes et de plusieurs astuces
+de visite (voir tipsList ci-dessous, obligatoire). Règle absolue, inchangée malgré cette
+exigence de longueur : ne jamais inventer une adresse, un lien, une URL de photo ou un détail
+historique — si tu n'es pas certain à 100% qu'une information est réelle et vérifiable, laisse
+le champ correspondant vide ("") plutôt que d'en inventer une ; en revanche, pour ce que tu SAIS
+être vrai et vérifiable sur un lieu, développe-le pleinement plutôt que de le résumer en une
+phrase — plus de détails réels valent mieux qu'un résumé trop court.
 
 Pour tipsList (demande du 13/09/2026, "je veux qu'il ajoute également la rédaction des
-tips") : rédige TOUJOURS au moins 2 à 3 astuces distinctes et concrètes par lieu, jamais une
-seule astuce générique et jamais un tableau vide. Chaque astuce doit couvrir un angle
-pratique différent — par exemple : le meilleur moment de la journée/saison pour y aller,
-comment éviter l'affluence, ce qu'il faut réserver ou vérifier à l'avance (billets, horaires
-d'ouverture, jours de fermeture), une astuce photo, une règle sur place (tenue, interdiction
-de photographier...), ou un lieu à combiner à proximité. Comme pour le reste : une astuce
-non vérifiable ou trop vague vaut mieux absente qu'inventée — dans ce cas rédige uniquement
-les astuces dont tu es certain, même si cela fait moins de 2 à 3.
+tips" ; réaffirmé le 14/09/2026, "je veux qu'il génère des tips") : CHAMP OBLIGATOIRE, jamais
+un tableau vide et jamais une seule astuce générique — rédige TOUJOURS 3 astuces distinctes et
+concrètes par lieu (2 seulement si tu ne peux vraiment pas en trouver une 3e vérifiable, jamais
+moins que 2). Chaque astuce doit couvrir un angle pratique différent — par exemple : le
+meilleur moment de la journée/saison pour y aller, comment éviter l'affluence, ce qu'il faut
+réserver ou vérifier à l'avance (billets, horaires d'ouverture, jours de fermeture), une astuce
+photo, une règle sur place (tenue, interdiction de photographier...), ou un lieu à combiner à
+proximité. Comme pour le reste : une astuce non vérifiable ou trop vague vaut mieux absente
+qu'inventée — mais un lieu réel et documenté permet presque toujours de trouver au moins 2-3
+astuces pratiques légitimes rien qu'en réfléchissant à "que devrait savoir quelqu'un qui visite
+concrètement cet endroit" ; ne renvoie un tableau plus court que 2 que si le lieu est vraiment
+trop peu documenté pour aller plus loin sans inventer.
 
 Pour CHAQUE lieu, cherche aussi tous les liens vers du contenu BTS OFFICIEL qui s'y rapportent
 (chaîne YouTube officielle HYBE LABELS/BANGTANTV, compte Twitter/X officiel @BTS_twt ou @bts_bighit,
@@ -154,9 +164,9 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
   "year": "Année",
   "address": "Adresse complète et réelle (jamais inventée)",
   "lat": 0.0, "lng": 0.0,
-  "fullDescription": { "en": "<p>Premier paragraphe : le lieu lui-même, son contexte, son histoire.</p><p>Deuxième paragraphe : son lien concret avec BTS/le membre (tournage, évènement, visite...).</p>" },
+  "fullDescription": { "en": "<p>Premier paragraphe (AU MOINS 4-5 phrases détaillées) : le lieu lui-même — ce que c'est concrètement, où il se situe, son contexte, son histoire, ce qui le rend particulier. Pas un résumé d'une ligne : développe chaque fait réel que tu connais.</p><p>Deuxième paragraphe (AU MOINS 4-5 phrases détaillées) : son lien concret avec BTS/le membre — CE QUI s'est passé exactement (tournage, évènement, visite...), QUAND, et pourquoi ce moment est resté marquant pour les fans. Même exigence de détail que le premier paragraphe.</p>" },
   "practicalInfo": [ { "title": { "en": "How to get there" }, "text": { "en": "Indications concrètes pour s'y rendre." } } ],
-  "tipsList": [ { "title": { "en": "Best time to visit" }, "text": { "en": "Un premier conseil concret et utile pour la visite." } }, { "title": { "en": "Avoid the crowds" }, "text": { "en": "Un deuxième conseil, sur un angle différent du premier." } } ],
+  "tipsList": [ { "title": { "en": "Best time to visit" }, "text": { "en": "Un premier conseil concret et utile pour la visite." } }, { "title": { "en": "Avoid the crowds" }, "text": { "en": "Un deuxième conseil, sur un angle différent du premier." } }, { "title": { "en": "Book ahead" }, "text": { "en": "Un troisième conseil, encore un angle différent (réservation, horaires, tenue, photo...). CHAMP OBLIGATOIRE : ne jamais renvoyer un tableau vide." } } ],
   "img": "URL réelle d'une photo (Wikimedia Commons ou site officiel) — laisse vide (\\"\\") si tu n'es pas certain qu'elle existe",
   "episodeLink": "https://source-verifiable-reelle.com (laisse vide si aucune source certaine)",
   "officialLink": "URL du site officiel DU LIEU LUI-MÊME (hôtel/musée/salle de concert/café...), pas un lien BTS — laisse vide si aucun site officiel certain",
@@ -167,12 +177,14 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
   "tiktokUrl": "URL d'un post TikTok OFFICIEL montrant ce lieu — laisse vide si aucun"
 }]`;
 
-        // maxOutputTokens explicite (demande du 11/09/2026, "plus de lieux par jour") :
-        // avec 20 fiches complètes demandées par appel au lieu de 5, la réponse est
-        // nettement plus longue — sans ce plafond relevé, une réponse tronquée en plein
-        // milieu d'un objet ferait échouer le JSON.parse() plus bas et perdrait TOUTE la
-        // génération (même les lieux valides avant la coupure).
-        const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash', generationConfig: { maxOutputTokens: 16384 } });
+        // maxOutputTokens explicite (demande du 11/09/2026, "plus de lieux par jour" ;
+        // relevé à nouveau le 14/09/2026, "plus de texte dans les paragraphes") : avec 20
+        // fiches complètes demandées par appel, ET des paragraphes/tips désormais plus
+        // longs (voir le prompt ci-dessus), la réponse est nettement plus longue — sans ce
+        // plafond relevé, une réponse tronquée en plein milieu d'un objet ferait échouer le
+        // JSON.parse() plus bas et perdrait TOUTE la génération (même les lieux valides
+        // avant la coupure).
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash', generationConfig: { maxOutputTokens: 32768 } });
         const result = await model.generateContent(prompt);
         const text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
         const locations = JSON.parse(text);
