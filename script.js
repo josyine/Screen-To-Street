@@ -5100,6 +5100,10 @@ let locationEditCurrentId = null;
 let locationEditExistingFullDescription = {};
 let locationEditExistingImg = '';
 let locationEditExtraWidgets = {};
+// Valeurs d'origine des liens (voir le commentaire dans fillForm() plus bas et dans
+// saveLocationEdit()) — permet de ne revalider que ce que l'admin a réellement changé.
+let locationEditOriginalLinkValues = {};
+let locationEditOriginalRawLinks = {};
 // Tips (demande du 13/09/2026, "quand on clique sur le crayon, il faut également qu'on
 // puisse modifier les tips") — même éditeur/widget (createTitledListField) et même champ
 // (tipsList) que la fiche "Existing locations" d'admin.html, pour ne pas les faire diverger.
@@ -5147,6 +5151,27 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
         document.getElementById('location-edit-official-link').value = data.officialLink || '';
         document.getElementById('location-edit-img-credit').value = data.imgCredit || '';
+        // Valeurs d'origine des liens (demande du 14/09/2026, "je change la date... mais la
+        // date ne change pas") — 2e cause trouvée du même symptôme : un lieu dont un lien
+        // déjà enregistré (ytId, tweetUrl...) ne repasse plus la validation d'aujourd'hui
+        // (ex: un ytId de seulement 5 caractères au lieu de 11) faisait échouer TOUTE la
+        // sauvegarde en silence dans saveLocationEdit() — y compris Year, jamais touché —
+        // puisque ces champs sont toujours revalidés, même non modifiés. Mémorisées ici pour
+        // que saveLocationEdit() ne revalide que ce que l'admin a réellement changé.
+        locationEditOriginalLinkValues = {
+            youtube: document.getElementById('location-edit-youtube').value,
+            tweet: document.getElementById('location-edit-tweet').value,
+            instagram: document.getElementById('location-edit-instagram').value,
+            facebook: document.getElementById('location-edit-facebook').value,
+            tiktok: document.getElementById('location-edit-tiktok').value,
+        };
+        locationEditOriginalRawLinks = {
+            ytId: data.ytId || '',
+            tweetUrl: data.tweetUrl || '',
+            instagramUrl: data.instagramUrl || '',
+            facebookUrl: data.facebookUrl || '',
+            tiktokUrl: data.tiktokUrl || '',
+        };
         const tipsEditorEl = document.getElementById('location-edit-tips-editor');
         if (tipsEditorEl) {
             locationEditTipsWidget = window.createTitledListField(tipsEditorEl, {
@@ -5263,16 +5288,35 @@ async function saveLocationEdit(locId, modal) {
         if (val && !extracted) { errEl.classList.remove('hidden'); hasError = true; }
         else errEl.classList.add('hidden');
     };
-    const ytId = youtubeVal ? extractYouTubeIdForEdit(youtubeVal) : null;
-    checkField(youtubeVal, ytId, 'location-edit-youtube-error');
-    const tweetUrl = tweetVal ? extractTweetUrlForEdit(tweetVal) : null;
-    checkField(tweetVal, tweetUrl, 'location-edit-tweet-error');
-    const instagramUrl = instagramVal ? extractSocialUrlForEdit(instagramVal, 'instagram\\.com') : null;
-    checkField(instagramVal, instagramUrl, 'location-edit-instagram-error');
-    const facebookUrl = facebookVal ? extractSocialUrlForEdit(facebookVal, 'facebook\\.com') : null;
-    checkField(facebookVal, facebookUrl, 'location-edit-facebook-error');
-    const tiktokUrl = tiktokVal ? extractSocialUrlForEdit(tiktokVal, 'tiktok\\.com') : null;
-    checkField(tiktokVal, tiktokUrl, 'location-edit-tiktok-error');
+    // BUG corrigé (demande du 14/09/2026, "je change la date... mais la date ne change
+    // pas") : 2e cause du même symptôme — ces 5 champs étaient TOUJOURS revalidés, même
+    // quand l'admin n'y avait pas touché. Un lieu dont un lien déjà enregistré ne repasse
+    // plus la validation d'aujourd'hui (ex: un ytId historique de 5 caractères au lieu de
+    // 11) faisait donc échouer TOUTE la sauvegarde en silence — y compris Year, jamais
+    // modifié — sans le moindre message visible (voir le bloc hasError plus bas, qui ne
+    // touchait que resultEl APRÈS ce point, jamais atteint). Ne revalider que ce qui a
+    // réellement changé ; un champ inchangé garde tel quel son ancien id/URL, quoi qu'en
+    // dise la regex d'aujourd'hui — il fonctionnait déjà avant cette édition.
+    const ytId = youtubeVal !== (locationEditOriginalLinkValues.youtube || '')
+        ? (youtubeVal ? extractYouTubeIdForEdit(youtubeVal) : null)
+        : locationEditOriginalRawLinks.ytId || null;
+    if (youtubeVal !== (locationEditOriginalLinkValues.youtube || '')) checkField(youtubeVal, ytId, 'location-edit-youtube-error');
+    const tweetUrl = tweetVal !== (locationEditOriginalLinkValues.tweet || '')
+        ? (tweetVal ? extractTweetUrlForEdit(tweetVal) : null)
+        : locationEditOriginalRawLinks.tweetUrl || null;
+    if (tweetVal !== (locationEditOriginalLinkValues.tweet || '')) checkField(tweetVal, tweetUrl, 'location-edit-tweet-error');
+    const instagramUrl = instagramVal !== (locationEditOriginalLinkValues.instagram || '')
+        ? (instagramVal ? extractSocialUrlForEdit(instagramVal, 'instagram\\.com') : null)
+        : locationEditOriginalRawLinks.instagramUrl || null;
+    if (instagramVal !== (locationEditOriginalLinkValues.instagram || '')) checkField(instagramVal, instagramUrl, 'location-edit-instagram-error');
+    const facebookUrl = facebookVal !== (locationEditOriginalLinkValues.facebook || '')
+        ? (facebookVal ? extractSocialUrlForEdit(facebookVal, 'facebook\\.com') : null)
+        : locationEditOriginalRawLinks.facebookUrl || null;
+    if (facebookVal !== (locationEditOriginalLinkValues.facebook || '')) checkField(facebookVal, facebookUrl, 'location-edit-facebook-error');
+    const tiktokUrl = tiktokVal !== (locationEditOriginalLinkValues.tiktok || '')
+        ? (tiktokVal ? extractSocialUrlForEdit(tiktokVal, 'tiktok\\.com') : null)
+        : locationEditOriginalRawLinks.tiktokUrl || null;
+    if (tiktokVal !== (locationEditOriginalLinkValues.tiktok || '')) checkField(tiktokVal, tiktokUrl, 'location-edit-tiktok-error');
 
     const extraValidators = {
         youtubeUrls: extractYouTubeUrlForEdit,
@@ -5287,7 +5331,16 @@ async function saveLocationEdit(locId, modal) {
         if (extraErr) hasError = true; else extraCollected[field] = values;
     });
 
-    if (hasError) { saveBtn.disabled = false; return; }
+    // Message visible en cas d'échec de validation (demande du 14/09/2026) : avant, cette
+    // sortie anticipée ne touchait jamais resultEl — rien ne s'affichait, laissant croire
+    // que "Save" n'avait tout simplement rien fait plutôt que d'expliquer pourquoi.
+    if (hasError) {
+        saveBtn.disabled = false;
+        resultEl.textContent = 'Failed: please check the highlighted link field(s) above.';
+        resultEl.style.color = '#ef4444';
+        resultEl.classList.remove('hidden');
+        return;
+    }
 
     // Ne remplace QUE la clé "en" de fullDescription, jamais les autres langues déjà
     // traduites (locationEditExistingFullDescription posé par openLocationEditModal).
@@ -5340,7 +5393,17 @@ async function saveLocationEdit(locId, modal) {
         const loc = celebLocations.find(l => l.id === locId);
         if (loc) {
             Object.assign(loc, fields, skeletonFields);
-            if (currentLocationIdForMemory === locId) renderLocationRichContent(loc);
+            if (currentLocationIdForMemory === locId) {
+                renderLocationRichContent(loc);
+                // BUG corrigé (demande du 14/09/2026, "je change la date... mais la date ne
+                // change pas") : renderLocationRichContent() ne touche jamais
+                // Group/Member/Country/City/Address/Date — ces champs ne sont posés que par
+                // renderLocationMetaFields() (voir openDetailsPanel()), jusqu'ici jamais
+                // rappelée après une sauvegarde. `loc.year` était donc bien mis à jour ici
+                // ET dans Firestore, mais le texte "Date" affiché sur la fiche déjà ouverte
+                // restait figé sur l'ancienne valeur.
+                if (hasSkeletonChanges) renderLocationMetaFields(loc);
+            }
             // group/city/country affectent aussi la liste/les marqueurs (pas seulement le
             // panneau de détail ouvert) — même convention que adminSetLocationHidden.
             if (hasSkeletonChanges && typeof renderLocations === 'function') renderLocations(true);
@@ -5361,6 +5424,51 @@ async function saveLocationEdit(locId, modal) {
 // vignette YouTube automatique plutôt que l'inverse — avant ce correctif, un ytId présent
 // (le cas de la quasi-totalité des lieux de ce site) faisait ignorer purement et simplement
 // tout changement du champ photo, quoi qu'on y mette.
+// Champs "méta" de la fiche détail (demande du 14/09/2026, "je change la date en cliquant
+// sur le crayon, mais la date ne change pas") — Group/Member/Country/City/Address/Date
+// n'étaient posés QUE dans openDetailsPanel() ci-dessous, jamais re-rappelés après une
+// sauvegarde depuis le modal crayon (saveLocationEdit() ne rappelait que
+// renderLocationRichContent(), qui ne touche pas ces éléments) : `loc.year` était donc bien
+// mis à jour en mémoire (Object.assign) et bien écrit dans Firestore, mais le texte "Date"
+// affiché sur la fiche déjà ouverte restait figé sur l'ancienne valeur jusqu'à un rechargement
+// complet de la page. Extrait en fonction à part pour pouvoir la rappeler après coup.
+function renderLocationMetaFields(loc) {
+    const badge = document.getElementById('detail-badge');
+    if(badge) badge.textContent = `${loc.group} · ${getCatName(loc.category)}`;
+
+    const dTitle = document.getElementById('details-title');
+    if(dTitle) dTitle.textContent = loc.name;
+
+    const dSub = document.getElementById('details-location-sub');
+    if(dSub) dSub.textContent = `${loc.city}, ${loc.country}`;
+
+    const dGroup = document.getElementById('details-group');
+    if(dGroup) dGroup.textContent = loc.group;
+
+    const dMember = document.getElementById('details-member');
+    if(dMember) dMember.textContent = loc.member === "All" ? "All" : loc.member;
+
+    const dCountry = document.getElementById('details-country');
+    if(dCountry) dCountry.textContent = loc.country;
+
+    const dCity = document.getElementById('details-city');
+    if(dCity) dCity.textContent = loc.city;
+
+    const dAddr = document.getElementById('details-full-address');
+    if(dAddr) dAddr.textContent = loc.address;
+
+    const dDate = document.getElementById('details-date');
+    if(dDate) dDate.textContent = loc.year;
+
+    const dEpi = document.getElementById('details-episode');
+    const dEpiCont = document.getElementById('details-episode-container');
+    // display:block, même raison que dLinkCont (renderLocationRichContent).
+    if (dEpi && dEpiCont) { if(loc.episode) { dEpi.textContent = loc.episode; dEpiCont.style.display = 'block'; } else { dEpiCont.style.display = 'none'; } }
+
+    const mapLink = document.getElementById('details-map-link');
+    if(mapLink) mapLink.href = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
+}
+
 function renderLocationHeroBg(loc) {
     const heroBg = document.getElementById('detail-hero-bg');
     if (!heroBg) return;
@@ -5424,16 +5532,7 @@ window.openDetailsPanel = function(id) {
     if (typeof updateLocVisitorsBar === 'function') updateLocVisitorsBar(loc);
 
     renderLocationHeroBg(loc);
-
-    const badge = document.getElementById('detail-badge');
-    if(badge) badge.textContent = `${loc.group} · ${getCatName(loc.category)}`;
-
-    const dTitle = document.getElementById('details-title');
-    if(dTitle) dTitle.textContent = loc.name;
-
-    const dSub = document.getElementById('details-location-sub');
-    if(dSub) dSub.textContent = `${loc.city}, ${loc.country}`;
-    
+    renderLocationMetaFields(loc);
     renderLocationRichContent(loc);
 
     // Étape 1 de la migration vers Firestore (voir fetchLocationContent() dans
@@ -5491,32 +5590,6 @@ window.openDetailsPanel = function(id) {
             friendVisitBox.classList.add('hidden');
         }
     }
-
-    const dGroup = document.getElementById('details-group');
-    if(dGroup) dGroup.textContent = loc.group;
-
-    const dMember = document.getElementById('details-member');
-    if(dMember) dMember.textContent = loc.member === "All" ? "All" : loc.member;
-    
-    const dCountry = document.getElementById('details-country');
-    if(dCountry) dCountry.textContent = loc.country;
-    
-    const dCity = document.getElementById('details-city');
-    if(dCity) dCity.textContent = loc.city;
-    
-    const dAddr = document.getElementById('details-full-address');
-    if(dAddr) dAddr.textContent = loc.address;
-    
-    const dDate = document.getElementById('details-date');
-    if(dDate) dDate.textContent = loc.year;
-
-    const dEpi = document.getElementById('details-episode');
-    const dEpiCont = document.getElementById('details-episode-container');
-    // display:block, même raison que dLinkCont plus haut (renderLocationRichContent).
-    if (dEpi && dEpiCont) { if(loc.episode) { dEpi.textContent = loc.episode; dEpiCont.style.display = 'block'; } else { dEpiCont.style.display = 'none'; } }
-
-    const mapLink = document.getElementById('details-map-link');
-    if(mapLink) mapLink.href = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
 
     const vCheck = document.getElementById('details-visited');
     const memoryDropdown = document.getElementById('memory-dropdown');

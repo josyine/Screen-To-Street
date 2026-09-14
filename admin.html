@@ -1100,6 +1100,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const verifyBtn = card.querySelector('.btn-verify');
         const resultEl = card.querySelector('.sub-result');
         let mergedFullDescription = loc.fullDescription || {};
+        // Valeurs d'origine des liens (demande du 14/09/2026, "je change la date... mais la
+        // date ne change pas" — même bug ici, pas seulement dans le modal crayon) : ces
+        // champs étaient TOUJOURS revalidés au save, même non touchés. Un lieu dont un lien
+        // déjà enregistré ne repasse plus la validation d'aujourd'hui (ex: un ytId
+        // historique trop court) faisait donc échouer TOUTE la sauvegarde en silence — y
+        // compris Group/Member/Country/City/Category/Year, jamais modifiés — sans le
+        // moindre message visible. Voir saveBtn.onclick plus bas.
+        let originalLinkValues = {};
+        let originalRawLinks = {};
         let tipsFieldWidget = null;
 
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
@@ -1123,6 +1132,17 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             linkInput.value = data.episodeLink || '';
             officialLinkInput.value = data.officialLink || '';
             mergedFullDescription = data.fullDescription || {};
+            originalLinkValues = {
+                tweet: tweetInput.value,
+                instagram: card.querySelector('.sub-social-input[data-platform="instagram"]').value,
+                facebook: card.querySelector('.sub-social-input[data-platform="facebook"]').value,
+                tiktok: card.querySelector('.sub-social-input[data-platform="tiktok"]').value,
+                video: videoInput.value,
+            };
+            originalRawLinks = {
+                tweetUrl: data.tweetUrl || '', instagramUrl: data.instagramUrl || '',
+                facebookUrl: data.facebookUrl || '', tiktokUrl: data.tiktokUrl || '', ytId: data.ytId || '',
+            };
             if (typeof window.createTitledListField === 'function') {
                 const tipsEditorEl = card.querySelector('.sub-tips-editor');
                 if (tipsEditorEl) {
@@ -1157,21 +1177,26 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const tiktokVal = card.querySelector('.sub-social-input[data-platform="tiktok"]').value.trim();
             const videoVal = videoInput.value.trim();
 
+            // Ne revalider que ce qui a réellement changé (demande du 14/09/2026) — un champ
+            // laissé tel quel garde son ancien id/URL, quoi qu'en dise la regex
+            // d'aujourd'hui : il fonctionnait déjà avant cette édition, inutile de bloquer
+            // TOUTE la sauvegarde (Year y compris) à cause de lui.
             let hasError = false;
-            const tweetUrl = tweetVal ? extractTweetUrl(tweetVal) : null;
-            tweetError.classList.toggle('hidden', !tweetVal || !!tweetUrl);
-            if (tweetVal && !tweetUrl) hasError = true;
-            const instagramUrl = instagramVal ? extractInstagramUrl(instagramVal) : null;
-            card.querySelector('.sub-social-error[data-platform="instagram"]').classList.toggle('hidden', !instagramVal || !!instagramUrl);
-            if (instagramVal && !instagramUrl) hasError = true;
-            const facebookUrl = facebookVal ? extractFacebookUrl(facebookVal) : null;
-            card.querySelector('.sub-social-error[data-platform="facebook"]').classList.toggle('hidden', !facebookVal || !!facebookUrl);
-            if (facebookVal && !facebookUrl) hasError = true;
-            const tiktokUrl = tiktokVal ? extractTikTokUrl(tiktokVal) : null;
-            card.querySelector('.sub-social-error[data-platform="tiktok"]').classList.toggle('hidden', !tiktokVal || !!tiktokUrl);
-            if (tiktokVal && !tiktokUrl) hasError = true;
-            const ytId = videoVal ? extractYouTubeId(videoVal) : null;
-            if (videoVal && !ytId) { videoStatus.textContent = "Doesn't look like a YouTube URL"; hasError = true; }
+            const tweetChanged = tweetVal !== (originalLinkValues.tweet || '');
+            const tweetUrl = tweetChanged ? (tweetVal ? extractTweetUrl(tweetVal) : null) : (originalRawLinks.tweetUrl || null);
+            if (tweetChanged) { tweetError.classList.toggle('hidden', !tweetVal || !!tweetUrl); if (tweetVal && !tweetUrl) hasError = true; }
+            const instagramChanged = instagramVal !== (originalLinkValues.instagram || '');
+            const instagramUrl = instagramChanged ? (instagramVal ? extractInstagramUrl(instagramVal) : null) : (originalRawLinks.instagramUrl || null);
+            if (instagramChanged) { card.querySelector('.sub-social-error[data-platform="instagram"]').classList.toggle('hidden', !instagramVal || !!instagramUrl); if (instagramVal && !instagramUrl) hasError = true; }
+            const facebookChanged = facebookVal !== (originalLinkValues.facebook || '');
+            const facebookUrl = facebookChanged ? (facebookVal ? extractFacebookUrl(facebookVal) : null) : (originalRawLinks.facebookUrl || null);
+            if (facebookChanged) { card.querySelector('.sub-social-error[data-platform="facebook"]').classList.toggle('hidden', !facebookVal || !!facebookUrl); if (facebookVal && !facebookUrl) hasError = true; }
+            const tiktokChanged = tiktokVal !== (originalLinkValues.tiktok || '');
+            const tiktokUrl = tiktokChanged ? (tiktokVal ? extractTikTokUrl(tiktokVal) : null) : (originalRawLinks.tiktokUrl || null);
+            if (tiktokChanged) { card.querySelector('.sub-social-error[data-platform="tiktok"]').classList.toggle('hidden', !tiktokVal || !!tiktokUrl); if (tiktokVal && !tiktokUrl) hasError = true; }
+            const videoChanged = videoVal !== (originalLinkValues.video || '');
+            const ytId = videoChanged ? (videoVal ? extractYouTubeId(videoVal) : null) : (originalRawLinks.ytId || null);
+            if (videoChanged && videoVal && !ytId) { videoStatus.textContent = "Doesn't look like a YouTube URL"; hasError = true; }
 
             const extraCollected = {};
             Object.keys(extraFieldWidgets).forEach(field => {
@@ -1179,7 +1204,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 if (extraErr) hasError = true; else extraCollected[field] = values;
             });
 
-            if (hasError) { saveBtn.disabled = false; return; }
+            // Message visible en cas d'échec (demande du 14/09/2026) : avant, rien ne
+            // s'affichait ici — impossible de distinguer "rien n'a été changé" d'un échec.
+            if (hasError) {
+                saveBtn.disabled = false;
+                resultEl.textContent = 'Failed: please check the highlighted link field(s) above.';
+                resultEl.className = 'sub-result err';
+                resultEl.classList.remove('hidden');
+                return;
+            }
 
             const combinedStory = [storyPlaceEl.value.trim(), storyBtsEl.value.trim()].filter(Boolean).join('\n\n');
             const fullDescription = Object.assign({}, mergedFullDescription, {
