@@ -8669,5 +8669,245 @@
         }
       }
     ]
+  },
+  {
+    "id": 203,
+    "name": "Porter's Lodge, Castle Hill",
+    "group": "BTS",
+    "member": "All",
+    "country": "New Zealand",
+    "city": "Castle Hill",
+    "category": "Bon Voyage",
+    "year": "2019",
+    "address": "Porters Ski Area Access Road, Castle Hill",
+    "lat": -43.2167,
+    "lng": 171.7163,
+    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "fullDescription": {
+      "en": "<p>Castle Hill is a vast limestone boulder field in the high country of Canterbury, its weathered rock formations scattered across open tussock grassland beneath the Craigieburn Range — one of the most photographed rock-climbing and bouldering spots in New Zealand. Porter's Lodge sits nearby, a mountain lodge built to serve the neighbouring Porters ski field, the kind of no-frills alpine base that road-trippers use to break up the drive across the South Island.</p><p>The group stopped here early in their Bon Voyage Season 4 road trip through the South Island, using the lodge as a rest point between the wide, empty landscapes that define this stretch of State Highway 73. It's a quieter, less staged moment than most of the season's headline activities — just seven people and a genuinely remote part of the country.</p>",
+      "fr": "<p>Castle Hill est un vaste champ de blocs de calcaire dans l'arrière-pays de Canterbury, ses formations rocheuses façonnées par l'érosion parsemant une prairie de tussack à ciel ouvert sous la chaîne des Craigieburn — l'un des sites d'escalade et de bloc les plus photographiés de Nouvelle-Zélande. Porter's Lodge se trouve à proximité, un lodge de montagne construit pour desservir le domaine skiable voisin de Porters, le genre de base alpine sans chichi qu'utilisent les voyageurs pour couper la traversée de l'île du Sud.</p><p>Le groupe s'y est arrêté au début de son road trip à travers l'île du Sud pour Bon Voyage Saison 4, utilisant le lodge comme point de pause entre les paysages vastes et vides qui caractérisent ce tronçon de la route nationale 73. C'est un moment plus discret, moins mis en scène que la plupart des activités phares de la saison — juste sept personnes dans une partie authentiquement isolée du pays.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Bring warm layers"
+        },
+        "text": {
+          "en": "Castle Hill sits at altitude in an exposed high-country basin — weather changes fast, even in summer, so pack layers regardless of the season."
+        }
+      },
+      {
+        "title": {
+          "en": "Stick to marked areas"
+        },
+        "text": {
+          "en": "The boulder field is on private/leased land with public walking access on marked tracks only — respect the roped-off conservation areas around fragile rock formations."
+        }
+      }
+    ],
+    "directions": {
+      "en": "Castle Hill sits directly on State Highway 73 between Christchurch and Arthur's Pass, roughly a 90-minute drive from Christchurch.",
+      "fr": "Castle Hill se trouve directement sur la route nationale 73 entre Christchurch et Arthur's Pass, à environ 1h30 de route de Christchurch."
+    }
+  },
+  {
+    "id": 204,
+    "name": "Speight's Ale House, Christchurch",
+    "group": "BTS",
+    "member": "All",
+    "country": "New Zealand",
+    "city": "Christchurch",
+    "category": "Bon Voyage",
+    "year": "2019",
+    "address": "Christchurch",
+    "lat": -43.5321,
+    "lng": 172.6362,
+    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "fullDescription": {
+      "en": "<p>Speight's is one of New Zealand's best-known breweries, founded in Dunedin in 1876 and built around a hearty, unpretentious \"Southern Man\" identity. Its Ale House chain serves classic Kiwi pub food — meat pies, fish and chips, steak — alongside the brewery's own beers, and functions as a reliable, casual stop in most major South Island towns.</p><p>The group had lunch at one of Christchurch's Speight's Ale House locations on the first day of their New Zealand road trip, a straightforward pub meal before heading further into the South Island's high country.</p>",
+      "fr": "<p>Speight's est l'une des brasseries les plus connues de Nouvelle-Zélande, fondée à Dunedin en 1876 et construite autour d'une identité de \"Southern Man\" simple et sans prétention. Sa chaîne d'Ale House sert une cuisine de pub kiwi classique — tourtes à la viande, fish and chips, steak — accompagnée des bières maison de la brasserie, et fait office d'étape fiable et décontractée dans la plupart des grandes villes de l'île du Sud.</p><p>Le groupe a déjeuné dans l'un des Speight's Ale House de Christchurch le premier jour de son road trip en Nouvelle-Zélande, un repas de pub simple avant de continuer plus loin dans l'arrière-pays de l'île du Sud.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Try the tasting paddle"
+        },
+        "text": {
+          "en": "Most Speight's Ale House locations offer a small tasting paddle of the brewery's core range if you want to sample more than one beer."
+        }
+      },
+      {
+        "title": {
+          "en": "Several branches in town"
+        },
+        "text": {
+          "en": "Christchurch has more than one Speight's Ale House — check which branch is closest to where you're staying before heading over."
+        }
+      }
+    ],
+    "directions": {
+      "en": "Speight's Ale House has several branches around Christchurch — check the current locations before visiting.",
+      "fr": "Speight's Ale House compte plusieurs établissements à Christchurch — vérifiez les emplacements actuels avant de vous y rendre."
+    }
+  },
+  {
+    "id": 205,
+    "name": "Omarama Hot Tubs",
+    "group": "BTS",
+    "member": "All",
+    "country": "New Zealand",
+    "city": "Omarama",
+    "category": "Bon Voyage",
+    "year": "2019",
+    "address": "29 Omarama Ave, Omarama",
+    "lat": -44.4833,
+    "lng": 169.9667,
+    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "fullDescription": {
+      "en": "<p>Set on State Highway 8 between Omarama and Twizel, this is a cluster of private, wood-fired hot tubs filled with naturally sourced mineral water, built as individual outdoor pods rather than one shared pool. The wide-open Mackenzie Country sky above makes it as much a stargazing spot after dark as a place to soak.</p><p>The group stopped here during the South Island leg of Bon Voyage Season 4, an easy, low-key way to recover after long days of driving and hiking through the Mackenzie Country's empty, mountain-ringed landscape.</p>",
+      "fr": "<p>Installé sur la route nationale 8 entre Omarama et Twizel, ce site regroupe des bains chauds privés, chauffés au bois et remplis d'eau minérale naturelle, construits sous forme de cabines individuelles en extérieur plutôt qu'une seule piscine commune. Le ciel immense du Mackenzie Country au-dessus en fait aussi un lieu d'observation des étoiles à la nuit tombée qu'un simple endroit pour se détendre.</p><p>Le groupe s'y est arrêté durant l'étape sur l'île du Sud de Bon Voyage Saison 4, un moyen simple et tranquille de récupérer après de longues journées de route et de randonnée dans le paysage vide et cerné de montagnes du Mackenzie Country.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book ahead"
+        },
+        "text": {
+          "en": "The individual tubs are booked in timed sessions and fill up quickly in peak season — reserve online before arriving."
+        }
+      },
+      {
+        "title": {
+          "en": "Go after dark"
+        },
+        "text": {
+          "en": "An evening or night session pairs the hot water with genuinely dark, star-filled Mackenzie Country skies."
+        }
+      }
+    ],
+    "directions": {
+      "en": "Located on State Highway 8, across the road from Omarama Airfield, between the townships of Omarama and Twizel.",
+      "fr": "Situé sur la route nationale 8, en face de l'aérodrome d'Omarama, entre les villages d'Omarama et de Twizel."
+    }
+  },
+  {
+    "id": 206,
+    "name": "Ivan Clarke Gallery",
+    "group": "BTS",
+    "member": "All",
+    "country": "New Zealand",
+    "city": "Queenstown",
+    "category": "Bon Voyage",
+    "year": "2019",
+    "address": "Camp Street, Queenstown",
+    "lat": -45.0312,
+    "lng": 168.6626,
+    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "fullDescription": {
+      "en": "<p>This gallery showcases the work of New Zealand landscape painter Ivan Clarke, known for large-scale oil paintings of the South Island's mountains and lakes as well as his recurring \"Lonely Dog\" series. It's a small, personal gallery experience rather than a large institution — often with the artist or his family present to talk through the work.</p><p>The group visited during the later part of their New Zealand road trip on Bon Voyage Season 4, taking in local art as a quieter counterpoint to the season's more physical, adrenaline-driven stops around Queenstown.</p>",
+      "fr": "<p>Cette galerie présente le travail du peintre paysagiste néo-zélandais Ivan Clarke, connu pour ses grandes toiles à l'huile représentant les montagnes et les lacs de l'île du Sud, ainsi que sa série récurrente \"Lonely Dog\". C'est une expérience de galerie intimiste plutôt qu'une grande institution — l'artiste ou sa famille y sont souvent présents pour présenter les œuvres.</p><p>Le groupe s'y est rendu vers la fin de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'accordant un moment d'art local, plus calme, en contrepoint des étapes plus physiques et riches en adrénaline de la saison autour de Queenstown.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check opening hours"
+        },
+        "text": {
+          "en": "As a small, owner-run gallery, opening hours can vary — it's worth checking ahead rather than assuming standard retail hours."
+        }
+      },
+      {
+        "title": {
+          "en": "Ask about the \"Lonely Dog\" series"
+        },
+        "text": {
+          "en": "Ivan Clarke's recurring \"Lonely Dog\" paintings are the gallery's best-known works and a good conversation starter if staff or the artist are on site."
+        }
+      }
+    ],
+    "directions": {
+      "en": "The gallery is in central Queenstown, a short walk from the lakefront.",
+      "fr": "La galerie se trouve dans le centre de Queenstown, à quelques minutes à pied du bord du lac."
+    }
+  },
+  {
+    "id": 207,
+    "name": "Mt John Observatory & Astro Cafe",
+    "group": "BTS",
+    "member": "All",
+    "country": "New Zealand",
+    "city": "Lake Tekapo",
+    "category": "Bon Voyage",
+    "year": "2019",
+    "address": "Mount John Observatory Rd, Lake Tekapo",
+    "lat": -43.9866,
+    "lng": 170.4653,
+    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "fullDescription": {
+      "en": "<p>Perched on the summit of Mt John above Lake Tekapo, this University of Canterbury research observatory sits inside the Aoraki Mackenzie International Dark Sky Reserve — one of the largest and darkest stargazing reserves on Earth. The Astro Cafe at the top serves food and coffee with a panoramic view over Lake Tekapo's turquoise water and the surrounding Mackenzie Basin.</p><p>The group made the drive up to the summit during their New Zealand road trip on Bon Voyage Season 4, taking in the view by day from a spot most visitors associate with astonishing, light-pollution-free skies after dark.</p>",
+      "fr": "<p>Perché au sommet du mont John au-dessus du lac Tekapo, cet observatoire de recherche de l'Université de Canterbury se trouve au cœur de la réserve internationale de ciel étoilé Aoraki Mackenzie — l'une des plus grandes et des plus sombres réserves d'observation des étoiles au monde. L'Astro Cafe, au sommet, sert repas et cafés avec une vue panoramique sur les eaux turquoise du lac Tekapo et le bassin du Mackenzie qui l'entoure.</p><p>Le groupe a fait la route jusqu'au sommet durant son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, profitant de la vue en plein jour depuis un lieu que la plupart des visiteurs associent à des ciels nocturnes stupéfiants, sans aucune pollution lumineuse.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Pay the access road fee"
+        },
+        "text": {
+          "en": "The private access road up Mt John charges a per-vehicle fee, payable by card at the gate — budget a few extra minutes for this on the way up."
+        }
+      },
+      {
+        "title": {
+          "en": "Come back after dark if you can"
+        },
+        "text": {
+          "en": "Mt John is one of the best stargazing spots in the Southern Hemisphere — if your schedule allows, a night visit shows a completely different side of the site."
+        }
+      }
+    ],
+    "directions": {
+      "en": "Accessible via Godley Peaks Road, off State Highway 8, a roughly 15-minute drive up the private access road from Lake Tekapo village.",
+      "fr": "Accessible par Godley Peaks Road, au départ de la route nationale 8, à environ 15 minutes de route par la route d'accès privée depuis le village de Lake Tekapo."
+    }
+  },
+  {
+    "id": 208,
+    "name": "Kinloch Lodge",
+    "group": "BTS",
+    "member": "All",
+    "country": "New Zealand",
+    "city": "Glenorchy",
+    "category": "Bon Voyage",
+    "year": "2019",
+    "address": "862 Kinloch Rd, Kinloch, Glenorchy",
+    "lat": -44.8333,
+    "lng": 168.3667,
+    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "fullDescription": {
+      "en": "<p>Kinloch Lodge is a lakeside wilderness retreat at the northern end of Lake Wakatipu, near Glenorchy — the small settlement widely used as a gateway to Paradise, Mt Aspiring National Park and the Routeburn and Greenstone tracks. The lodge occupies a historic heritage building right on the lake, well outside the reach of Queenstown's more built-up tourist strip.</p><p>The group stayed here during the more remote, outdoors-focused stretch of their New Zealand road trip on Bon Voyage Season 4, using it as a base for exploring the wilderness around Glenorchy before continuing on toward Queenstown.</p>",
+      "fr": "<p>Kinloch Lodge est un refuge sauvage au bord du lac, situé à l'extrémité nord du lac Wakatipu, près de Glenorchy — la petite localité largement utilisée comme porte d'entrée vers Paradise, le parc national du Mont Aspiring, ainsi que les pistes de Routeburn et de Greenstone. Le lodge occupe un bâtiment historique classé, directement au bord du lac, bien loin de la zone touristique plus urbanisée de Queenstown.</p><p>Le groupe y a séjourné durant l'étape la plus reculée et axée sur le plein air de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'en servant de base pour explorer les environs sauvages de Glenorchy avant de poursuivre vers Queenstown.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book well ahead"
+        },
+        "text": {
+          "en": "As a small heritage lodge in a popular gateway town, rooms can book out well in advance during the New Zealand summer season."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with a Glenorchy day trip"
+        },
+        "text": {
+          "en": "Glenorchy's short scenic walks and the Paradise/Routeburn road are all within easy reach if you're staying the night here."
+        }
+      }
+    ],
+    "directions": {
+      "en": "Glenorchy is roughly a 45-minute drive from Queenstown along the Glenorchy-Queenstown Road, which hugs the edge of Lake Wakatipu.",
+      "fr": "Glenorchy se trouve à environ 45 minutes de route de Queenstown par la Glenorchy-Queenstown Road, qui longe les rives du lac Wakatipu."
+    }
   }
 ]
