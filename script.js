@@ -5121,6 +5121,23 @@ window.openLocationEditModal = async function (locId) {
     // Pré-remplit d'abord avec les données locales (immédiat), puis tente une lecture
     // Firestore qui, si elle répond, remplace le pré-remplissage par la version
     // réellement affichée aux visiteurs (même logique que openDetailsPanel).
+    //
+    // BUG corrigé (demande du 14/09/2026, "parfois les modifications ne s'appliquent pas...
+    // c'est le cas pour l'année") : cette 2e lecture Firestore (locationContent) arrive de
+    // façon asynchrone, potentiellement APRÈS que l'admin a déjà commencé à cocher des
+    // années ou modifier Group/Member/Country/City — ces 5 champs ne vivent pourtant jamais
+    // dans locationContent (voir locationSkeletonOverrides plus bas), donc les regénérer une
+    // 2e fois à partir de `remote` ne pouvait jamais rien y changer, seulement écraser en
+    // silence ce que l'admin venait de cocher/taper entre les deux. fillForm() ne les
+    // remplit donc plus qu'une seule fois, à l'ouverture — voir fillSkeletonFields()
+    // ci-dessous, appelée uniquement pour le remplissage initial.
+    const fillSkeletonFields = (data) => {
+        document.getElementById('location-edit-group').value = data.group || '';
+        document.getElementById('location-edit-member').value = data.member || '';
+        document.getElementById('location-edit-country').value = data.country || '';
+        document.getElementById('location-edit-city').value = data.city || '';
+        document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
+    };
     const fillForm = (data) => {
         document.getElementById('location-edit-story').value = htmlParagraphsToPlainText(getLocText(data.fullDescription));
         document.getElementById('location-edit-youtube').value = data.ytId ? `https://www.youtube.com/watch?v=${data.ytId}` : '';
@@ -5130,11 +5147,6 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
         document.getElementById('location-edit-official-link').value = data.officialLink || '';
         document.getElementById('location-edit-img-credit').value = data.imgCredit || '';
-        document.getElementById('location-edit-group').value = data.group || '';
-        document.getElementById('location-edit-member').value = data.member || '';
-        document.getElementById('location-edit-country').value = data.country || '';
-        document.getElementById('location-edit-city').value = data.city || '';
-        document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
         const tipsEditorEl = document.getElementById('location-edit-tips-editor');
         if (tipsEditorEl) {
             locationEditTipsWidget = window.createTitledListField(tipsEditorEl, {
@@ -5159,10 +5171,14 @@ window.openLocationEditModal = async function (locId) {
             });
         }
     };
+    fillSkeletonFields(loc);
     fillForm(loc);
 
     if (typeof window.fetchLocationContent === 'function') {
         const remote = await window.fetchLocationContent(locId);
+        // fillSkeletonFields() n'est PAS rappelé ici — voir le commentaire au-dessus de sa
+        // définition : Group/Member/Country/City/Year ne viennent jamais de `remote`, les
+        // rappeler ici ne ferait qu'écraser une correction déjà en cours de saisie.
         if (remote && locationEditCurrentId === locId) fillForm(Object.assign({}, loc, remote));
     }
 

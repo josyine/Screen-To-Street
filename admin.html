@@ -1045,6 +1045,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
 
+            <!-- Site officiel (demande du 14/09/2026, "ajoute également le lien de Official
+                 website") — champ déjà présent côté "Location submissions" (renderCard
+                 ci-dessus), manquait ici. Même champ (officialLink) que le modal crayon
+                 (script.js), publié via adminUpdateLocationContent(). -->
+            <label class="sub-section-label">Official website (optional)</label>
+            <input type="url" class="sub-official-link-input" placeholder='https://... — shown as "Learn more"'>
+
             <input type="url" class="sub-tweet-input" placeholder="Tweet / X post URL (optional)">
             <div class="sub-tweet-error hidden" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a twitter.com/x.com status URL.</div>
             <div class="sub-tweet-extra" style="margin-bottom:6px;"></div>
@@ -1087,6 +1094,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const videoInput = card.querySelector('.sub-video-input');
         const videoStatus = card.querySelector('.sub-video-status');
         const linkInput = card.querySelector('.sub-link-input');
+        const officialLinkInput = card.querySelector('.sub-official-link-input');
         const saveBtn = card.querySelector('.loc-save-btn');
         const hideBtn = card.querySelector('.btn-hide');
         const verifyBtn = card.querySelector('.btn-verify');
@@ -1113,6 +1121,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             videoInput.value = data.ytId ? 'https://www.youtube.com/watch?v=' + data.ytId : '';
             videoStatus.textContent = data.ytId ? 'YouTube video: ' + data.ytId : 'No YouTube video';
             linkInput.value = data.episodeLink || '';
+            officialLinkInput.value = data.officialLink || '';
             mergedFullDescription = data.fullDescription || {};
             if (typeof window.createTitledListField === 'function') {
                 const tipsEditorEl = card.querySelector('.sub-tips-editor');
@@ -1176,7 +1185,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const fullDescription = Object.assign({}, mergedFullDescription, {
                 en: plainTextToHtmlParagraphs(combinedStory)
             });
-            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim() }, extraCollected);
+            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim() }, extraCollected);
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
 
             // Group/Member/Country/City/Category/Year (demande du 13/09/2026, "ajoute
