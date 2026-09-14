@@ -534,7 +534,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', sub.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', sub.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', sub.category)}</div>
-                <div class="sub-meta-field"><label>Year</label>${metaFieldSelectHtml('year', sub.year)}</div>
+                <div class="sub-meta-field sub-meta-field-wide"><label>Year — select every year that applies</label>${yearCheckboxGroupHtml(sub.year)}</div>
             </div>
             <div class="sub-photo-preview">${photoPreviewHtml(sub.img)}</div>
             <input type="url" class="sub-photo-input" placeholder="Photo URL" value="${escapeHtml((sub.img || '').startsWith('data:') ? '' : (sub.img || ''))}">
@@ -666,6 +666,17 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 sub.member = checked.length ? checked.join(', ') : 'All';
             });
         });
+
+        // Cases à cocher "Year" (demande du 13/09/2026, "sélection multiple pour en
+        // sélectionner plusieurs") — même principe que "Member" ci-dessus : `sub.year`
+        // reste synchronisé à chaque coche, si bien qu'Approve publie déjà la bonne
+        // valeur (skeletonFields d'approveLocationSubmission() lit sub.year directement).
+        const yearGroupEl = card.querySelector('.year-checkbox-group');
+        if (yearGroupEl) {
+            yearGroupEl.querySelectorAll('.year-checkbox-input').forEach(cb => {
+                cb.addEventListener('change', () => { sub.year = collectYearCheckboxValue(yearGroupEl); });
+            });
+        }
 
         // Sections de contenu dédiées (demande du 13/09/2026, remplace l'ancien champ
         // unique "texte brut" derrière un crayon) — même découpage que
@@ -972,6 +983,24 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         }
         const existingIds = new Set(skeleton.map(l => l.id));
         newLocs.forEach(l => { if (l && l.id && !existingIds.has(l.id)) skeleton.push(l); });
+        // Corrections Groupe/Membre/Pays/Ville/Catégorie/Année déjà enregistrées via l'icône
+        // crayon ou "Existing locations" (demande du 13/09/2026, "quand je change la date
+        // d'un lieu les modifications ne s'appliquent pas") — jusqu'ici jamais relues nulle
+        // part : locationSkeletonOverrides n'est publié sur le site qu'au prochain export
+        // planifié (voir admin-scripts/export-locations.js), donc rouvrir "Existing
+        // locations" avant cet export réaffichait la valeur d'origine, donnant l'impression
+        // qu'une correction pourtant bien enregistrée n'avait servi à rien. Merge ici comme
+        // fetchNewLocations() ci-dessus, pour qu'admin.html reflète toujours la DERNIÈRE
+        // valeur enregistrée, même avant publication.
+        if (typeof window.fetchLocationSkeletonOverrides === 'function') {
+            try {
+                const overrides = await window.fetchLocationSkeletonOverrides();
+                skeleton.forEach(loc => {
+                    const o = overrides[String(loc.id)];
+                    if (o) Object.assign(loc, o);
+                });
+            } catch (e) { /* tant pis, on garde les valeurs codées en dur */ }
+        }
         allSiteLocationsCache = skeleton;
         return allSiteLocationsCache;
     }
@@ -994,7 +1023,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', loc.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', loc.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', loc.category)}</div>
-                <div class="sub-meta-field"><label>Year</label>${metaFieldSelectHtml('year', loc.year)}</div>
+                <div class="sub-meta-field sub-meta-field-wide"><label>Year — select every year that applies</label>${yearCheckboxGroupHtml(loc.year)}</div>
             </div>
 
             <!-- Sections "story" (demande du 13/09/2026, "reprenne l'affichage de Location
@@ -1160,6 +1189,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 const val = input.value.trim();
                 if (val) skeletonFields[input.dataset.field] = val;
             });
+            // Year (demande du 13/09/2026) : cases à cocher plutôt qu'un .sub-field-input,
+            // donc collecté séparément — voir yearCheckboxGroupHtml()/collectYearCheckboxValue()
+            // dans script.js.
+            const yearGroupEl = card.querySelector('.year-checkbox-group');
+            if (yearGroupEl) {
+                const yearVal = collectYearCheckboxValue(yearGroupEl);
+                if (yearVal) skeletonFields.year = yearVal;
+            }
             const hasSkeletonChanges = Object.keys(skeletonFields).length > 0;
 
             const res = await window.adminUpdateLocationContent(loc.id, fields);

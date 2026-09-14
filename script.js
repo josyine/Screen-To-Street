@@ -4817,6 +4817,77 @@ function splitFullDescriptionForEdit(html) {
     };
 }
 
+// Sélection multiple des années (demande du 13/09/2026, "quand je change la date d'un
+// lieu les modifications ne s'appliquent pas... au lieu d'afficher 2016-2017, je veux
+// que tu n'affiches que les années en sélection, en sélection multiple") — remplace le
+// champ Year (jusqu'ici un texte libre ici, ou un <select> limité aux chaînes déjà vues
+// dans celebLocations côté admin.html) par des cases à cocher, une par année. Racine du
+// bug signalé : l'ancien <select> d'admin.html ne proposait QUE des chaînes DÉJÀ
+// présentes ailleurs dans les données (ex: "2013 - 2017") — impossible de composer une
+// combinaison d'années qui n'existait pas encore mot pour mot, donc "changer la date"
+// n'avait souvent aucune option correspondant à ce que l'admin voulait réellement
+// sélectionner. Fonctions partagées ici (script.js) plutôt que dupliquées dans
+// admin.html : les deux fichiers exécutent leurs <script> dans la même portée globale
+// (voir adminVerifiedLocationIdsCache / le bug de PR #85), donc une simple déclaration
+// `function` suffit à les rendre appelables depuis l'inline <script> d'admin.html.
+let _yearOptionsCache = null;
+function getYearOptions() {
+    if (_yearOptionsCache) return _yearOptionsCache;
+    const years = new Set();
+    if (typeof celebLocations !== 'undefined') {
+        celebLocations.forEach(loc => {
+            parseYearsFromValue(loc.year).forEach(y => years.add(y));
+        });
+    }
+    const nums = Array.from(years);
+    const dataMin = nums.length ? Math.min(...nums) : 2013;
+    const dataMax = nums.length ? Math.max(...nums) : 2013;
+    // Toujours au moins jusqu'à l'année prochaine, pour pouvoir taguer un lieu tout juste
+    // annoncé avant même qu'aucun autre lieu publié n'ait cette année-là.
+    const max = Math.max(dataMax, new Date().getFullYear() + 1);
+    const result = [];
+    for (let y = dataMin; y <= max; y++) result.push(y);
+    _yearOptionsCache = result;
+    return result;
+}
+// Comprend 3 formats déjà présents dans les données existantes (uniquement pour
+// pré-cocher les bonnes cases à l'ouverture d'une fiche — n'affecte jamais ce qui est
+// réécrit à la sauvegarde, toujours ", " désormais, voir collectYearCheckboxValue) :
+// une plage continue "2013 - 2017"/"2013-2017" (toutes les années comprises), ou une
+// liste d'années précises séparées par "," ou "·" (ex: "2019 · 2026", "2017, 2019").
+function parseYearsFromValue(currentValue) {
+    const raw = (currentValue || '').toString().trim();
+    if (!raw) return [];
+    const rangeMatch = raw.match(/^(\d{4})\s*-\s*(\d{4})$/);
+    if (rangeMatch) {
+        const start = parseInt(rangeMatch[1], 10), end = parseInt(rangeMatch[2], 10);
+        const years = [];
+        for (let y = Math.min(start, end); y <= Math.max(start, end); y++) years.push(y);
+        return years;
+    }
+    return raw.split(/[,·]/).map(s => parseInt(s.trim(), 10)).filter(n => !Number.isNaN(n));
+}
+function yearCheckboxGroupHtml(currentValue) {
+    const selected = new Set(parseYearsFromValue(currentValue));
+    const checkboxes = getYearOptions().map(y => `
+        <label class="member-checkbox">
+            <input type="checkbox" class="year-checkbox-input" value="${y}"${selected.has(y) ? ' checked' : ''}>
+            ${y}
+        </label>`).join('');
+    return `<div class="member-checkbox-group year-checkbox-group">${checkboxes}</div>`;
+}
+// Lit les cases cochées d'un conteneur donné (une fiche/carte peut en contenir un seul
+// groupe) et les rejoint par ", ", triées — même convention que "Member" (déjà ", "),
+// remplace pour de bon les anciennes plages à tiret ("2016-2017") côté écriture.
+function collectYearCheckboxValue(container) {
+    if (!container) return '';
+    return Array.from(container.querySelectorAll('.year-checkbox-input'))
+        .filter(cb => cb.checked)
+        .map(cb => parseInt(cb.value, 10))
+        .sort((a, b) => a - b)
+        .join(', ');
+}
+
 function ensureLocationEditModal() {
     let modal = document.getElementById('location-edit-modal');
     if (modal) return modal;
@@ -4868,8 +4939,8 @@ function ensureLocationEditModal() {
                 <div style="flex:1;"><label style="${labelStyle}">Country</label><input type="text" id="location-edit-country" style="${fieldStyle}"></div>
                 <div style="flex:1;"><label style="${labelStyle}">City</label><input type="text" id="location-edit-city" style="${fieldStyle}"></div>
             </div>
-            <label style="${labelStyle}">Date</label>
-            <input type="text" id="location-edit-year" style="${fieldStyle} margin-bottom:14px;" placeholder="e.g. 2020">
+            <label style="${labelStyle}">Date — select every year that applies</label>
+            <div id="location-edit-year" style="margin-bottom:14px;"></div>
 
             <label style="${labelStyle}">YouTube video URL</label>
             <input type="url" id="location-edit-youtube" style="${fieldStyle}" placeholder="https://www.youtube.com/watch?v=...">
@@ -5064,7 +5135,7 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-member').value = data.member || '';
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
-        document.getElementById('location-edit-year').value = data.year || '';
+        document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
         const tipsEditorEl = document.getElementById('location-edit-tips-editor');
         if (tipsEditorEl) {
             locationEditTipsWidget = window.createTitledListField(tipsEditorEl, {
@@ -5169,7 +5240,7 @@ async function saveLocationEdit(locId, modal) {
     const memberVal = document.getElementById('location-edit-member').value.trim();
     const countryVal = document.getElementById('location-edit-country').value.trim();
     const cityVal = document.getElementById('location-edit-city').value.trim();
-    const yearVal = document.getElementById('location-edit-year').value.trim();
+    const yearVal = collectYearCheckboxValue(document.getElementById('location-edit-year'));
 
     let hasError = false;
     const checkField = (val, extracted, errId) => {
