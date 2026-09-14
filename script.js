@@ -4901,6 +4901,46 @@ function collectYearCheckboxValue(container) {
         .join(', ');
 }
 
+// Sélection multiple des membres (demande du 14/09/2026, "je veux que tu sépare... reprend
+// la même forme que dans la page admin pour 'Submission location', avec aussi la multi
+// sélection des membres et multi sélection des dates" — modal crayon de map.html). Même
+// mécanisme que les cases à cocher Year ci-dessus : fonctions partagées ici plutôt que
+// dupliquées dans admin.html (qui les déclarait jusqu'ici en interne), pour la même raison
+// documentée au-dessus de getYearOptions() — les deux fichiers exécutent leurs <script>
+// dans la même portée globale, une simple déclaration `const`/`function` au niveau racine
+// de CE fichier suffit donc à les rendre appelables depuis l'inline <script> d'admin.html,
+// sans jamais les y redéclarer (sans quoi la page entière se figerait en silence, voir le
+// bug de PR #85 dans le commentaire au-dessus de getYearOptions()).
+const BTS_MEMBER_OPTIONS = ['RM', 'Jin', 'Suga', 'J-Hope', 'Jimin', 'V', 'Jungkook'];
+// Tolère quelques variantes déjà vues dans des données existantes (vrai prénom, faute de
+// frappe) pour pré-cocher correctement une valeur déjà enregistrée — n'affecte que
+// l'affichage initial, jamais ce qui est écrit à la sauvegarde.
+const BTS_MEMBER_ALIASES = { namjoon: 'RM', jhope: 'J-Hope' };
+function memberMultiSelectHtml(currentValue) {
+    const raw = (currentValue || '').split(',').map(s => s.trim()).filter(Boolean);
+    const selected = new Set(raw.map(v => {
+        const key = v.toLowerCase().replace(/[^a-z]/g, '');
+        return BTS_MEMBER_ALIASES[key] || v;
+    }));
+    const checkboxes = BTS_MEMBER_OPTIONS.map(m => `
+        <label class="member-checkbox">
+            <input type="checkbox" class="member-checkbox-input" value="${m}"${selected.has(m) ? ' checked' : ''}>
+            ${m}
+        </label>`).join('');
+    return `<div class="member-checkbox-group">${checkboxes}</div>`;
+}
+// Lit les cases cochées d'un conteneur donné, jointes par ", " — même convention que Year
+// ci-dessus ; "All" si aucune case cochée (convention du site pour "concerne tous les
+// membres", voir renderExistingLocationCard() dans admin.html).
+function collectMemberCheckboxValue(container) {
+    if (!container) return '';
+    const checked = BTS_MEMBER_OPTIONS.filter(m => {
+        const cb = container.querySelector(`.member-checkbox-input[value="${m}"]`);
+        return cb && cb.checked;
+    });
+    return checked.length ? checked.join(', ') : 'All';
+}
+
 function ensureLocationEditModal() {
     let modal = document.getElementById('location-edit-modal');
     if (modal) return modal;
@@ -4945,8 +4985,17 @@ function ensureLocationEditModal() {
             <div id="location-edit-recreate-photo-error" class="hidden" style="${errStyle}"></div>
             <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place" — hidden entirely while this is empty.</div>
 
-            <label style="${labelStyle}">Story (English)</label>
-            <textarea id="location-edit-story" rows="6" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="One paragraph per blank line"></textarea>
+            <!-- Sections "story" séparées (demande du 14/09/2026, "je veux que tu sépare la
+                 partie 'The story of this place' et 'Following in BTS's footsteps'... reprend
+                 la même forme que dans la page admin pour 'Submission location'") — même
+                 découpe/labels que renderExistingLocationCard()/renderCard() dans admin.html :
+                 splitFullDescriptionForEdit() sépare le 1er paragraphe de fullDescription.en
+                 (le lieu) des suivants (le lien BTS), les deux se recombinent en un seul
+                 fullDescription.en à la sauvegarde (voir saveLocationEdit()). -->
+            <label style="${labelStyle}">The story of this place</label>
+            <textarea id="location-edit-story-place" rows="3" style="${fieldStyle} margin-bottom:10px; resize:vertical;" placeholder="Describe the place itself — what it is, where it is."></textarea>
+            <label style="${labelStyle}">Following in BTS's footsteps</label>
+            <textarea id="location-edit-story-bts" rows="3" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="How this place connects to BTS / the member — one paragraph per blank line."></textarea>
 
             <!-- Tips (demande du 13/09/2026) : même éditeur que admin.html, voir
                  window.createTitledListField() plus haut dans ce fichier — écrit dans le
@@ -4963,8 +5012,9 @@ function ensureLocationEditModal() {
                  fonctionner — pas de validation stricte ici, panneau réservé aux admins. -->
             <div style="display:flex; gap:8px;">
                 <div style="flex:1;"><label style="${labelStyle}">Group</label><input type="text" id="location-edit-group" style="${fieldStyle}"></div>
-                <div style="flex:1;"><label style="${labelStyle}">Member(s)</label><input type="text" id="location-edit-member" style="${fieldStyle}"></div>
             </div>
+            <label style="${labelStyle}">Member(s) — select every member that applies</label>
+            <div id="location-edit-member" style="margin-bottom:10px;"></div>
             <div style="display:flex; gap:8px;">
                 <div style="flex:1;"><label style="${labelStyle}">Country</label><input type="text" id="location-edit-country" style="${fieldStyle}"></div>
                 <div style="flex:1;"><label style="${labelStyle}">City</label><input type="text" id="location-edit-city" style="${fieldStyle}"></div>
@@ -5220,13 +5270,18 @@ window.openLocationEditModal = async function (locId) {
     // ci-dessous, appelée uniquement pour le remplissage initial.
     const fillSkeletonFields = (data) => {
         document.getElementById('location-edit-group').value = data.group || '';
-        document.getElementById('location-edit-member').value = data.member || '';
+        document.getElementById('location-edit-member').innerHTML = memberMultiSelectHtml(data.member);
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
         document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
     };
     const fillForm = (data) => {
-        document.getElementById('location-edit-story').value = htmlParagraphsToPlainText(getLocText(data.fullDescription));
+        // Découpe en 2 sections (demande du 14/09/2026) : même champ source
+        // (fullDescription.en) et même découpe que admin.html — voir
+        // splitFullDescriptionForEdit() plus haut dans ce fichier.
+        const storySplit = splitFullDescriptionForEdit(data.fullDescription && data.fullDescription.en);
+        document.getElementById('location-edit-story-place').value = storySplit.placeText;
+        document.getElementById('location-edit-story-bts').value = storySplit.btsText;
         document.getElementById('location-edit-youtube').value = data.ytId ? `https://www.youtube.com/watch?v=${data.ytId}` : '';
         document.getElementById('location-edit-tweet').value = data.tweetUrl || '';
         document.getElementById('location-edit-instagram').value = data.instagramUrl || '';
@@ -5360,7 +5415,8 @@ async function saveLocationEdit(locId, modal) {
     const resultEl = document.getElementById('location-edit-result');
     saveBtn.disabled = true;
 
-    const storyText = document.getElementById('location-edit-story').value;
+    const storyPlaceText = document.getElementById('location-edit-story-place').value;
+    const storyBtsText = document.getElementById('location-edit-story-bts').value;
     const youtubeVal = document.getElementById('location-edit-youtube').value.trim();
     const tweetVal = document.getElementById('location-edit-tweet').value.trim();
     const instagramVal = document.getElementById('location-edit-instagram').value.trim();
@@ -5368,7 +5424,7 @@ async function saveLocationEdit(locId, modal) {
     const tiktokVal = document.getElementById('location-edit-tiktok').value.trim();
     const officialLinkVal = document.getElementById('location-edit-official-link').value.trim();
     const groupVal = document.getElementById('location-edit-group').value.trim();
-    const memberVal = document.getElementById('location-edit-member').value.trim();
+    const memberVal = collectMemberCheckboxValue(document.getElementById('location-edit-member'));
     const countryVal = document.getElementById('location-edit-country').value.trim();
     const cityVal = document.getElementById('location-edit-city').value.trim();
     const yearVal = collectYearCheckboxValue(document.getElementById('location-edit-year'));
@@ -5435,7 +5491,11 @@ async function saveLocationEdit(locId, modal) {
 
     // Ne remplace QUE la clé "en" de fullDescription, jamais les autres langues déjà
     // traduites (locationEditExistingFullDescription posé par openLocationEditModal).
-    const fullDescription = Object.assign({}, locationEditExistingFullDescription, { en: plainTextToHtmlParagraphs(storyText) });
+    // Recombine les 2 sections en un seul texte (demande du 14/09/2026) — même convention
+    // que admin.html (renderExistingLocationCard()/renderCard()) : un paragraphe par
+    // section, séparées par une ligne vide.
+    const combinedStory = [storyPlaceText.trim(), storyBtsText.trim()].filter(Boolean).join('\n\n');
+    const fullDescription = Object.assign({}, locationEditExistingFullDescription, { en: plainTextToHtmlParagraphs(combinedStory) });
     const fields = Object.assign({
         fullDescription,
         ytId: ytId || '',
@@ -5621,6 +5681,18 @@ window.openDetailsPanel = function(id) {
             if (typeof window.syncUserData === 'function') window.syncUserData({ viewedLocationIds: viewed });
             updateFreeViewsCounter();
         }
+    }
+
+    // Compteur public "vues" par lieu (demande du 14/09/2026, mode admin : lieux les plus
+    // consultés) — une seule incrémentation par lieu et par session de navigation, pas par
+    // clic (rouvrir 10x la même fiche ne doit pas fausser le classement). En mémoire
+    // seulement (pas besoin de survivre à un rechargement, contrairement au mur de
+    // paiement juste au-dessus) ; compte aussi les visiteurs non connectés, voir la règle
+    // Firestore dédiée sur window.incrementLocationViewCount() (firebase-init.js).
+    if (!window.__viewCountedLocationIds) window.__viewCountedLocationIds = new Set();
+    if (!window.__viewCountedLocationIds.has(id)) {
+        window.__viewCountedLocationIds.add(id);
+        if (typeof window.incrementLocationViewCount === 'function') window.incrementLocationViewCount(id);
     }
 
     currentLocationIdForMemory = loc.id;

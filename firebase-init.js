@@ -335,6 +335,27 @@ window.updateLocationWishlistCount = async function (locationId, delta) {
     }
 };
 
+// Compteur public "nombre de vues" par lieu (demande du 14/09/2026, "ajoute le nombre de
+// vue par lieu, pour qu'on puisse savoir les lieux les plus consultés" — mode admin).
+// Champ distinct de wishlistCount/checkinCount ci-dessus sur le MÊME document
+// locationStats/{locationId} : appelé depuis openDetailsPanel() (script.js), y compris
+// pour les visiteurs non connectés (voir la règle Firestore dédiée ci-dessous, qui ne
+// requiert donc PAS request.auth != null contrairement aux deux autres champs).
+//
+// IMPORTANT — nécessite une règle Firestore dédiée (à ajouter dans la console Firebase,
+// voir firestore.rules à la racine du dépôt pour la version à jour) :
+//   match /locationStats/{locationId} {
+//     allow write: if (resource == null && request.resource.data.keys().hasOnly(['viewCount']))
+//       || (resource != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['viewCount']));
+//   }
+window.incrementLocationViewCount = async function (locationId) {
+    try {
+        await setDoc(doc(db, 'locationStats', String(locationId)), { viewCount: increment(1) }, { merge: true });
+    } catch (e) {
+        console.warn('Mise à jour du compteur de vues échouée :', e);
+    }
+};
+
 window.loadAllLocationStats = async function () {
     try {
         const snap = await getDocs(collection(db, 'locationStats'));
