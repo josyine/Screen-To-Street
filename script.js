@@ -3643,12 +3643,11 @@ function renderLocations(skipFitBounds) {
             // vers le lieu sur la map", donc PAS d'ouverture de la fiche détail dans ce
             // cas précis — seulement quand on clique depuis la liste normale (parcours
             // par filtres, champ de recherche vide), comportement inchangé.
-            // Sur mobile (demande du 13/09/2026), cette liste vit dans le menu déroulant
-            // de la carte (hamburger) : un tap recentre juste la carte sur le point, sans
-            // jamais ouvrir la fiche détail — même choix que la recherche ci-dessus, cette
-            // fois pour TOUTE la liste. Sur ordinateur, comportement inchangé.
-            const isMobile = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-            if (!isMobile && !searchInput.value.trim()) window.openDetailsPanel(loc.id);
+            // Sur mobile, cette liste vit dans le menu déroulant de la carte (hamburger) —
+            // un tap dessus ouvrait seulement le pin (demande du 13/09/2026), mais plus
+            // depuis (demande du 14/09/2026, "quand je clique sur un lieu dans le menu, je
+            // veux que ça ouvre la page détail du lieu") : même comportement qu'ordinateur.
+            if (!searchInput.value.trim()) window.openDetailsPanel(loc.id);
         });
         locationListElement.appendChild(card);
     });
@@ -3823,12 +3822,12 @@ function renderVisitedTabList() {
             // souvent 1.5 à 4s pour un lieu éloigné du centre actuel. Même valeur fixe
             // partout où flyTo() est appelé sur ce fichier, pour une sensation cohérente.
             map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
-            // Sur mobile (demande du 13/09/2026), cette liste vit dans le menu déroulant de
-            // la carte (hamburger) : un tap recentre juste la carte sur le point, sans
-            // ouvrir la fiche détail — même choix que renderLocations() plus haut. Sur
-            // ordinateur, comportement inchangé.
-            const isMobile = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
-            if (!isMobile) window.openDetailsPanel(loc.id);
+            // Sur mobile, cette liste vit dans le menu déroulant de la carte (hamburger) —
+            // un tap dessus ouvrait seulement le pin (demande du 13/09/2026), mais plus
+            // depuis (demande du 14/09/2026, "quand je clique sur un lieu dans le menu, je
+            // veux que ça ouvre la page détail du lieu") : même comportement qu'ordinateur,
+            // voir renderLocations() plus haut.
+            window.openDetailsPanel(loc.id);
         });
         listEl.appendChild(card);
     });
