@@ -104,6 +104,11 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 .feed-tile-likes { position: absolute; top: 6px; right: 6px; display: flex; align-items: center; gap: 3px; background: rgba(20,16,30,.5); color: #fff; font-size: 10.5px; font-weight: 700; padding: 3px 7px 3px 6px; border-radius: 100px; z-index: 2; cursor: pointer; }
 .feed-tile-likes svg { width: 11px; height: 11px; flex-shrink: 0; }
 .feed-tile-likes.liked svg { fill: #D42759; stroke: #D42759; }
+/* Onglet "Sacred Places" (demande du 14/09/2026) : tuiles de lieux officiels du site, pas
+   des publications d'utilisateurs — ni avatar ni compteur de likes (voir renderSacredGrid()
+   plus bas), remplacés par ce seul badge "Official". */
+.feed-tile-official-badge { position: absolute; left: 6px; bottom: 6px; display: flex; align-items: center; gap: 4px; background: rgba(20,16,30,.55); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; padding: 4px 8px; border-radius: 100px; z-index: 2; }
+.feed-tile-official-badge svg { width: 10px; height: 10px; flex-shrink: 0; }
 .feed-empty, .feed-loading { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
 
 /* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
@@ -300,21 +305,28 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 </div>
 
 <div class="feed-page">
-    <div class="feed-title">Explore</div>
+    <div class="feed-title">Feed</div>
 
-    <!-- Onglets Explore/Saved (demande du 13/09/2026) : "Saved" liste les publications où
-         l'utilisateur a cliqué l'icône d'enregistrement (voir modal-post-save-btn/
-         window.togglePhotoSave() dans script.js/firebase-init.js) — voir switchFeedTab()
-         plus bas. -->
+    <!-- Onglets (demande du 13/09/2026, "Explore"/"Saved" ; renommé et étendu le
+         14/09/2026, "renomme Explore par Communauté... et un nouvel onglet Lieux Cultes") :
+         - "community" (ex-"explore") : le fil de publications des visiteurs.
+         - "sacred" : TOUS les lieux du site, contenu officiel (voir renderSacredGrid() plus
+           bas) — pas des publications d'utilisateurs.
+         - "saved" : publications où l'utilisateur a cliqué l'icône d'enregistrement (voir
+           modal-post-save-btn/window.togglePhotoSave() dans script.js/firebase-init.js).
+         Voir switchFeedTab() plus bas. -->
     <div class="feed-tabs" id="feed-tabs">
-        <button class="feed-tab-btn active" data-tab="explore" onclick="switchFeedTab('explore')">Explore</button>
+        <button class="feed-tab-btn active" data-tab="community" onclick="switchFeedTab('community')">Community</button>
+        <button class="feed-tab-btn" data-tab="sacred" onclick="switchFeedTab('sacred')">Sacred Places</button>
         <button class="feed-tab-btn" data-tab="saved" onclick="switchFeedTab('saved')">Saved</button>
     </div>
 
     <!-- Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client
-         sur feedPhotos, déjà chargé en entier — voir filterFeed() plus bas. Masquée sur
-         l'onglet Saved (demande du 13/09/2026) : peu de publications enregistrées, la
-         recherche n'y a pas grand intérêt et complique inutilement l'écran. -->
+         sur feedPhotos, déjà chargé en entier — voir filterFeed() plus bas. Masquée sur les
+         onglets Saved (demande du 13/09/2026) et Sacred Places (demande du 14/09/2026) :
+         peu d'intérêt sur Saved (peu de publications enregistrées), et Sacred Places liste
+         des lieux (pas des publications de feedPhotos) — filterFeed() ne s'applique pas à
+         ces données-là. -->
     <div class="feed-search-wrap" id="feed-search-wrap">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="feed-search-icon"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search a place, a group, a user...">
@@ -471,20 +483,85 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     }
     document.getElementById('feed-search-input').addEventListener('input', (e) => filterFeed(e.target.value));
 
-    // Onglets Explore/Saved (demande du 13/09/2026). "Saved" filtre feedPhotos (déjà
-    // chargé pour Explore) sur les clés renvoyées par window.listMySavedPhotoKeys() —
-    // pas de second fetch réseau des publications elles-mêmes.
-    let currentFeedTab = 'explore';
+    // Onglets (demande du 13/09/2026, "Explore"/"Saved" ; renommé/étendu le 14/09/2026).
+    // "Saved" filtre feedPhotos (déjà chargé pour Community) sur les clés renvoyées par
+    // window.listMySavedPhotoKeys() — pas de second fetch réseau des publications
+    // elles-mêmes. "Sacred Places" (tous les lieux du site) est un contenu totalement
+    // différent (celebLocations, pas feedPhotos) — voir renderSacredGrid() plus bas.
+    let currentFeedTab = 'community';
     window.switchFeedTab = function (tab) {
         currentFeedTab = tab;
         document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-        document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved');
+        document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred');
         if (tab === 'saved') {
             loadSavedFeed();
+        } else if (tab === 'sacred') {
+            renderSacredGrid();
         } else {
             filterFeed(document.getElementById('feed-search-input').value);
         }
     };
+
+    // Onglet "Sacred Places" (demande du 14/09/2026, "afficher tous les lieux présents dans
+    // le site... enlever les likes et le profil de l'utilisateur... à la place, un badge
+    // Officiel... quand on clique, ça ouvre le detail du lieu, et quand on revient en
+    // arrière ça revient là où on était") — même grille visuelle que .feed-tile
+    // (renderFeedGrid ci-dessus), mais construite à partir de celebLocations (tous les
+    // lieux publiés, déjà en mémoire via locations-data.js, aucune lecture Firestore) au
+    // lieu de feedPhotos (publications d'utilisateurs). Un clic navigue VRAIMENT vers
+    // map.html?loc=<id> (même convention qu'un lien de lieu partagé — voir le bloc
+    // "locParam" dans script.js) plutôt que d'ouvrir la modale #loc-modal comme les autres
+    // onglets : "quand on revient en arrière" implique une vraie navigation avec bouton
+    // Retour du navigateur, pas une fermeture de modale (qui ne "revient" nulle part).
+    const officialBadgeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    let sacredGridRendered = false;
+    function renderSacredGrid() {
+        const grid = document.getElementById('feed-grid');
+        const emptyEl = document.getElementById('feed-empty');
+        const loadingEl = document.getElementById('feed-loading');
+        loadingEl.classList.add('hidden');
+        const locs = typeof celebLocations !== 'undefined' ? celebLocations : [];
+        if (!locs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No locations yet.'; emptyEl.classList.remove('hidden'); return; }
+        emptyEl.classList.add('hidden');
+        grid.innerHTML = '';
+        locs.forEach(loc => {
+            const img = loc.img || (loc.ytId ? `https://img.youtube.com/vi/${loc.ytId}/hqdefault.jpg` : '');
+            const tile = document.createElement('div');
+            tile.className = 'feed-tile';
+            tile.style.backgroundImage = img ? `url('${img}')` : 'none';
+            tile.style.background = img ? '' : '#cbd5e1';
+            tile.title = loc.name || '';
+            tile.innerHTML = `<div class="feed-tile-official-badge">${officialBadgeSvg}<span>Official</span></div>`;
+            tile.onclick = () => openSacredPlace(loc.id);
+            grid.appendChild(tile);
+        });
+        sacredGridRendered = true;
+    }
+
+    const SACRED_RETURN_KEY = 'feedSacredReturnScrollY';
+    function openSacredPlace(locId) {
+        // Mémorise où revenir (voir restoreSacredReturnState() plus bas, appelé au
+        // rechargement de cette page par le bouton Retour du navigateur) — sessionStorage,
+        // pas juste une variable JS, puisque cette page sera rechargée/dépubliée pendant la
+        // navigation vers map.html.
+        sessionStorage.setItem('feedActiveTab', 'sacred');
+        sessionStorage.setItem(SACRED_RETURN_KEY, String(window.scrollY));
+        window.location.href = 'map.html?loc=' + encodeURIComponent(locId);
+    }
+    function restoreSacredReturnState() {
+        const savedTab = sessionStorage.getItem('feedActiveTab');
+        if (savedTab !== 'sacred') return;
+        switchFeedTab('sacred');
+        const scrollY = parseInt(sessionStorage.getItem(SACRED_RETURN_KEY), 10);
+        sessionStorage.removeItem('feedActiveTab');
+        sessionStorage.removeItem(SACRED_RETURN_KEY);
+        if (!Number.isNaN(scrollY)) {
+            // Le scroll ne peut être restauré qu'une fois la grille effectivement peuplée
+            // (hauteur de page correcte) — un court délai suffit, celebLocations est déjà en
+            // mémoire (aucune lecture réseau à attendre pour cet onglet).
+            requestAnimationFrame(() => window.scrollTo(0, scrollY));
+        }
+    }
 
     async function loadSavedFeed() {
         const loadingEl = document.getElementById('feed-loading');
@@ -565,14 +642,23 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
                     p.group = loc ? loc.group : '';
                 });
             }
+            // Ne dessine la grille Community que si cet onglet est TOUJOURS actif (demande
+            // du 14/09/2026, ajout de "sacred") : cette lecture Firestore est asynchrone et
+            // peut résoudre après que la personne a déjà changé d'onglet (en particulier
+            // "sacred", restauré immédiatement au chargement par restoreSacredReturnState()
+            // ci-dessous, donc souvent avant même que cette requête ait fini) — sans cette
+            // garde, la grille Community réapparaîtrait par-dessus en silence.
+            if (currentFeedTab !== 'community') { loadingEl.classList.add('hidden'); return; }
             loadingEl.classList.add('hidden');
             if (!feedPhotos.length) { document.getElementById('feed-empty').textContent = 'No public photos yet.'; document.getElementById('feed-empty').classList.remove('hidden'); return; }
             renderFeedGrid(feedPhotos);
         } catch (e) {
             console.warn('Chargement du fil de photos échoué :', e);
             loadingEl.classList.add('hidden');
-            emptyEl.textContent = 'Loading failed — check your connection and try again.';
-            emptyEl.classList.remove('hidden');
+            if (currentFeedTab === 'community') {
+                emptyEl.textContent = 'Loading failed — check your connection and try again.';
+                emptyEl.classList.remove('hidden');
+            }
         }
     }
 
@@ -594,6 +680,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
             photoId: p.standalone ? p.id : null
         });
     }
+
+    // Restaure l'onglet "Sacred Places" + le scroll au retour d'un clic sur un lieu
+    // (demande du 14/09/2026) — celebLocations est déjà en mémoire à ce stade (chargée en
+    // synchrone par locations-data.js/script.js avant ce <script>), pas besoin d'attendre
+    // firebase-ready pour ça. loadFeed() (Community) reste appelé normalement ci-dessous
+    // pour que l'onglet Community soit prêt si la personne y bascule ensuite.
+    restoreSacredReturnState();
 
     window.addEventListener('firebase-ready', () => { loadFeed(); });
 </script>
