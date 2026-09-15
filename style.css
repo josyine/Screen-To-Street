@@ -387,6 +387,13 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .stat-pill-btn { display:flex; gap:6px; align-items:center; cursor:pointer; transition: 0.2s; }
 .stat-pill-num { color: var(--primary-magenta); font-weight: 800; }
 .stat-pill-text { color: #212832; transition: 0.2s; }
+/* KPI "verified" admin (demande du 15/09/2026) : deuxième pastille sous la bannière
+   principale ("X LOCATIONS | Y COUNTRIES") — .map-kpi-pill passe donc en colonne pour
+   empiler les deux ; son unique enfant jusqu'ici (la bannière) gérait déjà lui-même sa
+   propre mise en ligne horizontale via son style inline, donc rien ne casse pour les
+   visiteurs normaux (élément admin absent/masqué pour eux). */
+.map-kpi-pill { flex-direction: column; align-items: flex-start; gap: 8px; }
+.admin-verified-kpi-pill { background: #fff; border-radius: 100px; padding: 8px 18px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 12px; font-weight: 700; }
 .stat-pill-btn:hover .stat-pill-text { color: var(--primary-magenta); }
 
 .custom-category-marker div { 
