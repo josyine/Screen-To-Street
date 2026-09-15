@@ -577,8 +577,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 
             <label class="sub-section-label">The story of this place</label>
             <textarea class="sub-story-place-textarea sub-section-textarea" rows="3" placeholder="Describe the place itself — what it is, where it is."></textarea>
+            <!-- Une section par visite (demande du 15/09/2026) — voir
+                 window.createVisitSectionsField() dans script.js. -->
             <label class="sub-section-label">Following in BTS's footsteps</label>
-            <textarea class="sub-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line. Visited more than once? Start each paragraph with &quot;Year, Member(s):&quot;, e.g. &quot;2023, Jimin &amp; J-Hope: ...&quot; then a blank line then &quot;2026, RM: ...&quot; — shown as a bold label per visit."></textarea>
+            <div class="sub-story-bts-editor" style="margin-bottom:10px;"></div>
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
             <label class="sub-section-label">Official website (optional)</label>
@@ -695,17 +697,19 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         // paragraphes suivants sont "following in BTS's footsteps". Les deux zones
         // toujours visibles se recombinent en un seul fullDescription.en à la saisie.
         const storyPlaceEl = card.querySelector('.sub-story-place-textarea');
-        const storyBtsEl = card.querySelector('.sub-story-bts-textarea');
-        if (storyPlaceEl && storyBtsEl) {
+        const storyBtsEditorEl = card.querySelector('.sub-story-bts-editor');
+        let footstepsWidget = null;
+        if (storyPlaceEl) {
             const split = splitFullDescriptionForEdit(sub.fullDescription && sub.fullDescription.en);
             storyPlaceEl.value = split.placeText;
-            storyBtsEl.value = split.btsText;
-            const syncFullDescription = () => {
-                const combined = [storyPlaceEl.value.trim(), storyBtsEl.value.trim()].filter(Boolean).join('\n\n');
-                sub.fullDescription = Object.assign({}, sub.fullDescription, { en: plainTextToHtmlParagraphs(combined) });
-            };
-            storyPlaceEl.addEventListener('change', syncFullDescription);
-            storyBtsEl.addEventListener('change', syncFullDescription);
+            // Une section par visite (demande du 15/09/2026) — collecté au clic sur
+            // Approve, comme tipsFieldWidget plus bas, plutôt qu'en direct à chaque
+            // frappe (le widget n'a pas un seul champ "change" à écouter).
+            if (storyBtsEditorEl && typeof window.createVisitSectionsField === 'function') {
+                footstepsWidget = window.createVisitSectionsField(storyBtsEditorEl, {
+                    sections: parseFootstepsSections(split.btsText)
+                });
+            }
         }
 
         // THE "SCREEN TO STREET" TIPS (demande du 13/09/2026, "+ add a tips") —
@@ -897,6 +901,15 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             // haut) : collectées seulement ici, au clic, plutôt qu'à chaque frappe comme
             // les autres champs — même principe que extraFieldWidgets ci-dessus.
             if (tipsFieldWidget) sub.tipsList = tipsFieldWidget.collect().values;
+            // Recombine "The story of this place" + les sections de visite en un seul
+            // fullDescription.en (demande du 15/09/2026) — même principe, collecté ici
+            // plutôt qu'à chaque frappe (voir window.createVisitSectionsField() dans
+            // script.js).
+            if (storyPlaceEl) {
+                const btsText = buildFootstepsPlainText(footstepsWidget ? footstepsWidget.collect() : []);
+                const combined = [storyPlaceEl.value.trim(), btsText.trim()].filter(Boolean).join('\n\n');
+                sub.fullDescription = Object.assign({}, sub.fullDescription, { en: plainTextToHtmlParagraphs(combined) });
+            }
             approveBtn.disabled = true; rejectBtn.disabled = true;
             const res = await window.approveLocationSubmission(sub);
             resultEl.classList.remove('hidden');
@@ -1056,8 +1069,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                  deux se recombinent en un seul fullDescription.en à la sauvegarde. -->
             <label class="sub-section-label">The story of this place</label>
             <textarea class="loc-story-place-textarea sub-section-textarea" rows="3" placeholder="Describe the place itself — what it is, where it is."></textarea>
+            <!-- Une section par visite (demande du 15/09/2026) — voir
+                 window.createVisitSectionsField() dans script.js. -->
             <label class="sub-section-label">Following in BTS's footsteps</label>
-            <textarea class="loc-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line. Visited more than once? Start each paragraph with &quot;Year, Member(s):&quot;, e.g. &quot;2023, Jimin &amp; J-Hope: ...&quot; then a blank line then &quot;2026, RM: ...&quot; — shown as a bold label per visit."></textarea>
+            <div class="loc-story-bts-editor" style="margin-bottom:10px;"></div>
 
             <!-- Tips (demande du 13/09/2026, "ajoute également les tips dans Existing
                  locations") — même éditeur (window.createTitledListField()) et même champ
@@ -1131,7 +1146,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         `;
 
         const storyPlaceEl = card.querySelector('.loc-story-place-textarea');
-        const storyBtsEl = card.querySelector('.loc-story-bts-textarea');
+        const storyBtsEditorEl = card.querySelector('.loc-story-bts-editor');
+        let footstepsWidget = null;
         const tweetInput = card.querySelector('.sub-tweet-input');
         const tweetError = card.querySelector('.sub-tweet-error');
         const videoInput = card.querySelector('.sub-video-input');
@@ -1203,7 +1219,11 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const fillFields = (data) => {
             const split = splitFullDescriptionForEdit(data.fullDescription && data.fullDescription.en);
             storyPlaceEl.value = split.placeText;
-            storyBtsEl.value = split.btsText;
+            if (storyBtsEditorEl && typeof window.createVisitSectionsField === 'function') {
+                footstepsWidget = window.createVisitSectionsField(storyBtsEditorEl, {
+                    sections: parseFootstepsSections(split.btsText)
+                });
+            }
             tweetInput.value = data.tweetUrl || '';
             card.querySelector('.sub-social-input[data-platform="instagram"]').value = data.instagramUrl || '';
             card.querySelector('.sub-social-input[data-platform="facebook"]').value = data.facebookUrl || '';
@@ -1305,7 +1325,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 return;
             }
 
-            const combinedStory = [storyPlaceEl.value.trim(), storyBtsEl.value.trim()].filter(Boolean).join('\n\n');
+            const btsText = buildFootstepsPlainText(footstepsWidget ? footstepsWidget.collect() : []);
+            const combinedStory = [storyPlaceEl.value.trim(), btsText.trim()].filter(Boolean).join('\n\n');
             const fullDescription = Object.assign({}, mergedFullDescription, {
                 en: plainTextToHtmlParagraphs(combinedStory)
             });

@@ -4873,6 +4873,114 @@ function splitFullDescriptionForEdit(html) {
     };
 }
 
+// Éditeur "une section par visite" pour Following in BTS's footsteps (demande du
+// 15/09/2026, "parfois les membres vont plusieurs fois au même endroit... je veux que tu
+// ajoutes une section de rédaction par année et membres... s'il n'y a qu'une seule visite,
+// il ne faut pas afficher l'année") — remplace le simple textarea "un paragraphe par ligne
+// vide" par un vrai widget répétable, mais SANS ajouter de nouveau champ de données :
+// btsText reste, comme avant, du texte brut avec un paragraphe par visite ("Année,
+// Membre(s) : texte" quand il y a plusieurs sections, sinon juste le texte) — exactement
+// ce que renderLocationRichContent() sait déjà mettre en gras (voir plus haut, demande
+// du 14/09/2026). Ce widget ne fait donc qu'ÉDITER ce même texte de façon guidée ;
+// parseFootstepsSections()/buildFootstepsPlainText() font l'aller-retour entre les deux
+// représentations, sans toucher au format stocké ni à l'agent IA.
+const VISIT_LABEL_RE = /^(\d{4}(?:\s*[-–]\s*\d{4})?)\s*,\s*([^:]{1,80}):\s*/;
+function parseFootstepsSections(plainText) {
+    const paragraphs = (plainText || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+    if (paragraphs.length === 0) return [{ year: '', member: '', text: '' }];
+    return paragraphs.map(p => {
+        const m = p.match(VISIT_LABEL_RE);
+        // "&" (ex: "Jimin & J-Hope", la convention suggérée à l'admin avant ce widget)
+        // normalisé en ", " — memberMultiSelectHtml() ne reconnaît que des noms séparés
+        // par une virgule pour précocher les bonnes cases ci-dessous.
+        if (m) return { year: m[1].trim(), member: m[2].trim().replace(/\s*&\s*/g, ', '), text: p.slice(m[0].length).trim() };
+        return { year: '', member: '', text: p };
+    });
+}
+function buildFootstepsPlainText(sections) {
+    const real = (sections || []).filter(s => s && s.text && s.text.trim());
+    if (real.length === 0) return '';
+    // Une seule visite : jamais de préfixe "Année, Membre :", même si year/member ont été
+    // remplis pendant qu'il y avait plusieurs sections puis que les autres ont été
+    // supprimées — voir la consigne "s'il n'y a qu'une seule visite... il ne faut pas
+    // afficher l'année" ci-dessus.
+    if (real.length === 1) return real[0].text.trim();
+    return real.map(s => {
+        const label = [s.year, s.member].filter(Boolean).join(', ');
+        return (label ? `${label}: ` : '') + s.text.trim();
+    }).join('\n\n');
+}
+window.createVisitSectionsField = function (container, opts) {
+    opts = opts || {};
+    const textPlaceholder = opts.textPlaceholder || "How this place connects to BTS / the member during this visit.";
+    let sections = Array.isArray(opts.sections) && opts.sections.length > 0
+        ? opts.sections
+        : [{ year: '', member: '', text: '' }];
+
+    const fieldStyle = "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:8px 10px; font-size:12px; font-family:'Poppins',sans-serif; margin-bottom:6px;";
+
+    function collectRaw() {
+        return Array.from(container.querySelectorAll('.vs-row')).map(row => {
+            const yearEl = row.querySelector('.vs-year');
+            const memberEl = row.querySelector('.vs-member');
+            // Pas de repli "All" ici (contrairement à collectMemberCheckboxValue, utilisé
+            // pour le champ Member du lieu) : une visite dont le membre n'est pas encore
+            // renseigné doit rester vide, pas devenir "concerne tous les membres".
+            const member = memberEl
+                ? BTS_MEMBER_OPTIONS.filter(m => {
+                    const cb = memberEl.querySelector(`.member-checkbox-input[value="${m}"]`);
+                    return cb && cb.checked;
+                }).join(', ')
+                : '';
+            return {
+                year: yearEl ? yearEl.value.trim() : '',
+                member: member,
+                text: row.querySelector('.vs-text').value.trim()
+            };
+        });
+    }
+
+    function render(secs) {
+        const multi = secs.length > 1;
+        container.innerHTML = secs.map(sec => `
+            <div class="vs-row" style="border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; position:relative;">
+                ${multi ? `
+                <div style="display:flex; gap:8px; margin-bottom:6px; align-items:flex-start;">
+                    <input type="text" class="vs-year" value="${escapeHtml(sec.year || '')}" placeholder="Year" style="${fieldStyle} width:90px; flex-shrink:0; margin-bottom:0;">
+                    <div class="vs-member" style="flex:1;">${memberMultiSelectHtml(sec.member || '')}</div>
+                </div>` : ''}
+                <textarea class="vs-text" rows="2" placeholder="${escapeHtml(textPlaceholder)}" style="${fieldStyle} margin-bottom:0; resize:vertical;">${escapeHtml(sec.text || '')}</textarea>
+                ${multi ? `<button type="button" class="vs-remove" title="Remove this visit" style="position:absolute; top:6px; right:6px; width:24px; height:24px; border:none; background:none; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer;">&times;</button>` : ''}
+            </div>`).join('') +
+            `<button type="button" class="vs-add-btn" style="background:none; border:none; color:#D42759; font-size:11.5px; font-weight:700; cursor:pointer; padding:2px 0 8px 0; font-family:'Poppins',sans-serif;">+ Add a section</button>`;
+
+        container.querySelector('.vs-add-btn').addEventListener('click', () => {
+            const current = collectRaw();
+            current.push({ year: '', member: '', text: '' });
+            render(current);
+        });
+        container.querySelectorAll('.vs-remove').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const rows = Array.from(container.querySelectorAll('.vs-row'));
+                const idx = rows.indexOf(btn.closest('.vs-row'));
+                const current = collectRaw();
+                current.splice(idx, 1);
+                render(current.length > 0 ? current : [{ year: '', member: '', text: '' }]);
+            });
+        });
+    }
+
+    render(sections);
+
+    return {
+        // Ignore les sections totalement vides (jamais touchées après un "+ Add a
+        // section") — même convention que window.createTitledListField() ci-dessus.
+        collect: function () {
+            return collectRaw().filter(s => s.text);
+        }
+    };
+};
+
 // Sélection multiple des années (demande du 13/09/2026, "quand je change la date d'un
 // lieu les modifications ne s'appliquent pas... au lieu d'afficher 2016-2017, je veux
 // que tu n'affiches que les années en sélection, en sélection multiple") — remplace le
@@ -5037,8 +5145,12 @@ function ensureLocationEditModal() {
                  fullDescription.en à la sauvegarde (voir saveLocationEdit()). -->
             <label style="${labelStyle}">The story of this place</label>
             <textarea id="location-edit-story-place" rows="3" style="${fieldStyle} margin-bottom:10px; resize:vertical;" placeholder="Describe the place itself — what it is, where it is."></textarea>
+            <!-- Une section par visite (demande du 15/09/2026, "ajoute une section de
+                 rédaction par année et membres... s'il n'y a qu'une seule visite, il ne
+                 faut pas afficher l'année") — voir window.createVisitSectionsField() plus
+                 haut dans ce fichier. -->
             <label style="${labelStyle}">Following in BTS's footsteps</label>
-            <textarea id="location-edit-story-bts" rows="3" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="How this place connects to BTS / the member — one paragraph per blank line. Visited more than once? Start each paragraph with &quot;Year, Member(s):&quot;, e.g. &quot;2023, Jimin &amp; J-Hope: ...&quot; then a blank line then &quot;2026, RM: ...&quot; — shown as a bold label per visit."></textarea>
+            <div id="location-edit-story-bts" style="margin-bottom:14px;"></div>
 
             <!-- Tips (demande du 13/09/2026) : même éditeur que admin.html, voir
                  window.createTitledListField() plus haut dans ce fichier — écrit dans le
@@ -5298,6 +5410,9 @@ let locationEditOriginalRawLinks = {};
 // puisse modifier les tips") — même éditeur/widget (createTitledListField) et même champ
 // (tipsList) que la fiche "Existing locations" d'admin.html, pour ne pas les faire diverger.
 let locationEditTipsWidget = null;
+// Sections "une visite par section" (demande du 15/09/2026) — voir
+// window.createVisitSectionsField() plus haut dans ce fichier.
+let locationEditFootstepsWidget = null;
 window.openLocationEditModal = async function (locId) {
     if (!window.__isAdminUser || locId === null || locId === undefined) return;
     const loc = celebLocations.find(l => l.id === locId);
@@ -5338,7 +5453,12 @@ window.openLocationEditModal = async function (locId) {
         // splitFullDescriptionForEdit() plus haut dans ce fichier.
         const storySplit = splitFullDescriptionForEdit(data.fullDescription && data.fullDescription.en);
         document.getElementById('location-edit-story-place').value = storySplit.placeText;
-        document.getElementById('location-edit-story-bts').value = storySplit.btsText;
+        const footstepsEditorEl = document.getElementById('location-edit-story-bts');
+        if (footstepsEditorEl) {
+            locationEditFootstepsWidget = window.createVisitSectionsField(footstepsEditorEl, {
+                sections: parseFootstepsSections(storySplit.btsText)
+            });
+        }
         document.getElementById('location-edit-youtube').value = data.ytId ? `https://www.youtube.com/watch?v=${data.ytId}` : '';
         document.getElementById('location-edit-tweet').value = data.tweetUrl || '';
         document.getElementById('location-edit-instagram').value = data.instagramUrl || '';
@@ -5477,7 +5597,7 @@ async function saveLocationEdit(locId, modal) {
     saveBtn.disabled = true;
 
     const storyPlaceText = document.getElementById('location-edit-story-place').value;
-    const storyBtsText = document.getElementById('location-edit-story-bts').value;
+    const storyBtsText = buildFootstepsPlainText(locationEditFootstepsWidget ? locationEditFootstepsWidget.collect() : []);
     const youtubeVal = document.getElementById('location-edit-youtube').value.trim();
     const tweetVal = document.getElementById('location-edit-tweet').value.trim();
     const instagramVal = document.getElementById('location-edit-instagram').value.trim();
