@@ -1648,7 +1648,32 @@ window.syncTrips = syncTrips;
 // tout doublon ou conflit entre les deux.
 window.addEventListener('firebase-ready', async (e) => {
     const user = e.detail && e.detail.user;
-    if (!user) return; // visiteur non connecté : on garde les données locales telles quelles
+
+    // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
+    // "j'ai essayé de modifier la categorie d'un lieu dans Existing locations, mais ça
+    // ne s'est pas mis à jour dans le lieu dans map") — window.fetchLocationSkeletonOverrides()
+    // (firebase-init.js) documentait déjà "fusionné dans celebLocations au chargement",
+    // mais ce mérge n'était en réalité branché QUE dans admin.html
+    // (loadAllSiteLocationsOnce), jamais ici : la carte elle-même ne relisait donc jamais
+    // les corrections déjà enregistrées, qui restaient invisibles pour tout le monde
+    // (admin inclus) jusqu'au prochain export planifié. Placé AVANT le "if (!user) return"
+    // ci-dessous : une correction déjà publiée doit être visible même déconnecté, comme
+    // n'importe quelle autre donnée de lieu.
+    if (typeof window.fetchLocationSkeletonOverrides === 'function') {
+        try {
+            const overrides = await window.fetchLocationSkeletonOverrides();
+            let anyOverrideApplied = false;
+            celebLocations.forEach(loc => {
+                const o = overrides[String(loc.id)];
+                if (o) { Object.assign(loc, o); anyOverrideApplied = true; }
+            });
+            if (anyOverrideApplied && document.getElementById('map') && typeof renderLocations === 'function') {
+                renderLocations(true);
+            }
+        } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
+    }
+
+    if (!user) return; // visiteur non connecté : le reste (wishlist, trips...) ne s'applique pas
 
     // Icônes "Feed", "Message" et "Admin" du header : présentes en HTML (masquées par
     // défaut via la classe .hidden) sur TOUTES les pages qui incluent ce script — un

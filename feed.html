@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260907">
+<link rel="stylesheet" href="style.css?v=20260915">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -317,7 +317,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
          Voir switchFeedTab() plus bas. -->
     <div class="feed-tabs" id="feed-tabs">
         <button class="feed-tab-btn active" data-tab="community" onclick="switchFeedTab('community')">Community</button>
-        <button class="feed-tab-btn" data-tab="sacred" onclick="switchFeedTab('sacred')">Sacred Places</button>
+        <button class="feed-tab-btn" data-tab="sacred" onclick="switchFeedTab('sacred')">Recreate the Photo</button>
         <button class="feed-tab-btn" data-tab="saved" onclick="switchFeedTab('saved')">Saved</button>
     </div>
 
@@ -378,9 +378,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260913"></script>
-<script src="locations-data.js?v=20260911"></script>
-<script src="script.js?v=20260911"></script>
+<script type="module" src="firebase-init.js?v=20260915"></script>
+<script src="locations-data.js?v=20260915"></script>
+<script src="script.js?v=20260915"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -502,36 +502,34 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         }
     };
 
-    // Onglet "Sacred Places" (demande du 14/09/2026, "afficher tous les lieux présents dans
-    // le site... enlever les likes et le profil de l'utilisateur... à la place, un badge
-    // Officiel... quand on clique, ça ouvre le detail du lieu, et quand on revient en
-    // arrière ça revient là où on était") — même grille visuelle que .feed-tile
-    // (renderFeedGrid ci-dessus), mais construite à partir de celebLocations (tous les
-    // lieux publiés, déjà en mémoire via locations-data.js, aucune lecture Firestore) au
-    // lieu de feedPhotos (publications d'utilisateurs). Un clic navigue VRAIMENT vers
-    // map.html?loc=<id> (même convention qu'un lien de lieu partagé — voir le bloc
-    // "locParam" dans script.js) plutôt que d'ouvrir la modale #loc-modal comme les autres
-    // onglets : "quand on revient en arrière" implique une vraie navigation avec bouton
-    // Retour du navigateur, pas une fermeture de modale (qui ne "revient" nulle part).
-    const officialBadgeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    // Onglet "Recreate the Photo" (demande du 15/09/2026, "l'onglet 'Sacred places' ne
+    // fonctionne pas... je n'aime pas le nom... renomme... affiche les photos de 'Recreate
+    // the Photo' des lieux") — reprend la même grille/mécanique de navigation que l'ancien
+    // onglet "Sacred Places" (clic -> vraie navigation vers map.html?loc=<id>, retour ->
+    // restoreSacredReturnState() plus bas restaure l'onglet + le scroll), mais construit la
+    // grille à partir des lieux qui ont un loc.recreatedPhoto renseigné (voir "Recreate the
+    // Photo" dans script.js/admin.html) au lieu de TOUS les lieux du site — et affiche cette
+    // photo recréée elle-même comme vignette, plus l'image officielle du lieu. Noms de
+    // variables/fonctions/clé sessionStorage laissés en "sacred" en interne (jamais visibles)
+    // pour limiter le diff — seuls le libellé de l'onglet et le contenu affiché changent.
+    const cameraBadgeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
     let sacredGridRendered = false;
     function renderSacredGrid() {
         const grid = document.getElementById('feed-grid');
         const emptyEl = document.getElementById('feed-empty');
         const loadingEl = document.getElementById('feed-loading');
         loadingEl.classList.add('hidden');
-        const locs = typeof celebLocations !== 'undefined' ? celebLocations : [];
-        if (!locs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No locations yet.'; emptyEl.classList.remove('hidden'); return; }
+        const allLocs = typeof celebLocations !== 'undefined' ? celebLocations : [];
+        const locs = allLocs.filter(loc => loc.recreatedPhoto);
+        if (!locs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No recreated photos yet.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');
         grid.innerHTML = '';
         locs.forEach(loc => {
-            const img = loc.img || (loc.ytId ? `https://img.youtube.com/vi/${loc.ytId}/hqdefault.jpg` : '');
             const tile = document.createElement('div');
             tile.className = 'feed-tile';
-            tile.style.backgroundImage = img ? `url('${img}')` : 'none';
-            tile.style.background = img ? '' : '#cbd5e1';
+            tile.style.backgroundImage = `url('${loc.recreatedPhoto}')`;
             tile.title = loc.name || '';
-            tile.innerHTML = `<div class="feed-tile-official-badge">${officialBadgeSvg}<span>Official</span></div>`;
+            tile.innerHTML = `<div class="feed-tile-official-badge">${cameraBadgeSvg}</div>`;
             tile.onclick = () => openSacredPlace(loc.id);
             grid.appendChild(tile);
         });
