@@ -98,11 +98,24 @@ window.createTitledListField = function (container, opts) {
     const fieldStyle = "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:8px 10px; font-size:12px; font-family:'Poppins',sans-serif; margin-bottom:6px;";
     const initialValues = Array.isArray(opts.values) ? opts.values.filter(v => v && (v.title || v.text)) : [];
 
+    // BUG corrigé (demande du 15/09/2026, "complète où il y a écrit '[object Object]'") :
+    // item.title/item.text sont, partout ailleurs dans ce site (fullDescription,
+    // directions...), des objets multilingues {en:"...", fr:"..."} — jamais de simples
+    // chaînes. Ce widget les affichait pourtant jusqu'ici tels quels (`item.title || ''`),
+    // et escapeHtml() convertit un objet en chaîne via String(), d'où le "[object Object]"
+    // affiché à la place du vrai texte anglais dès qu'un lieu a des tips au format objet
+    // (donc la quasi-totalité — voir le format historique de l'agent IA, même commentaire
+    // que getLocText() plus haut). getLocText() gère déjà les deux formats en lecture ;
+    // on la réutilise ici pour pré-remplir correctement le formulaire. L'objet brut est
+    // gardé sur la ligne (data-raw) pour que collect() ci-dessous puisse préserver une
+    // éventuelle traduction fr existante plutôt que de l'écraser.
     function rowHtml(item) {
         item = item || {};
-        return `<div class="tl-row" style="border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; position:relative;">
-            <input type="text" class="tl-title" value="${escapeHtml(item.title || '')}" placeholder="${escapeHtml(titlePlaceholder)}" style="${fieldStyle} font-weight:700;">
-            <textarea class="tl-text" rows="2" placeholder="${escapeHtml(textPlaceholder)}" style="${fieldStyle} margin-bottom:0; resize:vertical;">${escapeHtml(item.text || '')}</textarea>
+        const titleText = getLocText(item.title);
+        const bodyText = getLocText(item.text);
+        return `<div class="tl-row" data-raw='${escapeHtml(JSON.stringify(item))}' style="border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; position:relative;">
+            <input type="text" class="tl-title" value="${escapeHtml(titleText)}" placeholder="${escapeHtml(titlePlaceholder)}" style="${fieldStyle} font-weight:700;">
+            <textarea class="tl-text" rows="2" placeholder="${escapeHtml(textPlaceholder)}" style="${fieldStyle} margin-bottom:0; resize:vertical;">${escapeHtml(bodyText)}</textarea>
             <button type="button" class="tl-remove" title="Remove this item" style="position:absolute; top:6px; right:6px; width:24px; height:24px; border:none; background:none; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer;">&times;</button>
         </div>`;
     }
@@ -121,12 +134,28 @@ window.createTitledListField = function (container, opts) {
     return {
         // Aucune validation de format (texte libre) — une ligne où titre ET texte sont
         // vides est simplement ignorée, tout le reste est gardé tel quel.
+        //
+        // Écrit toujours au format objet multilingue {en:"..."} (voir le commentaire au-
+        // dessus de rowHtml() : c'est le format utilisé PARTOUT ailleurs dans le schéma,
+        // pas de simples chaînes) — la ligne était collectée en chaînes simples jusqu'ici,
+        // ce qui non seulement causait le "[object Object]" à la ré-ouverture (rowHtml()
+        // recevait alors un objet la fois suivante SEULEMENT pour les lieux jamais
+        // repassés par ce widget) mais effaçait aussi silencieusement toute traduction fr
+        // déjà présente à chaque sauvegarde. data-raw (posé par rowHtml()) préserve les
+        // clés autres que "en" (fr...) de l'objet d'origine plutôt que de les perdre.
         collect: function () {
             const values = [];
             container.querySelectorAll('.tl-row').forEach(row => {
                 const title = row.querySelector('.tl-title').value.trim();
                 const text = row.querySelector('.tl-text').value.trim();
-                if (title || text) values.push({ title, text });
+                if (!title && !text) return;
+                let raw = {};
+                try { raw = JSON.parse(row.dataset.raw || '{}'); } catch (e) { raw = {}; }
+                const titleObj = (raw.title && typeof raw.title === 'object') ? Object.assign({}, raw.title) : {};
+                const textObj = (raw.text && typeof raw.text === 'object') ? Object.assign({}, raw.text) : {};
+                titleObj.en = title;
+                textObj.en = text;
+                values.push({ title: titleObj, text: textObj });
             });
             return { values };
         }
@@ -4571,7 +4600,19 @@ function renderLocationRichContent(loc) {
         }
         descPlaceEl.innerHTML = paragraphs.length > 0 ? paragraphs[0].outerHTML : '';
         if(paragraphs.length > 1) {
-            descBtsEl.innerHTML = paragraphs.slice(1).map(p => p.outerHTML).join('');
+            // Visites multiples (demande du 15/09/2026, "parfois les membres vont plusieurs
+            // fois au même endroit... je veux qu'à chaque visite tu rédiges un paragraphe,
+            // en mettant un petit titre. Par exemple : 2023, Jimin & Jhope : xxxxx puis
+            // 2026, Namjoon : xxxxx") — aucun nouveau champ : toujours un paragraphe HTML
+            // par visite (déjà le fonctionnement existant, un paragraphe par ligne vide dans
+            // l'éditeur "Following in BTS's footsteps"), juste un préfixe "Année,
+            // Membre(s) :" mis en gras automatiquement ici si le paragraphe en commence par
+            // un — pour que ça s'applique aussi aux paragraphes déjà écrits sans migration
+            // de données, plutôt que d'ajouter un vrai champ structuré.
+            descBtsEl.innerHTML = paragraphs.slice(1).map(p => {
+                p.innerHTML = p.innerHTML.replace(/^(\d{4}(?:\s*[-–]\s*\d{4})?[^:<]{0,60}):\s*/, '<b>$1:</b> ');
+                return p.outerHTML;
+            }).join('');
             if(descBtsSection) descBtsSection.classList.remove('hidden');
         } else {
             descBtsEl.innerHTML = '';
@@ -4727,7 +4768,8 @@ function renderLocationRichContent(loc) {
         const socialLinks = [
             ['details-instagram-link', instagramEmbedded ? null : loc.instagramUrl],
             ['details-facebook-link', loc.facebookUrl],
-            ['details-tiktok-link', loc.tiktokUrl]
+            ['details-tiktok-link', loc.tiktokUrl],
+            ['details-pinterest-link', loc.pinterestUrl]
         ];
         let anySocial = false;
         socialLinks.forEach(([elId, url]) => {
@@ -4755,6 +4797,7 @@ function renderLocationRichContent(loc) {
             ['instagramUrls', 'Instagram'],
             ['facebookUrls', 'Facebook'],
             ['tiktokUrls', 'TikTok'],
+            ['pinterestUrls', 'Pinterest'],
             ['youtubeUrls', 'YouTube']
         ];
         const extraHtml = extraLinkDefs.map(([field, label]) => {
@@ -4995,7 +5038,7 @@ function ensureLocationEditModal() {
             <label style="${labelStyle}">The story of this place</label>
             <textarea id="location-edit-story-place" rows="3" style="${fieldStyle} margin-bottom:10px; resize:vertical;" placeholder="Describe the place itself — what it is, where it is."></textarea>
             <label style="${labelStyle}">Following in BTS's footsteps</label>
-            <textarea id="location-edit-story-bts" rows="3" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="How this place connects to BTS / the member — one paragraph per blank line."></textarea>
+            <textarea id="location-edit-story-bts" rows="3" style="${fieldStyle} margin-bottom:14px; resize:vertical;" placeholder="How this place connects to BTS / the member — one paragraph per blank line. Visited more than once? Start each paragraph with &quot;Year, Member(s):&quot;, e.g. &quot;2023, Jimin &amp; J-Hope: ...&quot; then a blank line then &quot;2026, RM: ...&quot; — shown as a bold label per visit."></textarea>
 
             <!-- Tips (demande du 13/09/2026) : même éditeur que admin.html, voir
                  window.createTitledListField() plus haut dans ce fichier — écrit dans le
@@ -5047,8 +5090,22 @@ function ensureLocationEditModal() {
             <div id="location-edit-tiktok-error" class="hidden" style="${errStyle}">Doesn't look like a tiktok.com URL.</div>
             <div id="location-edit-tiktok-extra" style="margin-bottom:14px;"></div>
 
+            <label style="${labelStyle}">Pinterest URL</label>
+            <input type="url" id="location-edit-pinterest" style="${fieldStyle}" placeholder="https://pinterest.com/...">
+            <div id="location-edit-pinterest-error" class="hidden" style="${errStyle}">Doesn't look like a pinterest.com URL.</div>
+            <div id="location-edit-pinterest-extra" style="margin-bottom:14px;"></div>
+
             <label style="${labelStyle}">Official website (optional)</label>
             <input type="url" id="location-edit-official-link" style="${fieldStyle} margin-bottom:14px;" placeholder="https://... — shown as &quot;Learn more&quot;">
+
+            <!-- "Link" (demande du 15/09/2026) : champ déjà présent côté admin.html
+                 (sub-link-input, renderCard/renderExistingLocationCard) mais manquait ici —
+                 même champ (episodeLink), publié via adminUpdateLocationContent(). Distinct
+                 de "Official website" ci-dessus : une source/référence pour CE moment précis
+                 (épisode, article, post officiel...), pas le site du lieu lui-même. -->
+            <label style="${labelStyle}">Link (optional)</label>
+            <input type="url" id="location-edit-link" style="${fieldStyle}" placeholder="https://...">
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">A source/reference link for this location (episode, article, official post...) — shown as "Link" on the location page, or hidden entirely if left empty.</div>
 
             <label style="${labelStyle}">Photo credit / copyright (optional)</label>
             <input type="text" id="location-edit-img-credit" style="${fieldStyle} margin-bottom:14px;" placeholder="e.g. Photo: @username, or © Official press kit">
@@ -5249,7 +5306,7 @@ window.openLocationEditModal = async function (locId) {
 
     const modal = ensureLocationEditModal();
     document.getElementById('location-edit-title').textContent = `Edit — ${loc.name}`;
-    ['youtube', 'tweet', 'instagram', 'facebook', 'tiktok'].forEach(k => document.getElementById(`location-edit-${k}-error`).classList.add('hidden'));
+    ['youtube', 'tweet', 'instagram', 'facebook', 'tiktok', 'pinterest'].forEach(k => document.getElementById(`location-edit-${k}-error`).classList.add('hidden'));
     document.getElementById('location-edit-photo-error').classList.add('hidden');
     const resultEl = document.getElementById('location-edit-result');
     resultEl.classList.add('hidden');
@@ -5287,7 +5344,9 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-instagram').value = data.instagramUrl || '';
         document.getElementById('location-edit-facebook').value = data.facebookUrl || '';
         document.getElementById('location-edit-tiktok').value = data.tiktokUrl || '';
+        document.getElementById('location-edit-pinterest').value = data.pinterestUrl || '';
         document.getElementById('location-edit-official-link').value = data.officialLink || '';
+        document.getElementById('location-edit-link').value = data.episodeLink || '';
         document.getElementById('location-edit-img-credit').value = data.imgCredit || '';
         // Valeurs d'origine des liens (demande du 14/09/2026, "je change la date... mais la
         // date ne change pas") — 2e cause trouvée du même symptôme : un lieu dont un lien
@@ -5302,6 +5361,7 @@ window.openLocationEditModal = async function (locId) {
             instagram: document.getElementById('location-edit-instagram').value,
             facebook: document.getElementById('location-edit-facebook').value,
             tiktok: document.getElementById('location-edit-tiktok').value,
+            pinterest: document.getElementById('location-edit-pinterest').value,
         };
         locationEditOriginalRawLinks = {
             ytId: data.ytId || '',
@@ -5309,6 +5369,7 @@ window.openLocationEditModal = async function (locId) {
             instagramUrl: data.instagramUrl || '',
             facebookUrl: data.facebookUrl || '',
             tiktokUrl: data.tiktokUrl || '',
+            pinterestUrl: data.pinterestUrl || '',
         };
         const tipsEditorEl = document.getElementById('location-edit-tips-editor');
         if (tipsEditorEl) {
@@ -5336,7 +5397,7 @@ window.openLocationEditModal = async function (locId) {
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté admin.html (fiches de review/édition).
         if (typeof window.createMultiUrlField === 'function') {
-            ['youtube', 'tweet', 'instagram', 'facebook', 'tiktok'].forEach(k => {
+            ['youtube', 'tweet', 'instagram', 'facebook', 'tiktok', 'pinterest'].forEach(k => {
                 const el = document.getElementById(`location-edit-${k}-extra`);
                 if (el) locationEditExtraWidgets[k + 'Urls'] = window.createMultiUrlField(el, { values: data[k + 'Urls'] || [], placeholder: `Additional ${k.charAt(0).toUpperCase() + k.slice(1)} URL`, fieldStyle: "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:9px 12px; font-size:12.5px; font-family:'Poppins',sans-serif;" });
             });
@@ -5422,7 +5483,9 @@ async function saveLocationEdit(locId, modal) {
     const instagramVal = document.getElementById('location-edit-instagram').value.trim();
     const facebookVal = document.getElementById('location-edit-facebook').value.trim();
     const tiktokVal = document.getElementById('location-edit-tiktok').value.trim();
+    const pinterestVal = document.getElementById('location-edit-pinterest').value.trim();
     const officialLinkVal = document.getElementById('location-edit-official-link').value.trim();
+    const linkVal = document.getElementById('location-edit-link').value.trim();
     const groupVal = document.getElementById('location-edit-group').value.trim();
     const memberVal = collectMemberCheckboxValue(document.getElementById('location-edit-member'));
     const countryVal = document.getElementById('location-edit-country').value.trim();
@@ -5464,13 +5527,18 @@ async function saveLocationEdit(locId, modal) {
         ? (tiktokVal ? extractSocialUrlForEdit(tiktokVal, 'tiktok\\.com') : null)
         : locationEditOriginalRawLinks.tiktokUrl || null;
     if (tiktokVal !== (locationEditOriginalLinkValues.tiktok || '')) checkField(tiktokVal, tiktokUrl, 'location-edit-tiktok-error');
+    const pinterestUrl = pinterestVal !== (locationEditOriginalLinkValues.pinterest || '')
+        ? (pinterestVal ? extractSocialUrlForEdit(pinterestVal, '(?:pinterest\\.[a-z.]{2,6}|pin\\.it)') : null)
+        : locationEditOriginalRawLinks.pinterestUrl || null;
+    if (pinterestVal !== (locationEditOriginalLinkValues.pinterest || '')) checkField(pinterestVal, pinterestUrl, 'location-edit-pinterest-error');
 
     const extraValidators = {
         youtubeUrls: extractYouTubeUrlForEdit,
         tweetUrls: extractTweetUrlForEdit,
         instagramUrls: (v) => extractSocialUrlForEdit(v, 'instagram\\.com'),
         facebookUrls: (v) => extractSocialUrlForEdit(v, 'facebook\\.com'),
-        tiktokUrls: (v) => extractSocialUrlForEdit(v, 'tiktok\\.com')
+        tiktokUrls: (v) => extractSocialUrlForEdit(v, 'tiktok\\.com'),
+        pinterestUrls: (v) => extractSocialUrlForEdit(v, '(?:pinterest\\.[a-z.]{2,6}|pin\\.it)')
     };
     const extraCollected = {};
     Object.keys(locationEditExtraWidgets).forEach(field => {
@@ -5503,7 +5571,9 @@ async function saveLocationEdit(locId, modal) {
         instagramUrl: instagramUrl || '',
         facebookUrl: facebookUrl || '',
         tiktokUrl: tiktokUrl || '',
+        pinterestUrl: pinterestUrl || '',
         officialLink: officialLinkVal,
+        episodeLink: linkVal,
         imgCredit: document.getElementById('location-edit-img-credit').value.trim(),
         tipsList: locationEditTipsWidget ? locationEditTipsWidget.collect().values : []
     }, extraCollected);
@@ -5695,6 +5765,33 @@ window.openDetailsPanel = function(id) {
         if (typeof window.incrementLocationViewCount === 'function') window.incrementLocationViewCount(id);
     }
 
+    // BUG corrigé (demande du 15/09/2026, "sur ordinateur, quand je clique sur un lieu
+    // dans le menu de gauche, il faut afficher le detail du lieu dans le menu") : ce
+    // bloc de bascule liste -> détail vivait jusqu'ici tout en bas de cette fonction,
+    // après ~150 lignes de peuplement de widgets annexes (mémoire de visite, wishlist,
+    // tips, réseaux sociaux...). N'importe laquelle de ces étapes qui lève une exception
+    // interrompt le reste de la fonction en silence — le flyTo() du clic sur la liste
+    // (posé AVANT l'appel à openDetailsPanel) avait donc bien lieu, mais la bascule
+    // list->détail, jamais atteinte, laissait la fiche invisible malgré la carte qui
+    // bougeait bien. Remonté ici, tout en haut, pour que le panneau devienne visible
+    // quoi qu'il arrive ensuite.
+    const topTabs = document.querySelector('.sidebar-top-tabs');
+    if(topTabs) topTabs.style.display = 'none';
+
+    const mainSidebar = document.getElementById('sidebar-main');
+    if(mainSidebar) mainSidebar.style.display = 'none';
+
+    const detailsSidebar = document.getElementById('sidebar-details');
+    if(detailsSidebar) {
+        detailsSidebar.classList.remove('hidden');
+        detailsSidebar.style.display = 'flex';
+    }
+
+    const appSidebarEl = document.getElementById('app-sidebar');
+    if(appSidebarEl) { appSidebarEl.classList.add('open'); appSidebarEl.classList.add('expanded'); }
+
+    setTimeout(() => { if(map) map.invalidateSize(); }, 450);
+
     currentLocationIdForMemory = loc.id;
     highlightSelectedLocationMarker(loc);
     if (typeof updateLocVisitorsBar === 'function') updateLocVisitorsBar(loc);
@@ -5838,23 +5935,6 @@ window.openDetailsPanel = function(id) {
         }
     }
 
-    // MASQUER LES ONGLETS EXPLORE/ITINERARY ET LE BLOC PRINCIPAL
-    const topTabs = document.querySelector('.sidebar-top-tabs');
-    if(topTabs) topTabs.style.display = 'none';
-
-    const mainSidebar = document.getElementById('sidebar-main');
-    if(mainSidebar) mainSidebar.style.display = 'none';
-    
-    const detailsSidebar = document.getElementById('sidebar-details');
-    if(detailsSidebar) {
-        detailsSidebar.classList.remove('hidden');
-        detailsSidebar.style.display = 'flex';
-    }
-    
-    const sidebar = document.getElementById('app-sidebar');
-    if(sidebar) { sidebar.classList.add('open'); sidebar.classList.add('expanded'); }
-    
-    setTimeout(() => { if(map) map.invalidateSize(); }, 450);
 };
 
 // Catégories pour lesquelles on demande, en plus de la note générale, une note de
