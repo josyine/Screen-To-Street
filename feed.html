@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260915">
+<link rel="stylesheet" href="style.css?v=20260916">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -378,9 +378,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260915"></script>
-<script src="locations-data.js?v=20260915"></script>
-<script src="script.js?v=20260915"></script>
+<script type="module" src="firebase-init.js?v=20260916"></script>
+<script src="locations-data.js?v=20260916"></script>
+<script src="script.js?v=20260916"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -504,27 +504,33 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
 
     // Onglet "Recreate the Photo" (demande du 15/09/2026, "l'onglet 'Sacred places' ne
     // fonctionne pas... je n'aime pas le nom... renomme... affiche les photos de 'Recreate
-    // the Photo' des lieux") — reprend la même grille/mécanique de navigation que l'ancien
-    // onglet "Sacred Places" (clic -> vraie navigation vers map.html?loc=<id>, retour ->
-    // restoreSacredReturnState() plus bas restaure l'onglet + le scroll), mais construit la
-    // grille à partir des lieux qui ont un loc.recreatedPhoto renseigné (voir "Recreate the
-    // Photo" dans script.js/admin.html) au lieu de TOUS les lieux du site — et affiche cette
-    // photo recréée elle-même comme vignette, plus l'image officielle du lieu. Noms de
-    // variables/fonctions/clé sessionStorage laissés en "sacred" en interne (jamais visibles)
-    // pour limiter le diff — seuls le libellé de l'onglet et le contenu affiché changent.
+    // the Photo' des lieux") — construit la grille à partir des lieux qui ont un
+    // loc.recreatedPhoto renseigné (voir "Recreate the Photo" dans script.js/admin.html) au
+    // lieu de TOUS les lieux du site, et affiche cette photo recréée elle-même comme
+    // vignette. Un clic ouvre désormais la modale de détail partagée (#loc-modal, voir
+    // openSacredPlace() plus bas) au lieu de naviguer vers map.html (demande du 15/09/2026,
+    // "comme dans Community") : plus de restauration d'onglet/scroll au retour du bouton
+    // Précédent à gérer, la page ne quitte plus jamais l'onglet. Noms de variables/fonctions
+    // laissés en "sacred" en interne (jamais visibles) pour limiter le diff — seuls le
+    // libellé de l'onglet et le contenu affiché changent.
     const cameraBadgeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
     let sacredGridRendered = false;
+    // Liste ordonnée des lieux affichés dans cet onglet + index de celui actuellement
+    // ouvert dans la modale (-1 = aucun, ou modale ouverte depuis un autre onglet) — sert au
+    // swipe entre photos (voir wireSacredSwipe() plus bas).
+    let sacredLocs = [];
+    let sacredSwipeIndex = -1;
     function renderSacredGrid() {
         const grid = document.getElementById('feed-grid');
         const emptyEl = document.getElementById('feed-empty');
         const loadingEl = document.getElementById('feed-loading');
         loadingEl.classList.add('hidden');
         const allLocs = typeof celebLocations !== 'undefined' ? celebLocations : [];
-        const locs = allLocs.filter(loc => loc.recreatedPhoto);
-        if (!locs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No recreated photos yet.'; emptyEl.classList.remove('hidden'); return; }
+        sacredLocs = allLocs.filter(loc => loc.recreatedPhoto);
+        if (!sacredLocs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No recreated photos yet.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');
         grid.innerHTML = '';
-        locs.forEach(loc => {
+        sacredLocs.forEach(loc => {
             const tile = document.createElement('div');
             tile.className = 'feed-tile';
             tile.style.backgroundImage = `url('${loc.recreatedPhoto}')`;
@@ -536,30 +542,46 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
         sacredGridRendered = true;
     }
 
-    const SACRED_RETURN_KEY = 'feedSacredReturnScrollY';
+    // Ouvre la modale "publication" partagée (voir #loc-modal et window.openLocModal() dans
+    // script.js), avec la photo recréée comme visuel principal — pas de postContext.username
+    // ici (ce n'est pas une publication utilisateur) : openLocModal() masque alors l'entête
+    // "auteur"/like/save et n'affiche que le détail du lieu, exactement ce qu'on veut.
     function openSacredPlace(locId) {
-        // Mémorise où revenir (voir restoreSacredReturnState() plus bas, appelé au
-        // rechargement de cette page par le bouton Retour du navigateur) — sessionStorage,
-        // pas juste une variable JS, puisque cette page sera rechargée/dépubliée pendant la
-        // navigation vers map.html.
-        sessionStorage.setItem('feedActiveTab', 'sacred');
-        sessionStorage.setItem(SACRED_RETURN_KEY, String(window.scrollY));
-        window.location.href = 'map.html?loc=' + encodeURIComponent(locId);
+        const loc = sacredLocs.find(l => l.id == locId);
+        if (!loc || typeof window.openLocModal !== 'function') return;
+        sacredSwipeIndex = sacredLocs.indexOf(loc);
+        window.openLocModal(locId, loc.recreatedPhoto ? { photo: loc.recreatedPhoto } : undefined);
     }
-    function restoreSacredReturnState() {
-        const savedTab = sessionStorage.getItem('feedActiveTab');
-        if (savedTab !== 'sacred') return;
-        switchFeedTab('sacred');
-        const scrollY = parseInt(sessionStorage.getItem(SACRED_RETURN_KEY), 10);
-        sessionStorage.removeItem('feedActiveTab');
-        sessionStorage.removeItem(SACRED_RETURN_KEY);
-        if (!Number.isNaN(scrollY)) {
-            // Le scroll ne peut être restauré qu'une fois la grille effectivement peuplée
-            // (hauteur de page correcte) — un court délai suffit, celebLocations est déjà en
-            // mémoire (aucune lecture réseau à attendre pour cet onglet).
-            requestAnimationFrame(() => window.scrollTo(0, scrollY));
-        }
-    }
+
+    // Swipe gauche/droite pour passer à la photo recréée suivante/précédente pendant que la
+    // modale est ouverte (demande du 15/09/2026, "je n'arrive pas à swipe") — #loc-modal est
+    // partagé avec l'onglet Community/profile.html, donc le geste ne doit être actif QUE pour
+    // une modale ouverte depuis CET onglet : sacredSwipeIndex reste à -1 sinon, et est remis à
+    // -1 dès que la modale se referme (peu importe comment) via l'observateur ci-dessous.
+    (function wireSacredSwipe() {
+        const modalHero = document.getElementById('modal-hero');
+        const modalOverlay = document.getElementById('loc-modal');
+        if (!modalHero || !modalOverlay) return;
+        let touchStartX = null;
+        modalHero.addEventListener('touchstart', (e) => {
+            if (sacredSwipeIndex === -1) return;
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+        modalHero.addEventListener('touchend', (e) => {
+            if (sacredSwipeIndex === -1 || touchStartX === null) return;
+            const deltaX = e.changedTouches[0].clientX - touchStartX;
+            touchStartX = null;
+            if (Math.abs(deltaX) < 50) return; // geste trop court pour être un swipe volontaire
+            const nextIndex = deltaX < 0
+                ? Math.min(sacredSwipeIndex + 1, sacredLocs.length - 1)
+                : Math.max(sacredSwipeIndex - 1, 0);
+            if (nextIndex === sacredSwipeIndex) return;
+            openSacredPlace(sacredLocs[nextIndex].id);
+        }, { passive: true });
+        new MutationObserver(() => {
+            if (modalOverlay.classList.contains('hidden')) sacredSwipeIndex = -1;
+        }).observe(modalOverlay, { attributes: true, attributeFilter: ['class'] });
+    })();
 
     async function loadSavedFeed() {
         const loadingEl = document.getElementById('feed-loading');
@@ -678,13 +700,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden;}
             photoId: p.standalone ? p.id : null
         });
     }
-
-    // Restaure l'onglet "Sacred Places" + le scroll au retour d'un clic sur un lieu
-    // (demande du 14/09/2026) — celebLocations est déjà en mémoire à ce stade (chargée en
-    // synchrone par locations-data.js/script.js avant ce <script>), pas besoin d'attendre
-    // firebase-ready pour ça. loadFeed() (Community) reste appelé normalement ci-dessous
-    // pour que l'onglet Community soit prêt si la personne y bascule ensuite.
-    restoreSacredReturnState();
 
     window.addEventListener('firebase-ready', () => { loadFeed(); });
 </script>

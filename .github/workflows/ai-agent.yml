@@ -1,8 +1,11 @@
-name: Agent IA — propositions de lieux BTS
+name: Agent IA — propositions de lieux BTS + Agenda
 
 # Fait tourner admin-scripts/example-ai-submission.js automatiquement, sans que ton Mac
-# ait besoin d'être allumé. Les résultats vont dans la file d'attente `locationSubmissions`
-# (Firestore) — rien n'est publié sur le site sans ta validation manuelle sur admin.html.
+# ait besoin d'être allumé. Ce script propose désormais deux choses (demande du
+# 15/09/2026, suite à l'oubli du 2026 iHeartRadio Music Festival) : de nouveaux lieux
+# (file d'attente `locationSubmissions`) ET des évènements Agenda à venir (file d'attente
+# `liveEventSubmissions`) — rien n'est publié sur le site sans ta validation manuelle sur
+# admin.html, pour les deux.
 #
 # Mise en place (une seule fois, voir admin-scripts/README.md pour le détail) :
 #   Réglages du dépôt GitHub > Secrets and variables > Actions > "New repository secret" :
@@ -34,7 +37,7 @@ jobs:
         working-directory: admin-scripts
         run: npm install
 
-      - name: Lance l'agent
+      - name: Lance l'agent (lieux + Agenda)
         working-directory: admin-scripts
         run: node example-ai-submission.js
         env:

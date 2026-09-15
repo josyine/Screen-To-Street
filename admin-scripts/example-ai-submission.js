@@ -1,5 +1,6 @@
 // ==========================================
-// Agent IA (Gemini) — propose de nouveaux lieux BTS pour relecture dans admin.html.
+// Agent IA (Gemini) — propose de nouveaux lieux BTS ET des évènements Agenda à venir,
+// pour relecture dans admin.html.
 // ==========================================
 // Utilise le SDK Admin (compte de service — voir migrate-location-content.js pour
 // comment en générer un) car ce script ne tourne que localement, jamais dans un
@@ -258,4 +259,109 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
     }
 }
 
-runAgent();
+// ==========================================
+// Agent IA (Gemini) — propose des évènements Agenda à venir pour BTS.
+// ==========================================
+// Ajouté le 15/09/2026 suite à un vrai oubli constaté : le 2026 iHeartRadio Music
+// Festival (BTS confirmé le 18 septembre 2026) n'avait été signalé par aucun agent, car
+// jusqu'ici runAgent() ci-dessus ne proposait QUE des lieux — aucun agent ne surveillait
+// les évènements à venir (concerts, tournées, festivals, récompenses...), qui restaient
+// donc entièrement à la charge de la saisie manuelle admin (voir wireLiveEventForm() dans
+// admin.html). Même principe de relecture humaine que runAgent() : écrit dans
+// `liveEventSubmissions` (voir submitLiveEvent()/approveLiveEventSubmission() dans
+// firebase-init.js), jamais directement dans `liveEvents` (visible des visiteurs) — rien
+// n'est publié sans validation manuelle sur l'onglet "Agenda" de admin.html.
+async function runLiveEventAgent() {
+    try {
+        console.log('🔍 Chargement des évènements Agenda déjà connus...');
+        const [approvedSnap, submittedSnap] = await Promise.all([
+            db.collection('liveEvents').get(),
+            db.collection('liveEventSubmissions').get(), // toutes (pending/approved/rejected) : évite de reproposer un évènement déjà rejeté aussi
+        ]);
+        const knownEvents = [];
+        approvedSnap.forEach((d) => knownEvents.push(d.data()));
+        submittedSnap.forEach((d) => knownEvents.push(d.data()));
+        console.log(`   ${knownEvents.length} évènements déjà connus (approuvés + déjà proposés).`);
+
+        const knownDescriptions = knownEvents
+            .map((e) => `${e.title || e.eventName || '?'} — ${e.city || '?'} (${e.dateStart || '?'})`)
+            .join('\n');
+
+        console.log("🤖 L'IA cherche des évènements Agenda à venir pour BTS...");
+        const prompt = `Tu es un expert BTS suivant de près l'actualité officielle du groupe et de ses membres.
+
+Évènements déjà connus (NE PROPOSE AUCUN de ceux-ci, même reformulé différemment) :
+${knownDescriptions || '(aucun)'}
+
+Cherche des évènements PUBLICS réels et vérifiables où BTS (le groupe) ou un membre en solo
+va se produire ou apparaître dans les 12 prochains mois à partir d'aujourd'hui : dates de
+tournée, festivals (ex: iHeartRadio Music Festival), cérémonies de récompenses, fan meetings
+officiels, apparitions publiques confirmées. Règle absolue, identique partout ailleurs sur ce
+site : ne JAMAIS inventer une date, un lieu ou un évènement — si tu n'es pas certain à 100%
+qu'un évènement est réel, confirmé publiquement et vérifiable, ne le propose pas du tout
+plutôt que de deviner. Mieux vaut renvoyer un tableau vide qu'un seul évènement incertain.
+
+Renvoie UNIQUEMENT un tableau JSON (array, vide si rien de vérifiable) avec cette structure
+exacte pour chaque évènement :
+[{
+  "kind": "group ou solo",
+  "member": "nom du membre si kind=solo, sinon null",
+  "title": "Nom de l'évènement (ex: iHeartRadio Music Festival — performance)",
+  "eventName": "même nom, sans le membre devant",
+  "city": "Ville",
+  "country": "Pays",
+  "lat": 0.0, "lng": 0.0,
+  "dateStart": "AAAA-MM-JJ",
+  "dateEnd": "AAAA-MM-JJ (identique à dateStart si évènement d'un seul jour)"
+}]`;
+
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash', generationConfig: { maxOutputTokens: 8192 } });
+        const result = await model.generateContent(prompt);
+        const text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+        const events = JSON.parse(text);
+
+        console.log('🛡️ Vérification anti-doublon (ville + date)...');
+        let addedCount = 0;
+        for (const ev of events) {
+            if (!ev.title || !ev.city || !ev.country || !ev.dateStart || typeof ev.lat !== 'number' || typeof ev.lng !== 'number') {
+                console.log(`🚫 Ignoré (champs manquants ou invalides) : ${ev.title || '(sans titre)'}`);
+                continue;
+            }
+
+            const duplicate = knownEvents.some((known) =>
+                (known.city || '').toLowerCase().trim() === ev.city.toLowerCase().trim() &&
+                (known.dateStart || '') === ev.dateStart
+            );
+            if (duplicate) {
+                console.log(`🚫 Bloqué (déjà connu, même ville/date) : ${ev.title}`);
+                continue;
+            }
+
+            await db.collection('liveEventSubmissions').add({
+                kind: ev.kind === 'solo' ? 'solo' : 'group',
+                member: ev.kind === 'solo' ? (ev.member || null) : null,
+                title: ev.title,
+                eventName: ev.eventName || ev.title,
+                city: ev.city,
+                country: ev.country,
+                lat: ev.lat,
+                lng: ev.lng,
+                dateStart: ev.dateStart,
+                dateEnd: ev.dateEnd || ev.dateStart,
+                status: 'pending',
+                submittedAt: admin.firestore.FieldValue.serverTimestamp(),
+                submittedBy: 'Gemini-AI-Agent',
+            });
+            console.log(`✅ Ajouté à la file Agenda : ${ev.title} (${ev.dateStart})`);
+            addedCount++;
+        }
+        console.log(`🎉 Terminé ! ${addedCount} nouveaux évènements à relire dans l'onglet Agenda de admin.html.`);
+    } catch (error) {
+        console.error('❌ Erreur (agent Agenda) :', error);
+    }
+}
+
+(async function main() {
+    await runAgent();
+    await runLiveEventAgent();
+})();

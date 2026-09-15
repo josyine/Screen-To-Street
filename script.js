@@ -655,7 +655,8 @@ const BTS_MILESTONES_DATA = [
     { id: 'jhope-discharge', member: 'j-hope',eventName: 'Military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2024-10-16'] },
     { id: 'rmv-discharge',   member: null,   eventName: 'RM & V — military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2025-06-10'] },
     { id: 'jjk-discharge',   member: null,   eventName: 'Jimin & Jungkook — military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2025-06-11'] },
-    { id: 'suga-discharge',  member: 'SUGA', eventName: 'Military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2025-06-21'] }
+    { id: 'suga-discharge',  member: 'SUGA', eventName: 'Military service completed', city: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, showDates: ['2025-06-21'] },
+    { id: 'iheartradio26', member: null, eventName: 'iHeartRadio Music Festival — performance', city: 'Las Vegas', country: 'USA', lat: 36.1028, lng: -115.1784, showDates: ['2026-09-18'] }
 ];
 
 // window.__tourModeNowOverride (chaîne ISO, ex: '2026-09-03') permet aux tests
@@ -6713,7 +6714,12 @@ window.openLocModal = function(id, postContext) {
     const modalPostHeader = document.getElementById('modal-post-header');
     const modalPostCaption = document.getElementById('modal-post-caption');
     if (modalPostHeader) {
-        if (postContext) {
+        // postContext.username (demande du 15/09/2026, onglet "Recreate the Photo" de
+        // feed.html) : ce nouvel appelant passe un postContext juste pour imposer la photo
+        // recréée comme visuel (voir openSacredPlace() dans feed.html), sans être une
+        // publication utilisateur — masquer l'entête auteur/like/save dans ce cas plutôt que
+        // d'afficher un pseudo vide et des boutons non câblés (photoKey absent).
+        if (postContext && postContext.username) {
             modalPostHeader.classList.remove('hidden');
             const avatarEl = document.getElementById('modal-post-avatar');
             const usernameEl = document.getElementById('modal-post-username');

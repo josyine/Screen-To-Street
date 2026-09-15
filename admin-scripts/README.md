@@ -67,16 +67,31 @@ Review pending submissions and approve or reject them at `/admin.html` (requires
 being signed in AND having an `admins/{your-uid}` document — see the rule comment
 in `firebase-init.js` for how to add yourself as one, from the Firebase console).
 
+### Agenda events queue (`liveEventSubmissions` collection)
+
+Since 15/09/2026, the same script also runs `runLiveEventAgent()` after
+`runAgent()` finishes: it asks Gemini for real, verifiable upcoming BTS
+group/member public events (tour dates, festivals, award shows, fan meetings)
+not already known, and writes each one to `liveEventSubmissions` (status
+`pending`) — the exact same queue the manual "Agenda" form in admin.html
+writes to (see `wireLiveEventForm()`). Nothing reaches the public `liveEvents`
+collection (and therefore the site's Agenda panel) without being approved by
+hand on admin.html, same as location submissions. This was added because the
+original agent only ever proposed locations — real upcoming events (like the
+2026 iHeartRadio Music Festival) had no agent watching for them at all and
+depended entirely on someone noticing and typing them in manually.
+
 ### Running it automatically (GitHub Actions)
 
 `.github/workflows/ai-agent.yml` runs `example-ai-submission.js` on a schedule
 (4 times a day by default, every 6 hours — edit the `cron` line to change that)
 using GitHub's own servers, so it works even when your Mac is off. At 20
-proposals per run × 4 runs/day, expect up to ~80 raw proposals a day before
-anti-duplicate filtering — comfortably enough to build and maintain a 50-100
-item backlog on `/admin.html`. You can also trigger it by hand any time from the
-repo's **Actions** tab → "Agent IA — propositions de lieux BTS" → **Run
-workflow**.
+location proposals per run × 4 runs/day, expect up to ~80 raw location
+proposals a day before anti-duplicate filtering — comfortably enough to build
+and maintain a 50-100 item backlog on `/admin.html`. Each run also checks for
+new Agenda events (see above). You can also trigger it by hand any time from
+the repo's **Actions** tab → "Agent IA — propositions de lieux BTS + Agenda" →
+**Run workflow**.
 
 One-time setup — the script needs the same two secrets it needs locally
 (`GEMINI_API_KEY` and your service account), but neither can be committed to the
