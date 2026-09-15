@@ -400,6 +400,14 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const s = (url || '').trim();
         return /^https?:\/\/(www\.)?tiktok\.com\/.+/.test(s) ? s : null;
     }
+    // Pinterest (demande du 15/09/2026) — même principe que Instagram/Facebook/TikTok
+    // ci-dessus (pas d'embed, juste un lien "Follow" cliquable), deux domaines valides :
+    // pinterest.com/pinterest.fr... (tout TLD à 2 lettres) et pin.it, le raccourcisseur
+    // officiel de Pinterest pour un pin individuel.
+    function extractPinterestUrl(url) {
+        const s = (url || '').trim();
+        return /^https?:\/\/(www\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/.+/.test(s) ? s : null;
+    }
 
     let twitterWidgetLoading = null;
     function loadTwitterWidgetScript() {
@@ -559,6 +567,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)" value="${escapeHtml(sub.tiktokUrl || '')}">
             <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
             <div class="sub-social-extra" data-platform="tiktok" style="margin-bottom:6px;"></div>
+            <input type="url" class="sub-social-input" data-platform="pinterest" placeholder="Pinterest URL (optional)" value="${escapeHtml(sub.pinterestUrl || '')}">
+            <div class="sub-social-error hidden" data-platform="pinterest" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a pinterest.com URL.</div>
+            <div class="sub-social-extra" data-platform="pinterest" style="margin-bottom:6px;"></div>
 
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)" value="${sub.ytId ? 'https://www.youtube.com/watch?v=' + escapeHtml(sub.ytId) : ''}">
             <div class="sub-video-hint" style="font-size:10.5px;color:#94a3b8;margin-bottom:6px;">If the photo field above is empty, the video's thumbnail is used automatically for the location's header image.</div>
@@ -567,7 +578,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <label class="sub-section-label">The story of this place</label>
             <textarea class="sub-story-place-textarea sub-section-textarea" rows="3" placeholder="Describe the place itself — what it is, where it is."></textarea>
             <label class="sub-section-label">Following in BTS's footsteps</label>
-            <textarea class="sub-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line."></textarea>
+            <textarea class="sub-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line. Visited more than once? Start each paragraph with &quot;Year, Member(s):&quot;, e.g. &quot;2023, Jimin &amp; J-Hope: ...&quot; then a blank line then &quot;2026, RM: ...&quot; — shown as a bold label per visit."></textarea>
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
             <label class="sub-section-label">Official website (optional)</label>
@@ -743,7 +754,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const videoExtraEl = card.querySelector('.sub-video-extra');
             if (videoExtraEl) extraFieldWidgets.youtubeUrls = window.createMultiUrlField(videoExtraEl, { values: sub.youtubeUrls || [], placeholder: 'Additional YouTube video URL' });
         }
-        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl, youtubeUrls: extractYouTubeUrl };
+        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl, pinterestUrls: extractPinterestUrl, youtubeUrls: extractYouTubeUrl };
 
         // Modifie directement `sub` (fermé par les callbacks d'approbation/rejet ci-dessous) :
         // approuver publie donc la valeur éditée ici, pas la proposition d'origine de l'IA.
@@ -818,7 +829,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const socialConfig = {
             instagram: { extract: extractInstagramUrl, field: 'instagramUrl' },
             facebook: { extract: extractFacebookUrl, field: 'facebookUrl' },
-            tiktok: { extract: extractTikTokUrl, field: 'tiktokUrl' }
+            tiktok: { extract: extractTikTokUrl, field: 'tiktokUrl' },
+            pinterest: { extract: extractPinterestUrl, field: 'pinterestUrl' }
         };
         card.querySelectorAll('.sub-social-input').forEach(input => {
             const platform = input.dataset.platform;
@@ -1045,7 +1057,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <label class="sub-section-label">The story of this place</label>
             <textarea class="loc-story-place-textarea sub-section-textarea" rows="3" placeholder="Describe the place itself — what it is, where it is."></textarea>
             <label class="sub-section-label">Following in BTS's footsteps</label>
-            <textarea class="loc-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line."></textarea>
+            <textarea class="loc-story-bts-textarea sub-section-textarea" rows="3" placeholder="How this place connects to BTS / the member — one paragraph per blank line. Visited more than once? Start each paragraph with &quot;Year, Member(s):&quot;, e.g. &quot;2023, Jimin &amp; J-Hope: ...&quot; then a blank line then &quot;2026, RM: ...&quot; — shown as a bold label per visit."></textarea>
 
             <!-- Tips (demande du 13/09/2026, "ajoute également les tips dans Existing
                  locations") — même éditeur (window.createTitledListField()) et même champ
@@ -1092,6 +1104,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)">
             <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
             <div class="sub-social-extra" data-platform="tiktok" style="margin-bottom:6px;"></div>
+            <input type="url" class="sub-social-input" data-platform="pinterest" placeholder="Pinterest URL (optional)">
+            <div class="sub-social-error hidden" data-platform="pinterest" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a pinterest.com URL.</div>
+            <div class="sub-social-extra" data-platform="pinterest" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-video-input" placeholder="YouTube video URL (optional)">
             <div class="sub-video-status" style="font-size:11px;color:#94a3b8;margin-bottom:6px;">Loading…</div>
             <div class="sub-video-extra" style="margin-bottom:14px;"></div>
@@ -1180,7 +1195,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté fiche de review d'une proposition, plus haut dans ce fichier.
         const extraFieldWidgets = {};
-        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl, youtubeUrls: extractYouTubeUrl };
+        const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl, pinterestUrls: extractPinterestUrl, youtubeUrls: extractYouTubeUrl };
 
         // Pré-remplit avec les données locales (immédiat), puis avec le contenu Firestore
         // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
@@ -1193,6 +1208,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             card.querySelector('.sub-social-input[data-platform="instagram"]').value = data.instagramUrl || '';
             card.querySelector('.sub-social-input[data-platform="facebook"]').value = data.facebookUrl || '';
             card.querySelector('.sub-social-input[data-platform="tiktok"]').value = data.tiktokUrl || '';
+            card.querySelector('.sub-social-input[data-platform="pinterest"]').value = data.pinterestUrl || '';
             videoInput.value = data.ytId ? 'https://www.youtube.com/watch?v=' + data.ytId : '';
             videoStatus.textContent = data.ytId ? 'YouTube video: ' + data.ytId : 'No YouTube video';
             linkInput.value = data.episodeLink || '';
@@ -1207,11 +1223,12 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 instagram: card.querySelector('.sub-social-input[data-platform="instagram"]').value,
                 facebook: card.querySelector('.sub-social-input[data-platform="facebook"]').value,
                 tiktok: card.querySelector('.sub-social-input[data-platform="tiktok"]').value,
+                pinterest: card.querySelector('.sub-social-input[data-platform="pinterest"]').value,
                 video: videoInput.value,
             };
             originalRawLinks = {
                 tweetUrl: data.tweetUrl || '', instagramUrl: data.instagramUrl || '',
-                facebookUrl: data.facebookUrl || '', tiktokUrl: data.tiktokUrl || '', ytId: data.ytId || '',
+                facebookUrl: data.facebookUrl || '', tiktokUrl: data.tiktokUrl || '', pinterestUrl: data.pinterestUrl || '', ytId: data.ytId || '',
             };
             if (typeof window.createTitledListField === 'function') {
                 const tipsEditorEl = card.querySelector('.sub-tips-editor');
@@ -1245,6 +1262,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const instagramVal = card.querySelector('.sub-social-input[data-platform="instagram"]').value.trim();
             const facebookVal = card.querySelector('.sub-social-input[data-platform="facebook"]').value.trim();
             const tiktokVal = card.querySelector('.sub-social-input[data-platform="tiktok"]').value.trim();
+            const pinterestVal = card.querySelector('.sub-social-input[data-platform="pinterest"]').value.trim();
             const videoVal = videoInput.value.trim();
 
             // Ne revalider que ce qui a réellement changé (demande du 14/09/2026) — un champ
@@ -1264,6 +1282,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const tiktokChanged = tiktokVal !== (originalLinkValues.tiktok || '');
             const tiktokUrl = tiktokChanged ? (tiktokVal ? extractTikTokUrl(tiktokVal) : null) : (originalRawLinks.tiktokUrl || null);
             if (tiktokChanged) { card.querySelector('.sub-social-error[data-platform="tiktok"]').classList.toggle('hidden', !tiktokVal || !!tiktokUrl); if (tiktokVal && !tiktokUrl) hasError = true; }
+            const pinterestChanged = pinterestVal !== (originalLinkValues.pinterest || '');
+            const pinterestUrl = pinterestChanged ? (pinterestVal ? extractPinterestUrl(pinterestVal) : null) : (originalRawLinks.pinterestUrl || null);
+            if (pinterestChanged) { card.querySelector('.sub-social-error[data-platform="pinterest"]').classList.toggle('hidden', !pinterestVal || !!pinterestUrl); if (pinterestVal && !pinterestUrl) hasError = true; }
             const videoChanged = videoVal !== (originalLinkValues.video || '');
             const ytId = videoChanged ? (videoVal ? extractYouTubeId(videoVal) : null) : (originalRawLinks.ytId || null);
             if (videoChanged && videoVal && !ytId) { videoStatus.textContent = "Doesn't look like a YouTube URL"; hasError = true; }
@@ -1288,7 +1309,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             const fullDescription = Object.assign({}, mergedFullDescription, {
                 en: plainTextToHtmlParagraphs(combinedStory)
             });
-            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim(), recreatedPhoto: currentRecreatePhoto }, extraCollected);
+            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', pinterestUrl: pinterestUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim(), recreatedPhoto: currentRecreatePhoto }, extraCollected);
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
 
             // Group/Member/Country/City/Category/Year (demande du 13/09/2026, "ajoute

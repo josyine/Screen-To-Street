@@ -827,7 +827,7 @@
                              (épisode seul, lien seul, les deux, ou ni l'un ni l'autre). -->
                         <span id="details-episode-container"><b data-i18n="lEpisode">Episode:</b> <span id="details-episode"></span></span>
                         <span id="details-link-container"><b data-i18n="lWatch">Link:</b> <a id="details-episode-link" href="#" target="_blank" data-i18n="lOfficialLink">Official Link</a></span>
-                        <span id="details-social-links" class="hidden"><br><b data-i18n="lFollow">Follow:</b> <a id="details-instagram-link" href="#" target="_blank" class="hidden">Instagram</a> <a id="details-facebook-link" href="#" target="_blank" class="hidden">Facebook</a> <a id="details-tiktok-link" href="#" target="_blank" class="hidden">TikTok</a></span>
+                        <span id="details-social-links" class="hidden"><br><b data-i18n="lFollow">Follow:</b> <a id="details-instagram-link" href="#" target="_blank" class="hidden">Instagram</a> <a id="details-facebook-link" href="#" target="_blank" class="hidden">Facebook</a> <a id="details-tiktok-link" href="#" target="_blank" class="hidden">TikTok</a> <a id="details-pinterest-link" href="#" target="_blank" class="hidden">Pinterest</a></span>
                     </div>
 
                     <!-- "The story of this place" (demande du 13/09/2026 : "je veux que tu mettes
@@ -849,7 +849,14 @@
                          renderLocationRichContent() dans script.js). Upload depuis le modal crayon
                          (script.js) et admin.html ("Existing locations"). -->
                     <div class="story-section hidden" id="story-section-recreate">
-                        <div class="story-heading"><span class="dot"></span><span data-i18n="lRecreatePhoto">Recreate the Photo</span></div>
+                        <div class="story-heading">
+                            <span class="dot"></span>
+                            <!-- Icône appareil photo (demande du 15/09/2026) — SVG plutôt qu'un
+                                 emoji (préférence du site, voir CLAUDE.md), même couleur que le
+                                 texte du titre via currentColor. -->
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:var(--primary-magenta);"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                            <span data-i18n="lRecreatePhoto">Recreate the Photo</span>
+                        </div>
                         <img id="details-recreate-photo" class="recreate-photo-img" alt="">
                     </div>
 
