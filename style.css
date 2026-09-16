@@ -94,6 +94,16 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .cat-card { padding: 8px 14px; border: 1px solid var(--border-color); border-radius: 100px; font-size: 11.5px; font-weight: 600; color: #64748b; white-space: nowrap; cursor: pointer; transition: 0.2s; background: white;}
 .cat-card:hover { border-color: var(--primary-magenta); }
 .cat-card.active { background: var(--accent-pink); border-color: var(--primary-magenta); color: var(--primary-magenta); }
+/* Bouton "Verified only" (demande du 15/09/2026, admin uniquement) : même look que
+   .cat-card mais SA PROPRE classe — .cat-card est aussi le sélecteur utilisé par
+   initializeFilters() pour câbler les vrais boutons de catégorie (voir script.js), donc le
+   réutiliser ici faisait aussi matcher ce bouton par erreur : un clic déclenchait EN PLUS le
+   handler de catégorie, qui posait activeCategory = this.getAttribute('data-cat') = null
+   (aucun data-cat sur ce bouton) et filtrait silencieusement TOUS les lieux (bug du
+   16/09/2026, "aucun lieu n'apparait"). */
+.verified-filter-chip { padding: 8px 14px; border: 1px solid var(--border-color); border-radius: 100px; font-size: 11.5px; font-weight: 600; color: #64748b; white-space: nowrap; cursor: pointer; transition: 0.2s; background: white; }
+.verified-filter-chip:hover { border-color: var(--primary-magenta); }
+.verified-filter-chip.active { background: var(--accent-pink); border-color: var(--primary-magenta); color: var(--primary-magenta); }
 
 .location-list { display: flex; flex-direction: column; gap: 9px; padding-bottom: 20px;}
 .loc-item { display: flex; gap: 11px; align-items: center; background: #faf9fc; border-radius: 12px; padding: 10px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;}
