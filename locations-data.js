@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-16T21:00:48.395Z.
+// Généré le 2026-09-16T22:16:21.516Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -390,16 +390,28 @@ window.STATIC_LOCATIONS = [
     },
     "tipsList": [
       {
-        "text": "Don't be deterred by the fact that you can't see the ice cream in the display case! The hidden pozzetti wells are the ultimate sign of a high-quality, artisanal gelateria.",
-        "title": "Trust the Metal Lids"
+        "title": {
+          "en": "Trust the Metal Lids"
+        },
+        "text": {
+          "en": "Don't be deterred by the fact that you can't see the ice cream in the display case! The hidden pozzetti wells are the ultimate sign of a high-quality, artisanal gelateria."
+        }
       },
       {
-        "text": "You cannot go wrong with their traditional nut-based flavors. Their Pistachio (Pistacchio) and Hazelnut/Chocolate (Gianduja) are widely considered some of the best in all of Paris.",
-        "title": "The Classic Flavors"
+        "title": {
+          "en": "The Classic Flavors"
+        },
+        "text": {
+          "en": "You cannot go wrong with their traditional nut-based flavors. Their Pistachio (Pistacchio) and Hazelnut/Chocolate (Gianduja) are widely considered some of the best in all of Paris."
+        }
       },
       {
-        "title": "Gelato on the Go",
-        "text": "The shop is quite small with very limited seating. Do as the locals (and Jimin) do: order your gelato to go, and take a leisurely ten-minute stroll down the historic streets to enjoy it in the beautiful, grassy square of the nearby Place des Vosges."
+        "title": {
+          "en": "Gelato on the Go"
+        },
+        "text": {
+          "en": "The shop is quite small with very limited seating. Do as the locals (and Jimin) do: order your gelato to go, and take a leisurely ten-minute stroll down the historic streets to enjoy it in the beautiful, grassy square of the nearby Place des Vosges."
+        }
       }
     ],
     "directions": {
@@ -420,7 +432,11 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "youtubeUrls": [],
     "tweetUrls": [],
-    "officialLink": "https://www.instagram.com/pozzettoparis/?hl=fr"
+    "officialLink": "https://www.instagram.com/pozzettoparis/?hl=fr",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "episodeLink": "https://feaforall.com/k-pop/article/when-did-jimin-go-to-paris/",
+    "recreatedPhoto": "images/admin-upload-6-recreated.jpg"
   },
   {
     "id": 7,
@@ -10210,21 +10226,7 @@ window.STATIC_LOCATIONS = [
     "city": "Wanju",
     "group": "BTS",
     "addedAt": 1789074154119,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Photospot Tip"
-        },
-        "text": {
-          "en": "Look for the photo zone sign installed by the local tourist board which indicates the exact angle where the members posed during the Summer Package photoshoot."
-        }
-      }
-    ],
     "instagramUrl": "https://www.instagram.com/p/DGuO1Y9Phr2/?img_index=1",
-    "fullDescription": {
-      "en": "<p>Located in the serene countryside of Wanju-gun in Jeollabuk-do province, these stone stepping crossings span across scenic local streams nestled against lush green mountain backdrops. Wanju county is celebrated for its well-preserved traditional Korean culture, historic hanok villages, and serene natural landscapes.</p><p>This location gained international fame when BTS filmed their '2019 Summer Package in Korea' across various sites in Wanju. The pictorial featuring all seven members casually crossing the picturesque stepping stones across the stream became one of the photoshoot's most iconic images. Following the release, local authorities officially designated the area as part of the Wanju BTS Tour trail, complete with informational photo zone markers.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -10238,7 +10240,46 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "tweetUrl": "",
     "tiktokUrl": "",
-    "ytId": ""
+    "ytId": "",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Look for the Purple Markers"
+        },
+        "text": {
+          "en": "You won't have to wander aimlessly looking for the exact stones! The Wanju local government has thoughtfully set up a dedicated \"BTS Road,\" complete with official photo zone markers and QR codes right in front of the stream to show you exactly where the cameras were placed."
+        }
+      },
+      {
+        "title": {
+          "en": "Watch Your Step"
+        },
+        "text": {
+          "en": "While the stepping stones make for a brilliant photo, be mindful of the weather. If you visit after heavy summer rains, the stream's water level can rise, making the stones slippery or even impassable. Wear practical shoes!"
+        }
+      },
+      {
+        "title": {
+          "en": "Complete the Summer Package Tour (Awon Museum & Hotel)"
+        },
+        "text": {
+          "en": "Just a very short distance from the stepping stones is the spectacular Awon Hanok (Awon Museum & Hotel). This 250-year-old traditional Korean house was the primary filming location and accommodation for the group during this exact same trip. It is an absolute must-visit to complete your Wanju itinerary!"
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located in the serene, untouched countryside of Wanju-gun in North Jeolla Province, this charming stone stepping crossing (doldari) spans across a quiet local stream, nestled against a breathtaking backdrop of lush green mountains. Wanju is deeply celebrated for its well-preserved traditional Korean culture, historic hanok villages, and tranquil natural landscapes, offering a perfect, slow-paced contrast to the high-tech bustle of South Korea's major cities.</p><p>This quiet rural stream gained massive international fame when BTS selected Wanju as the exclusive filming location for their 2019 Summer Package in Korea—notably their first-ever domestic Summer Package. The beautiful pictorial featuring all seven members casually sitting and walking across the picturesque stepping stones became one of the photoshoot's most iconic and beloved images. The visual impact was so profound that local authorities officially designated the area as part of the \"Wanju BTS Tour\" trail, placing informational photo zone markers to help fans perfectly recreate the group's relaxing summer aesthetic.</p>"
+    },
+    "episodeLink": "https://www.youtube.com/watch?v=codiyeFL8wA",
+    "officialLink": "https://english.visitkorea.or.kr/svc/whereToGo/hdrdslt/hdrdsltView.do?crsSn=371745"
   },
   {
     "address": "38 Songjeong-ro 8beon-gil, Gwangsan-gu, Gwangju, South Korea",
@@ -10480,8 +10521,6 @@ window.STATIC_LOCATIONS = [
     "lng": 126.9808,
     "group": "BTS",
     "addedAt": 1789074676082,
-    "tweetUrl": "https://x.com/KNJsSource/status/1773580661338612116",
-    "episodeLink": "",
     "practicalInfo": [
       {
         "title": {
@@ -10494,7 +10533,6 @@ window.STATIC_LOCATIONS = [
     ],
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "",
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
@@ -10532,8 +10570,11 @@ window.STATIC_LOCATIONS = [
     ],
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
-    "tweetUrls": []
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "tweetUrl": "https://x.com/urmisope/status/2065054945460838666?s=46",
+    "episodeLink": "https://www.koreajoongangdaily.com/lifestyle/bts-member-rm-takes-time-off-military-service-to-enjoy-art/12103577",
+    "officialLink": "https://www.kukjegallery.com/"
   },
   {
     "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Museum_SAN.tif/lossy-page1-1280px-Museum_SAN.tif.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
