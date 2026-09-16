@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-16T17:41:54.424Z.
+// Généré le 2026-09-16T21:00:48.395Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -10482,19 +10482,6 @@ window.STATIC_LOCATIONS = [
     "addedAt": 1789074676082,
     "tweetUrl": "https://x.com/KNJsSource/status/1773580661338612116",
     "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Admission to general exhibitions at Kukje Gallery is typically free, and the surrounding Samcheong-dong neighborhood offers numerous traditional teahouses and art spaces."
-        },
-        "title": {
-          "en": "Visiting Tip"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Located in the Samcheong-dong art district near Gyeongbokgung Palace, Kukje Gallery is one of South Korea's premier contemporary art galleries. Established in 1982, it showcases prominent Korean modern artists, particularly masters of Dansaekhwa (Korean monochrome painting), alongside celebrated international artists in its architecturally distinct exhibition spaces.</p><p>RM has been a frequent patron of Kukje Gallery for years, attending solo exhibitions by legendary Korean fine artists like Lee Ufan, Park Seo-Bo, and Yun Hyong-keun. His visits have played a key role in introducing Korean fine art to millions of young global fans.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -10504,7 +10491,49 @@ window.STATIC_LOCATIONS = [
           "en": "Take Seoul Subway Line 3 to Anguk Station (Exit 1) and walk north along Samcheong-ro for approximately 12 minutes."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the cultural heart of the Samcheong-dong district near Gyeongbokgung Palace, Kukje Gallery is undeniably one of South Korea's premier contemporary art institutions. Established in 1982, the gallery has been a driving force in the global art world. It showcases celebrated international creators alongside prominent Korean modern masters, particularly the pioneers of Dansaekhwa (Korean monochrome painting). The gallery complex itself is a masterpiece, divided into three distinct architectural buildings (K1, K2, and K3), with the award-winning K3 building famously draped in a striking, stainless-steel mesh canopy.</p><p>RM has been a dedicated, frequent patron of Kukje Gallery for years, making it an essential, recurring stop on his Seoul \"Namjooning\" map. He has attended numerous solo exhibitions here, quietly admiring the works of legendary Korean fine artists like Park Seo-Bo and Lee Ufan, as well as international visionaries. By consistently sharing photos of his visits on social media, RM has played a profound, well-documented role in introducing Korean fine art—especially the meditative Dansaekhwa movement—to millions of young global fans, cementing his legacy as a serious and highly influential art patron.</p>"
+    },
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Three Galleries in One"
+        },
+        "text": {
+          "en": "Kukje Gallery isn't just one single room! It is split into K1, K2, and K3, each featuring different architectural styles and hosting different exhibitions simultaneously. Make sure to walk through the back courtyard to discover K3's unique, chainmail-like exterior!"
+        }
+      },
+      {
+        "title": {
+          "en": "Free and Accessible"
+        },
+        "text": {
+          "en": "Unlike traditional museums, Kukje is a commercial art gallery, which means admission to its world-class exhibitions is entirely free. However, be sure to check their official website before your visit, as the buildings briefly close to the public between exhibition rotations."
+        }
+      },
+      {
+        "title": {
+          "en": "The Art-Filled Café"
+        },
+        "text": {
+          "en": "You don't have to leave the gallery to take a break. The K1 building houses a chic café and restaurant (simply named \"Kukje Gallery Cafe\") where you can relax with a drink, soak in the sophisticated atmosphere, and plan the rest of your Samcheong-dong itinerary."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": []
   },
   {
     "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Museum_SAN.tif/lossy-page1-1280px-Museum_SAN.tif.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
@@ -10560,20 +10589,6 @@ window.STATIC_LOCATIONS = [
     "lng": 128.9664,
     "category": "Landmarks",
     "addedAt": 1789075142938,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Golden Hour Visit"
-        },
-        "text": {
-          "en": "Visit in the late afternoon to catch the sunset just like Jimin did in his vlog, as Dadaepo is widely considered the best sunset spot in Busan."
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Dadaepo Beach is situated at the southwestern tip of Busan, where the Nakdong River meets the South Sea. Famous for its shallow waters, expansive sandy flats, and stunning sunset views, the beach offers a peaceful escape from Busan's more urban coastal areas. It is also well known for the Dadaepo Sunset Fountain of Dreams and its surrounding coastal park trails.</p><p>In January 2016, Jimin returned to his hometown of Busan during a holiday break and filmed a personal vlog at Dadaepo Beach during sunset. In the emotional video, Jimin walked along the shoreline and made heartfelt wishes for BTS's future success, happiness, and for the safety and health of ARMYs worldwide. The beach has since become a meaningful spot for fans reflecting on Jimin's journey from Busan to international stardom.</p>"
-    },
     "practicalInfo": [
       {
         "text": {
@@ -10584,7 +10599,51 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "ytId": "C_CWm5cYX_s"
+    "ytId": "C_CWm5cYX_s",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "images/admin-upload-new-NUTF1HJaRyROCB3Cwd46-recreated.jpg",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Chase the Golden Hour"
+        },
+        "text": {
+          "en": "Do not visit this beach in the early morning! Dadaepo is universally agreed to have the most beautiful sunsets in all of Busan. Plan your visit for late afternoon so you can recreate Jimin’s vlog setting as the sky turns brilliant shades of orange, pink, and purple."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk the Tidal Flats"
+        },
+        "text": {
+          "en": "Because the water here is incredibly shallow, the wet sand creates a perfect, mirror-like reflection of the sky during low tide. Wear shoes that you don't mind getting a little sandy, or do what many locals do and simply go barefoot to fully experience the natural beauty."
+        }
+      },
+      {
+        "title": {
+          "en": "The Fountain of Dreams"
+        },
+        "text": {
+          "en": "If you are visiting between April and October, stick around after the sun goes down! The nearby plaza hosts the Dadaepo Sunset Fountain of Dreams, which features spectacular, synchronized water and light shows set to music every evening."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located at the southwestern edge of Busan, where the Nakdong River gently meets the South Sea, Dadaepo Beach is a breathtaking natural retreat. Famous for its remarkably shallow waters, vast tidal sand flats, and some of the most spectacular sunset views in South Korea, the beach offers a peaceful, untouched escape from Busan's more densely populated urban coastlines (like Haeundae or Gwangalli). The area is also celebrated for the vibrant Dadaepo Sunset Fountain of Dreams and its beautiful network of wooden coastal park trails.</p><p>In January 2016, Jimin returned to his hometown for a brief holiday break and filmed a highly personal vlog at Dadaepo Beach as the sun went down. In this touching video, shot long before the group reached their massive global superstardom, a young Jimin walked along the windy shoreline and made heartfelt New Year's wishes. He prayed for BTS's future success, the members' happiness, and the health and safety of ARMYs worldwide. Today, watching the sunset at this exact beach serves as a deeply meaningful pilgrimage for fans, offering a quiet moment to reflect on Jimin's incredible journey from a hopeful boy in Busan to an international icon.</p>"
+    },
+    "episodeLink": "https://www.visitbusan.net/en/index.do?menuCd=DOM_000000302002001000&uc_seq=477&lang_cd=en&pagingParms=4ca15f3a76a21f554a6e515f5344f50c4f734814d27260977c0eb574b1e0019a33f5a8e2dd587a9efb82cc91cf112987488312a3bc08c3054da8c190c930f6592e7894a7ed3cf4243291b2529527de050aa608ee54ad79feb8b43e0becf2aedf306446a26175f37928b2e64d297ab48f8acfae3743ce2794ef15d99eb79334135b659e2827a188ae72a11ca917970aac34400ec0365d93e364d7a859d58178e212648c28901350cb20330ec09b4e8c7ee5e2b8287a2a6536a889e832bf7d31f847bff6a467836ed9d75537b39410af390c426aa2cb2a1bd8a64dc547815f320b6242d2505ff463a634757c4ad1fb53163852273f4a3020b9b3120c45d755832b1bfdbc1ea7e0f32a1b21bec241920c4ba50f7077696f89bf66d524dd2942c4dee6ed72a6ab2ac94ac4ca6fddecc6d987793a5e1a71bd7c5ecf22aa4bbfe412dfc77d87603c0e96d7053984732496e554e28739c2ef435dbccd6740feb0f0d69f7b0d03a7292defeec4bda3ac0123b4fab549604bdda4f1a4399d3de6418aefad9225e975c7aef42efd154a86c57ddf205954fd0f3329d1300c774984706b28907a05264e6fb9cc23fc96a4aafe87e4f8d53c47b399853c6798bf07a3ef3af7230dfd5896ce340c4644d5bccb845f32c279d18f1f9cdc65713d7871231c2484183e655d5773e51e693157b6c8457fb14e1f1d7fc555f24c310e1b1fc3bb2ec3b8537e5c3c41ffde2f06bca9b29a52f3a820c30f9ef9ab393b9616c46fbc6ef5fd78ff334e3df20c860299b60aa334a70c5e98c1bf20a59ae3172de4ddb7c6306d39f9c46f407cb63c04889abd5e8e45f381c6eba17a50188a",
+    "officialLink": "https://www.visitbusan.net/en/index.do?menuCd=DOM_000000301001001000&uc_seq=1718&lang_cd=en"
   },
   {
     "year": "2020",
@@ -10769,53 +10828,13 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "https://www.koreaboo.com/news/bts-jhope-street-woman-fighter-joy-dance-plug-in-academy-school-true-real-personality/"
   },
   {
-    "address": "160 Sanroknam-ro, Andeok-myeon, Seogwipo-si, Jeju-do, South Korea",
-    "name": "Podo Museum",
-    "country": "South Korea",
-    "id": "new-qY2aFkZWyStqtvzNOsRF",
-    "category": "Museum",
-    "img": "https://img.youtube.com/vi/nxUOxsimI8o/hqdefault.jpg",
-    "lng": 126.3888,
-    "city": "Jeju",
-    "year": "2022",
-    "group": "BTS",
-    "lat": 33.2925,
-    "member": "RM",
-    "addedAt": 1789076833289,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Check the museum's current exhibition schedule online prior to visiting, as exhibitions change periodically throughout the year."
-        },
-        "title": {
-          "en": "Visiting Tip"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Podo Museum is a modern contemporary art space located in Seogwipo on Jeju Island. Committed to promoting empathy and artistic dialogue, the museum hosts curated exhibitions that address social issues, human emotion, and contemporary visual arts in a sleek, minimalist environment integrated with Jeju's volcanic scenery.</p><p>RM visited Podo Museum during his travels to Jeju Island in early 2022, spending time exploring the 'Yet, With Love' exhibition. His social media posts documenting the artwork brought widespread interest to the museum, highlighting his passion for contemporary art spaces across South Korea.</p>"
-    },
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Located in Seogwipo, about a 45-minute drive or taxi ride south from Jeju International Airport."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
-    "ytId": "nxUOxsimI8o"
-  },
-  {
     "name": "Daeoh Bookstore",
     "member": "RM",
     "city": "Seoul",
     "id": "new-Uu7jJIYLTSjiSrwJtKnq",
     "group": "BTS",
     "lng": 126.9701,
-    "year": "2019",
+    "year": "2016, 2019",
     "country": "South Korea",
     "img": "images/admin-upload-new-Uu7jJIYLTSjiSrwJtKnq-photo.jpg",
     "lat": 37.5791,
@@ -10823,21 +10842,7 @@ window.STATIC_LOCATIONS = [
     "address": "55 Jahamun-ro 7-gil, Jongno-gu, Seoul, South Korea",
     "addedAt": 1789076510530,
     "tweetUrl": "https://x.com/bts_twt/status/1086536853778423808?s=46",
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "The space operates as a private cafe/exhibition. Purchasing a beverage or ticket at the entrance allows entry into the inner courtyard where RM took his famous photo."
-        },
-        "title": {
-          "en": "Visiting Tip"
-        }
-      }
-    ],
     "instagramUrl": "",
-    "fullDescription": {
-      "en": "<p>Nestled in the historic Seochon neighborhood near Gyeongbokgung Palace, Daeoh Bookstore is the oldest second-hand bookstore in Seoul, originally opened in 1951. Over decades, the charming wooden building has maintained its nostalgic mid-20th-century aesthetic, eventually transitioning into a heritage cafe and cultural space where visitors can appreciate traditional Korean architecture and classic literature.</p><p>In February 2019, RM visited Daeoh Bookstore during one of his characteristic personal cultural excursions, often referred to by fans as 'Namjooning'. He sat on the wooden step in the central courtyard and left a handwritten signature and warm note for the owners, making this quiet historic spot a famous pilgrimage destination for ARMY worldwide.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -10850,7 +10855,47 @@ window.STATIC_LOCATIONS = [
     ],
     "facebookUrl": "",
     "tiktokUrl": "",
-    "ytId": ""
+    "ytId": "",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "recreatedPhoto": "images/admin-upload-new-Uu7jJIYLTSjiSrwJtKnq-recreated.jpg",
+    "fullDescription": {
+      "en": "<p>Nestled in the historic Seochon neighborhood near Gyeongbokgung Palace, Daeoh Bookstore is the oldest second-hand bookstore in Seoul, having opened its doors in 1951. Over the decades, this charming, traditional hanok building has lovingly maintained its nostalgic mid-20th-century aesthetic. Today, it has gracefully transitioned into a heritage café and cultural space, offering visitors a rare, preserved glimpse into Seoul's past where they can appreciate traditional Korean architecture and classic literature.</p><p>2016, RM: Long before \"Namjooning\" became a globally recognized term, RM sought out this quiet, historical gem. During his earlier visit in 2016, he explored the narrow, book-lined corridors and left a warm, handwritten autograph for the owners, expressing his deep appreciation for the preservation of such a meaningful cultural space in the rapidly modernizing city.</p><p>2019, RM: RM returned to Daeoh Bookstore in February 2019 for another quiet cultural excursion. He took a now-iconic photograph sitting on the traditional wooden porch (daecheong maru) in the rustic central courtyard, surrounded by stacks of vintage books. By sharing this peaceful moment, he officially cemented this retro bookstore as a world-famous pilgrimage destination for ARMYs seeking the same introspective, cozy vibe.</p>"
+    },
+    "imgCredit": "AI-generated illustrative image",
+    "tipsList": [
+      {
+        "title": {
+          "en": "The Admission"
+        },
+        "text": {
+          "en": "Because it is a fragile, privately maintained heritage space, you cannot simply walk in just to take photos. You must purchase a drink from their café menu (their Yuja-cha/Citron tea and Dalgona coffee are excellent!) or buy a souvenir set to gain access to the interior courtyard."
+        }
+      },
+      {
+        "title": {
+          "en": "The Iconic Photo Spot"
+        },
+        "text": {
+          "en": "The exact spot where Namjoon sat is in the central courtyard. The owners are very welcoming to fans and often have a small photo of RM displayed nearby to help you find the perfect angle for your picture!"
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Neighborhood"
+        },
+        "text": {
+          "en": "Make a day out of your visit! The surrounding Seochon area is famous for its artistic vibe, indie boutiques, and the nearby Tongin Market. It’s the absolute perfect neighborhood for a full afternoon of \"Namjooning\" in Seoul."
+        }
+      }
+    ],
+    "officialLink": "https://english.visitseoul.net/attractions/daeo-bookstore/ENP010928",
+    "episodeLink": "https://thesmartlocal.kr/dae-oh-bookstore/"
   },
   {
     "address": "12 Metasequoia-ro, Damyang-eup, Damyang-gun, Jeollanam-do, South Korea",
@@ -11177,27 +11222,13 @@ window.STATIC_LOCATIONS = [
     "lat": 35.0975,
     "id": "new-zSoRIbdjWgX2cNxfIjeH",
     "lng": 129.0106,
-    "year": "2019",
+    "year": "2021",
     "city": "Busan",
     "country": "South Korea",
     "member": "Jimin, Jungkook",
     "img": "images/admin-upload-new-zSoRIbdjWgX2cNxfIjeH-photo.jpg",
     "category": "Landmark",
     "addedAt": 1789075955043,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Buy a stamp-tour map at the tourist information center near the entrance to easily locate art murals without getting lost in the winding alleyways."
-        },
-        "title": {
-          "en": "Exploring the Village Map"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Gamcheon Culture Village is a vibrant cultural district built along the steep hillsides of Busan. Famous for its terraced pastel houses, narrow labyrinthine alleys, and creative art installations, it is frequently called the 'Machu Picchu of Busan'.</p><p>To celebrate Busan's native sons Jimin and Jungkook, local artists and fan organizations created large, impressive wall murals depicting the duo. The most famous mural features portrait artwork of both members set against vibrant color backgrounds, attracting fans from around the globe who come to pay homage to the Busan-born BTS members.</p>"
-    },
     "practicalInfo": [
       {
         "text": {
@@ -11212,6 +11243,45 @@ window.STATIC_LOCATIONS = [
     "tweetUrl": "",
     "instagramUrl": "",
     "tiktokUrl": "",
-    "ytId": "MCqbvYnF6XM"
+    "ytId": "MCqbvYnF6XM",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Finding the Boys"
+        },
+        "text": {
+          "en": "The village is a maze, but the Jimin and Jungkook mural is thankfully easy to spot! It is prominently located along the main walking route just past the entrance. We highly recommend buying the official illustrated map at the village tourist center—it helps you navigate, and you can collect fun stamps at different checkpoints along the way."
+        }
+      },
+      {
+        "title": {
+          "en": "Comfort is Key"
+        },
+        "text": {
+          "en": "Gamcheon is built on very steep hills and is packed with countless uneven, winding staircases. Leave your fashion footwear at the hotel and wear your most comfortable, reliable walking shoes!"
+        }
+      },
+      {
+        "title": {
+          "en": "A Living Neighborhood"
+        },
+        "text": {
+          "en": "While it is a major tourist attraction, remember that Gamcheon is a residential village where locals actually live and work. Show respect by keeping your noise levels down and being careful not to trespass or peer into private windows while hunting for photo spots."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Gamcheon Culture Village is a vibrant cultural district built along the steep hillsides of coastal Busan. Famous for its brightly painted terraced houses, narrow labyrinthine alleys, and creative street art installations, it is frequently called the \"Machu Picchu of Busan.\" Originally a settlement for refugees during the Korean War, the neighborhood has been beautifully revitalized by local artists and residents into a bustling, open-air art gallery.</p><p>While not an official filming location, this vibrant village is an absolute must-visit for any ARMY. To celebrate Busan's native sons, Jimin and Jungkook, local artists and international fan organizations collaborated to create a magnificent wall mural depicting the duo. Unveiled in 2021, the sweeping artwork features stunning, photorealistic portraits of both members set against a vibrant background that perfectly matches the village's colorful aesthetic. Today, it stands as a globally recognized landmark, attracting fans who come to pay homage to the Busan-born stars while taking in their hometown's creative spirit.</p>"
+    },
+    "episodeLink": "https://mindtrip.ai/attraction/busan-south-korea/jungkook-jimin-mural/at-TrHxMv8y",
+    "officialLink": "https://www.gamcheon.or.kr/"
   }
 ];
