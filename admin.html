@@ -1408,7 +1408,7 @@ recomposée, sans texte ni légende.`;
 
             <div class="sub-actions">
                 <button type="button" class="btn-approve loc-save-btn">Save changes</button>
-                <button type="button" class="btn-hide${isHidden ? ' is-hidden' : ''}">${isHidden ? 'Unhide (show on map)' : 'Remove from map'}</button>
+                <button type="button" class="btn-hide${isHidden ? ' is-hidden' : ''}">${isHidden ? 'Restore location' : 'Delete location'}</button>
             </div>
             <div class="sub-result hidden"></div>
         `;
@@ -1680,7 +1680,7 @@ recomposée, sans texte ni légende.`;
 
         hideBtn.onclick = async () => {
             const nowHidden = !isHidden;
-            if (nowHidden && !window.confirm(`Remove "${loc.name}" from the map? Visitors will no longer see it (you can unhide it later from this same screen).`)) return;
+            if (nowHidden && !window.confirm(`Delete "${loc.name}" from the map? Visitors will no longer see it (you can restore it later from this same screen).`)) return;
             hideBtn.disabled = true;
             const res = await window.adminSetLocationHidden(loc.id, nowHidden);
             hideBtn.disabled = false;
