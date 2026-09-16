@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-15T17:44:07.880Z.
+// Généré le 2026-09-16T17:41:54.424Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9453,13 +9453,13 @@ window.STATIC_LOCATIONS = [
   {
     "address": "Coron Island, Calamian Islands, Palawan, Philippines",
     "country": "Philippines",
-    "city": "Coron",
+    "city": "Coron (Palawan)",
     "name": "Coron Island & Twin Lagoon",
     "id": "new-0GBu2KZ95jpTtlexQAG1",
     "group": "BTS",
     "member": "All",
     "lat": 11.9547,
-    "img": "https://img.youtube.com/vi/-BZHpyBDZEE/hqdefault.jpg",
+    "img": "images/admin-upload-new-0GBu2KZ95jpTtlexQAG1-photo.jpg",
     "lng": 120.2289,
     "category": "Landmarks",
     "year": "2017",
@@ -9467,21 +9467,7 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "tweetUrl": "https://x.com/bts_bighit/status/892218402554630145",
     "instagramUrls": [],
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "ARMY Tip"
-        },
-        "text": {
-          "en": "Rent a private motorized banca boat early in the morning to arrive at Twin Lagoon before crowds, capturing serene photos like those in the 2017 photobook."
-        }
-      }
-    ],
     "facebookUrls": [],
-    "fullDescription": {
-      "en": "<p>Coron Island in Palawan is world-renowned for its dramatic limestone karst cliffs, crystal-clear turquoise lagoons, and vibrant marine life. Twin Lagoon is one of its most famous natural wonders, where freshwater meets saltwater under soaring rock walls.</p><p>BTS spent their summer in Palawan for the <i>BTS Summer Package 2017</i>. They went snorkeling, rode boats through Twin Lagoon, and held photoshoots along the pristine white sand beaches of the Calamian islands.</p>"
-    },
     "practicalInfo": [
       {
         "text": {
@@ -9493,7 +9479,46 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrls": [],
-    "ytId": "-BZHpyBDZEE"
+    "ytId": "-BZHpyBDZEE",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "instagramUrl": "",
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "recreatedPhoto": "images/admin-upload-new-0GBu2KZ95jpTtlexQAG1-recreated.jpg",
+    "episodeLink": "https://www.youtube.com/watch?v=c4TLPA7Jmd4&pp=ygUXQlRTIFN1bW1lciBQYWNrYWdlIDIwMTc%3D",
+    "officialLink": "https://share.google/dUaedpxOBLCC9Zt7E",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book an Island-Hopping Tour"
+        },
+        "text": {
+          "en": "You cannot simply walk to these locations! To visit Twin Lagoon and the stunning beaches featured in the Summer Package, you must book an official \"Island Hopping\" boat tour departing from Coron Town Proper. Look for tour packages that specifically include Twin Lagoon and the beautiful beaches of Malcapuya or Banana Island."
+        }
+      },
+      {
+        "title": {
+          "en": "Pack for the Water"
+        },
+        "text": {
+          "en": "You will be in and out of traditional bangka (outrigger boats) all day. Bring a sturdy dry bag to protect your valuables, a waterproof phone pouch for photos, and—most importantly—water shoes or aqua socks to protect your feet from the sharp limestone rocks and hidden corals."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the Ancestral Domain"
+        },
+        "text": {
+          "en": "Coron Island is the sacred ancestral domain of the indigenous Tagbanua people, who fiercely protect its natural beauty. Show respect by keeping your voice down when echoing through the enclosed lagoons, never leaving any trash behind, and strictly using reef-safe sunscreen to protect the vibrant marine life the boys admired."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located in the pristine Palawan province, Coron Island is a world-renowned tropical paradise. It is famous for its dramatic, jagged limestone karst cliffs that rise sharply from crystal-clear, emerald waters, making it a spectacular haven for divers and nature lovers. Twin Lagoon, one of its most celebrated natural wonders, offers a surreal swimming experience where warm, salty ocean currents blend with cool underground freshwater springs, all completely enclosed by towering, majestic rock walls.</p><p>Seeking the ultimate tropical escape, BTS traveled to this breathtaking archipelago to film the BTS Summer Package 2017. Trading their hectic global schedules for relaxed \"island time,\" the seven members fully embraced the Palawan lifestyle. They navigated the mesmerizing Twin Lagoon, went snorkeling among vibrant coral reefs, and bravely rode inflatable banana boats. The pristine, powdery white-sand beaches of the Calamian Islands served as the perfect sun-drenched backdrop for their photobook, capturing the group’s pure, chaotic, and youthful joy in an untouched island setting.</p>"
+    },
+    "imgCredit": "Franz C. Trinidad / CC BY-SA 4.0"
   },
   {
     "country": "South Korea",
@@ -9551,17 +9576,6 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "tweetUrl": "https://x.com/KNJsSource/status/1609443863202258945?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1610748675504103424%7Ctwgr%5E5b65acbc2ac6150f6ebbe6087a972f62043193f1%7Ctwcon%5Es3_&ref_url=https%3A%2F%2Fwww.hindustantimes.com%2Fentertainment%2Fmusic%2Fbts-rm-reacts-to-report-about-his-private-visit-to-temple-next-time-ill-101672993017385.html",
     "instagramUrls": [],
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "ARMY Tip"
-        },
-        "text": {
-          "en": "Consider participating in the official Templestay program at Hwaeomsa to experience the quiet tea ceremony and reflection that RM enjoyed."
-        }
-      }
-    ],
     "facebookUrls": [],
     "instagramUrl": "https://www.instagram.com/p/CnB3PIgvc2_/?utm_source=ig_embed&ig_rid=Af04ICyA--7f9LuBWOnUzX8",
     "fullDescription": {
@@ -9577,7 +9591,43 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "tweetUrls": []
+    "tweetUrls": [],
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "youtubeUrls": [],
+    "officialLink": "https://fr.wikipedia.org/wiki/Hwaeomsa",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhoto": "images/admin-upload-new-1bOsxr6FNynKsmMF2N5g-recreated.jpg",
+    "imgCredit": "eimoberg / CC BY 2.0",
+    "episodeLink": "https://www.thenews.com.pk/latest/1028439-hwaeomsa-temple-denies-any-involvement-with-leak-of-bts-rm-s-private-conversation",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Honor the"
+        },
+        "text": {
+          "en": "Because RM’s visit was tainted by a breach of privacy, approach this location with a deep sense of respect. If you choose to visit, focus on appreciating the temple’s thousand-year-old history and breathtaking mountain scenery, rather than treating it as a traditional fandom checkpoint."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Jirisan National Park"
+        },
+        "text": {
+          "en": "Hwaeomsa serves as a major gateway to Jirisan, South Korea’s first and largest national park. After walking through the temple grounds, take some time to hike the surrounding trails and enjoy the pristine nature that originally drew Namjoon to this region."
+        }
+      },
+      {
+        "title": {
+          "en": "The Authentic Templestay Experience"
+        },
+        "text": {
+          "en": "If you want to experience the peaceful, reflective retreat that RM was originally seeking, South Korea offers incredible official Templestay programs across the country. Consider booking a stay (perhaps at a different, quieter temple, as RM suggested for himself!) to experience traditional tea ceremonies, meditation, and monastic life in true privacy."
+        }
+      }
+    ]
   },
   {
     "category": "MV Location",
@@ -9685,25 +9735,14 @@ window.STATIC_LOCATIONS = [
     "member": "All",
     "name": "Hyundai Motorstudio Goyang",
     "id": "new-3UtuxgcNLM7VVKgsgZiG",
-    "img": "https://img.youtube.com/vi/zaXfSCdO69I/hqdefault.jpg",
-    "category": "Variety Show Location",
+    "img": "images/admin-upload-new-3UtuxgcNLM7VVKgsgZiG-photo.jpg",
+    "category": "Run BTS",
     "country": "South Korea",
     "address": "217 Kintex-ro, Ilsanseo-gu, Goyang-si, Gyeonggi-do, South Korea",
     "lat": 37.6653,
     "addedAt": 1789249367092,
     "tiktokUrls": [],
     "instagramUrls": [],
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Take the guided permanent exhibition tour to walk through the exact interactive design spaces where RM, Jin, Suga, J-Hope, Jimin, V, and Jungkook searched for clues."
-        },
-        "title": {
-          "en": "Interactive Experience"
-        }
-      }
-    ],
     "facebookUrls": [],
     "fullDescription": {
       "en": "<p>Located just outside Seoul, Hyundai Motorstudio Goyang is South Korea's premier automotive theme park and mobility experience center. Far beyond a traditional showroom, this architectural landmark immerses visitors in the entire journey of car creation, featuring futuristic interactive exhibits, automated manufacturing displays, and cutting-edge concept car showcases.</p><p>This sprawling, multi-story venue became an exclusive, after-hours playground for the group during Run BTS! Episodes 110 and 111. The sleek and futuristic exhibition zones served as the perfect backdrop for a hilariously chaotic late-night treasure hunt. Members raced across the facility, frantically searching for hidden clues inside the showcased vehicles and tackling automotive trivia challenges, turning this modern corporate space into a memorable arena of pure comedic entertainment.</p>"
@@ -9719,7 +9758,44 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrls": [],
-    "ytId": "zaXfSCdO69I"
+    "ytId": "zaXfSCdO69I",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "instagramUrl": "",
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "recreatedPhoto": "images/admin-upload-new-3UtuxgcNLM7VVKgsgZiG-recreated.jpg",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book the Exhibition Tour"
+        },
+        "text": {
+          "en": "You can enter the building and see the lobby's car showcase for free, but the coolest interactive zones the members ran through are part of the paid exhibition. Be sure to book the guided \"Into the Car\" tour online in advance to get the full, behind-the-scenes technological experience."
+        }
+      },
+      {
+        "title": {
+          "en": "Look Inside the Cars"
+        },
+        "text": {
+          "en": "Take a cue from the boys! You are highly encouraged to open the doors, sit inside, and explore the interiors of the vehicles in the main showcase area. Just try to resist the urge to frantically tear the seats apart looking for treasure hunt clues!"
+        }
+      },
+      {
+        "title": {
+          "en": "Refuel Like a Pro"
+        },
+        "text": {
+          "en": "After completing your own exploration of the studio, head up to the 4th floor to dine at \"Kitchen by Haevichi.\" It offers fantastic food, a great atmosphere, and sweeping views of the surrounding area—the perfect spot to relax after a busy afternoon."
+        }
+      }
+    ],
+    "imgCredit": "Damian B Oh / CC BY-SA 4.0",
+    "episodeLink": "https://www.youtube.com/watch?v=zaXfSCdO69I",
+    "officialLink": "https://motorstudio.hyundai.com/goyang/ln/main.do?lang=en"
   },
   {
     "id": "new-3XGdjRGOFysEfy39UpDo",
@@ -9781,7 +9857,6 @@ window.STATIC_LOCATIONS = [
     "addedAt": 1789249796838,
     "tiktokUrls": [],
     "instagramUrls": [],
-    "episodeLink": "",
     "facebookUrls": [],
     "fullDescription": {
       "en": "<p>Korea House is a premier traditional cultural center situated at the foot of Namsan Mountain in Seoul. Built in traditional Joseon Dynasty architectural style, the complex promotes Korean heritage through traditional performing arts, royal cuisine court dining, and cultural workshops.</p><p>In 2018, BTS held their iconic photoshoot with Billboard Magazine at Korea House. Dressed in modern luxury high fashion blended with traditional aesthetic surroundings, the members posed in the elegant outdoor hanok courtyards, making it a celebrated landmark for ARMY interested in traditional Korean architecture.</p>"
@@ -9800,17 +9875,41 @@ window.STATIC_LOCATIONS = [
     "ytId": "ThcZlAqKVmQ",
     "facebookUrl": "",
     "tweetUrl": "",
-    "tipsList": [
-      {
-        "title": "[object Object]",
-        "text": "[object Object]"
-      }
-    ],
     "instagramUrl": "",
     "youtubeUrls": [],
-    "officialLink": "",
     "tiktokUrl": "",
-    "imgCredit": "Piotrus / CC BY-SA 3.0"
+    "imgCredit": "Piotrus / CC BY-SA 3.0",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "recreatedPhoto": "images/admin-upload-new-4BJEcfrUGqy68YbNzjQM-recreated.jpg",
+    "officialLink": "https://www.kh.or.kr/kh/eng",
+    "episodeLink": "https://www.youtube.com/watch?v=ThcZlAqKVmQ",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Dine Like Royalty"
+        },
+        "text": {
+          "en": "You can do more than just take photos here! Korea House is famous for its Royal Court Cuisine (Surasang), carefully prepared based on historical records of the Joseon Dynasty. If you want to indulge in an unforgettable culinary experience, be sure to make a reservation well in advance."
+        }
+      },
+      {
+        "title": {
+          "en": "Find the Billboard Porch"
+        },
+        "text": {
+          "en": "When wandering through the outdoor courtyards, keep an eye out for the traditional wooden porches (daecheong maru). This is where the group took their most iconic, relaxed group shots."
+        }
+      },
+      {
+        "title": {
+          "en": "A Living Venue"
+        },
+        "text": {
+          "en": "Because of its authentic beauty, Korea House is a highly sought-after venue for traditional Korean weddings and banquets. If you visit on a weekend, you might be lucky enough to witness a beautiful ceremony! Just be mindful of the space and maintain a respectful distance so as not to interrupt the festivities."
+        }
+      }
+    ]
   },
   {
     "category": "Restaurant",
@@ -10501,17 +10600,6 @@ window.STATIC_LOCATIONS = [
     "member": "All",
     "img": "images/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-photo.jpg",
     "addedAt": 1789133503720,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Winter Visit Essentials"
-        },
-        "text": {
-          "en": "If visiting during the winter months to match the Winter Package aesthetic, bring heavy windproof clothing and heat packs as temperatures on the ridge drop significantly."
-        }
-      }
-    ],
     "fullDescription": {
       "en": "<p>Samyang Roundhill (formerly Samyang Ranch) is Asia's largest highland green pasture, sprawling across the windy peaks of Daegwalnyeong in Gangwon Province. Known for its endless grassy fields in summer and dramatic snowscapes in winter, it is dotted with massive wind turbines overlooking rolling hilltops.</p><p>BTS selected these majestic snowy slopes as the primary outdoor filming and photoshoot location for the '2021 BTS Winter Package'. Clad in colorful winter coats, the members played in the snow, shot playful video sequences, and captured warmth against the freezing alpine backdrop, creating unforgettable imagery for fans.</p>"
     },
@@ -10525,7 +10613,48 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "ytId": "1LMz6hgQtBM"
+    "ytId": "1LMz6hgQtBM",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Prepare for the Wind Chill"
+        },
+        "text": {
+          "en": "There is a reason this mountain is covered in giant wind turbines! The wind chill at the top of Daegwallyeong is notoriously brutal, especially in winter. If you plan to recreate the members' snowy photos, layer up heavily with thermals, thick gloves, and a good scarf."
+        }
+      },
+      {
+        "title": {
+          "en": "Winter Driving Rules"
+        },
+        "text": {
+          "en": "Because the ranch is massive (around 6 square miles), a shuttle bus operates from spring to autumn. However, during the snowy winter months, the shuttle is suspended, and visitors are actually allowed to drive their own personal vehicles all the way up to the East Sea Observatory!"
+        }
+      },
+      {
+        "title": {
+          "en": "The Signature Post-Snow Snack"
+        },
+        "text": {
+          "en": "The ranch is owned by Samyang, the famous Korean food company behind Buldak (Hot Chicken Flavor) Ramen. Before leaving, you absolutely must stop by the ranch mart at the entrance to eat a hot bowl of Samyang cup noodles and try their famous soft-serve ice cream made from the ranch’s own organic milk!"
+        }
+      }
+    ],
+    "recreatedPhoto": "images/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-recreated.jpg",
+    "episodeLink": "https://www.youtube.com/watch?v=RxKg68Az3tY&pp=ygUXMjAyMSBidHMgd2ludGVyIHBhY2thZ2U%3D",
+    "officialLink": "https://www.samyangfarm.co.kr/eng/index",
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "address": "29 Kookchudobosang-ro 84-gil, Seo-gu, Daegu, South Korea",
@@ -10584,20 +10713,6 @@ window.STATIC_LOCATIONS = [
     "name": "Joy Dance Plug In Music Academy",
     "addedAt": 1789131511921,
     "tweetUrl": "https://x.com/dailystardancer/status/1494574447629582336",
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Since this is an active private educational studio, interior access is generally restricted to registered students. Respectful exterior photography is encouraged while exploring the lively downtown area."
-        },
-        "title": {
-          "en": "Visitor Etiquette"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Joy Dance Plug In Music Academy is a legendary performing arts academy located in Gwangju, South Korea, famous for training numerous successful K-pop artists and dancers. Positioned near the downtown Geumnam-ro district, the facility specializes in popping, locking, hip-hop, and vocal technique training.</p><p>This academy marks the foundational roots of J-Hope's career as a dancer. Before being scouted by Big Hit Entertainment, Jung Ho-seok spent years here perfecting his street dance skills and performing with the local underground street dance crew NEURON. His exceptional work ethic and dance foundation were built inside these practice rooms.</p>"
-    },
     "practicalInfo": [
       {
         "text": {
@@ -10608,7 +10723,50 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "ytId": "1LxDdclfqMI"
+    "ytId": "1LxDdclfqMI",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "images/admin-upload-new-QlaUQW0O515Yqrte3UqU-recreated.jpg",
+    "fullDescription": {
+      "en": "<p>Joy Dance Plug In Music Academy is a legendary performing arts institution located in Gwangju, a city celebrated for its rich artistic and cultural heritage. Positioned near the bustling downtown Geumnam-ro district, the facility is widely renowned as a premier incubator for K-pop talent. It specializes in popping, locking, hip-hop choreography, and vocal training, shaping the skills of numerous successful K-pop artists before they ever hit the national stage.</p><p>This academy represents the foundational roots of j-hope's extraordinary career. Long before he became BTS's main dancer and a global icon, a young Jung Ho-seok spent countless hours grinding inside these practice rooms. It was during this era that he honed his foundational street dance skills and performed with the local underground crew NEURON. His legendary work ethic, relentless precision, and undeniable passion for hip-hop were entirely forged within these walls, earning him significant local fame as a teenage dance prodigy.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Respect the Next Generation"
+        },
+        "text": {
+          "en": "Joy Dance is still a fully functioning, busy academy training the next wave of potential K-pop stars. While you can visit the building and take photos outside, please be respectful of the students and staff by not interrupting ongoing classes or blocking the entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit the K-Pop Star Alley"
+        },
+        "text": {
+          "en": "Just a short walk from the academy in the Chungjang-ro district, the city of Gwangju has created a dedicated \"K-Pop Star Alley\" to honor its local heroes. It is an absolute must-visit for ARMYs, as it features beautiful murals, handprints, and a massive, colorful \"HOPE\" sculpture entirely dedicated to j-hope!"
+        }
+      },
+      {
+        "title": {
+          "en": "Trace the"
+        },
+        "text": {
+          "en": "To truly understand j-hope's roots, take time to wander around the Geumnam-ro and Chungjang-ro downtown areas. This is the very same neighborhood where he grew up dancing, a vibrant district he recently celebrated and revisited in his docuseries HOPE ON THE STREET."
+        }
+      }
+    ],
+    "officialLink": "https://joydance.kr/en/",
+    "episodeLink": "https://www.koreaboo.com/news/bts-jhope-street-woman-fighter-joy-dance-plug-in-academy-school-true-real-personality/"
   },
   {
     "address": "160 Sanroknam-ro, Andeok-myeon, Seogwipo-si, Jeju-do, South Korea",
@@ -10709,20 +10867,6 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-VvHht3XrSc6Cz5ogLsQh-photo.jpg",
     "addedAt": 1789132233861,
     "tweetUrl": "https://x.com/BTS_twt/status/1106079401907642372",
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Seasonal Planning"
-        },
-        "text": {
-          "en": "While RM visited during summer when the foliage was lush green, late October to early November offers a dramatically different autumn aesthetic with deep rust colors."
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Damyang Metasequoia Land is home to one of South Korea's most beautiful tree-lined boulevards. Planted in the 1970s, these towering metasequoia (dawn redwood) trees line a long pedestrian walkway, creating a natural green tunnel during spring and summer that turns vibrant red and orange during autumn.</p><p>In August 2019, RM took a vacation trip to Damyang during BTS's official break and shared photos of his stroll along the Metasequoia path on Twitter (@BTS_twt). Posing in relaxed attire under the soaring green canopy, RM showcased his love for nature and quiet reflection. The location quickly became one of the quintessential 'Namjooning' destinations in South Korea.</p>"
-    },
     "practicalInfo": [
       {
         "text": {
@@ -10732,14 +10876,58 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "episodeLink": "https://thekoreanlass.wordpress.com/2020/03/29/travel-rms-tour-in-damyang-county-metasequoia-lined-road-juknokwon-and-gwanbangjerim-forest/",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://french.visitkorea.or.kr/svc/whereToGo/locIntrdn/rgnContentsView.do?vcontsId=88487",
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Rent a Bicycle"
+        },
+        "text": {
+          "en": "While walking the path is beautiful, Damyang is famous for being incredibly bike-friendly. Renting a bicycle (like Namjoon often does on his trips!) is one of the best ways to explore the extensive trails that run parallel to the main Metasequoia pedestrian walkway."
+        }
+      },
+      {
+        "title": {
+          "en": "Complete the Namjooning Route (Juknokwon)"
+        },
+        "text": {
+          "en": "You cannot visit Damyang without seeing its most famous attraction! Just a short distance from the Metasequoia path is Juknokwon, a massive, tranquil bamboo forest. RM visited this forest on the exact same day, taking photos among the towering green bamboo stalks."
+        }
+      },
+      {
+        "title": {
+          "en": "Timing the Seasons"
+        },
+        "text": {
+          "en": "If you want to recreate RM's exact photos, aim for a summer visit when the leaves are a brilliant, lush green. However, if you are looking for pure scenic drama, mid-to-late November offers an unforgettable red-and-gold autumn landscape."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Damyang Metasequoia Land is home to one of South Korea's most breathtaking tree-lined boulevards. Originally planted in the 1970s, these towering dawn redwood trees now form a spectacular, two-kilometer pedestrian pathway. The dense branches interlock to create a natural, soaring green tunnel during the spring and summer months, before dramatically transforming into a vibrant, fiery corridor of orange and crimson in the autumn.</p><p>During BTS's official extended period of rest in the late summer of 2019, RM took a quiet vacation to Damyang to recharge. He shared a series of peaceful photos of his stroll along the Metasequoia path on Twitter (@BTS_twt). Posing in relaxed attire under the soaring green canopy, RM perfectly showcased his love for nature, art, and quiet reflection. Thanks to these beautiful snapshots, this majestic tree-lined walkway quickly became cemented as one of the quintessential \"Namjooning\" destinations in South Korea.</p>"
+    },
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhoto": "images/admin-upload-new-VvHht3XrSc6Cz5ogLsQh-recreated.jpg"
   },
   {
     "member": "All",
     "id": "new-WJ655ZFtqzPwrwKx5VE8",
     "country": "South Korea",
     "lng": 128.3242,
-    "img": "https://img.youtube.com/vi/9DwzBICPhdM/hqdefault.jpg",
+    "img": "images/admin-upload-new-WJ655ZFtqzPwrwKx5VE8-photo.jpg",
     "year": "2017",
     "city": "Danyang",
     "lat": 36.9892,
@@ -10749,20 +10937,6 @@ window.STATIC_LOCATIONS = [
     "group": "BTS",
     "addedAt": 1789132587200,
     "tweetUrl": "https://x.com/choi_bts2/status/1151472113372368896",
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Safety and Access"
-        },
-        "text": {
-          "en": "Because this remains an operational industrial site, inner pit access is prohibited to the public. However, the impressive surrounding mountain landscape and cliff perspectives can be appreciated safely from nearby municipal vantage points."
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>The Hanil Cement Quarry in Danyang is a massive industrial limestone quarry set in the mountain terrain of Chungcheongbuk-do. With its dramatic carved cliffs, terraced white gravel terrain, and wide open ground, it provides a stark and cinematic backdrop quite unique among Korean music video sets.</p><p>This site served as the primary outdoor filming location for the explosive music video 'Not Today' in 2017. BTS performed high-intensity, large-scale choreography alongside dozens of backup dancers across the open dusty fields and towering quarry rock walls, creating one of the most powerful visual spectacles in their videography.</p>"
-    },
     "practicalInfo": [
       {
         "text": {
@@ -10773,7 +10947,50 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "ytId": "9DwzBICPhdM"
+    "ytId": "9DwzBICPhdM",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>The Hanil Cement Quarry in Danyang is a massive, active industrial limestone mine carved directly into the rugged mountain terrain of North Chungcheong Province. With its dramatic, sheer rock cliffs, terraced white gravel slopes, and vast, dusty expanses, it provides a stark, apocalyptic, and highly cinematic backdrop that stands out as one of the most striking locations in Korean music video history.</p><p>This imposing site served as the primary outdoor filming location for the explosive music video \"Not Today\" in early 2017. BTS performed their high-intensity, large-scale choreography alongside dozens of black-clad backup dancers across the open, dusty plains, completely dwarfed by the towering quarry walls. The raw, aggressive energy of the industrial landscape perfectly matched the song's fierce underdog anthem, resulting in one of the most powerful and visually spectacular cinematic pieces in their entire videography.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Safety First (No Trespassing)"
+        },
+        "text": {
+          "en": "It is absolutely critical to note that the Hanil Cement Quarry is an active industrial mining site and strictly private property. You cannot simply walk in or hike down to the quarry floor to recreate the dance routine. Trespassing is strictly prohibited and extremely dangerous due to heavy machinery."
+        }
+      },
+      {
+        "title": {
+          "en": "The Scenic Alternative"
+        },
+        "text": {
+          "en": "Instead of trying to enter the quarry, you can experience the exact same dramatic limestone landscapes and dizzying heights by visiting the nearby Mancheonha Skywalk. Located on a towering cliff, it offers thrilling, panoramic views of the region's carved mountains and the winding South Han River."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Danyang's Karst Beauty"
+        },
+        "text": {
+          "en": "Danyang is famous across Korea for its stunning geological topography. Make the most of your trip by visiting the gorgeous Dodam Sambong Peaks (three natural stone peaks rising from the river) to appreciate the area's breathtaking limestone cliffs safely and legally!"
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.gem.wiki/Hanil_Cement_Danyang_Cement_Plant",
+    "recreatedPhoto": "images/admin-upload-new-WJ655ZFtqzPwrwKx5VE8-recreated.jpg",
+    "episodeLink": "https://www.google.com/search?q=danyang+hanil+cement+quarry+bts+not+today&tbnid=n5oVBg-V085XxM&tbnh=0&tbnw=0&rlz=1C5CHFA_enFR884FR884&sca_esv=3c5bece75fa21f2c&cs=0&biw=930&bih=680&sxsrf=APpeQns-G0JMBdvbRxQJrPM4srek-sc0zQ%3A1789507751182&ei=p7ipaoLVCqmgkdUP7o-akAw&udm=imgs&oq=Danyang+Hanil+Cement+Quarry+B&gs_lp=Egxnd3Mtd2l6LXNlcnAiHURhbnlhbmcgSGFuaWwgQ2VtZW50IFF1YXJyeSBCKgoIABjJAhjwBRgnMgoQIxjJAhjwBRgnMgoQIxjwBRjJAhgnSKARUNkBWOkJcAF4AJABAJgBpAKgAdgGqgEFMC4yLjK4AQHIAQD4AQGYAgWgAu8GwgINECMY8AUYyQIYsAMYJ8ICDRAjGMkCGPAFGLADGCeYAwCIBgGQBgKSBwUxLjIuMqAHkxGyBwUwLjIuMrgH7AbCBwUwLjIuM8gHEIAIAQ&sclient=gws-wiz-serp#sv=CAMSURoyKhBlLTlmb3JRSGV0ZDlfZnlNMg45Zm9yUUhldGQ5X2Z5TToOYTFyVW56eGhseGdWdk0gBCoXCgFzEhBlLTlmb3JRSGV0ZDlfZnlNGAEwARgHILqliocLSggQARgBIAEoAQ"
   },
   {
     "group": "BTS",
@@ -10793,30 +11010,9 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Moktarama / CC BY 3.0",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Designed by the renowned architect Frank Gehry, the Fondation Louis Vuitton is a striking contemporary art museum nestled in the Bois de Boulogne on the edge of Paris. Opened in 2014, its futuristic glass sails and avant-garde architecture have quickly established it as a major global hub for contemporary art exhibitions and cultural events. Beyond its permanent collections and striking geometry, the venue serves as a prestigious backdrop for high-fashion milestones, bridging the worlds of modern architecture, fine art, and luxury design.</p><p>The members of BTS have cultivated a deep, long-standing connection with Louis Vuitton, both as global brand ambassadors and through individual high-profile appearances. In January 2023, j-hope made headlines when he attended the Louis Vuitton Men's Autumn-Winter Fashion Show during Paris Fashion Week, creating a massive wave of excitement among fans as he stepped out in a stunning, custom-coordinated look. Additionally, art-enthusiast members like RM and j-hope have spent time exploring the museum's cutting-edge contemporary galleries during their personal and professional trips to the French capital, matching their well-known passion for international art museums.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "episodeLink": "",
-    "tipsList": [
-      {
-        "text": "Go early in the morning right when it opens to avoid the heavy crowds and enjoy the outdoor terraces in peace. Late afternoon also offers incredible lighting as the sun hits the massive glass \"sails.\"",
-        "title": "Best Time to Visit:"
-      },
-      {
-        "text": "Booking your ticket online in advance through the official website is mandatory to secure your entry time slot. Even if you qualify for a free or reduced ticket, you must reserve it online beforehand.",
-        "title": "Ticketing & Reservations:"
-      },
-      {
-        "text": "The Lower Terraces / Water Basins: Stand near the reflecting pools outside to capture the sheer scale of Frank Gehry’s glass architecture mirroring the sky.\n\nThe Rooftop Walkways: Head all the way up to the upper decks for sweeping panoramic views of Paris (including the distant Eiffel Tower) framed by the futuristic glass panels.",
-        "title": "How to Get the Best Photos:"
-      },
-      {
-        "title": "Getting There:",
-        "text": "Skip the long walks from the standard metro lines by taking the dedicated electric shuttle bus. It departs regularly right from Charles de Gaulle-Étoile (near the Arc de Triomphe) and drops you off directly at the gates."
-      }
-    ],
     "facebookUrls": [],
     "instagramUrl": "",
     "officialLink": "https://www.fondationlouisvuitton.fr/",
@@ -10832,7 +11028,47 @@ window.STATIC_LOCATIONS = [
     ],
     "tweetUrls": [],
     "tweetUrl": "https://x.com/mimie452/status/1617576602950418446?s=10",
-    "ytId": ""
+    "ytId": "",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best Time to Visit:"
+        },
+        "text": {
+          "en": "Go early in the morning right when it opens to avoid the heavy crowds and enjoy the outdoor terraces in peace. Late afternoon also offers incredible lighting as the sun hits the massive glass \"sails.\""
+        }
+      },
+      {
+        "title": {
+          "en": "Ticketing & Reservations:"
+        },
+        "text": {
+          "en": "Booking your ticket online in advance through the official website is mandatory to secure your entry time slot. Even if you qualify for a free or reduced ticket, you must reserve it online beforehand."
+        }
+      },
+      {
+        "title": {
+          "en": "How to Get the Best Photos:"
+        },
+        "text": {
+          "en": "The Lower Terraces / Water Basins: Stand near the reflecting pools outside to capture the sheer scale of Frank Gehry’s glass architecture mirroring the sky.\n\nThe Rooftop Walkways: Head all the way up to the upper decks for sweeping panoramic views of Paris (including the distant Eiffel Tower) framed by the futuristic glass panels."
+        }
+      },
+      {
+        "title": {
+          "en": "Getting There:"
+        },
+        "text": {
+          "en": "Skip the long walks from the standard metro lines by taking the dedicated electric shuttle bus. It departs regularly right from Charles de Gaulle-Étoile (near the Arc de Triomphe) and drops you off directly at the gates."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Designed by the renowned architect Frank Gehry, the Fondation Louis Vuitton is a striking contemporary art museum nestled in the Bois de Boulogne on the edge of Paris. Opened in 2014, its futuristic glass sails and avant-garde architecture have quickly established it as a major global hub for contemporary art exhibitions and cultural events. Beyond its permanent collections and striking geometry, the venue serves as a prestigious backdrop for high-fashion milestones, bridging the worlds of modern architecture, fine art, and luxury design.</p><p>2023, J-Hope, Jimin: Jimin &amp; J-Hope's Fashion Week Break\nDuring their highly publicized trip for Paris Fashion Week in January 2023, Jimin and J-Hope took a well-deserved break from the bustling runways to explore the Fondation. J-Hope famously shared photos of his visit to the immersive Monet - Mitchell exhibition, showcasing his appreciation for the delicate interplay between classical impressionism and abstract expressionism. For fans, it was a delight to see the duo soaking in Parisian culture beyond their ambassador duties.</p><p>2026, RM: RM's \"Namjooning\" Excursion\nLater in 2026, RM added the spectacular museum to his ever-growing \"Namjooning\" map. Wandering through the sunlit, cutting-edge galleries, he appreciated both the monumental architecture and the contemporary installations. His visit perfectly illustrated his well-known passion for international art spaces where structure and creativity seamlessly converge.</p>"
+    },
+    "recreatedPhoto": "images/admin-upload-new-wMPd7uwtaZtYdrcNZtrS-recreated.jpg"
   },
   {
     "member": "RM",
