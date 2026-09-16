@@ -131,6 +131,41 @@ async function main() {
     const published = merged.filter((loc) => !hiddenIds.has(String(loc.id)));
     console.log(`Résultat : ${published.length} lieux publiés (${merged.length - published.length} masqués retirés).`);
 
+    // Extraction des photos en base64 (demande du 16/09/2026, "le temps de chargement de
+    // la page feed est extrêmement long") : `img`/`recreatedPhoto` peuvent contenir une
+    // data URL base64 quand l'admin a uploadé une photo directement (pencil icon/admin.html)
+    // plutôt que de coller une URL externe — ce site n'a pas de Firebase Storage (voir le
+    // README), donc c'est la seule façon d'uploader une photo aujourd'hui. Le problème :
+    // laissée telle quelle, cette data URL finit copiée verbatim dans locations-data.js,
+    // chargé en <script> bloquant sur CHAQUE page du site (même feed.html, qui n'affiche
+    // qu'un onglet "Recreate the Photo" et n'a besoin d'aucune des 183 autres images) — un
+    // seul lieu avec une grosse photo pouvait à lui seul ajouter plusieurs centaines de Ko à
+    // TOUTE page du site. Ici, chaque data URL est décodée UNE FOIS et écrite comme vrai
+    // fichier binaire dans images/ (servi normalement par GitHub Pages, mis en cache par le
+    // navigateur, chargé en parallèle plutôt qu'en bloquant le script) — remplacée dans le
+    // JSON exporté par son chemin relatif. Firestore lui-même garde la data URL (jamais
+    // modifié par ce script, lecture seule) : ce n'est qu'une optimisation du fichier
+    // EXPORTÉ, ré-appliquée à chaque régénération.
+    const imagesDir = path.join(__dirname, '..', 'images');
+    const MIME_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+    let extractedCount = 0;
+    published.forEach((loc) => {
+        ['img', 'recreatedPhoto'].forEach((field) => {
+            const val = loc[field];
+            if (typeof val !== 'string' || !val.startsWith('data:image/')) return;
+            const m = val.match(/^data:(image\/[a-z]+);base64,(.*)$/s);
+            if (!m) return;
+            const ext = MIME_EXT[m[1]] || 'jpg';
+            const safeId = String(loc.id).replace(/[^a-zA-Z0-9_-]/g, '');
+            const fieldSlug = field === 'img' ? 'photo' : 'recreated';
+            const filename = `admin-upload-${safeId}-${fieldSlug}.${ext}`;
+            fs.writeFileSync(path.join(imagesDir, filename), Buffer.from(m[2], 'base64'));
+            loc[field] = `images/${filename}`;
+            extractedCount++;
+        });
+    });
+    if (extractedCount) console.log(`  ${extractedCount} photo(s) uploadée(s) en base64 extraite(s) vers images/.`);
+
     // Tri stable par id (les ids numériques d'abord, dans l'ordre, puis les ids "new-..."
     // par ordre alphabétique) — un fichier généré déterministe est plus facile à relire
     // dans un diff git qu'un ordre qui dépendrait de l'ordre de réponse Firestore.

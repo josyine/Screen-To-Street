@@ -2720,7 +2720,7 @@ window.listMyDmConversationPreviews = async function () {
 window.countUnreadConversations = async function (convoIds) {
     const user = auth.currentUser;
     if (!user || !convoIds || convoIds.length === 0) return 0;
-    let count = 0;
+    const candidates = [];
     try {
         for (let i = 0; i < convoIds.length; i += 30) {
             const batch = convoIds.slice(i, i + 30);
@@ -2730,18 +2730,44 @@ window.countUnreadConversations = async function (convoIds) {
                 const data = d.data();
                 // Garde-fou (demande du 13/09/2026, "le badge affiche une notification alors
                 // que je n'ai rien à lire") : ne compte jamais une conversation comme non lue
-                // si le DERNIER message est le MIEN — sans ce filet, une dérive du compteur
-                // dénormalisé unreadCount (setDoc({merge:true}) parti en retard, écriture qui
-                // échoue silencieusement...) resterait figée indéfiniment sur "non lu" côté
-                // badge malgré une conversation où il n'y a objectivement rien de neuf pour
-                // moi (mon propre dernier message n'a rien à voir avec un message non lu).
+                // si le DERNIER message est le MIEN.
                 if (data.lastMessageFromUid === user.uid) return;
-                if ((data.unreadCount && data.unreadCount[user.uid]) > 0) count++;
+                if ((data.unreadCount && data.unreadCount[user.uid]) > 0) {
+                    candidates.push({ id: d.id, lastMessageAt: data.lastMessageAt });
+                }
             });
         }
     } catch (e) {
         console.warn('Vérification des messages non lus échouée :', e);
+        return 0;
     }
+    if (!candidates.length) return 0;
+    // Auto-réparation (demande du 16/09/2026, "notification sur l'icône alors que j'ai
+    // aucune notification en attente", ENCORE — le garde-fou ci-dessus ne couvrait qu'UN
+    // cas de dérive du compteur dénormalisé unreadCount) : sa remise à zéro
+    // (markConversationRead()) peut échouer silencieusement (voir le commentaire à côté de
+    // cet appel) et laisser le compteur bloqué à une valeur périmée pour toujours, alors
+    // que reads/{uid}.lastReadAt — la source de vérité — a bien été mis à jour. Vérifiée ici
+    // UNIQUEMENT pour les quelques conversations déjà repérées "non lues" par le compteur
+    // (jamais pour toutes, pour ne pas perdre l'optimisation du 13/09/2026), et corrigée en
+    // base au passage pour que les prochains appels n'aient plus besoin de cette vérification.
+    let count = 0;
+    await Promise.all(candidates.map(async (c) => {
+        try {
+            const readSnap = await getDoc(doc(db, 'conversations', c.id, 'reads', user.uid));
+            const lastReadSeconds = (readSnap.exists() && readSnap.data().lastReadAt && readSnap.data().lastReadAt.seconds) || 0;
+            const lastMsgSeconds = (c.lastMessageAt && c.lastMessageAt.seconds) || 0;
+            if (lastReadSeconds >= lastMsgSeconds) {
+                setDoc(doc(db, 'conversations', c.id), { unreadCount: { [user.uid]: 0 } }, { merge: true }).catch(() => {});
+                return;
+            }
+            count++;
+        } catch (e) {
+            // Lecture de reads/{uid} impossible (offline, permission...) : mieux vaut faire
+            // confiance au compteur dénormalisé que risquer de masquer un vrai message non lu.
+            count++;
+        }
+    }));
     return count;
 };
 
