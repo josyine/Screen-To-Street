@@ -1,3 +1,9 @@
 node_modules/
 serviceAccountKey.json
 .env
+mei-reference.jpg
+mei-reference.png
+mei-reference.webp
+mei-preview-*.jpg
+mei-preview-*.png
+mei-preview-*.webp
