@@ -5645,6 +5645,13 @@ async function deleteLocationFromEditModal(locId, modal) {
     deleteBtn.disabled = true;
     const res = await window.adminSetLocationHidden(locId, true);
     if (res && res.success) {
+        // celebLocations vient d'un instantané statique (locations-data.js, voir la
+        // migration du 13/09/2026) et n'est plus jamais re-filtré au chargement de la page
+        // — sans ce retrait immédiat, le lieu masqué restait visible à l'écran jusqu'au
+        // prochain export automatique (bug rapporté le 16/09/2026, "le bouton ne fonctionne
+        // pas"), alors que l'écriture Firestore avait pourtant bien réussi.
+        const idx = celebLocations.indexOf(loc);
+        if (idx !== -1) celebLocations.splice(idx, 1);
         modal.classList.add('hidden');
         if (typeof window.closeDetailsPanel === 'function') window.closeDetailsPanel();
         if (typeof renderLocations === 'function') renderLocations(true);
