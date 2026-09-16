@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260921">
+<link rel="stylesheet" href="style.css?v=20260922">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -165,6 +165,22 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .btn-verify{flex:1;background:#fff;color:#64748b;border:1.5px solid #e2e8f0;border-radius:100px;padding:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
 .btn-verify:hover{background:#f8fafc;}
 .btn-verify.is-verified{background:#10b981;color:#fff;border-color:#10b981;}
+
+/* "Generate with Mei" (demande du 16/09/2026) — génération de la photo "Recreate the
+   Photo" directement depuis admin.html (bouton + image de référence uploadée une seule
+   fois), plutôt qu'en ligne de commande via admin-scripts/generate-mei-recreation.js. */
+.mei-reference-panel{background:#fff;border:1px solid #ECE7F3;border-radius:16px;padding:16px 20px;margin-bottom:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.mei-reference-preview{flex-shrink:0;}
+.mei-reference-preview img{display:block;width:56px;height:56px;object-fit:cover;border-radius:10px;}
+.mei-reference-body{display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex:1;}
+.mei-reference-title{font-size:13px;font-weight:700;color:#212832;display:block;}
+.mei-reference-hint{font-size:11px;color:#94a3b8;display:block;margin-top:2px;}
+.mei-generate-btn{background:#fff;border:1.5px solid #D42759;border-radius:100px;padding:8px 14px;font-size:11.5px;font-weight:700;color:#D42759;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:.15s;}
+.mei-generate-btn:hover{background:#FCE7F0;}
+.mei-generate-btn:disabled{opacity:.6;cursor:default;}
+.mei-generate-status{font-size:11px;font-weight:600;margin:6px 0 10px 0;}
+.mei-generate-status.err{color:#D42759;}
+.mei-generate-status.ok{color:#10b981;}
 </style>
 </head>
 <body>
@@ -213,6 +229,25 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <button type="button" id="admin-tab-locations-btn" class="admin-tab-btn" onclick="window.switchAdminTab('locations')">Existing locations</button>
             <button type="button" id="admin-tab-live-btn" class="admin-tab-btn" onclick="window.switchAdminTab('live')">Agenda</button>
             <button type="button" id="admin-tab-maintenance-btn" class="admin-tab-btn" onclick="window.switchAdminTab('maintenance')">Maintenance</button>
+        </div>
+
+        <!-- Image de référence de "Mei" (demande du 16/09/2026, "je veux pouvoir placer
+             Mei's reference image directement dans la page admin") — uploadée une seule
+             fois ici, stockée dans localStorage (jamais envoyée à Firestore : c'est une
+             photo personnelle de l'admin, pas du contenu public du site), réutilisée par
+             le bouton "Generate with Mei" de chaque fiche lieu ci-dessous, dans les deux
+             onglets "Location submissions" et "Existing locations". -->
+        <div class="mei-reference-panel">
+            <div class="mei-reference-preview" id="mei-reference-preview"></div>
+            <div class="mei-reference-body">
+                <div>
+                    <span class="mei-reference-title">Mei's reference image</span>
+                    <span class="mei-reference-hint">Used by "Generate with Mei" below, on any location — upload once, stays in this browser only.</span>
+                </div>
+                <button type="button" id="mei-reference-upload-btn" class="sub-photo-upload-btn">Upload Mei's reference photo</button>
+                <input type="file" id="mei-reference-file-input" class="hidden" accept="image/*">
+                <span id="mei-reference-upload-name" class="sub-photo-upload-name"></span>
+            </div>
         </div>
 
         <div id="admin-panel-submissions" class="admin-tab-panel active">
@@ -328,10 +363,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260921"></script>
-<script src="countries.js?v=20260921"></script>
-<script src="locations-data.js?v=20260921"></script>
-<script src="script.js?v=20260921"></script>
+<script type="module" src="firebase-init.js?v=20260922"></script>
+<script src="countries.js?v=20260922"></script>
+<script src="locations-data.js?v=20260922"></script>
+<script src="script.js?v=20260922"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -407,6 +442,150 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     function extractPinterestUrl(url) {
         const s = (url || '').trim();
         return /^https?:\/\/(www\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/.+/.test(s) ? s : null;
+    }
+
+    // ==========================================
+    // "Generate with Mei" (demande du 16/09/2026) — génère la section "Recreate the
+    // Photo" directement depuis ce navigateur, sans passer par le script Node
+    // admin-scripts/generate-mei-recreation.js : mêmes règles (un seul membre → même
+    // pose + tenue originale de Mei ; plusieurs membres → une occurrence de Mei par
+    // membre, une en tenue originale, les autres en tenues alternatives cohérentes avec
+    // la palette pastel/tenues féminines, adaptées à la saison visible sur la photo),
+    // le modèle détecte lui-même le nombre de membres, voir le prompt ci-dessous.
+    //
+    // Ce site n'a ni backend ni Cloud Function (100% statique, voir README.md) : l'appel
+    // à l'API Gemini se fait donc directement depuis ce fichier JS servi au navigateur.
+    // IMPORTANT (sécurité) : restreins cette clé par référent HTTP dans Google Cloud
+    // Console (APIs & Services > Identifiants > cette clé > "Restrictions relatives aux
+    // applications" > "Référents HTTP") au domaine du site UNIQUEMENT avant de la coller
+    // ci-dessous — sans cette restriction, n'importe qui pourrait lire cette clé dans le
+    // code source de la page et l'utiliser ailleurs à tes frais. Une fois restreinte,
+    // colle ta clé ici (jamais dans un commit accompagné de la restriction retirée).
+    const GEMINI_API_KEY = '';
+    // Vérifie le nom exact du modèle image disponible sur ton compte Google AI Studio au
+    // moment où tu lis ceci — les identifiants de modèle évoluent avec le temps (voir la
+    // même remarque dans admin-scripts/generate-mei-recreation.js et README.md).
+    const GEMINI_IMAGE_MODEL = 'gemini-3.6-flash-image';
+    const MEI_REFERENCE_STORAGE_KEY = 'stsAdminMeiReferenceImage';
+
+    const MEI_GENERATION_PROMPT = `Tu vas recevoir deux images : la PREMIÈRE est l'image de référence fixe d'un
+personnage appelé "Mei" (son visage, sa morphologie, sa tenue originale) ; la SECONDE est une
+photo réelle d'un lieu visité par un ou plusieurs membres du groupe BTS.
+
+Ta tâche : régénère la SECONDE image (même lieu, même décor, même cadrage, même éclairage,
+même ambiance) en remplaçant CHAQUE membre de BTS visible par le personnage Mei — jamais par
+qui que ce soit d'autre, et sans jamais retoucher ou inventer le décor.
+
+Règles à appliquer STRICTEMENT selon le nombre de membres BTS visibles sur la photo :
+
+1. UN SEUL membre visible : remplace-le par Mei, avec EXACTEMENT la même pose, la même
+   position et la même orientation que le membre sur la photo originale. Mei porte SA tenue
+   originale telle que montrée sur l'image de référence (ne change pas sa tenue).
+
+2. PLUSIEURS membres visibles : remplace CHAQUE membre par une occurrence de Mei, en
+   conservant pour chacune la pose et la position exactes du membre qu'elle remplace (autant
+   d'occurrences de Mei que de membres sur la photo originale). UNE seule de ces occurrences
+   porte la tenue originale de Mei (image de référence). TOUTES les autres occurrences
+   portent des tenues DIFFÉRENTES les unes des autres, mais cohérentes avec la même direction
+   artistique que la tenue originale de Mei : couleurs pastel, coupes féminines, et adaptées
+   au contexte visible sur la photo (tenues chaudes/hiver si la scène est visiblement
+   hivernale ou neigeuse, tenues légères si la scène est visiblement estivale, etc.).
+
+Dans tous les cas : garde le visage, les traits et la morphologie de Mei identiques à l'image
+de référence sur chaque occurrence — ne les fais jamais varier d'une occurrence à l'autre.
+Ne fais apparaître aucune personne réelle, seulement Mei. Renvoie uniquement l'image finale
+recomposée, sans texte ni légende.`;
+
+    function loadMeiReferenceImage() {
+        try { return localStorage.getItem(MEI_REFERENCE_STORAGE_KEY) || ''; } catch (e) { return ''; }
+    }
+    function saveMeiReferenceImage(dataUrl) {
+        try { localStorage.setItem(MEI_REFERENCE_STORAGE_KEY, dataUrl); } catch (e) { /* stockage plein/bloqué (navigation privée) — tant pis, réessaie juste au prochain clic */ }
+    }
+    function renderMeiReferencePreview() {
+        const preview = document.getElementById('mei-reference-preview');
+        if (!preview) return;
+        const current = loadMeiReferenceImage();
+        preview.innerHTML = current ? `<img src="${escapeHtml(current)}" alt="">` : '';
+    }
+    function initMeiReferenceUpload() {
+        const btn = document.getElementById('mei-reference-upload-btn');
+        const fileInput = document.getElementById('mei-reference-file-input');
+        const nameEl = document.getElementById('mei-reference-upload-name');
+        if (!btn || !fileInput) return;
+        btn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const resized = typeof resizeTripCoverDataUrl === 'function'
+                    ? await resizeTripCoverDataUrl(event.target.result, 1024)
+                    : event.target.result;
+                saveMeiReferenceImage(resized);
+                if (nameEl) nameEl.textContent = file.name;
+                renderMeiReferencePreview();
+            };
+            reader.readAsDataURL(file);
+        });
+        renderMeiReferencePreview();
+    }
+
+    // data:...;base64,... -> {mimeType, data} attendu par l'API Gemini (inlineData).
+    function dataUrlToInlineData(dataUrl) {
+        const m = /^data:([^;]+);base64,(.*)$/s.exec(dataUrl || '');
+        return m ? { mimeType: m[1], data: m[2] } : null;
+    }
+
+    // La photo d'un lieu est parfois une simple URL (collée dans "Photo URL", jamais
+    // uploadée) plutôt qu'une data URL — l'API Gemini a besoin de l'image encodée en
+    // base64, donc on la retélécharge ici. Échoue si l'hébergeur ne renvoie pas d'en-tête
+    // CORS permissif (fréquent pour un lien Instagram/X copié à la main) : dans ce cas,
+    // le message d'erreur invite à ré-uploader la photo depuis l'appareil à la place.
+    async function urlToDataUrl(url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Impossible de récupérer la photo du lieu (HTTP ${res.status}).`);
+        const blob = await res.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('Impossible de lire la photo du lieu.'));
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    // Appelle directement l'API Gemini REST depuis le navigateur (voir le commentaire sur
+    // GEMINI_API_KEY plus haut) avec l'image de référence de Mei + la photo du lieu, et
+    // renvoie l'image générée sous forme de data URL — même format que currentRecreatePhoto/
+    // sub.recreatedPhoto ci-dessous, prêt à être sauvegardé tel quel.
+    async function generateMeiRecreationInBrowser(locationPhoto) {
+        if (!GEMINI_API_KEY) throw new Error("Aucune clé Gemini configurée — vois le commentaire au-dessus de GEMINI_API_KEY dans admin.html.");
+        const meiReference = loadMeiReferenceImage();
+        if (!meiReference) throw new Error("Upload d'abord l'image de référence de Mei, en haut de la page.");
+        const meiPart = dataUrlToInlineData(meiReference);
+        const posePhotoDataUrl = locationPhoto.startsWith('data:') ? locationPhoto : await urlToDataUrl(locationPhoto);
+        const posePart = dataUrlToInlineData(posePhotoDataUrl);
+        if (!meiPart || !posePart) throw new Error("Image de référence ou photo du lieu invalide.");
+
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_IMAGE_MODEL}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: MEI_GENERATION_PROMPT }, { inlineData: meiPart }, { inlineData: posePart }] }]
+            })
+        });
+        if (!res.ok) {
+            const errText = await res.text().catch(() => '');
+            throw new Error(`Gemini a répondu ${res.status}${errText ? ' — ' + errText.slice(0, 200) : ''}`);
+        }
+        const json = await res.json();
+        const parts = (json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts) || [];
+        const imagePart = parts.find(p => p.inlineData && p.inlineData.data);
+        if (!imagePart) {
+            const textPart = parts.find(p => p.text);
+            throw new Error(textPart ? `Aucune image renvoyée par Gemini : ${textPart.text.slice(0, 200)}` : 'Aucune image renvoyée par Gemini.');
+        }
+        return `data:${imagePart.inlineData.mimeType || 'image/jpeg'};base64,${imagePart.inlineData.data}`;
     }
 
     let twitterWidgetLoading = null;
@@ -583,6 +762,27 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div class="sub-story-bts-editor" style="margin-bottom:10px;"></div>
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
+
+            <!-- "Recreate the Photo" (demande du 16/09/2026, "Dans Location submissions il
+                 n'y a pas Recreate the photo. Je ne peux pas upload de photo, ajoute le.") —
+                 manquait ici alors que la même section existe déjà côté "Existing locations"
+                 (renderExistingLocationCard ci-dessous) : même champ (sub.recreatedPhoto,
+                 publié via approveLocationSubmission()), mêmes widgets URL/upload, plus le
+                 bouton "Generate with Mei" (voir generateMeiRecreationInBrowser() plus haut)
+                 qui génère cette photo automatiquement à partir de la photo du lieu ci-dessus
+                 + l'image de référence de Mei uploadée en haut de la page. -->
+            <label class="sub-section-label">Recreate the Photo (optional)</label>
+            <div class="sub-recreate-photo-preview">${sub.recreatedPhoto ? `<img src="${escapeHtml(sub.recreatedPhoto)}" alt="" style="display:block;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:8px;">` : ''}</div>
+            <input type="url" class="sub-recreate-photo-input" placeholder="Recreated photo URL (optional)" value="${escapeHtml((sub.recreatedPhoto || '').startsWith('data:') ? '' : (sub.recreatedPhoto || ''))}">
+            <div class="sub-photo-upload-row">
+                <button type="button" class="sub-photo-upload-btn sub-recreate-photo-upload-btn">Upload from device</button>
+                <input type="file" class="sub-recreate-photo-file-input hidden" accept="image/*">
+                <span class="sub-photo-upload-name sub-recreate-photo-upload-name">${(sub.recreatedPhoto || '').startsWith('data:') ? 'Uploaded photo' : ''}</span>
+                <button type="button" class="mei-generate-btn">Generate with Mei</button>
+            </div>
+            <div class="mei-generate-status hidden"></div>
+            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place". "Generate with Mei" uses the location photo above + Mei's reference image (uploaded once at the top of this page).</div>
+
             <label class="sub-section-label">Official website (optional)</label>
             <input type="url" class="sub-official-link-input" placeholder='https://... — shown as "Learn more"' value="${escapeHtml(sub.officialLink || '')}">
             <label class="sub-section-label">Photo credit / copyright (optional)</label>
@@ -722,6 +922,72 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             tipsEditorEl.classList.add('sub-tips-editor');
             tipsFieldWidget = window.createTitledListField(tipsEditorEl, {
                 values: sub.tipsList || [], titlePlaceholder: 'Tip title', textPlaceholder: 'Tip text', addLabel: '+ Add a tip'
+            });
+        }
+
+        // "Recreate the Photo" + "Generate with Mei" (demande du 16/09/2026) — modifie
+        // directement `sub.recreatedPhoto`, même principe que sub.img plus haut : Approve
+        // publie donc la valeur éditée/générée ici (voir contentFields dans
+        // approveLocationSubmission(), firebase-init.js).
+        const recreatePhotoInput = card.querySelector('.sub-recreate-photo-input');
+        const recreatePhotoPreview = card.querySelector('.sub-recreate-photo-preview');
+        const recreatePhotoUploadBtn = card.querySelector('.sub-recreate-photo-upload-btn');
+        const recreatePhotoFileInput = card.querySelector('.sub-recreate-photo-file-input');
+        const recreatePhotoUploadName = card.querySelector('.sub-recreate-photo-upload-name');
+        const meiGenerateBtn = card.querySelector('.mei-generate-btn');
+        const meiGenerateStatus = card.querySelector('.mei-generate-status');
+        const updateRecreatePhotoPreview = () => {
+            recreatePhotoPreview.innerHTML = sub.recreatedPhoto
+                ? `<img src="${escapeHtml(sub.recreatedPhoto)}" alt="" style="display:block;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:8px;">`
+                : '';
+        };
+        if (recreatePhotoInput) {
+            recreatePhotoInput.addEventListener('change', () => {
+                sub.recreatedPhoto = recreatePhotoInput.value.trim();
+                updateRecreatePhotoPreview();
+            });
+        }
+        if (recreatePhotoUploadBtn && recreatePhotoFileInput) {
+            recreatePhotoUploadBtn.addEventListener('click', () => recreatePhotoFileInput.click());
+            recreatePhotoFileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    const resized = typeof resizeTripCoverDataUrl === 'function'
+                        ? await resizeTripCoverDataUrl(event.target.result, 1200)
+                        : event.target.result;
+                    sub.recreatedPhoto = resized;
+                    if (recreatePhotoInput) recreatePhotoInput.value = '';
+                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = file.name;
+                    updateRecreatePhotoPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        if (meiGenerateBtn) {
+            meiGenerateBtn.addEventListener('click', async () => {
+                meiGenerateStatus.classList.add('hidden');
+                if (!sub.img) {
+                    meiGenerateStatus.textContent = 'Add the location photo above first — Mei needs a real BTS photo to work from.';
+                    meiGenerateStatus.className = 'mei-generate-status err';
+                    meiGenerateStatus.classList.remove('hidden');
+                    return;
+                }
+                meiGenerateBtn.disabled = true;
+                meiGenerateBtn.textContent = 'Generating…';
+                try {
+                    sub.recreatedPhoto = await generateMeiRecreationInBrowser(sub.img);
+                    if (recreatePhotoInput) recreatePhotoInput.value = '';
+                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = 'Generated with Mei';
+                    updateRecreatePhotoPreview();
+                } catch (err) {
+                    meiGenerateStatus.textContent = (err && err.message) || 'Generation failed.';
+                    meiGenerateStatus.className = 'mei-generate-status err';
+                    meiGenerateStatus.classList.remove('hidden');
+                }
+                meiGenerateBtn.disabled = false;
+                meiGenerateBtn.textContent = 'Generate with Mei';
             });
         }
 
@@ -1097,8 +1363,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <button type="button" class="sub-photo-upload-btn sub-recreate-photo-upload-btn">Upload from device</button>
                 <input type="file" class="sub-recreate-photo-file-input hidden" accept="image/*">
                 <span class="sub-photo-upload-name sub-recreate-photo-upload-name"></span>
+                <button type="button" class="mei-generate-btn">Generate with Mei</button>
             </div>
-            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place".</div>
+            <div class="mei-generate-status hidden"></div>
+            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place". "Generate with Mei" uses this location's photo + Mei's reference image (uploaded once at the top of this page).</div>
 
             <!-- Site officiel (demande du 14/09/2026, "ajoute également le lien de Official
                  website") — champ déjà présent côté "Location submissions" (renderCard
@@ -1159,6 +1427,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         const recreatePhotoUploadBtn = card.querySelector('.sub-recreate-photo-upload-btn');
         const recreatePhotoFileInput = card.querySelector('.sub-recreate-photo-file-input');
         const recreatePhotoUploadName = card.querySelector('.sub-recreate-photo-upload-name');
+        const meiGenerateBtn = card.querySelector('.mei-generate-btn');
+        const meiGenerateStatus = card.querySelector('.mei-generate-status');
         const saveBtn = card.querySelector('.loc-save-btn');
         const hideBtn = card.querySelector('.btn-hide');
         const verifyBtn = card.querySelector('.btn-verify');
@@ -1205,6 +1475,34 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                     updateRecreatePhotoPreview();
                 };
                 reader.readAsDataURL(file);
+            });
+        }
+        // "Generate with Mei" (demande du 16/09/2026) — même bouton/logique que côté
+        // "Location submissions" plus haut, mais lit la photo déjà publiée du lieu
+        // (loc.img, éditée depuis le modal crayon de map.html) plutôt que sub.img.
+        if (meiGenerateBtn) {
+            meiGenerateBtn.addEventListener('click', async () => {
+                meiGenerateStatus.classList.add('hidden');
+                if (!loc.img) {
+                    meiGenerateStatus.textContent = 'This location has no photo to work from yet.';
+                    meiGenerateStatus.className = 'mei-generate-status err';
+                    meiGenerateStatus.classList.remove('hidden');
+                    return;
+                }
+                meiGenerateBtn.disabled = true;
+                meiGenerateBtn.textContent = 'Generating…';
+                try {
+                    currentRecreatePhoto = await generateMeiRecreationInBrowser(loc.img);
+                    if (recreatePhotoInput) recreatePhotoInput.value = '';
+                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = 'Generated with Mei';
+                    updateRecreatePhotoPreview();
+                } catch (err) {
+                    meiGenerateStatus.textContent = (err && err.message) || 'Generation failed.';
+                    meiGenerateStatus.className = 'mei-generate-status err';
+                    meiGenerateStatus.classList.remove('hidden');
+                }
+                meiGenerateBtn.disabled = false;
+                meiGenerateBtn.textContent = 'Generate with Mei';
             });
         }
 
@@ -1654,6 +1952,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             return;
         }
         document.getElementById('admin-main-content').classList.remove('hidden');
+        initMeiReferenceUpload();
         if (typeof window.fetchHiddenLocationIds === 'function') {
             hiddenLocationIdsCache = (await window.fetchHiddenLocationIds()).map(String);
         }
