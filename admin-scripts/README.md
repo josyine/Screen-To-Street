@@ -125,6 +125,43 @@ Approving a submission:
   numeric id), only `locationContent` is touched — the existing map pin, name,
   category etc. (still defined in `script.js`) are unaffected.
 
+## "Recreate the Photo" with Mei (`generate-mei-recreation.js`)
+
+Automates the admin's manual workflow (previously done by hand via ChatGPT): take a real
+photo of a BTS location + a fixed reference image of the admin's custom avatar "Mei", and
+generate a recreation where Mei replaces every BTS member visible in the photo, for the
+"Recreate the Photo" section on that location's page.
+
+```
+cd admin-scripts
+npm install
+# place Mei's reference screenshot here (never committed, see .gitignore):
+#   admin-scripts/mei-reference.jpg
+node generate-mei-recreation.js <locationId> <path-to-bts-location-photo>
+```
+
+Rules (as specified by the admin, applied via the prompt — the model detects the member
+count itself, no manual flag needed):
+- **One member visible** → Mei replaces them, in the EXACT same pose, wearing HER OWN
+  original outfit (from the reference image).
+- **Multiple members visible** → Mei appears once per member (same respective poses): one
+  occurrence in her original outfit, the others in alternative outfits within the same art
+  direction (pastel colors, feminine cuts, adapted to the photo's visible season/context).
+
+Writes the result into `locationContent/{locationId}.recreatedPhoto` — the exact same field
+and format (base64 data URL) that `admin.html`'s manual "Recreate the Photo" upload already
+writes to (see `adminUpdateLocationContent()`). No new infrastructure: the existing
+base64-extraction step already in `export-locations.js` turns it into a real static
+`images/admin-upload-*-recreated.*` file on the next catalog export, exactly like a manual
+upload would. A local `mei-preview-<locationId>.<ext>` copy is also saved next to the script
+for a quick visual check before that next export runs.
+
+Uses the same service-account/`GEMINI_API_KEY` setup as `example-ai-submission.js` above —
+no new secrets or dependencies needed if that script is already configured. The image-capable
+model id in the script (`gemini-3.6-flash-image`) may need adjusting to whatever
+image-generation model is actually available on your Google AI Studio account when you run
+this — model ids change over time.
+
 ## Anti-duplicate check (`duplicate-check.js`)
 
 Checking whether an AI-proposed location already exists **by name** is unreliable:
