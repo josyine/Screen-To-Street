@@ -1120,6 +1120,9 @@ let currentLocationIdForMemory = null;
 // Lieux marqués "vérifiés" par un admin (demande du 13/09/2026) — chargé une seule fois,
 // admins uniquement, voir le handler 'firebase-ready' plus bas et renderLocations().
 let verifiedLocationIdsCache = [];
+// Filtre "Verified only" (demande du 15/09/2026, admin uniquement) — voir
+// window.toggleVerifiedOnlyFilter() et renderLocations() plus bas.
+let verifiedOnlyFilter = false;
 let currentGeneratedItinerary = [];
 let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -1702,6 +1705,13 @@ window.addEventListener('firebase-ready', async (e) => {
         window.__isAdminUser = true;
         const adminEditBtn = document.getElementById('details-admin-edit-btn');
         if (adminEditBtn) adminEditBtn.classList.remove('hidden');
+        // KPI "verified" + bouton de filtre "Verified only" (demande du 15/09/2026) : comme
+        // la pastille de vérification ci-dessous, réservés aux admins — jamais visibles d'un
+        // visiteur normal.
+        const adminVerifiedKpi = document.getElementById('admin-verified-kpi-pill');
+        if (adminVerifiedKpi) adminVerifiedKpi.classList.remove('hidden');
+        const verifiedFilterBtn = document.getElementById('verified-filter-btn');
+        if (verifiedFilterBtn) verifiedFilterBtn.classList.remove('hidden');
         // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) : lue
         // UNE SEULE FOIS ici, réservée aux admins (jamais chargée pour un visiteur
         // normal) — voir renderLocations() plus bas, qui s'appuie sur ce cache.
@@ -3552,7 +3562,20 @@ window.resetMapFilters = function () {
     if (!groupSelect) return;
     groupSelect.value = 'All';
     if (yearSelect) yearSelect.value = 'All';
+    verifiedOnlyFilter = false;
+    const verifiedBtn = document.getElementById('verified-filter-btn');
+    if (verifiedBtn) verifiedBtn.classList.remove('active');
     initializeFilters();
+    renderLocations();
+};
+
+// Bouton "Verified only" du bloc filtres (demande du 15/09/2026, admin uniquement) :
+// bascule verifiedOnlyFilter et redessine la carte/liste avec renderLocations() ci-dessus,
+// qui applique déjà le filtre dans son propre prédicat.
+window.toggleVerifiedOnlyFilter = function () {
+    verifiedOnlyFilter = !verifiedOnlyFilter;
+    const btn = document.getElementById('verified-filter-btn');
+    if (btn) btn.classList.toggle('active', verifiedOnlyFilter);
     renderLocations();
 };
 
@@ -3615,9 +3638,13 @@ function renderLocations(skipFitBounds) {
     const fGroup = groupSelect.value, fMember = memberSelect.value, fYear = yearSelect.value, fCountry = countrySelect.value, searchTerm = searchInput.value.toLowerCase();
 
     const filteredLocations = availableLocs.filter(loc => {
-        return (fGroup === "All" || loc.group === fGroup) && (fMember === "All" || loc.member === fMember || loc.member === "All") && 
+        return (fGroup === "All" || loc.group === fGroup) && (fMember === "All" || loc.member === fMember || loc.member === "All") &&
                (activeCategory === "All" || loc.category === activeCategory) && (fYear === "All" || loc.year === fYear) &&
-               (fCountry === "All" || loc.country === fCountry) && (loc.name.toLowerCase().includes(searchTerm) || (loc.city && loc.city.toLowerCase().includes(searchTerm)));
+               (fCountry === "All" || loc.country === fCountry) && (loc.name.toLowerCase().includes(searchTerm) || (loc.city && loc.city.toLowerCase().includes(searchTerm))) &&
+               // Filtre "Verified only" (demande du 15/09/2026, admin uniquement) — sans effet
+               // pour un visiteur normal (verifiedOnlyFilter ne peut jamais passer à true en
+               // dehors du bouton admin, lui-même masqué hors admin).
+               (!verifiedOnlyFilter || verifiedLocationIdsCache.includes(String(loc.id)));
     });
 
     // Tri par ordre de nouveauté (les lieux les plus récemment ajoutés au site en
@@ -3647,6 +3674,16 @@ function renderLocations(skipFitBounds) {
     
     const sCountries = document.getElementById('stat-countries');
     if(sCountries) sCountries.textContent = new Set(filteredLocations.map(l => l.country)).size;
+
+    // KPI "verified" (demande du 15/09/2026, admin uniquement) : parmi les lieux
+    // actuellement affichés (après tous les autres filtres), combien sont déjà vérifiés —
+    // même logique de portée que stat-locations/stat-countries ci-dessus, juste un sous-
+    // total. Élément masqué par défaut (voir map.html), dévoilé une seule fois pour un
+    // admin dans le handler 'firebase-ready' plus haut.
+    const sVerified = document.getElementById('stat-verified');
+    if(sVerified && window.__isAdminUser) {
+        sVerified.textContent = filteredLocations.filter(loc => verifiedLocationIdsCache.includes(String(loc.id))).length;
+    }
 
     let visitedData = getVisitedLocs();
     const newLocationIds = getNewLocationIds();
