@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260923">
+<link rel="stylesheet" href="style.css?v=20260924">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -363,10 +363,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260923"></script>
-<script src="countries.js?v=20260923"></script>
-<script src="locations-data.js?v=20260923"></script>
-<script src="script.js?v=20260923"></script>
+<script type="module" src="firebase-init.js?v=20260924"></script>
+<script src="countries.js?v=20260924"></script>
+<script src="locations-data.js?v=20260924"></script>
+<script src="script.js?v=20260924"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -609,8 +609,17 @@ recomposée, sans texte ni légende.`;
         });
         return twitterWidgetLoading;
     }
+    // BUG corrigé (demande du 18/09/2026, "quand je mets un lien ça n'affiche plus le post
+    // embeded ça créé un lien") — même correctif que renderTweetEmbedOnDetails() dans
+    // script.js (aperçu de la fiche publique) : widgets.js ne résout fiablement l'embed que
+    // pour un href twitter.com, pas x.com (nouveau nom de domaine que copie l'app/le site X
+    // aujourd'hui) — le href du blockquote est réécrit vers twitter.com, tweetUrl lui-même
+    // garde le domaine d'origine.
+    function toTwitterComUrl(tweetUrl) {
+        return (tweetUrl || '').replace(/^(https?:\/\/)(www\.)?x\.com\//i, '$1twitter.com/');
+    }
     async function renderTweetEmbed(container, tweetUrl) {
-        container.innerHTML = `<blockquote class="twitter-tweet"><a href="${escapeHtml(tweetUrl)}"></a></blockquote>`;
+        container.innerHTML = `<blockquote class="twitter-tweet"><a href="${escapeHtml(toTwitterComUrl(tweetUrl))}"></a></blockquote>`;
         await loadTwitterWidgetScript();
         if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
     }
@@ -771,25 +780,22 @@ recomposée, sans texte ni légende.`;
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
 
-            <!-- "Recreate the Photo" (demande du 16/09/2026, "Dans Location submissions il
-                 n'y a pas Recreate the photo. Je ne peux pas upload de photo, ajoute le.") —
-                 manquait ici alors que la même section existe déjà côté "Existing locations"
-                 (renderExistingLocationCard ci-dessous) : même champ (sub.recreatedPhoto,
-                 publié via approveLocationSubmission()), mêmes widgets URL/upload, plus le
-                 bouton "Generate with Mei" (voir generateMeiRecreationInBrowser() plus haut)
-                 qui génère cette photo automatiquement à partir de la photo du lieu ci-dessus
-                 + l'image de référence de Mei uploadée en haut de la page. -->
-            <label class="sub-section-label">Recreate the Photo (optional)</label>
-            <div class="sub-recreate-photo-preview">${sub.recreatedPhoto ? `<img src="${escapeHtml(sub.recreatedPhoto)}" alt="" style="display:block;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:8px;">` : ''}</div>
-            <input type="url" class="sub-recreate-photo-input" placeholder="Recreated photo URL (optional)" value="${escapeHtml((sub.recreatedPhoto || '').startsWith('data:') ? '' : (sub.recreatedPhoto || ''))}">
+            <!-- "Mei's Pictures" (demande du 16/09/2026, "Dans Location submissions il
+                 n'y a pas Recreate the photo. Je ne peux pas upload de photo, ajoute le.",
+                 renommée + passée en galerie multi-photos le 18/09/2026, "je veux pouvoir
+                 ajouter plusieurs photo") — même champ (sub.recreatedPhotos, publié via
+                 approveLocationSubmission()), widget partagé window.createPhotoGalleryField()
+                 (voir script.js), plus le bouton "Generate with Mei" (voir
+                 generateMeiRecreationInBrowser() plus haut) qui ajoute une photo générée
+                 automatiquement à partir de la photo du lieu ci-dessus + l'image de référence
+                 de Mei uploadée en haut de la page. -->
+            <label class="sub-section-label">Mei's Pictures (optional)</label>
+            <div class="sub-recreate-photo-gallery"></div>
             <div class="sub-photo-upload-row">
-                <button type="button" class="sub-photo-upload-btn sub-recreate-photo-upload-btn">Upload from device</button>
-                <input type="file" class="sub-recreate-photo-file-input hidden" accept="image/*">
-                <span class="sub-photo-upload-name sub-recreate-photo-upload-name">${(sub.recreatedPhoto || '').startsWith('data:') ? 'Uploaded photo' : ''}</span>
                 <button type="button" class="mei-generate-btn">Generate with Mei</button>
             </div>
             <div class="mei-generate-status hidden"></div>
-            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place". "Generate with Mei" uses the location photo above + Mei's reference image (uploaded once at the top of this page).</div>
+            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Mei's Pictures" section on the location page, right below "The story of this place". "Generate with Mei" uses the location photo above + Mei's reference image (uploaded once at the top of this page).</div>
 
             <label class="sub-section-label">Official website (optional)</label>
             <input type="url" class="sub-official-link-input" placeholder='https://... — shown as "Learn more"' value="${escapeHtml(sub.officialLink || '')}">
@@ -933,46 +939,19 @@ recomposée, sans texte ni légende.`;
             });
         }
 
-        // "Recreate the Photo" + "Generate with Mei" (demande du 16/09/2026) — modifie
-        // directement `sub.recreatedPhoto`, même principe que sub.img plus haut : Approve
-        // publie donc la valeur éditée/générée ici (voir contentFields dans
-        // approveLocationSubmission(), firebase-init.js).
-        const recreatePhotoInput = card.querySelector('.sub-recreate-photo-input');
-        const recreatePhotoPreview = card.querySelector('.sub-recreate-photo-preview');
-        const recreatePhotoUploadBtn = card.querySelector('.sub-recreate-photo-upload-btn');
-        const recreatePhotoFileInput = card.querySelector('.sub-recreate-photo-file-input');
-        const recreatePhotoUploadName = card.querySelector('.sub-recreate-photo-upload-name');
+        // "Mei's Pictures" + "Generate with Mei" (demande du 16/09/2026, passée en
+        // galerie multi-photos le 18/09/2026) — widget partagé window.createPhotoGalleryField()
+        // (voir script.js), collecté dans sub.recreatedPhotos au clic sur Approve (voir plus
+        // bas), même principe que tipsFieldWidget/extraFieldWidgets ci-dessus.
+        const recreateGalleryEl = card.querySelector('.sub-recreate-photo-gallery');
+        let recreateGalleryWidget = null;
+        if (recreateGalleryEl && typeof window.createPhotoGalleryField === 'function') {
+            recreateGalleryWidget = window.createPhotoGalleryField(recreateGalleryEl, {
+                values: Array.isArray(sub.recreatedPhotos) && sub.recreatedPhotos.length ? sub.recreatedPhotos : (sub.recreatedPhoto ? [sub.recreatedPhoto] : [])
+            });
+        }
         const meiGenerateBtn = card.querySelector('.mei-generate-btn');
         const meiGenerateStatus = card.querySelector('.mei-generate-status');
-        const updateRecreatePhotoPreview = () => {
-            recreatePhotoPreview.innerHTML = sub.recreatedPhoto
-                ? `<img src="${escapeHtml(sub.recreatedPhoto)}" alt="" style="display:block;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:8px;">`
-                : '';
-        };
-        if (recreatePhotoInput) {
-            recreatePhotoInput.addEventListener('change', () => {
-                sub.recreatedPhoto = recreatePhotoInput.value.trim();
-                updateRecreatePhotoPreview();
-            });
-        }
-        if (recreatePhotoUploadBtn && recreatePhotoFileInput) {
-            recreatePhotoUploadBtn.addEventListener('click', () => recreatePhotoFileInput.click());
-            recreatePhotoFileInput.addEventListener('change', async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async (event) => {
-                    const resized = typeof resizeTripCoverDataUrl === 'function'
-                        ? await resizeTripCoverDataUrl(event.target.result, 1200)
-                        : event.target.result;
-                    sub.recreatedPhoto = resized;
-                    if (recreatePhotoInput) recreatePhotoInput.value = '';
-                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = file.name;
-                    updateRecreatePhotoPreview();
-                };
-                reader.readAsDataURL(file);
-            });
-        }
         if (meiGenerateBtn) {
             meiGenerateBtn.addEventListener('click', async () => {
                 meiGenerateStatus.classList.add('hidden');
@@ -985,10 +964,8 @@ recomposée, sans texte ni légende.`;
                 meiGenerateBtn.disabled = true;
                 meiGenerateBtn.textContent = 'Generating…';
                 try {
-                    sub.recreatedPhoto = await generateMeiRecreationInBrowser(sub.img);
-                    if (recreatePhotoInput) recreatePhotoInput.value = '';
-                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = 'Generated with Mei';
-                    updateRecreatePhotoPreview();
+                    const generatedUrl = await generateMeiRecreationInBrowser(sub.img);
+                    if (recreateGalleryWidget) recreateGalleryWidget.addPhoto(generatedUrl);
                 } catch (err) {
                     meiGenerateStatus.textContent = (err && err.message) || 'Generation failed.';
                     meiGenerateStatus.className = 'mei-generate-status err';
@@ -1175,6 +1152,14 @@ recomposée, sans texte ni légende.`;
             // haut) : collectées seulement ici, au clic, plutôt qu'à chaque frappe comme
             // les autres champs — même principe que extraFieldWidgets ci-dessus.
             if (tipsFieldWidget) sub.tipsList = tipsFieldWidget.collect().values;
+            // "Mei's Pictures" (demande du 18/09/2026) — même principe que tipsFieldWidget
+            // ci-dessus : collectée seulement ici, au clic sur Approve. recreatedPhoto
+            // (première photo) reste écrit en parallèle pour les consommateurs pas encore
+            // migrés vers le tableau (voir feed.html).
+            if (recreateGalleryWidget) {
+                sub.recreatedPhotos = recreateGalleryWidget.collect();
+                sub.recreatedPhoto = sub.recreatedPhotos[0] || '';
+            }
             // Recombine "The story of this place" + les sections de visite en un seul
             // fullDescription.en (demande du 15/09/2026) — même principe, collecté ici
             // plutôt qu'à chaque frappe (voir window.createVisitSectionsField() dans
@@ -1355,26 +1340,21 @@ recomposée, sans texte ni légende.`;
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
 
-            <!-- "Recreate the Photo" (demande du 14/09/2026, "refaire la photo" : une photo où
-                 le membre BTS d'origine est remplacé par un avatar du site, Iris ou Mei) — déjà
-                 composée/éditée ailleurs par l'admin, uploadée telle quelle. Même
-                 principe/widgets que "Photo URL"/"Upload from device" côté Location submissions
-                 (photoPreviewHtml()/resizeTripCoverDataUrl() plus haut dans ce fichier), champ
-                 distinct (loc.recreatedPhoto), publié via adminUpdateLocationContent(). Affichée
-                 sur la fiche lieu juste en dessous de "The story of this place" (voir
-                 renderLocationRichContent() dans script.js) — masquée entièrement tant qu'aucune
-                 photo n'est fournie. -->
-            <label class="sub-section-label">Recreate the Photo (optional)</label>
-            <div class="sub-recreate-photo-preview"></div>
-            <input type="url" class="sub-recreate-photo-input" placeholder="Recreated photo URL (optional)">
+            <!-- "Mei's Pictures" (demande du 14/09/2026, "refaire la photo" : une photo où
+                 le membre BTS d'origine est remplacé par un avatar du site, Iris ou Mei ;
+                 renommée + passée en galerie multi-photos le 18/09/2026, "je veux pouvoir
+                 ajouter plusieurs photo") — widget partagé window.createPhotoGalleryField()
+                 (voir script.js), champ distinct (loc.recreatedPhotos, un tableau), publié via
+                 adminUpdateLocationContent(). Affichée sur la fiche lieu juste en dessous de
+                 "The story of this place" (voir renderLocationRichContent() dans script.js) —
+                 masquée entièrement tant qu'aucune photo n'est fournie. -->
+            <label class="sub-section-label">Mei's Pictures (optional)</label>
+            <div class="sub-recreate-photo-gallery"></div>
             <div class="sub-photo-upload-row">
-                <button type="button" class="sub-photo-upload-btn sub-recreate-photo-upload-btn">Upload from device</button>
-                <input type="file" class="sub-recreate-photo-file-input hidden" accept="image/*">
-                <span class="sub-photo-upload-name sub-recreate-photo-upload-name"></span>
                 <button type="button" class="mei-generate-btn">Generate with Mei</button>
             </div>
             <div class="mei-generate-status hidden"></div>
-            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place". "Generate with Mei" uses this location's photo + Mei's reference image (uploaded once at the top of this page).</div>
+            <div class="sub-video-hint" style="margin-bottom:12px;">Shown as a "Mei's Pictures" section on the location page, right below "The story of this place". "Generate with Mei" uses this location's photo + Mei's reference image (uploaded once at the top of this page).</div>
 
             <!-- Site officiel (demande du 14/09/2026, "ajoute également le lien de Official
                  website") — champ déjà présent côté "Location submissions" (renderCard
@@ -1430,11 +1410,7 @@ recomposée, sans texte ni légende.`;
         const videoStatus = card.querySelector('.sub-video-status');
         const linkInput = card.querySelector('.sub-link-input');
         const officialLinkInput = card.querySelector('.sub-official-link-input');
-        const recreatePhotoInput = card.querySelector('.sub-recreate-photo-input');
-        const recreatePhotoPreview = card.querySelector('.sub-recreate-photo-preview');
-        const recreatePhotoUploadBtn = card.querySelector('.sub-recreate-photo-upload-btn');
-        const recreatePhotoFileInput = card.querySelector('.sub-recreate-photo-file-input');
-        const recreatePhotoUploadName = card.querySelector('.sub-recreate-photo-upload-name');
+        const recreateGalleryEl = card.querySelector('.sub-recreate-photo-gallery');
         const meiGenerateBtn = card.querySelector('.mei-generate-btn');
         const meiGenerateStatus = card.querySelector('.mei-generate-status');
         const saveBtn = card.querySelector('.loc-save-btn');
@@ -1452,39 +1428,11 @@ recomposée, sans texte ni légende.`;
         let originalLinkValues = {};
         let originalRawLinks = {};
         let tipsFieldWidget = null;
-        // "Recreate the Photo" (demande du 14/09/2026) — même principe que sub.img côté
-        // Location submissions (renderCard ci-dessus) : une variable locale à la carte,
-        // mise à jour par l'URL ou l'upload, lue directement à la sauvegarde.
-        let currentRecreatePhoto = '';
-        const updateRecreatePhotoPreview = () => {
-            recreatePhotoPreview.innerHTML = currentRecreatePhoto
-                ? `<img src="${escapeHtml(currentRecreatePhoto)}" alt="" style="display:block;width:100%;max-height:220px;object-fit:cover;border-radius:10px;margin-bottom:8px;">`
-                : '';
-        };
-        if (recreatePhotoInput) {
-            recreatePhotoInput.addEventListener('change', () => {
-                currentRecreatePhoto = recreatePhotoInput.value.trim();
-                updateRecreatePhotoPreview();
-            });
-        }
-        if (recreatePhotoUploadBtn && recreatePhotoFileInput) {
-            recreatePhotoUploadBtn.addEventListener('click', () => recreatePhotoFileInput.click());
-            recreatePhotoFileInput.addEventListener('change', async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async (event) => {
-                    const resized = typeof resizeTripCoverDataUrl === 'function'
-                        ? await resizeTripCoverDataUrl(event.target.result, 1200)
-                        : event.target.result;
-                    currentRecreatePhoto = resized;
-                    if (recreatePhotoInput) recreatePhotoInput.value = '';
-                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = file.name;
-                    updateRecreatePhotoPreview();
-                };
-                reader.readAsDataURL(file);
-            });
-        }
+        // "Mei's Pictures" (demande du 14/09/2026, passée en galerie multi-photos le
+        // 18/09/2026) — widget partagé window.createPhotoGalleryField() (voir script.js),
+        // (ré)initialisé dans fillFields() une fois les données Firestore reçues (voir
+        // plus bas), collecté directement à la sauvegarde (voir saveBtn.onclick).
+        let recreateGalleryWidget = null;
         // "Generate with Mei" (demande du 16/09/2026) — même bouton/logique que côté
         // "Location submissions" plus haut, mais lit la photo déjà publiée du lieu
         // (loc.img, éditée depuis le modal crayon de map.html) plutôt que sub.img.
@@ -1500,10 +1448,8 @@ recomposée, sans texte ni légende.`;
                 meiGenerateBtn.disabled = true;
                 meiGenerateBtn.textContent = 'Generating…';
                 try {
-                    currentRecreatePhoto = await generateMeiRecreationInBrowser(loc.img);
-                    if (recreatePhotoInput) recreatePhotoInput.value = '';
-                    if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = 'Generated with Mei';
-                    updateRecreatePhotoPreview();
+                    const generatedUrl = await generateMeiRecreationInBrowser(loc.img);
+                    if (recreateGalleryWidget) recreateGalleryWidget.addPhoto(generatedUrl);
                 } catch (err) {
                     meiGenerateStatus.textContent = (err && err.message) || 'Generation failed.';
                     meiGenerateStatus.className = 'mei-generate-status err';
@@ -1539,10 +1485,11 @@ recomposée, sans texte ni légende.`;
             videoStatus.textContent = data.ytId ? 'YouTube video: ' + data.ytId : 'No YouTube video';
             linkInput.value = data.episodeLink || '';
             officialLinkInput.value = data.officialLink || '';
-            currentRecreatePhoto = data.recreatedPhoto || '';
-            if (recreatePhotoInput) recreatePhotoInput.value = currentRecreatePhoto.startsWith('data:') ? '' : currentRecreatePhoto;
-            if (recreatePhotoUploadName) recreatePhotoUploadName.textContent = '';
-            updateRecreatePhotoPreview();
+            if (recreateGalleryEl && typeof window.createPhotoGalleryField === 'function') {
+                recreateGalleryWidget = window.createPhotoGalleryField(recreateGalleryEl, {
+                    values: Array.isArray(data.recreatedPhotos) && data.recreatedPhotos.length ? data.recreatedPhotos : (data.recreatedPhoto ? [data.recreatedPhoto] : [])
+                });
+            }
             mergedFullDescription = data.fullDescription || {};
             originalLinkValues = {
                 tweet: tweetInput.value,
@@ -1636,8 +1583,15 @@ recomposée, sans texte ni légende.`;
             const fullDescription = Object.assign({}, mergedFullDescription, {
                 en: plainTextToHtmlParagraphs(combinedStory)
             });
-            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', pinterestUrl: pinterestUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim(), recreatedPhoto: currentRecreatePhoto }, extraCollected);
+            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', pinterestUrl: pinterestUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim() }, extraCollected);
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
+            // "Mei's Pictures" (demande du 18/09/2026) — recreatedPhotos est le tableau
+            // courant ; recreatedPhoto (première photo) reste écrit en parallèle pour les
+            // consommateurs pas encore migrés (voir feed.html).
+            if (recreateGalleryWidget) {
+                fields.recreatedPhotos = recreateGalleryWidget.collect();
+                fields.recreatedPhoto = fields.recreatedPhotos[0] || '';
+            }
 
             // Group/Member/Country/City/Category/Year (demande du 13/09/2026, "ajoute
             // également la mise en forme de Location submissions") — même mécanisme que le

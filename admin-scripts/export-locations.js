@@ -163,6 +163,25 @@ async function main() {
             loc[field] = `images/${filename}`;
             extractedCount++;
         });
+        // "Mei's Pictures" en galerie multi-photos (demande du 18/09/2026) —
+        // loc.recreatedPhotos est un tableau, chaque entrée peut être une data URL
+        // (upload direct/"Generate with Mei") ou déjà une URL externe/chemin relatif
+        // (rien à faire dans ce cas). Même traitement que 'img'/'recreatedPhoto'
+        // ci-dessus, appliqué entrée par entrée, sinon un lieu à plusieurs photos
+        // uploadées réintroduirait exactement le bug de gonflement corrigé au-dessus.
+        if (Array.isArray(loc.recreatedPhotos)) {
+            loc.recreatedPhotos = loc.recreatedPhotos.map((val, i) => {
+                if (typeof val !== 'string' || !val.startsWith('data:image/')) return val;
+                const m = val.match(/^data:(image\/[a-z]+);base64,(.*)$/s);
+                if (!m) return val;
+                const ext = MIME_EXT[m[1]] || 'jpg';
+                const safeId = String(loc.id).replace(/[^a-zA-Z0-9_-]/g, '');
+                const filename = `admin-upload-${safeId}-recreated-${i}.${ext}`;
+                fs.writeFileSync(path.join(imagesDir, filename), Buffer.from(m[2], 'base64'));
+                extractedCount++;
+                return `images/${filename}`;
+            });
+        }
     });
     if (extractedCount) console.log(`  ${extractedCount} photo(s) uploadée(s) en base64 extraite(s) vers images/.`);
 

@@ -15,12 +15,17 @@
 //     alternatives mais dans la même direction artistique (couleurs pastel, tenues
 //     féminines, adaptées à la saison/au contexte visible sur la photo).
 //
-// Écrit le résultat dans le MÊME champ que celui déjà rempli à la main depuis admin.html
-// (locationContent/{id}.recreatedPhoto, voir adminUpdateLocationContent() dans admin.html,
-// et son commentaire "currentRecreatePhoto") — aucune nouvelle infrastructure : le pipeline
-// d'export existant (voir le bloc d'extraction base64 dans export-locations.js) transforme
-// déjà ce champ en fichier image statique au prochain export, qu'il soit rempli à la main ou
-// par ce script.
+// Ajoute le résultat au MÊME champ que celui rempli depuis admin.html/le modal crayon
+// (locationContent/{id}.recreatedPhotos, un tableau — "Mei's Pictures", galerie multi-photos
+// depuis le 18/09/2026 ; voir window.createPhotoGalleryField() dans script.js) via
+// arrayUnion(), plutôt que d'écraser un champ unique — aucune nouvelle infrastructure : le
+// pipeline d'export existant (voir le bloc d'extraction base64 dans export-locations.js)
+// transforme déjà chaque entrée de ce tableau en fichier image statique au prochain export,
+// qu'elle soit ajoutée à la main ou par ce script. recreatedPhoto (chaîne, première photo)
+// reste écrit en parallèle pour les consommateurs pas encore migrés vers le tableau (voir
+// feed.html) — avec des lancements concurrents de ce script, "première photo" n'est
+// qu'approximatif, acceptable puisque ce script Node est un chemin secondaire au bouton
+// "Generate with Mei" intégré à admin.html.
 //
 // Pas de Firebase Storage ni de Cloud Function sur ce site (100% statique, voir README.md) —
 // même schéma que le reste de admin-scripts/ : ce script tourne en local (ou via GitHub
@@ -121,16 +126,19 @@ async function generateMeiRecreation(locationId, posePhotoPath, meiReferencePath
     admin.initializeApp({ credential: admin.credential.cert(loadServiceAccount()) });
     const db = admin.firestore();
 
-    // Même champ, même format (data URL base64) que celui écrit à la main par
-    // adminUpdateLocationContent() dans admin.html — le prochain export-locations.js
-    // l'extraira automatiquement en fichier images/admin-upload-<id>-recreated.<ext> (voir
-    // le bloc d'extraction déjà en place dans export-locations.js).
+    // Même champ, même format (data URL base64) que celui écrit par admin.html/le modal
+    // crayon — le prochain export-locations.js extraira automatiquement chaque entrée du
+    // tableau en fichier images/admin-upload-<id>-recreated-<i>.<ext> (voir le bloc
+    // d'extraction déjà en place dans export-locations.js).
     await db.collection('locationContent').doc(String(locationId)).set(
-        { recreatedPhoto: dataUrl },
+        {
+            recreatedPhotos: admin.firestore.FieldValue.arrayUnion(dataUrl),
+            recreatedPhoto: dataUrl
+        },
         { merge: true }
     );
 
-    console.log(`Recréation Mei écrite dans locationContent/${locationId}.recreatedPhoto (${mimeType}).`);
+    console.log(`Recréation Mei ajoutée à locationContent/${locationId}.recreatedPhotos (${mimeType}).`);
 
     // Copie locale pour vérification visuelle rapide avant le prochain export automatique.
     const previewPath = path.join(__dirname, `mei-preview-${locationId}.${ext}`);

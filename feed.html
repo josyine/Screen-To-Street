@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260923">
+<link rel="stylesheet" href="style.css?v=20260924">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -317,7 +317,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
          Voir switchFeedTab() plus bas. -->
     <div class="feed-tabs" id="feed-tabs">
         <button class="feed-tab-btn active" data-tab="community" onclick="switchFeedTab('community')">Community</button>
-        <button class="feed-tab-btn" data-tab="sacred" onclick="switchFeedTab('sacred')">Recreate the Photo</button>
+        <button class="feed-tab-btn" data-tab="sacred" onclick="switchFeedTab('sacred')">Mei's Pictures</button>
         <button class="feed-tab-btn" data-tab="saved" onclick="switchFeedTab('saved')">Saved</button>
     </div>
 
@@ -378,9 +378,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260923"></script>
-<script src="locations-data.js?v=20260923"></script>
-<script src="script.js?v=20260923"></script>
+<script type="module" src="firebase-init.js?v=20260924"></script>
+<script src="locations-data.js?v=20260924"></script>
+<script src="script.js?v=20260924"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -502,11 +502,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         }
     };
 
-    // Onglet "Recreate the Photo" (demande du 15/09/2026, "l'onglet 'Sacred places' ne
+    // Onglet "Mei's Pictures" (demande du 15/09/2026, "l'onglet 'Sacred places' ne
     // fonctionne pas... je n'aime pas le nom... renomme... affiche les photos de 'Recreate
-    // the Photo' des lieux") — construit la grille à partir des lieux qui ont un
-    // loc.recreatedPhoto renseigné (voir "Recreate the Photo" dans script.js/admin.html) au
-    // lieu de TOUS les lieux du site, et affiche cette photo recréée elle-même comme
+    // the Photo' des lieux", renommé "Mei's Pictures" + passé en galerie multi-photos le
+    // 18/09/2026) — construit la grille à partir des lieux qui ont au moins une photo dans
+    // loc.recreatedPhotos (tableau) ou, à défaut, l'ancien loc.recreatedPhoto (chaîne
+    // unique, lieux jamais migrés) — voir window.createPhotoGalleryField() dans script.js —
+    // au lieu de TOUS les lieux du site, et affiche la première de ces photos comme
     // vignette. Un clic ouvre désormais la modale de détail partagée (#loc-modal, voir
     // openSacredPlace() plus bas) au lieu de naviguer vers map.html (demande du 15/09/2026,
     // "comme dans Community") : plus de restauration d'onglet/scroll au retour du bouton
@@ -514,6 +516,11 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     // laissés en "sacred" en interne (jamais visibles) pour limiter le diff — seuls le
     // libellé de l'onglet et le contenu affiché changent.
     const cameraBadgeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
+    // Première photo de loc.recreatedPhotos (tableau, format courant depuis le 18/09/2026),
+    // ou repli sur l'ancien loc.recreatedPhoto (chaîne unique) pour les lieux jamais migrés.
+    function firstRecreatedPhoto(loc) {
+        return (Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length) ? loc.recreatedPhotos[0] : (loc.recreatedPhoto || '');
+    }
     let sacredGridRendered = false;
     // Liste ordonnée des lieux affichés dans cet onglet + index de celui actuellement
     // ouvert dans la modale (-1 = aucun, ou modale ouverte depuis un autre onglet) — sert au
@@ -526,14 +533,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         const loadingEl = document.getElementById('feed-loading');
         loadingEl.classList.add('hidden');
         const allLocs = typeof celebLocations !== 'undefined' ? celebLocations : [];
-        sacredLocs = allLocs.filter(loc => loc.recreatedPhoto);
+        sacredLocs = allLocs.filter(loc => (Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length) || loc.recreatedPhoto);
         if (!sacredLocs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No recreated photos yet.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');
         grid.innerHTML = '';
         sacredLocs.forEach(loc => {
             const tile = document.createElement('div');
             tile.className = 'feed-tile';
-            tile.style.backgroundImage = `url('${loc.recreatedPhoto}')`;
+            tile.style.backgroundImage = `url('${firstRecreatedPhoto(loc)}')`;
             tile.title = loc.name || '';
             tile.innerHTML = `<div class="feed-tile-official-badge">${cameraBadgeSvg}</div>`;
             tile.onclick = () => openSacredPlace(loc.id);
@@ -550,7 +557,8 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         const loc = sacredLocs.find(l => l.id == locId);
         if (!loc || typeof window.openLocModal !== 'function') return;
         sacredSwipeIndex = sacredLocs.indexOf(loc);
-        window.openLocModal(locId, loc.recreatedPhoto ? { photo: loc.recreatedPhoto } : undefined);
+        const photo = firstRecreatedPhoto(loc);
+        window.openLocModal(locId, photo ? { photo } : undefined);
     }
 
     // Swipe gauche/droite pour passer à la photo recréée suivante/précédente pendant que la
