@@ -1849,6 +1849,39 @@ window.addEventListener('firebase-ready', async (e) => {
         } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
     }
 
+    // BUG corrigé (demande du 19/09/2026, "le bouton delete location ne fonctionne
+    // toujours pas... quand je clique dessus, ça ne supprime pas le lieu du site") — même
+    // symptôme, même cause que le correctif locationSkeletonOverrides juste au-dessus :
+    // window.fetchHiddenLocationIds() (firebase-init.js) et son document Firestore
+    // siteConfig/hiddenLocations existaient déjà, correctement écrits par
+    // adminUpdateLocationHidden()/le bouton "Delete location" (admin.html/le modal
+    // crayon), et déjà relus dans admin.html (loadAllSiteLocationsOnce, pour afficher le
+    // badge "Hidden from map") — mais jamais relus ICI, sur la carte elle-même. L'admin
+    // voyait donc bien le badge changer dans admin.html (l'écriture Firestore avait
+    // réussi), tout en constatant que le lieu restait affiché partout ailleurs jusqu'au
+    // prochain export statique planifié (voir export-locations.yml, jusqu'à 6h plus
+    // tard) — d'où l'impression que le bouton "ne fonctionne pas". Retiré ici de
+    // celebLocations dès que Firestore répond, pour TOUT le monde (visiteur ou admin,
+    // donc placé AVANT le "if (!user) return" ci-dessous) — un lieu supprimé disparaît
+    // désormais du site dès la prochaine visite/rechargement, sans attendre l'export.
+    if (typeof window.fetchHiddenLocationIds === 'function') {
+        try {
+            const hiddenIds = new Set((await window.fetchHiddenLocationIds()).map(String));
+            if (hiddenIds.size) {
+                let anyRemoved = false;
+                for (let i = celebLocations.length - 1; i >= 0; i--) {
+                    if (hiddenIds.has(String(celebLocations[i].id))) {
+                        celebLocations.splice(i, 1);
+                        anyRemoved = true;
+                    }
+                }
+                if (anyRemoved && document.getElementById('map') && typeof renderLocations === 'function') {
+                    renderLocations(true);
+                }
+            }
+        } catch (err) { /* tant pis, le lieu reste visible jusqu'au prochain export statique */ }
+    }
+
     if (!user) return; // visiteur non connecté : le reste (wishlist, trips...) ne s'applique pas
 
     // Icônes "Feed", "Message" et "Admin" du header : présentes en HTML (masquées par
