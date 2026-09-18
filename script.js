@@ -1825,6 +1825,39 @@ window.syncTrips = syncTrips;
 window.addEventListener('firebase-ready', async (e) => {
     const user = e.detail && e.detail.user;
 
+    // BUG corrigé (demande du 19/09/2026, "Dans Location submissions, lorsque je publie
+    // un lieu il ne se publie plus dans map") — même famille de bug que les deux
+    // correctifs juste en dessous (locationSkeletonOverrides/hiddenLocations) : Approve
+    // (window.approveLocationSubmission(), firebase-init.js) écrit bien le lieu dans
+    // Firestore newLocations/{id}, avec un commentaire affirmant depuis longtemps "que
+    // script.js fusionne dans celebLocations au chargement de la page" — mais ce merge
+    // n'a jamais été branché ICI, seulement dans admin.html (loadAllSiteLocationsOnce,
+    // pour que l'onglet "Existing locations" les affiche). La carte elle-même ne relisait
+    // donc jamais newLocations, laissant un lieu tout juste publié invisible pour tout le
+    // monde jusqu'au prochain export statique planifié (jusqu'à 6h plus tard) — le message
+    // "It will appear on the map... from their next page load" affiché après Approve était
+    // donc faux depuis le début. Un lieu déjà présent dans le squelette statique (déjà
+    // exporté depuis) n'est jamais dupliqué (voir existingIds ci-dessous, même garde que
+    // admin.html). Placé AVANT le "if (!user) return" : un lieu publié doit être visible
+    // même déconnecté, comme n'importe quel autre lieu.
+    if (typeof window.fetchNewLocations === 'function') {
+        try {
+            const newLocs = await window.fetchNewLocations();
+            const existingIds = new Set(celebLocations.map(l => l.id));
+            let anyAdded = false;
+            newLocs.forEach(l => {
+                if (l && l.id != null && !existingIds.has(l.id)) {
+                    celebLocations.push(l);
+                    existingIds.add(l.id);
+                    anyAdded = true;
+                }
+            });
+            if (anyAdded && document.getElementById('map') && typeof renderLocations === 'function') {
+                renderLocations(true);
+            }
+        } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
+    }
+
     // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
     // "j'ai essayé de modifier la categorie d'un lieu dans Existing locations, mais ça
     // ne s'est pas mis à jour dans le lieu dans map") — window.fetchLocationSkeletonOverrides()

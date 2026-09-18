@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260926">
+<link rel="stylesheet" href="style.css?v=20260927">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -364,10 +364,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260926"></script>
-<script src="countries.js?v=20260926"></script>
-<script src="locations-data.js?v=20260926"></script>
-<script src="script.js?v=20260926"></script>
+<script type="module" src="firebase-init.js?v=20260927"></script>
+<script src="countries.js?v=20260927"></script>
+<script src="locations-data.js?v=20260927"></script>
+<script src="script.js?v=20260927"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1218,6 +1218,15 @@ recomposée, sans texte ni légende.`;
             if (res.success) {
                 resultEl.textContent = '✓ Published as ' + res.publishedId + '. It will appear on the map for visitors from their next page load.';
                 resultEl.className = 'sub-result ok';
+                // BUG corrigé (demande du 19/09/2026, "je veux que ça apparaisse quand je
+                // clique sur publié") — allSiteLocationsCache (voir loadAllSiteLocationsOnce()
+                // plus bas) est mémorisé une seule fois par session admin.html : si l'onglet
+                // "Existing locations" avait déjà été ouvert avant cet Approve, le lieu tout
+                // juste publié n'apparaissait qu'après un rechargement complet de la page,
+                // malgré la publication Firestore déjà réussie. Invalidé ici pour que le
+                // prochain appel à loadAllSiteLocationsOnce() (changement d'onglet) relise
+                // newLocations et l'inclue immédiatement.
+                allSiteLocationsCache = null;
                 setTimeout(() => card.remove(), 2500);
             } else {
                 resultEl.textContent = 'Failed: ' + res.code;
