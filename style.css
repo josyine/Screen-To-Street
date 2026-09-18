@@ -36,6 +36,43 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .dropdown-profile-btn svg { flex-shrink: 0; }
 .dropdown-profile-btn:hover { filter: brightness(1.06); color: #fff; }
 
+/* Rétrécissement du header en desktop "étroit" (demande du 18/09/2026, "quand je
+   réduis la fenêtre du site, les icones vont dans tous les sens") : .top-nav (icônes,
+   ancré à droite de la fenêtre), .map-kpi-pill (bannière lieux/pays, ancrée à gauche de
+   .map-container) et .tour-mode-badge (badge Live/Tour, centré dans .map-container) sont
+   3 éléments positionnés indépendamment, sans la moindre media query entre le seuil
+   mobile (760px) et le plein desktop — la sidebar gardant une largeur fixe (360/480px),
+   la zone carte rétrécit plus vite que la fenêtre entière, et ces 3 éléments finissent
+   par manquer de place et se chevaucher (fréquent dès qu'on épingle la fenêtre à la
+   moitié d'un écran 1920px, soit 960px de large). Ce palier intermédiaire leur laisse
+   de la place en réduisant icônes/badges, AVANT que .top-nav ne soit forcé de passer à
+   la ligne (voir flex-wrap plus bas) — qui reste le filet de sécurité si jamais ça ne
+   suffit toujours pas (fenêtre très étroite avec beaucoup d'icônes admin affichées). */
+/* !important sur chaque règle ci-dessous : ce fichier a des dizaines de règles pour ces
+   mêmes sélecteurs éparpillées plus loin (et pour .map-kpi-pill/.tour-mode-badge, un
+   <style> ENTIER dans map.html chargé après celui-ci, donc toujours prioritaire à
+   spécificité égale) — sans !important, l'ordre du fichier déciderait au cas par cas de
+   quelle règle gagne, un résultat imprévisible qu'on veut justement éviter ici. */
+@media (max-width: 1150px) and (min-width: 761px) {
+    .top-nav { gap: 6px !important; max-width: calc(100% - 40px); flex-wrap: wrap; justify-content: flex-end; }
+    .nav-btn, .header-icon-btn { width: 36px !important; height: 36px !important; font-size: 14px !important; }
+    /* Icône langue : déjà masquée sur mobile (voir plus bas) pour les mêmes raisons de
+       place — même traitement ici, c'est l'icône la moins essentielle du header. */
+    .lang-dropdown-container { display: none !important; }
+    /* Ce <div> porte en plus un style INLINE (padding/font-size) dans map.html/trips.html,
+       toujours prioritaire sur une règle externe sans !important (même limite déjà
+       documentée plus haut dans ce fichier pour .map-kpi-pill). */
+    .map-kpi-pill > div { padding: 8px 14px !important; font-size: 12px !important; }
+    .admin-verified-kpi-pill { padding: 6px 14px !important; font-size: 11px !important; }
+    /* Le texte du badge Live/Tour ("All live activity"/nom d'artiste) est ce qui prend
+       le plus de place dans .tour-mode-badge — masqué ici comme sur mobile
+       (.tour-mode-badge-mobile), ne laissant que le point animé, cliquable, pour ouvrir
+       le panneau Live en un coup d'oeil sans manger la largeur disponible. */
+    .tour-mode-badge { padding: 9px !important; }
+    .tour-mode-badge #tour-mode-badge-text,
+    .tour-mode-badge #tour-mode-badge-more { display: none !important; }
+}
+
 /* Sidebar Classique */
 .sidebar { width: 360px; flex-shrink: 0; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: var(--sidebar-bg); position: relative; overflow: hidden; transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1000; border-right: 1px solid rgba(0,0,0,0.05);}
 .sidebar.expanded { width: 480px; padding: 0; }

@@ -4901,6 +4901,17 @@ function extractSocialUrlForEdit(url, domainRe) {
     const s = (url || '').trim();
     return new RegExp(`^https?:\\/\\/(www\\.)?${domainRe}\\/.+`).test(s) ? s : null;
 }
+// Pinterest a besoin de sa propre validation, pas de extractSocialUrlForEdit() ci-dessus
+// (demande du 18/09/2026, "je n'arrive pas à mettre une adresse URL Pinterest") :
+// Pinterest génère très souvent des liens avec un sous-domaine PAYS selon la
+// langue/région du compte qui partage l'épingle (ex: fr.pinterest.com,
+// kr.pinterest.com...) — extractSocialUrlForEdit() n'accepte qu'un "www." optionnel,
+// donc un lien Pinterest parfaitement valide était rejeté à chaque fois pour ces
+// comptes. Même correctif que extractPinterestUrl() dans admin.html.
+function extractPinterestUrlForEdit(url) {
+    const s = (url || '').trim();
+    return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/.+/.test(s) ? s : null;
+}
 // Convertit un fullDescription HTML (<p>...</p><p>...</p>) en texte simple éditable
 // (un paragraphe par ligne vide), et inversement à la sauvegarde.
 function htmlParagraphsToPlainText(html) {
@@ -5718,7 +5729,7 @@ async function saveLocationEdit(locId, modal) {
         : locationEditOriginalRawLinks.tiktokUrl || null;
     if (tiktokVal !== (locationEditOriginalLinkValues.tiktok || '')) checkField(tiktokVal, tiktokUrl, 'location-edit-tiktok-error');
     const pinterestUrl = pinterestVal !== (locationEditOriginalLinkValues.pinterest || '')
-        ? (pinterestVal ? extractSocialUrlForEdit(pinterestVal, '(?:pinterest\\.[a-z.]{2,6}|pin\\.it)') : null)
+        ? (pinterestVal ? extractPinterestUrlForEdit(pinterestVal) : null)
         : locationEditOriginalRawLinks.pinterestUrl || null;
     if (pinterestVal !== (locationEditOriginalLinkValues.pinterest || '')) checkField(pinterestVal, pinterestUrl, 'location-edit-pinterest-error');
 
@@ -5728,7 +5739,7 @@ async function saveLocationEdit(locId, modal) {
         instagramUrls: (v) => extractSocialUrlForEdit(v, 'instagram\\.com'),
         facebookUrls: (v) => extractSocialUrlForEdit(v, 'facebook\\.com'),
         tiktokUrls: (v) => extractSocialUrlForEdit(v, 'tiktok\\.com'),
-        pinterestUrls: (v) => extractSocialUrlForEdit(v, '(?:pinterest\\.[a-z.]{2,6}|pin\\.it)')
+        pinterestUrls: extractPinterestUrlForEdit
     };
     const extraCollected = {};
     Object.keys(locationEditExtraWidgets).forEach(field => {

@@ -1215,7 +1215,11 @@ window.approveLocationSubmission = async function (submission) {
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         const targetId = submission.matchedLocId ? String(submission.matchedLocId) : 'new-' + submission.id;
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
+        // recreatedPhoto (demande du 16/09/2026, "Recreate the Photo" ajoutée à l'onglet
+        // "Location submissions" — voir renderCard() dans admin.html) manquait ici : la
+        // carte pouvait déjà écrire sub.recreatedPhoto, mais Approve ne le republiait
+        // jamais faute d'être dans cette liste.
+        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), contentDoc, { merge: true });
