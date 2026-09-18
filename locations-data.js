@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-18T17:09:35.701Z.
+// Généré le 2026-09-18T21:47:13.705Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9398,33 +9398,60 @@ window.STATIC_LOCATIONS = [
     "address": "Mount John Observatory Rd, Lake Tekapo",
     "lat": -43.9866,
     "lng": 170.4653,
-    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "img": "images/admin-upload-207-photo.jpg",
     "fullDescription": {
-      "en": "<p>Perched on the summit of Mt John above Lake Tekapo, this University of Canterbury research observatory sits inside the Aoraki Mackenzie International Dark Sky Reserve — one of the largest and darkest stargazing reserves on Earth. The Astro Cafe at the top serves food and coffee with a panoramic view over Lake Tekapo's turquoise water and the surrounding Mackenzie Basin.</p><p>The group made the drive up to the summit during their New Zealand road trip on Bon Voyage Season 4, taking in the view by day from a spot most visitors associate with astonishing, light-pollution-free skies after dark.</p>",
+      "en": "<p>Perched on the summit of Mt. John directly above Lake Tekapo, this University of Canterbury research observatory sits squarely inside the Aoraki Mackenzie International Dark Sky Reserve—one of the largest, highest-rated, and darkest stargazing reserves on Earth. While it is primarily a world-class scientific facility for nighttime astronomy, it is equally famous during the day. The glass-walled Astro Café at the summit serves up coffee and treats alongside an absolutely breathtaking, panoramic view of Lake Tekapo's surreal turquoise glacial waters and the vast surrounding Mackenzie Basin.</p><p>During Episode 3 of their Bon Voyage Season 4 New Zealand road trip (Day 2: Castle Hill &gt; Geraldine &gt; Lake Tekapo), the members drove their campervans up the winding road to the summit of Mt. John. Arriving just in time to catch the spectacular afternoon light transitioning into sunset, the group was completely mesmerized by the panoramic alpine views.</p><p>Taking full advantage of the stunning backdrop before the sun went down, members like j-hope, V, and Jimin famously used the summit to film several fun TikTok videos, including the iconic \"Chicken Noodle Soup\" dance challenge! While the group enjoyed the daytime vistas from the Astro Café, they were standing in a spot that most visitors associate with astonishing, light-pollution-free skies after dark, making it a perfect crossover of beautiful sunsets and world-class stargazing.</p>",
       "fr": "<p>Perché au sommet du mont John au-dessus du lac Tekapo, cet observatoire de recherche de l'Université de Canterbury se trouve au cœur de la réserve internationale de ciel étoilé Aoraki Mackenzie — l'une des plus grandes et des plus sombres réserves d'observation des étoiles au monde. L'Astro Cafe, au sommet, sert repas et cafés avec une vue panoramique sur les eaux turquoise du lac Tekapo et le bassin du Mackenzie qui l'entoure.</p><p>Le groupe a fait la route jusqu'au sommet durant son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, profitant de la vue en plein jour depuis un lieu que la plupart des visiteurs associent à des ciels nocturnes stupéfiants, sans aucune pollution lumineuse.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Pay the access road fee"
+          "en": "Recreate the TikToks"
         },
         "text": {
-          "en": "The private access road up Mt John charges a per-vehicle fee, payable by card at the gate — budget a few extra minutes for this on the way up."
+          "en": "The exact spot where the members filmed their dance videos is near the rocky outcrops just outside the Astro Café, overlooking the vibrant blue lake. The wind at the summit can be incredibly strong, so bring a warm jacket even in summer!"
         }
       },
       {
         "title": {
-          "en": "Come back after dark if you can"
+          "en": "Day vs. Night"
         },
         "text": {
-          "en": "Mt John is one of the best stargazing spots in the Southern Hemisphere — if your schedule allows, a night visit shows a completely different side of the site."
+          "en": "If you want to see the turquoise lake and drink coffee like BTS, visit during the day. However, if you want to experience why this place is internationally famous, we highly recommend booking an official nighttime stargazing tour with the Dark Sky Project."
+        }
+      },
+      {
+        "title": {
+          "en": "The Famous"
+        },
+        "text": {
+          "en": "While at the Astro Café, be sure to order a hot chocolate or a flat white—the baristas traditionally dust the foam with chocolate powder in the shape of stars, planets, or little aliens!"
         }
       }
     ],
     "directions": {
       "en": "Accessible via Godley Peaks Road, off State Highway 8, a roughly 15-minute drive up the private access road from Lake Tekapo village.",
       "fr": "Accessible par Godley Peaks Road, au départ de la route nationale 8, à environ 15 minutes de route par la route d'accès privée depuis le village de Lake Tekapo."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.darkskyproject.co.nz/dine/astro-cafe/",
+    "recreatedPhotos": [
+      "images/admin-upload-207-recreated-0.jpg"
+    ],
+    "recreatedPhoto": "images/admin-upload-207-recreated.jpg"
   },
   {
     "id": 208,
@@ -9438,33 +9465,340 @@ window.STATIC_LOCATIONS = [
     "address": "862 Kinloch Rd, Kinloch, Glenorchy",
     "lat": -44.8333,
     "lng": 168.3667,
-    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "img": "images/admin-upload-208-photo.jpg",
     "fullDescription": {
-      "en": "<p>Kinloch Lodge is a lakeside wilderness retreat at the northern end of Lake Wakatipu, near Glenorchy — the small settlement widely used as a gateway to Paradise, Mt Aspiring National Park and the Routeburn and Greenstone tracks. The lodge occupies a historic heritage building right on the lake, well outside the reach of Queenstown's more built-up tourist strip.</p><p>The group stayed here during the more remote, outdoors-focused stretch of their New Zealand road trip on Bon Voyage Season 4, using it as a base for exploring the wilderness around Glenorchy before continuing on toward Queenstown.</p>",
-      "fr": "<p>Kinloch Lodge est un refuge sauvage au bord du lac, situé à l'extrémité nord du lac Wakatipu, près de Glenorchy — la petite localité largement utilisée comme porte d'entrée vers Paradise, le parc national du Mont Aspiring, ainsi que les pistes de Routeburn et de Greenstone. Le lodge occupe un bâtiment historique classé, directement au bord du lac, bien loin de la zone touristique plus urbanisée de Queenstown.</p><p>Le groupe y a séjourné durant l'étape la plus reculée et axée sur le plein air de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'en servant de base pour explorer les environs sauvages de Glenorchy avant de poursuivre vers Queenstown.</p>"
+      "fr": "<p>Kinloch Lodge est un refuge sauvage au bord du lac, situé à l'extrémité nord du lac Wakatipu, près de Glenorchy — la petite localité largement utilisée comme porte d'entrée vers Paradise, le parc national du Mont Aspiring, ainsi que les pistes de Routeburn et de Greenstone. Le lodge occupe un bâtiment historique classé, directement au bord du lac, bien loin de la zone touristique plus urbanisée de Queenstown.</p><p>Le groupe y a séjourné durant l'étape la plus reculée et axée sur le plein air de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'en servant de base pour explorer les environs sauvages de Glenorchy avant de poursuivre vers Queenstown.</p>",
+      "en": "<p>Kinloch Wilderness Retreat (traditionally known as Kinloch Lodge) is a peaceful lakeside haven located at the remote northern tip of Lake Wakatipu. Just a short drive from Glenorchy—a small settlement famously known as the gateway to \"Paradise,\" Mount Aspiring National Park, and the legendary Routeburn and Greenstone tracks—the lodge occupies a beautiful historic heritage building right on the water's edge. It offers a spectacular, untouched natural escape, completely surrounded by towering mountains and far removed from the bustling, built-up tourist strips of nearby Queenstown.</p><p>Seeking a true connection with nature, the group stayed at this exact lodge during Episode 5 of their unforgettable New Zealand road trip in Bon Voyage Season 4. Arriving in their campervans and SUVs after a long day of driving through breathtaking alpine landscapes, the members used this serene retreat as a base camp to rest, share communal meals, and marvel at the incredibly clear, star-filled night sky. Waking up to the misty, tranquil morning views over Lake Wakatipu provided fans with some of the most peaceful, healing, and cozy moments of the entire season before the group continued their journey toward Queenstown.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Book well ahead"
+          "en": "Book a Room (or a Campsite!)"
         },
         "text": {
-          "en": "As a small heritage lodge in a popular gateway town, rooms can book out well in advance during the New Zealand summer season."
+          "en": "Kinloch Wilderness Retreat is a fully operational accommodation offering everything from heritage lodge rooms to backpacker dorms and campsites. You can literally book a stay here to experience the exact same crisp morning lake views the members woke up to!"
         }
       },
       {
         "title": {
-          "en": "Combine with a Glenorchy day trip"
+          "en": "Prepare for the Drive"
         },
         "text": {
-          "en": "Glenorchy's short scenic walks and the Paradise/Routeburn road are all within easy reach if you're staying the night here."
+          "en": "The journey to Kinloch from Queenstown is widely considered one of the most scenic drives in the world. However, the final stretch of the road past Glenorchy is unsealed (gravel). If you are driving a rental car or campervan like the boys did, take it slow and be sure to check your rental agreement regarding unpaved roads."
+        }
+      },
+      {
+        "title": {
+          "en": "Embrace the Disconnect"
+        },
+        "text": {
+          "en": "This area is truly remote. Cell phone reception is very spotty, and the lodge is entirely off the grid, generating its own power. Take a cue from BTS: put your phone away, grab a hot drink, and simply enjoy the majestic mountain views and the quiet wilderness."
         }
       }
     ],
     "directions": {
       "en": "Glenorchy is roughly a 45-minute drive from Queenstown along the Glenorchy-Queenstown Road, which hugs the edge of Lake Wakatipu.",
       "fr": "Glenorchy se trouve à environ 45 minutes de route de Queenstown par la Glenorchy-Queenstown Road, qui longe les rives du lac Wakatipu."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-208-recreated-0.jpg"
+    ],
+    "recreatedPhoto": "images/admin-upload-208-recreated.jpg",
+    "episodeLink": "https://www.flyhoneystars.com/2019/11/19/filming-location-bts-bon-voyage-in-new-zealand/bts-new-zealand-bon-voyage-day4-kinloch-lodge-glenorchy/",
+    "ytId": "QYQd69V1dE4",
+    "officialLink": "https://weverse.io/bts/media/0-6453577"
+  },
+  {
+    "id": 209,
+    "name": "Lotte Duty Free Star Avenue",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2018/04/24/lotte-duty-free-star-avenue-bts-handprints/",
+    "ytId": "",
+    "address": "30 Eulji-ro, Jung-gu, Seoul",
+    "lat": 37.5643,
+    "lng": 126.9816,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Star Avenue is a handprint wall inside Lotte Duty Free's Myeongdong Main Store, between the department store and the Lotte Hotel, right by Euljiro-1(il)-ga Station exit 7. Placing your hand on a K-pop star's handprint plays a short video clip of that artist on a nearby screen — a simple but very photogenic first stop for fans just landing in Seoul.</p><p>All seven BTS members have their handprints on the wall, making it a popular quick pilgrimage stop before heading deeper into the city. Fan reports since 2022 suggest the attraction may have been scaled back or is listed as \"coming soon\" in places, so treat a visit as a bonus rather than a guaranteed highlight — the building and street-level mall entrance remain there either way.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Euljiro-1(il)-ga Station (Line 2), exit 7. Turn back and go right toward the mall, then walk down the alley to find Star Avenue at the end, at the Main Branch of Lotte Department Store between the Department Store and Lotte Hotel."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check before you go"
+        },
+        "text": {
+          "en": "Some fan reports from 2022 describe the handprint/mirror feature as \"coming soon\" or possibly discontinued — it's worth asking mall staff on arrival rather than making it the sole reason for a trip to this part of Myeongdong."
+        }
+      }
+    ]
+  },
+  {
+    "id": 210,
+    "name": "Gyeonghoeru Pavilion (Gyeongbokgung Palace)",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2020",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2018/05/13/gyeongbokgung-palace-and-bukcheon-hanbok-village-nct-127-went-here-and-bts-performed-here-how-to-go-and-where-to-rent-hanbok-3355-hanbok-rental/",
+    "ytId": "",
+    "address": "161 Sajik-ro, Jongno-gu, Seoul",
+    "lat": 37.5798,
+    "lng": 126.9759,
+    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Gyeonghoeru%20(Royal%20Banquet%20Hall)%20at%20Gyeongbokgung%20Palace,%20Seoul.jpg",
+    "fullDescription": {
+      "en": "<p>Gyeonghoeru is the large lake-side pavilion inside Gyeongbokgung Palace, built on a stone-pillared platform surrounded by a rectangular pond — historically used for state banquets and receiving foreign envoys. It's one of the most photographed spots in the whole palace complex, distinct from the main throne hall, Geunjeongjeon, a short walk away.</p><p>BTS performed \"Mikrokosmos\" here on October 1, 2020, as part of NBC's \"The Tonight Show Starring Jimmy Fallon\" BTS Week, right after filming \"IDOL\" at Geunjeongjeon Hall. RM also separately posted photos taken at the pavilion. The Seoul city government confirmed on Twitter that both performances were filmed on the palace grounds.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Anguk Station (Line 3), exit 2, and walk straight to reach the palace grounds. The pavilion is inside Gyeongbokgung Palace, near the main gate — same entrance as the Geunjeongjeon throne hall."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Free entry in a hanbok"
+        },
+        "text": {
+          "en": "The palace is closed on Tuesdays. Entry is free for anyone wearing a hanbok — several rental shops (e.g. 3355 Hanbok Rental) operate near the Bukchon Hanbok Village area close to exit 2."
+        }
+      }
+    ]
+  },
+  {
+    "id": 211,
+    "name": "Everland — American Adventure (Rockville)",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Yongin",
+    "category": "Landmark",
+    "year": "2020",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2018/05/16/everland-theme-park-during-tulip-festival/",
+    "ytId": "",
+    "address": "199 Everland-ro, Pogok-eup, Cheoin-gu, Yongin-si",
+    "lat": 37.2945,
+    "lng": 127.202,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Everland is South Korea's largest theme park, split into several themed zones including \"American Adventure,\" home to the Rockspin swing ride and the general \"Rockville\" area. It's a separate part of the park from the Everland Bungee Jump area already on this site, and one of the go-to filming backdrops for K-pop TV specials thanks to its colorful, US-diner-style storefronts.</p><p>BTS performed \"Dynamite\" here for America's Got Talent (AGT) 2020, reportedly filmed near the American Adventure/Rockville area by the Rockspin ride — the group's first performance of the song after its release, timed with its US chart-topping run.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Jeondae-Everland Station (Ever Line), exit 3. Walk straight, then take the escalator/stairs down to the free shuttle bus station and ride the Everland shuttle bus (free) to the park entrance."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Combine with the T Express"
+        },
+        "text": {
+          "en": "The T Express roller coaster, one of Everland's biggest draws, is in the same general area of the park — worth planning your day so you're not crossing back and forth."
+        }
+      }
+    ]
+  },
+  {
+    "id": 212,
+    "name": "[CLOSED] LINE Store & BT21 Cafe — Itaewon",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Cafe",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/04/20/line-store-and-bt21-cafe-itaewon-branch-how-to-go-and-what-to-expect/",
+    "ytId": "",
+    "address": "200 Itaewon-ro, Itaewon-dong, Yongsan-gu, Seoul",
+    "lat": 37.5345,
+    "lng": 126.9944,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>This flagship LINE Friends store in Itaewon housed a BT21-themed cafe on the 3rd floor, with more BT21 merchandise on the 2nd floor — at the time the world's largest LINE Friends store. The pink building was a landmark stop on the Itaewon shopping strip for several years before it closed.</p><p>BTS filmed videos here during the BT21 character-creation process, and fans identified the specific cafe table the members reportedly sat at (V is said to have taken one end of it). The Itaewon branch permanently closed on April 5, 2020, with LINE Friends citing plans to expand operations elsewhere in the city rather than renew this store.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Itaewon Station, exit 3. Walk straight and cross the pedestrian crossing — the building that housed the pink LINE store is visible from there, on Itaewon-ro."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "This location has closed"
+        },
+        "text": {
+          "en": "The store and cafe permanently closed on April 5, 2020 — there's no BT21 cafe to visit here anymore, but the address remains a nostalgic photo stop for fans passing through Itaewon."
+        }
+      }
+    ]
+  },
+  {
+    "id": 213,
+    "name": "Tokyu Plaza (glass escalator) — Harajuku",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "Japan",
+    "city": "Tokyo (Harajuku)",
+    "category": "Landmark",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/07/04/tokyu-plaza-famous-glass-escalator-in-harajuku-appeared-in-bts-jungkooks-gcf-film-how-to-go-and-what-to-expect/",
+    "ytId": "",
+    "address": "4-30-3 Jingumae, Shibuya, Tokyo",
+    "lat": 35.6692,
+    "lng": 139.7075,
+    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Tokyu%20Plaza%20Omotesando-Harajuku.jpg",
+    "fullDescription": {
+      "en": "<p>Tokyu Plaza Omotesando Harajuku is a shopping complex known for its striking entrance: an escalator that carries visitors through a kaleidoscopic hall of angled mirrors before opening onto the shops and a rooftop garden above. Opened in 2012 and designed by architect Hiroshi Nakamura, the mirrored entrance has become one of Harajuku's most photographed spots.</p><p>The escalator appears in Jungkook's self-shot travel film \"GCF in Tokyo,\" part of the members' GCF (Golden Closet Film) series where each of them documents a personal trip. Fans retrace the same steps through the mirrored entrance as a quick, easy-to-reach stop while exploring Harajuku and Omotesando.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Meiji-jingumae \"Harajuku\" Station (Chiyoda Line C03 / Fukutoshin Line F15). Follow the signs for exits 1-6, then take exit 5 — this leads directly to Tokyu Plaza."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best time for photos"
+        },
+        "text": {
+          "en": "The mirrored entrance gets crowded fast since it sits right at a major Harajuku/Omotesando crossing — an early morning visit gives a much better chance at photos without a crowd of other people reflected in every mirror panel."
+        }
+      }
+    ]
+  },
+  {
+    "id": 214,
+    "name": "Red Rock (Harajuku branch)",
+    "group": "BTS",
+    "member": "Jimin, Jungkook",
+    "country": "Japan",
+    "city": "Tokyo (Harajuku)",
+    "category": "Restaurant",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/06/22/red-rock-harajuku-bts-jimin-and-jungkook-ate-here-how-to-go-and-what-to-expect/",
+    "ytId": "",
+    "address": "3-25-12 Jingumae, Shibuya, Tokyo",
+    "lat": 35.6708,
+    "lng": 139.7031,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Red Rock is a small roast beef bowl restaurant near Takeshita Street in Harajuku, known for generous portions ordered via a vending machine at the entrance — a popular, no-frills lunch stop for people exploring the neighborhood's shopping streets.</p><p>Jimin and Jungkook ate here during the same Harajuku outing captured in Jungkook's \"GCF in Tokyo\" film, after Jimin shopped at the nearby YSL Omotesando branch. They're reported to have ordered the Slice Steak Bowl, #2 on the menu.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Meiji-jingumae \"Harajuku\" Station (Chiyoda Line C03 / Fukutoshin Line F15), exit 3. Cross the pedestrian crossing and go around the small round park, walk through the alley to Takeshita Street, cross at the far end, turn left, and continue past the Rip N Dip store to reach Red Rock."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Order at the vending machine"
+        },
+        "text": {
+          "en": "Like many small Japanese eateries, you order and pay at a vending machine near the entrance before sitting down — the Slice Steak Bowl is menu item #2, the one Jimin and Jungkook reportedly ordered."
+        }
+      }
+    ]
+  },
+  {
+    "id": 215,
+    "name": "SHOW DC — Idol Cafe (BTS Brick Cafe)",
+    "group": "BTS",
+    "member": "All",
+    "country": "Thailand",
+    "city": "Bangkok",
+    "category": "Cafe",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/03/20/show-dc-how-to-go-and-what-to-expect-idol-cafe-bts-brick-cafe-is-located-here/",
+    "ytId": "",
+    "address": "99/6-9 Rim Klong Bangkapi Road, Huai Khwang, Bangkok 10310",
+    "lat": 13.7514,
+    "lng": 100.5724,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Idol Cafe is a LEGO-brick-themed cafe inside the SHOW DC mall in Bangkok, part of the mall's \"YG Republique\" idol-focused area. Waffles are the menu highlight, and the cafe's LEGO-brick wall doubles as a photo backdrop for visitors posing the same way idols have in their own visits.</p><p>BTS visited Idol Cafe and left signed cups on display, and fans have been able to identify roughly where Jimin sat and which section of the LEGO wall the members posed at. As of a recent visit, parts of the surrounding \"YG Republique\" area were reported as under-maintained or still listed as \"coming soon,\" so it's worth checking current mall conditions before a special trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "SHOW DC mall is best reached by taxi or Grab directly, since the nearest train station is a long walk away. Enter via the entrance nearest the information booth for the shortest walk to Idol Cafe (the alternate entrance is near Gloria Jean's)."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Confirm it's open before going"
+        },
+        "text": {
+          "en": "The mall has reportedly struggled with occupancy, and the \"YG Republique\" idol area was described as mostly \"coming soon\"/unmaintained in a recent visit — check recent reviews or call ahead rather than making it your only reason to visit this part of Bangkok."
+        }
+      }
+    ]
   },
   {
     "address": "Coron Island, Calamian Islands, Palawan, Philippines",
@@ -9537,10 +9871,83 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Franz C. Trinidad / CC BY-SA 4.0"
   },
   {
+    "id": "new-0GsQ7YXKUoWXQaA4PgII",
+    "name": "Cheonggyecheon Stream",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2017, 2026",
+    "address": "Cheonggyecheon-ro, Jongno-gu, Seoul, South Korea",
+    "lat": 37.5692,
+    "lng": 126.9782,
+    "img": "images/admin-upload-new-0GsQ7YXKUoWXQaA4PgII-photo.jpg",
+    "addedAt": 1789763099492,
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Cheonggyecheon Stream is an 11-kilometer modern public recreation stream running east-west through downtown Seoul. Covered over by concrete highways in the post-war modernization boom during the 1950s and 1960s, the stream was restored in 2005 in a landmark urban renewal project, creating a quiet natural haven with waterfalls, historic bridges, and stepping stones right beneath Seoul's skyscrapers.</p><p>2017: Cheonggyecheon is symbolically deeply tied to the group's role as global ambassadors for their capital city, as seen when it was prominently featured in the iconic 2017 \"With Seoul\" tourism campaign. But its most spectacular connection to BTS happened very recently in April 2026 during \"The City Seoul\" urban festival.</p><p>2026: To celebrate the release of their highly anticipated comeback album Arirang and its lead single \"SWIM\", the stream was transformed into a massive, immersive art installation. At night, colorful lights intersected over the water, and the song's empowering message—\"KEEP SWIMMING\"—drifted along the stream's surface as if literally swimming. The Willow (Beodeul) Bridge promenade and Ogansu Bridge were completely transformed into dazzling streets of light, mesmerizing fans and citizens walking along the historic waterway and giving the stream a brand new, highly emotional meaning for ARMYs.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "practicalInfo": [
+      {
+        "text": {
+          "en": "Take Seoul Subway Line 5 to Gwanghwamun Station (Exit 5) and walk 2 minutes to Cheonggye Plaza, the start of the stream."
+        },
+        "title": {
+          "en": "How to get there"
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://www.google.com/imgres?q=BTS%20Cheonggyecheon%20Stream&imgurl=https%3A%2F%2Fwimg.mk.co.kr%2Fnews%2Fcms%2F202604%2F21%2Fnews-p.v1.20260421.f83009a7ddc244d6b649fa6de0ab69fe_P1.jpg&imgrefurl=https%3A%2F%2Fwww.mk.co.kr%2Fen%2Fmusics%2F12023021&docid=K9t0AMTW-EdiSM&tbnid=tI803EYOAvHFrM&vet=12ahUKEwiZw-nx-fiWAxWMUaQEHQPxD1kQnPAOegUIigEQAA..i&w=700&h=525&hcb=2&ved=2ahUKEwiZw-nx-fiWAxWMUaQEHQPxD1kQnPAOegUIigEQAA",
+    "officialLink": "https://www.google.com/imgres?q=BTS%20Cheonggyecheon%20Stream&imgurl=https%3A%2F%2Fenglish.seoul.go.kr%2Fwp-content%2Fuploads%2F2021%2F12%2Fcheonggyecheon-1.jpg&imgrefurl=https%3A%2F%2Fenglish.seoul.go.kr%2Fcheonggyecheon-stream-3%2F&docid=goFzBDV-bK-pVM&tbnid=PMIlS0JIC6lRaM&vet=12ahUKEwiZw-nx-fiWAxWMUaQEHQPxD1kQnPAOegUIzwEQAA..i&w=1280&h=853&hcb=2&ved=2ahUKEwiZw-nx-fiWAxWMUaQEHQPxD1kQnPAOegUIzwEQAA",
+    "ytId": "c6ws9tGMso0",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Start at the Source"
+        },
+        "text": {
+          "en": "The stream is 11 kilometers long, which can be overwhelming! The best place to start your walk is at Cheonggye Plaza (near Gwanghwamun Station). This is the scenic head of the stream, featuring a beautiful miniature waterfall and the famous colorful spiral sculpture called \"Spring.\""
+        }
+      },
+      {
+        "title": {
+          "en": "Cross the Stepping Stones"
+        },
+        "text": {
+          "en": "You cannot visit Cheonggyecheon without crossing the water using the traditional stone blocks (doldari) placed across the stream. It is the perfect spot for an iconic, cinematic photo with the flowing water and city lights in the background!"
+        }
+      },
+      {
+        "title": {
+          "en": "Watch for BTS Pop-Ups"
+        },
+        "text": {
+          "en": "As demonstrated by the breathtaking 2026 \"KEEP SWIMMING\" event, HYBE frequently uses the Cheonggyecheon area for massive outdoor celebrations and light shows during BTS's comeback seasons. Always check the news for official \"The City\" events if you are visiting around a major release!"
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-0GsQ7YXKUoWXQaA4PgII-recreated-0.jpg"
+    ],
+    "recreatedPhoto": "images/admin-upload-new-0GsQ7YXKUoWXQaA4PgII-recreated.jpg"
+  },
+  {
     "country": "South Korea",
     "lat": 35.1408,
     "city": "Gwangju",
-    "img": "https://www.youtube.com/watch?v=gNOZM4Skh2c",
+    "img": "images/admin-upload-new-1amF71xqTl5VJ5H75FqS-photo.jpg",
     "member": "J-Hope",
     "year": "2020",
     "name": "Yangnim-dong Penguin Village",
@@ -9550,20 +9957,6 @@ window.STATIC_LOCATIONS = [
     "category": "Landmark",
     "group": "BTS",
     "addedAt": 1788697365516,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Yangnim-dong is filled with early 20th-century Western missionary houses and traditional hanoks; plan extra time to walk around the entire heritage neighborhood."
-        },
-        "title": {
-          "en": "Combine with Historic Tour"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Yangnim-dong Penguin Village is an eco-friendly arts village in Gwangju, where residents transformed quiet alleyways into an open-air museum using upcycled retro goods, clocks, and colorful street art. The village gets its name from the adorable waddling walk of the elderly community members who originally built the village arts program.</p><p>Because Gwangju is J-Hope's hometown, artists and local fan initiatives decorated wall sections with tributes to his music, including murals celebrating his mixtape 'Hope World' and hit solo single 'Chicken Noodle Soup'. The village has become an essential stop for ARMYs visiting Gwangju to celebrate J-Hope's artistic roots.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -9573,7 +9966,55 @@ window.STATIC_LOCATIONS = [
           "en": "Take Gwangju Metro Line 1 to Namgwangju Station (Exit 3). Walk approximately 10 minutes west into the historic Yangnim-dong district to reach the village entrance."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Yangnim-dong Penguin Village is a heartwarming, eco-friendly arts village nestled in the historical center of Gwangju. The community gets its charming name from the endearing, waddling walk of the neighborhood’s elderly residents, who originally initiated the village's revitalization. Transforming quiet, aging alleyways into a vibrant open-air museum, the locals used upcycled retro goods, broken clocks, discarded mirrors, and colorful street art to bring the area back to life, creating a deeply nostalgic and creative aesthetic.</p><p>Because Gwangju is proudly j-hope's hometown, the city frequently honors its global superstar. To celebrate his vibrant artistry, local artists and passionate fan initiatives came together to decorate sections of the village walls with beautiful tributes to his music. Strolling through the narrow, art-filled alleys, you can discover stunning, colorful murals celebrating his legendary mixtape Hope World and his hit solo single \"Chicken Noodle Soup\". Today, this quirky, joyful village has become an absolutely essential and uplifting stop for ARMYs visiting Gwangju to celebrate j-hope's creative roots.</p>"
+    },
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "The"
+        },
+        "text": {
+          "en": "Yangnim-dong is filled with early 20th-century Western missionary houThe village is a densely packed maze of upcycled \"junk art\" and hidden details. Take your time exploring the narrowest alleys to spot not only the large Hope World murals but also smaller, subtle fan-made crafts and tributes dedicated to j-hope hidden among the vintage clocks!ses and traditional hanoks; plan extra time to walk around the entire heritage neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the"
+        },
+        "text": {
+          "en": "This is a quiet residential area primarily populated by elderly citizens. While taking photos and expressing your excitement as a fan, please remember to keep your voice down, avoid blocking the small pathways, and never trespass on private property."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Historic Yangnim-dong"
+        },
+        "text": {
+          "en": "Don’t just stop at the murals! The surrounding Yangnim-dong neighborhood is often called the \"Jerusalem of Gwangju\" due to its mix of early 20th-century Western missionary houses and traditional Korean hanok. It is packed with incredibly aesthetic, vintage cafés where you can relax after your walk."
+        }
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/CztEXoDPEeL/",
+    "recreatedPhotos": [
+      "images/admin-upload-new-1amF71xqTl5VJ5H75FqS-recreated-0.jpg"
+    ],
+    "recreatedPhoto": "images/admin-upload-new-1amF71xqTl5VJ5H75FqS-recreated.jpg",
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://www.google.com/imgres?q=yangnim-dong%20penguin%20village%20bts&imgurl=https%3A%2F%2Ftour.gwangju.go.kr%2Fuploads%2Ftour%2Finfo%2Fvillage%2F202003051117590166.jpg&imgrefurl=https%3A%2F%2Ftour.gwangju.go.kr%2Feng%2Ftour%2Finfo%2Fvillage%2F002.cs%3Fact%3Dview%26infoId%3D1160%26category%3D002%26guNm%3D%26searchCondition%3D%26searchKeyword%3D%26pageIndex%3D2&docid=BOYBZHneSH81IM&tbnid=PxBGuf9Q7ddqLM&vet=12ahUKEwjf28aZ8viWAxUJVqQEHYRyG9wQnPAOegQIORAA..i&w=1000&h=560&hcb=2&ved=2ahUKEwjf28aZ8viWAxUJVqQEHYRyG9wQnPAOegQIORAA",
+    "episodeLink": "https://www.tatlerasia.com/lifestyle/travel/where-to-go-in-gwangju-hometown-of-btss-j-hope"
   },
   {
     "group": "BTS",
@@ -9659,20 +10100,6 @@ window.STATIC_LOCATIONS = [
     "id": "new-2sZwoI4KpzIPUwlgvDVg",
     "member": "All",
     "addedAt": 1789072845192,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "There is a small entrance fee (around 10,000 KRW in cash) payable at the gate. If you stay until dusk, the park owner will occasionally illuminate the carousel lights upon request for photos."
-        },
-        "title": {
-          "en": "Admission & Timing"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Yongma Land is a small, abandoned amusement park located in Jungnang-gu, Seoul, which officially closed its primary operations in 2011. Instead of being completely demolished, the park was preserved by its owner as an open vintage film set and photography venue, attracting musicians, tourists, and creative teams looking for a nostalgic, slightly faded aesthetic.</p><p>During the pivotal early years of BTS, the group used Yongma Land as the setting for several shoots, most notably for their 2015 Season's Greetings photoshoot. Concept photos featuring members posing around the unlit central carousel, vintage rides, and weathered arcade machines perfectly captured the melancholic yet hopeful youth aesthetic that defined the early 'The Most Beautiful Moment in Life' (HYYH) era.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -9692,11 +10119,42 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "ytId": "",
     "facebookUrl": "",
-    "tweetUrl": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
-    "tweetUrls": []
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "The Admission Fee"
+        },
+        "text": {
+          "en": "Even though it is \"abandoned,\" Yongma Land is private property and operates as a business. The owner sits near the entrance and charges a 10,000 KRW entrance fee (make sure to bring cash!). It is absolutely worth the price for the freedom to explore and photograph the entire park."
+        }
+      },
+      {
+        "title": {
+          "en": "Chase the Golden Hour"
+        },
+        "text": {
+          "en": "To capture the best, most cinematic photos, plan your visit for the late afternoon (around 4:00 PM to 6:00 PM). The setting sun casts a beautiful, warm glow on the rusted metal and faded pastel rides, maximizing that nostalgic HYYH vibe."
+        }
+      },
+      {
+        "title": {
+          "en": "The Magic of the Carousel"
+        },
+        "text": {
+          "en": "The famous central carousel is usually unlit and stationary. However, if you are lucky, the owner sometimes turns on the vintage lights for a few minutes as the sun goes down (or you can request it for an extra fee). Have your camera ready to capture the magic when it happens!"
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Yongma Land is a small amusement park in the Jungnang-gu district of Seoul that officially ceased operations in 2011 due to financial decline. However, instead of demolishing the site, the owner made the brilliant decision to preserve the decaying park, transforming it into a unique, open-air vintage film set. Today, its peeling paint, overgrown weeds, unlit carousel, and rusted bumper cars attract photographers, K-pop music video directors, and tourists looking for a perfectly nostalgic, slightly melancholic, and retrofuturistic aesthetic.</p><p>During their pivotal early years, BTS utilized Yongma Land’s beautifully faded backdrop to capture the raw, unfiltered essence of youth. Most notably featured in their 2015 Season's Greetings photoshoot, the members were captured posing around the weathered arcade machines, abandoned rides, and the iconic central carousel. This rugged, slightly eerie location perfectly foreshadowed the \"beautiful but fleeting youth\" visual identity that would soon come to define their legendary The Most Beautiful Moment in Life (HYYH) era. For many fans, the vintage carousel also evokes the emotional, wistful atmosphere seen later in the \"Spring Day\" music video, making it a highly popular spot for ARMYs to recreate those iconic, cinematic moods.</p>"
+    },
+    "episodeLink": "https://koreasowls.fr/yongma-land-parc-dattractions-abandonne-toujours-en-activite/",
+    "officialLink": "https://creatrip.com/fr/blog/6415?srsltid=AU7gw4XxvoozcGC2T-owr9dLp3SHxWCc8MmzZdoWJ3wWv2VqgUjecZRl",
+    "recreatedPhoto": "images/admin-upload-new-2sZwoI4KpzIPUwlgvDVg-recreated.jpg",
+    "tweetUrl": "https://x.com/i/status/2011086898165637125"
   },
   {
     "id": "new-37Ztk5NoqShGM7H5EFlX",
@@ -9842,20 +10300,6 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "addedAt": 1788772972254,
     "tweetUrl": "https://x.com/BTS_twt/status/1139743038006185984?s=46",
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Look for the wooden signboards and footprint markers near the park's central path to take a photo recreating V's iconic umbrella shot."
-        },
-        "title": {
-          "en": "Astuce"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Busan Citizens Park is an expansive urban park located in the Busanjin-gu district of Busan. Built on the grounds of a former U.S. military base, it was transformed into a lush public space featuring wide lawns, scenic walkways, ponds, and cultural installations.</p><p>In June 2019, while visiting Busan for BTS's 5th Muster [Magic Shop] fan meeting, V went for a peaceful stroll along the park's walking paths on a rainy afternoon holding an umbrella. After he posted photos of his walk on social media, the park's managing corporation created an official designated 'V Trail' photo zone, complete with painted footprints marking the exact spot where V posed.</p>"
-    },
     "practicalInfo": [
       {
         "text": {
@@ -9869,7 +10313,47 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "instagramUrl": "",
     "tiktokUrl": "",
-    "ytId": ""
+    "ytId": "",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Purple Footprints"
+        },
+        "text": {
+          "en": "The park is massive (over 100 acres!), so finding the exact spot can be tricky. Head toward the park's South Gate (near the maze garden and the mirror pond); you will easily spot the official photo zone sign and the painted footprints on the walking path."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring the Ultimate Prop"
+        },
+        "text": {
+          "en": "To truly capture the essence of V's iconic photo, you need the right weather and the right prop! Don't be discouraged by a gloomy forecast—a rainy day actually makes for the most authentic \"V Road\" picture. Just remember to pack a classic black umbrella."
+        }
+      },
+      {
+        "title": {
+          "en": "Pack a Picnic"
+        },
+        "text": {
+          "en": "After snapping your photos, take advantage of the park's beautiful layout. It is one of the best places in Busan for a picnic. Grab some snacks from a nearby convenience store, rent a mat, and relax on the expansive central lawn just like the locals do."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Busan Citizens Park is an expansive urban park located in the Busanjin-gu district of Busan. Built on the grounds of a former U.S. military base, it was transformed into a lush public space featuring wide lawns, scenic walkways, ponds, and cultural installations.</p><p>In June 2019, while the group was in town for their historic 5th Muster [Magic Shop] fan meeting, V took some time off to enjoy a peaceful, solitary stroll through the park on a rainy afternoon. Holding a simple black umbrella, he snapped a few atmospheric photos along a quiet, tree-lined path and shared them with fans online. The response was so overwhelmingly positive that the Busan Facilities Corporation quickly established an officially designated \"V Road.\" They installed a commemorative sign and painted a set of footprints on the ground, marking the exact spot where Taehyung stood, allowing fans to perfectly recreate his tranquil, rainy-day aesthetic.</p>"
+    },
+    "episodeLink": "https://sbsstar.net/article/N1005314535/busan-kindly-informs-the-park-where-bts-v-has-recently-walked",
+    "officialLink": "https://www.visitbusan.net/index.do?menuCd=DOM_000000301001001000&uc_seq=354&lang_cd=en",
+    "recreatedPhoto": "images/admin-upload-new-3XGdjRGOFysEfy39UpDo-recreated.jpg"
   },
   {
     "category": "Landmarks",
@@ -10437,21 +10921,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Arad / CC BY-SA 3.0"
   },
   {
-    "category": "Cafe",
-    "member": "All",
-    "year": "2024",
-    "lng": 127,
-    "id": "new-AL7Ru0SXbbeQXikZkMSn",
-    "lat": 37.5,
-    "group": "BTS",
-    "address": "1 Example-ro, Example-gu, Seoul",
-    "episode": "Example context for this location",
-    "country": "South Korea",
-    "city": "Seoul",
-    "name": "Example Cafe (delete me, this is just a sample)",
-    "addedAt": 1788560637590
-  },
-  {
     "id": "new-D2pf3IFWKTH64FaUCAdd",
     "year": "2021",
     "category": "Museum",
@@ -10508,7 +10977,7 @@ window.STATIC_LOCATIONS = [
     "recreatedPhoto": "images/admin-upload-new-D2pf3IFWKTH64FaUCAdd-recreated.jpg"
   },
   {
-    "img": "https://img.youtube.com/vi/619Q0DhywRo/hqdefault.jpg",
+    "img": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-photo.jpg",
     "name": "Sungnyemun Gate (Namdaemun)",
     "year": "2021",
     "address": "40 Sejong-daero, Jung-gu, Seoul, South Korea",
@@ -10521,20 +10990,6 @@ window.STATIC_LOCATIONS = [
     "city": "Seoul",
     "group": "BTS",
     "addedAt": 1788775540502,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Visit in the evening when the fortress gate is lit up to experience the same dramatic lighting seen in the Global Citizen Live broadcast."
-        },
-        "title": {
-          "en": "Astuce"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Sungnyemun Gate, designated as South Korea's National Treasure No. 1 and historically known as Namdaemun Gate, is one of the four main gates of the ancient Fortress Wall of Seoul. Originally built in 1398 during the Joseon Dynasty, it stands at a historic crossroads between Seoul's ancient history and modern skyline.</p><p>In September 2021, BTS selected Sungnyemun Gate as the stage for their performance of 'Permission to Dance' broadcast globally during the Global Citizen Live 24-hour event. Illuminated by brilliant lights against the night backdrop, the members danced around the outer perimeter of the historic gate, celebrating Korean heritage before a global audience.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -10549,7 +11004,47 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "tweetUrl": "https://x.com/bts_bighit/status/1442272577611714563?s=46",
     "instagramUrl": "",
-    "tiktokUrl": ""
+    "tiktokUrl": "",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visit After Dark"
+        },
+        "text": {
+          "en": "While the gate is impressive during the day, try to visit in the evening to recreate the exact atmosphere of the BTS performance. The pavilion is beautifully illuminated at night with soft, golden lights that make the intricate wooden roof brackets pop against the dark sky."
+        }
+      },
+      {
+        "title": {
+          "en": "The Royal Guard Changing Ceremony"
+        },
+        "text": {
+          "en": "If you prefer a daytime visit, time your trip to witness the traditional Changing of the Royal Guard ceremony, which takes place in front of the gate (typically operating every day except Mondays). It adds a fantastic historical layer to your photos!"
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Namdaemun Market"
+        },
+        "text": {
+          "en": "You cannot visit the gate without crossing the street to explore Namdaemun Market, the oldest and largest traditional market in Korea! It is the perfect place to grab popular street foods like Hotteok (sweet filled pancakes) or Kalguksu (knife-cut noodles) to fuel up after your photoshoot."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Sungnyemun Gate, officially designated as South Korea's National Treasure No. 1 and historically known as Namdaemun (South Great Gate), is the largest and most magnificent of the four main gates that once protected the ancient Fortress Wall of Seoul. Originally built in 1398 during the Joseon Dynasty, it stands proudly at a bustling intersection, creating a striking visual contrast between Seoul's deep architectural history and its gleaming modern skyline. Meticulously restored after a tragic fire in 2008, the gate remains a powerful, enduring symbol of the city's resilience and cultural pride.</p><p>In September 2021, BTS selected this majestic landmark as the stage for their spectacular performance during the Global Citizen Live 24-hour worldwide broadcast. Dressed in elegant, earth-toned outfits, the members performed their hit \"Permission to Dance\" right on the plaza in front of the gate. Illuminated by brilliant lights against the dark night sky, the ancient wooden pavilion provided a breathtaking backdrop. By bringing their modern pop anthems to a 600-year-old royal gateway, BTS beautifully showcased the harmonious blend of Korea's past and present to millions of viewers across the globe.</p>"
+    },
+    "tweetUrls": [],
+    "officialLink": "https://fr.wikipedia.org/wiki/Sungnyemun",
+    "episodeLink": "https://www.travelandleisureasia.com/sea/destinations/asia/how-bts-will-turn-seouls-historic-landmarks-into-a-stage-for-their-arirang-comeback/",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhoto": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-recreated.jpg"
   },
   {
     "address": "54 Samcheong-ro, Jongno-gu, Seoul, South Korea",
@@ -10636,19 +11131,6 @@ window.STATIC_LOCATIONS = [
     "addedAt": 1788713854097,
     "tweetUrl": "https://x.com/BTS_twt/status/1163313092379332608?s=46",
     "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "James Turrell Exhibition"
-        },
-        "text": {
-          "en": "Reserve your ticket in advance online if you plan to visit the James Turrell exhibition hall, as capacity is limited per time slot."
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Museum SAN (Space Art Nature) is a world-class architectural and art landmark designed by renowned Japanese architect Tadao Ando. Tucked away in the mountains of Wonju, the museum seamlessly merges minimalist concrete structures, expansive water gardens, and light installations with the surrounding natural landscape.</p><p>As an avid art collector and museum visitor, RM traveled to Museum SAN in 2019 and shared serene photos of his tour on BTS's official social media channels. He posed by the iconic arch sculpture standing in the Water Garden and spent quiet moments observing the permanent James Turrell light exhibits, turning the museum into a staple pilgrimage for art-loving ARMYs.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -10658,6 +11140,53 @@ window.STATIC_LOCATIONS = [
           "en": "From Seoul, take a KTX train from Cheongnyangni Station to Manjong Station or Wonju Station, then take a taxi (approx. 20-25 minutes) directly to Museum SAN."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.museumsan.org/",
+    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book the Right Ticket"
+        },
+        "text": {
+          "en": "Museum SAN offers different tiers of admission. To fully recreate RM's experience, the basic gallery ticket is not enough. You must purchase the integrated ticket that specifically includes entry to the James Turrell Exhibition, as access is strictly limited by time slots and requires a guided walkthrough."
+        }
+      },
+      {
+        "title": {
+          "en": "The Floating Archway Photo"
+        },
+        "text": {
+          "en": "The iconic red arch where RM took his photo is located in the Water Garden. For the most dramatic and cinematic shot, lower your camera close to the water's surface to capture the perfect, mirror-like reflection of both the sculpture and the surrounding mountains."
+        }
+      },
+      {
+        "title": {
+          "en": "Plan for Travel Time"
+        },
+        "text": {
+          "en": "The museum is deliberately isolated to maintain its peaceful atmosphere. It is located at the top of a mountain, meaning you cannot easily walk there from Wonju city center. Plan ahead to take the Wonju City Tour Bus, or catch a taxi from Wonju Station (which is about a 30-to-40-minute drive)."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Museum SAN (Space Art Nature) is a world-class architectural masterpiece designed by the legendary minimalist architect Tadao Ando. Tucked away in the pristine mountains of Wonju, the museum is designed as a sanctuary to foster a deep connection between art and the environment. It seamlessly merges stark, exposed concrete structures, expansive stone and water gardens, and immersive light installations with the breathtaking surrounding natural landscape.</p><p>As an avid art enthusiast and the group's resident museum connoisseur, RM traveled to Museum SAN in early 2019 for a peaceful winter \"Namjooning\" retreat. He shared serene photos of his visit on BTS's official Twitter account, most notably posing in front of Alexander Liberman's towering red Archway sculpture that seemingly floats on the tranquil Water Garden. He also spent quiet, introspective moments experiencing the museum's permanent James Turrell light and space exhibits. Through his thoughtful documentation, RM instantly transformed this remote mountain museum into a staple pilgrimage for art-loving ARMYs worldwide.</p>"
+    },
+    "imgCredit": "Museum SAN / CC BY-SA 4.0",
+    "recreatedPhoto": "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated.jpg",
+    "recreatedPhotos": [
+      "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-0.jpg",
+      "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-1.jpg"
     ]
   },
   {
@@ -10803,7 +11332,7 @@ window.STATIC_LOCATIONS = [
   {
     "address": "29 Kookchudobosang-ro 84-gil, Seo-gu, Daegu, South Korea",
     "name": "Daegu Daeseong Elementary School V Mural",
-    "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScybZAsJAlQPAGsGlgEIp4MNco7aPV66mZtwSXYkJJ1xsOs9t8_Qd9bMW5&s=10",
+    "img": "images/admin-upload-new-O7gbWdpEnR8bnMZFv071-photo.jpg",
     "country": "South Korea",
     "member": "V",
     "id": "new-O7gbWdpEnR8bnMZFv071",
@@ -10814,22 +11343,7 @@ window.STATIC_LOCATIONS = [
     "group": "BTS",
     "category": "Art & Murals",
     "addedAt": 1788775338191,
-    "facebookUrl": "",
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "Since this is an active elementary school, make sure to view and photograph the mural quietly from the public sidewalk outside."
-        },
-        "title": {
-          "en": "Astuce"
-        }
-      }
-    ],
     "instagramUrl": "",
-    "fullDescription": {
-      "en": "<p>Daegu Daeseong Elementary School is a public school located in the Seo-gu district of Daegu, widely known among fans as the childhood alma mater of BTS member V (Kim Taehyung).</p><p>In December 2021, a massive 33-meter panoramic mural was constructed along the outer brick wall of the school to celebrate V's 26th birthday. Designed by global fan communities in coordination with local district authorities, the mural highlights V's discography, solo works such as 'Inner Child', and artistic motifs inspired by Vincent van Gogh's 'The Starry Night'.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -10840,7 +11354,50 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "tiktokUrl": "https://www.tiktok.com/@thizisdan/video/7359967386436455698"
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "tweetUrl": "",
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "ytId": "",
+    "fullDescription": {
+      "en": "<p>Daegu Daeseong Elementary School is a traditional public school tucked away in the quiet Seo-gu district of Daegu. While it operates as a standard, everyday educational facility for local children, it has gained monumental global recognition as the childhood alma mater of BTS member V (Kim Taehyung). The surrounding neighborhood retains a peaceful, residential atmosphere, offering fans a glimpse into the humble beginnings of one of the world's biggest stars.</p><p>To celebrate V's birthday in December 2021, global fan communities collaborated with local district authorities to transform the school's mundane outer brick wall into a breathtaking artistic tribute. They unveiled a massive, 33-meter-long panoramic mural (which was so popular it was later extended to nearly 60 meters in 2022!). Set against a beautiful, swirling backdrop inspired by V's favorite painter, Vincent van Gogh (The Starry Night), the mural beautifully chronicles his musical journey. It features vibrant visual references to his solo masterpieces like \"Inner Child\", \"Scenery\", and \"Snow Flower\", creating a heartwarming and permanent celebration of Daegu's beloved hometown hero.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "School Hours Protocol"
+        },
+        "text": {
+          "en": "Please remember that this is a fully functioning elementary school. For the safety and privacy of the children, do not enter the school grounds under any circumstances. Admire and photograph the mural from the outside public sidewalk, keep your noise levels down, and ideally visit on a weekend or late afternoon when classes are over."
+        }
+      },
+      {
+        "title": {
+          "en": "The"
+        },
+        "text": {
+          "en": "As you walk along the massive panorama, keep an eye out for the specific section dedicated to the phrase \"I Purple You\" (the iconic term coined by V). It is the most popular spot for fans to stop and take their commemorative photos!"
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Seomun Market"
+        },
+        "text": {
+          "en": "Make a full Daegu day out of your trip! After visiting the mural, head over to the nearby Seomun Market (one of Korea's largest and most historic traditional markets). It is the perfect place to try famous Daegu street foods like Napjak Mandu (flat dumplings) and soak in the local dialect and culture the members grew up with."
+        }
+      }
+    ],
+    "recreatedPhoto": "images/admin-upload-new-O7gbWdpEnR8bnMZFv071-recreated.jpg",
+    "episodeLink": "https://medium.com/the-daebak-company/take-a-walk-along-bts-v-mural-street-in-daegu-a-perfect-purple-art-17103723dc89",
+    "officialLink": "https://www.dgs.go.kr/english/main.do",
+    "tiktokUrl": "",
+    "facebookUrl": "https://www.facebook.com/groups/southkoreatravel/posts/1432531671687883/"
   },
   {
     "member": "J-Hope",
@@ -11234,31 +11791,54 @@ window.STATIC_LOCATIONS = [
     "ytId": "aYUfoYcqWgE",
     "facebookUrl": "",
     "tweetUrl": "",
-    "tipsList": [
-      {
-        "title": "Learn Before You Explore :",
-        "text": "Before venturing deep into the dunes, it is highly recommended to stop by the Dubai Desert Conservation Reserve Visitor Centre. It is the perfect place to learn about the protected desert ecosystem and the wildlife that the boys might have spotted!"
-      },
-      {
-        "title": "Book an Official Safari :",
-        "text": "The reserve is strictly protected, meaning you cannot simply drive in yourself. You will likely pass through official checkpoints like the Dubai Desert Conservation Reserve, Margham gate as part of a guided tour. You must book through approved operators (such as Platinum Heritage or Arabian Adventures) to access the pristine dunes where the filming took place."
-      },
-      {
-        "title": "Recreate the Thrill :",
-        "text": "When booking, make sure your safari package includes a dune buggy or sandboarding experience if you want to perfectly recreate the members' fun-filled afternoon!"
-      },
-      {
-        "title": "Desert Survival Kit :",
-        "text": "The boys often talked about the intense heat in their travel diaries. Bring plenty of water, a good sunscreen, and a lightweight scarf or mask—just like Taehyung suggested—to protect your face from the blowing sand."
-      }
-    ],
     "tiktokUrl": "",
     "fullDescription": {
       "en": "<p>Spanning over 225 square kilometers of pristine, rolling dunes, the Dubai Desert Conservation Reserve is a breathtaking protected national park that showcases the majestic natural beauty of the Arabian Peninsula. Away from the glittering skyscrapers of the city, this vast expanse offers a serene, cinematic landscape of golden sands and native wildlife.</p><p>In early 2016, BTS traded the bustling city life for the breathtaking heat of the Emirates to film their very first overseas desert adventure: the BTS Summer Package 2016 in Dubai. The members embraced the desert lifestyle completely. Clad in memorable, vibrant outfits that popped beautifully against the golden sand, they drove dune buggies, tried sandboarding (with varying degrees of success!), and rode camels. They transformed this seemingly barren landscape into the ultimate summer playground, creating hilarious and unforgettable memories for ARMYs.</p>"
     },
     "instagramUrl": "https://www.instagram.com/p/DO9go6_jYnk/",
+    "imgCredit": "Tim de Groot / CC0 1.0",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Learn Before You Explore :"
+        },
+        "text": {
+          "en": "Before venturing deep into the dunes, it is highly recommended to stop by the Dubai Desert Conservation Reserve Visitor Centre. It is the perfect place to learn about the protected desert ecosystem and the wildlife that the boys might have spotted!"
+        }
+      },
+      {
+        "title": {
+          "en": "Book an Official Safari :"
+        },
+        "text": {
+          "en": "The reserve is strictly protected, meaning you cannot simply drive in yourself. You will likely pass through official checkpoints like the Dubai Desert Conservation Reserve, Margham gate as part of a guided tour. You must book through approved operators (such as Platinum Heritage or Arabian Adventures) to access the pristine dunes where the filming took place."
+        }
+      },
+      {
+        "title": {
+          "en": "Recreate the Thrill :"
+        },
+        "text": {
+          "en": "When booking, make sure your safari package includes a dune buggy or sandboarding experience if you want to perfectly recreate the members' fun-filled afternoon!"
+        }
+      },
+      {
+        "title": {
+          "en": "Desert Survival Kit :"
+        },
+        "text": {
+          "en": "The boys often talked about the intense heat in their travel diaries. Bring plenty of water, a good sunscreen, and a lightweight scarf or mask—just like Taehyung suggested—to protect your face from the blowing sand."
+        }
+      }
+    ],
     "recreatedPhoto": "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated.jpg",
-    "imgCredit": "Tim de Groot / CC0 1.0"
+    "recreatedPhotos": [
+      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-0.jpg",
+      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-1.jpg",
+      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-2.jpg"
+    ]
   },
   {
     "address": "203 Gamnae 2-ro, Saha-gu, Busan, South Korea",
