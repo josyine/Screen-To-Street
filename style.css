@@ -230,6 +230,11 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .tweet-embed-wrapper { margin-bottom: 18px; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.1); display: flex; justify-content: center; background: #fff; }
 .tweet-embed-wrapper iframe { max-width: 100%; }
 .tweet-embed-wrapper .twitter-tweet { margin: 0 !important; max-width: 100%; }
+/* Lien de repli (demande du 18/09/2026, "ça créé un lien" au lieu de l'embed) — affiché
+   uniquement si widgets.js/embed.js n'ont pas réussi à remplacer le blockquote par un
+   <iframe> après quelques secondes, voir showEmbedFallbackLinkIfStuck() dans script.js. */
+.embed-fallback-link { display: block; padding: 14px 18px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px; color: var(--primary-magenta); text-decoration: none; text-align: center; }
+.embed-fallback-link:hover { text-decoration: underline; }
 
 .practical-box { background: #faf9fc; border: 1px solid #EFECF6; border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; }
 .practical-item { font-size: 12.5px; line-height: 1.7; color: #3f495c; margin-bottom: 12px; }
@@ -260,8 +265,16 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .story-heading span { font-size: 13px; font-weight: 700; color: var(--primary-magenta); letter-spacing: .2px; }
 .story-section p { font-size: 13px; line-height: 1.85; color: #3f495c; }
 .story-section p + p { margin-top: 12px; }
-/* "Recreate the Photo" (demande du 14/09/2026) — voir #story-section-recreate dans map.html. */
-.recreate-photo-img { display: block; width: 100%; max-height: 340px; object-fit: cover; border-radius: 14px; }
+/* "Mei's Pictures" (demande du 14/09/2026, galerie multi-photos le 18/09/2026) — voir
+   #story-section-recreate dans map.html. Une seule photo remplit toute la largeur (comme
+   avant) ; plusieurs photos deviennent un carrousel défilable horizontalement, avec un
+   léger aperçu de la photo suivante pour signaler qu'il y en a d'autres (pas juste une
+   grille figée : ces photos méritent d'être vues en grand, pas en vignettes). */
+.recreate-photo-gallery { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 2px; }
+.recreate-photo-gallery::-webkit-scrollbar { height: 5px; }
+.recreate-photo-gallery::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.15); border-radius: 10px; }
+.recreate-photo-gallery img { flex: 0 0 92%; width: 92%; scroll-snap-align: center; display: block; max-height: 340px; object-fit: cover; border-radius: 14px; }
+.recreate-photo-gallery.single img { flex: 0 0 100%; width: 100%; }
 
 .tips-box { background: #FFF7F8; border-left: 4px solid var(--primary-magenta); border-radius: 0 12px 12px 0; padding: 16px 18px; }
 .tips-box .tips-title { font-size: 12px; font-weight: 700; color: var(--primary-magenta); margin-bottom: 12px; }

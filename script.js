@@ -162,6 +162,103 @@ window.createTitledListField = function (container, opts) {
     };
 };
 
+// Galerie "Mei's Pictures" (demande du 18/09/2026, "je veux pouvoir ajouter plusieurs
+// photo") — remplace l'ancien champ photo UNIQUE (loc.recreatedPhoto, une chaîne) par un
+// tableau (loc.recreatedPhotos), même principe de widget réutilisable que
+// createMultiUrlField()/createTitledListField() ci-dessus (admin.html ET la modale crayon
+// de script.js partagent ce même fichier, donc une seule définition suffit pour les deux).
+// Chaque vignette peut être retirée individuellement ; l'ajout se fait soit en collant une
+// URL, soit en uploadant depuis l'appareil (même redimensionnement que les autres champs
+// photo du site, voir resizeTripCoverDataUrl()). addPhoto() est exposé séparément pour que
+// le bouton "Generate with Mei" (admin.html) puisse ajouter une image générée sans repasser
+// par un input manuel.
+window.createPhotoGalleryField = function (container, opts) {
+    opts = opts || {};
+    let photos = (Array.isArray(opts.values) ? opts.values : []).filter(Boolean);
+
+    function render() {
+        container.innerHTML = `
+            <div class="pg-grid" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;"></div>
+            <div class="pg-add-row" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="pg-upload-btn" style="background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">Add a photo</button>
+                <input type="file" class="pg-file-input hidden" accept="image/*">
+                <button type="button" class="pg-url-toggle-btn" style="background:none; border:none; color:#D42759; font-size:11.5px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif;">or paste a photo URL</button>
+            </div>
+            <div class="pg-url-row hidden" style="display:flex; gap:6px; margin-top:8px;">
+                <input type="url" class="pg-url-input" placeholder="Photo URL" style="flex:1; border:1.5px solid #e2e8f0; border-radius:8px; padding:8px 10px; font-size:12px; font-family:'Poppins',sans-serif;">
+                <button type="button" class="pg-url-confirm-btn" style="background:#D42759; color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif;">Add</button>
+            </div>
+        `;
+        const grid = container.querySelector('.pg-grid');
+        grid.innerHTML = photos.map((url, i) => `
+            <div class="pg-thumb" style="position:relative; width:84px; height:84px;">
+                <img src="${escapeHtml(url)}" alt="" style="width:100%; height:100%; object-fit:cover; border-radius:10px; display:block;">
+                <button type="button" class="pg-remove" data-index="${i}" title="Remove this photo" style="position:absolute; top:-6px; right:-6px; width:22px; height:22px; border-radius:50%; border:1.5px solid #e2e8f0; background:#fff; color:#64748b; font-size:14px; line-height:1; cursor:pointer;">&times;</button>
+            </div>
+        `).join('');
+        grid.querySelectorAll('.pg-remove').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                photos.splice(Number(btn.dataset.index), 1);
+                render();
+            });
+        });
+
+        const urlRow = container.querySelector('.pg-url-row');
+        const urlInput = container.querySelector('.pg-url-input');
+        container.querySelector('.pg-url-toggle-btn').addEventListener('click', () => {
+            urlRow.classList.toggle('hidden');
+            if (!urlRow.classList.contains('hidden')) urlInput.focus();
+        });
+        container.querySelector('.pg-url-confirm-btn').addEventListener('click', () => {
+            const val = urlInput.value.trim();
+            if (!val) return;
+            photos.push(val);
+            render();
+        });
+
+        const uploadBtn = container.querySelector('.pg-upload-btn');
+        const fileInput = container.querySelector('.pg-file-input');
+        uploadBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            // fileToResizedDataUrl() (défini plus bas dans ce fichier, gère aussi les
+            // .heic/.heif iPhone) si disponible, sinon repli sur une simple lecture +
+            // redimensionnement classique — cette galerie est utilisée aussi bien depuis la
+            // modale crayon (où fileToResizedDataUrl existe déjà) que depuis admin.html (qui
+            // charge script.js et en hérite donc aussi).
+            try {
+                const resized = typeof fileToResizedDataUrl === 'function'
+                    ? await fileToResizedDataUrl(file, 1200)
+                    : await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = async (event) => {
+                            resolve(typeof resizeTripCoverDataUrl === 'function'
+                                ? await resizeTripCoverDataUrl(event.target.result, 1200)
+                                : event.target.result);
+                        };
+                        reader.onerror = () => reject(new Error('Could not read file'));
+                        reader.readAsDataURL(file);
+                    });
+                photos.push(resized);
+                render();
+            } catch (err) {
+                console.warn('Import de photo (galerie) échoué :', err);
+                window.alert("Couldn't read this photo. Try a different file, or paste a URL instead.");
+            }
+            fileInput.value = '';
+        });
+    }
+    render();
+
+    return {
+        collect: () => photos.slice(),
+        // Utilisé par le bouton "Generate with Mei" (admin.html) pour ajouter directement
+        // une image générée, sans passer par le champ URL/upload manuel ci-dessus.
+        addPhoto: (url) => { photos.push(url); render(); }
+    };
+};
+
 function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str == null ? '' : String(str);
@@ -222,10 +319,36 @@ function loadTwitterWidgetScriptOnce() {
     });
     return _twitterWidgetLoadPromise;
 }
+// BUG corrigé (demande du 18/09/2026, "quand je mets un lien ça n'affiche plus le post
+// embeded ça créé un lien") : widgets.js (le script officiel Twitter/X ci-dessus) résout
+// l'embed via son propre href — les liens tweetUrl collés depuis l'app/le site X pointent
+// aujourd'hui presque tous vers x.com plutôt que twitter.com (le nouveau nom de domaine),
+// mais widgets.js ne reconnaît fiablement QUE les href twitter.com : donné un href x.com,
+// il abandonne l'embed et laisse le <a> brut affiché tel quel, un simple lien plutôt que le
+// post. tweetUrl (stocké, affiché ailleurs) garde le domaine d'origine intact ; seul le
+// href passé au blockquote (ce que widgets.js lit) est réécrit vers twitter.com ici.
+function toTwitterComUrl(tweetUrl) {
+    return (tweetUrl || '').replace(/^(https?:\/\/)(www\.)?x\.com\//i, '$1twitter.com/');
+}
 async function renderTweetEmbedOnDetails(container, tweetUrl) {
-    container.innerHTML = `<blockquote class="twitter-tweet"><a href="${tweetUrl}"></a></blockquote>`;
+    container.innerHTML = `<blockquote class="twitter-tweet"><a href="${toTwitterComUrl(tweetUrl)}"></a></blockquote>`;
     await loadTwitterWidgetScriptOnce();
     if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
+    showEmbedFallbackLinkIfStuck(container, tweetUrl, 'iframe', 'View this post on X');
+}
+
+// Filet de sécurité partagé par le tweet ET l'Instagram ci-dessous : widgets.js/embed.js
+// remplacent le blockquote par un <iframe> une fois l'embed résolu ; si ça n'a toujours pas
+// eu lieu après quelques secondes (script bloqué par un bloqueur de pub, post supprimé/
+// privé, panne du service tiers...), le blockquote reste tel quel — un <a> sans texte,
+// totalement invisible plutôt qu'un "lien" lisible comme rapporté. Un lien de repli, stylé
+// et cliquable, vaut mieux qu'un vide silencieux dans ce cas — mais ne remplace jamais un
+// embed déjà réussi (vérifié juste avant l'affichage).
+function showEmbedFallbackLinkIfStuck(container, url, successSelector, label) {
+    setTimeout(() => {
+        if (container.querySelector(successSelector)) return;
+        container.innerHTML = `<a href="${url}" target="_blank" rel="noopener" class="embed-fallback-link">${escapeHtml(label)}</a>`;
+    }, 4000);
 }
 
 // Même principe que le widget Twitter ci-dessus, pour un post/reel Instagram précis (demande
@@ -259,6 +382,7 @@ async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     // second argument ciblé côté API officielle, mais sans risque ici : les blockquotes
     // déjà traités sont ignorés par le widget lui-même.
     if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+    showEmbedFallbackLinkIfStuck(container, instagramUrl, 'iframe', 'View this post on Instagram');
 }
 
 window.showSimpleToast = function (message, opts) {
@@ -2762,7 +2886,7 @@ const translations = {
         itiTitle: "Auto-Itinerary Generator", itiDesc: "Select a group, a country, and how many days you stay.", itiCreateBtn: "Create My Guide", itiCatLabel: "Categories (optional, select multiple)", itiExport: "Export Guide as PDF", itiSave: "Save to My Trips",
         searchTripsPlaceholder: "Search your trips...", noTripsFound: "No trips found.", selectTripToView: "Select a trip to view", deselectTripOption: "— No trip selected —", locationsWord: "location", locationsWordPlural: "locations",
         addAnotherVisit: "Add another visit",
-        tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", accessibilityRating: "Easy to access?", siteQualityRating: "Site quality", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "{count} friends have visited this place", friendsVisitedStatOne: "1 friend has visited this place", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Link:", lOfficialLink: "Source", lFollow: "Follow:", lWatchEpi: "On Screen", lPractical: "Practical information & access", lLearnMore: "Learn more", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lRecreatePhoto: "Recreate the Photo", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
+        tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", accessibilityRating: "Easy to access?", siteQualityRating: "Site quality", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "{count} friends have visited this place", friendsVisitedStatOne: "1 friend has visited this place", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Link:", lOfficialLink: "Source", lFollow: "Follow:", lWatchEpi: "On Screen", lPractical: "Practical information & access", lLearnMore: "Learn more", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lRecreatePhoto: "Mei's Pictures", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
         backToMap: "← Back to Map", moreDetails: "More details", openInMaps: "Open in Google Maps", detailsLabel: "Details", aboutPlaceLabel: "About this place",
         accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address", accBioLabel: "Bio", accBioPlaceholder: "Write a short bio...", accBioSaveBtn: "Save bio",
         accCountryLabel: "Country you're interested in", accCountryPlaceholder: "Select a country (optional)",
@@ -2829,7 +2953,7 @@ const translations = {
         itiTitle: "Générateur Itinéraire", itiDesc: "Sélectionnez un groupe, un pays, et le nombre de jours.", itiCreateBtn: "Créer mon guide", itiCatLabel: "Catégories (facultatif, sélection multiple)", itiExport: "Exporter en PDF", itiSave: "Sauvegarder dans My Trips",
         searchTripsPlaceholder: "Rechercher vos voyages...", noTripsFound: "Aucun voyage trouvé.", selectTripToView: "Sélectionner un voyage", deselectTripOption: "— Aucun voyage sélectionné —", locationsWord: "lieu", locationsWordPlural: "lieux",
         addAnotherVisit: "Ajouter une autre visite",
-        tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", accessibilityRating: "Facilement accessible ?", siteQualityRating: "Qualité du lieu", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "{count} amis ont visité cet endroit", friendsVisitedStatOne: "1 ami a visité cet endroit", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Lien :", lOfficialLink: "Source", lFollow: "Suivre :", lWatchEpi: "À l'écran", lPractical: "Informations pratiques & accès", lLearnMore: "En savoir plus", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lRecreatePhoto: "Recrée la photo", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
+        tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", accessibilityRating: "Facilement accessible ?", siteQualityRating: "Qualité du lieu", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "{count} amis ont visité cet endroit", friendsVisitedStatOne: "1 ami a visité cet endroit", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Lien :", lOfficialLink: "Source", lFollow: "Suivre :", lWatchEpi: "À l'écran", lPractical: "Informations pratiques & accès", lLearnMore: "En savoir plus", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lRecreatePhoto: "Les photos de Mei", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
         backToMap: "← Retour à la carte", moreDetails: "Plus de détails", openInMaps: "Ouvrir dans Google Maps", detailsLabel: "Détails", aboutPlaceLabel: "À propos de ce lieu",
         accTitle: "Votre compte", accChangePhoto: "Changer la photo de profil", accResetPhoto: "Réinitialiser la photo de profil", accNameLabel: "Identifiant", accChangeUsernameHint: "Changer d'identifiant", accEmailLabel: "Adresse e-mail",
         accCountryLabel: "Pays qui vous intéresse", accCountryPlaceholder: "Choisir un pays (optionnel)",
@@ -2896,7 +3020,7 @@ const translations = {
         itiTitle: "Generador de Itinerarios", itiDesc: "Selecciona un grupo, un país y cuántos días te quedas.", itiCreateBtn: "Crear mi guía", itiCatLabel: "Categorías (opcional, selección múltiple)", itiExport: "Exportar guía en PDF", itiSave: "Guardar en Mis Viajes",
         searchTripsPlaceholder: "Buscar tus viajes...", noTripsFound: "No se encontraron viajes.", selectTripToView: "Selecciona un viaje para ver", deselectTripOption: "— Ningún viaje seleccionado —", locationsWord: "lugar", locationsWordPlural: "lugares",
         addAnotherVisit: "Añadir otra visita",
-        tabExplore: "Explorar", tabMyItinerary: "Mi Itinerario", yourRating: "Tu valoración", foodQualityRating: "Calidad de la comida", valueForMoneyRating: "Relación calidad-precio", accessibilityRating: "¿Fácil acceso?", siteQualityRating: "Calidad del lugar", wishlistStat: "El {pct}% de los usuarios añadió este lugar a su lista de deseos", friendsVisitedStat: "{count} amigos han visitado este lugar", friendsVisitedStatOne: "1 amigo ha visitado este lugar", whenDidYouVisit: "¿Cuándo visitaste este lugar?", saveMemory: "Guardar recuerdo", myVisitTab: "Mi Visita", tabReviews: "Reseñas", tabInfo: "Info", tabStory: "Historia", lGroup: "Grupo:", lMembers: "Miembros:", lCountry: "País:", lCity: "Ciudad:", lDate: "Fecha:", lEpisode: "Episodio:", lWatch: "Enlace:", lOfficialLink: "Fuente", lFollow: "Seguir:", lWatchEpi: "En pantalla", lPractical: "Información práctica y acceso", lLearnMore: "Más información", lAddress: "Dirección", lOpenMap: "Abrir en Google Maps", lStoryPlace: "La historia de este lugar", lStoryBts: "Siguiendo los pasos de BTS", lRecreatePhoto: "Recrea la foto", lTipsTitle: "LOS CONSEJOS DE «SCREEN TO STREET»", lHowToGetThere: "Cómo llegar:", memoryNotesLabel: "Tus notas (opcional)", memoryNotesPlaceholder: "¿Qué recuerdas de este lugar?", reviewsCountLabel: "{n} reseñas públicas", reviewsWriteLabel: "Escribe tu reseña", reviewsComposePlaceholder: "Comparte lo que pensaste...", reviewsComposeMakePublic: "Hacer esto público", reviewsComposePost: "Publicar reseña", memoryPhotoLabel: "Añadir una foto (opcional)", memoryPhotoChoose: "Elegir una foto", memoryPhotoRemove: "Quitar", memoryMakePublic: "Hacer pública esta reseña (visible para otros usuarios)", reviewsLoading: "Cargando reseñas…", reviewsEmpty: "Todavía no hay reseñas públicas para este lugar — ¡sé el primero en compartir la tuya desde la pestaña «Mi Visita»!",
+        tabExplore: "Explorar", tabMyItinerary: "Mi Itinerario", yourRating: "Tu valoración", foodQualityRating: "Calidad de la comida", valueForMoneyRating: "Relación calidad-precio", accessibilityRating: "¿Fácil acceso?", siteQualityRating: "Calidad del lugar", wishlistStat: "El {pct}% de los usuarios añadió este lugar a su lista de deseos", friendsVisitedStat: "{count} amigos han visitado este lugar", friendsVisitedStatOne: "1 amigo ha visitado este lugar", whenDidYouVisit: "¿Cuándo visitaste este lugar?", saveMemory: "Guardar recuerdo", myVisitTab: "Mi Visita", tabReviews: "Reseñas", tabInfo: "Info", tabStory: "Historia", lGroup: "Grupo:", lMembers: "Miembros:", lCountry: "País:", lCity: "Ciudad:", lDate: "Fecha:", lEpisode: "Episodio:", lWatch: "Enlace:", lOfficialLink: "Fuente", lFollow: "Seguir:", lWatchEpi: "En pantalla", lPractical: "Información práctica y acceso", lLearnMore: "Más información", lAddress: "Dirección", lOpenMap: "Abrir en Google Maps", lStoryPlace: "La historia de este lugar", lStoryBts: "Siguiendo los pasos de BTS", lRecreatePhoto: "Las fotos de Mei", lTipsTitle: "LOS CONSEJOS DE «SCREEN TO STREET»", lHowToGetThere: "Cómo llegar:", memoryNotesLabel: "Tus notas (opcional)", memoryNotesPlaceholder: "¿Qué recuerdas de este lugar?", reviewsCountLabel: "{n} reseñas públicas", reviewsWriteLabel: "Escribe tu reseña", reviewsComposePlaceholder: "Comparte lo que pensaste...", reviewsComposeMakePublic: "Hacer esto público", reviewsComposePost: "Publicar reseña", memoryPhotoLabel: "Añadir una foto (opcional)", memoryPhotoChoose: "Elegir una foto", memoryPhotoRemove: "Quitar", memoryMakePublic: "Hacer pública esta reseña (visible para otros usuarios)", reviewsLoading: "Cargando reseñas…", reviewsEmpty: "Todavía no hay reseñas públicas para este lugar — ¡sé el primero en compartir la tuya desde la pestaña «Mi Visita»!",
         backToMap: "← Volver al mapa", moreDetails: "Más detalles", openInMaps: "Abrir en Google Maps", detailsLabel: "Detalles", aboutPlaceLabel: "Sobre este lugar",
         accTitle: "Tu cuenta", accChangePhoto: "Cambiar foto de perfil", accResetPhoto: "Restablecer foto de perfil", accNameLabel: "Nombre de usuario", accChangeUsernameHint: "Cambiar nombre de usuario", accEmailLabel: "Correo electrónico",
         accCountryLabel: "País que te interesa", accCountryPlaceholder: "Elige un país (opcional)",
@@ -2959,7 +3083,7 @@ const translations = {
         itiTitle: "Generatore di Itinerari", itiDesc: "Seleziona un gruppo, un paese e quanti giorni resti.", itiCreateBtn: "Crea la mia guida", itiCatLabel: "Categorie (opzionale, selezione multipla)", itiExport: "Esporta guida in PDF", itiSave: "Salva nei Miei Viaggi",
         searchTripsPlaceholder: "Cerca i tuoi viaggi...", noTripsFound: "Nessun viaggio trovato.", selectTripToView: "Seleziona un viaggio da vedere", deselectTripOption: "— Nessun viaggio selezionato —", locationsWord: "luogo", locationsWordPlural: "luoghi",
         addAnotherVisit: "Aggiungi un'altra visita",
-        tabExplore: "Esplora", tabMyItinerary: "Il Mio Itinerario", yourRating: "La tua valutazione", foodQualityRating: "Qualità del cibo", valueForMoneyRating: "Rapporto qualità-prezzo", accessibilityRating: "Facile da raggiungere?", siteQualityRating: "Qualità del luogo", wishlistStat: "Il {pct}% degli utenti ha aggiunto questo posto alla propria wishlist", friendsVisitedStat: "{count} amici hanno visitato questo posto", friendsVisitedStatOne: "1 amico ha visitato questo posto", whenDidYouVisit: "Quando hai visitato questo posto?", saveMemory: "Salva ricordo", myVisitTab: "La Mia Visita", tabReviews: "Recensioni", tabInfo: "Info", tabStory: "Storia", lGroup: "Gruppo:", lMembers: "Membri:", lCountry: "Paese:", lCity: "Città:", lDate: "Data:", lEpisode: "Episodio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Segui:", lWatchEpi: "Sullo schermo", lPractical: "Informazioni pratiche e accesso", lLearnMore: "Scopri di più", lAddress: "Indirizzo", lOpenMap: "Apri in Google Maps", lStoryPlace: "La storia di questo posto", lStoryBts: "Sulle orme dei BTS", lRecreatePhoto: "Ricrea la foto", lTipsTitle: "I CONSIGLI DI «SCREEN TO STREET»", lHowToGetThere: "Come arrivare:", memoryNotesLabel: "Le tue note (facoltativo)", memoryNotesPlaceholder: "Cosa ricordi di questo posto?", reviewsCountLabel: "{n} recensioni pubbliche", reviewsWriteLabel: "Scrivi la tua recensione", reviewsComposePlaceholder: "Condividi cosa ne pensi...", reviewsComposeMakePublic: "Rendi pubblica questa recensione", reviewsComposePost: "Pubblica recensione", memoryPhotoLabel: "Aggiungi una foto (facoltativo)", memoryPhotoChoose: "Scegli una foto", memoryPhotoRemove: "Rimuovi", memoryMakePublic: "Rendi pubblica questa recensione (visibile agli altri utenti)", reviewsLoading: "Caricamento recensioni…", reviewsEmpty: "Ancora nessuna recensione pubblica per questo posto — sii il primo a condividere la tua dalla scheda «La Mia Visita»!",
+        tabExplore: "Esplora", tabMyItinerary: "Il Mio Itinerario", yourRating: "La tua valutazione", foodQualityRating: "Qualità del cibo", valueForMoneyRating: "Rapporto qualità-prezzo", accessibilityRating: "Facile da raggiungere?", siteQualityRating: "Qualità del luogo", wishlistStat: "Il {pct}% degli utenti ha aggiunto questo posto alla propria wishlist", friendsVisitedStat: "{count} amici hanno visitato questo posto", friendsVisitedStatOne: "1 amico ha visitato questo posto", whenDidYouVisit: "Quando hai visitato questo posto?", saveMemory: "Salva ricordo", myVisitTab: "La Mia Visita", tabReviews: "Recensioni", tabInfo: "Info", tabStory: "Storia", lGroup: "Gruppo:", lMembers: "Membri:", lCountry: "Paese:", lCity: "Città:", lDate: "Data:", lEpisode: "Episodio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Segui:", lWatchEpi: "Sullo schermo", lPractical: "Informazioni pratiche e accesso", lLearnMore: "Scopri di più", lAddress: "Indirizzo", lOpenMap: "Apri in Google Maps", lStoryPlace: "La storia di questo posto", lStoryBts: "Sulle orme dei BTS", lRecreatePhoto: "Le foto di Mei", lTipsTitle: "I CONSIGLI DI «SCREEN TO STREET»", lHowToGetThere: "Come arrivare:", memoryNotesLabel: "Le tue note (facoltativo)", memoryNotesPlaceholder: "Cosa ricordi di questo posto?", reviewsCountLabel: "{n} recensioni pubbliche", reviewsWriteLabel: "Scrivi la tua recensione", reviewsComposePlaceholder: "Condividi cosa ne pensi...", reviewsComposeMakePublic: "Rendi pubblica questa recensione", reviewsComposePost: "Pubblica recensione", memoryPhotoLabel: "Aggiungi una foto (facoltativo)", memoryPhotoChoose: "Scegli una foto", memoryPhotoRemove: "Rimuovi", memoryMakePublic: "Rendi pubblica questa recensione (visibile agli altri utenti)", reviewsLoading: "Caricamento recensioni…", reviewsEmpty: "Ancora nessuna recensione pubblica per questo posto — sii il primo a condividere la tua dalla scheda «La Mia Visita»!",
         backToMap: "← Torna alla mappa", moreDetails: "Maggiori dettagli", openInMaps: "Apri in Google Maps", detailsLabel: "Dettagli", aboutPlaceLabel: "Informazioni su questo luogo",
         accTitle: "Il tuo account", accChangePhoto: "Cambia foto profilo", accResetPhoto: "Ripristina foto profilo", accNameLabel: "Nome utente", accChangeUsernameHint: "Cambia nome utente", accEmailLabel: "Indirizzo email",
         accCountryLabel: "Paese che ti interessa", accCountryPlaceholder: "Scegli un paese (opzionale)",
@@ -3022,7 +3146,7 @@ const translations = {
         itiTitle: "Gerador de Roteiros", itiDesc: "Selecione um grupo, um país e quantos dias você fica.", itiCreateBtn: "Criar meu guia", itiCatLabel: "Categorias (opcional, seleção múltipla)", itiExport: "Exportar guia em PDF", itiSave: "Salvar em Minhas Viagens",
         searchTripsPlaceholder: "Buscar suas viagens...", noTripsFound: "Nenhuma viagem encontrada.", selectTripToView: "Selecione uma viagem para ver", deselectTripOption: "— Nenhuma viagem selecionada —", locationsWord: "local", locationsWordPlural: "locais",
         addAnotherVisit: "Adicionar outra visita",
-        tabExplore: "Explorar", tabMyItinerary: "Meu Itinerário", yourRating: "Sua avaliação", foodQualityRating: "Qualidade da comida", valueForMoneyRating: "Custo-benefício", accessibilityRating: "Fácil acesso?", siteQualityRating: "Qualidade do lugar", wishlistStat: "{pct}% dos usuários adicionaram este lugar à lista de desejos", friendsVisitedStat: "{count} amigos visitaram este lugar", friendsVisitedStatOne: "1 amigo visitou este lugar", whenDidYouVisit: "Quando você visitou este lugar?", saveMemory: "Salvar lembrança", myVisitTab: "Minha Visita", tabReviews: "Avaliações", tabInfo: "Info", tabStory: "História", lGroup: "Grupo:", lMembers: "Membros:", lCountry: "País:", lCity: "Cidade:", lDate: "Data:", lEpisode: "Episódio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Seguir:", lWatchEpi: "Na tela", lPractical: "Informações práticas e acesso", lLearnMore: "Saiba mais", lAddress: "Endereço", lOpenMap: "Abrir no Google Maps", lStoryPlace: "A história deste lugar", lStoryBts: "Nos passos do BTS", lRecreatePhoto: "Recrie a foto", lTipsTitle: "AS DICAS «SCREEN TO STREET»", lHowToGetThere: "Como chegar:", memoryNotesLabel: "Suas notas (opcional)", memoryNotesPlaceholder: "O que você lembra deste lugar?", reviewsCountLabel: "{n} avaliações públicas", reviewsWriteLabel: "Escreva sua avaliação", reviewsComposePlaceholder: "Compartilhe sua opinião...", reviewsComposeMakePublic: "Tornar isso público", reviewsComposePost: "Publicar avaliação", memoryPhotoLabel: "Adicionar uma foto (opcional)", memoryPhotoChoose: "Escolher uma foto", memoryPhotoRemove: "Remover", memoryMakePublic: "Tornar esta avaliação pública (visível para outros usuários)", reviewsLoading: "Carregando avaliações…", reviewsEmpty: "Ainda não há avaliações públicas para este lugar — seja o primeiro a compartilhar a sua na aba «Minha Visita»!",
+        tabExplore: "Explorar", tabMyItinerary: "Meu Itinerário", yourRating: "Sua avaliação", foodQualityRating: "Qualidade da comida", valueForMoneyRating: "Custo-benefício", accessibilityRating: "Fácil acesso?", siteQualityRating: "Qualidade do lugar", wishlistStat: "{pct}% dos usuários adicionaram este lugar à lista de desejos", friendsVisitedStat: "{count} amigos visitaram este lugar", friendsVisitedStatOne: "1 amigo visitou este lugar", whenDidYouVisit: "Quando você visitou este lugar?", saveMemory: "Salvar lembrança", myVisitTab: "Minha Visita", tabReviews: "Avaliações", tabInfo: "Info", tabStory: "História", lGroup: "Grupo:", lMembers: "Membros:", lCountry: "País:", lCity: "Cidade:", lDate: "Data:", lEpisode: "Episódio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Seguir:", lWatchEpi: "Na tela", lPractical: "Informações práticas e acesso", lLearnMore: "Saiba mais", lAddress: "Endereço", lOpenMap: "Abrir no Google Maps", lStoryPlace: "A história deste lugar", lStoryBts: "Nos passos do BTS", lRecreatePhoto: "As fotos da Mei", lTipsTitle: "AS DICAS «SCREEN TO STREET»", lHowToGetThere: "Como chegar:", memoryNotesLabel: "Suas notas (opcional)", memoryNotesPlaceholder: "O que você lembra deste lugar?", reviewsCountLabel: "{n} avaliações públicas", reviewsWriteLabel: "Escreva sua avaliação", reviewsComposePlaceholder: "Compartilhe sua opinião...", reviewsComposeMakePublic: "Tornar isso público", reviewsComposePost: "Publicar avaliação", memoryPhotoLabel: "Adicionar uma foto (opcional)", memoryPhotoChoose: "Escolher uma foto", memoryPhotoRemove: "Remover", memoryMakePublic: "Tornar esta avaliação pública (visível para outros usuários)", reviewsLoading: "Carregando avaliações…", reviewsEmpty: "Ainda não há avaliações públicas para este lugar — seja o primeiro a compartilhar a sua na aba «Minha Visita»!",
         backToMap: "← Voltar ao mapa", moreDetails: "Mais detalhes", openInMaps: "Abrir no Google Maps", detailsLabel: "Detalhes", aboutPlaceLabel: "Sobre este local",
         accTitle: "Sua conta", accChangePhoto: "Alterar foto de perfil", accResetPhoto: "Redefinir foto de perfil", accNameLabel: "Nome de usuário", accChangeUsernameHint: "Alterar nome de usuário", accEmailLabel: "Endereço de e-mail",
         accCountryLabel: "País de interesse", accCountryPlaceholder: "Escolha um país (opcional)",
@@ -3085,7 +3209,7 @@ const translations = {
         itiTitle: "자동 일정 생성기", itiDesc: "그룹, 국가, 체류 일수를 선택하세요.", itiCreateBtn: "가이드 만들기", itiCatLabel: "카테고리 (선택 사항, 다중 선택 가능)", itiExport: "가이드 PDF로 내보내기", itiSave: "내 여행에 저장",
         searchTripsPlaceholder: "여행 검색...", noTripsFound: "여행을 찾을 수 없습니다.", selectTripToView: "볼 여행을 선택하세요", deselectTripOption: "— 선택된 여행 없음 —", locationsWord: "장소", locationsWordPlural: "장소",
         addAnotherVisit: "다른 방문 추가",
-        tabExplore: "탐색", tabMyItinerary: "내 일정", yourRating: "평점", foodQualityRating: "음식 품질", valueForMoneyRating: "가성비", accessibilityRating: "접근이 쉬운가요?", siteQualityRating: "장소의 품질", wishlistStat: "사용자의 {pct}%가 이 장소를 위시리스트에 추가했습니다", friendsVisitedStat: "친구 {count}명이 이곳을 방문했어요", friendsVisitedStatOne: "친구 1명이 이곳을 방문했어요", whenDidYouVisit: "언제 방문하셨나요?", saveMemory: "추억 저장", myVisitTab: "내 방문", tabReviews: "후기", tabInfo: "정보", tabStory: "스토리", lGroup: "그룹:", lMembers: "멤버:", lCountry: "국가:", lCity: "도시:", lDate: "날짜:", lEpisode: "에피소드:", lWatch: "링크:", lOfficialLink: "출처", lFollow: "팔로우:", lWatchEpi: "화면 속", lPractical: "실용 정보 및 접근 방법", lLearnMore: "더 알아보기", lAddress: "주소", lOpenMap: "구글 지도에서 열기", lStoryPlace: "이 장소의 이야기", lStoryBts: "BTS의 발자취를 따라", lRecreatePhoto: "사진 재현하기", lTipsTitle: "'SCREEN TO STREET' 팁", lHowToGetThere: "가는 방법:", memoryNotesLabel: "나의 메모 (선택 사항)", memoryNotesPlaceholder: "이 장소에 대해 기억나는 것이 있나요?", reviewsCountLabel: "공개 후기 {n}개", reviewsWriteLabel: "후기 작성하기", reviewsComposePlaceholder: "느낀 점을 공유해보세요...", reviewsComposeMakePublic: "이 후기를 공개로 설정", reviewsComposePost: "후기 게시", memoryPhotoLabel: "사진 추가 (선택 사항)", memoryPhotoChoose: "사진 선택", memoryPhotoRemove: "제거", memoryMakePublic: "이 후기를 공개로 설정 (다른 사용자에게 표시됨)", reviewsLoading: "후기를 불러오는 중…", reviewsEmpty: "아직 이 장소에 대한 공개 후기가 없습니다 — '내 방문' 탭에서 첫 후기를 남겨보세요!",
+        tabExplore: "탐색", tabMyItinerary: "내 일정", yourRating: "평점", foodQualityRating: "음식 품질", valueForMoneyRating: "가성비", accessibilityRating: "접근이 쉬운가요?", siteQualityRating: "장소의 품질", wishlistStat: "사용자의 {pct}%가 이 장소를 위시리스트에 추가했습니다", friendsVisitedStat: "친구 {count}명이 이곳을 방문했어요", friendsVisitedStatOne: "친구 1명이 이곳을 방문했어요", whenDidYouVisit: "언제 방문하셨나요?", saveMemory: "추억 저장", myVisitTab: "내 방문", tabReviews: "후기", tabInfo: "정보", tabStory: "스토리", lGroup: "그룹:", lMembers: "멤버:", lCountry: "국가:", lCity: "도시:", lDate: "날짜:", lEpisode: "에피소드:", lWatch: "링크:", lOfficialLink: "출처", lFollow: "팔로우:", lWatchEpi: "화면 속", lPractical: "실용 정보 및 접근 방법", lLearnMore: "더 알아보기", lAddress: "주소", lOpenMap: "구글 지도에서 열기", lStoryPlace: "이 장소의 이야기", lStoryBts: "BTS의 발자취를 따라", lRecreatePhoto: "메이의 사진", lTipsTitle: "'SCREEN TO STREET' 팁", lHowToGetThere: "가는 방법:", memoryNotesLabel: "나의 메모 (선택 사항)", memoryNotesPlaceholder: "이 장소에 대해 기억나는 것이 있나요?", reviewsCountLabel: "공개 후기 {n}개", reviewsWriteLabel: "후기 작성하기", reviewsComposePlaceholder: "느낀 점을 공유해보세요...", reviewsComposeMakePublic: "이 후기를 공개로 설정", reviewsComposePost: "후기 게시", memoryPhotoLabel: "사진 추가 (선택 사항)", memoryPhotoChoose: "사진 선택", memoryPhotoRemove: "제거", memoryMakePublic: "이 후기를 공개로 설정 (다른 사용자에게 표시됨)", reviewsLoading: "후기를 불러오는 중…", reviewsEmpty: "아직 이 장소에 대한 공개 후기가 없습니다 — '내 방문' 탭에서 첫 후기를 남겨보세요!",
         backToMap: "← 지도로 돌아가기", moreDetails: "자세히 보기", openInMaps: "구글 지도에서 열기", detailsLabel: "상세 정보", aboutPlaceLabel: "이 장소에 대해",
         accTitle: "내 계정", accChangePhoto: "프로필 사진 변경", accResetPhoto: "프로필 사진 재설정", accNameLabel: "아이디", accChangeUsernameHint: "아이디 변경", accEmailLabel: "이메일 주소",
         accCountryLabel: "관심 있는 국가", accCountryPlaceholder: "국가 선택 (선택 사항)",
@@ -3148,7 +3272,7 @@ const translations = {
         itiTitle: "自動旅程ジェネレーター", itiDesc: "グループ、国、滞在日数を選択してください。", itiCreateBtn: "ガイドを作成", itiCatLabel: "カテゴリー（任意、複数選択可）", itiExport: "ガイドをPDFで出力", itiSave: "マイトリップに保存",
         searchTripsPlaceholder: "旅行を検索...", noTripsFound: "旅行が見つかりません。", selectTripToView: "表示する旅行を選択", deselectTripOption: "— 選択された旅行はありません —", locationsWord: "スポット", locationsWordPlural: "スポット",
         addAnotherVisit: "別の訪問を追加",
-        tabExplore: "探索", tabMyItinerary: "マイ旅程", yourRating: "評価", foodQualityRating: "料理の質", valueForMoneyRating: "コストパフォーマンス", accessibilityRating: "アクセスしやすさ", siteQualityRating: "場所の質", wishlistStat: "ユーザーの{pct}%がこの場所をウィッシュリストに追加しました", friendsVisitedStat: "{count}人の友達がここを訪れました", friendsVisitedStatOne: "1人の友達がここを訪れました", whenDidYouVisit: "いつ訪れましたか？", saveMemory: "思い出を保存", myVisitTab: "マイビジット", tabReviews: "レビュー", tabInfo: "情報", tabStory: "ストーリー", lGroup: "グループ：", lMembers: "メンバー：", lCountry: "国：", lCity: "都市：", lDate: "日付：", lEpisode: "エピソード：", lWatch: "リンク：", lOfficialLink: "出典", lFollow: "フォロー:", lWatchEpi: "画面の中", lPractical: "実用情報とアクセス", lLearnMore: "もっと詳しく", lAddress: "住所", lOpenMap: "Googleマップで開く", lStoryPlace: "この場所の物語", lStoryBts: "BTSの足跡をたどって", lRecreatePhoto: "写真を再現", lTipsTitle: "「SCREEN TO STREET」のヒント", lHowToGetThere: "行き方：", memoryNotesLabel: "メモ（任意）", memoryNotesPlaceholder: "この場所について覚えていることは？", reviewsCountLabel: "公開レビュー{n}件", reviewsWriteLabel: "レビューを書く", reviewsComposePlaceholder: "感想をシェアしましょう…", reviewsComposeMakePublic: "このレビューを公開する", reviewsComposePost: "レビューを投稿", memoryPhotoLabel: "写真を追加（任意）", memoryPhotoChoose: "写真を選択", memoryPhotoRemove: "削除", memoryMakePublic: "このレビューを公開する（他のユーザーに表示されます）", reviewsLoading: "レビューを読み込み中…", reviewsEmpty: "この場所にはまだ公開レビューがありません —「マイビジット」タブから最初のレビューを共有しましょう！",
+        tabExplore: "探索", tabMyItinerary: "マイ旅程", yourRating: "評価", foodQualityRating: "料理の質", valueForMoneyRating: "コストパフォーマンス", accessibilityRating: "アクセスしやすさ", siteQualityRating: "場所の質", wishlistStat: "ユーザーの{pct}%がこの場所をウィッシュリストに追加しました", friendsVisitedStat: "{count}人の友達がここを訪れました", friendsVisitedStatOne: "1人の友達がここを訪れました", whenDidYouVisit: "いつ訪れましたか？", saveMemory: "思い出を保存", myVisitTab: "マイビジット", tabReviews: "レビュー", tabInfo: "情報", tabStory: "ストーリー", lGroup: "グループ：", lMembers: "メンバー：", lCountry: "国：", lCity: "都市：", lDate: "日付：", lEpisode: "エピソード：", lWatch: "リンク：", lOfficialLink: "出典", lFollow: "フォロー:", lWatchEpi: "画面の中", lPractical: "実用情報とアクセス", lLearnMore: "もっと詳しく", lAddress: "住所", lOpenMap: "Googleマップで開く", lStoryPlace: "この場所の物語", lStoryBts: "BTSの足跡をたどって", lRecreatePhoto: "メイの写真", lTipsTitle: "「SCREEN TO STREET」のヒント", lHowToGetThere: "行き方：", memoryNotesLabel: "メモ（任意）", memoryNotesPlaceholder: "この場所について覚えていることは？", reviewsCountLabel: "公開レビュー{n}件", reviewsWriteLabel: "レビューを書く", reviewsComposePlaceholder: "感想をシェアしましょう…", reviewsComposeMakePublic: "このレビューを公開する", reviewsComposePost: "レビューを投稿", memoryPhotoLabel: "写真を追加（任意）", memoryPhotoChoose: "写真を選択", memoryPhotoRemove: "削除", memoryMakePublic: "このレビューを公開する（他のユーザーに表示されます）", reviewsLoading: "レビューを読み込み中…", reviewsEmpty: "この場所にはまだ公開レビューがありません —「マイビジット」タブから最初のレビューを共有しましょう！",
         backToMap: "← 地図に戻る", moreDetails: "詳細を見る", openInMaps: "Googleマップで開く", detailsLabel: "詳細", aboutPlaceLabel: "この場所について",
         accTitle: "アカウント", accChangePhoto: "プロフィール写真を変更", accResetPhoto: "プロフィール写真をリセット", accNameLabel: "ユーザー名", accChangeUsernameHint: "ユーザー名を変更", accEmailLabel: "メールアドレス",
         accCountryLabel: "興味のある国", accCountryPlaceholder: "国を選択（任意）",
@@ -3211,7 +3335,7 @@ const translations = {
         itiTitle: "自动行程生成器", itiDesc: "选择一个团体、一个国家，以及停留天数。", itiCreateBtn: "生成我的指南", itiCatLabel: "类别（可选，可多选）", itiExport: "导出指南为 PDF", itiSave: "保存到我的行程",
         searchTripsPlaceholder: "搜索您的行程...", noTripsFound: "未找到任何行程。", selectTripToView: "选择要查看的行程", deselectTripOption: "— 未选择行程 —", locationsWord: "个地点", locationsWordPlural: "个地点",
         addAnotherVisit: "添加另一次访问",
-        tabExplore: "探索", tabMyItinerary: "我的行程", yourRating: "你的评分", foodQualityRating: "食物质量", valueForMoneyRating: "性价比", accessibilityRating: "是否容易到达？", siteQualityRating: "场地质量", wishlistStat: "{pct}%的用户将这个地方加入了心愿单", friendsVisitedStat: "{count}位好友到访过这里", friendsVisitedStatOne: "1位好友到访过这里", whenDidYouVisit: "你什么时候去的？", saveMemory: "保存回忆", myVisitTab: "我的到访", tabReviews: "评价", tabInfo: "信息", tabStory: "故事", lGroup: "组合：", lMembers: "成员：", lCountry: "国家：", lCity: "城市：", lDate: "日期：", lEpisode: "集数：", lWatch: "链接：", lOfficialLink: "来源", lFollow: "关注：", lWatchEpi: "画面中", lPractical: "实用信息与交通", lLearnMore: "了解更多", lAddress: "地址", lOpenMap: "在谷歌地图中打开", lStoryPlace: "这个地方的故事", lStoryBts: "追随BTS的足迹", lRecreatePhoto: "重现这张照片", lTipsTitle: "「SCREEN TO STREET」小贴士", lHowToGetThere: "交通方式：", memoryNotesLabel: "你的备注（可选）", memoryNotesPlaceholder: "你还记得这个地方的什么？", reviewsCountLabel: "{n}条公开评价", reviewsWriteLabel: "写下你的评价", reviewsComposePlaceholder: "分享你的感受…", reviewsComposeMakePublic: "公开此评价", reviewsComposePost: "发布评价", memoryPhotoLabel: "添加照片（可选）", memoryPhotoChoose: "选择照片", memoryPhotoRemove: "移除", memoryMakePublic: "公开此评价（其他用户可见）", reviewsLoading: "正在加载评价…", reviewsEmpty: "该地点暂无公开评价——从「我的到访」标签页分享第一条评价吧！",
+        tabExplore: "探索", tabMyItinerary: "我的行程", yourRating: "你的评分", foodQualityRating: "食物质量", valueForMoneyRating: "性价比", accessibilityRating: "是否容易到达？", siteQualityRating: "场地质量", wishlistStat: "{pct}%的用户将这个地方加入了心愿单", friendsVisitedStat: "{count}位好友到访过这里", friendsVisitedStatOne: "1位好友到访过这里", whenDidYouVisit: "你什么时候去的？", saveMemory: "保存回忆", myVisitTab: "我的到访", tabReviews: "评价", tabInfo: "信息", tabStory: "故事", lGroup: "组合：", lMembers: "成员：", lCountry: "国家：", lCity: "城市：", lDate: "日期：", lEpisode: "集数：", lWatch: "链接：", lOfficialLink: "来源", lFollow: "关注：", lWatchEpi: "画面中", lPractical: "实用信息与交通", lLearnMore: "了解更多", lAddress: "地址", lOpenMap: "在谷歌地图中打开", lStoryPlace: "这个地方的故事", lStoryBts: "追随BTS的足迹", lRecreatePhoto: "Mei的照片", lTipsTitle: "「SCREEN TO STREET」小贴士", lHowToGetThere: "交通方式：", memoryNotesLabel: "你的备注（可选）", memoryNotesPlaceholder: "你还记得这个地方的什么？", reviewsCountLabel: "{n}条公开评价", reviewsWriteLabel: "写下你的评价", reviewsComposePlaceholder: "分享你的感受…", reviewsComposeMakePublic: "公开此评价", reviewsComposePost: "发布评价", memoryPhotoLabel: "添加照片（可选）", memoryPhotoChoose: "选择照片", memoryPhotoRemove: "移除", memoryMakePublic: "公开此评价（其他用户可见）", reviewsLoading: "正在加载评价…", reviewsEmpty: "该地点暂无公开评价——从「我的到访」标签页分享第一条评价吧！",
         backToMap: "← 返回地图", moreDetails: "更多详情", openInMaps: "在 Google 地图中打开", detailsLabel: "详情", aboutPlaceLabel: "关于这个地方",
         accTitle: "我的账户", accChangePhoto: "更换头像", accResetPhoto: "重置头像", accNameLabel: "用户名", accChangeUsernameHint: "更改用户名", accEmailLabel: "电子邮箱",
         accCountryLabel: "感兴趣的国家", accCountryPlaceholder: "选择国家（可选）",
@@ -4683,16 +4807,24 @@ function renderLocationRichContent(loc) {
         }
     }
 
-    // "Recreate the Photo" (demande du 14/09/2026) — simple image admin (loc.recreatedPhoto),
-    // masquée entièrement tant qu'aucune photo n'est fournie pour ce lieu.
+    // "Mei's Pictures" (demande du 14/09/2026, renommé et rendu multi-photos le
+    // 18/09/2026 : "je veux pouvoir ajouter plusieurs photo") — loc.recreatedPhotos
+    // (tableau) est le format courant ; loc.recreatedPhoto (une seule chaîne) reste lu en
+    // repli pour les lieux déjà publiés avant ce changement et jamais retouchés depuis
+    // (jamais migré en tableau, voir export-locations.js qui écrit toujours les deux).
+    // Masquée entièrement tant qu'aucune photo n'est fournie pour ce lieu.
     const recreateSection = document.getElementById('story-section-recreate');
-    const recreateImg = document.getElementById('details-recreate-photo');
-    if (recreateSection && recreateImg) {
-        if (loc.recreatedPhoto) {
-            recreateImg.src = loc.recreatedPhoto;
+    const recreateGallery = document.getElementById('details-recreate-photo-gallery');
+    if (recreateSection && recreateGallery) {
+        const recreatePhotos = Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length
+            ? loc.recreatedPhotos
+            : (loc.recreatedPhoto ? [loc.recreatedPhoto] : []);
+        if (recreatePhotos.length) {
+            recreateGallery.innerHTML = recreatePhotos.map(url => `<img src="${escapeHtml(url)}" alt="">`).join('');
+            recreateGallery.classList.toggle('single', recreatePhotos.length === 1);
             recreateSection.classList.remove('hidden');
         } else {
-            recreateImg.src = '';
+            recreateGallery.innerHTML = '';
             recreateSection.classList.add('hidden');
         }
     }
@@ -5193,22 +5325,17 @@ function ensureLocationEditModal() {
             <div id="location-edit-photo-error" class="hidden" style="${errStyle}"></div>
             <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">A URL or an uploaded photo both override the header photo — leave both empty to fall back to the YouTube thumbnail, if a video is set.</div>
 
-            <!-- "Recreate the Photo" (demande du 14/09/2026) : une photo où le membre BTS
-                 d'origine est remplacé par un avatar du site (Iris, Mei...) — déjà
-                 composée/éditée ailleurs par l'admin, uploadée telle quelle ici. Même
-                 mécanisme (upload + URL, redimensionnement, HEIC) que "Header photo"
-                 au-dessus, juste un champ distinct (loc.recreatedPhoto). Optionnel :
-                 laissé vide, la section correspondante reste masquée sur la fiche lieu. -->
-            <label style="${labelStyle}">Recreate the Photo (optional)</label>
-            <div id="location-edit-recreate-photo-preview" style="margin-bottom:8px; border-radius:10px; overflow:hidden; display:none;"><img style="display:block; width:100%; max-height:180px; object-fit:cover;"></div>
-            <input type="url" id="location-edit-recreate-photo-url" style="${fieldStyle}" placeholder="Recreated photo URL (optional)">
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                <button type="button" id="location-edit-recreate-photo-upload-btn" style="background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">Upload from device</button>
-                <input type="file" id="location-edit-recreate-photo-file-input" accept="image/*,.heic,.heif" class="hidden">
-                <span id="location-edit-recreate-photo-name" style="font-size:10.5px; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
-            </div>
-            <div id="location-edit-recreate-photo-error" class="hidden" style="${errStyle}"></div>
-            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Shown as a "Recreate the Photo" section on the location page, right below "The story of this place" — hidden entirely while this is empty.</div>
+            <!-- "Mei's Pictures" (demande du 14/09/2026, renommée + passée en galerie
+                 multi-photos le 18/09/2026, "je veux pouvoir ajouter plusieurs photo") :
+                 une ou plusieurs photos où le membre BTS d'origine est remplacé par un
+                 avatar du site (Iris, Mei...) — déjà composées/éditées ailleurs par
+                 l'admin, uploadées telles quelles ici. Widget partagé avec admin.html, voir
+                 window.createPhotoGalleryField() plus haut dans ce fichier — champ distinct
+                 (loc.recreatedPhotos, un tableau). Optionnel : laissé vide, la section
+                 correspondante reste masquée sur la fiche lieu. -->
+            <label style="${labelStyle}">Mei's Pictures (optional)</label>
+            <div id="location-edit-recreate-photo-gallery"></div>
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Shown as a "Mei's Pictures" section on the location page, right below "The story of this place" — hidden entirely while empty.</div>
 
             <!-- Sections "story" séparées (demande du 14/09/2026, "je veux que tu sépare la
                  partie 'The story of this place' et 'Following in BTS's footsteps'... reprend
@@ -5317,7 +5444,6 @@ function ensureLocationEditModal() {
         </div>`;
     document.body.appendChild(modal);
     wireLocationEditPhotoInputOnce(modal);
-    wireLocationEditRecreatePhotoInputOnce(modal);
     return modal;
 }
 
@@ -5421,60 +5547,16 @@ function wireLocationEditPhotoInputOnce(modal) {
     }
 }
 
-// "Recreate the Photo" (demande du 14/09/2026) — même mécanisme qu'au-dessus (upload +
-// URL, redimensionnement, HEIC), un champ distinct (recreatedPhoto) et son propre état.
-let locationEditPendingRecreatePhoto = null;
-let locationEditRecreatePhotoTouched = false;
-function updateLocationEditRecreatePhotoPreview(src) {
-    const preview = document.getElementById('location-edit-recreate-photo-preview');
-    if (!preview) return;
-    if (src) { preview.style.display = 'block'; preview.querySelector('img').src = src; }
-    else { preview.style.display = 'none'; preview.querySelector('img').src = ''; }
-}
-function wireLocationEditRecreatePhotoInputOnce(modal) {
-    const btn = modal.querySelector('#location-edit-recreate-photo-upload-btn');
-    const input = modal.querySelector('#location-edit-recreate-photo-file-input');
-    const urlInput = modal.querySelector('#location-edit-recreate-photo-url');
-    const errorEl = modal.querySelector('#location-edit-recreate-photo-error');
-    if (!btn || !input || input.dataset.wired) return;
-    input.dataset.wired = '1';
-    btn.addEventListener('click', () => input.click());
-    input.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        errorEl.classList.add('hidden');
-        btn.disabled = true;
-        try {
-            const resized = await fileToResizedDataUrl(file, 1200);
-            locationEditPendingRecreatePhoto = resized;
-            locationEditRecreatePhotoTouched = true;
-            if (urlInput) urlInput.value = '';
-            updateLocationEditRecreatePhotoPreview(resized);
-            document.getElementById('location-edit-recreate-photo-name').textContent = file.name;
-        } catch (err) {
-            console.warn('Import de la photo recréée échoué :', err);
-            errorEl.textContent = isHeicFile(file)
-                ? "Couldn't convert this HEIC photo. Try exporting it as JPEG first, or paste a URL instead."
-                : "Couldn't read this photo. Try a different file, or paste a URL instead.";
-            errorEl.classList.remove('hidden');
-        }
-        btn.disabled = false;
-    });
-    if (urlInput) {
-        urlInput.addEventListener('input', () => {
-            const val = urlInput.value.trim();
-            locationEditPendingRecreatePhoto = val || null;
-            locationEditRecreatePhotoTouched = true;
-            document.getElementById('location-edit-recreate-photo-name').textContent = '';
-            updateLocationEditRecreatePhotoPreview(val || null);
-        });
-    }
-}
+// "Mei's Pictures" (demande du 14/09/2026, passée en galerie multi-photos le 18/09/2026) —
+// plus de wireXInputOnce()/pending-state dédié comme "Header photo" ci-dessus : le widget
+// partagé window.createPhotoGalleryField() (voir le haut de ce fichier) gère lui-même tout
+// son état interne, recréé à chaque ouverture du modal (voir fillForm() plus bas, comme
+// footstepsWidget/tipsFieldWidget pour les autres champs à liste variable de ce modal).
+let locationEditRecreateGalleryWidget = null;
 
 let locationEditCurrentId = null;
 let locationEditExistingFullDescription = {};
 let locationEditExistingImg = '';
-let locationEditExistingRecreatePhoto = '';
 let locationEditExtraWidgets = {};
 // Valeurs d'origine des liens (voir le commentaire dans fillForm() plus bas et dans
 // saveLocationEdit()) — permet de ne revalider que ce que l'admin a réellement changé.
@@ -5580,14 +5662,13 @@ window.openLocationEditModal = async function (locId) {
         // convention que admin.html pour ce même champ.
         document.getElementById('location-edit-photo-url').value = locationEditExistingImg.startsWith('data:') ? '' : locationEditExistingImg;
         updateLocationEditPhotoPreview(locationEditExistingImg || null);
-        // "Recreate the Photo" (demande du 14/09/2026) — même logique que Header photo
-        // juste au-dessus, champ distinct (recreatedPhoto).
-        locationEditExistingRecreatePhoto = data.recreatedPhoto || '';
-        locationEditPendingRecreatePhoto = null;
-        locationEditRecreatePhotoTouched = false;
-        document.getElementById('location-edit-recreate-photo-name').textContent = '';
-        document.getElementById('location-edit-recreate-photo-url').value = locationEditExistingRecreatePhoto.startsWith('data:') ? '' : locationEditExistingRecreatePhoto;
-        updateLocationEditRecreatePhotoPreview(locationEditExistingRecreatePhoto || null);
+        // "Mei's Pictures" (demande du 14/09/2026, galerie multi-photos le 18/09/2026) —
+        // widget partagé, recréé à chaque ouverture du modal ; repli sur l'ancien champ
+        // recreatedPhoto (chaîne unique) pour les lieux jamais migrés en tableau.
+        locationEditRecreateGalleryWidget = window.createPhotoGalleryField(
+            document.getElementById('location-edit-recreate-photo-gallery'),
+            { values: Array.isArray(data.recreatedPhotos) && data.recreatedPhotos.length ? data.recreatedPhotos : (data.recreatedPhoto ? [data.recreatedPhoto] : []) }
+        );
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté admin.html (fiches de review/édition).
         if (typeof window.createMultiUrlField === 'function') {
@@ -5789,10 +5870,12 @@ async function saveLocationEdit(locId, modal) {
     } else if (!locationEditExistingImg && ytId) {
         fields.img = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
     }
-    // "Recreate the Photo" (demande du 14/09/2026) — même logique que la photo d'en-tête
-    // au-dessus, sans repli automatique (ni YouTube ni autre source n'a de sens ici).
-    if (locationEditRecreatePhotoTouched) {
-        fields.recreatedPhoto = locationEditPendingRecreatePhoto || '';
+    // "Mei's Pictures" (demande du 14/09/2026, galerie multi-photos le 18/09/2026) —
+    // recreatedPhotos est le tableau courant ; recreatedPhoto (première photo) reste
+    // écrit en parallèle pour les consommateurs pas encore migrés (voir feed.html).
+    if (locationEditRecreateGalleryWidget) {
+        fields.recreatedPhotos = locationEditRecreateGalleryWidget.collect();
+        fields.recreatedPhoto = fields.recreatedPhotos[0] || '';
     }
 
     // group/member/country/city/year : hors de locationContent (voir la note dans

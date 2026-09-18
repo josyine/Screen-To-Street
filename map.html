@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260923">
+<link rel="stylesheet" href="style.css?v=20260924">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -849,13 +849,15 @@
                         <div id="details-desc-place"></div>
                     </div>
 
-                    <!-- "Recreate the Photo" (demande du 14/09/2026, "refaire la photo" : une photo
-                         où le membre BTS d'origine est remplacé par l'un des avatars du site, Iris
-                         ou Mei) — champ optionnel (loc.recreatedPhoto), une simple image déjà
-                         composée/éditée ailleurs par l'admin, jamais générée par le site lui-même.
-                         Masquée entièrement tant qu'aucune photo n'est fournie (voir
-                         renderLocationRichContent() dans script.js). Upload depuis le modal crayon
-                         (script.js) et admin.html ("Existing locations"). -->
+                    <!-- "Mei's Pictures" (demande du 14/09/2026, "refaire la photo" : une photo où
+                         le membre BTS d'origine est remplacé par l'un des avatars du site, Iris
+                         ou Mei ; renommée + passée en galerie multi-photos le 18/09/2026, "je veux
+                         pouvoir ajouter plusieurs photo") — champ optionnel (loc.recreatedPhotos,
+                         un tableau), des images déjà composées/éditées ailleurs par l'admin OU
+                         générées via "Generate with Mei" (admin.html), jamais générées par le site
+                         lui-même à l'affichage. Masquée entièrement tant qu'aucune photo n'est
+                         fournie (voir renderLocationRichContent() dans script.js). Upload depuis le
+                         modal crayon (script.js) et admin.html ("Existing locations"). -->
                     <div class="story-section hidden" id="story-section-recreate">
                         <div class="story-heading">
                             <span class="dot"></span>
@@ -863,9 +865,9 @@
                                  emoji (préférence du site, voir CLAUDE.md), même couleur que le
                                  texte du titre via currentColor. -->
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:var(--primary-magenta);"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                            <span data-i18n="lRecreatePhoto">Recreate the Photo</span>
+                            <span data-i18n="lRecreatePhoto">Mei's Pictures</span>
                         </div>
-                        <img id="details-recreate-photo" class="recreate-photo-img" alt="">
+                        <div id="details-recreate-photo-gallery" class="recreate-photo-gallery"></div>
                     </div>
 
                     <span class="sub-label" data-i18n="lPractical">Practical information &amp; access</span>
@@ -1370,12 +1372,12 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260923"></script>
-<script type="module" src="firebase-init.js?v=20260923"></script>
-<script src="locations-data.js?v=20260923"></script>
-<script src="script.js?v=20260923"></script>
+<script src="countries.js?v=20260924"></script>
+<script type="module" src="firebase-init.js?v=20260924"></script>
+<script src="locations-data.js?v=20260924"></script>
+<script src="script.js?v=20260924"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260923"></script>
+<script src="map-tour.js?v=20260924"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
