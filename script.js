@@ -385,6 +385,54 @@ async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     showEmbedFallbackLinkIfStuck(container, instagramUrl, 'iframe', 'View this post on Instagram');
 }
 
+// Post Facebook embarqué (demande du 18/09/2026, "les liens embeded qui ne fonctionnent
+// plus, comme tu peux le voir avec Facebook") — jusqu'ici Facebook restait volontairement
+// un simple lien "Follow" (voir l'ancien commentaire au-dessus de la section "Liens
+// sociaux" plus bas) : Facebook a bien une méthode d'embed officielle sans clé API/App ID
+// obligatoire pour un post PUBLIC (le plugin "Embedded Posts", même mécanisme que le
+// bouton "Embed" sur facebook.com) — même principe que Twitter/Instagram ci-dessus : un
+// <div class="fb-post"> retraité par le SDK JS officiel une fois chargé. Un simple lien de
+// profil/page (pas un post précis) n'a pas d'équivalent embarquable et reste donc un lien
+// "Follow" classique, voir isFacebookPostUrl ci-dessous.
+function isFacebookPostUrl(url) {
+    const s = (url || '').trim();
+    return /^https?:\/\/(www\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s) || /[?&]story_fbid=/i.test(s);
+}
+let _facebookSdkLoadPromise = null;
+function loadFacebookSdkOnce() {
+    if (window.FB && window.FB.XFBML) return Promise.resolve();
+    if (_facebookSdkLoadPromise) return _facebookSdkLoadPromise;
+    _facebookSdkLoadPromise = new Promise((resolve) => {
+        // Le SDK Facebook cherche un <div id="fb-root"> au chargement — absent sur ce site
+        // (jamais utilisé jusqu'ici), donc créé ici s'il manque plutôt que codé en dur dans
+        // chaque page HTML.
+        if (!document.getElementById('fb-root')) {
+            const root = document.createElement('div');
+            root.id = 'fb-root';
+            document.body.insertBefore(root, document.body.firstChild);
+        }
+        const s = document.createElement('script');
+        s.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0';
+        s.crossOrigin = 'anonymous';
+        s.onload = resolve;
+        s.onerror = resolve;
+        document.body.appendChild(s);
+    });
+    return _facebookSdkLoadPromise;
+}
+async function renderFacebookEmbedOnDetails(container, facebookUrl) {
+    // data-width="auto" (plutôt qu'une largeur fixe en pixels) : rend l'embed responsive,
+    // contrairement au simple iframe plugins/post.php?href=... (largeur figée) — se
+    // redimensionne correctement sur mobile, comme le widget Twitter au-dessus.
+    container.innerHTML = `<div class="fb-post" data-href="${escapeHtml(facebookUrl)}" data-width="auto"></div>`;
+    await loadFacebookSdkOnce();
+    // Contrairement à twttr.widgets.load(container) (accepte un conteneur précis),
+    // FB.XFBML.parse(container) accepte lui aussi un conteneur ciblé — API officielle, pas
+    // besoin du retraitement global de toute la page comme instgrm.Embeds.process().
+    if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
+    showEmbedFallbackLinkIfStuck(container, facebookUrl, 'iframe', 'View this post on Facebook');
+}
+
 window.showSimpleToast = function (message, opts) {
     const isError = opts && opts.isError;
     let container = document.getElementById('simple-toast-container');
@@ -4869,19 +4917,23 @@ function renderLocationRichContent(loc) {
     const videoSection = document.getElementById('details-video-section');
     const tweetContainer = document.getElementById('details-tweet-container');
     const instagramContainer = document.getElementById('details-instagram-container');
-    // Réutilisé plus bas dans la section "Liens sociaux" : si le post est déjà embarqué
-    // ici, le lien "Follow: Instagram" ne doit pas être répété en double en dessous.
+    const facebookContainer = document.getElementById('details-facebook-container');
+    // Réutilisés plus bas dans la section "Liens sociaux" : si le post est déjà embarqué
+    // ici, le lien "Follow: Instagram"/"Follow: Facebook" ne doit pas être répété en double
+    // en dessous.
     let instagramEmbedded = false;
+    let facebookEmbedded = false;
     if (videoContainer && videoSection) {
-        // Chacun des trois types de média a son propre conteneur, affiché ou masqué
-        // INDÉPENDAMMENT des deux autres (demande du 07/09/2026 : un lien YouTube ET un lien
+        // Chacun des types de média a son propre conteneur, affiché ou masqué
+        // INDÉPENDAMMENT des autres (demande du 07/09/2026 : un lien YouTube ET un lien
         // Twitter tous les deux renseignés n'affichaient jusqu'ici que YouTube, à cause d'un
         // if/else-if qui ne permettait qu'un seul média à la fois). La section entière ne
-        // reste masquée que si AUCUN des trois n'a de contenu.
+        // reste masquée que si AUCUN d'entre eux n'a de contenu.
         videoContainer.innerHTML = "";
         videoContainer.classList.add('hidden');
         if (tweetContainer) { tweetContainer.innerHTML = ""; tweetContainer.classList.add('hidden'); }
         if (instagramContainer) { instagramContainer.innerHTML = ""; instagramContainer.classList.add('hidden'); }
+        if (facebookContainer) { facebookContainer.innerHTML = ""; facebookContainer.classList.add('hidden'); }
         let anyMedia = false;
 
         // Vidéo(s)/YouTube : les deux restent mutuellement exclusifs ENTRE EUX (ils partagent
@@ -4915,6 +4967,15 @@ function renderLocationRichContent(loc) {
             instagramContainer.classList.remove('hidden');
             renderInstagramEmbedOnDetails(instagramContainer, loc.instagramUrl);
             instagramEmbedded = true;
+            anyMedia = true;
+        }
+        if (loc.facebookUrl && isFacebookPostUrl(loc.facebookUrl) && facebookContainer) {
+            // Même chose pour un post/vidéo/photo Facebook précis (demande du 18/09/2026) —
+            // un simple lien de profil/page (pas de post) n'a pas d'équivalent embarquable,
+            // voir isFacebookPostUrl(), et reste donc affiché comme lien "Follow" plus bas.
+            facebookContainer.classList.remove('hidden');
+            renderFacebookEmbedOnDetails(facebookContainer, loc.facebookUrl);
+            facebookEmbedded = true;
             anyMedia = true;
         }
         videoSection.classList.toggle('hidden', !anyMedia);
@@ -4953,16 +5014,17 @@ function renderLocationRichContent(loc) {
     // se séparer proprement de la ligne Date/Episode au-dessus, dans tous les cas de figure.
     if (dLink && dLinkCont) { if(loc.episodeLink) { dLink.href = loc.episodeLink; dLinkCont.style.display = 'block'; } else { dLinkCont.style.display = 'none'; } }
 
-    // Liens sociaux (Instagram/Facebook/TikTok, voir admin.html) : chacun n'apparaît que
-    // s'il a été renseigné, et redirige simplement vers le réseau au clic — pas d'embed ici
-    // pour Facebook/TikTok (aucune méthode fiable sans clé API), et pas pour Instagram non
-    // plus SI le post est déjà embarqué juste au-dessus (voir instagramEmbedded, sinon un
-    // lien de simple profil, qui lui n'a pas d'embed possible, reste affiché normalement).
+    // Liens sociaux (Instagram/Facebook/TikTok/Pinterest, voir admin.html) : chacun
+    // n'apparaît que s'il a été renseigné, et redirige simplement vers le réseau au clic —
+    // pas d'embed ici pour TikTok/Pinterest (aucune méthode fiable sans clé API), et pas
+    // pour Instagram/Facebook non plus SI le post est déjà embarqué juste au-dessus (voir
+    // instagramEmbedded/facebookEmbedded, sinon un lien de simple profil, qui lui n'a pas
+    // d'embed possible, reste affiché normalement).
     const socialCont = document.getElementById('details-social-links');
     if (socialCont) {
         const socialLinks = [
             ['details-instagram-link', instagramEmbedded ? null : loc.instagramUrl],
-            ['details-facebook-link', loc.facebookUrl],
+            ['details-facebook-link', facebookEmbedded ? null : loc.facebookUrl],
             ['details-tiktok-link', loc.tiktokUrl],
             ['details-pinterest-link', loc.pinterestUrl]
         ];
@@ -4979,8 +5041,9 @@ function renderLocationRichContent(loc) {
         // la modale crayon) : injectés en JS après les liens "principaux" ci-dessus plutôt
         // que codés en dur dans le HTML de chaque page (leur NOMBRE varie d'un lieu à
         // l'autre) — même approche que le reste des éléments injectés dynamiquement sur ce
-        // site (nav du bas, etc). Le tweet "principal" a déjà son embed plus haut ; ses
-        // liens en plus n'ont pas d'embed, juste un lien texte, comme Facebook/TikTok.
+        // site (nav du bas, etc). Le tweet/Instagram/Facebook "principal" a déjà son embed
+        // plus haut ; ses liens en plus n'ont pas d'embed, juste un lien texte, comme
+        // TikTok/Pinterest.
         let extraCont = document.getElementById('details-social-extra-links');
         if (!extraCont) {
             extraCont = document.createElement('span');

@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260924">
+<link rel="stylesheet" href="style.css?v=20260925">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -81,6 +81,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-photo-upload-name{font-size:10.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sub-tweet-preview{margin-bottom:8px;}
 .sub-instagram-preview{margin-bottom:8px;}
+.sub-facebook-preview{margin-bottom:8px;}
 .sub-story-wrap{position:relative;margin-bottom:12px;}
 .sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;padding-right:44px;}
 .sub-story p{margin-bottom:8px;}
@@ -363,10 +364,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260924"></script>
-<script src="countries.js?v=20260924"></script>
-<script src="locations-data.js?v=20260924"></script>
-<script src="script.js?v=20260924"></script>
+<script type="module" src="firebase-init.js?v=20260925"></script>
+<script src="countries.js?v=20260925"></script>
+<script src="locations-data.js?v=20260925"></script>
+<script src="script.js?v=20260925"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -650,6 +651,40 @@ recomposée, sans texte ni légende.`;
         if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
     }
 
+    // Embed Facebook (demande du 18/09/2026, "les liens embeded qui ne fonctionnent plus,
+    // comme tu peux le voir avec Facebook") — même mécanisme officiel sans clé API/App ID
+    // obligatoire (SDK "Embedded Posts"), valable seulement pour un post/vidéo/photo PRÉCIS,
+    // pas pour un simple lien de profil/page (voir isFacebookPostUrl). Même correctif que
+    // renderFacebookEmbedOnDetails() dans script.js (fiche publique).
+    function isFacebookPostUrl(url) {
+        const s = (url || '').trim();
+        return /^https?:\/\/(www\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s) || /[?&]story_fbid=/i.test(s);
+    }
+    let facebookSdkLoading = null;
+    function loadFacebookSdkScript() {
+        if (window.FB && window.FB.XFBML) return Promise.resolve();
+        if (facebookSdkLoading) return facebookSdkLoading;
+        facebookSdkLoading = new Promise((resolve) => {
+            if (!document.getElementById('fb-root')) {
+                const root = document.createElement('div');
+                root.id = 'fb-root';
+                document.body.insertBefore(root, document.body.firstChild);
+            }
+            const s = document.createElement('script');
+            s.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0';
+            s.crossOrigin = 'anonymous';
+            s.onload = resolve;
+            s.onerror = resolve;
+            document.body.appendChild(s);
+        });
+        return facebookSdkLoading;
+    }
+    async function renderFacebookEmbed(container, facebookUrl) {
+        container.innerHTML = `<div class="fb-post" data-href="${escapeHtml(facebookUrl)}" data-width="auto"></div>`;
+        await loadFacebookSdkScript();
+        if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
+    }
+
     // Champs Group/Member/Country/City/Category/Year en SÉLECTION plutôt qu'en texte libre
     // (demande du 13/09/2026, "je ne dois pas pouvoir rédiger car je risque de faire des
     // erreurs") — les valeurs possibles viennent directement des lieux déjà publiés
@@ -757,7 +792,8 @@ recomposée, sans texte ni légende.`;
             <input type="url" class="sub-social-input" data-platform="instagram" placeholder="Instagram URL (optional) — a specific post/reel link embeds a preview" value="${escapeHtml(sub.instagramUrl || '')}">
             <div class="sub-social-error hidden" data-platform="instagram" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like an instagram.com URL.</div>
             <div class="sub-social-extra" data-platform="instagram" style="margin-bottom:6px;"></div>
-            <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional)" value="${escapeHtml(sub.facebookUrl || '')}">
+            <div class="sub-facebook-preview hidden"></div>
+            <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional) — a specific post/video link embeds a preview" value="${escapeHtml(sub.facebookUrl || '')}">
             <div class="sub-social-error hidden" data-platform="facebook" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a facebook.com URL.</div>
             <div class="sub-social-extra" data-platform="facebook" style="margin-bottom:6px;"></div>
             <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)" value="${escapeHtml(sub.tiktokUrl || '')}">
@@ -1076,11 +1112,17 @@ recomposée, sans texte ni légende.`;
         }
 
         // Instagram/Facebook/TikTok : mêmes trois champs, juste une validation de domaine
-        // avant d'accepter la valeur dans `sub` — Instagram a EN PLUS un embed (demande du
-        // 07/09/2026, voir renderInstagramEmbed plus haut), uniquement pour un post/reel
-        // précis (isInstagramPostUrl) ; Facebook/TikTok restent sans embed, aucune méthode
-        // fiable sans clé API pour ces deux-là.
+        // avant d'accepter la valeur dans `sub` — Instagram ET Facebook ont EN PLUS un embed
+        // (demande du 07/09/2026 pour Instagram, du 18/09/2026 pour Facebook, voir
+        // renderInstagramEmbed()/renderFacebookEmbed() plus haut), uniquement pour un post/
+        // reel/vidéo précis (isInstagramPostUrl/isFacebookPostUrl) ; TikTok/Pinterest
+        // restent sans embed, aucune méthode fiable sans clé API pour ces deux-là.
         const instagramPreview = card.querySelector('.sub-instagram-preview');
+        const facebookPreview = card.querySelector('.sub-facebook-preview');
+        const embeddablePlatforms = {
+            instagram: { preview: instagramPreview, isPostUrl: isInstagramPostUrl, render: renderInstagramEmbed },
+            facebook: { preview: facebookPreview, isPostUrl: isFacebookPostUrl, render: renderFacebookEmbed }
+        };
         const socialConfig = {
             instagram: { extract: extractInstagramUrl, field: 'instagramUrl' },
             facebook: { extract: extractFacebookUrl, field: 'facebookUrl' },
@@ -1092,28 +1134,29 @@ recomposée, sans texte ni légende.`;
             const cfg = socialConfig[platform];
             const errorEl = card.querySelector(`.sub-social-error[data-platform="${platform}"]`);
             if (!cfg || !errorEl) return;
+            const embed = embeddablePlatforms[platform];
             const refreshSocial = () => {
                 const val = input.value.trim();
                 if (!val) {
                     sub[cfg.field] = '';
                     errorEl.classList.add('hidden');
-                    if (platform === 'instagram' && instagramPreview) instagramPreview.classList.add('hidden');
+                    if (embed && embed.preview) embed.preview.classList.add('hidden');
                     return;
                 }
                 const clean = cfg.extract(val);
                 if (!clean) {
                     errorEl.classList.remove('hidden');
-                    if (platform === 'instagram' && instagramPreview) instagramPreview.classList.add('hidden');
+                    if (embed && embed.preview) embed.preview.classList.add('hidden');
                     return;
                 }
                 errorEl.classList.add('hidden');
                 sub[cfg.field] = clean;
-                if (platform === 'instagram' && instagramPreview) {
-                    if (isInstagramPostUrl(clean)) {
-                        instagramPreview.classList.remove('hidden');
-                        renderInstagramEmbed(instagramPreview, clean);
+                if (embed && embed.preview) {
+                    if (embed.isPostUrl(clean)) {
+                        embed.preview.classList.remove('hidden');
+                        embed.render(embed.preview, clean);
                     } else {
-                        instagramPreview.classList.add('hidden');
+                        embed.preview.classList.add('hidden');
                     }
                 }
             };
