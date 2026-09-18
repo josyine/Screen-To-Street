@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-18T12:20:22.199Z.
+// Généré le 2026-09-18T17:09:35.701Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9682,7 +9682,21 @@ window.STATIC_LOCATIONS = [
           "en": "Take Seoul Subway Line 7 or the Gyeongui-Jungang Line to Mangu Station (Exit 1) or Myeonmok Station. From either station, take a short 5 to 10-minute taxi ride up toward Mangu Mountain."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": []
   },
   {
     "id": "new-37Ztk5NoqShGM7H5EFlX",
@@ -9931,30 +9945,16 @@ window.STATIC_LOCATIONS = [
     "category": "Restaurant",
     "name": "Geum Dwaeji Sikdang",
     "address": "149 Dasan-ro, Jung-gu, Seoul, South Korea",
-    "img": "https://img.youtube.com/vi/UiFnPAFmCxc/hqdefault.jpg",
+    "img": "images/admin-upload-new-65mMbwq8jIppC1goKZQy-photo.jpg",
     "country": "South Korea",
     "lat": 37.5582,
     "group": "BTS",
     "lng": 127.0116,
-    "member": "Jimin, Jungkook, V",
+    "member": "Jimin, V, Jungkook",
     "id": "new-65mMbwq8jIppC1goKZQy",
     "year": "2018",
     "city": "Seoul",
     "addedAt": 1789073846062,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "text": {
-          "en": "The restaurant does not accept advance reservations for general seating and uses an on-site queue system (CatchTable). Arrive early before opening hours to log your phone number at the kiosk."
-        },
-        "title": {
-          "en": "Waitlist Tip"
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Geum Dwaeji Sikdang (Gold Pig Restaurant) is one of Seoul's most famous Korean BBQ establishments, recognized annually by the Michelin Guide's Bib Gourmand selection. Located in the Yaksu neighborhood of Jung-gu, this three-story restaurant is renowned for serving premium, meticulously aged YDS pork cuts grilled over golden charcoal on cast-iron grates. The distinctive gold-tiled exterior and iconic pig logo have made it a culinary landmark in the capital.</p><p>The restaurant earned legendary status among ARMY after members of BTS—most notably Jimin, Jungkook, and V—became frequent patrons. Jimin and Jungkook have visited numerous times, leaving behind signed autographs that are proudly displayed inside. It remains an essential pilgrimage site for fans seeking to experience the same world-class pork belly and shoulder cuts loved by the members.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -9965,7 +9965,51 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "ytId": "UiFnPAFmCxc"
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "officialLink": "https://gold-pig.com/",
+    "tweetUrls": [],
+    "episodeLink": "http://seoulandsoul.com/the-ultimate-guide-to-geumdwaeji-sikdang-gold-pig-restaurant-bts-jimins-favorite-k-bbq-spot-in-seoul/",
+    "imgCredit": "AI-generated illustrative image",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Prepare to Wait (The CatchTable App)"
+        },
+        "text": {
+          "en": "Because it is both a Michelin-listed restaurant and a global BTS favorite, the lines are famously long. You cannot make a standard reservation; you must arrive early and use the electronic \"CatchTable\" kiosk at the entrance to secure your spot in the virtual queue."
+        }
+      },
+      {
+        "title": {
+          "en": "Spot the Autographs"
+        },
+        "text": {
+          "en": "The members typically dine on the 2nd floor, which has a sleek, bar-style seating arrangement. When you visit, be sure to look for Jimin and Jungkook's framed autographs safely preserved on the wall!"
+        }
+      },
+      {
+        "title": {
+          "en": "The Signature Order"
+        },
+        "text": {
+          "en": "To eat exactly like the members, order the Bone-in Pork Belly (Bon Samgyeopsal) and their famous Kimchi Stew (Kimchi Jjigae), which is slow-cooked for two hours. Don't worry about cooking—the expert staff will grill the meat perfectly for you at your table."
+        }
+      }
+    ],
+    "ytId": "",
+    "recreatedPhoto": "images/admin-upload-new-65mMbwq8jIppC1goKZQy-recreated.jpg",
+    "fullDescription": {
+      "en": "<p>Geum Dwaeji Sikdang, famously known as the Gold Pig Restaurant, is undeniably one of Seoul's most prestigious Korean BBQ establishments. Recognized annually by the Michelin Guide's Bib Gourmand selection since 2019, this three-story culinary landmark is located in the Yaksu neighborhood (Jung-gu). With its distinctive white-tiled exterior and iconic gold pig logo, the restaurant is celebrated for serving premium, meticulously aged YBD (a crossbreed of Yorkshire, Berkshire, and Duroc) pork cuts, expertly grilled over golden charcoal on heavy cast-iron grates.</p><p>This restaurant earned its legendary status within the ARMY community after members of BTS—most notably Jimin, Jungkook, and V—became highly frequent patrons. The group's vocal line has visited numerous times over the years to enjoy the world-class pork belly and shoulder cuts, turning a quiet dinner spot into a global phenomenon. Today, it remains an essential pilgrimage site for fans, with Jimin and Jungkook’s signed autographs proudly preserved and displayed on the wall.</p>"
+    },
+    "instagramUrl": "https://www.instagram.com/p/ChTLwbVvYn8/"
   },
   {
     "lat": 35.8274,
@@ -11155,46 +11199,6 @@ window.STATIC_LOCATIONS = [
       "en": "<p>Designed by the renowned architect Frank Gehry, the Fondation Louis Vuitton is a striking contemporary art museum nestled in the Bois de Boulogne on the edge of Paris. Opened in 2014, its futuristic glass sails and avant-garde architecture have quickly established it as a major global hub for contemporary art exhibitions and cultural events. Beyond its permanent collections and striking geometry, the venue serves as a prestigious backdrop for high-fashion milestones, bridging the worlds of modern architecture, fine art, and luxury design.</p><p>2023, J-Hope, Jimin: Jimin &amp; J-Hope's Fashion Week Break\nDuring their highly publicized trip for Paris Fashion Week in January 2023, Jimin and J-Hope took a well-deserved break from the bustling runways to explore the Fondation. J-Hope famously shared photos of his visit to the immersive Monet - Mitchell exhibition, showcasing his appreciation for the delicate interplay between classical impressionism and abstract expressionism. For fans, it was a delight to see the duo soaking in Parisian culture beyond their ambassador duties.</p><p>2026, RM: RM's \"Namjooning\" Excursion\nLater in 2026, RM added the spectacular museum to his ever-growing \"Namjooning\" map. Wandering through the sunlit, cutting-edge galleries, he appreciated both the monumental architecture and the contemporary installations. His visit perfectly illustrated his well-known passion for international art spaces where structure and creativity seamlessly converge.</p>"
     },
     "recreatedPhoto": "images/admin-upload-new-wMPd7uwtaZtYdrcNZtrS-recreated.jpg"
-  },
-  {
-    "member": "RM",
-    "address": "2539 Namjo-ro, Jochon-eup, Jeju-si, Jeju-do, South Korea",
-    "name": "Jeju Stone Park",
-    "country": "South Korea",
-    "group": "BTS",
-    "category": "Landmarks",
-    "city": "Jeju",
-    "year": "2021",
-    "id": "new-XZncknw6TN5a3XSLHB1D",
-    "lng": 126.6669,
-    "lat": 33.4358,
-    "img": "",
-    "addedAt": 1789077407341,
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Sky Pond Photo"
-        },
-        "text": {
-          "en": "Don't miss the circular Sky Pond at the entrance area where RM took his famous reflective photo. Wearing water-resistant shoes allows you to walk onto the stone path over the water."
-        }
-      }
-    ],
-    "instagramUrl": "https://www.instagram.com/p/C2CG9dCIyfA/",
-    "fullDescription": {
-      "en": "<p>Jeju Stone Park is an ecological and cultural museum park created to express the myth, history, and unique stone culture of Jeju Island. Spanning a vast forest area in Jochon-eup, the park features hundreds of basalt stone sculptures, traditional Jeju stone pagodas, volcanic rock formations, and ambient exhibition halls built harmoniously into the landscape.</p><p>During his solo trip to Jeju Island in December 2021, RM (Kim Namjoon) visited Jeju Stone Park as part of his signature art and cultural exploration. He posted photos of himself walking among the giant stone statues and standing in front of the famous Sky Pond. His visit inspired countless fans to follow in his footsteps, solidifying the park as an essential stop on any 'Namjooning' itinerary in Jeju.</p>"
-    },
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "From Jeju International Airport, take express bus 131 or local bus 231 directly to the Jeju Stone Park stop. The trip takes approximately 45 minutes."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ]
   },
   {
     "lng": 55.65,
