@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-17T22:22:21.676Z.
+// Généré le 2026-09-18T06:25:51.269Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
