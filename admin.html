@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260922">
+<link rel="stylesheet" href="style.css?v=20260923">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -363,10 +363,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260922"></script>
-<script src="countries.js?v=20260922"></script>
-<script src="locations-data.js?v=20260922"></script>
-<script src="script.js?v=20260922"></script>
+<script type="module" src="firebase-init.js?v=20260923"></script>
+<script src="countries.js?v=20260923"></script>
+<script src="locations-data.js?v=20260923"></script>
+<script src="script.js?v=20260923"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -439,9 +439,17 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     // ci-dessus (pas d'embed, juste un lien "Follow" cliquable), deux domaines valides :
     // pinterest.com/pinterest.fr... (tout TLD à 2 lettres) et pin.it, le raccourcisseur
     // officiel de Pinterest pour un pin individuel.
+    //
+    // BUG corrigé (demande du 18/09/2026, "je n'arrive pas à mettre une adresse URL
+    // Pinterest") : n'acceptait qu'un sous-domaine "www." optionnel, alors que Pinterest
+    // génère très souvent des liens avec un sous-domaine PAYS selon la langue/région du
+    // compte qui partage l'épingle (ex: fr.pinterest.com, kr.pinterest.com,
+    // in.pinterest.com...) — un lien Pinterest parfaitement valide, copié tel quel depuis
+    // le site, était donc rejeté à chaque fois pour ces comptes. N'importe quel
+    // sous-domaine est maintenant accepté (pas seulement "www").
     function extractPinterestUrl(url) {
         const s = (url || '').trim();
-        return /^https?:\/\/(www\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/.+/.test(s) ? s : null;
+        return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/.+/.test(s) ? s : null;
     }
 
     // ==========================================

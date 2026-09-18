@@ -8909,5 +8909,285 @@
       "en": "Glenorchy is roughly a 45-minute drive from Queenstown along the Glenorchy-Queenstown Road, which hugs the edge of Lake Wakatipu.",
       "fr": "Glenorchy se trouve à environ 45 minutes de route de Queenstown par la Glenorchy-Queenstown Road, qui longe les rives du lac Wakatipu."
     }
+  },
+  {
+    "id": 209,
+    "name": "Lotte Duty Free Star Avenue",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2018/04/24/lotte-duty-free-star-avenue-bts-handprints/",
+    "ytId": "",
+    "address": "30 Eulji-ro, Jung-gu, Seoul",
+    "lat": 37.5643,
+    "lng": 126.9816,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Star Avenue is a handprint wall inside Lotte Duty Free's Myeongdong Main Store, between the department store and the Lotte Hotel, right by Euljiro-1(il)-ga Station exit 7. Placing your hand on a K-pop star's handprint plays a short video clip of that artist on a nearby screen — a simple but very photogenic first stop for fans just landing in Seoul.</p><p>All seven BTS members have their handprints on the wall, making it a popular quick pilgrimage stop before heading deeper into the city. Fan reports since 2022 suggest the attraction may have been scaled back or is listed as \"coming soon\" in places, so treat a visit as a bonus rather than a guaranteed highlight — the building and street-level mall entrance remain there either way.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Euljiro-1(il)-ga Station (Line 2), exit 7. Turn back and go right toward the mall, then walk down the alley to find Star Avenue at the end, at the Main Branch of Lotte Department Store between the Department Store and Lotte Hotel."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check before you go"
+        },
+        "text": {
+          "en": "Some fan reports from 2022 describe the handprint/mirror feature as \"coming soon\" or possibly discontinued — it's worth asking mall staff on arrival rather than making it the sole reason for a trip to this part of Myeongdong."
+        }
+      }
+    ]
+  },
+  {
+    "id": 210,
+    "name": "Gyeonghoeru Pavilion (Gyeongbokgung Palace)",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2020",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2018/05/13/gyeongbokgung-palace-and-bukcheon-hanbok-village-nct-127-went-here-and-bts-performed-here-how-to-go-and-where-to-rent-hanbok-3355-hanbok-rental/",
+    "ytId": "",
+    "address": "161 Sajik-ro, Jongno-gu, Seoul",
+    "lat": 37.5798,
+    "lng": 126.9759,
+    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Gyeonghoeru%20(Royal%20Banquet%20Hall)%20at%20Gyeongbokgung%20Palace,%20Seoul.jpg",
+    "fullDescription": {
+      "en": "<p>Gyeonghoeru is the large lake-side pavilion inside Gyeongbokgung Palace, built on a stone-pillared platform surrounded by a rectangular pond — historically used for state banquets and receiving foreign envoys. It's one of the most photographed spots in the whole palace complex, distinct from the main throne hall, Geunjeongjeon, a short walk away.</p><p>BTS performed \"Mikrokosmos\" here on October 1, 2020, as part of NBC's \"The Tonight Show Starring Jimmy Fallon\" BTS Week, right after filming \"IDOL\" at Geunjeongjeon Hall. RM also separately posted photos taken at the pavilion. The Seoul city government confirmed on Twitter that both performances were filmed on the palace grounds.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Anguk Station (Line 3), exit 2, and walk straight to reach the palace grounds. The pavilion is inside Gyeongbokgung Palace, near the main gate — same entrance as the Geunjeongjeon throne hall."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Free entry in a hanbok"
+        },
+        "text": {
+          "en": "The palace is closed on Tuesdays. Entry is free for anyone wearing a hanbok — several rental shops (e.g. 3355 Hanbok Rental) operate near the Bukchon Hanbok Village area close to exit 2."
+        }
+      }
+    ]
+  },
+  {
+    "id": 211,
+    "name": "Everland — American Adventure (Rockville)",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Yongin",
+    "category": "Landmark",
+    "year": "2020",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2018/05/16/everland-theme-park-during-tulip-festival/",
+    "ytId": "",
+    "address": "199 Everland-ro, Pogok-eup, Cheoin-gu, Yongin-si",
+    "lat": 37.2945,
+    "lng": 127.202,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Everland is South Korea's largest theme park, split into several themed zones including \"American Adventure,\" home to the Rockspin swing ride and the general \"Rockville\" area. It's a separate part of the park from the Everland Bungee Jump area already on this site, and one of the go-to filming backdrops for K-pop TV specials thanks to its colorful, US-diner-style storefronts.</p><p>BTS performed \"Dynamite\" here for America's Got Talent (AGT) 2020, reportedly filmed near the American Adventure/Rockville area by the Rockspin ride — the group's first performance of the song after its release, timed with its US chart-topping run.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Jeondae-Everland Station (Ever Line), exit 3. Walk straight, then take the escalator/stairs down to the free shuttle bus station and ride the Everland shuttle bus (free) to the park entrance."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Combine with the T Express"
+        },
+        "text": {
+          "en": "The T Express roller coaster, one of Everland's biggest draws, is in the same general area of the park — worth planning your day so you're not crossing back and forth."
+        }
+      }
+    ]
+  },
+  {
+    "id": 212,
+    "name": "[CLOSED] LINE Store & BT21 Cafe — Itaewon",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Cafe",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/04/20/line-store-and-bt21-cafe-itaewon-branch-how-to-go-and-what-to-expect/",
+    "ytId": "",
+    "address": "200 Itaewon-ro, Itaewon-dong, Yongsan-gu, Seoul",
+    "lat": 37.5345,
+    "lng": 126.9944,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>This flagship LINE Friends store in Itaewon housed a BT21-themed cafe on the 3rd floor, with more BT21 merchandise on the 2nd floor — at the time the world's largest LINE Friends store. The pink building was a landmark stop on the Itaewon shopping strip for several years before it closed.</p><p>BTS filmed videos here during the BT21 character-creation process, and fans identified the specific cafe table the members reportedly sat at (V is said to have taken one end of it). The Itaewon branch permanently closed on April 5, 2020, with LINE Friends citing plans to expand operations elsewhere in the city rather than renew this store.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Itaewon Station, exit 3. Walk straight and cross the pedestrian crossing — the building that housed the pink LINE store is visible from there, on Itaewon-ro."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "This location has closed"
+        },
+        "text": {
+          "en": "The store and cafe permanently closed on April 5, 2020 — there's no BT21 cafe to visit here anymore, but the address remains a nostalgic photo stop for fans passing through Itaewon."
+        }
+      }
+    ]
+  },
+  {
+    "id": 213,
+    "name": "Tokyu Plaza (glass escalator) — Harajuku",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "Japan",
+    "city": "Tokyo (Harajuku)",
+    "category": "Landmark",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/07/04/tokyu-plaza-famous-glass-escalator-in-harajuku-appeared-in-bts-jungkooks-gcf-film-how-to-go-and-what-to-expect/",
+    "ytId": "",
+    "address": "4-30-3 Jingumae, Shibuya, Tokyo",
+    "lat": 35.6692,
+    "lng": 139.7075,
+    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Tokyu%20Plaza%20Omotesando-Harajuku.jpg",
+    "fullDescription": {
+      "en": "<p>Tokyu Plaza Omotesando Harajuku is a shopping complex known for its striking entrance: an escalator that carries visitors through a kaleidoscopic hall of angled mirrors before opening onto the shops and a rooftop garden above. Opened in 2012 and designed by architect Hiroshi Nakamura, the mirrored entrance has become one of Harajuku's most photographed spots.</p><p>The escalator appears in Jungkook's self-shot travel film \"GCF in Tokyo,\" part of the members' GCF (Golden Closet Film) series where each of them documents a personal trip. Fans retrace the same steps through the mirrored entrance as a quick, easy-to-reach stop while exploring Harajuku and Omotesando.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Meiji-jingumae \"Harajuku\" Station (Chiyoda Line C03 / Fukutoshin Line F15). Follow the signs for exits 1-6, then take exit 5 — this leads directly to Tokyu Plaza."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best time for photos"
+        },
+        "text": {
+          "en": "The mirrored entrance gets crowded fast since it sits right at a major Harajuku/Omotesando crossing — an early morning visit gives a much better chance at photos without a crowd of other people reflected in every mirror panel."
+        }
+      }
+    ]
+  },
+  {
+    "id": 214,
+    "name": "Red Rock (Harajuku branch)",
+    "group": "BTS",
+    "member": "Jimin, Jungkook",
+    "country": "Japan",
+    "city": "Tokyo (Harajuku)",
+    "category": "Restaurant",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/06/22/red-rock-harajuku-bts-jimin-and-jungkook-ate-here-how-to-go-and-what-to-expect/",
+    "ytId": "",
+    "address": "3-25-12 Jingumae, Shibuya, Tokyo",
+    "lat": 35.6708,
+    "lng": 139.7031,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Red Rock is a small roast beef bowl restaurant near Takeshita Street in Harajuku, known for generous portions ordered via a vending machine at the entrance — a popular, no-frills lunch stop for people exploring the neighborhood's shopping streets.</p><p>Jimin and Jungkook ate here during the same Harajuku outing captured in Jungkook's \"GCF in Tokyo\" film, after Jimin shopped at the nearby YSL Omotesando branch. They're reported to have ordered the Slice Steak Bowl, #2 on the menu.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Meiji-jingumae \"Harajuku\" Station (Chiyoda Line C03 / Fukutoshin Line F15), exit 3. Cross the pedestrian crossing and go around the small round park, walk through the alley to Takeshita Street, cross at the far end, turn left, and continue past the Rip N Dip store to reach Red Rock."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Order at the vending machine"
+        },
+        "text": {
+          "en": "Like many small Japanese eateries, you order and pay at a vending machine near the entrance before sitting down — the Slice Steak Bowl is menu item #2, the one Jimin and Jungkook reportedly ordered."
+        }
+      }
+    ]
+  },
+  {
+    "id": 215,
+    "name": "SHOW DC — Idol Cafe (BTS Brick Cafe)",
+    "group": "BTS",
+    "member": "All",
+    "country": "Thailand",
+    "city": "Bangkok",
+    "category": "Cafe",
+    "year": "2019",
+    "episode": "",
+    "episodeLink": "https://starsofheavens.com/2019/03/20/show-dc-how-to-go-and-what-to-expect-idol-cafe-bts-brick-cafe-is-located-here/",
+    "ytId": "",
+    "address": "99/6-9 Rim Klong Bangkapi Road, Huai Khwang, Bangkok 10310",
+    "lat": 13.7514,
+    "lng": 100.5724,
+    "img": "",
+    "fullDescription": {
+      "en": "<p>Idol Cafe is a LEGO-brick-themed cafe inside the SHOW DC mall in Bangkok, part of the mall's \"YG Republique\" idol-focused area. Waffles are the menu highlight, and the cafe's LEGO-brick wall doubles as a photo backdrop for visitors posing the same way idols have in their own visits.</p><p>BTS visited Idol Cafe and left signed cups on display, and fans have been able to identify roughly where Jimin sat and which section of the LEGO wall the members posed at. As of a recent visit, parts of the surrounding \"YG Republique\" area were reported as under-maintained or still listed as \"coming soon,\" so it's worth checking current mall conditions before a special trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "SHOW DC mall is best reached by taxi or Grab directly, since the nearest train station is a long walk away. Enter via the entrance nearest the information booth for the shortest walk to Idol Cafe (the alternate entrance is near Gloria Jean's)."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Confirm it's open before going"
+        },
+        "text": {
+          "en": "The mall has reportedly struggled with occupancy, and the \"YG Republique\" idol area was described as mostly \"coming soon\"/unmaintained in a recent visit — check recent reviews or call ahead rather than making it your only reason to visit this part of Bangkok."
+        }
+      }
+    ]
   }
 ]
