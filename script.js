@@ -465,6 +465,22 @@ function pollForEmbedSuccess(container, url, successSelector, label, reprocess) 
 function isInstagramPostUrl(url) {
     return /^https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[^/?]+/i.test((url || '').trim());
 }
+// BUG corrigé (demande du 19/09/2026, persiste malgré les nouvelles tentatives ajoutées à
+// pollForEmbedSuccess() — le lien Instagram restait bloqué sur "View this post on
+// Instagram" même après 8 tentatives sur ~12s) : embed.js + instgrm.Embeds.process() (voir
+// plus bas, gardé en repli) dépend d'un script tiers dont le comportement exact n'est ni
+// documenté de façon fiable, ni garanti de produire un <iframe> — cause la plus probable
+// d'un échec PERMANENT (pas juste temporaire) que même des tentatives répétées ne peuvent
+// jamais corriger. Instagram propose aussi un iframe direct, sans aucun script tiers ni
+// traitement asynchrone : instagram.com/p/{code}/embed/ — c'est la même technique que
+// pinterest.com/ext/embed.html?id=... utilisée pour Pinterest ci-dessous (voir sa note),
+// et documentée comme fiable par de nombreux guides d'intégration (contrairement à l'API
+// oEmbed officielle de Meta, qui exige désormais un token d'app). Produit un vrai <iframe>
+// immédiatement, sans dépendre d'aucun état interne d'un widget JS externe.
+function extractInstagramShortcode(url) {
+    const m = (url || '').trim().match(/instagram\.com\/(?:p|reel|tv)\/([^/?]+)/i);
+    return m ? m[1] : '';
+}
 let _instagramWidgetLoadPromise = null;
 function loadInstagramWidgetScriptOnce() {
     if (window.instgrm && window.instgrm.Embeds) return Promise.resolve();
@@ -479,6 +495,13 @@ function loadInstagramWidgetScriptOnce() {
     return _instagramWidgetLoadPromise;
 }
 async function renderInstagramEmbedOnDetails(container, instagramUrl) {
+    const shortcode = extractInstagramShortcode(instagramUrl);
+    if (shortcode) {
+        container.innerHTML = `<iframe src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%;"></iframe>`;
+        return;
+    }
+    // Repli si jamais aucun code n'a pu être extrait (ne devrait normalement jamais arriver
+    // vu isInstagramPostUrl ci-dessus) — ancienne méthode widget JS, meilleur effort.
     // Posé ICI, de façon SYNCHRONE, avant le moindre `await` — voir la note dans
     // pollForEmbedSuccess() plus haut sur pourquoi ce drapeau ne peut pas être posé là-bas.
     container.dataset.embedPending = '1';
@@ -595,6 +618,24 @@ async function renderTikTokEmbedOnDetails(container, tiktokUrl) {
 function isPinterestPinUrl(url) {
     return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/pin\/[\w-]+/i.test((url || '').trim());
 }
+// BUG corrigé (demande du 19/09/2026, lieu "LINE Store & BT21 Cafe — Itaewon" — un lien
+// pinterest.com/pin/128282289370654878/ pourtant valide restait bloqué sur "View this Pin
+// on Pinterest" indéfiniment, malgré les nouvelles tentatives ajoutées à
+// pollForEmbedSuccess()) : comme pour Instagram ci-dessus, PinUtils.build() (repli
+// ci-dessous) dépend d'un widget JS tiers dont le comportement exact n'est pas documenté
+// de façon fiable et n'est pas garanti de produire un <iframe> — cause la plus probable
+// d'un échec PERMANENT qu'aucune nouvelle tentative ne peut corriger. Pinterest expose
+// aussi un iframe direct, sans script tiers : assets.pinterest.com/ext/embed.html?id={id
+// numérique de l'épingle} — même principe que le repli "Method 1" documenté par Pinterest
+// lui-même en complément du widget JS classique ("Method 2", utilisé jusqu'ici). Produit
+// un vrai <iframe> immédiatement, sans dépendre d'aucun état interne d'un widget externe.
+// pin.it (lien raccourci) reste sur l'ancien widget JS en repli : son id numérique n'est
+// pas présent dans l'URL elle-même (il faudrait résoudre la redirection côté serveur, ce
+// que ce site 100% statique n'a aucun moyen de faire).
+function extractPinterestPinId(url) {
+    const m = (url || '').trim().match(/\/pin\/(?:[^/?]*?)(\d{6,})\/?(?:[?#].*)?$/i);
+    return m ? m[1] : '';
+}
 let _pinterestSdkLoadPromise = null;
 function loadPinterestSdkOnce() {
     if (window.PinUtils) return Promise.resolve();
@@ -610,6 +651,11 @@ function loadPinterestSdkOnce() {
     return _pinterestSdkLoadPromise;
 }
 async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
+    const pinId = extractPinterestPinId(pinterestUrl);
+    if (pinId) {
+        container.innerHTML = `<iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" height="445" width="345" frameborder="0" scrolling="no" style="max-width:100%;"></iframe>`;
+        return;
+    }
     // Voir la note dans renderInstagramEmbedOnDetails() plus haut sur ce drapeau.
     container.dataset.embedPending = '1';
     container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="medium" href="${escapeHtml(pinterestUrl)}"></a>`;
