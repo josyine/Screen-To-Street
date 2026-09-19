@@ -573,6 +573,35 @@ async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
     showEmbedFallbackLinkIfStuck(container, pinterestUrl, 'iframe', 'View this Pin on Pinterest');
 }
 
+// BUG corrigé (demande du 19/09/2026, lieu "Daegu Daeseong Elementary School V Mural" —
+// un lien Instagram pourtant valide restait affiché en simple lien "View this post on
+// Instagram" au lieu de l'embed, "je veux que tous les réseaux sociaux soient des posts
+// embeded") — renderLocationRichContent() (plus bas) lance ces embeds dès l'ouverture de
+// la fiche lieu, mais ils vivent dans l'onglet "Story" (#tab-story, voir map.html), pas
+// actif par défaut (onglet "Info" ouvert en premier) : .tab-panel a `display:none` tant
+// qu'il n'est pas .active (voir style.css). Plusieurs des scripts d'embed officiels
+// utilisés ici (embed.js d'Instagram notamment, contrairement à widgets.js de Twitter/X,
+// qui n'a pas ce problème — d'où "seul Instagram" dans le rapport) mesurent la largeur de
+// leur conteneur au moment du traitement et abandonnent SILENCIEUSEMENT un conteneur de
+// largeur nulle, sans jamais retenter — d'où le blocage définitif sur le lien de repli
+// (voir showEmbedFallbackLinkIfStuck() plus haut), quelle que soit la validité du post.
+// Retraite donc ici les embeds pas encore réussis (pas de <iframe>, le marqueur de succès
+// partagé par les 4) dès que l'onglet redevient RÉELLEMENT visible — appelé depuis le
+// clic sur .tab-btn[data-tab="story"] ci-dessous.
+function reprocessStoryEmbedsIfNeeded(loc) {
+    [
+        ['details-instagram-container', loc.instagramUrl, isInstagramPostUrl, renderInstagramEmbedOnDetails],
+        ['details-facebook-container', loc.facebookUrl, isFacebookPostUrl, renderFacebookEmbedOnDetails],
+        ['details-tiktok-container', loc.tiktokUrl, isTikTokVideoUrl, renderTikTokEmbedOnDetails],
+        ['details-pinterest-container', loc.pinterestUrl, isPinterestPinUrl, renderPinterestEmbedOnDetails],
+    ].forEach(([id, url, isValidUrl, renderFn]) => {
+        if (!url || !isValidUrl(url)) return;
+        const container = document.getElementById(id);
+        if (!container || container.querySelector('iframe')) return; // déjà réussi
+        renderFn(container, url);
+    });
+}
+
 window.showSimpleToast = function (message, opts) {
     const isError = opts && opts.isError;
     let container = document.getElementById('simple-toast-container');
@@ -1429,6 +1458,12 @@ let map = null;
 let markerGroup = null;
 let currentFilteredLocations = [];
 let currentLocationIdForMemory = null;
+// Dernier objet lieu effectivement passé à renderLocationRichContent() (demande du
+// 19/09/2026, voir reprocessStoryEmbedsIfNeeded() plus bas) — peut différer de
+// celebLocations.find(...) : renderLocationRichContent() est souvent rappelée avec une
+// version fusionnée à la volée (Object.assign({}, loc, remote), voir fetchLocationContent()
+// plus bas) une fois la lecture Firestore résolue, plus à jour que le catalogue statique.
+let lastRenderedLocationForEmbeds = null;
 // Lieux marqués "vérifiés" par un admin (demande du 13/09/2026) — chargé une seule fois,
 // admins uniquement, voir le handler 'firebase-ready' plus bas et renderLocations().
 let verifiedLocationIdsCache = [];
@@ -2847,6 +2882,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if(target) target.classList.add('active');
             if (btn.dataset.tab === 'reviews' && typeof window.loadLocationReviews === 'function' && currentLocationIdForMemory != null) {
                 window.loadLocationReviews(currentLocationIdForMemory);
+            }
+            // Voir reprocessStoryEmbedsIfNeeded() plus haut : rattrape un embed Instagram/
+            // Facebook/TikTok/Pinterest resté bloqué sur son lien de repli parce que le
+            // script d'embed officiel a traité un conteneur encore masqué (onglet "Story"
+            // pas encore actif au moment de l'ouverture de la fiche).
+            if (btn.dataset.tab === 'story' && lastRenderedLocationForEmbeds != null) {
+                reprocessStoryEmbedsIfNeeded(lastRenderedLocationForEmbeds);
             }
         });
     });
@@ -5027,6 +5069,7 @@ window.closeLocVisitorsDrawer = function () {
 // délai), PUIS une seconde fois si une lecture Firestore répond avec une version plus à
 // jour (voir l'appel à window.fetchLocationContent() dans openDetailsPanel ci-dessous).
 function renderLocationRichContent(loc) {
+    lastRenderedLocationForEmbeds = loc;
     // Story tab : le fullDescription (1er paragraphe = le lieu, paragraphes suivants = le lien avec BTS)
     // est découpé automatiquement par balises <p>, sans toucher aux données des lieux.
     const descPlaceEl = document.getElementById('details-desc-place');
