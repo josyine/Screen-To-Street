@@ -1249,7 +1249,10 @@ window.approveLocationSubmission = async function (submission) {
         return { success: true, publishedId: targetId };
     } catch (e) {
         console.warn('Approbation de la proposition échouée :', e);
-        return { success: false, code: e && e.code || 'unknown' };
+        // message (demande du 19/09/2026) — voir la note dans adminUpdateLocationContent()
+        // plus bas : nomme le champ Firestore fautif, sans quoi "invalid-argument" seul ne
+        // donne aucune piste.
+        return { success: false, code: e && e.code || 'unknown', message: e && e.message };
     }
 };
 
@@ -1390,7 +1393,14 @@ window.adminUpdateLocationContent = async function (locationId, fields) {
         return { success: true };
     } catch (e) {
         console.warn('Édition directe du lieu échouée :', e);
-        return { success: false, code: e && e.code || 'unknown' };
+        // message (demande du 19/09/2026, "l'URL Facebook... invalid-argument" persistant
+        // malgré stripUndefinedDeep ci-dessus) : Firestore inclut normalement le CHEMIN DU
+        // CHAMP fautif dans e.message (ex: "Unsupported field value: undefined (found in
+        // field practicalInfo.2.text)") — jusqu'ici perdu, ne laissant que le code générique
+        // "invalid-argument" sans indice exploitable. Affiché par admin.html/script.js à
+        // côté du code pour rendre la cause réelle diagnosticable sans accès direct à la
+        // console du navigateur de l'admin.
+        return { success: false, code: e && e.code || 'unknown', message: e && e.message };
     }
 };
 
@@ -1422,7 +1432,7 @@ window.adminUpdateLocationSkeleton = async function (locationId, fields) {
         return { success: true };
     } catch (e) {
         console.warn('Correction de la fiche échouée :', e);
-        return { success: false, code: e && e.code || 'unknown' };
+        return { success: false, code: e && e.code || 'unknown', message: e && e.message };
     }
 };
 

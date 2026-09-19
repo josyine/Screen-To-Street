@@ -451,6 +451,70 @@ async function renderFacebookEmbedOnDetails(container, facebookUrl) {
     showEmbedFallbackLinkIfStuck(container, facebookUrl, 'iframe', 'View this post on Facebook');
 }
 
+// Post TikTok embarqué (demande du 19/09/2026, "je veux que tous les liens des réseaux
+// sociaux soient embeded dans Story") — contrairement à ce qu'affirmait un ancien
+// commentaire ici ("aucune méthode fiable sans clé API"), TikTok a bien un embed officiel
+// PUBLIC sans clé API pour une vidéo précise : un <blockquote class="tiktok-embed"> retraité
+// par https://www.tiktok.com/embed.js, exactement le même mécanisme que le bouton "Embed"
+// sur tiktok.com — même principe que Twitter/Instagram/Facebook ci-dessus. Un simple lien de
+// profil (pas une vidéo précise) n'a pas d'équivalent embarquable et reste donc un lien
+// "Follow" classique, voir isTikTokVideoUrl ci-dessous.
+function isTikTokVideoUrl(url) {
+    return /^https?:\/\/(www\.|vm\.|vt\.)?tiktok\.com\/(@[\w.-]+\/video\/\d+|v\/\d+)/i.test((url || '').trim());
+}
+function extractTikTokVideoId(url) {
+    const m = (url || '').trim().match(/tiktok\.com\/(?:@[\w.-]+\/video\/|v\/)(\d+)/i);
+    return m ? m[1] : '';
+}
+async function renderTikTokEmbedOnDetails(container, tiktokUrl) {
+    const videoId = extractTikTokVideoId(tiktokUrl);
+    container.innerHTML = `<blockquote class="tiktok-embed" cite="${escapeHtml(tiktokUrl)}" data-video-id="${escapeHtml(videoId)}" style="max-width:605px;min-width:325px;"><section></section></blockquote>`;
+    // Contrairement au SDK Facebook/Instagram, embed.js de TikTok n'expose aucune fonction
+    // publique du type FB.XFBML.parse(container)/instgrm.Embeds.process() pour retraiter
+    // UNIQUEMENT un conteneur précis après coup — le script se contente de scanner le DOM au
+    // chargement. Réinjecter une NOUVELLE balise <script> à chaque appel (plutôt que de la
+    // charger une seule fois comme pour les autres réseaux) force ce nouveau scan, seule
+    // méthode fiable documentée pour un blockquote ajouté après le premier chargement.
+    const s = document.createElement('script');
+    s.src = 'https://www.tiktok.com/embed.js';
+    s.async = true;
+    document.body.appendChild(s);
+    showEmbedFallbackLinkIfStuck(container, tiktokUrl, 'iframe', 'View this video on TikTok');
+}
+
+// Épingle Pinterest embarquée (demande du 19/09/2026, même principe que TikTok ci-dessus) —
+// widget officiel "Save Button" / embed public sans clé API : un <a data-pin-do="embedPin">
+// retraité par //assets.pinterest.com/js/pinit.js. Un simple lien de profil/board (pas une
+// épingle précise) n'a pas d'équivalent embarquable et reste donc un lien "Follow" classique,
+// voir isPinterestPinUrl ci-dessous.
+function isPinterestPinUrl(url) {
+    return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/pin\/[\w-]+/i.test((url || '').trim());
+}
+let _pinterestSdkLoadPromise = null;
+function loadPinterestSdkOnce() {
+    if (window.PinUtils) return Promise.resolve();
+    if (_pinterestSdkLoadPromise) return _pinterestSdkLoadPromise;
+    _pinterestSdkLoadPromise = new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = 'https://assets.pinterest.com/js/pinit.js';
+        s.async = true;
+        s.onload = resolve;
+        s.onerror = resolve;
+        document.body.appendChild(s);
+    });
+    return _pinterestSdkLoadPromise;
+}
+async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
+    container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="medium" href="${escapeHtml(pinterestUrl)}"></a>`;
+    await loadPinterestSdkOnce();
+    // PinUtils.build(container) est l'API officielle pour retraiter un conteneur précis après
+    // le chargement initial du script (équivalent de FB.XFBML.parse(container)/
+    // instgrm.Embeds.process() ci-dessus) — documentée par Pinterest pour justement ce cas
+    // (contenu ajouté dynamiquement après coup).
+    if (window.PinUtils && typeof window.PinUtils.build === 'function') window.PinUtils.build(container);
+    showEmbedFallbackLinkIfStuck(container, pinterestUrl, 'iframe', 'View this Pin on Pinterest');
+}
+
 window.showSimpleToast = function (message, opts) {
     const isError = opts && opts.isError;
     let container = document.getElementById('simple-toast-container');
@@ -5005,11 +5069,15 @@ function renderLocationRichContent(loc) {
     const tweetContainer = document.getElementById('details-tweet-container');
     const instagramContainer = document.getElementById('details-instagram-container');
     const facebookContainer = document.getElementById('details-facebook-container');
+    const tiktokContainer = document.getElementById('details-tiktok-container');
+    const pinterestContainer = document.getElementById('details-pinterest-container');
     // Réutilisés plus bas dans la section "Liens sociaux" : si le post est déjà embarqué
-    // ici, le lien "Follow: Instagram"/"Follow: Facebook" ne doit pas être répété en double
-    // en dessous.
+    // ici, le lien "Follow: Instagram"/"Follow: Facebook"/"Follow: TikTok"/"Follow: Pinterest"
+    // ne doit pas être répété en double en dessous.
     let instagramEmbedded = false;
     let facebookEmbedded = false;
+    let tiktokEmbedded = false;
+    let pinterestEmbedded = false;
     if (videoContainer && videoSection) {
         // Chacun des types de média a son propre conteneur, affiché ou masqué
         // INDÉPENDAMMENT des autres (demande du 07/09/2026 : un lien YouTube ET un lien
@@ -5021,6 +5089,8 @@ function renderLocationRichContent(loc) {
         if (tweetContainer) { tweetContainer.innerHTML = ""; tweetContainer.classList.add('hidden'); }
         if (instagramContainer) { instagramContainer.innerHTML = ""; instagramContainer.classList.add('hidden'); }
         if (facebookContainer) { facebookContainer.innerHTML = ""; facebookContainer.classList.add('hidden'); }
+        if (tiktokContainer) { tiktokContainer.innerHTML = ""; tiktokContainer.classList.add('hidden'); }
+        if (pinterestContainer) { pinterestContainer.innerHTML = ""; pinterestContainer.classList.add('hidden'); }
         let anyMedia = false;
 
         // Vidéo(s)/YouTube : les deux restent mutuellement exclusifs ENTRE EUX (ils partagent
@@ -5065,6 +5135,24 @@ function renderLocationRichContent(loc) {
             facebookEmbedded = true;
             anyMedia = true;
         }
+        if (loc.tiktokUrl && isTikTokVideoUrl(loc.tiktokUrl) && tiktokContainer) {
+            // Même chose pour une vidéo TikTok précise (demande du 19/09/2026) — un simple
+            // lien de profil (pas une vidéo) n'a pas d'équivalent embarquable, voir
+            // isTikTokVideoUrl(), et reste donc affiché comme lien "Follow" plus bas.
+            tiktokContainer.classList.remove('hidden');
+            renderTikTokEmbedOnDetails(tiktokContainer, loc.tiktokUrl);
+            tiktokEmbedded = true;
+            anyMedia = true;
+        }
+        if (loc.pinterestUrl && isPinterestPinUrl(loc.pinterestUrl) && pinterestContainer) {
+            // Même chose pour une épingle Pinterest précise (demande du 19/09/2026) — un
+            // simple lien de profil/board (pas une épingle) n'a pas d'équivalent embarquable,
+            // voir isPinterestPinUrl(), et reste donc affiché comme lien "Follow" plus bas.
+            pinterestContainer.classList.remove('hidden');
+            renderPinterestEmbedOnDetails(pinterestContainer, loc.pinterestUrl);
+            pinterestEmbedded = true;
+            anyMedia = true;
+        }
         videoSection.classList.toggle('hidden', !anyMedia);
     }
 
@@ -5103,17 +5191,20 @@ function renderLocationRichContent(loc) {
 
     // Liens sociaux (Instagram/Facebook/TikTok/Pinterest, voir admin.html) : chacun
     // n'apparaît que s'il a été renseigné, et redirige simplement vers le réseau au clic —
-    // pas d'embed ici pour TikTok/Pinterest (aucune méthode fiable sans clé API), et pas
-    // pour Instagram/Facebook non plus SI le post est déjà embarqué juste au-dessus (voir
-    // instagramEmbedded/facebookEmbedded, sinon un lien de simple profil, qui lui n'a pas
-    // d'embed possible, reste affiché normalement).
+    // sauf s'il est déjà embarqué juste au-dessus (demande du 19/09/2026, "je veux que tous
+    // les liens des réseaux sociaux soient embeded dans Story" — TikTok/Pinterest ont
+    // maintenant un embed comme Instagram/Facebook/Twitter, voir instagramEmbedded/
+    // facebookEmbedded/tiktokEmbedded/pinterestEmbedded ci-dessus), auquel cas ce lien
+    // "Follow" resterait redondant avec le contenu déjà affiché juste au-dessus. Un simple
+    // lien de profil/page/board (jamais embarquable, voir isXPostUrl()) reste affiché
+    // normalement ici.
     const socialCont = document.getElementById('details-social-links');
     if (socialCont) {
         const socialLinks = [
             ['details-instagram-link', instagramEmbedded ? null : loc.instagramUrl],
             ['details-facebook-link', facebookEmbedded ? null : loc.facebookUrl],
-            ['details-tiktok-link', loc.tiktokUrl],
-            ['details-pinterest-link', loc.pinterestUrl]
+            ['details-tiktok-link', tiktokEmbedded ? null : loc.tiktokUrl],
+            ['details-pinterest-link', pinterestEmbedded ? null : loc.pinterestUrl]
         ];
         let anySocial = false;
         socialLinks.forEach(([elId, url]) => {
@@ -6145,7 +6236,11 @@ async function saveLocationEdit(locId, modal) {
         }
         setTimeout(() => modal.classList.add('hidden'), 900);
     } else {
-        resultEl.textContent = 'Failed: ' + (res.code || skeletonRes.code);
+        // message (demande du 19/09/2026) — voir la note dans adminUpdateLocationContent()
+        // (firebase-init.js) : le message Firestore complet nomme le CHAMP fautif, sans quoi
+        // "Failed: invalid-argument" ne donne aucune piste pour trouver la vraie cause.
+        const failedRes = res.success ? skeletonRes : res;
+        resultEl.textContent = 'Failed: ' + (failedRes.code || 'unknown') + (failedRes.message ? ' — ' + failedRes.message : '');
         resultEl.style.color = '#ef4444';
     }
     saveBtn.disabled = false;
