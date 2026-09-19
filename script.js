@@ -5633,6 +5633,11 @@ function ensureLocationEditModal() {
                 <div style="flex:1;"><label style="${labelStyle}">Country</label><input type="text" id="location-edit-country" style="${fieldStyle}"></div>
                 <div style="flex:1;"><label style="${labelStyle}">City</label><input type="text" id="location-edit-city" style="${fieldStyle}"></div>
             </div>
+            <!-- Adresse (demande du 19/09/2026, "je veux pouvoir modifier l'adresse d'un
+                 lieu... directement dans le detail d'un lieu") — même champ squelette
+                 (locationSkeletonOverrides) que Group/Country/City ci-dessus. -->
+            <label style="${labelStyle}">Address</label>
+            <input type="text" id="location-edit-address" style="${fieldStyle} margin-bottom:14px;">
             <label style="${labelStyle}">Date — select every year that applies</label>
             <div id="location-edit-year" style="margin-bottom:14px;"></div>
 
@@ -5882,6 +5887,7 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-member').innerHTML = memberMultiSelectHtml(data.member);
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
+        document.getElementById('location-edit-address').value = data.address || '';
         document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
         // Bouton "Closed" (demande du 19/09/2026) — reflète l'état actuel du nom.
         locationEditClosedState = (data.name || '').startsWith('[CLOSED] ');
@@ -6078,6 +6084,7 @@ async function saveLocationEdit(locId, modal) {
     const memberVal = collectMemberCheckboxValue(document.getElementById('location-edit-member'));
     const countryVal = document.getElementById('location-edit-country').value.trim();
     const cityVal = document.getElementById('location-edit-city').value.trim();
+    const addressVal = document.getElementById('location-edit-address').value.trim();
     const yearVal = collectYearCheckboxValue(document.getElementById('location-edit-year'));
 
     let hasError = false;
@@ -6205,6 +6212,10 @@ async function saveLocationEdit(locId, modal) {
     if (memberVal) skeletonFields.member = memberVal;
     if (countryVal) skeletonFields.country = countryVal;
     if (cityVal) skeletonFields.city = cityVal;
+    // Adresse (demande du 19/09/2026, "je veux pouvoir modifier l'adresse d'un lieu...
+    // directement dans le detail d'un lieu") — même champ squelette que Group/Country/City
+    // ci-dessus.
+    if (addressVal) skeletonFields.address = addressVal;
     if (yearVal) skeletonFields.year = yearVal;
     // Bouton "Closed" (demande du 19/09/2026) — préfixe/déprefixe le nom avec "[CLOSED] "
     // selon la bascule locale, sans jamais empiler le préfixe plusieurs fois. Le générateur
