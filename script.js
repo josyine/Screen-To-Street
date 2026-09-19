@@ -2173,79 +2173,86 @@ window.addEventListener('firebase-ready', async (e) => {
     // exporté depuis) n'est jamais dupliqué (voir existingIds ci-dessous, même garde que
     // admin.html). Placé AVANT le "if (!user) return" : un lieu publié doit être visible
     // même déconnecté, comme n'importe quel autre lieu.
-    if (typeof window.fetchNewLocations === 'function') {
-        try {
-            const newLocs = await window.fetchNewLocations();
-            const existingIds = new Set(celebLocations.map(l => l.id));
-            let anyAdded = false;
-            newLocs.forEach(l => {
-                if (l && l.id != null && !existingIds.has(l.id)) {
-                    celebLocations.push(l);
-                    existingIds.add(l.id);
-                    anyAdded = true;
-                }
-            });
-            if (anyAdded && document.getElementById('map') && typeof renderLocations === 'function') {
-                renderLocations(true);
-            }
-        } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
-    }
-
-    // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
-    // "j'ai essayé de modifier la categorie d'un lieu dans Existing locations, mais ça
-    // ne s'est pas mis à jour dans le lieu dans map") — window.fetchLocationSkeletonOverrides()
-    // (firebase-init.js) documentait déjà "fusionné dans celebLocations au chargement",
-    // mais ce mérge n'était en réalité branché QUE dans admin.html
-    // (loadAllSiteLocationsOnce), jamais ici : la carte elle-même ne relisait donc jamais
-    // les corrections déjà enregistrées, qui restaient invisibles pour tout le monde
-    // (admin inclus) jusqu'au prochain export planifié. Placé AVANT le "if (!user) return"
-    // ci-dessous : une correction déjà publiée doit être visible même déconnecté, comme
-    // n'importe quelle autre donnée de lieu.
-    if (typeof window.fetchLocationSkeletonOverrides === 'function') {
-        try {
-            const overrides = await window.fetchLocationSkeletonOverrides();
-            let anyOverrideApplied = false;
-            celebLocations.forEach(loc => {
-                const o = overrides[String(loc.id)];
-                if (o) { Object.assign(loc, o); anyOverrideApplied = true; }
-            });
-            if (anyOverrideApplied && document.getElementById('map') && typeof renderLocations === 'function') {
-                renderLocations(true);
-            }
-        } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
-    }
-
-    // BUG corrigé (demande du 19/09/2026, "le bouton delete location ne fonctionne
-    // toujours pas... quand je clique dessus, ça ne supprime pas le lieu du site") — même
-    // symptôme, même cause que le correctif locationSkeletonOverrides juste au-dessus :
-    // window.fetchHiddenLocationIds() (firebase-init.js) et son document Firestore
-    // siteConfig/hiddenLocations existaient déjà, correctement écrits par
-    // adminUpdateLocationHidden()/le bouton "Delete location" (admin.html/le modal
-    // crayon), et déjà relus dans admin.html (loadAllSiteLocationsOnce, pour afficher le
-    // badge "Hidden from map") — mais jamais relus ICI, sur la carte elle-même. L'admin
-    // voyait donc bien le badge changer dans admin.html (l'écriture Firestore avait
-    // réussi), tout en constatant que le lieu restait affiché partout ailleurs jusqu'au
-    // prochain export statique planifié (voir export-locations.yml, jusqu'à 6h plus
-    // tard) — d'où l'impression que le bouton "ne fonctionne pas". Retiré ici de
-    // celebLocations dès que Firestore répond, pour TOUT le monde (visiteur ou admin,
-    // donc placé AVANT le "if (!user) return" ci-dessous) — un lieu supprimé disparaît
-    // désormais du site dès la prochaine visite/rechargement, sans attendre l'export.
-    if (typeof window.fetchHiddenLocationIds === 'function') {
-        try {
-            const hiddenIds = new Set((await window.fetchHiddenLocationIds()).map(String));
-            if (hiddenIds.size) {
-                let anyRemoved = false;
-                for (let i = celebLocations.length - 1; i >= 0; i--) {
-                    if (hiddenIds.has(String(celebLocations[i].id))) {
-                        celebLocations.splice(i, 1);
-                        anyRemoved = true;
+    // Perf (demande du 19/09/2026, "sur mobile... fait en sorte que le temps de chargement
+    // soit très rapide") : les 3 synchronisations ci-dessous (newLocations/
+    // locationSkeletonOverrides/hiddenLocations) n'ont d'effet visible QUE sur la carte
+    // (#map, présent uniquement sur map.html, voir les gardes déjà en place plus bas avant
+    // chaque renderLocations()) — mais jusqu'ici, la LECTURE Firestore elle-même s'exécutait
+    // sur TOUTE page chargeant script.js, feed.html/friends.html/trips.html compris, qui
+    // n'en ont pourtant aucun usage. 3 allers-retours Firestore inutiles avant même que
+    // cette fonction atteigne le reste (wishlist/trips/etc. plus bas) sur un réseau mobile
+    // déjà plus lent — désormais entièrement sautés hors de map.html, et lancées en
+    // parallèle (Promise.all, chacune indépendante des deux autres) plutôt qu'en série là
+    // où elles s'exécutent encore.
+    if (document.getElementById('map')) {
+        await Promise.all([
+            // BUG corrigé (demande du 19/09/2026, "Dans Location submissions, lorsque je
+            // publie un lieu il ne se publie plus dans map") — même famille de bug que les
+            // deux correctifs juste en dessous (locationSkeletonOverrides/hiddenLocations) :
+            // Approve (window.approveLocationSubmission(), firebase-init.js) écrit bien le
+            // lieu dans Firestore newLocations/{id}, avec un commentaire affirmant depuis
+            // longtemps "que script.js fusionne dans celebLocations au chargement de la
+            // page" — mais ce merge n'a jamais été branché ICI, seulement dans admin.html
+            // (loadAllSiteLocationsOnce, pour que l'onglet "Existing locations" les
+            // affiche). La carte elle-même ne relisait donc jamais newLocations, laissant
+            // un lieu tout juste publié invisible pour tout le monde jusqu'au prochain
+            // export statique planifié (jusqu'à 6h plus tard). Un lieu déjà présent dans le
+            // squelette statique (déjà exporté depuis) n'est jamais dupliqué (voir
+            // existingIds ci-dessous, même garde que admin.html).
+            (async () => {
+                if (typeof window.fetchNewLocations !== 'function') return;
+                try {
+                    const newLocs = await window.fetchNewLocations();
+                    const existingIds = new Set(celebLocations.map(l => l.id));
+                    let anyAdded = false;
+                    newLocs.forEach(l => {
+                        if (l && l.id != null && !existingIds.has(l.id)) {
+                            celebLocations.push(l);
+                            existingIds.add(l.id);
+                            anyAdded = true;
+                        }
+                    });
+                    if (anyAdded && typeof renderLocations === 'function') renderLocations(true);
+                } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
+            })(),
+            // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
+            // "j'ai essayé de modifier la categorie d'un lieu dans Existing locations, mais
+            // ça ne s'est pas mis à jour dans le lieu dans map") — même cause que ci-dessus :
+            // window.fetchLocationSkeletonOverrides() n'était fusionné que dans admin.html,
+            // jamais ici.
+            (async () => {
+                if (typeof window.fetchLocationSkeletonOverrides !== 'function') return;
+                try {
+                    const overrides = await window.fetchLocationSkeletonOverrides();
+                    let anyOverrideApplied = false;
+                    celebLocations.forEach(loc => {
+                        const o = overrides[String(loc.id)];
+                        if (o) { Object.assign(loc, o); anyOverrideApplied = true; }
+                    });
+                    if (anyOverrideApplied && typeof renderLocations === 'function') renderLocations(true);
+                } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
+            })(),
+            // BUG corrigé (demande du 19/09/2026, "le bouton delete location ne fonctionne
+            // toujours pas") — même symptôme, même cause : window.fetchHiddenLocationIds()
+            // (siteConfig/hiddenLocations) n'était relu que dans admin.html, jamais ici, sur
+            // la carte elle-même.
+            (async () => {
+                if (typeof window.fetchHiddenLocationIds !== 'function') return;
+                try {
+                    const hiddenIds = new Set((await window.fetchHiddenLocationIds()).map(String));
+                    if (hiddenIds.size) {
+                        let anyRemoved = false;
+                        for (let i = celebLocations.length - 1; i >= 0; i--) {
+                            if (hiddenIds.has(String(celebLocations[i].id))) {
+                                celebLocations.splice(i, 1);
+                                anyRemoved = true;
+                            }
+                        }
+                        if (anyRemoved && typeof renderLocations === 'function') renderLocations(true);
                     }
-                }
-                if (anyRemoved && document.getElementById('map') && typeof renderLocations === 'function') {
-                    renderLocations(true);
-                }
-            }
-        } catch (err) { /* tant pis, le lieu reste visible jusqu'au prochain export statique */ }
+                } catch (err) { /* tant pis, le lieu reste visible jusqu'au prochain export statique */ }
+            })(),
+        ]);
     }
 
     if (!user) return; // visiteur non connecté : le reste (wishlist, trips...) ne s'applique pas
@@ -2285,10 +2292,13 @@ window.addEventListener('firebase-ready', async (e) => {
         if (verifiedFilterBtn) verifiedFilterBtn.classList.remove('hidden');
         // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) : lue
         // UNE SEULE FOIS ici, réservée aux admins (jamais chargée pour un visiteur
-        // normal) — voir renderLocations() plus bas, qui s'appuie sur ce cache.
-        if (typeof window.fetchVerifiedLocationIds === 'function') {
+        // normal) — voir renderLocations() plus bas, qui s'appuie sur ce cache. N'a
+        // d'effet visible QUE sur la carte (perf, demande du 19/09/2026, voir la note
+        // au-dessus sur newLocations/locationSkeletonOverrides/hiddenLocations) — inutile
+        // sur les pages sans #map, y compris pour un compte admin.
+        if (document.getElementById('map') && typeof window.fetchVerifiedLocationIds === 'function') {
             verifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
-            if (document.getElementById('map') && typeof renderLocations === 'function') renderLocations(true);
+            if (typeof renderLocations === 'function') renderLocations(true);
         }
     }
 

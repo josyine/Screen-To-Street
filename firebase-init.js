@@ -222,15 +222,21 @@ window.syncUserData = async function (fields) {
             // règles Firestore DÉPLOYÉES (console Firebase) en retard sur ce fichier —
             // jamais auto-déployées, voir CLAUDE.md — plutôt qu'une vraie règle qui
             // bloquerait ce compte.
-            // BUG signalé à nouveau le 13/09/2026 malgré ce qui précède : e.code n'est pas
-            // toujours 'permission-denied' à la lettre pour un refus serveur (le SDK
-            // Firestore peut aussi renvoyer un code générique selon le contexte). On
-            // s'appuie donc en plus sur navigator.onLine, qui répond IMMÉDIATEMENT sans
-            // aller-retour réseau : si l'appareil se sait connecté à internet mais que
-            // l'écriture échoue quand même, ce n'est presque jamais un "problème de
-            // connexion" au sens propre — plus probablement encore les règles Firestore
-            // déployées (console Firebase), en retard sur ce fichier (voir CLAUDE.md).
-            const looksLikeServerRefusal = (e && e.code === 'permission-denied') || navigator.onLine;
+            // BUG corrigé (demande du 19/09/2026, "sur mobile... Server permission error...
+            // ça bug dès qu'il faut utiliser les données de firebase") : la tentative du
+            // 13/09/2026 de couvrir les cas où e.code n'est pas littéralement
+            // 'permission-denied' s'appuyait sur navigator.onLine — mais cette API ne fait
+            // que constater qu'une interface réseau existe (Wi-Fi/cellulaire allumé), PAS
+            // que Firestore est réellement joignable : sur mobile en particulier, elle reste
+            // `true` y compris pendant une coupure réelle (signal faible, bascule Wi-Fi ↔
+            // cellulaire, DNS capricieux...). Résultat : ce toast alarmant "contactez
+            // l'administrateur du site" s'affichait pour à peu près TOUT échec Firestore dès
+            // lors que le téléphone affichait la moindre barre de réseau — un simple
+            // problème de connexion, bien plus fréquent sur mobile qu'un vrai refus serveur,
+            // était donc quasi systématiquement mal diagnostiqué. e.code reste le seul
+            // signal fiable ici : Firestore renvoie bien 'permission-denied' pour un refus
+            // de règles, code que le SDK ne réutilise jamais pour un problème réseau/timeout.
+            const looksLikeServerRefusal = e && e.code === 'permission-denied';
             const message = looksLikeServerRefusal
                 ? (isFr
                     ? "Erreur de permission serveur : vos changements sont enregistrés sur cet appareil, mais le serveur les refuse pour l'instant. Réessayez plus tard ou contactez l'administrateur du site."
