@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260934">
+<link rel="stylesheet" href="style.css?v=20260935">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -400,9 +400,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260934"></script>
-<script src="locations-data.js?v=20260934"></script>
-<script src="script.js?v=20260934"></script>
+<script type="module" src="firebase-init.js?v=20260935"></script>
+<script src="locations-data.js?v=20260935"></script>
+<script src="script.js?v=20260935"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -768,7 +768,35 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         });
     }
 
-    window.addEventListener('firebase-ready', () => { loadFeed(); });
+    // Filet de sécurité supplémentaire (demande du 19/09/2026, "problème de serveur sur
+    // mobile, je n'arrive pas à voir les publications de feed... ça charge à l'infini") —
+    // withTimeout() ci-dessus protège contre une requête Firestore qui ne répond jamais
+    // une fois loadFeed() lancé, mais pas contre le cas où loadFeed() n'est JAMAIS appelé
+    // du tout : "firebase-ready" n'est déclenché que depuis onAuthStateChanged(), dans
+    // firebase-init.js — un <script type="module"> qui importe le SDK Firebase depuis
+    // gstatic.com. Sur un réseau mobile lent/instable, ou un navigateur mobile qui bloque
+    // ce module (navigation privée sans IndexedDB, etc.), cet import peut ne jamais
+    // aboutir : "firebase-ready" ne part alors jamais, et #feed-loading (affiché par
+    // défaut dans le HTML) reste visible indéfiniment sans qu'aucun code n'ait jamais
+    // tourné pour le cacher — exactement le symptôme rapporté, absent sur desktop où cet
+    // import échoue beaucoup plus rarement. Après 8s sans "firebase-ready", on charge le
+    // fil quand même : window.fetchGlobalPhotoFeed() (si le module a fini par charger)
+    // répond sans avoir besoin d'être connecté (lecture publique, voir firestore.rules),
+    // et si la fonction est toujours indisponible, loadFeed() bascule proprement sur son
+    // message "Loading failed" existant — un échec visible et actionnable, jamais un
+    // spinner bloqué pour toujours.
+    let feedLoadStarted = false;
+    window.addEventListener('firebase-ready', () => {
+        if (feedLoadStarted) return;
+        feedLoadStarted = true;
+        loadFeed();
+    });
+    setTimeout(() => {
+        if (feedLoadStarted) return;
+        feedLoadStarted = true;
+        console.warn('"firebase-ready" jamais reçu après 8s — chargement du fil sans attendre Firebase.');
+        loadFeed();
+    }, 8000);
 </script>
 </body>
 </html>
