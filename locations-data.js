@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-18T21:47:13.705Z.
+// Généré le 2026-09-19T06:23:51.174Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -3757,52 +3757,6 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Look for the famous red periscope-shaped structure near the station exit, a popular meeting point close to where their stage once stood.",
       "fr": "Repérez la célèbre structure rouge en forme de périscope près de la sortie de la station, un point de rendez-vous populaire proche de l'endroit où se tenait leur scène."
-    }
-  },
-  {
-    "id": 75,
-    "name": "Everland (Bungee Jump)",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Yongin",
-    "category": "Run BTS",
-    "year": "2015",
-    "episode": "Episode 9",
-    "ytId": "KrJfIKaXhY4",
-    "address": "199 Everland-ro, Pogok-eup, Cheoin-gu, Yongin-si",
-    "lat": 37.2945,
-    "lng": 127.202,
-    "img": "https://img.youtube.com/vi/KrJfIKaXhY4/hqdefault.jpg",
-    "fullDescription": {
-      "en": "<p>In a legendary early episode of Run BTS!, the members went to Everland to face their fears by bungee jumping — the episode is famous for J-Hope's tearful hesitation and Jungkook's fearless, smiling leap.</p><p>South Korea's largest theme park offers a full day of rides and attractions, but for ARMY, walking past the bungee jump tower brings back the hilarious memory of the members screaming the group's name before taking the plunge.</p>",
-      "fr": "<p>Dans un épisode légendaire des débuts de Run BTS!, les membres se sont rendus à Everland pour affronter leurs peurs en sautant à l'élastique — épisode resté célèbre pour l'hésitation larmoyante de J-Hope et le saut souriant et sans peur de Jungkook.</p><p>Le plus grand parc à thème de Corée du Sud offre une journée entière de manèges et d'attractions, mais pour l'ARMY, passer devant la tour de saut à l'élastique rappelle le souvenir hilarant des membres criant le nom du groupe avant de sauter.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Ride the T-Express after"
-        },
-        "text": {
-          "en": "After the bungee tower, ride the T-Express — one of the steepest wooden rollercoasters in the world."
-        }
-      },
-      {
-        "title": {
-          "en": "Look up at the tower"
-        },
-        "text": {
-          "en": "Even without jumping yourself, the bungee tower is worth a look up — it's the same structure J-Hope hesitated at and Jungkook leapt from without a second thought."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Take the Everline light rail to Jeondae-Everland Station, then the free shuttle bus; a full day pass runs around 50,000-60,000 KRW depending on the season.",
-      "fr": "Prenez le train léger Everline jusqu'à la station Jeondae-Everland, puis la navette gratuite ; un pass journée coûte environ 50 000 à 60 000 KRW selon la saison."
-    },
-    "tip": {
-      "en": "After the bungee tower, ride the T-Express — one of the steepest wooden rollercoasters in the world.",
-      "fr": "Après la tour de saut à l'élastique, montez dans le T-Express — l'un des grands huit en bois les plus vertigineux au monde."
     }
   },
   {
@@ -9350,7 +9304,7 @@ window.STATIC_LOCATIONS = [
     "id": 206,
     "name": "Ivan Clarke Gallery",
     "group": "BTS",
-    "member": "All",
+    "member": "V",
     "country": "New Zealand",
     "city": "Queenstown",
     "category": "Bon Voyage",
@@ -9358,33 +9312,60 @@ window.STATIC_LOCATIONS = [
     "address": "Camp Street, Queenstown",
     "lat": -45.0312,
     "lng": 168.6626,
-    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "img": "images/admin-upload-206-photo.jpg",
     "fullDescription": {
-      "en": "<p>This gallery showcases the work of New Zealand landscape painter Ivan Clarke, known for large-scale oil paintings of the South Island's mountains and lakes as well as his recurring \"Lonely Dog\" series. It's a small, personal gallery experience rather than a large institution — often with the artist or his family present to talk through the work.</p><p>The group visited during the later part of their New Zealand road trip on Bon Voyage Season 4, taking in local art as a quieter counterpoint to the season's more physical, adrenaline-driven stops around Queenstown.</p>",
-      "fr": "<p>Cette galerie présente le travail du peintre paysagiste néo-zélandais Ivan Clarke, connu pour ses grandes toiles à l'huile représentant les montagnes et les lacs de l'île du Sud, ainsi que sa série récurrente \"Lonely Dog\". C'est une expérience de galerie intimiste plutôt qu'une grande institution — l'artiste ou sa famille y sont souvent présents pour présenter les œuvres.</p><p>Le groupe s'y est rendu vers la fin de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'accordant un moment d'art local, plus calme, en contrepoint des étapes plus physiques et riches en adrénaline de la saison autour de Queenstown.</p>"
+      "fr": "<p>Cette galerie présente le travail du peintre paysagiste néo-zélandais Ivan Clarke, connu pour ses grandes toiles à l'huile représentant les montagnes et les lacs de l'île du Sud, ainsi que sa série récurrente \"Lonely Dog\". C'est une expérience de galerie intimiste plutôt qu'une grande institution — l'artiste ou sa famille y sont souvent présents pour présenter les œuvres.</p><p>Le groupe s'y est rendu vers la fin de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'accordant un moment d'art local, plus calme, en contrepoint des étapes plus physiques et riches en adrénaline de la saison autour de Queenstown.</p>",
+      "en": "<p>Located in the heart of Queenstown, this intimate gallery showcases the extraordinary work of native New Zealand landscape painter Ivan Clarke. The gallery is celebrated for its breathtaking, large-scale oil paintings that masterfully capture the majestic lighting, mountains, and glacial lakes of the South Island. It is also the exclusive home to Clarke's whimsical and internationally loved \"Lonely Dog\" collection. Unlike large, sterile institutions, this offers a warm, highly personal gallery experience, often with the artist himself or his family members present to personally walk visitors through the stories behind the canvases.</p><p>During Day 6 of their New Zealand road trip (featured across Episodes 7 and 8 of Bon Voyage Season 4), the group visited this gallery while exploring downtown Queenstown. Known as the \"Adventure Capital of the World,\" Queenstown is famous for high-adrenaline activities (which the members certainly partook in!). However, their visit to the Ivan Clarke Gallery served as a much-needed, quieter counterpoint to the season's more physical, adrenaline-driven stops. The members spent time quietly admiring the local art, proving that even in the middle of an action-packed travel schedule, they always make time to appreciate regional culture and fine arts.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Check opening hours"
+          "en": "Discover the"
         },
         "text": {
-          "en": "As a small, owner-run gallery, opening hours can vary — it's worth checking ahead rather than assuming standard retail hours."
+          "en": "While the grand landscapes are breathtaking, make sure to ask the staff about the \"Lonely Dog\" paintings and sculptures! This quirky, recurring character has an entire universe and backstory created by the artist, which adds a fun, whimsical layer to your visit."
         }
       },
       {
         "title": {
-          "en": "Ask about the \"Lonely Dog\" series"
+          "en": "A Peaceful Escape"
         },
         "text": {
-          "en": "Ivan Clarke's recurring \"Lonely Dog\" paintings are the gallery's best-known works and a good conversation starter if staff or the artist are on site."
+          "en": "Downtown Queenstown is incredibly bustling, packed with tourists, bars, and adventure booking agencies. Use your visit to this gallery exactly as BTS did—as a quiet, meditative escape from the loud streets outside."
+        }
+      },
+      {
+        "title": {
+          "en": "Gallery Etiquette"
+        },
+        "text": {
+          "en": "Because it is a working, private art gallery where original paintings are sold, remember to be respectful. Do not touch the canvases, keep your voice down, and always ask the staff politely before taking close-up photos of specific artworks."
         }
       }
     ],
     "directions": {
       "en": "The gallery is in central Queenstown, a short walk from the lakefront.",
       "fr": "La galerie se trouve dans le centre de Queenstown, à quelques minutes à pied du bord du lac."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.ivanclarkeartist.com/",
+    "tweetUrls": [],
+    "ytId": "8GRNpV2U5YU",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-206-recreated-0.jpg"
+    ],
+    "recreatedPhoto": "images/admin-upload-206-recreated.jpg"
   },
   {
     "id": 207,
@@ -9439,7 +9420,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [],
     "youtubeUrls": [],
     "tiktokUrl": "",
-    "ytId": "",
     "facebookUrl": "",
     "tweetUrl": "",
     "episodeLink": "",
@@ -9451,7 +9431,8 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-207-recreated-0.jpg"
     ],
-    "recreatedPhoto": "images/admin-upload-207-recreated.jpg"
+    "recreatedPhoto": "images/admin-upload-207-recreated.jpg",
+    "ytId": "uK_9Cp83Tho"
   },
   {
     "id": 208,
@@ -9611,13 +9592,13 @@ window.STATIC_LOCATIONS = [
     "year": "2020",
     "episode": "",
     "episodeLink": "https://starsofheavens.com/2018/05/16/everland-theme-park-during-tulip-festival/",
-    "ytId": "",
+    "ytId": "e81ad5MpfQ0",
     "address": "199 Everland-ro, Pogok-eup, Cheoin-gu, Yongin-si",
     "lat": 37.2945,
     "lng": 127.202,
-    "img": "",
+    "img": "images/admin-upload-211-photo.jpg",
     "fullDescription": {
-      "en": "<p>Everland is South Korea's largest theme park, split into several themed zones including \"American Adventure,\" home to the Rockspin swing ride and the general \"Rockville\" area. It's a separate part of the park from the Everland Bungee Jump area already on this site, and one of the go-to filming backdrops for K-pop TV specials thanks to its colorful, US-diner-style storefronts.</p><p>BTS performed \"Dynamite\" here for America's Got Talent (AGT) 2020, reportedly filmed near the American Adventure/Rockville area by the Rockspin ride — the group's first performance of the song after its release, timed with its US chart-topping run.</p>"
+      "en": "<p>Everland is South Korea's largest and most famous theme park, boasting massive roller coasters, a sprawling safari, and beautiful seasonal flower gardens. The park is split into several intricately themed zones, with the \"American Adventure\" zone being one of the most visually striking. Specifically, the \"Rockville\" area within this zone is a vibrant homage to 1950s America, featuring classic diners, vintage cars, and retro storefronts. Home to the adrenaline-pumping Rockspin swing ride, this colorful, highly aesthetic section of the park has become a go-to filming backdrop for K-pop TV specials and music videos.</p><p>In September 2020, BTS took over the Rockville area to film their spectacular performance of \"Dynamite\" for the America's Got Talent (AGT) broadcast. This was an incredibly historic moment for the group: it was their very first television performance of the song following its release, perfectly timed to celebrate the track's monumental debut at #1 on the US Billboard Hot 100 chart. Dressed in flawless 1970s disco-inspired outfits, the members danced their way through the retro gas station, diner sets, and right past the towering Rockspin ride. The bright, cinematic backdrop of Everland perfectly matched the song's joyful, explosive energy, creating one of the most iconic performances of the \"Dynamite\" era.</p>"
     },
     "practicalInfo": [
       {
@@ -9632,13 +9613,46 @@ window.STATIC_LOCATIONS = [
     "tipsList": [
       {
         "title": {
-          "en": "Combine with the T Express"
+          "en": "The Retro Dress Code"
         },
         "text": {
-          "en": "The T Express roller coaster, one of Everland's biggest draws, is in the same general area of the park — worth planning your day so you're not crossing back and forth."
+          "en": "Everland is deeply loved by Korean youths who often dress up in matching school uniforms or retro outfits to visit the park. Embrace the vibe! Wear your best 70s-inspired \"Dynamite\" outfit to take the ultimate photos in front of the vintage cars and diner sets."
+        }
+      },
+      {
+        "title": {
+          "en": "Find the Opening Spot"
+        },
+        "text": {
+          "en": "You can perfectly trace the members' choreography path! Start near the Rockville gas station setup (where Jungkook opens the song), walk past the diner storefronts, and end your tour by the giant guitar structures of the Rockspin ride."
+        }
+      },
+      {
+        "title": {
+          "en": "Make a Full Day of It"
+        },
+        "text": {
+          "en": "Everland is massive, so plan to spend the entire day there. Beyond the BTS photo spots, you cannot leave without riding the T-Express (one of the world's steepest wooden roller coasters) and exploring Safari World."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-211-recreated-0.jpg"
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "images/admin-upload-211-recreated.jpg",
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.everland.com/everland/home/main"
   },
   {
     "id": 212,
@@ -9762,7 +9776,7 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 215,
-    "name": "SHOW DC — Idol Cafe (BTS Brick Cafe)",
+    "name": "[CLOSED] SHOW DC — Idol Cafe (BTS Brick Cafe)",
     "group": "BTS",
     "member": "All",
     "country": "Thailand",
@@ -9770,14 +9784,14 @@ window.STATIC_LOCATIONS = [
     "category": "Cafe",
     "year": "2019",
     "episode": "",
-    "episodeLink": "https://starsofheavens.com/2019/03/20/show-dc-how-to-go-and-what-to-expect-idol-cafe-bts-brick-cafe-is-located-here/",
+    "episodeLink": "https://www.koreaboo.com/news/amazing-bts-themed-cafe-thailand-now-open/",
     "ytId": "",
     "address": "99/6-9 Rim Klong Bangkapi Road, Huai Khwang, Bangkok 10310",
     "lat": 13.7514,
     "lng": 100.5724,
-    "img": "",
+    "img": "images/admin-upload-215-photo.jpg",
     "fullDescription": {
-      "en": "<p>Idol Cafe is a LEGO-brick-themed cafe inside the SHOW DC mall in Bangkok, part of the mall's \"YG Republique\" idol-focused area. Waffles are the menu highlight, and the cafe's LEGO-brick wall doubles as a photo backdrop for visitors posing the same way idols have in their own visits.</p><p>BTS visited Idol Cafe and left signed cups on display, and fans have been able to identify roughly where Jimin sat and which section of the LEGO wall the members posed at. As of a recent visit, parts of the surrounding \"YG Republique\" area were reported as under-maintained or still listed as \"coming soon,\" so it's worth checking current mall conditions before a special trip.</p>"
+      "en": "<p>Originally located inside the SHOW DC entertainment mega-mall, the \"Idol Cafe\" (often associated with the interactive Brick Live franchise) was a vibrant, toy-themed eatery designed to tap into the massive K-pop wave in Thailand. It was famous for its playful aesthetic, featuring colorful LEGO-brick walls, quirky toy displays, and sweet waffles. However, the SHOW DC mall struggled significantly with low foot traffic over the years. Today, the entire K-pop zone, including the Idol Cafe, is permanently closed. The building has since been completely overhauled, rebranded, and reopened as \"Bravo BKK,\" meaning the original K-pop installations and cafes have been fully dismantled.</p><p>During their 2019 tour stop in Bangkok, the members of BTS visited this cafe, leaving their mark on what was then a bustling K-pop hub. They signed several display cups, and highly observant fans quickly analyzed photos from the visit to identify the exact section of the LEGO wall where the members posed, as well as the specific table where Jimin sat. For a few years, finding these exact spots became a fun scavenger hunt for ARMYs. Although the physical cafe no longer exists, the photos of the members playing with the LEGO bricks remain a fond, nostalgic memory of their time in Thailand.</p>"
     },
     "practicalInfo": [
       {
@@ -9792,12 +9806,47 @@ window.STATIC_LOCATIONS = [
     "tipsList": [
       {
         "title": {
-          "en": "Confirm it's open before going"
+          "en": "Archived Location Warning"
         },
         "text": {
-          "en": "The mall has reportedly struggled with occupancy, and the \"YG Republique\" idol area was described as mostly \"coming soon\"/unmaintained in a recent visit — check recent reviews or call ahead rather than making it your only reason to visit this part of Bangkok."
+          "en": "Please be aware that this location is strictly a piece of BTS history now. Do not travel to the mall expecting to find the LEGO wall, the cafe, or the signed cups, as they have all been removed."
+        }
+      },
+      {
+        "title": {
+          "en": "Beware of Outdated Guides"
+        },
+        "text": {
+          "en": "Many older fan blogs, outdated travel maps, and social media posts still list SHOW DC and the Idol Cafe as active BTS locations. Consider this guidebook entry your official update to save you a wasted trip!"
+        }
+      },
+      {
+        "title": {
+          "en": "Bravo BKK Today"
+        },
+        "text": {
+          "en": "If you are curious about the building itself, it still stands under the name Bravo BKK. It has been repurposed into a more general lifestyle and events mall, though it no longer caters specifically to the K-pop idol aesthetic."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BangtanINDIA/status/855405756010577921",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "images/admin-upload-215-recreated.jpg",
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.facebook.com/p/IDOL-LIVE-CAFE-100063484842352/",
+    "recreatedPhotos": [
+      "images/admin-upload-215-recreated-0.jpg",
+      "images/admin-upload-215-recreated-1.jpg",
+      "images/admin-upload-215-recreated-2.jpg"
     ]
   },
   {
