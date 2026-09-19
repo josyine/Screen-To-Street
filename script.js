@@ -417,6 +417,44 @@ function showEmbedFallbackLinkIfStuck(container, url, successSelector, label) {
     }, 4000);
 }
 
+// BUG corrigé (demande du 19/09/2026, lieu "Daegu Daeseong Elementary School V Mural" —
+// "ça ne fonctionne pas il y a encore 'View this post on Instagram'" : le premier correctif
+// — retraiter une fois quand l'onglet "Story" redevient visible — n'a pas suffi, le post
+// restait en lien de repli même une fois l'onglet ouvert) : contrairement à
+// showEmbedFallbackLinkIfStuck() ci-dessus (UNE seule vérification à 4s), les scripts
+// d'embed officiels tiers (embed.js d'Instagram en particulier — voir la discussion
+// publique de bibliothèques comme react-ig-embed, qui implémentent elles-mêmes un
+// mécanisme de nouvelles tentatives) peuvent échouer une première fois pour des raisons
+// purement temporaires (réponse lente de leur propre API interne, ordre de chargement...)
+// SANS jamais retenter d'eux-mêmes après coup — retraiter une seule fois ne suffit donc
+// pas toujours. Utilisé pour Instagram/Facebook/Pinterest, dont l'API officielle accepte de
+// retraiter un conteneur déjà tenté sans effet de bord (idempotent — contrairement à
+// TikTok, qui n'a aucune fonction de ce type, voir renderTikTokEmbedOnDetails plus bas).
+function pollForEmbedSuccess(container, url, successSelector, label, reprocess) {
+    // container.dataset.embedPending : posé de façon SYNCHRONE par l'appelant, tout au début
+    // de renderXEmbedOnDetails (voir plus bas), PAS ici — cette fonction n'est appelée qu'après
+    // le `await` de chargement du script tiers, donc trop tard pour empêcher un 2e appel
+    // concurrent de reprocessStoryEmbedsIfNeeded() (ex: onglet "Story" cliqué juste après
+    // l'ouverture de la fiche, avant que ce `await` ait eu le temps de se résoudre) de démarrer
+    // un 2e cycle de sondage EN PARALLÈLE sur le même conteneur — repéré en test (Playwright),
+    // le nombre d'appels à reprocess() doublait exactement dans ce cas tant que le drapeau
+    // n'était posé qu'ici. Retiré ici une fois le cycle terminé (réussite ou abandon).
+    let attempts = 0;
+    const maxAttempts = 8; // ~12s de tentatives au total avant d'abandonner (voir intervalle ci-dessous)
+    const tick = () => {
+        if (container.querySelector(successSelector)) { delete container.dataset.embedPending; return; } // déjà réussi
+        attempts++;
+        if (attempts >= maxAttempts) {
+            container.innerHTML = `<a href="${url}" target="_blank" rel="noopener" class="embed-fallback-link">${escapeHtml(label)}</a>`;
+            delete container.dataset.embedPending;
+            return;
+        }
+        reprocess();
+        setTimeout(tick, 1500);
+    };
+    setTimeout(tick, 1500);
+}
+
 // Même principe que le widget Twitter ci-dessus, pour un post/reel Instagram précis (demande
 // du 07/09/2026 : le lien "Instagram" restait un simple lien "Follow" sans jamais s'afficher
 // en embed, contrairement au tweet — voir admin.html pour le même correctif côté prévisualisation
@@ -441,6 +479,9 @@ function loadInstagramWidgetScriptOnce() {
     return _instagramWidgetLoadPromise;
 }
 async function renderInstagramEmbedOnDetails(container, instagramUrl) {
+    // Posé ICI, de façon SYNCHRONE, avant le moindre `await` — voir la note dans
+    // pollForEmbedSuccess() plus haut sur pourquoi ce drapeau ne peut pas être posé là-bas.
+    container.dataset.embedPending = '1';
     container.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${instagramUrl}" data-instgrm-version="14"></blockquote>`;
     await loadInstagramWidgetScriptOnce();
     // Contrairement à twttr.widgets.load(container) (accepte un conteneur précis),
@@ -448,7 +489,9 @@ async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     // second argument ciblé côté API officielle, mais sans risque ici : les blockquotes
     // déjà traités sont ignorés par le widget lui-même.
     if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
-    showEmbedFallbackLinkIfStuck(container, instagramUrl, 'iframe', 'View this post on Instagram');
+    pollForEmbedSuccess(container, instagramUrl, 'iframe', 'View this post on Instagram', () => {
+        if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+    });
 }
 
 // Post Facebook embarqué (demande du 18/09/2026, "les liens embeded qui ne fonctionnent
@@ -497,6 +540,8 @@ function loadFacebookSdkOnce() {
     return _facebookSdkLoadPromise;
 }
 async function renderFacebookEmbedOnDetails(container, facebookUrl) {
+    // Voir la note dans renderInstagramEmbedOnDetails() ci-dessus sur ce drapeau.
+    container.dataset.embedPending = '1';
     // data-width="auto" (plutôt qu'une largeur fixe en pixels) : rend l'embed responsive,
     // contrairement au simple iframe plugins/post.php?href=... (largeur figée) — se
     // redimensionne correctement sur mobile, comme le widget Twitter au-dessus.
@@ -506,7 +551,9 @@ async function renderFacebookEmbedOnDetails(container, facebookUrl) {
     // FB.XFBML.parse(container) accepte lui aussi un conteneur ciblé — API officielle, pas
     // besoin du retraitement global de toute la page comme instgrm.Embeds.process().
     if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
-    showEmbedFallbackLinkIfStuck(container, facebookUrl, 'iframe', 'View this post on Facebook');
+    pollForEmbedSuccess(container, facebookUrl, 'iframe', 'View this post on Facebook', () => {
+        if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
+    });
 }
 
 // Post TikTok embarqué (demande du 19/09/2026, "je veux que tous les liens des réseaux
@@ -563,6 +610,8 @@ function loadPinterestSdkOnce() {
     return _pinterestSdkLoadPromise;
 }
 async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
+    // Voir la note dans renderInstagramEmbedOnDetails() plus haut sur ce drapeau.
+    container.dataset.embedPending = '1';
     container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="medium" href="${escapeHtml(pinterestUrl)}"></a>`;
     await loadPinterestSdkOnce();
     // PinUtils.build(container) est l'API officielle pour retraiter un conteneur précis après
@@ -570,7 +619,9 @@ async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
     // instgrm.Embeds.process() ci-dessus) — documentée par Pinterest pour justement ce cas
     // (contenu ajouté dynamiquement après coup).
     if (window.PinUtils && typeof window.PinUtils.build === 'function') window.PinUtils.build(container);
-    showEmbedFallbackLinkIfStuck(container, pinterestUrl, 'iframe', 'View this Pin on Pinterest');
+    pollForEmbedSuccess(container, pinterestUrl, 'iframe', 'View this Pin on Pinterest', () => {
+        if (window.PinUtils && typeof window.PinUtils.build === 'function') window.PinUtils.build(container);
+    });
 }
 
 // BUG corrigé (demande du 19/09/2026, lieu "Daegu Daeseong Elementary School V Mural" —
@@ -579,15 +630,15 @@ async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
 // embeded") — renderLocationRichContent() (plus bas) lance ces embeds dès l'ouverture de
 // la fiche lieu, mais ils vivent dans l'onglet "Story" (#tab-story, voir map.html), pas
 // actif par défaut (onglet "Info" ouvert en premier) : .tab-panel a `display:none` tant
-// qu'il n'est pas .active (voir style.css). Plusieurs des scripts d'embed officiels
-// utilisés ici (embed.js d'Instagram notamment, contrairement à widgets.js de Twitter/X,
-// qui n'a pas ce problème — d'où "seul Instagram" dans le rapport) mesurent la largeur de
-// leur conteneur au moment du traitement et abandonnent SILENCIEUSEMENT un conteneur de
-// largeur nulle, sans jamais retenter — d'où le blocage définitif sur le lien de repli
-// (voir showEmbedFallbackLinkIfStuck() plus haut), quelle que soit la validité du post.
-// Retraite donc ici les embeds pas encore réussis (pas de <iframe>, le marqueur de succès
-// partagé par les 4) dès que l'onglet redevient RÉELLEMENT visible — appelé depuis le
-// clic sur .tab-btn[data-tab="story"] ci-dessous.
+// qu'il n'est pas .active (voir style.css) — un conteneur masqué au moment du 1er
+// traitement PEUT contribuer à l'échec selon le script tiers. Complété (le rapport a
+// persisté après ce seul correctif) par pollForEmbedSuccess() ci-dessus, qui couvre la
+// cause la plus probable : les scripts d'embed tiers (embed.js d'Instagram en particulier)
+// peuvent échouer une 1ère fois pour des raisons purement temporaires, sans lien avec la
+// visibilité, et n'ont eux-mêmes aucun mécanisme de nouvelle tentative. Retraite donc ici
+// les embeds pas encore réussis (pas de <iframe>, le marqueur de succès partagé par les 4)
+// dès que l'onglet redevient RÉELLEMENT visible — appelé depuis le clic sur
+// .tab-btn[data-tab="story"] ci-dessous.
 function reprocessStoryEmbedsIfNeeded(loc) {
     [
         ['details-instagram-container', loc.instagramUrl, isInstagramPostUrl, renderInstagramEmbedOnDetails],
@@ -597,7 +648,11 @@ function reprocessStoryEmbedsIfNeeded(loc) {
     ].forEach(([id, url, isValidUrl, renderFn]) => {
         if (!url || !isValidUrl(url)) return;
         const container = document.getElementById(id);
-        if (!container || container.querySelector('iframe')) return; // déjà réussi
+        // container.dataset.embedPending : un cycle de tentatives (pollForEmbedSuccess())
+        // est déjà en cours sur ce conteneur — ne pas en démarrer un 2e en parallèle (ex:
+        // onglet "Story" cliqué juste après l'ouverture de la fiche, avant que le 1er rendu
+        // ait eu le temps d'aboutir ou d'échouer).
+        if (!container || container.querySelector('iframe') || container.dataset.embedPending === '1') return;
         renderFn(container, url);
     });
 }
