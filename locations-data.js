@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-19T12:00:55.720Z.
+// Généré le 2026-09-19T16:41:56.143Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -581,12 +581,12 @@ window.STATIC_LOCATIONS = [
     "country": "France",
     "city": "Paris",
     "category": "Museum",
-    "year": "2023",
+    "year": "2019",
     "ytId": "PalaisTokyo1",
     "address": "13 Av. du Président Wilson, Paris",
     "lat": 48.8643,
     "lng": 2.2965,
-    "img": "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=600",
+    "img": "images/admin-upload-10-photo.jpg",
     "fullDescription": {
       "en": "<p>One of Europe's largest spaces dedicated to contemporary art, Palais de Tokyo occupies a monumental 1937 Art Deco building facing the Seine, known for its raw concrete interiors and constantly rotating, boundary-pushing exhibitions.</p><p>Jimin's appearance here tied into a fashion and art moment that fit the venue's avant-garde identity perfectly, and its industrial-chic architecture has since become a favourite backdrop for fans' own photos.</p>",
       "fr": "<p>L'un des plus grands espaces d'Europe dédiés à l'art contemporain, le Palais de Tokyo occupe un bâtiment monumental de style Art déco datant de 1937, face à la Seine, reconnu pour ses intérieurs en béton brut et ses expositions sans cesse renouvelées et avant-gardistes.</p><p>L'apparition de Jimin ici s'inscrivait dans un moment mode et art parfaitement en phase avec l'identité avant-gardiste du lieu, et son architecture industrielle-chic est depuis devenue un décor de prédilection pour les photos des fans.</p>"
@@ -616,7 +616,26 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The building stays open late most evenings — an evening visit avoids the daytime museum crowds entirely.",
       "fr": "Le bâtiment reste ouvert tard la plupart des soirs — une visite en soirée permet d'éviter complètement l'affluence diurne du musée."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-10-recreated-0.jpg",
+      "images/admin-upload-10-recreated-1.jpg"
+    ],
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet"
   },
   {
     "id": 11,
@@ -9309,7 +9328,7 @@ window.STATIC_LOCATIONS = [
     "city": "Queenstown",
     "category": "Bon Voyage",
     "year": "2019",
-    "address": "Camp Street, Queenstown",
+    "address": "39 Camp Street, Queenstown 9300, New Zealand",
     "lat": -45.0312,
     "lng": 168.6626,
     "img": "images/admin-upload-206-photo.jpg",
@@ -9365,7 +9384,6 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-206-recreated-0.jpg"
     ],
-    "recreatedPhoto": "images/admin-upload-206-recreated.jpg",
     "practicalInfo": [
       {
         "title": {
@@ -9402,7 +9420,7 @@ window.STATIC_LOCATIONS = [
     "city": "Lake Tekapo",
     "category": "Bon Voyage",
     "year": "2019",
-    "address": "Mount John Observatory Rd, Lake Tekapo",
+    "address": "Godley Peaks Road, Lake Tekapo 7945 (Mt. John summit)",
     "lat": -43.9866,
     "lng": 170.4653,
     "img": "images/admin-upload-207-photo.jpg",
@@ -9456,7 +9474,6 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-207-recreated-0.jpg"
     ],
-    "recreatedPhoto": "images/admin-upload-207-recreated.jpg",
     "ytId": "uK_9Cp83Tho",
     "tiktokUrl": "https://www.tiktok.com/@bts_official_bighit/video/6741983766970993921?_r=1&_t=ZN-99qTtNMy9TC",
     "practicalInfo": [
@@ -9495,7 +9512,7 @@ window.STATIC_LOCATIONS = [
     "city": "Glenorchy",
     "category": "Bon Voyage",
     "year": "2019",
-    "address": "862 Kinloch Rd, Kinloch, Glenorchy",
+    "address": "862 Kinloch Road, Glenorchy 9372, New Zealand",
     "lat": -44.8333,
     "lng": 168.3667,
     "img": "images/admin-upload-208-photo.jpg",
@@ -9548,10 +9565,35 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-208-recreated-0.jpg"
     ],
-    "recreatedPhoto": "images/admin-upload-208-recreated.jpg",
     "episodeLink": "https://www.flyhoneystars.com/2019/11/19/filming-location-bts-bon-voyage-in-new-zealand/bts-new-zealand-bon-voyage-day4-kinloch-lodge-glenorchy/",
     "ytId": "QYQd69V1dE4",
-    "officialLink": "https://weverse.io/bts/media/0-6453577"
+    "officialLink": "https://weverse.io/bts/media/0-6453577",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Because of its remote location, you will need a private vehicle (rental car or campervan). Drive 45 minutes from Queenstown to Glenorchy along the spectacular Glenorchy-Queenstown Road. From Glenorchy, follow the signs toward Kinloch and the Routeburn Track for another 25-30 minutes. Be aware that the final 9 kilometers are on an unsealed, gravel road."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The retreat operates year-round as a hotel, hostel, and campsite. Advance booking is absolutely essential, especially during the peak New Zealand summer months (December–February). If you only want to eat at the on-site restaurant without staying overnight, you must call ahead to make a reservation."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The surrounding wilderness terrain (lakefront and trails) is rugged and uneven. As the main lodge is a historic heritage building, it has some accessibility limitations. However, ground-floor facilities and specific rooms can accommodate guests with mobility needs if the staff is contacted in advance."
+        }
+      }
+    ]
   },
   {
     "id": 209,
@@ -10069,16 +10111,6 @@ window.STATIC_LOCATIONS = [
     "tweetUrl": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Seoul Subway Line 5 to Gwanghwamun Station (Exit 5) and walk 2 minutes to Cheonggye Plaza, the start of the stream."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "tweetUrls": [],
     "pinterestUrls": [],
     "pinterestUrl": "",
@@ -10115,7 +10147,32 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-new-0GsQ7YXKUoWXQaA4PgII-recreated-0.jpg"
     ],
-    "recreatedPhoto": "images/admin-upload-new-0GsQ7YXKUoWXQaA4PgII-recreated.jpg"
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The most scenic starting point is Cheonggye Plaza. Take Subway Line 5 to Gwanghwamun Station (Exit 5) or Subway Lines 1/2 to City Hall Station (Exit 4). Because the stream cuts through the center of Seoul, you can also hop on or off the trail from Jonggak, Euljiro 1-ga, or Dongdaemun stations."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open 24 hours a day, 365 days a year. Free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The pedestrian paths on both sides of the stream are flat and paved. Wheelchair and stroller ramps are available at regular intervals to access the street level from the waterway (though crossing the water via the stepping stones is not accessible)."
+        }
+      }
+    ]
   },
   {
     "country": "South Korea",
@@ -10549,16 +10606,6 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Korea House is a premier traditional cultural center situated at the foot of Namsan Mountain in Seoul. Built in traditional Joseon Dynasty architectural style, the complex promotes Korean heritage through traditional performing arts, royal cuisine court dining, and cultural workshops.</p><p>In 2018, BTS held their iconic photoshoot with Billboard Magazine at Korea House. Dressed in modern luxury high fashion blended with traditional aesthetic surroundings, the members posed in the elegant outdoor hanok courtyards, making it a celebrated landmark for ARMY interested in traditional Korean architecture.</p>"
     },
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Seoul Subway Line 3 or 4 to Chungmuro Station and take Exit 3. Korea House is less than a 2-minute walk from the exit."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "tweetUrls": [],
     "ytId": "ThcZlAqKVmQ",
     "facebookUrl": "",
@@ -10566,10 +10613,8 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "youtubeUrls": [],
     "tiktokUrl": "",
-    "imgCredit": "Piotrus / CC BY-SA 3.0",
     "pinterestUrls": [],
     "pinterestUrl": "",
-    "recreatedPhoto": "images/admin-upload-new-4BJEcfrUGqy68YbNzjQM-recreated.jpg",
     "officialLink": "https://www.kh.or.kr/kh/eng",
     "episodeLink": "https://www.youtube.com/watch?v=ThcZlAqKVmQ",
     "tipsList": [
@@ -10597,7 +10642,37 @@ window.STATIC_LOCATIONS = [
           "en": "Because of its authentic beauty, Korea House is a highly sought-after venue for traditional Korean weddings and banquets. If you visit on a weekend, you might be lucky enough to witness a beautiful ceremony! Just be mindful of the space and maintain a respectful distance so as not to interrupt the festivities."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-4BJEcfrUGqy68YbNzjQM-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The location is extremely accessible via public transit. Take Subway Line 3 or Line 4 to Chungmuro Station and use Exit 3. The entrance to Korea House is just a short 3-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor courtyards are generally open to the public during the day, but the main facilities operate around dining and performance schedules (Lunch: 12:00 PM – 3:00 PM / Dinner: 6:00 PM – 10:00 PM). Important: The center is closed on Mondays and major traditional holidays (Seollal and Chuseok)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main courtyards and modern dining halls are accessible, but because the complex replicates authentic Joseon-era architecture, there are raised wooden thresholds, uneven stone paths, and steps leading into the traditional hanok pavilions that may require assistance."
+        }
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "category": "Restaurant",
@@ -10675,7 +10750,7 @@ window.STATIC_LOCATIONS = [
     "city": "Gyeongju",
     "img": "images/admin-upload-new-6j7N5FkbYfq7rjE9qcg9-photo.jpg",
     "lng": 129.2831,
-    "address": "614 Gyeonggam-ro, Gyeongju-si, Gyeongsangbuk-do, South Korea",
+    "address": "130 Expo-ro, Gyeongju-si, Gyeongsangbuk-do (Located inside Gyeongju Expo Grand Park).",
     "member": "RM",
     "id": "new-6j7N5FkbYfq7rjE9qcg9",
     "country": "South Korea",
@@ -10688,16 +10763,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [],
     "episodeLink": "https://korean-vibe.com/news/newsview.php?ncode=1065603298323586",
     "facebookUrls": [],
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "From Singyeongju KTX Station, take Bus 700 or 10 directly to Gyeongju Expo Park."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "tweetUrls": [],
     "youtubeUrls": [],
     "imgCredit": "Choi2451 / Wikimedia Commons / CC BY-SA 3.0",
@@ -10745,11 +10810,39 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhoto": "images/admin-upload-new-6j7N5FkbYfq7rjE9qcg9-recreated.jpg"
+    "recreatedPhotos": [
+      "images/admin-upload-new-6j7N5FkbYfq7rjE9qcg9-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Gyeongju does not have a subway system. If you arrive by high-speed train at Singyeongju KTX Station, you can take local Bus #700 directly to the Expo Park. If you are already in the downtown Gyeongju tourist area, buses #10 or #11 will easily drop you off at the park entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The museum is open daily from 10:00 AM to 6:00 PM. Admission to the Solgeo Art Museum is automatically included when you purchase a general admission ticket to the Gyeongju Expo Grand Park (approximately 12,000 KRW for adults)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum itself is equipped with elevators and is accessible. However, please note that it is located on a slight hill within the expansive Expo Park, so the walk from the main park entrance to the museum doors requires navigating some paved inclines."
+        }
+      }
+    ]
   },
   {
     "id": "new-6s64K2xAPRELCZCbVIbV",
-    "address": "12100 Glen Rd, Potomac, MD 20854, United States",
+    "address": "12100 Glen Road, Potomac, MD 20854, USA",
     "country": "United States",
     "city": "Potomac",
     "member": "RM",
@@ -10771,46 +10864,82 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Spread across nearly 300 acres of rolling hills and pristine woodlands in Potomac, Maryland, the Glenstone Museum is a remarkable private art sanctuary. It offers a deeply contemplative experience by seamlessly harmonizing post-World War II art, minimalist architecture, and breathtaking landscape design.</p><p>RM visited this tranquil haven in December 2021 during an extensive East Coast art tour following BTS's schedule in the US. He explored the minimalist indoor galleries and wandered among colossal outdoor sculptures by master artists. By sharing photos of the museum's striking Water Court and its sweeping, peaceful landscapes on Instagram, he beautifully captured the essence of \"Namjooning\"—inspiring fans worldwide to discover this hidden gem just outside Washington, D.C.</p>"
     },
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "officialLink": "https://www.glenstone.org/",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Fuzheado / CC BY-SA 4.0",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-6s64K2xAPRELCZCbVIbV-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "The Golden Ticket"
+        },
+        "text": {
+          "en": "Admission to Glenstone is completely free, but timed tickets are mandatory and highly sought after. They are released online on the 1st of every month at 10 a.m. (for the current and following month). Set an alarm, as weekend slots disappear in minutes! (Note: Students, active military, and museum professionals can get guaranteed walk-in entry with an ID)."
+        }
+      },
+      {
+        "title": {
+          "en": "A Mature Environment (Age 12+)"
+        },
+        "text": {
+          "en": "Because of the fragile, unbarriered nature of the artwork, Glenstone enforces a strict age policy. Children under 12 years old are not permitted on the property."
+        }
+      },
+      {
+        "title": {
+          "en": "No Interior Photography"
+        },
+        "text": {
+          "en": "To preserve the contemplative atmosphere, taking photos inside the gallery buildings is strictly prohibited. You are, however, free to take outdoor photos for personal use without a tripod—just like Namjoon did at the outdoor Water Court!"
+        }
+      },
+      {
+        "title": {
+          "en": "Travel Light"
+        },
+        "text": {
+          "en": "The museum enforces a rigorous bag policy. Bags larger than 8x8 inches will not be permitted inside, so leave your large backpacks or bulky purses in your vehicle or check them at the Arrival Hall."
+        }
+      }
+    ],
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Located approximately 40 minutes by car from downtown Washington D.C. Rideshare or personal vehicle is recommended."
+          "en": "Located about 40 minutes from downtown Washington D.C. If you are driving, parking is free (but you must have a pre-booked ticket). If you want to use the guaranteed-entry public transit method, take the Metro Red Line to Rockville Station, then catch the Ride On Bus Route 301, which drops you directly at the museum gates."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open Thursday through Sunday from 10:00 AM to 5:00 PM (closed Monday, Tuesday, and Wednesday). Admission is completely free, but strictly controlled via advance online booking or the public transit exception."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Pavilions and the main arrival hall are fully wheelchair accessible with flat surfaces and elevators. However, the 300-acre outdoor landscape features crushed granite paths, rolling hills, and unpaved woodland trails that can be challenging to navigate. Wheelchairs are available to borrow on a first-come, first-served basis."
         }
       }
-    ],
-    "tweetUrls": [],
-    "facebookUrl": "",
-    "officialLink": "https://www.glenstone.org/",
-    "tiktokUrl": "",
-    "ytId": "",
-    "tipsList": [
-      {
-        "title": "The Golden Ticket",
-        "text": "Admission to Glenstone is completely free, but timed tickets are mandatory and highly sought after. They are released online on the 1st of every month at 10 a.m. (for the current and following month). Set an alarm, as weekend slots disappear in minutes! (Note: Students, active military, and museum professionals can get guaranteed walk-in entry with an ID)."
-      },
-      {
-        "title": "A Mature Environment (Age 12+)",
-        "text": "Because of the fragile, unbarriered nature of the artwork, Glenstone enforces a strict age policy. Children under 12 years old are not permitted on the property."
-      },
-      {
-        "title": "No Interior Photography",
-        "text": "To preserve the contemplative atmosphere, taking photos inside the gallery buildings is strictly prohibited. You are, however, free to take outdoor photos for personal use without a tripod—just like Namjoon did at the outdoor Water Court!"
-      },
-      {
-        "title": "Travel Light",
-        "text": "The museum enforces a rigorous bag policy. Bags larger than 8x8 inches will not be permitted inside, so leave your large backpacks or bulky purses in your vehicle or check them at the Arrival Hall."
-      }
-    ],
-    "recreatedPhoto": "images/admin-upload-new-6s64K2xAPRELCZCbVIbV-recreated.jpg",
-    "imgCredit": "Fuzheado / CC BY-SA 4.0"
+    ]
   },
   {
     "id": "new-6tksvhTz9CYsaibjPIaH",
     "category": "Museums",
-    "address": "69 Sanroknam-ro 762beon-gil, Andeok-myeon, Seogwipo-si, Jeju-do, South Korea",
+    "address": "69 Sanroknam-ro 762beon-gil, Andeok-myeon, Seogwipo-si, Jeju-do",
     "member": "RM",
     "lng": 126.3922,
     "city": "Jeju",
@@ -10824,40 +10953,69 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Designed by world-renowned architect Tadao Ando, Bonte Museum in Seogwipo, Jeju Island, harmonizes traditional Korean craft arts with modern architecture featuring signature exposed concrete walls and water gardens.</p><p>RM visited Bonte Museum to admire both Tadao Ando's architecture and permanent installations by Yayoi Kusama, including her famous 'Infinity Mirrored Room - Gleaming Lights of the Souls'.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "https://x.com/BTS_twt/status/1166324035090694145?s=20",
     "episodeLink": "https://altselection.ouest-france.fr/rm-prouve-amour-musee-jeju/",
-    "tipsList": [
-      {
-        "text": "Arrive right at opening time (10:00 AM) on a weekday to calmly experience Tadao Ando’s architecture and the famous Yayoi Kusama mirror room without heavy foot traffic.",
-        "title": "Beat the crowds"
-      },
-      {
-        "title": "Prep for the mirror room",
-        "text": "Time inside the Infinity Mirrored Room is limited to a brief moment per visitor—have your camera settings adjusted and ready before you step in."
-      }
-    ],
     "facebookUrls": [],
     "instagramUrl": "",
     "officialLink": "http://www.bontemuseum.com/",
+    "tweetUrls": [],
+    "ytId": "",
+    "imgCredit": "김나롱 / CC BY-SA 4.0",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Beat the crowds"
+        },
+        "text": {
+          "en": "Arrive right at opening time (10:00 AM) on a weekday to calmly experience Tadao Ando’s architecture and the famous Yayoi Kusama mirror room without heavy foot traffic."
+        }
+      },
+      {
+        "title": {
+          "en": "Prep for the mirror room"
+        },
+        "text": {
+          "en": "Time inside the Infinity Mirrored Room is limited to a brief moment per visitor—have your camera settings adjusted and ready before you step in."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Designed by the world-renowned Pritzker Prize-winning architect Tadao Ando, the Bonte Museum is a breathtaking cultural sanctuary nestled in the serene landscapes of Seogwipo on Jeju Island. The museum's design is a masterpiece in itself, featuring Ando's signature exposed geometric concrete walls beautifully harmonized with traditional Korean elements and expansive, reflective water gardens. The word \"Bonte\" translates to \"original form,\" which perfectly reflects the museum's mission: displaying exquisite, centuries-old traditional Korean craft arts alongside spectacular contemporary global masterpieces.</p><p>In early 2019, during a period of well-deserved time off, RM traveled to Jeju Island for some dedicated \"Namjooning\"—a term he coined himself to describe the act of unwinding, admiring nature, and taking quiet walks through parks and art galleries. The Bonte Museum was a natural must-visit for the group's resident art enthusiast. He explored the galleries showcasing traditional Korean artifacts and took a moment to experience the museum's permanent contemporary highlight: Yayoi Kusama’s dazzling Infinity Mirrored Room - Gleaming Lights of the Souls. His visit further cemented the museum's status as a premier cultural destination for ARMYs looking to experience the peaceful, artistic side of South Korea.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Located in Andeok-myeon, Seogwipo. Reached easily by rental car or taxi from the Jungmun Tourist Complex."
+          "en": "Public transportation on Jeju Island can be very sparse, especially in this mountainous region. The most reliable way to reach the museum is by driving a rental car or taking a taxi from Jeju City (about a 40-to-50-minute drive) or from central Seogwipo (about 30 minutes). Parking is available on-site."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from 10:00 AM to 6:00 PM (the last admission is at 5:00 PM). Standard adult tickets are approximately 20,000 KRW."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "While the museum offers stroller rentals and has an accessible main entrance, it is important to note that Tadao Ando's multi-level concrete design includes many internal staircases. Moving between certain galleries can be somewhat inconvenient for wheelchair users or those with limited mobility."
         }
       }
     ],
-    "tweetUrls": [],
-    "ytId": "",
-    "imgCredit": "김나롱 / CC BY-SA 4.0",
-    "recreatedPhoto": "images/admin-upload-new-6tksvhTz9CYsaibjPIaH-recreated.jpg"
+    "recreatedPhotos": [
+      "images/admin-upload-new-6tksvhTz9CYsaibjPIaH-recreated-0.jpg",
+      "images/admin-upload-new-6tksvhTz9CYsaibjPIaH-recreated-1.jpg"
+    ]
   },
   {
     "lng": 126.9684,
@@ -10865,7 +11023,7 @@ window.STATIC_LOCATIONS = [
     "lat": 37.5601,
     "name": "Seosomun Shrine History Museum",
     "year": "2022",
-    "address": "5 Chilsarang-gil, Jung-gu, Seoul, South Korea",
+    "address": "5 Chilpae-ro, Jung-gu, Seoul (Located underneath Seosomun Historical Park)",
     "category": "Landmarks",
     "city": "Seoul",
     "group": "BTS",
@@ -10882,37 +11040,70 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Built on a deeply significant historic site in Seoul, the Seosomun Shrine History Museum is a striking architectural marvel that masterfully balances its role as a solemn memorial with its function as a modern art space. The museum is renowned for its breathtaking subterranean design, featuring imposing red-brick plazas, the deeply moving Consolation Hall, and a magnificent sky-lit courtyard that metaphorically connects the underground shadows with the light above.</p><p>Drawn by his well-known passion for spatial design and the visual arts, RM visited this reflective sanctuary to take in its unique atmosphere. He shared a series of stunning, atmospheric photographs on his Instagram (@rkive), capturing the dramatic interplay of light and shadow within the sunken brick courtyards and sculpture halls. Through his discerning eye, he introduced international fans to this hidden architectural gem, perfectly illustrating his love for spaces where history, art, and architecture converge.</p>"
     },
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Seoul Subway Line 2 or Line 5 to Chungjeongno Station (Exit 4) and walk 5 minutes towards Seosomun Park."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "tweetUrls": [],
     "imgCredit": "Ethan Doyle White / Wikimedia Commons / CC BY-SA 4.0",
     "facebookUrl": "",
     "tiktokUrl": "",
     "ytId": "",
+    "instagramUrl": "",
+    "officialLink": "https://www.seosomun.org/en/retrieveContents.do?mCode=220",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
     "tipsList": [
       {
-        "title": "Chase the Shadows :",
-        "text": "To capture the exact dramatic interplay of light and shadow seen in RM's photographs, try to visit on a clear, sunny day. The museum's famous Sky Square is specifically designed to project striking, geometric shadows against the towering red brick walls, which shift beautifully as the sun moves across the open roof."
+        "title": {
+          "en": "Chase the Shadows :"
+        },
+        "text": {
+          "en": "To capture the exact dramatic interplay of light and shadow seen in RM's photographs, try to visit on a clear, sunny day. The museum's famous Sky Square is specifically designed to project striking, geometric shadows against the towering red brick walls, which shift beautifully as the sun moves across the open roof."
+        }
       },
       {
-        "text": "Keep in mind that while it is an art space, the museum is primarily a historical memorial for Catholic martyrs. Maintain a quiet, respectful demeanor, especially when walking through the deeply moving Consolation Hall. It is the perfect environment to sit, reflect, and experience the profound peace that drew Namjoon here in the first place.",
-        "title": "Embrace the Silence :"
+        "title": {
+          "en": "Embrace the Silence :"
+        },
+        "text": {
+          "en": "Keep in mind that while it is an art space, the museum is primarily a historical memorial for Catholic martyrs. Maintain a quiet, respectful demeanor, especially when walking through the deeply moving Consolation Hall. It is the perfect environment to sit, reflect, and experience the profound peace that drew Namjoon here in the first place."
+        }
       },
       {
-        "title": "A Convenient Art Stop :",
-        "text": "The museum is located just a short walk from Seoul Station. It makes for an incredibly convenient and inspiring first stop when you arrive in the city, or a peaceful final outing before catching the KTX or heading to the airport!"
+        "title": {
+          "en": "A Convenient Art Stop :"
+        },
+        "text": {
+          "en": "The museum is located just a short walk from Seoul Station. It makes for an incredibly convenient and inspiring first stop when you arrive in the city, or a peaceful final outing before catching the KTX or heading to the airport!"
+        }
       }
     ],
-    "instagramUrl": "",
-    "officialLink": "https://www.seosomun.org/en/retrieveContents.do?mCode=220"
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The museum is highly central and easy to reach. Take Subway Line 2 or 5 to Chungjeongno Station (Exit 4 is just a 5-minute walk away). Alternatively, it is about a 10-minute walk from the major transit hub of Seoul Station (Lines 1, 4, or the Airport Railroad)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open from 9:30 AM to 5:30 PM. Important: Like most museums in South Korea, it is strictly closed on Mondays. General admission to the museum and the surrounding ground-level park is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum is highly accessible. Wide elevators seamlessly connect the street-level park to the subterranean museum levels, and the broad, flat plazas make it very easy to navigate for visitors using wheelchairs or strollers."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-6xXjhHVEvJQYmC3pN0eT-recreated-0.jpg"
+    ]
   },
   {
     "name": "Wanju BTS Stepping Stones",
@@ -11000,35 +11191,11 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "instagramUrls": [],
     "episodeLink": "https://www.alamy.com/the-1913-songjeong-station-market-apr-20-2024-the-1913-songjeong-station-market-is-seen-in-the-city-of-gwangju-in-south-jeolla-province-about-330-km-205-miles-south-of-seoul-south-korea-the-market-aka-the-1913-songjeong-yeok-market-was-opened-in-1913-and-it-is-one-of-hot-places-for-the-locals-and-tourists-photo-by-lee-jae-wonaflo-image604240670.html",
-    "tipsList": [
-      {
-        "text": "Plan your visit for the late afternoon or early evening. As the sun sets, the charming retro neon signs and string lights illuminate the street, creating a cinematic atmosphere that is perfect for photography.",
-        "title": "Catch the Evening Glow :"
-      },
-      {
-        "text": "Come hungry! Make sure to try local street food favorites like Gyeran-bap (egg rice roll-ups), artisan breads, and classic hotteok (sweet pancakes) sold by the mix of generations sharing the market.",
-        "title": "Taste the Heritage :"
-      },
-      {
-        "text": "The market is located just a quick walk across the street from the Gwangju-Songjeong KTX Station. It is the ideal first stop when you arrive in Gwangju, or the perfect final destination to grab snacks and souvenirs before catching your train back to Seoul.",
-        "title": "The Perfect Transit Stop :"
-      }
-    ],
     "facebookUrls": [],
     "youtubeUrls": [],
     "fullDescription": {
       "en": "<p>First established in 1913, this historic market in Gwangju underwent a brilliant revitalization to become one of the city's most vibrant destinations. Today, it beautifully balances its century-old heritage with a retro-modern aesthetic, seamlessly blending traditional street food stalls run by long-time vendors with hip, innovative shops opened by young entrepreneurs.</p><p>Located in the heart of Gwangju—the beloved hometown of BTS's J-Hope—this bustling street is celebrated as a cultural symbol of the city's dynamic spirit. For ARMYs traveling to explore the roots of the artist who so proudly shouts out Gwangju in the BTS track \"Ma City,\" this market is an absolute must-visit. It offers the perfect mix of nostalgic architecture, local flavors, and the warm, welcoming energy that defines J-Hope's hometown.</p>"
     },
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Located directly across the street from Gwangju Songjeong KTX Station (Exit 2)."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "tweetUrls": [],
     "facebookUrl": "",
     "tweetUrl": "",
@@ -11036,7 +11203,64 @@ window.STATIC_LOCATIONS = [
     "officialLink": "",
     "tiktokUrl": "",
     "ytId": "",
-    "imgCredit": "AI-generated illustrative image"
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Catch the Evening Glow :"
+        },
+        "text": {
+          "en": "Plan your visit for the late afternoon or early evening. As the sun sets, the charming retro neon signs and string lights illuminate the street, creating a cinematic atmosphere that is perfect for photography."
+        }
+      },
+      {
+        "title": {
+          "en": "Taste the Heritage :"
+        },
+        "text": {
+          "en": "Come hungry! Make sure to try local street food favorites like Gyeran-bap (egg rice roll-ups), artisan breads, and classic hotteok (sweet pancakes) sold by the mix of generations sharing the market."
+        }
+      },
+      {
+        "title": {
+          "en": "The Perfect Transit Stop :"
+        },
+        "text": {
+          "en": "The market is located just a quick walk across the street from the Gwangju-Songjeong KTX Station. It is the ideal first stop when you arrive in Gwangju, or the perfect final destination to grab snacks and souvenirs before catching your train back to Seoul."
+        }
+      }
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The location could not be more convenient for travelers. It is situated literally right across the street from the Gwangju-Songjeong KTX Station. If you are using the local Gwangju Subway (Line 1), get off at Gwangju Songjeong Station and use Exit 2—the market entrance is just a 3-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The street itself is open 24/7 and free to walk through. However, individual shop hours vary; most food vendors are open from 11:00 AM to 10:00 PM. Important: Many shops in the market are closed on the 2nd and 4th Mondays of every month."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As part of its modern revitalization, the entire market street was repaved. The central walkway is completely flat, well-paved, and pedestrian-friendly, making it perfectly accessible for wheelchairs and strollers."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-7zHKyzha9CsirwlMgEGM-recreated-0.jpg"
+    ]
   },
   {
     "lat": 40.7794,
@@ -11047,7 +11271,7 @@ window.STATIC_LOCATIONS = [
     "lng": -73.9632,
     "id": "new-8YXW578rGkc4YTIt107e",
     "year": "2021",
-    "address": "1000 5th Ave, New York, NY 10028, United States",
+    "address": "1000 Fifth Avenue (at 82nd Street), New York, NY 10028",
     "country": "United States",
     "member": "All",
     "name": "The Metropolitan Museum of Art",
@@ -11065,34 +11289,66 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "https://www.instagram.com/p/CUGtka0lhik/",
     "officialLink": "https://www.metmuseum.org/",
+    "tweetUrls": [],
+    "ytId": "",
+    "imgCredit": "Arad / CC BY-SA 3.0",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "The Cantor Roof Garden :"
+        },
+        "text": {
+          "en": "Head up to the Iris and B. Gerald Cantor Roof Garden where BTS stood to deliver their speech. Keep in mind that this spectacular outdoor space is seasonal (usually open from spring through fall), so be sure to check the museum's schedule before your visit!"
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Korean Art Galleries :"
+        },
+        "text": {
+          "en": "Since the boys were there to celebrate and share their heritage, take some time to visit The Met's dedicated Arts of Korea gallery to admire both traditional artifacts and contemporary pieces."
+        }
+      },
+      {
+        "title": {
+          "en": "Pace Yourself :"
+        },
+        "text": {
+          "en": "The Met is famously massive and virtually impossible to see in a single day. Map out the specific wings you want to explore in advance, and don't forget to snap a classic photo on the iconic front steps before heading inside."
+        }
+      }
+    ],
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Subway Line 4, 5, or 6 to 86th Street Station and walk west 3 blocks to Fifth Avenue."
+          "en": "Take the 4, 5, or 6 Subway trains to 86th Street Station, then enjoy a short, scenic 10-minute walk west toward Central Park and Fifth Avenue. Alternatively, several city buses (like the M1, M2, M3, or M4) run directly along Fifth Avenue and Madison Avenue."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Usually open from 10:00 AM to 5:00 PM (open late until 9:00 PM on Fridays and Saturdays). Important: The museum is closed on Wednesdays. General admission for tourists is $30 USD (only New York State residents can \"pay as you wish\"). Advance ticket purchase online is highly recommended to skip the ticket desk queues."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum is fully accessible. While the main entrance features the famous grand staircase, there is a dedicated, step-free accessible entrance located at 81st Street and Fifth Avenue. Wheelchairs are available to borrow free of charge at the coat checks."
         }
       }
     ],
-    "tweetUrls": [],
-    "tipsList": [
-      {
-        "title": "The Cantor Roof Garden :",
-        "text": "Head up to the Iris and B. Gerald Cantor Roof Garden where BTS stood to deliver their speech. Keep in mind that this spectacular outdoor space is seasonal (usually open from spring through fall), so be sure to check the museum's schedule before your visit!"
-      },
-      {
-        "text": "Since the boys were there to celebrate and share their heritage, take some time to visit The Met's dedicated Arts of Korea gallery to admire both traditional artifacts and contemporary pieces.",
-        "title": "Explore the Korean Art Galleries :"
-      },
-      {
-        "title": "Pace Yourself :",
-        "text": "The Met is famously massive and virtually impossible to see in a single day. Map out the specific wings you want to explore in advance, and don't forget to snap a classic photo on the iconic front steps before heading inside."
-      }
-    ],
-    "ytId": "",
-    "recreatedPhoto": "images/admin-upload-new-8YXW578rGkc4YTIt107e-recreated.jpg",
-    "imgCredit": "Arad / CC BY-SA 3.0"
+    "recreatedPhotos": [
+      "images/admin-upload-new-8YXW578rGkc4YTIt107e-recreated-0.jpg"
+    ]
   },
   {
     "id": "new-D2pf3IFWKTH64FaUCAdd",
@@ -11118,37 +11374,69 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "tweetUrl": "https://x.com/aco24042511/status/1956920478951678445?s=46",
     "episodeLink": "https://www.koreaboo.com/stories/bts-j-hope-v-rm-broad-museum-los-angeles/",
-    "tipsList": [
-      {
-        "title": "Recreate the Iconic Photos :",
-        "text": "When exploring the galleries, keep an eye out for Robert Therrien's massive \"Under the Table\" installation and Jeff Koons' giant blue \"Balloon Dog\". These are the exact spots where V and J-Hope playfully posed for the camera!"
-      },
-      {
-        "text": "General admission to The Broad is free, but tickets are highly sought after. You must reserve them well in advance online, especially if you want access to Yayoi Kusama's Infinity Mirrored Rooms, which require a separate booking.",
-        "title": "Book Well in Advance"
-      },
-      {
-        "title": "Explore Downtown LA",
-        "text": "The museum is located right next to the iconic Walt Disney Concert Hall. Take a stroll around the area to enjoy more world-class architecture before grabbing a bite at the famous Grand Central Market nearby."
-      }
-    ],
     "facebookUrls": [],
     "instagramUrl": "",
     "officialLink": "https://www.thebroad.org/",
+    "tweetUrls": [],
+    "ytId": "",
+    "imgCredit": "Dllu / CC BY-SA 4.0",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-D2pf3IFWKTH64FaUCAdd-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate the Iconic Photos :"
+        },
+        "text": {
+          "en": "When exploring the galleries, keep an eye out for Robert Therrien's massive \"Under the Table\" installation and Jeff Koons' giant blue \"Balloon Dog\". These are the exact spots where V and J-Hope playfully posed for the camera!"
+        }
+      },
+      {
+        "title": {
+          "en": "Book Well in Advance"
+        },
+        "text": {
+          "en": "General admission to The Broad is free, but tickets are highly sought after. You must reserve them well in advance online, especially if you want access to Yayoi Kusama's Infinity Mirrored Rooms, which require a separate booking."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Downtown LA"
+        },
+        "text": {
+          "en": "The museum is located right next to the iconic Walt Disney Concert Hall. Take a stroll around the area to enjoy more world-class architecture before grabbing a bite at the famous Grand Central Market nearby."
+        }
+      }
+    ],
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take the Metro A or E Line to Grand Av Arts/Bunker Hill Station, located right next to the museum."
+          "en": "Driving and parking in Downtown LA (DTLA) can be expensive; the museum has a parking garage beneath it (around $17 for 3 hours). For public transit, take the Metro A or E Line to the Grand Av Arts/Bunker Hill Station (just a short walk away), or the B or D Line to Civic Center/Grand Park Station. Rideshare apps (Uber/Lyft) are also highly recommended for DTLA."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "General admission to The Broad is completely free! However, advance online reservations are highly recommended to avoid long standby lines outside. The museum is typically open Tuesday through Sunday (closed on Mondays)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum is fully ADA compliant and wheelchair accessible. There is a large central elevator that takes you seamlessly from the lobby up through the \"vault\" to the third-floor galleries."
         }
       }
-    ],
-    "tweetUrls": [],
-    "ytId": "",
-    "imgCredit": "Dllu / CC BY-SA 4.0",
-    "recreatedPhoto": "images/admin-upload-new-D2pf3IFWKTH64FaUCAdd-recreated.jpg"
+    ]
   },
   {
     "img": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-photo.jpg",
@@ -11877,63 +12165,73 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "",
     "officialLink": "https://www.fondationlouisvuitton.fr/",
+    "tweetUrls": [],
+    "tweetUrl": "https://x.com/mimie452/status/1617576602950418446?s=10",
+    "ytId": "",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "fullDescription": {
+      "en": "<p>Designed by the renowned architect Frank Gehry, the Fondation Louis Vuitton is a striking contemporary art museum nestled in the Bois de Boulogne on the edge of Paris. Opened in 2014, its futuristic glass sails and avant-garde architecture have quickly established it as a major global hub for contemporary art exhibitions and cultural events. Beyond its permanent collections and striking geometry, the venue serves as a prestigious backdrop for high-fashion milestones, bridging the worlds of modern architecture, fine art, and luxury design.</p><p>2023, J-Hope, Jimin: Jimin &amp; J-Hope's Fashion Week Break\nDuring their highly publicized trip for Paris Fashion Week in January 2023, Jimin and J-Hope took a well-deserved break from the bustling runways to explore the Fondation. J-Hope famously shared photos of his visit to the immersive Monet - Mitchell exhibition, showcasing his appreciation for the delicate interplay between classical impressionism and abstract expressionism. For fans, it was a delight to see the duo soaking in Parisian culture beyond their ambassador duties.</p><p>2026, RM: RM's \"Namjooning\" Excursion\nLater in 2026, RM added the spectacular museum to his ever-growing \"Namjooning\" map. Wandering through the sunlit, cutting-edge galleries, he appreciated both the monumental architecture and the contemporary installations. His visit perfectly illustrated his well-known passion for international art spaces where structure and creativity seamlessly converge.</p>"
+    },
+    "recreatedPhotos": [
+      "images/admin-upload-new-wMPd7uwtaZtYdrcNZtrS-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Explore the Glass Sails"
+        },
+        "text": {
+          "en": "Don’t just look at the art inside! Make sure to take the elevators all the way up to the outdoor rooftop terraces. Walking under the massive glass \"sails\" offers unique architectural photo opportunities and breathtaking, panoramic views of the Eiffel Tower and the Parisian skyline."
+        }
+      },
+      {
+        "title": {
+          "en": "The Water Garden"
+        },
+        "text": {
+          "en": "RM is known to appreciate nature and architecture blending together. Walk down to the lower ground floor to see the stunning stepped water cascade and the bright yellow Olafur Eliasson mirrored installation."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with the Park"
+        },
+        "text": {
+          "en": "Your museum ticket usually grants you free entry to the adjacent Jardin d'Acclimatation, a charming, historic amusement park. It's a wonderful place to take a relaxing stroll after your art tour."
+        }
+      }
+    ],
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Metro Line 1 to Les Sablons station and follow the signs for Fondation Louis Vuitton (approx. 10 minutes walk)."
+          "en": "The most convenient way is to take the official Fondation Louis Vuitton electric shuttle bus (costs a few euros), which departs every 15–20 minutes from Place Charles de Gaulle (corner of Avenue de Friedland, near the Arc de Triomphe) directly to the museum entrance. Alternatively, take Metro Line 1 to Les Sablons station and enjoy a scenic 10-to-15-minute walk through the park."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open from 11:00 AM to 8:00 PM (closed on Tuesdays), with extended hours on weekends. Standard adult admission is around €16. Advance online booking is highly recommended, as time slots for major exhibitions frequently sell out."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum is exceptionally accessible. It features step-free access from the street, wide elevators reaching all gallery levels and terraces, and complimentary wheelchair rentals available at the cloakroom."
         }
       }
-    ],
-    "tweetUrls": [],
-    "tweetUrl": "https://x.com/mimie452/status/1617576602950418446?s=10",
-    "ytId": "",
-    "pinterestUrls": [],
-    "pinterestUrl": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Best Time to Visit:"
-        },
-        "text": {
-          "en": "Go early in the morning right when it opens to avoid the heavy crowds and enjoy the outdoor terraces in peace. Late afternoon also offers incredible lighting as the sun hits the massive glass \"sails.\""
-        }
-      },
-      {
-        "title": {
-          "en": "Ticketing & Reservations:"
-        },
-        "text": {
-          "en": "Booking your ticket online in advance through the official website is mandatory to secure your entry time slot. Even if you qualify for a free or reduced ticket, you must reserve it online beforehand."
-        }
-      },
-      {
-        "title": {
-          "en": "How to Get the Best Photos:"
-        },
-        "text": {
-          "en": "The Lower Terraces / Water Basins: Stand near the reflecting pools outside to capture the sheer scale of Frank Gehry’s glass architecture mirroring the sky.\n\nThe Rooftop Walkways: Head all the way up to the upper decks for sweeping panoramic views of Paris (including the distant Eiffel Tower) framed by the futuristic glass panels."
-        }
-      },
-      {
-        "title": {
-          "en": "Getting There:"
-        },
-        "text": {
-          "en": "Skip the long walks from the standard metro lines by taking the dedicated electric shuttle bus. It departs regularly right from Charles de Gaulle-Étoile (near the Arc de Triomphe) and drops you off directly at the gates."
-        }
-      }
-    ],
-    "fullDescription": {
-      "en": "<p>Designed by the renowned architect Frank Gehry, the Fondation Louis Vuitton is a striking contemporary art museum nestled in the Bois de Boulogne on the edge of Paris. Opened in 2014, its futuristic glass sails and avant-garde architecture have quickly established it as a major global hub for contemporary art exhibitions and cultural events. Beyond its permanent collections and striking geometry, the venue serves as a prestigious backdrop for high-fashion milestones, bridging the worlds of modern architecture, fine art, and luxury design.</p><p>2023, J-Hope, Jimin: Jimin &amp; J-Hope's Fashion Week Break\nDuring their highly publicized trip for Paris Fashion Week in January 2023, Jimin and J-Hope took a well-deserved break from the bustling runways to explore the Fondation. J-Hope famously shared photos of his visit to the immersive Monet - Mitchell exhibition, showcasing his appreciation for the delicate interplay between classical impressionism and abstract expressionism. For fans, it was a delight to see the duo soaking in Parisian culture beyond their ambassador duties.</p><p>2026, RM: RM's \"Namjooning\" Excursion\nLater in 2026, RM added the spectacular museum to his ever-growing \"Namjooning\" map. Wandering through the sunlit, cutting-edge galleries, he appreciated both the monumental architecture and the contemporary installations. His visit perfectly illustrated his well-known passion for international art spaces where structure and creativity seamlessly converge.</p>"
-    },
-    "recreatedPhoto": "images/admin-upload-new-wMPd7uwtaZtYdrcNZtrS-recreated.jpg"
+    ]
   },
   {
     "lng": 55.65,
-    "address": "E66 Murqquab, Dubai, United Arab Emirates",
+    "address": "Dubai Desert Conservation Reserve (DDCR), Dubai, United Arab Emirates.",
     "year": "2016",
     "category": "Photoshoot Location",
     "group": "BTS",
@@ -11951,16 +12249,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "officialLink": "https://www.ddcr.org/en/index.aspx",
     "youtubeUrls": [],
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Access to the reserve is strictly restricted to licensed tour operators (such as Arabian Adventures). Book a desert safari package starting from central Dubai."
-        }
-      }
-    ],
     "tweetUrls": [],
     "ytId": "aYUfoYcqWgE",
     "facebookUrl": "",
@@ -11973,45 +12261,62 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Tim de Groot / CC0 1.0",
     "pinterestUrls": [],
     "pinterestUrl": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Learn Before You Explore :"
-        },
-        "text": {
-          "en": "Before venturing deep into the dunes, it is highly recommended to stop by the Dubai Desert Conservation Reserve Visitor Centre. It is the perfect place to learn about the protected desert ecosystem and the wildlife that the boys might have spotted!"
-        }
-      },
-      {
-        "title": {
-          "en": "Book an Official Safari :"
-        },
-        "text": {
-          "en": "The reserve is strictly protected, meaning you cannot simply drive in yourself. You will likely pass through official checkpoints like the Dubai Desert Conservation Reserve, Margham gate as part of a guided tour. You must book through approved operators (such as Platinum Heritage or Arabian Adventures) to access the pristine dunes where the filming took place."
-        }
-      },
-      {
-        "title": {
-          "en": "Recreate the Thrill :"
-        },
-        "text": {
-          "en": "When booking, make sure your safari package includes a dune buggy or sandboarding experience if you want to perfectly recreate the members' fun-filled afternoon!"
-        }
-      },
-      {
-        "title": {
-          "en": "Desert Survival Kit :"
-        },
-        "text": {
-          "en": "The boys often talked about the intense heat in their travel diaries. Bring plenty of water, a good sunscreen, and a lightweight scarf or mask—just like Taehyung suggested—to protect your face from the blowing sand."
-        }
-      }
-    ],
-    "recreatedPhoto": "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated.jpg",
     "recreatedPhotos": [
       "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-0.jpg",
       "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-1.jpg",
       "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-2.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "You cannot drive into the reserve independently. Access is strictly limited to approved tour operators (such as Arabian Adventures, Platinum Heritage, or Nara). When you book a desert safari, the operator will pick you up directly from your hotel in Dubai in a 4x4 vehicle and drive you into the reserve (about a 45-to-60-minute drive from downtown)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Access depends entirely on your booked tour. Most standard safaris depart mid-afternoon (around 3:00 PM or 4:00 PM) and return by 9:00 PM. Prices typically range from $60 to $150+ USD per person depending on the luxury level of the safari."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Traditional \"dune bashing\" (fast driving over steep sand dunes) is rough and heavily jolting; it is strictly prohibited for pregnant women or individuals with back/neck issues. However, operators like Platinum Heritage offer gentle, smooth \"wildlife drives\" that are much more accessible and family-friendly."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "The"
+        },
+        "text": {
+          "en": "To capture the exact same stunning, warm-toned aesthetic as the Summer Package photobook, make sure your tour includes a sunset stop. The lighting in the desert just before the sun dips below the dunes is incredibly flattering and creates perfect silhouettes."
+        }
+      },
+      {
+        "title": {
+          "en": "Embrace the Style"
+        },
+        "text": {
+          "en": "During their desert trip, several members wore traditional Arab headscarves (ghutra or keffiyeh) to protect themselves from the sun and sand. You can easily purchase one at local souks before your trip, and your safari guide will happily show you the authentic way to wrap it!"
+        }
+      },
+      {
+        "title": {
+          "en": "Prepare for Temperature Drops"
+        },
+        "text": {
+          "en": "While the desert is scorching during the day, temperatures drop significantly as soon as the sun goes down. If you are staying for the evening BBQ camp like BTS did, definitely bring a light jacket or sweater."
+        }
+      }
     ]
   },
   {
