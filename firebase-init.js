@@ -1245,7 +1245,13 @@ window.approveLocationSubmission = async function (submission) {
             }
         }
 
-        await setDoc(doc(db, 'locationSubmissions', submission.id), { status: 'approved', reviewedAt: serverTimestamp() }, { merge: true });
+        // Lieu créé à la main via le bouton "Add" (admin.html, demande du 19/09/2026) :
+        // submission.id (préfixé "manual-") ne correspond à aucun document
+        // locationSubmissions réel — l'écrire quand même créerait un document orphelin
+        // à cet id, jamais lu ni nettoyé nulle part.
+        if (!String(submission.id).startsWith('manual-')) {
+            await setDoc(doc(db, 'locationSubmissions', submission.id), { status: 'approved', reviewedAt: serverTimestamp() }, { merge: true });
+        }
         return { success: true, publishedId: targetId };
     } catch (e) {
         console.warn('Approbation de la proposition échouée :', e);

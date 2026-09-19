@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260932">
+<link rel="stylesheet" href="style.css?v=20260933">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -67,6 +67,9 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .submission-card{background:#fff;border:1px solid #ECE7F3;border-radius:16px;padding:22px 24px;margin-bottom:18px;}
 .sub-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
 .sub-name{font-size:16.5px;font-weight:700;color:#212832;}
+.sub-name-input{font-size:16.5px;font-weight:700;color:#212832;border:none;border-bottom:1.5px solid #e2e8f0;padding:2px 0 4px;width:100%;font-family:'Poppins',sans-serif;background:transparent;}
+.sub-name-input:focus{outline:none;border-bottom-color:#D42759;}
+.sub-name-input::placeholder{color:#94a3b8;font-weight:600;}
 .sub-badge{display:inline-block;margin-top:4px;background:#FCE7F0;color:#D42759;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;}
 .sub-edit-tag{background:#EFF6FF;color:#2563eb;}
 .sub-meta{font-size:12px;color:#64748b;margin-bottom:12px;}
@@ -257,10 +260,26 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
         <div id="admin-panel-submissions" class="admin-tab-panel active">
             <div class="submissions-header-row">
                 <h1>Location submissions <span id="submissions-count" class="submissions-count hidden"></span></h1>
-                <button type="button" id="refresh-submissions-btn" class="refresh-submissions-btn" onclick="window.refreshSubmissions()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
-                    Refresh
-                </button>
+                <div style="display:flex; gap:8px;">
+                    <!-- Bouton "Add" (demande du 19/09/2026, "je veux pouvoir ajouter moi
+                         même un nouveau lieu en mode admin... une nouvelle section vierge où
+                         je peux compléter les informations") — voir window.addManualLocation()
+                         plus bas : réutilise TEL QUEL renderCard(), le même formulaire/les
+                         mêmes champs (Group/Member/Country/City/Address/Story/Practical
+                         info/Tips/Mei's Pictures/réseaux sociaux/Approve & publish) déjà
+                         utilisés pour une proposition de l'agent IA, juste avec un objet
+                         `sub` vierge au lieu d'une vraie soumission Firestore — aucun
+                         nouveau formulaire à maintenir en double.
+                    -->
+                    <button type="button" id="add-manual-location-btn" class="refresh-submissions-btn" onclick="window.addManualLocation()" style="color:#D42759; border-color:#D42759;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Add
+                    </button>
+                    <button type="button" id="refresh-submissions-btn" class="refresh-submissions-btn" onclick="window.refreshSubmissions()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"></path><polyline points="21 3 21 9 15 9"></polyline></svg>
+                        Refresh
+                    </button>
+                </div>
             </div>
             <p class="sub">New locations and corrections proposed for review — nothing here is visible on the site until approved. An AI agent proposes new ones automatically every few hours; "Refresh" checks for anything it's found since you last looked.</p>
             <div id="refresh-submissions-status" class="refresh-submissions-status hidden"></div>
@@ -367,10 +386,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260932"></script>
-<script src="countries.js?v=20260932"></script>
-<script src="locations-data.js?v=20260932"></script>
-<script src="script.js?v=20260932"></script>
+<script type="module" src="firebase-init.js?v=20260933"></script>
+<script src="countries.js?v=20260933"></script>
+<script src="locations-data.js?v=20260933"></script>
+<script src="script.js?v=20260933"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -830,8 +849,15 @@ recomposée, sans texte ni légende.`;
         card.className = 'submission-card';
         card.innerHTML = `
             <div class="sub-header">
-                <div>
-                    <div class="sub-name">${escapeHtml(sub.name || '(no name)')}</div>
+                <div style="flex:1;">
+                    <!-- Nom éditable (demande du 19/09/2026, "je veux pouvoir ajouter moi
+                         même un nouveau lieu... une nouvelle section vierge") — jusqu'ici
+                         un simple texte en lecture seule (sub.name toujours déjà fourni par
+                         l'agent IA) ; un lieu créé manuellement via le bouton "Add" n'a pas
+                         encore de nom, il lui faut donc un champ. Ramassé par le même
+                         mécanisme générique .sub-field-input que Group/Country/City/
+                         Category/Address ci-dessous. -->
+                    <input type="text" class="sub-field-input sub-name-input" data-field="name" value="${escapeHtml(sub.name || '')}" placeholder="Location name">
                     <span class="sub-badge ${isEdit ? 'sub-edit-tag' : ''}">${isEdit ? 'Correction to existing location #' + escapeHtml(sub.matchedLocId) : 'New location'}</span>
                 </div>
             </div>
@@ -849,6 +875,15 @@ recomposée, sans texte ni légende.`;
                      boucle plus bas dans ce fichier) : aucun changement JS nécessaire
                      au-delà de ce champ. -->
                 <div class="sub-meta-field sub-meta-field-wide"><label>Address</label><input type="text" class="sub-field-input" data-field="address" value="${escapeHtml(sub.address || '')}" placeholder="Street address"></div>
+                <!-- Latitude/Longitude (demande du 19/09/2026, ajout manuel d'un nouveau
+                     lieu) — un lieu proposé par l'agent IA arrive déjà géocodé (sub.lat/
+                     sub.lng posés), mais un lieu créé ici à la main n'a encore aucune
+                     coordonnée : sans ces deux champs il n'apparaîtrait jamais sur la
+                     carte une fois publié. Même mécanisme .sub-field-input, avec une
+                     conversion en nombre (voir la boucle plus bas) plutôt qu'une simple
+                     chaîne, Leaflet/les tris de distance attendant des nombres. -->
+                <div class="sub-meta-field"><label>Latitude</label><input type="text" inputmode="decimal" class="sub-field-input" data-field="lat" value="${sub.lat != null ? sub.lat : ''}" placeholder="e.g. 37.5665"></div>
+                <div class="sub-meta-field"><label>Longitude</label><input type="text" inputmode="decimal" class="sub-field-input" data-field="lng" value="${sub.lng != null ? sub.lng : ''}" placeholder="e.g. 126.9780"></div>
                 <div class="sub-meta-field sub-meta-field-wide"><label>Year — select every year that applies</label>${yearCheckboxGroupHtml(sub.year)}</div>
             </div>
             <div class="sub-photo-preview">${photoPreviewHtml(sub.img)}</div>
@@ -1003,7 +1038,18 @@ recomposée, sans texte ni légende.`;
         // les valeurs corrigées ici (group/member/country/city/category/year sont déjà
         // dans la liste skeletonFields d'approveLocationSubmission(), firebase-init.js).
         card.querySelectorAll('.sub-field-input').forEach(input => {
-            input.addEventListener('change', () => { sub[input.dataset.field] = input.value.trim(); });
+            input.addEventListener('change', () => {
+                const field = input.dataset.field;
+                // lat/lng (demande du 19/09/2026, voir la note sur ces deux champs plus
+                // haut) : convertis en nombre, contrairement aux autres champs texte de
+                // cette boucle — sub.lat/sub.lng doivent rester numériques pour Leaflet.
+                if (field === 'lat' || field === 'lng') {
+                    const num = parseFloat(input.value);
+                    sub[field] = isNaN(num) ? undefined : num;
+                } else {
+                    sub[field] = input.value.trim();
+                }
+            });
         });
 
         // Cases à cocher "Member" (demande du 13/09/2026, sélection multiple parmi les 7
@@ -1293,6 +1339,19 @@ recomposée, sans texte ni légende.`;
         }
 
         approveBtn.onclick = async () => {
+            // Validation minimale pour un lieu créé à la main (bouton "Add") : un lieu
+            // proposé par l'agent IA arrive toujours déjà avec un nom et des coordonnées,
+            // mais une carte vierge peut être publiée sans que l'admin ait pensé à les
+            // remplir — sans quoi le lieu serait publié invisible (sans nom affiché,
+            // sans position sur la carte).
+            if (!sub.name || !sub.name.trim()) {
+                alert('Please enter a location name before publishing.');
+                return;
+            }
+            if (!sub.matchedLocId && (typeof sub.lat !== 'number' || typeof sub.lng !== 'number')) {
+                alert('Please enter a valid latitude and longitude before publishing.');
+                return;
+            }
             let extraHasError = false;
             Object.keys(extraFieldWidgets).forEach(field => {
                 const { values, hasError } = extraFieldWidgets[field].collect(extraValidators[field]);
@@ -1344,6 +1403,13 @@ recomposée, sans texte ni légende.`;
                 // prochain appel à loadAllSiteLocationsOnce() (changement d'onglet) relise
                 // newLocations et l'inclue immédiatement.
                 allSiteLocationsCache = null;
+                // Fiche créée via le bouton "Add" (voir window.addManualLocation() plus
+                // bas) : la retirer du suivi client-side maintenant qu'elle est publiée,
+                // sinon le prochain Refresh la réafficherait indéfiniment (elle n'a jamais
+                // eu de document Firestore, rien ne pourrait la faire disparaître
+                // autrement). Sans effet pour une vraie soumission, jamais présente dans
+                // ce tableau.
+                manualLocationEntries = manualLocationEntries.filter(e => e.id !== sub.id);
                 setTimeout(() => card.remove(), 2500);
             } else {
                 // message (demande du 19/09/2026) — voir la note dans
@@ -1355,6 +1421,14 @@ recomposée, sans texte ni légende.`;
         };
 
         rejectBtn.onclick = async () => {
+            // Fiche créée via le bouton "Add" : jamais un vrai document Firestore
+            // (locationSubmissions/{sub.id} n'existe pas), donc rien à annuler côté
+            // serveur — "Reject" ne fait ici que retirer la carte vierge localement.
+            if (String(sub.id).indexOf('manual-') === 0) {
+                card.remove();
+                manualLocationEntries = manualLocationEntries.filter(e => e.id !== sub.id);
+                return;
+            }
             const note = prompt('Optional note (why is this rejected?)') || '';
             approveBtn.disabled = true; rejectBtn.disabled = true;
             const res = await window.rejectLocationSubmission(sub.id, note);
@@ -1962,6 +2036,36 @@ recomposée, sans texte ni légende.`;
     };
 
     let knownSubmissionIds = null; // null = pas encore chargé une première fois
+
+    // Bouton "Add" (demande du 19/09/2026, "je veux pouvoir ajouter moi-même un nouveau
+    // lieu en mode admin... une nouvelle section vierge où je peux compléter les
+    // informations") — réutilise TEL QUEL renderCard(), le même formulaire/les mêmes
+    // champs déjà utilisés pour une proposition de l'agent IA, avec un objet `sub`
+    // client-side vierge au lieu d'une vraie soumission Firestore : aucun nouveau
+    // formulaire à maintenir en double. L'id préfixé "manual-" sert de marqueur pour
+    // approveLocationSubmission() (firebase-init.js) et le bouton Reject ci-dessus : sans
+    // document `locationSubmissions` réel derrière, rien à lire/écrire/annuler côté
+    // Firestore pour cette carte tant qu'elle n'a pas été publiée.
+    //
+    // Suivies dans ce tableau (et non seulement dans le DOM) parce que loadSubmissions()
+    // ci-dessous fait `listEl.innerHTML = ''` à chaque appel (chargement initial, bouton
+    // Refresh) : sans ce suivi, une carte manuelle pas encore publiée disparaîtrait au
+    // premier Refresh. On réinsère le MÊME nœud DOM (pas un nouveau rendu) pour ne pas
+    // perdre ce que l'admin est en train de saisir.
+    let manualLocationEntries = [];
+    window.addManualLocation = function () {
+        const manualId = 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+        const sub = { id: manualId, submittedBy: 'Admin (manual entry)' };
+        const card = renderCard(sub);
+        const listEl = document.getElementById('submissions-list');
+        listEl.prepend(card);
+        document.getElementById('empty-state').classList.add('hidden');
+        manualLocationEntries.push({ id: manualId, card });
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const nameInput = card.querySelector('.sub-name-input');
+        if (nameInput) nameInput.focus();
+    };
+
     async function loadSubmissions() {
         const listEl = document.getElementById('submissions-list');
         // Pas de limite ici : window.listPendingSubmissions() (firebase-init.js) interroge
@@ -1969,13 +2073,17 @@ recomposée, sans texte ni légende.`;
         // chargées, quel que soit leur nombre — seul ce compteur manquait pour le voir.
         const submissions = await window.listPendingSubmissions();
         listEl.innerHTML = '';
-        document.getElementById('empty-state').classList.toggle('hidden', submissions.length > 0);
+        document.getElementById('empty-state').classList.toggle('hidden', submissions.length > 0 || manualLocationEntries.length > 0);
         const countEl = document.getElementById('submissions-count');
         if (countEl) {
             countEl.textContent = submissions.length > 0 ? `(${submissions.length})` : '';
             countEl.classList.toggle('hidden', submissions.length === 0);
         }
         submissions.forEach(sub => listEl.appendChild(renderCard(sub)));
+        // Réinsère les cartes "Add" pas encore publiées (voir window.addManualLocation()
+        // ci-dessus) : mêmes nœuds DOM, pas un nouveau rendu, pour garder ce que l'admin a
+        // déjà saisi. Toujours en tête de liste, dans leur ordre d'ajout.
+        manualLocationEntries.forEach(entry => listEl.prepend(entry.card));
         knownSubmissionIds = new Set(submissions.map(s => s.id));
         return submissions;
     }
