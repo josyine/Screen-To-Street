@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-19T16:41:56.143Z.
+// Généré le 2026-09-19T21:37:55.550Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -1290,16 +1290,28 @@ window.STATIC_LOCATIONS = [
     },
     "tipsList": [
       {
-        "title": "The Gateway to Valletta",
-        "text": "The fountain is located right at the main bus terminal just outside the city walls. It is impossible to miss and serves as the perfect, dramatic starting point for your own walking tour of Valletta's historic center."
+        "title": {
+          "en": "The Gateway to Valletta"
+        },
+        "text": {
+          "en": "The fountain is located right at the main bus terminal just outside the city walls. It is impossible to miss and serves as the perfect, dramatic starting point for your own walking tour of Valletta's historic center."
+        }
       },
       {
-        "title": "Evening Magic",
-        "text": "While beautiful during the day, try to pass by the fountain again after dinner! The plaza is beautifully illuminated at night, and the water features glowing lights, making it an incredibly photogenic spot to wrap up your day."
+        "title": {
+          "en": "Evening Magic"
+        },
+        "text": {
+          "en": "While beautiful during the day, try to pass by the fountain again after dinner! The plaza is beautifully illuminated at night, and the water features glowing lights, making it an incredibly photogenic spot to wrap up your day."
+        }
       },
       {
-        "title": "Grab a Pastizzi",
-        "text": "Just steps away from the fountain and the City Gate, you will find small kiosks selling pastizzi—Malta's famous, cheap, and delicious savory pastry (usually filled with ricotta or mushy peas). Grab one to eat while taking in the view, just to get into the local holiday spirit!"
+        "title": {
+          "en": "Grab a Pastizzi"
+        },
+        "text": {
+          "en": "Just steps away from the fountain and the City Gate, you will find small kiosks selling pastizzi—Malta's famous, cheap, and delicious savory pastry (usually filled with ricotta or mushy peas). Grab one to eat while taking in the view, just to get into the local holiday spirit!"
+        }
       }
     ],
     "directions": {
@@ -1319,11 +1331,41 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
-    "recreatedPhoto": "images/admin-upload-25-recreated.jpg",
     "imgCredit": "Screentostreet",
     "tweetUrl": "https://x.com/taexprr/status/2099620001657311371?s=46",
     "officialLink": "https://en.wikipedia.org/wiki/Tritons%27_Fountain",
-    "episodeLink": "https://weverse.io/bts/media/2-6741268"
+    "episodeLink": "https://weverse.io/bts/media/2-6741268",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-25-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ]
   },
   {
     "id": 26,
@@ -1344,16 +1386,28 @@ window.STATIC_LOCATIONS = [
     },
     "tipsList": [
       {
-        "title": "The Saluting Battery",
-        "text": "Just below the viewing balcony is the Saluting Battery. If you time your visit right, you can watch a historical reenactment where cannons are fired over the harbor every day at 12:00 PM and 4:00 PM!"
+        "title": {
+          "en": "The Saluting Battery"
+        },
+        "text": {
+          "en": "Just below the viewing balcony is the Saluting Battery. If you time your visit right, you can watch a historical reenactment where cannons are fired over the harbor every day at 12:00 PM and 4:00 PM!"
+        }
       },
       {
-        "title": "Frame the Perfect Shot",
-        "text": "To capture the ultimate photo, step back and use the large, sweeping stone arches of the garden's terrace to frame the blue waters of the Grand Harbour in the background."
+        "title": {
+          "en": "Frame the Perfect Shot"
+        },
+        "text": {
+          "en": "To capture the ultimate photo, step back and use the large, sweeping stone arches of the garden's terrace to frame the blue waters of the Grand Harbour in the background."
+        }
       },
       {
-        "title": "Take the Lift",
-        "text": "Ready to continue your Malta adventure? You don't have to walk all the way down the steep hill. Use the Upper Barrakka Lift (located right inside the gardens) to instantly descend to the waterfront, where you can easily catch a traditional luzzu boat or ferry across to the Three Cities, just like the boys did!"
+        "title": {
+          "en": "Take the Lift"
+        },
+        "text": {
+          "en": "Ready to continue your Malta adventure? You don't have to walk all the way down the steep hill. Use the Upper Barrakka Lift (located right inside the gardens) to instantly descend to the waterfront, where you can easily catch a traditional luzzu boat or ferry across to the Three Cities, just like the boys did!"
+        }
       }
     ],
     "directions": {
@@ -1372,12 +1426,42 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "facebookUrls": [],
     "tweetUrls": [],
-    "recreatedPhoto": "images/admin-upload-26-recreated.jpg",
     "imgCredit": "Screentostreet",
     "officialLink": "https://fr.wikipedia.org/wiki/Jardins_Upper_Barrakka",
     "episodeLink": "https://weverse.io/bts/media/0-6740309",
     "tweetUrl": "https://x.com/taexprr/status/2099601588234981672?s=46",
-    "instagramUrl": ""
+    "instagramUrl": "",
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-26-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ]
   },
   {
     "id": 27,
@@ -9253,31 +9337,82 @@ window.STATIC_LOCATIONS = [
     "lng": 172.6362,
     "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
     "fullDescription": {
-      "en": "<p>Speight's is one of New Zealand's best-known breweries, founded in Dunedin in 1876 and built around a hearty, unpretentious \"Southern Man\" identity. Its Ale House chain serves classic Kiwi pub food — meat pies, fish and chips, steak — alongside the brewery's own beers, and functions as a reliable, casual stop in most major South Island towns.</p><p>The group had lunch at one of Christchurch's Speight's Ale House locations on the first day of their New Zealand road trip, a straightforward pub meal before heading further into the South Island's high country.</p>",
-      "fr": "<p>Speight's est l'une des brasseries les plus connues de Nouvelle-Zélande, fondée à Dunedin en 1876 et construite autour d'une identité de \"Southern Man\" simple et sans prétention. Sa chaîne d'Ale House sert une cuisine de pub kiwi classique — tourtes à la viande, fish and chips, steak — accompagnée des bières maison de la brasserie, et fait office d'étape fiable et décontractée dans la plupart des grandes villes de l'île du Sud.</p><p>Le groupe a déjeuné dans l'un des Speight's Ale House de Christchurch le premier jour de son road trip en Nouvelle-Zélande, un repas de pub simple avant de continuer plus loin dans l'arrière-pays de l'île du Sud.</p>"
+      "fr": "<p>Speight's est l'une des brasseries les plus connues de Nouvelle-Zélande, fondée à Dunedin en 1876 et construite autour d'une identité de \"Southern Man\" simple et sans prétention. Sa chaîne d'Ale House sert une cuisine de pub kiwi classique — tourtes à la viande, fish and chips, steak — accompagnée des bières maison de la brasserie, et fait office d'étape fiable et décontractée dans la plupart des grandes villes de l'île du Sud.</p><p>Le groupe a déjeuné dans l'un des Speight's Ale House de Christchurch le premier jour de son road trip en Nouvelle-Zélande, un repas de pub simple avant de continuer plus loin dans l'arrière-pays de l'île du Sud.</p>",
+      "en": "<p>Speight's is one of New Zealand's best-known and most beloved breweries. Founded further south in Dunedin in 1876, the brand was built around a hearty, unpretentious \"Southern Man\" identity that celebrates the rugged outdoor lifestyle of the South Island. Today, its Ale House chain serves as a reliable, welcoming, and casual stop in most major New Zealand towns. The menu is heavily focused on classic, filling Kiwi pub food—think savory meat pies, crispy fish and chips, and thick steaks—served alongside the brewery's own signature tap beers.</p><p>When BTS traveled to New Zealand for Bon Voyage Season 4, they landed in Christchurch to kick off their massive campervan road trip. Navigating a foreign country, driving massive RVs, and adjusting to the chilly alpine air required serious energy. A stop at a classic Kiwi pub like Speight's Ale House provided the perfect, hearty welcome to the South Island. The members have always loved diving into large, shared meals full of meat and fries, and this environment perfectly matched the relaxed, brotherhood-focused vibe of the entire Bon Voyage series. For fans, visiting a Speight's Ale House is the best way to taste the everyday, authentic New Zealand pub culture that fueled the group's adventures.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Try the tasting paddle"
+          "en": "Order a Classic Kiwi Feast"
         },
         "text": {
-          "en": "Most Speight's Ale House locations offer a small tasting paddle of the brewery's core range if you want to sample more than one beer."
+          "en": "To eat like the group after a long day of travel, skip the light salads! Order a classic New Zealand meat pie or a massive plate of fish and chips. If you are of legal drinking age, pair it with a pint of Speight's Gold Medal Ale, the brewery's most famous pour."
         }
       },
       {
         "title": {
-          "en": "Several branches in town"
+          "en": "Perfect for Large Groups"
         },
         "text": {
-          "en": "Christchurch has more than one Speight's Ale House — check which branch is closest to where you're staying before heading over."
+          "en": "If you are traveling with your own \"ARMY crew,\" this is the ideal restaurant. Kiwi pubs are designed for large, loud, and happy gatherings, featuring big wooden tables and a very casual dress code."
+        }
+      },
+      {
+        "title": {
+          "en": "A Nationwide Pilgrimage"
+        },
+        "text": {
+          "en": "While Christchurch is a great place to start, remember that Speight's Ale Houses are located all over the South Island (including Queenstown and Dunedin). You can easily fit a meal here into your itinerary regardless of which specific towns you pass through on your road trip."
         }
       }
     ],
     "directions": {
       "en": "Speight's Ale House has several branches around Christchurch — check the current locations before visiting.",
       "fr": "Speight's Ale House compte plusieurs établissements à Christchurch — vérifiez les emplacements actuels avant de vous y rendre."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "DyywoYyr-2w",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "If you are staying in the Christchurch city center, the Bealey Avenue location is a very easy 15-to-20-minute walk from the main botanical gardens, or a quick 5-minute Uber ride."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily from 11:30 AM to late (usually around 10:00 PM or 11:00 PM). Prices are standard for New Zealand dining, with large main courses averaging around $30 to $40 NZD."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Most Speight's Ale Houses, including the central Christchurch locations, are located on the ground floor with wide double doors, spacious dining rooms, and flat surfaces, making them highly accessible for wheelchair users and families with strollers."
+        }
+      }
+    ]
   },
   {
     "id": 205,
@@ -9288,36 +9423,87 @@ window.STATIC_LOCATIONS = [
     "city": "Omarama",
     "category": "Bon Voyage",
     "year": "2019",
-    "address": "29 Omarama Ave, Omarama",
+    "address": "29 Omarama Avenue, State Highway 8, Omarama, New Zealand",
     "lat": -44.4833,
     "lng": 169.9667,
-    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "img": "images/admin-upload-205-photo.jpg",
     "fullDescription": {
-      "en": "<p>Set on State Highway 8 between Omarama and Twizel, this is a cluster of private, wood-fired hot tubs filled with naturally sourced mineral water, built as individual outdoor pods rather than one shared pool. The wide-open Mackenzie Country sky above makes it as much a stargazing spot after dark as a place to soak.</p><p>The group stopped here during the South Island leg of Bon Voyage Season 4, an easy, low-key way to recover after long days of driving and hiking through the Mackenzie Country's empty, mountain-ringed landscape.</p>",
+      "en": "<p>Set on State Highway 8 between Omarama and Twizel, \"Hot Tubs Omarama\" features a cluster of private, wood-fired hot tubs filled with pure, naturally sourced mountain water. Built as individual outdoor pods rather than one large shared pool, the facility is perfectly integrated into the rugged, natural landscape. The wide-open Mackenzie Country sky above makes it as much a breathtaking stargazing spot after dark as a place to soak and heal aching muscles.</p><p>In 2019, BTS traveled across New Zealand's spectacular South Island for Bon Voyage Season 4. After days of exhausting outdoor activities, hiking, and driving their massive campervans through the freezing alpine winds, the members stopped at these exact hot tubs for some much-needed recovery. Cramming together into the wooden tubs, the group spent a hilarious and heartwarming afternoon splashing around, drinking beverages, and admiring the serene, wide-open mountain views. It was a perfect, intimate moment of bonding that showcased the incredible healing power of New Zealand's natural thermal culture.</p>",
       "fr": "<p>Installé sur la route nationale 8 entre Omarama et Twizel, ce site regroupe des bains chauds privés, chauffés au bois et remplis d'eau minérale naturelle, construits sous forme de cabines individuelles en extérieur plutôt qu'une seule piscine commune. Le ciel immense du Mackenzie Country au-dessus en fait aussi un lieu d'observation des étoiles à la nuit tombée qu'un simple endroit pour se détendre.</p><p>Le groupe s'y est arrêté durant l'étape sur l'île du Sud de Bon Voyage Saison 4, un moyen simple et tranquille de récupérer après de longues journées de route et de randonnée dans le paysage vide et cerné de montagnes du Mackenzie Country.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Book ahead"
+          "en": "Book Well in Advance"
         },
         "text": {
-          "en": "The individual tubs are booked in timed sessions and fill up quickly in peak season — reserve online before arriving."
+          "en": "Because these are private, individual pods and the location is highly famous, you cannot simply walk in. You must book your 90-minute time slot online weeks (sometimes months) in advance, especially during the peak summer and winter tourist seasons!"
         }
       },
       {
         "title": {
-          "en": "Go after dark"
+          "en": "Order the"
         },
         "text": {
-          "en": "An evening or night session pairs the hot water with genuinely dark, star-filled Mackenzie Country skies."
+          "en": "Just like the members did in the show, you don't have to leave the water if you get thirsty! You can order drinks and snacks directly to your tub, making the experience feel incredibly luxurious."
+        }
+      },
+      {
+        "title": {
+          "en": "Daytime Views vs. Nighttime Stars"
+        },
+        "text": {
+          "en": "BTS visited during the daytime, which offers gorgeous views of the surrounding hills and the gliding planes overhead. However, if you book an evening slot, you will experience something truly magical: Omarama is located near the Aoraki Mackenzie International Dark Sky Reserve, making it one of the best places on Earth to soak under the Milky Way."
         }
       }
     ],
     "directions": {
       "en": "Located on State Highway 8, across the road from Omarama Airfield, between the townships of Omarama and Twizel.",
       "fr": "Situé sur la route nationale 8, en face de l'aérodrome d'Omarama, entre les villages d'Omarama et de Twizel."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Public transport is practically non-existent in this rural area; you must rent a car or a campervan (just like BTS!). Omarama is roughly a 2.5-hour drive from Queenstown or a 4-hour drive from Christchurch along the incredibly scenic SH8."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Usually open daily from 10:00 AM to late evening (around 9:30 PM). Prices are structured per tub rather than per person, typically starting around $120 NZD for two people for a 90-minute private session."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The pathways leading to the tubs are relatively flat and covered in gravel. However, accessing the water requires physically stepping up and over the wooden rim of the deep tubs, which may be challenging for visitors with limited mobility."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://weverse.io/bts/media/0-6453577",
+    "ytId": "QYQd69V1dE4",
+    "tweetUrl": "https://x.com/stussyjimin/status/1178570942299004928"
   },
   {
     "id": 206,
@@ -9605,14 +9791,14 @@ window.STATIC_LOCATIONS = [
     "category": "Landmark",
     "year": "2018",
     "episode": "",
-    "episodeLink": "https://starsofheavens.com/2018/04/24/lotte-duty-free-star-avenue-bts-handprints/",
-    "ytId": "",
-    "address": "30 Eulji-ro, Jung-gu, Seoul",
+    "episodeLink": "",
+    "ytId": "U8NtsxpTRvA",
+    "address": "81 Namdaemun-ro, Jung-gu, Seoul (Located at the Lotte Department Store Main Branch)",
     "lat": 37.5643,
     "lng": 126.9816,
-    "img": "",
+    "img": "images/admin-upload-209-photo.jpg",
     "fullDescription": {
-      "en": "<p>Star Avenue is a handprint wall inside Lotte Duty Free's Myeongdong Main Store, between the department store and the Lotte Hotel, right by Euljiro-1(il)-ga Station exit 7. Placing your hand on a K-pop star's handprint plays a short video clip of that artist on a nearby screen — a simple but very photogenic first stop for fans just landing in Seoul.</p><p>All seven BTS members have their handprints on the wall, making it a popular quick pilgrimage stop before heading deeper into the city. Fan reports since 2022 suggest the attraction may have been scaled back or is listed as \"coming soon\" in places, so treat a visit as a bonus rather than a guaranteed highlight — the building and street-level mall entrance remain there either way.</p>"
+      "en": "<p>Star Avenue is a glittering, high-tech corridor located just outside the Lotte Duty Free Main Store in the bustling shopping district of Myeongdong (specifically situated in the walkway between the department store and the Lotte Hotel). Designed as an interactive \"Walk of Fame\" for the biggest stars of the Hallyu (Korean Wave) movement, the walls are lined with the golden, life-sized handprints of Lotte's celebrity ambassadors. Placing your hand on a star's handprint magically triggers a short, exclusive video clip of that artist on the surrounding massive LED screens, making it a simple, photogenic, and highly popular first stop for pop-culture tourists just landing in Seoul.</p><p>In late 2017 and 2018, BTS took over as the premier global ambassadors for Lotte Duty Free, a massive milestone reflecting their skyrocketing international fame. As part of this partnership, the group's golden handprints were officially installed at Star Avenue. For ARMYs, this corridor offers a uniquely tangible connection to the group. It is one of the rare places in the world where you can literally \"high-five\" the members, place your hand exactly where they placed theirs, and be instantly greeted by their faces on the surrounding screens. It is a brilliant, interactive celebration of their star power right in the center of Seoul's busiest shopping district.</p>"
     },
     "practicalInfo": [
       {
@@ -9620,20 +9806,68 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Euljiro-1(il)-ga Station (Line 2), exit 7. Turn back and go right toward the mall, then walk down the alley to find Star Avenue at the end, at the Main Branch of Lotte Department Store between the Department Store and Lotte Hotel."
+          "en": "It is incredibly easy to find. Take Seoul Subway Line 2 (the Green Line) directly to Euljiro 1(il)-ga Station. Take Exit 7, walk straight for about 2 minutes, and the bright, glowing entrance to Star Avenue will be right in front of you."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor corridor is generally open and illuminated from 9:30 AM to 8:00 PM (aligning with the department store's operating hours). Walking through the avenue and interacting with the handprints is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The corridor is located at street level. It is wide, smoothly paved, and completely flat, making it perfectly accessible for wheelchair users, strollers, and travelers dragging their luggage straight from the airport."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Check before you go"
+          "en": "The Hand Size Check"
         },
         "text": {
-          "en": "Some fan reports from 2022 describe the handprint/mirror feature as \"coming soon\" or possibly discontinued — it's worth asking mall staff on arrival rather than making it the sole reason for a trip to this part of Myeongdong."
+          "en": "This is a fan-favorite tradition! Place your hand in the molds to see how your size compares to the members. Fans are always amazed to see just how large V's hands are, or how they perfectly match Jimin's famously smaller hands."
+        }
+      },
+      {
+        "title": {
+          "en": "Have Your Camera Ready"
+        },
+        "text": {
+          "en": "The video clips on the LED screens trigger immediately when you touch the handprint, and they only play for a few seconds. Have your travel partner stand back with their camera already recording before you put your hand on the wall!"
+        }
+      },
+      {
+        "title": {
+          "en": "Beat the Myeongdong Crowds"
+        },
+        "text": {
+          "en": "Because it is located next to a major hotel and department store, this corridor gets incredibly busy in the afternoon. Visit early in the morning before the surrounding shops open to get clean photos without crowds in the background."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-209-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://share.google/jXOUH1qTebvY7sHhp"
   },
   {
     "id": 210,
@@ -9825,12 +10059,12 @@ window.STATIC_LOCATIONS = [
     "episode": "",
     "episodeLink": "https://starsofheavens.com/2019/04/20/line-store-and-bt21-cafe-itaewon-branch-how-to-go-and-what-to-expect/",
     "ytId": "",
-    "address": "200 Itaewon-ro, Itaewon-dong, Yongsan-gu, Seoul",
+    "address": "(Formerly) 200 Itaewon-ro, Yongsan-gu, Seoul",
     "lat": 37.5345,
     "lng": 126.9944,
-    "img": "",
+    "img": "images/admin-upload-212-photo.jpg",
     "fullDescription": {
-      "en": "<p>This flagship LINE Friends store in Itaewon housed a BT21-themed cafe on the 3rd floor, with more BT21 merchandise on the 2nd floor — at the time the world's largest LINE Friends store. The pink building was a landmark stop on the Itaewon shopping strip for several years before it closed.</p><p>BTS filmed videos here during the BT21 character-creation process, and fans identified the specific cafe table the members reportedly sat at (V is said to have taken one end of it). The Itaewon branch permanently closed on April 5, 2020, with LINE Friends citing plans to expand operations elsewhere in the city rather than renew this store.</p>"
+      "en": "<p>For several years, this flagship LINE Friends store was an unmistakable, massive pink landmark standing proudly on the main Itaewon shopping strip. At the time of its operation, it held the title of the world's largest LINE Friends store. The sprawling multi-story complex was a pop-culture paradise, housing an expansive BT21-themed cafe on the third floor and a dedicated BT21 merchandise zone on the second floor. Sadly, the physical store officially closed its doors in 2020 due to the global pandemic, but it remains a legendary site in K-pop retail history.</p><p>The Itaewon flagship store was the undisputed epicenter of the \"BT21\" universe—the incredibly successful character brand created by BTS. The members themselves visited this specific store on multiple occasions during the early BT21 campaigns, leaving behind their autographs, personal drawings, and interacting with the giant statues of Tata, Chimmy, Cooky, and the rest of the crew. For years, sitting at the BT21 cafe where the members had once filmed promotional content was considered a mandatory rite of passage for ARMYs visiting Seoul. While the building is gone, the global legacy of the characters they launched here continues to thrive.</p>"
     },
     "practicalInfo": [
       {
@@ -9838,39 +10072,87 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Itaewon Station, exit 3. Walk straight and cross the pedestrian crossing — the building that housed the pink LINE store is visible from there, on Itaewon-ro."
+          "en": "The building was originally located right outside Itaewon Station (Subway Line 6), near Exit 3."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "PERMANENTLY CLOSED"
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "This location has closed"
+          "en": "The Store is Permanently Closed"
         },
         "text": {
-          "en": "The store and cafe permanently closed on April 5, 2020 — there's no BT21 cafe to visit here anymore, but the address remains a nostalgic photo stop for fans passing through Itaewon."
+          "en": "It is crucial to note that the massive pink building in Itaewon no longer exists as a LINE Friends store. Do not dedicate time in your itinerary to searching for it on Itaewon-ro!"
+        }
+      },
+      {
+        "title": {
+          "en": "The Alternative Pilgrimages"
+        },
+        "text": {
+          "en": "Fortunately, the BT21 magic is still very much alive in Seoul. To get your merchandise fix and take photos with the giant character statues, you should reroute your itinerary to the massive LINE Friends flagship stores located in the Hongdae or Gangnam districts."
+        }
+      },
+      {
+        "title": {
+          "en": "Still Visit Itaewon"
+        },
+        "text": {
+          "en": "Even though the store is gone, Itaewon is still highly worth visiting! It is one of Seoul's most diverse, vibrant neighborhoods, packed with international cuisine, trendy cafes, and famous filming locations (including spots from the hit drama Itaewon Class, starring V's close friend Park Seo-joon, for which V sang the OST \"Sweet Night\")."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-212-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "tweetUrl": "https://x.com/bt21_/status/955407453000118278?s=46"
   },
   {
     "id": 213,
     "name": "Tokyu Plaza (glass escalator) — Harajuku",
     "group": "BTS",
-    "member": "Jungkook",
+    "member": "Jimin, Jungkook",
     "country": "Japan",
     "city": "Tokyo (Harajuku)",
     "category": "Landmark",
     "year": "2019",
     "episode": "",
     "episodeLink": "https://starsofheavens.com/2019/07/04/tokyu-plaza-famous-glass-escalator-in-harajuku-appeared-in-bts-jungkooks-gcf-film-how-to-go-and-what-to-expect/",
-    "ytId": "",
+    "ytId": "XrTNLkqGrlc",
     "address": "4-30-3 Jingumae, Shibuya, Tokyo",
     "lat": 35.6692,
     "lng": 139.7075,
-    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Tokyu%20Plaza%20Omotesando-Harajuku.jpg",
+    "img": "images/admin-upload-213-photo.jpg",
     "fullDescription": {
-      "en": "<p>Tokyu Plaza Omotesando Harajuku is a shopping complex known for its striking entrance: an escalator that carries visitors through a kaleidoscopic hall of angled mirrors before opening onto the shops and a rooftop garden above. Opened in 2012 and designed by architect Hiroshi Nakamura, the mirrored entrance has become one of Harajuku's most photographed spots.</p><p>The escalator appears in Jungkook's self-shot travel film \"GCF in Tokyo,\" part of the members' GCF (Golden Closet Film) series where each of them documents a personal trip. Fans retrace the same steps through the mirrored entrance as a quick, easy-to-reach stop while exploring Harajuku and Omotesando.</p>"
+      "en": "<p>Tokyu Plaza Omotesando Harajuku is a premier shopping complex known for its striking, futuristic entrance: a steep escalator that carries visitors through a kaleidoscopic hall of angled mirrors before opening onto the trendy boutiques and a beautiful rooftop garden above. Opened in 2012 and designed by award-winning architect Hiroshi Nakamura, the mesmerizing mirrored entrance was built to reflect the vibrant, ever-changing energy of the people passing through it, quickly becoming one of Harajuku's most iconic and photographed architectural spots.</p><p>During their legendary 2017 trip to Japan, brilliantly documented by Jungkook in his travel film G.C.F in Tokyo, the duo spent an afternoon exploring the vibrant shopping districts of Omotesando and Harajuku. If you watch the official vlog on YouTube, at exactly 1 minute and 34 seconds (1:34), the video cuts to the mesmerizing, kaleidoscope-like mirrored entrance of Tokyu Plaza. Jungkook beautifully captured Jimin riding the escalator up through this dazzling architectural tunnel, instantly cementing it as a must-visit photo and video spot for global fans retracing their Tokyo itinerary.</p>"
     },
     "practicalInfo": [
       {
@@ -9878,19 +10160,67 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Meiji-jingumae \"Harajuku\" Station (Chiyoda Line C03 / Fukutoshin Line F15). Follow the signs for exits 1-6, then take exit 5 — this leads directly to Tokyu Plaza."
+          "en": "The plaza is located right at the famous Jingumae intersection. Take the Tokyo Metro (Chiyoda or Fukutoshin Line) to Meiji-jingumae 'Harajuku' Station and use Exit 5—the mirrored entrance is literally steps away. Alternatively, it is a 5-minute walk from JR Harajuku Station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The shopping complex is generally open daily from 11:00 AM to 8:00 PM (restaurants on the upper floors stay open later). Riding the escalator and entering the mall is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "While the famous mirrored entrance is an escalator, wheelchair users and visitors with strollers can access the entire mall and the rooftop garden via the spacious ground-floor elevators located just to the side of the main escalator entrance."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Best time for photos"
+          "en": "The 1:34 Video Recreation"
         },
         "text": {
-          "en": "The mirrored entrance gets crowded fast since it sits right at a major Harajuku/Omotesando crossing — an early morning visit gives a much better chance at photos without a crowd of other people reflected in every mirror panel."
+          "en": "Don't just take a photo—shoot a video! To perfectly recreate the shot from G.C.F in Tokyo, have your travel partner stand a few steps behind you on the escalator and film your back as you ride up through the geometric mirrors."
+        }
+      },
+      {
+        "title": {
+          "en": "Relax at Omohara Forest"
+        },
+        "text": {
+          "en": "Once you finish taking photos on the escalator, don't leave! Head up to the 6th floor to discover the \"Omohara Forest,\" a stunning open-air rooftop terrace filled with trees and seating. It is one of the best free places in Harajuku to sit down, grab a coffee, and rest your feet after a long day of shopping."
+        }
+      },
+      {
+        "title": {
+          "en": "Mind the Crowds"
+        },
+        "text": {
+          "en": "Because this is the main entrance to a busy shopping mall situated on one of Tokyo's most famous intersections, the escalator is in constant motion. Be quick with your camera and mindful of local shoppers commuting behind you."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.tokyu-plaza.com/omokado/",
+    "recreatedPhotos": [
+      "images/admin-upload-213-recreated-0.jpg"
     ]
   },
   {
@@ -9904,13 +10234,13 @@ window.STATIC_LOCATIONS = [
     "year": "2019",
     "episode": "",
     "episodeLink": "https://starsofheavens.com/2019/06/22/red-rock-harajuku-bts-jimin-and-jungkook-ate-here-how-to-go-and-what-to-expect/",
-    "ytId": "",
-    "address": "3-25-12 Jingumae, Shibuya, Tokyo",
+    "ytId": "XrTNLkqGrlc",
+    "address": "Hulic Aoyama Building B1F, 3-25-12 Jingumae, Shibuya City, Tokyo",
     "lat": 35.6708,
     "lng": 139.7031,
-    "img": "",
+    "img": "images/admin-upload-214-photo.jpg",
     "fullDescription": {
-      "en": "<p>Red Rock is a small roast beef bowl restaurant near Takeshita Street in Harajuku, known for generous portions ordered via a vending machine at the entrance — a popular, no-frills lunch stop for people exploring the neighborhood's shopping streets.</p><p>Jimin and Jungkook ate here during the same Harajuku outing captured in Jungkook's \"GCF in Tokyo\" film, after Jimin shopped at the nearby YSL Omotesando branch. They're reported to have ordered the Slice Steak Bowl, #2 on the menu.</p>"
+      "en": "<p>Tucked away in the basement of a building in the bustling, trendy Ura-Harajuku district, Red Rock is a casual, hugely popular eatery. It has earned a devoted following for its signature dish: the Roast Beef Don. The restaurant is famous for serving incredibly generous, mountain-like portions of high-quality, thinly sliced roast beef over a bowl of rice, beautifully crowned with a raw egg yolk and a special yogurt sauce. Operating with a classic Japanese ticket-vending machine at the entrance, it is a fast, no-frills, and highly satisfying culinary staple for shoppers and locals exploring Tokyo's vibrant fashion streets.</p><p>In late 2017, Jimin and Jungkook took a private, highly publicized vacation to Japan, which Jungkook beautifully documented in his legendary travel film, G.C.F in Tokyo. After a long day of shopping in Omotesando and Harajuku, the duo stopped at this exact Red Rock branch for a hearty meal. If you watch the official vlog on YouTube, at exactly 2 minutes and 06 seconds (2:06), the film captures them sitting at a small table on the right side of the restaurant, happily digging into their massive bowls of meat. Thanks to this iconic vlog, Red Rock Harajuku went from being a trendy local lunch spot to an absolute must-visit pilgrimage destination for global ARMYs wanting to recreate the cozy, authentic Tokyo experience shared by the two members.</p>"
     },
     "practicalInfo": [
       {
@@ -9918,20 +10248,68 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Meiji-jingumae \"Harajuku\" Station (Chiyoda Line C03 / Fukutoshin Line F15), exit 3. Cross the pedestrian crossing and go around the small round park, walk through the alley to Takeshita Street, cross at the far end, turn left, and continue past the Rip N Dip store to reach Red Rock."
+          "en": "The restaurant is very easy to reach. Take the Tokyo Metro (Chiyoda or Fukutoshin Line) to Meiji-jingumae 'Harajuku' Station. From Exit 3 or 5, it is just a short 5-minute walk down the vibrant streets branching off from Takeshita Street."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from 11:30 AM to 9:00 PM (last order is usually slightly before closing). Prices are incredibly reasonable for Tokyo, with the standard Roast Beef Bowl costing around 1,600 JPY."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Because the restaurant is located in a tight basement level accessible primarily by a narrow, steep staircase, it is unfortunately not wheelchair accessible and can be difficult to navigate with large strollers."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Order at the vending machine"
+          "en": "Order the"
         },
         "text": {
-          "en": "Like many small Japanese eateries, you order and pay at a vending machine near the entrance before sitting down — the Slice Steak Bowl is menu item #2, the one Jimin and Jungkook reportedly ordered."
+          "en": "To eat exactly like them, you need to order the two most popular items on the menu: the Roast Beef Bowl (which comes topped with egg yolk and a yogurt sauce) and the Sliced Steak Bowl."
+        }
+      },
+      {
+        "title": {
+          "en": "Master the Vending Machine"
+        },
+        "text": {
+          "en": "Like many casual Japanese restaurants, you cannot order at the table. You must make your selection and pay at the digital vending machine located outside the door before you enter. The machine has an English language option, making it very tourist-friendly!"
+        }
+      },
+      {
+        "title": {
+          "en": "Beat the Queues"
+        },
+        "text": {
+          "en": "Because of its prime location in Harajuku and its BTS fame, lines can get very long during peak lunch hours. To avoid waiting on the stairs, try visiting on a weekday evening when the restaurant is significantly less crowded."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "http://www.redrock-kobebeef.com/shopinfo.html",
+    "recreatedPhotos": [
+      "images/admin-upload-214-recreated-0.jpg"
+    ],
+    "instagramUrl": ""
   },
   {
     "id": 215,
@@ -10034,16 +10412,6 @@ window.STATIC_LOCATIONS = [
     "tweetUrl": "https://x.com/bts_bighit/status/892218402554630145",
     "instagramUrls": [],
     "facebookUrls": [],
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Fly into Busuanga Airport (USU) on Coron Island, then book an Island Hopping Tour A or Ultimate Tour from Coron Town harbor."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "tweetUrls": [],
     "ytId": "-BZHpyBDZEE",
     "pinterestUrls": [],
@@ -10052,7 +10420,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "youtubeUrls": [],
     "tiktokUrl": "",
-    "recreatedPhoto": "images/admin-upload-new-0GBu2KZ95jpTtlexQAG1-recreated.jpg",
     "episodeLink": "https://www.youtube.com/watch?v=c4TLPA7Jmd4&pp=ygUXQlRTIFN1bW1lciBQYWNrYWdlIDIwMTc%3D",
     "officialLink": "https://share.google/dUaedpxOBLCC9Zt7E",
     "tipsList": [
@@ -10084,7 +10451,36 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Located in the pristine Palawan province, Coron Island is a world-renowned tropical paradise. It is famous for its dramatic, jagged limestone karst cliffs that rise sharply from crystal-clear, emerald waters, making it a spectacular haven for divers and nature lovers. Twin Lagoon, one of its most celebrated natural wonders, offers a surreal swimming experience where warm, salty ocean currents blend with cool underground freshwater springs, all completely enclosed by towering, majestic rock walls.</p><p>Seeking the ultimate tropical escape, BTS traveled to this breathtaking archipelago to film the BTS Summer Package 2017. Trading their hectic global schedules for relaxed \"island time,\" the seven members fully embraced the Palawan lifestyle. They navigated the mesmerizing Twin Lagoon, went snorkeling among vibrant coral reefs, and bravely rode inflatable banana boats. The pristine, powdery white-sand beaches of the Calamian Islands served as the perfect sun-drenched backdrop for their photobook, capturing the group’s pure, chaotic, and youthful joy in an untouched island setting.</p>"
     },
-    "imgCredit": "Franz C. Trinidad / CC BY-SA 4.0"
+    "imgCredit": "Franz C. Trinidad / CC BY-SA 4.0",
+    "recreatedPhotos": [
+      "images/admin-upload-new-0GBu2KZ95jpTtlexQAG1-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "First, take a domestic flight from Manila to Busuanga Airport (USU), followed by a van ride into Coron Town. From the town's port, Twin Lagoon is only accessible via a motorized outrigger boat (bangka). The boat ride takes about 20 to 30 minutes."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "You cannot visit independently; you must book an official island-hopping tour (often labeled as the \"Coron Ultimate Tour\" or \"Tour A\" at local agencies). Tours typically run from 8:00 AM to 5:00 PM. The specific environmental entrance fee for Twin Lagoon is 200 PHP (approx. $4 USD), which is usually bundled into the total price of your group or private tour package."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Because this location requires transferring in and out of a traditional wooden boat on the open water, swimming, and potentially climbing steep, slippery wooden stairs over a limestone cliff, it is unfortunately not accessible for wheelchairs or those with significant mobility issues. Please note that wearing a life jacket in the water is strictly mandatory for all tourists."
+        }
+      }
+    ]
   },
   {
     "id": "new-0GsQ7YXKUoWXQaA4PgII",
@@ -10183,21 +10579,11 @@ window.STATIC_LOCATIONS = [
     "year": "2020",
     "name": "Yangnim-dong Penguin Village",
     "lng": 126.9158,
-    "address": "7 Baekseo-ro 139beon-gil, Nam-gu, Gwangju, South Korea",
+    "address": "7 Cheonbyeonjwa-ro 446beon-gil, Nam-gu, Gwangju",
     "id": "new-1amF71xqTl5VJ5H75FqS",
     "category": "Landmark",
     "group": "BTS",
     "addedAt": 1788697365516,
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Gwangju Metro Line 1 to Namgwangju Station (Exit 3). Walk approximately 10 minutes west into the historic Yangnim-dong district to reach the village entrance."
-        }
-      }
-    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "pinterestUrl": "",
@@ -10242,10 +10628,35 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-new-1amF71xqTl5VJ5H75FqS-recreated-0.jpg"
     ],
-    "recreatedPhoto": "images/admin-upload-new-1amF71xqTl5VJ5H75FqS-recreated.jpg",
     "imgCredit": "Screentostreet",
     "officialLink": "https://www.google.com/imgres?q=yangnim-dong%20penguin%20village%20bts&imgurl=https%3A%2F%2Ftour.gwangju.go.kr%2Fuploads%2Ftour%2Finfo%2Fvillage%2F202003051117590166.jpg&imgrefurl=https%3A%2F%2Ftour.gwangju.go.kr%2Feng%2Ftour%2Finfo%2Fvillage%2F002.cs%3Fact%3Dview%26infoId%3D1160%26category%3D002%26guNm%3D%26searchCondition%3D%26searchKeyword%3D%26pageIndex%3D2&docid=BOYBZHneSH81IM&tbnid=PxBGuf9Q7ddqLM&vet=12ahUKEwjf28aZ8viWAxUJVqQEHYRyG9wQnPAOegQIORAA..i&w=1000&h=560&hcb=2&ved=2ahUKEwjf28aZ8viWAxUJVqQEHYRyG9wQnPAOegQIORAA",
-    "episodeLink": "https://www.tatlerasia.com/lifestyle/travel/where-to-go-in-gwangju-hometown-of-btss-j-hope"
+    "episodeLink": "https://www.tatlerasia.com/lifestyle/travel/where-to-go-in-gwangju-hometown-of-btss-j-hope",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Gwangju Subway (Line 1) to Namgwangju Station. Use Exit 3, and from there it is about a 10-to-15-minute walk across the river and into the Yangnim-dong neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The village alleys are open to the public 24/7 and are completely free to explore. However, out of respect for the residents, tourists are heavily encouraged to visit only between 9:00 AM and 6:00 PM."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main alleys of the village are mostly flat and paved, making the core areas accessible. However, because it is an older, organically developed neighborhood, some side pathways can be quite narrow, and the upcycled art installations sometimes protrude into the walking spaces, requiring a bit of careful navigation."
+        }
+      }
+    ]
   },
   {
     "group": "BTS",
@@ -10269,16 +10680,6 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Hwaeomsa Temple, nestled on the slopes of Jirisan Mountain in Gurye, South Jeolla Province, is one of the premier ancient Buddhist temples in South Korea. Founded in 544 AD during the Three Kingdoms period, it is a site of immense historical and cultural significance. The temple is home to numerous National Treasures—most notably the majestic Gakhwangjeon Hall and the Four Lion Three-Story Stone Pagoda—and is revered for its peaceful atmosphere, architectural grandeur, and deep spiritual heritage.</p><p>In December 2022, BTS's RM (Kim Namjoon) visited Hwaeomsa Temple for what was intended to be a private, quiet retreat alongside music producer Kang San. During his stay, RM sought a space for reflection prior to his solo endeavors and engaged in deep conversations with the temple's chief monk, Venerable Deokmun. They discussed profound themes regarding music, life, and his upcoming military enlistment.</p><p>However, the retreat took a controversial turn in early January 2023 when the chief monk leaked the contents of their private conversation to the Korean media. Articles quickly surfaced detailing RM's intimate thoughts on his military duty and charitable actions. Deeply disappointed by this breach of trust from a religious figure, RM publicly addressed the situation on Instagram. He swiftly deleted all his photos of the temple, expressed his regret over the unauthorized articles, and stated that his future temple stays would remain strictly private, famously leaving the hashtag #lowkeymustbelowkey.</p>"
     },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take an intercity bus to Gurye Bus Terminal, then board a local bus heading directly to Hwaeomsa (runs approximately every 30 minutes)."
-        }
-      }
-    ],
     "tweetUrls": [],
     "pinterestUrls": [],
     "pinterestUrl": "",
@@ -10287,7 +10688,6 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://fr.wikipedia.org/wiki/Hwaeomsa",
     "tiktokUrl": "",
     "ytId": "",
-    "recreatedPhoto": "images/admin-upload-new-1bOsxr6FNynKsmMF2N5g-recreated.jpg",
     "imgCredit": "eimoberg / CC BY 2.0",
     "episodeLink": "https://www.thenews.com.pk/latest/1028439-hwaeomsa-temple-denies-any-involvement-with-leak-of-bts-rm-s-private-conversation",
     "tipsList": [
@@ -10315,6 +10715,35 @@ window.STATIC_LOCATIONS = [
           "en": "If you want to experience the peaceful, reflective retreat that RM was originally seeking, South Korea offers incredible official Templestay programs across the country. Consider booking a stay (perhaps at a different, quieter temple, as RM suggested for himself!) to experience traditional tea ceremonies, meditation, and monastic life in true privacy."
         }
       }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-1bOsxr6FNynKsmMF2N5g-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The most efficient way to travel from Seoul is by taking the KTX high-speed train to Gurye-gu Station (about a 2.5-hour ride). From the station, a taxi directly to the temple entrance takes approximately 15 to 20 minutes. There are also local buses from the Gurye Bus Terminal that drop you near the temple."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The temple grounds are generally open daily from sunrise to sunset. Thanks to a major policy change by the South Korean government and the Jogye Order in May 2023, general admission to the temple is now completely free (previously it required a small cultural heritage fee)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Reaching the temple from the main parking lot requires a moderate uphill walk along a paved path. While the main central courtyard is spacious and relatively flat, exploring the various historic halls (like Gakhwangjeon) requires climbing steep stone staircases."
+        }
+      }
     ]
   },
   {
@@ -10331,16 +10760,6 @@ window.STATIC_LOCATIONS = [
     "id": "new-2sZwoI4KpzIPUwlgvDVg",
     "member": "All",
     "addedAt": 1789072845192,
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Seoul Subway Line 7 or the Gyeongui-Jungang Line to Mangu Station (Exit 1) or Myeonmok Station. From either station, take a short 5 to 10-minute taxi ride up toward Mangu Mountain."
-        }
-      }
-    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "imgCredit": "Screentostreet",
@@ -10384,8 +10803,36 @@ window.STATIC_LOCATIONS = [
     },
     "episodeLink": "https://koreasowls.fr/yongma-land-parc-dattractions-abandonne-toujours-en-activite/",
     "officialLink": "https://creatrip.com/fr/blog/6415?srsltid=AU7gw4XxvoozcGC2T-owr9dLp3SHxWCc8MmzZdoWJ3wWv2VqgUjecZRl",
-    "recreatedPhoto": "images/admin-upload-new-2sZwoI4KpzIPUwlgvDVg-recreated.jpg",
-    "tweetUrl": "https://x.com/i/status/2011086898165637125"
+    "tweetUrl": "https://x.com/i/status/2011086898165637125",
+    "recreatedPhotos": [
+      "images/admin-upload-new-2sZwoI4KpzIPUwlgvDVg-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Gyeongui-Jungang Line or Gyeongchun Line to Mangu Station. Take Exit 1. From there, it is about a steep 15-to-20-minute uphill walk to the park entrance. To save your energy for the photoshoot, it is highly recommended to catch a local taxi from the station for a quick 5-minute ride directly to the gates."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The entry fee is 10,000 KRW (cash only). Operating hours are generally from 10:00 AM to 6:00 PM, but because it is privately run by one person, closures can be completely random."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "This is an abandoned, unmaintained site. The ground features cracked and uneven concrete, overgrown vegetation, rust, and scattered debris. It is unfortunately not accessible for wheelchairs or strollers, and all visitors should wear closed-toe shoes to safely navigate around the rusted metal."
+        }
+      }
+    ]
   },
   {
     "id": "new-37Ztk5NoqShGM7H5EFlX",
@@ -10466,16 +10913,6 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Located just outside Seoul, Hyundai Motorstudio Goyang is South Korea's premier automotive theme park and mobility experience center. Far beyond a traditional showroom, this architectural landmark immerses visitors in the entire journey of car creation, featuring futuristic interactive exhibits, automated manufacturing displays, and cutting-edge concept car showcases.</p><p>This sprawling, multi-story venue became an exclusive, after-hours playground for the group during Run BTS! Episodes 110 and 111. The sleek and futuristic exhibition zones served as the perfect backdrop for a hilariously chaotic late-night treasure hunt. Members raced across the facility, frantically searching for hidden clues inside the showcased vehicles and tackling automotive trivia challenges, turning this modern corporate space into a memorable arena of pure comedic entertainment.</p>"
     },
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Subway Line 3 to Daehwa Station (Exit 2) and walk 15 minutes towards the KINTEX complex."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "tweetUrls": [],
     "ytId": "zaXfSCdO69I",
     "pinterestUrls": [],
@@ -10485,7 +10922,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "youtubeUrls": [],
     "tiktokUrl": "",
-    "recreatedPhoto": "images/admin-upload-new-3UtuxgcNLM7VVKgsgZiG-recreated.jpg",
     "tipsList": [
       {
         "title": {
@@ -10514,7 +10950,36 @@ window.STATIC_LOCATIONS = [
     ],
     "imgCredit": "Damian B Oh / CC BY-SA 4.0",
     "episodeLink": "https://www.youtube.com/watch?v=zaXfSCdO69I",
-    "officialLink": "https://motorstudio.hyundai.com/goyang/ln/main.do?lang=en"
+    "officialLink": "https://motorstudio.hyundai.com/goyang/ln/main.do?lang=en",
+    "recreatedPhotos": [
+      "images/admin-upload-new-3UtuxgcNLM7VVKgsgZiG-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 3 to Daehwa Station. From there, it is about a 15-minute walk to the Motorstudio. Alternatively, you can take a quick taxi ride from the station to the entrance (it is located right next to the famous KINTEX exhibition center)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main exhibition is open from 10:00 AM to 7:00 PM (Closed on Mondays). Walking around the ground-floor showcase is free, but the main interactive guided exhibition costs 10,000 KRW for adults."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a state-of-the-art corporate flagship facility, the entire Motorstudio is exceptionally accessible. It features wide, step-free pathways, spacious elevators, and full wheelchair accommodations across all exhibit levels."
+        }
+      }
+    ]
   },
   {
     "id": "new-3XGdjRGOFysEfy39UpDo",
@@ -10531,16 +10996,6 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "addedAt": 1788772972254,
     "tweetUrl": "https://x.com/BTS_twt/status/1139743038006185984?s=46",
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Busan Metro Line 1 to Bujeon Station (Exit 1 or 2) and walk approximately 10 minutes toward the South Gate of Busan Citizens Park."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "facebookUrl": "",
     "instagramUrl": "",
     "tiktokUrl": "",
@@ -10584,7 +11039,35 @@ window.STATIC_LOCATIONS = [
     },
     "episodeLink": "https://sbsstar.net/article/N1005314535/busan-kindly-informs-the-park-where-bts-v-has-recently-walked",
     "officialLink": "https://www.visitbusan.net/index.do?menuCd=DOM_000000301001001000&uc_seq=354&lang_cd=en",
-    "recreatedPhoto": "images/admin-upload-new-3XGdjRGOFysEfy39UpDo-recreated.jpg"
+    "recreatedPhotos": [
+      "images/admin-upload-new-3XGdjRGOFysEfy39UpDo-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The park is very centrally located. Take Busan Subway Line 1 to Bujeon Station. Use Exit 5 or 7, and walk straight for about 10 minutes to reach the southern entrance of the park (which is closest to the V Road photo zone)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The park is open daily from 5:00 AM to 12:00 AM (Midnight). Admission to the park and the photo zone is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a modern, master-planned urban park, this location is exceptionally accessible. The walkways are wide, completely flat, and smoothly paved, making it incredibly easy to navigate for wheelchair users, strollers, and visitors of all mobility levels."
+        }
+      }
+    ]
   },
   {
     "category": "Landmarks",
@@ -10688,16 +11171,6 @@ window.STATIC_LOCATIONS = [
     "year": "2018",
     "city": "Seoul",
     "addedAt": 1789073846062,
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Seoul Subway Line 3 or Line 6 to Yaksu Station. Take Exit 2 and walk straight for about 200 meters. The restaurant with its gold tile facade will be on your left."
-        }
-      }
-    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "pinterestUrl": "",
@@ -10738,11 +11211,39 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "ytId": "",
-    "recreatedPhoto": "images/admin-upload-new-65mMbwq8jIppC1goKZQy-recreated.jpg",
     "fullDescription": {
       "en": "<p>Geum Dwaeji Sikdang, famously known as the Gold Pig Restaurant, is undeniably one of Seoul's most prestigious Korean BBQ establishments. Recognized annually by the Michelin Guide's Bib Gourmand selection since 2019, this three-story culinary landmark is located in the Yaksu neighborhood (Jung-gu). With its distinctive white-tiled exterior and iconic gold pig logo, the restaurant is celebrated for serving premium, meticulously aged YBD (a crossbreed of Yorkshire, Berkshire, and Duroc) pork cuts, expertly grilled over golden charcoal on heavy cast-iron grates.</p><p>This restaurant earned its legendary status within the ARMY community after members of BTS—most notably Jimin, Jungkook, and V—became highly frequent patrons. The group's vocal line has visited numerous times over the years to enjoy the world-class pork belly and shoulder cuts, turning a quiet dinner spot into a global phenomenon. Today, it remains an essential pilgrimage site for fans, with Jimin and Jungkook’s signed autographs proudly preserved and displayed on the wall.</p>"
     },
-    "instagramUrl": "https://www.instagram.com/p/ChTLwbVvYn8/"
+    "instagramUrl": "https://www.instagram.com/p/ChTLwbVvYn8/",
+    "recreatedPhotos": [
+      "images/admin-upload-new-65mMbwq8jIppC1goKZQy-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The restaurant is highly accessible by public transit. Take Seoul Subway Line 3 or Line 6 to Yaksu Station. Take Exit 2, walk straight down the main street for about 3 to 4 minutes, and look for the bright white tiles and the golden pig sign on your left."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Usually open daily from 11:30 AM to 11:00 PM (the last order is typically taken around 10:15 PM). Prices are very reasonable for premium BBQ, averaging around 19,000 to 22,000 KRW per portion of meat."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The first-floor dining area is accessible from the street level. However, the restaurant spans three floors connected only by narrow, steep staircases. Because the tables are packed tightly together and feature hot charcoal grills in the center, wheelchair users should request seating on the ground floor upon arrival."
+        }
+      }
+    ]
   },
   {
     "lat": 35.8274,
@@ -11120,16 +11621,6 @@ window.STATIC_LOCATIONS = [
     "group": "BTS",
     "addedAt": 1789074154119,
     "instagramUrl": "https://www.instagram.com/p/DGuO1Y9Phr2/?img_index=1",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "From Jeonju Intercity Bus Terminal, take local bus 871 or 872 toward Soyang-myeon and get off near Seseong-ri. Taxi or rental car from Jeonju Station (approx. 20 minutes) is highly recommended for easier access."
-        }
-      }
-    ],
     "facebookUrl": "",
     "tweetUrl": "",
     "tiktokUrl": "",
@@ -11172,7 +11663,35 @@ window.STATIC_LOCATIONS = [
       "en": "<p>Located in the serene, untouched countryside of Wanju-gun in North Jeolla Province, this charming stone stepping crossing (doldari) spans across a quiet local stream, nestled against a breathtaking backdrop of lush green mountains. Wanju is deeply celebrated for its well-preserved traditional Korean culture, historic hanok villages, and tranquil natural landscapes, offering a perfect, slow-paced contrast to the high-tech bustle of South Korea's major cities.</p><p>This quiet rural stream gained massive international fame when BTS selected Wanju as the exclusive filming location for their 2019 Summer Package in Korea—notably their first-ever domestic Summer Package. The beautiful pictorial featuring all seven members casually sitting and walking across the picturesque stepping stones became one of the photoshoot's most iconic and beloved images. The visual impact was so profound that local authorities officially designated the area as part of the \"Wanju BTS Tour\" trail, placing informational photo zone markers to help fans perfectly recreate the group's relaxing summer aesthetic.</p>"
     },
     "episodeLink": "https://www.youtube.com/watch?v=codiyeFL8wA",
-    "officialLink": "https://english.visitkorea.or.kr/svc/whereToGo/hdrdslt/hdrdsltView.do?crsSn=371745"
+    "officialLink": "https://english.visitkorea.or.kr/svc/whereToGo/hdrdslt/hdrdsltView.do?crsSn=371745",
+    "recreatedPhotos": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Public transportation in this rural county is extremely sparse. The best way to explore Wanju is by driving a rental car. If you are arriving from Seoul, take the KTX high-speed train to Jeonju Station, and then rent a car or hire a local taxi for the day (the drive from Jeonju to Changpo Village takes about 30 to 40 minutes)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The stream and stepping stones are public outdoor spaces, meaning they are accessible 24/7 and completely free to visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Reaching the stream requires navigating an unpaved, natural riverbank. Because crossing the water requires stepping over open gaps on uneven, sometimes wet concrete and stone blocks, this specific photo spot is unfortunately not accessible for wheelchairs or those with limited mobility."
+        }
+      }
+    ],
+    "recreatedPhoto": ""
   },
   {
     "address": "38 Songjeong-ro 8beon-gil, Gwangsan-gu, Gwangju, South Korea",
@@ -11452,16 +11971,6 @@ window.STATIC_LOCATIONS = [
     "city": "Seoul",
     "group": "BTS",
     "addedAt": 1788775540502,
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Seoul Subway Line 1 or Line 4 to Hoehyeon Station (Exit 5) or City Hall Station (Exit 8) and walk 5 minutes straight toward the Namdaemun intersection."
-        }
-      }
-    ],
     "ytId": "619Q0DhywRo",
     "facebookUrl": "",
     "tweetUrl": "https://x.com/bts_bighit/status/1442272577611714563?s=46",
@@ -11506,7 +12015,35 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://fr.wikipedia.org/wiki/Sungnyemun",
     "episodeLink": "https://www.travelandleisureasia.com/sea/destinations/asia/how-bts-will-turn-seouls-historic-landmarks-into-a-stage-for-their-arirang-comeback/",
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhoto": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-recreated.jpg"
+    "recreatedPhotos": [
+      "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The gate is incredibly easy to reach. Take Seoul Subway Line 1 or 4 to Seoul Station (Exit 4) or Line 4 to Hoehyeon Station (Exit 5). Both stations are just a short 5-minute walk to the plaza."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor plaza surrounding the gate is open to the public and beautifully illuminated at night. If you wish to walk through the central stone archway, official visiting hours are generally from 9:00 AM to 6:00 PM (strictly closed on Mondays). Admission is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The surrounding plaza was completely redesigned to be extremely pedestrian-friendly. It is wide, completely flat, smoothly paved, and highly accessible for wheelchairs and strollers, allowing everyone to easily get a great view of the structure."
+        }
+      }
+    ]
   },
   {
     "address": "54 Samcheong-ro, Jongno-gu, Seoul, South Korea",
@@ -11522,16 +12059,6 @@ window.STATIC_LOCATIONS = [
     "lng": 126.9808,
     "group": "BTS",
     "addedAt": 1789074676082,
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Seoul Subway Line 3 to Anguk Station (Exit 1) and walk north along Samcheong-ro for approximately 12 minutes."
-        }
-      }
-    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "pinterestUrl": "",
@@ -11575,7 +12102,35 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "tweetUrl": "https://x.com/urmisope/status/2065054945460838666?s=46",
     "episodeLink": "https://www.koreajoongangdaily.com/lifestyle/bts-member-rm-takes-time-off-military-service-to-enjoy-art/12103577",
-    "officialLink": "https://www.kukjegallery.com/"
+    "officialLink": "https://www.kukjegallery.com/",
+    "recreatedPhotos": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 3 to Anguk Station. Use Exit 1, walk straight, and turn right to walk up the scenic stone-wall road running parallel to the Gyeongbokgung Palace grounds. The gallery will be on your right after a beautiful 10-to-15-minute walk."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open Monday through Saturday from 10:00 AM to 6:00 PM, and Sundays from 10:00 AM to 5:00 PM. Unlike the national museums, Kukje Gallery is a commercial gallery, meaning admission to its world-class exhibitions is almost always completely free!"
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The gallery buildings are modern and equipped with elevators connecting the different exhibition floors, making the indoor spaces easily accessible for wheelchairs and strollers."
+        }
+      }
+    ],
+    "recreatedPhoto": ""
   },
   {
     "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Museum_SAN.tif/lossy-page1-1280px-Museum_SAN.tif.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
@@ -11593,16 +12148,6 @@ window.STATIC_LOCATIONS = [
     "addedAt": 1788713854097,
     "tweetUrl": "https://x.com/BTS_twt/status/1163313092379332608?s=46",
     "episodeLink": "",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "From Seoul, take a KTX train from Cheongnyangni Station to Manjong Station or Wonju Station, then take a taxi (approx. 20-25 minutes) directly to Museum SAN."
-        }
-      }
-    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "pinterestUrl": "",
@@ -11645,10 +12190,35 @@ window.STATIC_LOCATIONS = [
       "en": "<p>Museum SAN (Space Art Nature) is a world-class architectural masterpiece designed by the legendary minimalist architect Tadao Ando. Tucked away in the pristine mountains of Wonju, the museum is designed as a sanctuary to foster a deep connection between art and the environment. It seamlessly merges stark, exposed concrete structures, expansive stone and water gardens, and immersive light installations with the breathtaking surrounding natural landscape.</p><p>As an avid art enthusiast and the group's resident museum connoisseur, RM traveled to Museum SAN in early 2019 for a peaceful winter \"Namjooning\" retreat. He shared serene photos of his visit on BTS's official Twitter account, most notably posing in front of Alexander Liberman's towering red Archway sculpture that seemingly floats on the tranquil Water Garden. He also spent quiet, introspective moments experiencing the museum's permanent James Turrell light and space exhibits. Through his thoughtful documentation, RM instantly transformed this remote mountain museum into a staple pilgrimage for art-loving ARMYs worldwide.</p>"
     },
     "imgCredit": "Museum SAN / CC BY-SA 4.0",
-    "recreatedPhoto": "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated.jpg",
     "recreatedPhotos": [
       "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-0.jpg",
       "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-1.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the KTX high-speed train from Cheongnyangni Station or Seoul Station to Manjong Station or Wonju Station (a quick 50 to 60-minute ride). From the station, the easiest and fastest way up to the mountain resort is a 20-minute taxi ride. Alternatively, you can catch the Wonju City Tour Bus which stops directly at the museum."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open from 10:00 AM to 6:00 PM. Important: Closed on Mondays. A basic gallery ticket is around 22,000 KRW, but the integrated ticket that includes the highly recommended James Turrell pavilion costs approximately 38,000 KRW."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Despite being located in the mountains, Tadao Ando designed the museum to be highly accessible. The outdoor pathways through the flower, water, and stone gardens are wide, flat, and smoothly paved. Elevators seamlessly connect the indoor gallery floors, making it very comfortable for wheelchair users and strollers."
+        }
+      }
     ]
   },
   {
@@ -11665,16 +12235,6 @@ window.STATIC_LOCATIONS = [
     "lng": 128.9664,
     "category": "Landmarks",
     "addedAt": 1789075142938,
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Busan Subway Line 1 directly to Dadaepo Beach Station. Leave via Exit 2 or 4, which lead directly into the beach park entrance."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "ytId": "C_CWm5cYX_s",
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -11688,7 +12248,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
-    "recreatedPhoto": "images/admin-upload-new-NUTF1HJaRyROCB3Cwd46-recreated.jpg",
     "tipsList": [
       {
         "title": {
@@ -11719,7 +12278,36 @@ window.STATIC_LOCATIONS = [
       "en": "<p>Located at the southwestern edge of Busan, where the Nakdong River gently meets the South Sea, Dadaepo Beach is a breathtaking natural retreat. Famous for its remarkably shallow waters, vast tidal sand flats, and some of the most spectacular sunset views in South Korea, the beach offers a peaceful, untouched escape from Busan's more densely populated urban coastlines (like Haeundae or Gwangalli). The area is also celebrated for the vibrant Dadaepo Sunset Fountain of Dreams and its beautiful network of wooden coastal park trails.</p><p>In January 2016, Jimin returned to his hometown for a brief holiday break and filmed a highly personal vlog at Dadaepo Beach as the sun went down. In this touching video, shot long before the group reached their massive global superstardom, a young Jimin walked along the windy shoreline and made heartfelt New Year's wishes. He prayed for BTS's future success, the members' happiness, and the health and safety of ARMYs worldwide. Today, watching the sunset at this exact beach serves as a deeply meaningful pilgrimage for fans, offering a quiet moment to reflect on Jimin's incredible journey from a hopeful boy in Busan to an international icon.</p>"
     },
     "episodeLink": "https://www.visitbusan.net/en/index.do?menuCd=DOM_000000302002001000&uc_seq=477&lang_cd=en&pagingParms=4ca15f3a76a21f554a6e515f5344f50c4f734814d27260977c0eb574b1e0019a33f5a8e2dd587a9efb82cc91cf112987488312a3bc08c3054da8c190c930f6592e7894a7ed3cf4243291b2529527de050aa608ee54ad79feb8b43e0becf2aedf306446a26175f37928b2e64d297ab48f8acfae3743ce2794ef15d99eb79334135b659e2827a188ae72a11ca917970aac34400ec0365d93e364d7a859d58178e212648c28901350cb20330ec09b4e8c7ee5e2b8287a2a6536a889e832bf7d31f847bff6a467836ed9d75537b39410af390c426aa2cb2a1bd8a64dc547815f320b6242d2505ff463a634757c4ad1fb53163852273f4a3020b9b3120c45d755832b1bfdbc1ea7e0f32a1b21bec241920c4ba50f7077696f89bf66d524dd2942c4dee6ed72a6ab2ac94ac4ca6fddecc6d987793a5e1a71bd7c5ecf22aa4bbfe412dfc77d87603c0e96d7053984732496e554e28739c2ef435dbccd6740feb0f0d69f7b0d03a7292defeec4bda3ac0123b4fab549604bdda4f1a4399d3de6418aefad9225e975c7aef42efd154a86c57ddf205954fd0f3329d1300c774984706b28907a05264e6fb9cc23fc96a4aafe87e4f8d53c47b399853c6798bf07a3ef3af7230dfd5896ce340c4644d5bccb845f32c279d18f1f9cdc65713d7871231c2484183e655d5773e51e693157b6c8457fb14e1f1d7fc555f24c310e1b1fc3bb2ec3b8537e5c3c41ffde2f06bca9b29a52f3a820c30f9ef9ab393b9616c46fbc6ef5fd78ff334e3df20c860299b60aa334a70c5e98c1bf20a59ae3172de4ddb7c6306d39f9c46f407cb63c04889abd5e8e45f381c6eba17a50188a",
-    "officialLink": "https://www.visitbusan.net/en/index.do?menuCd=DOM_000000301001001000&uc_seq=1718&lang_cd=en"
+    "officialLink": "https://www.visitbusan.net/en/index.do?menuCd=DOM_000000301001001000&uc_seq=1718&lang_cd=en",
+    "recreatedPhotos": [
+      "images/admin-upload-new-NUTF1HJaRyROCB3Cwd46-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Good news for travelers—reaching this beach used to require a long bus ride, but a subway extension opened in 2017! Now, you simply take Busan Subway Line 1 all the way to its final stop: Dadaepo Beach Station. Take Exit 2 or 4, and you will emerge right at the beach park entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The beach and eco-trails are open 24/7 and are completely free to enter. If you visit between April and October, stick around after dark to watch the Dadaepo Sunset Fountain of Dreams water and light show (usually runs at 8:00 PM)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The park leading up to the beach and the vast network of wooden boardwalks through the reed beds are completely flat, well-maintained, and fully accessible for wheelchairs and strollers. However, rolling out onto the actual wet sand flats is not possible."
+        }
+      }
+    ]
   },
   {
     "year": "2020",
@@ -11738,16 +12326,6 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Samyang Roundhill (formerly Samyang Ranch) is Asia's largest highland green pasture, sprawling across the windy peaks of Daegwalnyeong in Gangwon Province. Known for its endless grassy fields in summer and dramatic snowscapes in winter, it is dotted with massive wind turbines overlooking rolling hilltops.</p><p>BTS selected these majestic snowy slopes as the primary outdoor filming and photoshoot location for the '2021 BTS Winter Package'. Clad in colorful winter coats, the members played in the snow, shot playful video sequences, and captured warmth against the freezing alpine backdrop, creating unforgettable imagery for fans.</p>"
     },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take the KTX to Jinbu Station (Odaesan) or Gangneung Station. From the station, rent a vehicle or take a local taxi to Samyang Roundhill (about 30 minutes from Jinbu Station)."
-        }
-      }
-    ],
     "ytId": "1LMz6hgQtBM",
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -11786,10 +12364,38 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhoto": "images/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-recreated.jpg",
     "episodeLink": "https://www.youtube.com/watch?v=RxKg68Az3tY&pp=ygUXMjAyMSBidHMgd2ludGVyIHBhY2thZ2U%3D",
     "officialLink": "https://www.samyangfarm.co.kr/eng/index",
-    "imgCredit": "AI-generated illustrative image"
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the KTX high-speed train from Seoul to Jinbu Station (about a 1.5-hour ride). From the station, the most efficient way to reach the ranch is by taking a local taxi (roughly a 30-minute drive)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open from 9:00 AM to 5:30 PM (hours vary slightly by season). Adult admission is approximately 12,000 KRW."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main entrance and rest facilities are accessible. However, exploring the actual viewpoints requires navigating unpaved dirt paths. In winter, mobility can be significantly restricted due to heavy snow and ice, making wheelchair or stroller access at the peaks very difficult."
+        }
+      }
+    ]
   },
   {
     "address": "29 Kookchudobosang-ro 84-gil, Seo-gu, Daegu, South Korea",
@@ -11805,17 +12411,6 @@ window.STATIC_LOCATIONS = [
     "group": "BTS",
     "category": "Art & Murals",
     "addedAt": 1788775338191,
-    "instagramUrl": "",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Daegu Metro Line 3 to Seomun Market Station (Exit 2) and walk about 10 to 12 minutes west along Kookchudobosang-ro toward the school wall."
-        }
-      }
-    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "imgCredit": "AI-generated illustrative image",
@@ -11825,10 +12420,18 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "youtubeUrls": [],
     "tweetUrls": [],
-    "ytId": "",
     "fullDescription": {
       "en": "<p>Daegu Daeseong Elementary School is a traditional public school tucked away in the quiet Seo-gu district of Daegu. While it operates as a standard, everyday educational facility for local children, it has gained monumental global recognition as the childhood alma mater of BTS member V (Kim Taehyung). The surrounding neighborhood retains a peaceful, residential atmosphere, offering fans a glimpse into the humble beginnings of one of the world's biggest stars.</p><p>To celebrate V's birthday in December 2021, global fan communities collaborated with local district authorities to transform the school's mundane outer brick wall into a breathtaking artistic tribute. They unveiled a massive, 33-meter-long panoramic mural (which was so popular it was later extended to nearly 60 meters in 2022!). Set against a beautiful, swirling backdrop inspired by V's favorite painter, Vincent van Gogh (The Starry Night), the mural beautifully chronicles his musical journey. It features vibrant visual references to his solo masterpieces like \"Inner Child\", \"Scenery\", and \"Snow Flower\", creating a heartwarming and permanent celebration of Daegu's beloved hometown hero.</p>"
     },
+    "episodeLink": "https://medium.com/the-daebak-company/take-a-walk-along-bts-v-mural-street-in-daegu-a-perfect-purple-art-17103723dc89",
+    "officialLink": "https://www.dgs.go.kr/english/main.do",
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-O7gbWdpEnR8bnMZFv071-recreated-0.jpg"
+    ],
+    "instagramUrl": "",
+    "ytId": "x6RYPcVnUeo",
     "tipsList": [
       {
         "title": {
@@ -11840,10 +12443,10 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "The"
+          "en": "The Nighttime Glow"
         },
         "text": {
-          "en": "As you walk along the massive panorama, keep an eye out for the specific section dedicated to the phrase \"I Purple You\" (the iconic term coined by V). It is the most popular spot for fans to stop and take their commemorative photos!"
+          "en": "While the colorful tile mural is beautiful during the day, it was specially designed with built-in LED lighting. Visit just as the sun begins to set to see the portraits beautifully illuminated, giving the entire street a magical, cinematic glow."
         }
       },
       {
@@ -11855,11 +12458,32 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhoto": "images/admin-upload-new-O7gbWdpEnR8bnMZFv071-recreated.jpg",
-    "episodeLink": "https://medium.com/the-daebak-company/take-a-walk-along-bts-v-mural-street-in-daegu-a-perfect-purple-art-17103723dc89",
-    "officialLink": "https://www.dgs.go.kr/english/main.do",
-    "tiktokUrl": "",
-    "facebookUrl": "https://www.facebook.com/groups/southkoreatravel/posts/1432531671687883/"
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Daegu Subway Line 3 (the Monorail) to Dalseong Park Station. Use Exit 3, and the school's mural wall is about a 10-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor mural is located on a public street and is accessible 24/7 for free. (Reminder: the school interior is completely off-limits)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The artwork is displayed along a wide, flat, and paved public sidewalk that runs parallel to the main road, making it fully accessible and comfortable for wheelchairs, strollers, and visitors of all mobility levels."
+        }
+      }
+    ]
   },
   {
     "member": "J-Hope",
@@ -11876,16 +12500,6 @@ window.STATIC_LOCATIONS = [
     "name": "Joy Dance Plug In Music Academy",
     "addedAt": 1789131511921,
     "tweetUrl": "https://x.com/dailystardancer/status/1494574447629582336",
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Gwangju Subway Line 1 to Geumnam-ro 4-ga Station. The building is located a short 2-minute walk from Exit 1."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "ytId": "1LxDdclfqMI",
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -11898,7 +12512,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
-    "recreatedPhoto": "images/admin-upload-new-QlaUQW0O515Yqrte3UqU-recreated.jpg",
     "fullDescription": {
       "en": "<p>Joy Dance Plug In Music Academy is a legendary performing arts institution located in Gwangju, a city celebrated for its rich artistic and cultural heritage. Positioned near the bustling downtown Geumnam-ro district, the facility is widely renowned as a premier incubator for K-pop talent. It specializes in popping, locking, hip-hop choreography, and vocal training, shaping the skills of numerous successful K-pop artists before they ever hit the national stage.</p><p>This academy represents the foundational roots of j-hope's extraordinary career. Long before he became BTS's main dancer and a global icon, a young Jung Ho-seok spent countless hours grinding inside these practice rooms. It was during this era that he honed his foundational street dance skills and performed with the local underground crew NEURON. His legendary work ethic, relentless precision, and undeniable passion for hip-hop were entirely forged within these walls, earning him significant local fame as a teenage dance prodigy.</p>"
     },
@@ -11929,7 +12542,36 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "officialLink": "https://joydance.kr/en/",
-    "episodeLink": "https://www.koreaboo.com/news/bts-jhope-street-woman-fighter-joy-dance-plug-in-academy-school-true-real-personality/"
+    "episodeLink": "https://www.koreaboo.com/news/bts-jhope-street-woman-fighter-joy-dance-plug-in-academy-school-true-real-personality/",
+    "recreatedPhotos": [
+      "images/admin-upload-new-QlaUQW0O515Yqrte3UqU-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The academy is located right in the heart of Gwangju’s downtown area. Take the Gwangju Subway (Line 1) to Geumnam-ro 4(sa)-ga Station. Use Exit 1 or 2, and the academy is just a short 2-minute walk down the street."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a private academy, there are no tourist operating hours or admission tickets. You are free to view the exterior of the building at any time from the public sidewalk."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The public streets and sidewalks of the Geumnam-ro district are generally flat, paved, and fully accessible for wheelchairs and strollers, making it very easy to view the academy's exterior and navigate the nearby K-Pop Star Alley."
+        }
+      }
+    ]
   },
   {
     "name": "Daeoh Bookstore",
@@ -11947,16 +12589,6 @@ window.STATIC_LOCATIONS = [
     "addedAt": 1789076510530,
     "tweetUrl": "https://x.com/bts_twt/status/1086536853778423808?s=46",
     "instagramUrl": "",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Seoul Subway Line 3 to Gyeongbokgung Station (Exit 2) and walk north into the Seochon alleyways for about 10 minutes."
-        }
-      }
-    ],
     "facebookUrl": "",
     "tiktokUrl": "",
     "ytId": "",
@@ -11967,7 +12599,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "youtubeUrls": [],
     "tweetUrls": [],
-    "recreatedPhoto": "images/admin-upload-new-Uu7jJIYLTSjiSrwJtKnq-recreated.jpg",
     "fullDescription": {
       "en": "<p>Nestled in the historic Seochon neighborhood near Gyeongbokgung Palace, Daeoh Bookstore is the oldest second-hand bookstore in Seoul, having opened its doors in 1951. Over the decades, this charming, traditional hanok building has lovingly maintained its nostalgic mid-20th-century aesthetic. Today, it has gracefully transitioned into a heritage café and cultural space, offering visitors a rare, preserved glimpse into Seoul's past where they can appreciate traditional Korean architecture and classic literature.</p><p>2016, RM: Long before \"Namjooning\" became a globally recognized term, RM sought out this quiet, historical gem. During his earlier visit in 2016, he explored the narrow, book-lined corridors and left a warm, handwritten autograph for the owners, expressing his deep appreciation for the preservation of such a meaningful cultural space in the rapidly modernizing city.</p><p>2019, RM: RM returned to Daeoh Bookstore in February 2019 for another quiet cultural excursion. He took a now-iconic photograph sitting on the traditional wooden porch (daecheong maru) in the rustic central courtyard, surrounded by stacks of vintage books. By sharing this peaceful moment, he officially cemented this retro bookstore as a world-famous pilgrimage destination for ARMYs seeking the same introspective, cozy vibe.</p>"
     },
@@ -11999,7 +12630,36 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "officialLink": "https://english.visitseoul.net/attractions/daeo-bookstore/ENP010928",
-    "episodeLink": "https://thesmartlocal.kr/dae-oh-bookstore/"
+    "episodeLink": "https://thesmartlocal.kr/dae-oh-bookstore/",
+    "recreatedPhotos": [
+      "images/admin-upload-new-Uu7jJIYLTSjiSrwJtKnq-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 3 to Gyeongbokgung Station. Use Exit 2, walk straight for about 10 minutes, and turn left into the Seochon alleyways. The bright blue retro sign of the bookstore is easy to spot."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily from 12:00 PM to 9:00 PM. Admission is technically free, but a cafe or souvenir purchase (around 5,000 to 6,000 KRW) is strictly required to enter the courtyard and take photos."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As an authentically preserved 1951 traditional house, accessibility is very limited. The entrance has a raised threshold, the doorways are incredibly narrow, and the inner courtyard requires stepping up onto raised wooden platforms, making it inaccessible for wheelchairs."
+        }
+      }
+    ]
   },
   {
     "address": "12 Metasequoia-ro, Damyang-eup, Damyang-gun, Jeollanam-do, South Korea",
@@ -12016,16 +12676,6 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-VvHht3XrSc6Cz5ogLsQh-photo.jpg",
     "addedAt": 1789132233861,
     "tweetUrl": "https://x.com/BTS_twt/status/1106079401907642372",
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "From Gwangju U-Square Bus Terminal, take an intercity bus to Damyang Bus Terminal. From Damyang Terminal, take local bus 10-1 or a short 5-minute taxi ride to Metasequoia Land."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "pinterestUrl": "",
@@ -12069,7 +12719,35 @@ window.STATIC_LOCATIONS = [
       "en": "<p>Damyang Metasequoia Land is home to one of South Korea's most breathtaking tree-lined boulevards. Originally planted in the 1970s, these towering dawn redwood trees now form a spectacular, two-kilometer pedestrian pathway. The dense branches interlock to create a natural, soaring green tunnel during the spring and summer months, before dramatically transforming into a vibrant, fiery corridor of orange and crimson in the autumn.</p><p>During BTS's official extended period of rest in the late summer of 2019, RM took a quiet vacation to Damyang to recharge. He shared a series of peaceful photos of his stroll along the Metasequoia path on Twitter (@BTS_twt). Posing in relaxed attire under the soaring green canopy, RM perfectly showcased his love for nature, art, and quiet reflection. Thanks to these beautiful snapshots, this majestic tree-lined walkway quickly became cemented as one of the quintessential \"Namjooning\" destinations in South Korea.</p>"
     },
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhoto": "images/admin-upload-new-VvHht3XrSc6Cz5ogLsQh-recreated.jpg"
+    "recreatedPhotos": [
+      "images/admin-upload-new-VvHht3XrSc6Cz5ogLsQh-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Since Damyang does not have a KTX train station, the easiest route is to travel through Gwangju. Take the KTX to Gwangju-Songjeong Station (or an express bus to Gwangju U-Square Terminal), then hop on local Bus #311, which runs frequently and takes you directly into Damyang in about 45 minutes."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main maintained section of the path is generally open from 9:00 AM to 6:00 PM (winter) or 7:00 PM (summer). There is a small environmental admission fee of 2,000 KRW (about $1.50 USD) to enter the pedestrian zone."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The 2-kilometer pathway is completely flat, wide, and features a smooth, packed-dirt surface. It is exceptionally accessible and provides a very comfortable experience for wheelchair users and visitors with strollers."
+        }
+      }
+    ]
   },
   {
     "member": "All",
@@ -12086,16 +12764,6 @@ window.STATIC_LOCATIONS = [
     "group": "BTS",
     "addedAt": 1789132587200,
     "tweetUrl": "https://x.com/choi_bts2/status/1151472113372368896",
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take the KTX train from Seoul Cheongnyangni Station to Danyang Station. From there, access to Maepo-eup is best achieved via local taxi or rental car heading north along Route 5."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "ytId": "9DwzBICPhdM",
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -12138,8 +12806,36 @@ window.STATIC_LOCATIONS = [
     "tweetUrls": [],
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.gem.wiki/Hanil_Cement_Danyang_Cement_Plant",
-    "recreatedPhoto": "images/admin-upload-new-WJ655ZFtqzPwrwKx5VE8-recreated.jpg",
-    "episodeLink": "https://www.google.com/search?q=danyang+hanil+cement+quarry+bts+not+today&tbnid=n5oVBg-V085XxM&tbnh=0&tbnw=0&rlz=1C5CHFA_enFR884FR884&sca_esv=3c5bece75fa21f2c&cs=0&biw=930&bih=680&sxsrf=APpeQns-G0JMBdvbRxQJrPM4srek-sc0zQ%3A1789507751182&ei=p7ipaoLVCqmgkdUP7o-akAw&udm=imgs&oq=Danyang+Hanil+Cement+Quarry+B&gs_lp=Egxnd3Mtd2l6LXNlcnAiHURhbnlhbmcgSGFuaWwgQ2VtZW50IFF1YXJyeSBCKgoIABjJAhjwBRgnMgoQIxjJAhjwBRgnMgoQIxjwBRjJAhgnSKARUNkBWOkJcAF4AJABAJgBpAKgAdgGqgEFMC4yLjK4AQHIAQD4AQGYAgWgAu8GwgINECMY8AUYyQIYsAMYJ8ICDRAjGMkCGPAFGLADGCeYAwCIBgGQBgKSBwUxLjIuMqAHkxGyBwUwLjIuMrgH7AbCBwUwLjIuM8gHEIAIAQ&sclient=gws-wiz-serp#sv=CAMSURoyKhBlLTlmb3JRSGV0ZDlfZnlNMg45Zm9yUUhldGQ5X2Z5TToOYTFyVW56eGhseGdWdk0gBCoXCgFzEhBlLTlmb3JRSGV0ZDlfZnlNGAEwARgHILqliocLSggQARgBIAEoAQ"
+    "episodeLink": "https://www.google.com/search?q=danyang+hanil+cement+quarry+bts+not+today&tbnid=n5oVBg-V085XxM&tbnh=0&tbnw=0&rlz=1C5CHFA_enFR884FR884&sca_esv=3c5bece75fa21f2c&cs=0&biw=930&bih=680&sxsrf=APpeQns-G0JMBdvbRxQJrPM4srek-sc0zQ%3A1789507751182&ei=p7ipaoLVCqmgkdUP7o-akAw&udm=imgs&oq=Danyang+Hanil+Cement+Quarry+B&gs_lp=Egxnd3Mtd2l6LXNlcnAiHURhbnlhbmcgSGFuaWwgQ2VtZW50IFF1YXJyeSBCKgoIABjJAhjwBRgnMgoQIxjJAhjwBRgnMgoQIxjwBRjJAhgnSKARUNkBWOkJcAF4AJABAJgBpAKgAdgGqgEFMC4yLjK4AQHIAQD4AQGYAgWgAu8GwgINECMY8AUYyQIYsAMYJ8ICDRAjGMkCGPAFGLADGCeYAwCIBgGQBgKSBwUxLjIuMqAHkxGyBwUwLjIuMrgH7AbCBwUwLjIuM8gHEIAIAQ&sclient=gws-wiz-serp#sv=CAMSURoyKhBlLTlmb3JRSGV0ZDlfZnlNMg45Zm9yUUhldGQ5X2Z5TToOYTFyVW56eGhseGdWdk0gBCoXCgFzEhBlLTlmb3JRSGV0ZDlfZnlNGAEwARgHILqliocLSggQARgBIAEoAQ",
+    "recreatedPhotos": [
+      "images/admin-upload-new-WJ655ZFtqzPwrwKx5VE8-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "While you cannot visit the quarry, you can reach the beautiful city of Danyang by taking the KTX-Eum high-speed train from Cheongnyangni Station in Seoul directly to Danyang Station (about an 80-minute scenic ride)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Not applicable, as tourist entry is strictly prohibited."
+        }
+      }
+    ]
   },
   {
     "group": "BTS",
@@ -12333,16 +13029,6 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-zSoRIbdjWgX2cNxfIjeH-photo.jpg",
     "category": "Landmark",
     "addedAt": 1789075955043,
-    "practicalInfo": [
-      {
-        "text": {
-          "en": "Take Busan Metro Line 1 to Toseong Station (Exit 6). Walk to the bus stop outside the hospital and take local mini-bus Saha 1-1, Seogu 2, or Seogu 2-2 to Gamcheon Culture Village."
-        },
-        "title": {
-          "en": "How to get there"
-        }
-      }
-    ],
     "facebookUrl": "",
     "tweetUrl": "",
     "instagramUrl": "",
@@ -12386,6 +13072,34 @@ window.STATIC_LOCATIONS = [
       "en": "<p>Gamcheon Culture Village is a vibrant cultural district built along the steep hillsides of coastal Busan. Famous for its brightly painted terraced houses, narrow labyrinthine alleys, and creative street art installations, it is frequently called the \"Machu Picchu of Busan.\" Originally a settlement for refugees during the Korean War, the neighborhood has been beautifully revitalized by local artists and residents into a bustling, open-air art gallery.</p><p>While not an official filming location, this vibrant village is an absolute must-visit for any ARMY. To celebrate Busan's native sons, Jimin and Jungkook, local artists and international fan organizations collaborated to create a magnificent wall mural depicting the duo. Unveiled in 2021, the sweeping artwork features stunning, photorealistic portraits of both members set against a vibrant background that perfectly matches the village's colorful aesthetic. Today, it stands as a globally recognized landmark, attracting fans who come to pay homage to the Busan-born stars while taking in their hometown's creative spirit.</p>"
     },
     "episodeLink": "https://mindtrip.ai/attraction/busan-south-korea/jungkook-jimin-mural/at-TrHxMv8y",
-    "officialLink": "https://www.gamcheon.or.kr/"
+    "officialLink": "https://www.gamcheon.or.kr/",
+    "recreatedPhotos": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Busan Subway Line 1 to Toseong Station. Use Exit 6, walk straight, and turn right to find the bus stop in front of the PNU Cancer Centre. From there, take a local green village bus (Seo-gu 2, Seo-gu 2-2, or Saha 1-1) and get off at the \"Gamjeong Elementary School / Gamcheon Culture Village\" stop. Important local tip: Do not attempt to walk from the subway station to the village, as the hill is incredibly steep!"
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The village itself is completely free to enter. Tourist facilities, cafes, and souvenir shops generally operate from 9:00 AM to 6:00 PM (closing slightly earlier at 5:00 PM in the winter)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Because the village is built on a steep cliffside and relies heavily on narrow staircases and uneven alleys to get between the houses, accessibility for wheelchairs and strollers is severely limited. However, the main upper road where the BTS mural and the Little Prince statue are located is relatively flat and paved, making the most famous photo ops accessible."
+        }
+      }
+    ],
+    "recreatedPhoto": ""
   }
 ];
