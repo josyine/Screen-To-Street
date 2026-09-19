@@ -6178,11 +6178,22 @@ async function saveLocationEdit(locId, modal) {
         fields.img = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
     }
     // "Mei's Pictures" (demande du 14/09/2026, galerie multi-photos le 18/09/2026) —
-    // recreatedPhotos est le tableau courant ; recreatedPhoto (première photo) reste
-    // écrit en parallèle pour les consommateurs pas encore migrés (voir feed.html).
+    // recreatedPhotos est le tableau courant. BUG corrigé (demande du 19/09/2026, cause
+    // réelle du "Failed: invalid-argument" persistant sur Facebook : "document size...
+    // exceeds the maximum allowed size of 1,048,576 bytes") : recreatedPhoto (première
+    // photo, gardée "en parallèle pour les consommateurs pas encore migrés") dupliquait
+    // intégralement la même chaîne base64 déjà présente dans recreatedPhotos[0] — potentiellement
+    // plusieurs centaines de Ko réécrits en double à CHAQUE sauvegarde de ce lieu, quel que
+    // soit le champ modifié (ici Facebook), jusqu'à dépasser la limite Firestore de 1 Mo par
+    // document. Tous les lecteurs (feed.html/fillForm() ci-dessus/renderCard() dans admin.html)
+    // lisent déjà recreatedPhotos[0] EN PRIORITÉ, avec repli sur recreatedPhoto UNIQUEMENT si
+    // le tableau est vide — donc plus besoin de dupliquer dès qu'il y a au moins une photo :
+    // le champ obsolète est supprimé (deleteField(), voir resolveDeleteMarkers() dans
+    // firebase-init.js) plutôt que réécrit, ce qui réduit enfin la taille du document au lieu
+    // de la faire grossir à chaque sauvegarde.
     if (locationEditRecreateGalleryWidget) {
         fields.recreatedPhotos = locationEditRecreateGalleryWidget.collect();
-        fields.recreatedPhoto = fields.recreatedPhotos[0] || '';
+        fields.recreatedPhoto = fields.recreatedPhotos.length ? window.FIRESTORE_DELETE_FIELD_MARKER : '';
     }
 
     // group/member/country/city/year : hors de locationContent (voir la note dans

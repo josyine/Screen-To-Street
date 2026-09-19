@@ -1222,7 +1222,7 @@ window.approveLocationSubmission = async function (submission) {
         const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
-        await setDoc(doc(db, 'locationContent', targetId), stripUndefinedDeep(contentDoc), { merge: true });
+        await setDoc(doc(db, 'locationContent', targetId), resolveDeleteMarkers(stripUndefinedDeep(contentDoc)), { merge: true });
 
         // Champs "squelette" (Groupe/Membre/Pays/Ville/Catégorie/Année, demande du
         // 13/09/2026, "je veux également pouvoir modifier la partie Group, member,
@@ -1385,11 +1385,35 @@ function stripUndefinedDeep(value) {
     return value;
 }
 
+// Marqueur "supprimer ce champ" (demande du 19/09/2026, cause RÉELLE enfin identifiée :
+// "Document ... cannot be written because its size (1,062,639 bytes) exceeds the maximum
+// allowed size of 1,048,576 bytes" — RIEN à voir avec l'URL Facebook ni avec un champ
+// undefined : ce lieu précis (recreatedPhoto(s) en base64, voir plus bas) avait simplement
+// dépassé la limite de 1 Mo par document Firestore, donc TOUTE écriture dessus — y compris
+// vider un champ texte sans rapport — échouait avec exactement ce code générique
+// "invalid-argument", d'où la fausse piste). script.js/admin.html n'importent pas le SDK
+// Firestore et ne peuvent donc pas construire un vrai deleteField() eux-mêmes ; ils passent
+// cette chaîne à la place, remplacée ici par le vrai deleteField() juste avant l'écriture —
+// seul moyen de RÉDUIRE la taille d'un document déjà trop gros (contrairement à une chaîne
+// vide '', qui laisse le champ en place avec son ancien contenu si la valeur n'est jamais
+// réécrite par merge:true).
+const DELETE_FIELD_MARKER = window.FIRESTORE_DELETE_FIELD_MARKER = '__DELETE_FIELD__';
+function resolveDeleteMarkers(value) {
+    if (Array.isArray(value)) return value.map(resolveDeleteMarkers);
+    if (value === DELETE_FIELD_MARKER) return deleteField();
+    if (value && typeof value === 'object' && typeof value.toDate !== 'function') {
+        const out = {};
+        Object.keys(value).forEach(k => { out[k] = resolveDeleteMarkers(value[k]); });
+        return out;
+    }
+    return value;
+}
+
 window.adminUpdateLocationContent = async function (locationId, fields) {
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
-        await setDoc(doc(db, 'locationContent', String(locationId)), stripUndefinedDeep(fields), { merge: true });
+        await setDoc(doc(db, 'locationContent', String(locationId)), resolveDeleteMarkers(stripUndefinedDeep(fields)), { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Édition directe du lieu échouée :', e);
@@ -1428,7 +1452,7 @@ window.adminUpdateLocationSkeleton = async function (locationId, fields) {
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
-        await setDoc(doc(db, 'locationSkeletonOverrides', String(locationId)), stripUndefinedDeep(fields), { merge: true });
+        await setDoc(doc(db, 'locationSkeletonOverrides', String(locationId)), resolveDeleteMarkers(stripUndefinedDeep(fields)), { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Correction de la fiche échouée :', e);
