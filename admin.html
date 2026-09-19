@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260931">
+<link rel="stylesheet" href="style.css?v=20260932">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -367,10 +367,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260931"></script>
-<script src="countries.js?v=20260931"></script>
-<script src="locations-data.js?v=20260931"></script>
-<script src="script.js?v=20260931"></script>
+<script type="module" src="firebase-init.js?v=20260932"></script>
+<script src="countries.js?v=20260932"></script>
+<script src="locations-data.js?v=20260932"></script>
+<script src="script.js?v=20260932"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1057,9 +1057,11 @@ recomposée, sans texte ni légende.`;
         // items édités ici.
         const practicalEditorEl = card.querySelector('.sub-practical-editor');
         let practicalFieldWidget = null;
-        if (practicalEditorEl && typeof window.createTitledListField === 'function') {
-            practicalFieldWidget = window.createTitledListField(practicalEditorEl, {
-                values: sub.practicalInfo || [], titlePlaceholder: 'e.g. How to get there', textPlaceholder: 'Practical info text', addLabel: '+ Add a section', titleColor: '#D42759'
+        if (practicalEditorEl && typeof window.createFixedPracticalInfoField === 'function') {
+            // 3 parties fixes (demande du 19/09/2026, "je veux qu'il y ait toujours ces 3
+            // parties") — voir createFixedPracticalInfoField() dans script.js.
+            practicalFieldWidget = window.createFixedPracticalInfoField(practicalEditorEl, {
+                values: sub.practicalInfo || [], titleColor: '#D42759'
             });
         }
 
@@ -1706,11 +1708,13 @@ recomposée, sans texte ni légende.`;
                 tweetUrl: data.tweetUrl || '', instagramUrl: data.instagramUrl || '',
                 facebookUrl: data.facebookUrl || '', tiktokUrl: data.tiktokUrl || '', pinterestUrl: data.pinterestUrl || '', ytId: data.ytId || '',
             };
-            if (typeof window.createTitledListField === 'function') {
+            if (typeof window.createFixedPracticalInfoField === 'function') {
                 const practicalEditorEl = card.querySelector('.sub-practical-editor');
                 if (practicalEditorEl) {
-                    practicalFieldWidget = window.createTitledListField(practicalEditorEl, {
-                        values: data.practicalInfo || [], titlePlaceholder: 'e.g. How to get there', textPlaceholder: 'Practical info text', addLabel: '+ Add a section', titleColor: '#D42759'
+                    // 3 parties fixes (demande du 19/09/2026) — voir
+                    // createFixedPracticalInfoField() dans script.js.
+                    practicalFieldWidget = window.createFixedPracticalInfoField(practicalEditorEl, {
+                        values: data.practicalInfo || [], titleColor: '#D42759'
                     });
                 }
                 const tipsEditorEl = card.querySelector('.sub-tips-editor');
