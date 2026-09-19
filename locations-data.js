@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-19T06:23:51.174Z.
+// Généré le 2026-09-19T12:00:55.720Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9365,7 +9365,33 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-206-recreated-0.jpg"
     ],
-    "recreatedPhoto": "images/admin-upload-206-recreated.jpg"
+    "recreatedPhoto": "images/admin-upload-206-recreated.jpg",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The gallery is located right in the pedestrian-friendly center of downtown Queenstown. If you are staying anywhere in the town center, it is less than a 5-to-10-minute walk. It is situated just a block away from the famous Queenstown waterfront (Lake Wakatipu)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "General admission is completely free. The gallery is typically open daily from 10:00 AM to 5:00 PM (though hours can occasionally vary by season, so checking ahead is recommended)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The gallery is located on the ground floor and is fully accessible for wheelchairs and strollers, offering a smooth and easy viewing experience."
+        }
+      }
+    ]
   },
   {
     "id": 207,
@@ -9419,7 +9445,6 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
     "episodeLink": "",
@@ -9432,7 +9457,34 @@ window.STATIC_LOCATIONS = [
       "images/admin-upload-207-recreated-0.jpg"
     ],
     "recreatedPhoto": "images/admin-upload-207-recreated.jpg",
-    "ytId": "uK_9Cp83Tho"
+    "ytId": "uK_9Cp83Tho",
+    "tiktokUrl": "https://www.tiktok.com/@bts_official_bighit/video/6741983766970993921?_r=1&_t=ZN-99qTtNMy9TC",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "You can drive up the winding summit road via Godley Peaks Road (it takes about 15 minutes from Lake Tekapo village). Alternatively, you can hike the Mt. John Summit Track, which is a steep but rewarding 1.5 to 2-hour walk up from the village."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Astro Café and summit road are generally open from 10:00 AM to early evening. Important: There is an $8 NZD road toll access fee per vehicle if you choose to drive up. The road closes to public vehicles in the evening, as nighttime access is strictly reserved for official stargazing tour buses."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Astro Café is wheelchair accessible, but the surrounding summit area where the members walked consists of uneven dirt, tussock grass, and rocky terrain."
+        }
+      }
+    ]
   },
   {
     "id": 208,
@@ -9551,14 +9603,14 @@ window.STATIC_LOCATIONS = [
     "category": "Landmark",
     "year": "2020",
     "episode": "",
-    "episodeLink": "https://starsofheavens.com/2018/05/13/gyeongbokgung-palace-and-bukcheon-hanbok-village-nct-127-went-here-and-bts-performed-here-how-to-go-and-where-to-rent-hanbok-3355-hanbok-rental/",
-    "ytId": "",
+    "episodeLink": "https://www.billboard.com/music/music-news/bts-mikrokosmos-performance-tonight-show-takeover-9458944/",
+    "ytId": "oYpUZjxJOVg",
     "address": "161 Sajik-ro, Jongno-gu, Seoul",
     "lat": 37.5798,
     "lng": 126.9759,
     "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Gyeonghoeru%20(Royal%20Banquet%20Hall)%20at%20Gyeongbokgung%20Palace,%20Seoul.jpg",
     "fullDescription": {
-      "en": "<p>Gyeonghoeru is the large lake-side pavilion inside Gyeongbokgung Palace, built on a stone-pillared platform surrounded by a rectangular pond — historically used for state banquets and receiving foreign envoys. It's one of the most photographed spots in the whole palace complex, distinct from the main throne hall, Geunjeongjeon, a short walk away.</p><p>BTS performed \"Mikrokosmos\" here on October 1, 2020, as part of NBC's \"The Tonight Show Starring Jimmy Fallon\" BTS Week, right after filming \"IDOL\" at Geunjeongjeon Hall. RM also separately posted photos taken at the pavilion. The Seoul city government confirmed on Twitter that both performances were filmed on the palace grounds.</p>"
+      "en": "<p>Gyeonghoeru is a breathtaking, large-scale pavilion situated peacefully on a rectangular lotus pond inside the magnificent Gyeongbokgung Palace. Officially designated as National Treasure No. 224, this two-story architectural marvel was built on a raised stone-pillared platform. During the Joseon Dynasty, it was exclusively used by the King to host grand state banquets, receive foreign envoys, and hold royal festivities. Today, surrounded by weeping willows and offering spectacular reflections on the water's surface, it remains one of the most photographed and romantic spots in the entire palace complex.</p><p>In October 2020, NBC's The Tonight Show Starring Jimmy Fallon hosted a legendary \"BTS Week,\" and the group chose Gyeongbokgung Palace to showcase Korean heritage to the world. Right after delivering a fierce, hanbok-clad performance of \"IDOL\" at the main Geunjeongjeon throne hall, the members moved to the serene Gyeonghoeru Pavilion to perform \"Mikrokosmos\". Standing on the grassy banks under the night sky, surrounded by hundreds of floating lights and a beautifully illuminated pavilion, they created an emotional, magical atmosphere that perfectly matched the song's comforting message.</p><p>Beyond this group performance, Gyeonghoeru is also a certified \"Namjooning\" location. RM has separately visited the pavilion on his own time, posting peaceful daytime photos of the structure on social media and cementing it as a multi-layered pilgrimage site for fans.</p>"
     },
     "practicalInfo": [
       {
@@ -9566,20 +9618,69 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Anguk Station (Line 3), exit 2, and walk straight to reach the palace grounds. The pavilion is inside Gyeongbokgung Palace, near the main gate — same entrance as the Geunjeongjeon throne hall."
+          "en": "Take Subway Line 3 to Gyeongbokgung Station (Exit 5 drops you right inside the palace grounds). You can also take Subway Line 5 to Gwanghwamun Station (Exit 2) and walk through the main Gwanghwamun Gate."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open from 9:00 AM to 5:00 PM or 6:30 PM (closing time varies by season). Important: The palace is completely closed every Tuesday. Standard adult admission is 3,000 KRW (Free if wearing a hanbok)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The grounds around the Gyeonghoeru pond are flat and covered in packed dirt/sand, making it generally accessible for wheelchairs and strollers, though some other areas of the palace have uneven stone pathways."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Free entry in a hanbok"
+          "en": "The Hanbok Hack"
         },
         "text": {
-          "en": "The palace is closed on Tuesdays. Entry is free for anyone wearing a hanbok — several rental shops (e.g. 3355 Hanbok Rental) operate near the Bukchon Hanbok Village area close to exit 2."
+          "en": "You will see hundreds of visitors wearing traditional Korean clothing (hanbok) around the palace. Not only does this make for incredible photos in front of Gyeonghoeru, but anyone wearing a hanbok gets into the entire Gyeongbokgung Palace complex completely free of charge! You can rent them from dozens of shops just outside the palace gates."
+        }
+      },
+      {
+        "title": {
+          "en": "Chase the Night Viewings"
+        },
+        "text": {
+          "en": "The \"Mikrokosmos\" performance was filmed at night. While the palace normally closes before sunset, the government organizes special \"Night Viewings\" (usually in spring and autumn). Tickets for these evening sessions sell out incredibly fast, so check the official website well in advance. Seeing Gyeonghoeru illuminated in the dark is an unforgettable experience."
+        }
+      },
+      {
+        "title": {
+          "en": "Special Pavilion Access"
+        },
+        "text": {
+          "en": "General admission allows you to walk around the pond and take beautiful photos from the outside. However, if you actually want to go inside the pavilion and walk on the wooden floors like Joseon royalty, you must book a special \"Gyeonghoeru Special Tour\" reservation in advance online."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "officialLink": "https://royal.khs.go.kr/ROYAL/contents/menuInfo-gbg.do?grpCode=gbg",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-210-recreated-0.jpg"
+    ],
+    "recreatedPhoto": "images/admin-upload-210-recreated.jpg"
   },
   {
     "id": 211,
@@ -9606,7 +9707,23 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Jeondae-Everland Station (Ever Line), exit 3. Walk straight, then take the escalator/stairs down to the free shuttle bus station and ride the Everland shuttle bus (free) to the park entrance."
+          "en": "While Yongin is outside of Seoul, access is very tourist-friendly. You can take the Everline (Yongin Light Rail) to Jeondae-Everland Station, then take the free shuttle bus to the park entrance. Alternatively, book a direct shuttle bus that departs daily from major hubs like Gangnam, Hongdae, or Myeongdong."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily from 10:00 AM to 10:00 PM (hours may vary by season). You must purchase an entrance ticket (prices range from 46,000 to 68,000 KRW depending on the season and day of the week), which grants access to all rides."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The park is fully wheelchair and stroller accessible, though some sections are built on hills. You can rent wheelchairs or strollers right at the main entrance."
         }
       }
     ],
@@ -9796,10 +9913,18 @@ window.STATIC_LOCATIONS = [
     "practicalInfo": [
       {
         "title": {
+          "en": "Current Status"
+        },
+        "text": {
+          "en": "PERMANENTLY CLOSED (Building rebranded as Bravo BKK)"
+        }
+      },
+      {
+        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "SHOW DC mall is best reached by taxi or Grab directly, since the nearest train station is a long walk away. Enter via the entrance nearest the information booth for the shortest walk to Idol Cafe (the alternate entrance is near Gloria Jean's)."
+          "en": "If you still wish to see the rebranded venue, take the MRT (Blue Line) to Phetchaburi Station or Phra Ram 9 Station, followed by a short taxi or Grab ride to the Bravo BKK entrance."
         }
       }
     ],
