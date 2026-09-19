@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260927">
+<link rel="stylesheet" href="style.css?v=20260928">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -166,6 +166,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .btn-verify{flex:1;background:#fff;color:#64748b;border:1.5px solid #e2e8f0;border-radius:100px;padding:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
 .btn-verify:hover{background:#f8fafc;}
 .btn-verify.is-verified{background:#10b981;color:#fff;border-color:#10b981;}
+.btn-closed.is-closed{background:#ef4444;color:#fff;border-color:#ef4444;}
 
 /* "Generate with Mei" (demande du 16/09/2026) — génération de la photo "Recreate the
    Photo" directement depuis admin.html (bouton + image de référence uploadée une seule
@@ -364,10 +365,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260927"></script>
-<script src="countries.js?v=20260927"></script>
-<script src="locations-data.js?v=20260927"></script>
-<script src="script.js?v=20260927"></script>
+<script type="module" src="firebase-init.js?v=20260928"></script>
+<script src="countries.js?v=20260928"></script>
+<script src="locations-data.js?v=20260928"></script>
+<script src="script.js?v=20260928"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -430,7 +431,12 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     }
     function extractFacebookUrl(url) {
         const s = (url || '').trim();
-        return /^https?:\/\/(www\.)?facebook\.com\/.+/.test(s) ? s : null;
+        // Élargi (demande du 19/09/2026, "l'URL de Facebook ne fonctionne pas") — un lien
+        // copié depuis le téléphone (m.facebook.com/mobile.facebook.com) ou un lien court de
+        // vidéo (fb.watch) était rejeté ici avant même d'être enregistré, donc invisible
+        // ensuite quoi qu'on fasse côté embed. Voir isFacebookPostUrl() plus bas pour la
+        // liste, distincte, des formats qui s'affichent en embed plutôt qu'en simple lien.
+        return /^https?:\/\/(www\.|m\.|mobile\.)?facebook\.com\/.+/i.test(s) || /^https?:\/\/fb\.watch\/.+/i.test(s) ? s : null;
     }
     function extractTikTokUrl(url) {
         const s = (url || '').trim();
@@ -658,7 +664,16 @@ recomposée, sans texte ni légende.`;
     // renderFacebookEmbedOnDetails() dans script.js (fiche publique).
     function isFacebookPostUrl(url) {
         const s = (url || '').trim();
-        return /^https?:\/\/(www\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s) || /[?&]story_fbid=/i.test(s);
+        // Élargi (demande du 19/09/2026, lieu "Daegu Daeseong Elementary School V Mural" —
+        // "ce n'est pas embeded dans Story") : le format d'origine ratait plusieurs formats
+        // de lien Facebook pourtant tout à fait valides et fréquents — liens courts vidéo
+        // (fb.watch), version mobile (m./mobile.facebook.com), les nouveaux liens de partage
+        // "share/p|v|r/..." (format par défaut de Facebook depuis 2023), les reels sans
+        // préfixe de page (facebook.com/reel/ID) et les posts de GROUPES (facebook.com/
+        // groups/NOM/posts/ID), très courants pour ce genre de contenu fan-made.
+        if (/^https?:\/\/fb\.watch\/.+/i.test(s)) return true;
+        if (/^https?:\/\/(www\.|m\.|mobile\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|photo(\.php)?\/?\?|share\/(p|v|r)\/|reel\/|groups\/[^/]+\/(posts|permalink)\/|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s)) return true;
+        return /[?&](story_fbid|fbid)=/i.test(s);
     }
     let facebookSdkLoading = null;
     function loadFacebookSdkScript() {
@@ -813,6 +828,16 @@ recomposée, sans texte ni légende.`;
                  window.createVisitSectionsField() dans script.js. -->
             <label class="sub-section-label">Following in BTS's footsteps</label>
             <div class="sub-story-bts-editor" style="margin-bottom:10px;"></div>
+
+            <!-- "Practical information & access" (demande du 19/09/2026, "ajoute également la
+                 partie 'Practical information & access' en section de modification... comme
+                 pour les tips") — même éditeur (window.createTitledListField()) et même champ
+                 (loc.practicalInfo) que "THE SCREEN TO STREET TIPS" juste en dessous : le champ
+                 existait déjà (loc.practicalInfo, affiché sur la fiche lieu publique, voir
+                 renderLocationRichContent() dans script.js), mais aucune interface d'admin ne
+                 permettait jusqu'ici de le modifier. -->
+            <label class="sub-section-label">Practical information &amp; access</label>
+            <div class="sub-practical-editor"></div>
             <label class="sub-section-label">THE "SCREEN TO STREET" TIPS</label>
             <div class="sub-tips-editor"></div>
 
@@ -960,6 +985,18 @@ recomposée, sans texte ni légende.`;
                     sections: parseFootstepsSections(split.btsText)
                 });
             }
+        }
+
+        // "Practical information & access" (demande du 19/09/2026) — même widget/principe
+        // que THE "SCREEN TO STREET" TIPS juste en dessous ; sub.practicalInfo est déjà
+        // dans contentFields d'approveLocationSubmission(), donc Approve publie bien les
+        // items édités ici.
+        const practicalEditorEl = card.querySelector('.sub-practical-editor');
+        let practicalFieldWidget = null;
+        if (practicalEditorEl && typeof window.createTitledListField === 'function') {
+            practicalFieldWidget = window.createTitledListField(practicalEditorEl, {
+                values: sub.practicalInfo || [], titlePlaceholder: 'e.g. How to get there', textPlaceholder: 'Practical info text', addLabel: '+ Add a section', titleColor: '#D42759'
+            });
         }
 
         // THE "SCREEN TO STREET" TIPS (demande du 13/09/2026, "+ add a tips") —
@@ -1191,6 +1228,10 @@ recomposée, sans texte ni légende.`;
                 if (hasError) extraHasError = true; else sub[field] = values;
             });
             if (extraHasError) return;
+            // Practical information & access éditée dans cette carte (demande du
+            // 19/09/2026) — même principe que tipsFieldWidget juste en dessous : collectée
+            // seulement ici, au clic sur Approve.
+            if (practicalFieldWidget) sub.practicalInfo = practicalFieldWidget.collect().values;
             // Tips éditées dans cette carte (voir window.createTitledListField() plus
             // haut) : collectées seulement ici, au clic, plutôt qu'à chaque frappe comme
             // les autres champs — même principe que extraFieldWidgets ci-dessus.
@@ -1385,6 +1426,12 @@ recomposée, sans texte ni légende.`;
             <label class="sub-section-label">Following in BTS's footsteps</label>
             <div class="loc-story-bts-editor" style="margin-bottom:10px;"></div>
 
+            <!-- "Practical information & access" (demande du 19/09/2026) — même éditeur
+                 (window.createTitledListField()) et même champ (loc.practicalInfo, publié via
+                 adminUpdateLocationContent()) que la file de soumissions ci-dessus. -->
+            <label class="sub-section-label">Practical information &amp; access</label>
+            <div class="sub-practical-editor"></div>
+
             <!-- Tips (demande du 13/09/2026, "ajoute également les tips dans Existing
                  locations") — même éditeur (window.createTitledListField()) et même champ
                  (loc.tipsList, publié via adminUpdateLocationContent()) que la file de
@@ -1446,6 +1493,16 @@ recomposée, sans texte ni légende.`;
                 <span>${isVerified ? 'Verified' : 'Mark as verified'}</span>
             </button>
 
+            <!-- Bouton "Closed" (demande du 19/09/2026, "préciser si le lieu est
+                 définitivement fermé... exclure les lieux [CLOSED] de l'itinéraire") — même
+                 principe que le modal crayon (script.js, location-edit-closed-btn) : bascule
+                 purement locale, le nom n'est réellement préfixé/déprefixé qu'au clic sur
+                 "Save changes" ci-dessous. -->
+            <button type="button" class="btn-verify btn-closed${(loc.name || '').startsWith('[CLOSED] ') ? ' is-closed' : ''}" style="margin-bottom:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"></line></svg>
+                <span>${(loc.name || '').startsWith('[CLOSED] ') ? 'Closed' : 'Mark as closed'}</span>
+            </button>
+
             <div class="sub-actions">
                 <button type="button" class="btn-approve loc-save-btn">Save changes</button>
                 <button type="button" class="btn-hide${isHidden ? ' is-hidden' : ''}">${isHidden ? 'Restore location' : 'Delete location'}</button>
@@ -1467,7 +1524,16 @@ recomposée, sans texte ni légende.`;
         const meiGenerateStatus = card.querySelector('.mei-generate-status');
         const saveBtn = card.querySelector('.loc-save-btn');
         const hideBtn = card.querySelector('.btn-hide');
-        const verifyBtn = card.querySelector('.btn-verify');
+        const verifyBtn = card.querySelector('.btn-verify:not(.btn-closed)');
+        const closedBtn = card.querySelector('.btn-closed');
+        let closedState = (loc.name || '').startsWith('[CLOSED] ');
+        if (closedBtn) {
+            closedBtn.onclick = () => {
+                closedState = !closedState;
+                closedBtn.classList.toggle('is-closed', closedState);
+                closedBtn.querySelector('span').textContent = closedState ? 'Closed' : 'Mark as closed';
+            };
+        }
         const resultEl = card.querySelector('.sub-result');
         let mergedFullDescription = loc.fullDescription || {};
         // Valeurs d'origine des liens (demande du 14/09/2026, "je change la date... mais la
@@ -1479,6 +1545,10 @@ recomposée, sans texte ni légende.`;
         // moindre message visible. Voir saveBtn.onclick plus bas.
         let originalLinkValues = {};
         let originalRawLinks = {};
+        // "Practical information & access" (demande du 19/09/2026) — même principe que
+        // tipsFieldWidget juste en dessous : (ré)initialisé dans fillFields() une fois les
+        // données Firestore reçues, collecté directement à la sauvegarde.
+        let practicalFieldWidget = null;
         let tipsFieldWidget = null;
         // "Mei's Pictures" (demande du 14/09/2026, passée en galerie multi-photos le
         // 18/09/2026) — widget partagé window.createPhotoGalleryField() (voir script.js),
@@ -1556,6 +1626,12 @@ recomposée, sans texte ni légende.`;
                 facebookUrl: data.facebookUrl || '', tiktokUrl: data.tiktokUrl || '', pinterestUrl: data.pinterestUrl || '', ytId: data.ytId || '',
             };
             if (typeof window.createTitledListField === 'function') {
+                const practicalEditorEl = card.querySelector('.sub-practical-editor');
+                if (practicalEditorEl) {
+                    practicalFieldWidget = window.createTitledListField(practicalEditorEl, {
+                        values: data.practicalInfo || [], titlePlaceholder: 'e.g. How to get there', textPlaceholder: 'Practical info text', addLabel: '+ Add a section', titleColor: '#D42759'
+                    });
+                }
                 const tipsEditorEl = card.querySelector('.sub-tips-editor');
                 if (tipsEditorEl) {
                     tipsFieldWidget = window.createTitledListField(tipsEditorEl, {
@@ -1636,6 +1712,7 @@ recomposée, sans texte ni légende.`;
                 en: plainTextToHtmlParagraphs(combinedStory)
             });
             const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', pinterestUrl: pinterestUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim() }, extraCollected);
+            if (practicalFieldWidget) fields.practicalInfo = practicalFieldWidget.collect().values;
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
             // "Mei's Pictures" (demande du 18/09/2026) — recreatedPhotos est le tableau
             // courant ; recreatedPhoto (première photo) reste écrit en parallèle pour les
@@ -1673,6 +1750,13 @@ recomposée, sans texte ni légende.`;
                     memberGroupEl.querySelector(`.member-checkbox-input[value="${m}"]`).checked);
                 skeletonFields.member = checked.length ? checked.join(', ') : 'All';
             }
+            // Bouton "Closed" (demande du 19/09/2026) — même logique que le modal crayon
+            // (script.js, saveLocationEdit) : préfixe/déprefixe le nom avec "[CLOSED] " selon
+            // la bascule locale, sans jamais empiler le préfixe plusieurs fois.
+            const currentName = loc.name || '';
+            const baseName = currentName.startsWith('[CLOSED] ') ? currentName.slice(9) : currentName;
+            const finalName = closedState ? '[CLOSED] ' + baseName : baseName;
+            if (finalName !== currentName) skeletonFields.name = finalName;
             const hasSkeletonChanges = Object.keys(skeletonFields).length > 0;
 
             const res = await window.adminUpdateLocationContent(loc.id, fields);

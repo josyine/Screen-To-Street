@@ -96,6 +96,14 @@ window.createTitledListField = function (container, opts) {
     const textPlaceholder = opts.textPlaceholder || 'Text';
     const addLabel = opts.addLabel || '+ Add another item';
     const fieldStyle = "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:8px 10px; font-size:12px; font-family:'Poppins',sans-serif; margin-bottom:6px;";
+    // Couleur du champ "titre" (demande du 19/09/2026, "Practical information & access" —
+    // "un cadre 'titre' rose") : optionnelle, seulement pour les appels qui la passent
+    // (voir "Practical information & access" dans admin.html/script.js) — reflète le
+    // magenta déjà utilisé pour AFFICHER ce titre sur la fiche lieu publique (.story-heading
+    // span, voir style.css), contrairement aux tips dont le titre reste noir sur la fiche
+    // publique (.tip-line b). Laissé par défaut (hérité, noir) pour ne pas changer
+    // l'apparence de l'éditeur de tips déjà existant.
+    const titleStyle = opts.titleColor ? `${fieldStyle} font-weight:700; color:${opts.titleColor};` : `${fieldStyle} font-weight:700;`;
     const initialValues = Array.isArray(opts.values) ? opts.values.filter(v => v && (v.title || v.text)) : [];
 
     // BUG corrigé (demande du 15/09/2026, "complète où il y a écrit '[object Object]'") :
@@ -114,7 +122,7 @@ window.createTitledListField = function (container, opts) {
         const titleText = getLocText(item.title);
         const bodyText = getLocText(item.text);
         return `<div class="tl-row" data-raw='${escapeHtml(JSON.stringify(item))}' style="border:1px solid #e2e8f0; border-radius:10px; padding:10px; margin-bottom:8px; position:relative;">
-            <input type="text" class="tl-title" value="${escapeHtml(titleText)}" placeholder="${escapeHtml(titlePlaceholder)}" style="${fieldStyle} font-weight:700;">
+            <input type="text" class="tl-title" value="${escapeHtml(titleText)}" placeholder="${escapeHtml(titlePlaceholder)}" style="${titleStyle}">
             <textarea class="tl-text" rows="2" placeholder="${escapeHtml(textPlaceholder)}" style="${fieldStyle} margin-bottom:0; resize:vertical;">${escapeHtml(bodyText)}</textarea>
             <button type="button" class="tl-remove" title="Remove this item" style="position:absolute; top:6px; right:6px; width:24px; height:24px; border:none; background:none; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer;">&times;</button>
         </div>`;
@@ -396,7 +404,17 @@ async function renderInstagramEmbedOnDetails(container, instagramUrl) {
 // "Follow" classique, voir isFacebookPostUrl ci-dessous.
 function isFacebookPostUrl(url) {
     const s = (url || '').trim();
-    return /^https?:\/\/(www\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s) || /[?&]story_fbid=/i.test(s);
+    // Élargi (demande du 19/09/2026, lieu "Daegu Daeseong Elementary School V Mural" — "ce
+    // n'est pas embeded dans Story") : le format d'origine ratait plusieurs formats de lien
+    // Facebook pourtant tout à fait valides et fréquents — liens courts vidéo (fb.watch),
+    // version mobile (m./mobile.facebook.com), les nouveaux liens de partage "share/p|v|r/..."
+    // (format par défaut de Facebook depuis 2023), les reels sans préfixe de page
+    // (facebook.com/reel/ID) et les posts de GROUPES (facebook.com/groups/NOM/posts/ID), très
+    // courants pour ce genre de contenu fan-made. Même correctif que admin.html
+    // (isFacebookPostUrl, aperçu de la fiche "Location submissions").
+    if (/^https?:\/\/fb\.watch\/.+/i.test(s)) return true;
+    if (/^https?:\/\/(www\.|m\.|mobile\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|photo(\.php)?\/?\?|share\/(p|v|r)\/|reel\/|groups\/[^/]+\/(posts|permalink)\/|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s)) return true;
+    return /[?&](story_fbid|fbid)=/i.test(s);
 }
 let _facebookSdkLoadPromise = null;
 function loadFacebookSdkOnce() {
@@ -3639,7 +3657,10 @@ window.openItineraryModal = function() {
 
 window.initItineraryGenerator = function() {
     const unlockedGroups = getUnlockedGroups();
-    let availableLocs = celebLocations.filter(loc => unlockedGroups.includes(loc.group));
+    // Exclut les lieux "[CLOSED]" (demande du 19/09/2026) — même filtre que
+    // window.generateItinerary() plus bas, pour que les menus Group/Country/City proposés
+    // ici ne mènent jamais à une sélection 100% composée de lieux fermés.
+    let availableLocs = celebLocations.filter(loc => unlockedGroups.includes(loc.group) && !(loc.name || '').startsWith('[CLOSED] '));
 
     const gSelectIti = document.getElementById('iti-group');
     const cSelectIti = document.getElementById('iti-country');
@@ -5162,6 +5183,16 @@ function extractSocialUrlForEdit(url, domainRe) {
     const s = (url || '').trim();
     return new RegExp(`^https?:\\/\\/(www\\.)?${domainRe}\\/.+`).test(s) ? s : null;
 }
+// Facebook a besoin de sa propre validation, pas de extractSocialUrlForEdit() ci-dessus
+// (demande du 19/09/2026, "l'URL de Facebook ne fonctionne pas") : un lien copié depuis le
+// téléphone (m.facebook.com/mobile.facebook.com) ou un lien court de vidéo (fb.watch) était
+// rejeté ici avant même d'être enregistré — extractSocialUrlForEdit() n'accepte qu'un
+// "www." optionnel devant facebook.com, jamais un autre sous-domaine ni fb.watch. Même
+// correctif que extractFacebookUrl() dans admin.html.
+function extractFacebookUrlForEdit(url) {
+    const s = (url || '').trim();
+    return /^https?:\/\/(www\.|m\.|mobile\.)?facebook\.com\/.+/i.test(s) || /^https?:\/\/fb\.watch\/.+/i.test(s) ? s : null;
+}
 // Pinterest a besoin de sa propre validation, pas de extractSocialUrlForEdit() ci-dessus
 // (demande du 18/09/2026, "je n'arrive pas à mettre une adresse URL Pinterest") :
 // Pinterest génère très souvent des liens avec un sous-domaine PAYS selon la
@@ -5482,6 +5513,13 @@ function ensureLocationEditModal() {
             <label style="${labelStyle}">Following in BTS's footsteps</label>
             <div id="location-edit-story-bts" style="margin-bottom:14px;"></div>
 
+            <!-- "Practical information & access" (demande du 19/09/2026) : même éditeur que
+                 admin.html, voir window.createTitledListField() plus haut dans ce fichier —
+                 écrit dans le même champ practicalInfo que la fiche "Existing locations"
+                 d'admin.html. -->
+            <label style="${labelStyle}">Practical information &amp; access</label>
+            <div id="location-edit-practical-editor" style="margin-bottom:10px;"></div>
+
             <!-- Tips (demande du 13/09/2026) : même éditeur que admin.html, voir
                  window.createTitledListField() plus haut dans ce fichier — écrit dans le
                  même champ tipsList que la fiche "Existing locations" d'admin.html. -->
@@ -5560,6 +5598,15 @@ function ensureLocationEditModal() {
             <button type="button" id="location-edit-verify-btn" style="width:100%; background:none; border:1.5px solid #e2e8f0; color:#64748b; border-radius:100px; padding:10px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:6px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 <span>Mark as verified</span>
+            </button>
+
+            <!-- Bouton "Closed" (demande du 19/09/2026, "préciser si le lieu est
+                 définitivement fermé... exclure les lieux [CLOSED] de l'itinéraire") — bascule
+                 locale, appliquée au nom du lieu ("[CLOSED] " en préfixe) seulement au clic sur
+                 "Save changes" ci-dessous, voir saveLocationEdit(). -->
+            <button type="button" id="location-edit-closed-btn" style="width:100%; background:none; border:1.5px solid #e2e8f0; color:#64748b; border-radius:100px; padding:10px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"></line></svg>
+                <span>Mark as closed</span>
             </button>
 
             <button id="location-edit-save-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:11px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Save changes</button>
@@ -5691,6 +5738,10 @@ let locationEditExtraWidgets = {};
 // saveLocationEdit()) — permet de ne revalider que ce que l'admin a réellement changé.
 let locationEditOriginalLinkValues = {};
 let locationEditOriginalRawLinks = {};
+// "Practical information & access" (demande du 19/09/2026) — même éditeur/widget
+// (createTitledListField) et même champ (practicalInfo) que la fiche "Existing locations"
+// d'admin.html, pour ne pas les faire diverger.
+let locationEditPracticalWidget = null;
 // Tips (demande du 13/09/2026, "quand on clique sur le crayon, il faut également qu'on
 // puisse modifier les tips") — même éditeur/widget (createTitledListField) et même champ
 // (tipsList) que la fiche "Existing locations" d'admin.html, pour ne pas les faire diverger.
@@ -5698,6 +5749,16 @@ let locationEditTipsWidget = null;
 // Sections "une visite par section" (demande du 15/09/2026) — voir
 // window.createVisitSectionsField() plus haut dans ce fichier.
 let locationEditFootstepsWidget = null;
+// Bouton "Closed" (demande du 19/09/2026, "ajoute un bouton de sélection 'closed' qui
+// permet de préciser si le lieu est définitivement fermé") — simple bascule locale au clic
+// (comme groupVal/memberVal/etc. juste au-dessus), appliquée au NOM du lieu seulement au
+// clic sur "Save changes" (contrairement au bouton "vérifié", qui écrit immédiatement) :
+// name vit dans le squelette (locationSkeletonOverrides), pas dans locationContent, donc
+// pas de fonction Firestore dédiée nécessaire — voir saveLocationEdit() plus bas, qui
+// préfixe/déprefixe loc.name avec "[CLOSED] ". Le générateur d'itinéraire (voir
+// window.initItineraryGenerator() plus haut) exclut tout lieu dont le nom commence par ce
+// préfixe.
+let locationEditClosedState = false;
 window.openLocationEditModal = async function (locId) {
     if (!window.__isAdminUser || locId === null || locId === undefined) return;
     const loc = celebLocations.find(l => l.id === locId);
@@ -5731,6 +5792,9 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
         document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
+        // Bouton "Closed" (demande du 19/09/2026) — reflète l'état actuel du nom.
+        locationEditClosedState = (data.name || '').startsWith('[CLOSED] ');
+        updateLocationEditClosedBtn();
     };
     const fillForm = (data) => {
         // Découpe en 2 sections (demande du 14/09/2026) : même champ source
@@ -5776,6 +5840,12 @@ window.openLocationEditModal = async function (locId) {
             tiktokUrl: data.tiktokUrl || '',
             pinterestUrl: data.pinterestUrl || '',
         };
+        const practicalEditorEl = document.getElementById('location-edit-practical-editor');
+        if (practicalEditorEl) {
+            locationEditPracticalWidget = window.createTitledListField(practicalEditorEl, {
+                values: data.practicalInfo || [], titlePlaceholder: 'e.g. How to get there', textPlaceholder: 'Practical info text', addLabel: '+ Add a section', titleColor: '#D42759'
+            });
+        }
         const tipsEditorEl = document.getElementById('location-edit-tips-editor');
         if (tipsEditorEl) {
             locationEditTipsWidget = window.createTitledListField(tipsEditorEl, {
@@ -5827,7 +5897,23 @@ window.openLocationEditModal = async function (locId) {
     updateLocationEditVerifyBtn(locId);
     const verifyBtn = document.getElementById('location-edit-verify-btn');
     if (verifyBtn) verifyBtn.onclick = () => toggleLocationVerifiedFromEditModal(locId);
+
+    const closedBtn = document.getElementById('location-edit-closed-btn');
+    if (closedBtn) closedBtn.onclick = () => { locationEditClosedState = !locationEditClosedState; updateLocationEditClosedBtn(); };
 };
+
+// Bouton "Closed" du modal crayon (demande du 19/09/2026) — même principe visuel que
+// updateLocationEditVerifyBtn() juste au-dessus, mais purement local (locationEditClosedState,
+// pas de cache Firestore séparé) : le nom n'est réellement préfixé/déprefixé qu'au clic sur
+// "Save changes" dans saveLocationEdit().
+function updateLocationEditClosedBtn() {
+    const closedBtn = document.getElementById('location-edit-closed-btn');
+    if (!closedBtn) return;
+    closedBtn.style.background = locationEditClosedState ? '#ef4444' : 'none';
+    closedBtn.style.borderColor = locationEditClosedState ? '#ef4444' : '#e2e8f0';
+    closedBtn.style.color = locationEditClosedState ? '#fff' : '#64748b';
+    closedBtn.querySelector('span').textContent = locationEditClosedState ? 'Closed' : 'Mark as closed';
+}
 
 // Bouton "vérifié" du modal crayon (demande du 13/09/2026) — voir aussi l'équivalent dans
 // admin.html (renderExistingLocationCard). S'appuie sur verifiedLocationIdsCache, déjà
@@ -5931,7 +6017,7 @@ async function saveLocationEdit(locId, modal) {
         : locationEditOriginalRawLinks.instagramUrl || null;
     if (instagramVal !== (locationEditOriginalLinkValues.instagram || '')) checkField(instagramVal, instagramUrl, 'location-edit-instagram-error');
     const facebookUrl = facebookVal !== (locationEditOriginalLinkValues.facebook || '')
-        ? (facebookVal ? extractSocialUrlForEdit(facebookVal, 'facebook\\.com') : null)
+        ? (facebookVal ? extractFacebookUrlForEdit(facebookVal) : null)
         : locationEditOriginalRawLinks.facebookUrl || null;
     if (facebookVal !== (locationEditOriginalLinkValues.facebook || '')) checkField(facebookVal, facebookUrl, 'location-edit-facebook-error');
     const tiktokUrl = tiktokVal !== (locationEditOriginalLinkValues.tiktok || '')
@@ -5947,7 +6033,7 @@ async function saveLocationEdit(locId, modal) {
         youtubeUrls: extractYouTubeUrlForEdit,
         tweetUrls: extractTweetUrlForEdit,
         instagramUrls: (v) => extractSocialUrlForEdit(v, 'instagram\\.com'),
-        facebookUrls: (v) => extractSocialUrlForEdit(v, 'facebook\\.com'),
+        facebookUrls: extractFacebookUrlForEdit,
         tiktokUrls: (v) => extractSocialUrlForEdit(v, 'tiktok\\.com'),
         pinterestUrls: extractPinterestUrlForEdit
     };
@@ -5986,6 +6072,7 @@ async function saveLocationEdit(locId, modal) {
         officialLink: officialLinkVal,
         episodeLink: linkVal,
         imgCredit: document.getElementById('location-edit-img-credit').value.trim(),
+        practicalInfo: locationEditPracticalWidget ? locationEditPracticalWidget.collect().values : [],
         tipsList: locationEditTipsWidget ? locationEditTipsWidget.collect().values : []
     }, extraCollected);
     // Priorité de la photo d'en-tête (demande du 07/09/2026) : URL ou import — tous deux
@@ -6017,6 +6104,15 @@ async function saveLocationEdit(locId, modal) {
     if (countryVal) skeletonFields.country = countryVal;
     if (cityVal) skeletonFields.city = cityVal;
     if (yearVal) skeletonFields.year = yearVal;
+    // Bouton "Closed" (demande du 19/09/2026) — préfixe/déprefixe le nom avec "[CLOSED] "
+    // selon la bascule locale, sans jamais empiler le préfixe plusieurs fois. Le générateur
+    // d'itinéraire (voir window.initItineraryGenerator() plus haut) exclut tout lieu dont le
+    // nom commence par ce préfixe.
+    const locForName = celebLocations.find(l => l.id === locId);
+    const currentName = (locForName && locForName.name) || '';
+    const baseName = currentName.startsWith('[CLOSED] ') ? currentName.slice(9) : currentName;
+    const finalName = locationEditClosedState ? '[CLOSED] ' + baseName : baseName;
+    if (finalName !== currentName) skeletonFields.name = finalName;
     const hasSkeletonChanges = Object.keys(skeletonFields).length > 0;
 
     const res = await window.adminUpdateLocationContent(locId, fields);
@@ -6978,6 +7074,52 @@ window.openLocModal = function(id, postContext) {
     const heroImgUrl = (postContext && postContext.photo) || loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg');
     if(modalHero) modalHero.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
 
+    // Galerie horizontale "Mei's Pictures" (demande du 19/09/2026, "parfois pour un lieu il
+    // y a plusieurs photos de Mei... je veux que tu affiches la première photo du lieu dans
+    // le feed, et le reste apparait quand on clique sur le post, comme dans Instagram. On
+    // défile ensuite les photos à l'horizontal.") — la tuile de feed.html (renderSacredGrid())
+    // continue de n'afficher que la 1ère photo comme avant ; ce n'est qu'ICI, à l'ouverture
+    // de la modale, que les photos suivantes deviennent accessibles, en défilement
+    // horizontal avec accroche (scroll-snap) façon carrousel Instagram. Masquée/vidée par
+    // défaut (postContext.photos absent ou 1 seule photo) pour ne rien changer aux autres
+    // usages de cette modale partagée (publication utilisateur, fiche lieu classique...) —
+    // le background-image posé juste au-dessus reste alors le seul visuel affiché.
+    if (modalHero) {
+        let galleryEl = modalHero.querySelector('.modal-hero-gallery');
+        let dotsEl = modalHero.querySelector('.modal-hero-dots');
+        if (!galleryEl) {
+            galleryEl = document.createElement('div');
+            galleryEl.className = 'modal-hero-gallery hidden';
+            modalHero.insertBefore(galleryEl, modalHero.firstChild);
+        }
+        if (!dotsEl) {
+            dotsEl = document.createElement('div');
+            dotsEl.className = 'modal-hero-dots hidden';
+            modalHero.insertBefore(dotsEl, galleryEl.nextSibling);
+        }
+        const photos = (postContext && Array.isArray(postContext.photos) ? postContext.photos.filter(Boolean) : []);
+        if (photos.length > 1) {
+            modalHero.classList.add('modal-hero-gallery-active');
+            galleryEl.classList.remove('hidden');
+            galleryEl.innerHTML = photos.map(p => `<div class="modal-hero-slide" style="background-image:url('${p}')"></div>`).join('');
+            galleryEl.scrollLeft = 0;
+            dotsEl.classList.remove('hidden');
+            dotsEl.innerHTML = photos.map((p, i) => `<span class="modal-hero-dot${i === 0 ? ' active' : ''}"></span>`).join('');
+            const dotEls = Array.from(dotsEl.children);
+            galleryEl.onscroll = () => {
+                const idx = Math.round(galleryEl.scrollLeft / galleryEl.clientWidth);
+                dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+            };
+        } else {
+            modalHero.classList.remove('modal-hero-gallery-active');
+            galleryEl.classList.add('hidden');
+            galleryEl.innerHTML = '';
+            galleryEl.onscroll = null;
+            dotsEl.classList.add('hidden');
+            dotsEl.innerHTML = '';
+        }
+    }
+
     const modalPostHeader = document.getElementById('modal-post-header');
     const modalPostCaption = document.getElementById('modal-post-caption');
     if (modalPostHeader) {
@@ -7464,7 +7606,10 @@ window.generateItinerary = function() {
     const days = parseInt(document.getElementById('iti-days').value);
 
     const unlockedGroups = getUnlockedGroups();
-    let availableLocs = celebLocations.filter(loc => unlockedGroups.includes(loc.group));
+    // Exclut les lieux "[CLOSED]" (demande du 19/09/2026, "il faut exclure les lieux
+    // [CLOSED] pour ne présenter que des lieux ouverts") — voir le bouton "Mark as closed"
+    // du modal crayon (openLocationEditModal/saveLocationEdit plus bas), qui préfixe le nom.
+    let availableLocs = celebLocations.filter(loc => unlockedGroups.includes(loc.group) && !(loc.name || '').startsWith('[CLOSED] '));
 
     let validLocs = availableLocs.filter(l => l.group === group && l.country === country);
     if(city) validLocs = validLocs.filter(l => l.city === city);
