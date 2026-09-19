@@ -5963,6 +5963,14 @@ function ensureLocationEditModal() {
             <input type="text" id="location-edit-address" style="${fieldStyle} margin-bottom:14px;">
             <label style="${labelStyle}">Date — select every year that applies</label>
             <div id="location-edit-year" style="margin-bottom:14px;"></div>
+            <!-- Episode (demande du 19/09/2026, "je veux pouvoir supprimer la partie Episode
+                 mais je ne peux pas actuellement") : jusqu'ici absent de ce modal, aucun moyen
+                 de le modifier ni de le vider — même champ squelette (locationSkeletonOverrides)
+                 que Group/Country/City/Address ci-dessus, vide = section "Episode:" masquée sur
+                 la fiche (voir renderLocationMetaFields()). -->
+            <label style="${labelStyle}">Episode (optional)</label>
+            <textarea id="location-edit-episode" rows="2" style="${fieldStyle} margin-bottom:4px; resize:vertical;" placeholder="e.g. j-hope's hometown street, murals + &quot;Hope World&quot; message sculpture..."></textarea>
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Shown as "Episode:" in the location's Info tab — leave empty to hide it entirely.</div>
 
             <label style="${labelStyle}">YouTube video URL</label>
             <input type="url" id="location-edit-youtube" style="${fieldStyle}" placeholder="https://www.youtube.com/watch?v=...">
@@ -6157,6 +6165,10 @@ let locationEditExtraWidgets = {};
 // saveLocationEdit()) — permet de ne revalider que ce que l'admin a réellement changé.
 let locationEditOriginalLinkValues = {};
 let locationEditOriginalRawLinks = {};
+// Valeurs d'origine des champs squelette texte (Group/Country/City/Address/Episode) — voir
+// fillSkeletonFields()/saveLocationEdit() plus bas : permet de sauvegarder un champ VIDÉ
+// volontairement (ex: Episode supprimé), sans jamais écraser un champ resté intact.
+let locationEditOriginalSkeletonValues = {};
 // "Practical information & access" (demande du 19/09/2026) — même éditeur/widget
 // (createTitledListField) et même champ (practicalInfo) que la fiche "Existing locations"
 // d'admin.html, pour ne pas les faire diverger.
@@ -6211,10 +6223,20 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
         document.getElementById('location-edit-address').value = data.address || '';
+        document.getElementById('location-edit-episode').value = data.episode || '';
         document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
         // Bouton "Closed" (demande du 19/09/2026) — reflète l'état actuel du nom.
         locationEditClosedState = (data.name || '').startsWith('[CLOSED] ');
         updateLocationEditClosedBtn();
+        // Valeurs d'origine (demande du 19/09/2026, "je veux pouvoir supprimer la partie
+        // Episode mais je ne peux pas actuellement") : voir saveLocationEdit() plus bas, qui
+        // n'inclut désormais un de ces champs dans la sauvegarde que s'il a RÉELLEMENT changé
+        // depuis l'ouverture — vide y compris — pour qu'un champ volontairement vidé (ex:
+        // Episode) se sauvegarde bien vide au lieu d'être silencieusement ignoré.
+        locationEditOriginalSkeletonValues = {
+            group: data.group || '', country: data.country || '', city: data.city || '',
+            address: data.address || '', episode: data.episode || ''
+        };
     };
     const fillForm = (data) => {
         // Découpe en 2 sections (demande du 14/09/2026) : même champ source
@@ -6410,6 +6432,7 @@ async function saveLocationEdit(locId, modal) {
     const countryVal = document.getElementById('location-edit-country').value.trim();
     const cityVal = document.getElementById('location-edit-city').value.trim();
     const addressVal = document.getElementById('location-edit-address').value.trim();
+    const episodeVal = document.getElementById('location-edit-episode').value.trim();
     const yearVal = collectYearCheckboxValue(document.getElementById('location-edit-year'));
 
     let hasError = false;
@@ -6528,19 +6551,26 @@ async function saveLocationEdit(locId, modal) {
         fields.recreatedPhoto = fields.recreatedPhotos.length ? window.FIRESTORE_DELETE_FIELD_MARKER : '';
     }
 
-    // group/member/country/city/year : hors de locationContent (voir la note dans
-    // ensureLocationEditModal) — écrits dans locationSkeletonOverrides via un second appel,
-    // uniquement pour les champs réellement remplis (un champ laissé vide ne doit pas
-    // écraser la valeur codée en dur dans celebLocations).
+    // group/member/country/city/address/episode/year : hors de locationContent (voir la
+    // note dans ensureLocationEditModal) — écrits dans locationSkeletonOverrides via un
+    // second appel. member/year restent uniquement pour les champs réellement remplis (rien
+    // à vider volontairement là — laissé vide, ça veut dire "non touché"). Pour les 5 champs
+    // texte, en revanche (group/country/city/address/episode), une valeur vide n'est plus
+    // ignorée : BUG corrigé (demande du 19/09/2026, "je veux pouvoir supprimer la partie
+    // Episode mais je ne peux pas actuellement") — l'ancienne règle "vide = ignoré" empêchait
+    // aussi bien de vider Episode que Group/Country/City/Address volontairement, quoi qu'on
+    // fasse dans le champ. Comparé à sa valeur d'ORIGINE (locationEditOriginalSkeletonValues,
+    // posée à l'ouverture du modal, voir fillSkeletonFields()) plutôt qu'à une simple
+    // présence : un champ resté intact — vide au chargement, vide au clic sur Save — n'est
+    // donc toujours pas ré-écrit inutilement, mais un champ explicitement vidé l'est bien,
+    // vide y compris.
     const skeletonFields = {};
-    if (groupVal) skeletonFields.group = groupVal;
+    if (groupVal !== (locationEditOriginalSkeletonValues.group || '')) skeletonFields.group = groupVal;
     if (memberVal) skeletonFields.member = memberVal;
-    if (countryVal) skeletonFields.country = countryVal;
-    if (cityVal) skeletonFields.city = cityVal;
-    // Adresse (demande du 19/09/2026, "je veux pouvoir modifier l'adresse d'un lieu...
-    // directement dans le detail d'un lieu") — même champ squelette que Group/Country/City
-    // ci-dessus.
-    if (addressVal) skeletonFields.address = addressVal;
+    if (countryVal !== (locationEditOriginalSkeletonValues.country || '')) skeletonFields.country = countryVal;
+    if (cityVal !== (locationEditOriginalSkeletonValues.city || '')) skeletonFields.city = cityVal;
+    if (addressVal !== (locationEditOriginalSkeletonValues.address || '')) skeletonFields.address = addressVal;
+    if (episodeVal !== (locationEditOriginalSkeletonValues.episode || '')) skeletonFields.episode = episodeVal;
     if (yearVal) skeletonFields.year = yearVal;
     // Bouton "Closed" (demande du 19/09/2026) — préfixe/déprefixe le nom avec "[CLOSED] "
     // selon la bascule locale, sans jamais empiler le préfixe plusieurs fois. Le générateur
