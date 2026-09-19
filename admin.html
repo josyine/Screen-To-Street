@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260937">
+<link rel="stylesheet" href="style.css?v=20260939">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -386,10 +386,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260937"></script>
-<script src="countries.js?v=20260937"></script>
-<script src="locations-data.js?v=20260937"></script>
-<script src="script.js?v=20260937"></script>
+<script type="module" src="firebase-init.js?v=20260939"></script>
+<script src="countries.js?v=20260939"></script>
+<script src="locations-data.js?v=20260939"></script>
+<script src="script.js?v=20260939"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -659,6 +659,18 @@ recomposée, sans texte ni légende.`;
     function isInstagramPostUrl(url) {
         return /^https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[^/?]+/i.test((url || '').trim());
     }
+    // BUG corrigé (demande du 19/09/2026, "je veux que ça affiche le post embeded" —
+    // Instagram et Pinterest restaient bloqués sur leur lien de repli, même après les
+    // nouvelles tentatives ajoutées côté fiche publique) : embed.js + instgrm.Embeds.process()
+    // ci-dessous (gardé en repli) dépend d'un script tiers dont le comportement exact n'est
+    // pas documenté de façon fiable — cause la plus probable d'un échec permanent. Même
+    // correctif que renderInstagramEmbedOnDetails() dans script.js : instagram.com/{code}/
+    // embed/ est un iframe direct officieux mais largement documenté et fiable, sans aucun
+    // script tiers ni traitement asynchrone.
+    function extractInstagramShortcode(url) {
+        const m = (url || '').trim().match(/instagram\.com\/(?:p|reel|tv)\/([^/?]+)/i);
+        return m ? m[1] : '';
+    }
     let instagramWidgetLoading = null;
     function loadInstagramWidgetScript() {
         if (window.instgrm && window.instgrm.Embeds) return Promise.resolve();
@@ -673,6 +685,11 @@ recomposée, sans texte ni légende.`;
         return instagramWidgetLoading;
     }
     async function renderInstagramEmbed(container, instagramUrl) {
+        const shortcode = extractInstagramShortcode(instagramUrl);
+        if (shortcode) {
+            container.innerHTML = `<iframe src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%;"></iframe>`;
+            return;
+        }
         container.innerHTML = `<blockquote class="instagram-media" data-instgrm-permalink="${escapeHtml(instagramUrl)}" data-instgrm-version="14"></blockquote>`;
         await loadInstagramWidgetScript();
         if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
@@ -753,6 +770,18 @@ recomposée, sans texte ni légende.`;
     function isPinterestPinUrl(url) {
         return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/pin\/[\w-]+/i.test((url || '').trim());
     }
+    // BUG corrigé (demande du 19/09/2026, lieu "LINE Store & BT21 Cafe — Itaewon" — un lien
+    // pinterest.com/pin/128282289370654878/ pourtant valide restait bloqué sur son lien de
+    // repli) : PinUtils.build() ci-dessous (gardé en repli) dépend d'un widget JS tiers dont
+    // le comportement n'est pas documenté de façon fiable — cause la plus probable d'un
+    // échec permanent. Même correctif que renderPinterestEmbedOnDetails() dans script.js :
+    // assets.pinterest.com/ext/embed.html?id={id numérique} est l'iframe direct officiel de
+    // Pinterest, sans aucun script tiers. pin.it (lien raccourci, id non présent dans l'URL
+    // elle-même) reste sur l'ancien widget JS en repli.
+    function extractPinterestPinId(url) {
+        const m = (url || '').trim().match(/\/pin\/(?:[^/?]*?)(\d{6,})\/?(?:[?#].*)?$/i);
+        return m ? m[1] : '';
+    }
     let pinterestSdkLoading = null;
     function loadPinterestSdkScript() {
         if (window.PinUtils) return Promise.resolve();
@@ -768,6 +797,11 @@ recomposée, sans texte ni légende.`;
         return pinterestSdkLoading;
     }
     async function renderPinterestEmbed(container, pinterestUrl) {
+        const pinId = extractPinterestPinId(pinterestUrl);
+        if (pinId) {
+            container.innerHTML = `<iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" height="445" width="345" frameborder="0" scrolling="no" style="max-width:100%;"></iframe>`;
+            return;
+        }
         container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="medium" href="${escapeHtml(pinterestUrl)}"></a>`;
         await loadPinterestSdkScript();
         if (window.PinUtils && typeof window.PinUtils.build === 'function') window.PinUtils.build(container);
