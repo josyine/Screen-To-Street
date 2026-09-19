@@ -1245,7 +1245,13 @@ window.approveLocationSubmission = async function (submission) {
             }
         }
 
-        await setDoc(doc(db, 'locationSubmissions', submission.id), { status: 'approved', reviewedAt: serverTimestamp() }, { merge: true });
+        // Lieu créé à la main via le bouton "Add" (admin.html, demande du 19/09/2026) :
+        // submission.id (préfixé "manual-") ne correspond à aucun document
+        // locationSubmissions réel — l'écrire quand même créerait un document orphelin
+        // à cet id, jamais lu ni nettoyé nulle part.
+        if (!String(submission.id).startsWith('manual-')) {
+            await setDoc(doc(db, 'locationSubmissions', submission.id), { status: 'approved', reviewedAt: serverTimestamp() }, { merge: true });
+        }
         return { success: true, publishedId: targetId };
     } catch (e) {
         console.warn('Approbation de la proposition échouée :', e);
@@ -1425,6 +1431,29 @@ window.adminUpdateLocationContent = async function (locationId, fields) {
         // côté du code pour rendre la cause réelle diagnosticable sans accès direct à la
         // console du navigateur de l'admin.
         return { success: false, code: e && e.code || 'unknown', message: e && e.message };
+    }
+};
+
+// Lecture groupée de TOUT locationContent (demande du 19/09/2026, "je veux que les photos
+// de Mei... apparaissent automatiquement dans la section Mei's Pictures de la page feed...
+// il manque des photos") — feed.html (window.renderSacredGrid()) ne lisait jusqu'ici que
+// le catalogue statique (locations-data.js), republié seulement toutes les 6h par un
+// workflow planifié (voir .github/workflows/export-locations.yml) : une photo tout juste
+// ajoutée via l'icône crayon/admin.html restait invisible dans cet onglet jusqu'au
+// prochain export, alors qu'elle apparaît déjà instantanément sur la fiche du lieu
+// (map.html, qui superpose ce même type de lecture Firestore par-dessus le catalogue
+// statique, voir window.fetchLocationContent() ci-dessus). Même principe qu'
+// fetchLocationSkeletonOverrides() juste en dessous : une seule requête groupée par
+// visite, pas une lecture par lieu affiché.
+window.fetchAllLocationContent = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'locationContent'));
+        const result = {};
+        snap.forEach(d => { result[d.id] = d.data(); });
+        return result;
+    } catch (e) {
+        console.warn('Lecture groupée du contenu des lieux échouée :', e);
+        return {};
     }
 };
 

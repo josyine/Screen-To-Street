@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260931">
+<link rel="stylesheet" href="style.css?v=20260934">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -400,9 +400,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260931"></script>
-<script src="locations-data.js?v=20260931"></script>
-<script src="script.js?v=20260931"></script>
+<script type="module" src="firebase-init.js?v=20260934"></script>
+<script src="locations-data.js?v=20260934"></script>
+<script src="script.js?v=20260934"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -549,12 +549,39 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     // swipe entre photos (voir wireSacredSwipe() plus bas).
     let sacredLocs = [];
     let sacredSwipeIndex = -1;
-    function renderSacredGrid() {
+    // Contenu Firestore le plus récent, par-dessus le catalogue statique (demande du
+    // 19/09/2026, "il manque des photos" dans cet onglet) — voir la note sur
+    // window.fetchAllLocationContent() dans firebase-init.js : le catalogue statique
+    // (celebLocations) n'est republié que toutes les 6h, donc une photo Mei tout juste
+    // ajoutée via admin.html y resterait invisible jusqu'au prochain export sans cette
+    // superposition. Une promesse plutôt qu'un simple objet : si l'onglet est cliqué
+    // plusieurs fois avant la fin de la 1ère lecture, les appels suivants attendent la
+    // MÊME requête au lieu d'en déclencher une nouvelle à chaque clic.
+    let sacredContentPromise = null;
+    async function renderSacredGrid() {
         const grid = document.getElementById('feed-grid');
         const emptyEl = document.getElementById('feed-empty');
         const loadingEl = document.getElementById('feed-loading');
+        if (!sacredContentPromise) {
+            loadingEl.classList.remove('hidden');
+            emptyEl.classList.add('hidden');
+            grid.innerHTML = '';
+            sacredContentPromise = typeof window.fetchAllLocationContent === 'function'
+                ? window.fetchAllLocationContent()
+                : Promise.resolve({});
+        }
+        const liveContent = await sacredContentPromise;
         loadingEl.classList.add('hidden');
-        const allLocs = typeof celebLocations !== 'undefined' ? celebLocations : [];
+        // L'utilisateur a déjà changé d'onglet pendant l'attente réseau ci-dessus (même
+        // garde que loadFeed() pour "community") : ne pas dessiner par-dessus l'onglet
+        // entre-temps affiché.
+        if (currentFeedTab !== 'sacred') return;
+        const baseLocs = typeof celebLocations !== 'undefined' ? celebLocations : [];
+        // Object.assign({}, loc, ...) plutôt qu'une mutation de celebLocations : même
+        // convention que fetchLocationContent() ailleurs sur le site (script.js), pour ne
+        // jamais faire fuiter du contenu Firestore potentiellement plus frais vers d'autres
+        // usages de ce tableau partagé.
+        const allLocs = baseLocs.map(loc => liveContent[String(loc.id)] ? Object.assign({}, loc, liveContent[String(loc.id)]) : loc);
         sacredLocs = allLocs.filter(loc => (Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length) || loc.recreatedPhoto);
         if (!sacredLocs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No recreated photos yet.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');

@@ -170,6 +170,64 @@ window.createTitledListField = function (container, opts) {
     };
 };
 
+// "Practical information & access" à 3 parties FIXES (demande du 19/09/2026, "je veux
+// qu'il y ait toujours ces 3 parties : How to get there / Operating Hours & Admission /
+// Accessibility") — remplace ici l'usage de createTitledListField() ci-dessus pour ce champ
+// précis (tipsList garde son éditeur "+ Add a tip" libre, lui, inchangé) : plus de bouton
+// "+ Add"/"×" pour retirer une ligne, plus de champ "titre" éditable — seulement les 3 zones
+// de texte, toujours dans le même ordre, pour que la fiche publique affiche toujours la
+// même structure quel que soit le lieu. Les données restent stockées exactement comme avant
+// (un tableau loc.practicalInfo de {title, text} multilingues) : aucun changement côté
+// renderLocationRichContent() (script.js) ni côté schéma Firestore, seul l'ÉDITEUR change.
+window.PRACTICAL_INFO_SECTIONS = ['How to get there', 'Operating Hours & Admission', 'Accessibility'];
+window.createFixedPracticalInfoField = function (container, opts) {
+    opts = opts || {};
+    const titleColor = opts.titleColor || '#D42759';
+    const fieldStyle = "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:8px 10px; font-size:12px; font-family:'Poppins',sans-serif;";
+    const values = Array.isArray(opts.values) ? opts.values : [];
+
+    // Retrouve, pour chacune des 3 sections fixes, l'item existant correspondant par TITRE
+    // (comparaison insensible à la casse/espaces — un lieu déjà rempli avant ce correctif a
+    // très probablement déjà une section "How to get there" à réutiliser telle quelle,
+    // traductions fr/etc. comprises via data-raw, même principe que rowHtml() ci-dessus).
+    // Un item dont le titre ne correspond à AUCUNE des 3 sections (ancien contenu
+    // personnalisé) n'est volontairement plus affiché ici — la demande est d'avoir
+    // TOUJOURS exactement ces 3 parties, ni plus ni moins.
+    function findMatch(label) {
+        return values.find(v => (getLocText(v && v.title) || '').trim().toLowerCase() === label.toLowerCase()) || null;
+    }
+
+    container.innerHTML = window.PRACTICAL_INFO_SECTIONS.map(label => {
+        const match = findMatch(label);
+        const bodyText = match ? getLocText(match.text) : '';
+        return `<div class="fpi-row" data-raw='${escapeHtml(JSON.stringify(match || {}))}' data-label="${escapeHtml(label)}" style="margin-bottom:12px;">
+            <div style="font-weight:700; font-size:12.5px; color:${titleColor}; margin-bottom:5px;">${escapeHtml(label)}</div>
+            <textarea class="fpi-text" rows="2" placeholder="${escapeHtml(label)}..." style="${fieldStyle} resize:vertical;">${escapeHtml(bodyText)}</textarea>
+        </div>`;
+    }).join('');
+
+    return {
+        // Renvoie TOUJOURS exactement 3 entrées, dans le même ordre, même si une zone de
+        // texte est laissée vide (la fiche publique masque déjà individuellement une section
+        // sans texte, voir renderLocationRichContent() — aucun changement nécessaire là).
+        collect: function () {
+            const result = [];
+            container.querySelectorAll('.fpi-row').forEach(row => {
+                const label = row.dataset.label;
+                const text = row.querySelector('.fpi-text').value.trim();
+                let raw = {};
+                try { raw = JSON.parse(row.dataset.raw || '{}'); } catch (e) { raw = {}; }
+                const titleObj = (raw.title && typeof raw.title === 'object') ? Object.assign({}, raw.title) : {};
+                const textObj = (raw.text && typeof raw.text === 'object') ? Object.assign({}, raw.text) : {};
+                titleObj.en = label;
+                textObj.en = text;
+                result.push({ title: titleObj, text: textObj });
+            });
+            return { values: result };
+        }
+    };
+};
+
 // Galerie "Mei's Pictures" (demande du 18/09/2026, "je veux pouvoir ajouter plusieurs
 // photo") — remplace l'ancien champ photo UNIQUE (loc.recreatedPhoto, une chaîne) par un
 // tableau (loc.recreatedPhotos), même principe de widget réutilisable que
@@ -5939,8 +5997,10 @@ window.openLocationEditModal = async function (locId) {
         };
         const practicalEditorEl = document.getElementById('location-edit-practical-editor');
         if (practicalEditorEl) {
-            locationEditPracticalWidget = window.createTitledListField(practicalEditorEl, {
-                values: data.practicalInfo || [], titlePlaceholder: 'e.g. How to get there', textPlaceholder: 'Practical info text', addLabel: '+ Add a section', titleColor: '#D42759'
+            // 3 parties fixes (demande du 19/09/2026, "je veux qu'il y ait toujours ces 3
+            // parties") — voir createFixedPracticalInfoField() plus haut dans ce fichier.
+            locationEditPracticalWidget = window.createFixedPracticalInfoField(practicalEditorEl, {
+                values: data.practicalInfo || [], titleColor: '#D42759'
             });
         }
         const tipsEditorEl = document.getElementById('location-edit-tips-editor');
