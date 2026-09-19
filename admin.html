@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260929">
+<link rel="stylesheet" href="style.css?v=20260930">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -367,10 +367,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260929"></script>
-<script src="countries.js?v=20260929"></script>
-<script src="locations-data.js?v=20260929"></script>
-<script src="script.js?v=20260929"></script>
+<script type="module" src="firebase-init.js?v=20260930"></script>
+<script src="countries.js?v=20260930"></script>
+<script src="locations-data.js?v=20260930"></script>
+<script src="script.js?v=20260930"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1298,12 +1298,17 @@ recomposée, sans texte ni légende.`;
             // les autres champs — même principe que extraFieldWidgets ci-dessus.
             if (tipsFieldWidget) sub.tipsList = tipsFieldWidget.collect().values;
             // "Mei's Pictures" (demande du 18/09/2026) — même principe que tipsFieldWidget
-            // ci-dessus : collectée seulement ici, au clic sur Approve. recreatedPhoto
-            // (première photo) reste écrit en parallèle pour les consommateurs pas encore
-            // migrés vers le tableau (voir feed.html).
+            // ci-dessus : collectée seulement ici, au clic sur Approve. BUG corrigé (demande
+            // du 19/09/2026, cause réelle du "Failed: invalid-argument" sur Facebook :
+            // dépassement de la limite Firestore de 1 Mo/document) : recreatedPhoto
+            // (première photo) dupliquait la même chaîne base64 déjà dans recreatedPhotos[0]
+            // — voir la note dans script.js (saveLocationEdit) pour le détail. Tous les
+            // lecteurs lisent déjà recreatedPhotos[0] en priorité, donc le champ obsolète est
+            // supprimé (deleteField(), voir resolveDeleteMarkers() dans firebase-init.js)
+            // plutôt que réécrit dès qu'il y a au moins une photo.
             if (recreateGalleryWidget) {
                 sub.recreatedPhotos = recreateGalleryWidget.collect();
-                sub.recreatedPhoto = sub.recreatedPhotos[0] || '';
+                sub.recreatedPhoto = sub.recreatedPhotos.length ? window.FIRESTORE_DELETE_FIELD_MARKER : '';
             }
             // Recombine "The story of this place" + les sections de visite en un seul
             // fullDescription.en (demande du 15/09/2026) — même principe, collecté ici
@@ -1778,11 +1783,16 @@ recomposée, sans texte ni légende.`;
             if (practicalFieldWidget) fields.practicalInfo = practicalFieldWidget.collect().values;
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
             // "Mei's Pictures" (demande du 18/09/2026) — recreatedPhotos est le tableau
-            // courant ; recreatedPhoto (première photo) reste écrit en parallèle pour les
-            // consommateurs pas encore migrés (voir feed.html).
+            // courant. BUG corrigé (demande du 19/09/2026, cause réelle du "Failed:
+            // invalid-argument" sur Facebook : dépassement de la limite Firestore de 1 Mo/
+            // document) : recreatedPhoto (première photo) dupliquait la même chaîne base64
+            // déjà dans recreatedPhotos[0] — voir la note dans script.js (saveLocationEdit)
+            // pour le détail. Tous les lecteurs lisent déjà recreatedPhotos[0] en priorité,
+            // donc le champ obsolète est supprimé (deleteField(), voir resolveDeleteMarkers()
+            // dans firebase-init.js) plutôt que réécrit dès qu'il y a au moins une photo.
             if (recreateGalleryWidget) {
                 fields.recreatedPhotos = recreateGalleryWidget.collect();
-                fields.recreatedPhoto = fields.recreatedPhotos[0] || '';
+                fields.recreatedPhoto = fields.recreatedPhotos.length ? window.FIRESTORE_DELETE_FIELD_MARKER : '';
             }
 
             // Group/Member/Country/City/Category/Year (demande du 13/09/2026, "ajoute
