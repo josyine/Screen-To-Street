@@ -455,6 +455,55 @@ function pollForEmbedSuccess(container, url, successSelector, label, reprocess) 
     setTimeout(tick, 1500);
 }
 
+// Reconnaît un lien pointant vers UN tweet/post X précis (pas juste un profil) — même
+// motif que extractTweetUrl() dans admin.html (qui garantit déjà ce format à
+// l'enregistrement), revalidé ici pour rester cohérent avec isInstagramPostUrl/
+// isFacebookPostUrl/isTikTokVideoUrl/isPinterestPinUrl ci-dessous.
+function isTweetStatusUrl(url) {
+    return /^https?:\/\/(www\.)?(twitter|x)\.com\/[^/]+\/status\/\d+/i.test((url || '').trim());
+}
+
+// BUG corrigé (demande du 19/09/2026, répétée, lieu "United Nations Headquarters" : un 2e
+// lien YouTube ajouté via le "+" de admin.html n'apparaissait qu'en simple lien texte dans
+// l'onglet Info, jamais embarqué dans Story — "je veux que TOUS les liens des réseaux
+// sociaux apparaissent en embeded dans la section Story") : jusqu'ici, seul le champ
+// "principal" par plateforme (loc.tweetUrl, loc.instagramUrl...) était embarqué, les
+// tableaux "en plus" (tweetUrls, instagramUrls...) restant de simples liens texte par
+// conception (voir extraLinkDefs plus bas). Combine désormais le champ principal + son
+// tableau "en plus" en une seule liste dédupliquée, puis la sépare en deux : les URLs
+// pointant vers un post/vidéo PRÉCIS (embarquables) et celles qui n'en sont pas (un simple
+// lien de profil/page/board n'a pas d'équivalent embarquable, voir isXPostUrl ci-dessus/
+// ci-dessous) — ces dernières restent affichées en lien texte dans extraLinkDefs.
+function partitionEmbeddableUrls(primaryUrl, extraUrls, isPostUrl) {
+    const all = [primaryUrl, ...(Array.isArray(extraUrls) ? extraUrls : [])].filter(Boolean);
+    const seen = new Set();
+    const embeddable = [];
+    const nonEmbeddable = [];
+    all.forEach(raw => {
+        const url = (raw || '').trim();
+        if (!url || seen.has(url)) return;
+        seen.add(url);
+        (isPostUrl(url) ? embeddable : nonEmbeddable).push(url);
+    });
+    return { embeddable, nonEmbeddable };
+}
+
+// Rend PLUSIEURS embeds empilés dans un même conteneur Story (ex: 2 posts Instagram pour un
+// même lieu) : un <div class="embed-item"> par URL, chacun retraité indépendamment par
+// renderFn (qui pose son propre drapeau embedPending/gère son propre repli si besoin) — voir
+// .tweet-embed-wrapper .embed-item dans style.css, repensé en colonne pour empiler plutôt
+// qu'aligner côte à côte comme le prévoyait sa mise en page d'origine (un seul enfant).
+function renderMultiEmbedsInto(container, urls, renderFn) {
+    container.innerHTML = '';
+    urls.forEach(url => {
+        const item = document.createElement('div');
+        item.className = 'embed-item';
+        item.dataset.embedUrl = url;
+        container.appendChild(item);
+        renderFn(item, url);
+    });
+}
+
 // Même principe que le widget Twitter ci-dessus, pour un post/reel Instagram précis (demande
 // du 07/09/2026 : le lien "Instagram" restait un simple lien "Follow" sans jamais s'afficher
 // en embed, contrairement au tweet — voir admin.html pour le même correctif côté prévisualisation
@@ -685,21 +734,29 @@ async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
 // les embeds pas encore réussis (pas de <iframe>, le marqueur de succès partagé par les 4)
 // dès que l'onglet redevient RÉELLEMENT visible — appelé depuis le clic sur
 // .tab-btn[data-tab="story"] ci-dessous.
+//
+// Depuis le passage à plusieurs embeds par plateforme (demande du 19/09/2026, répétée —
+// voir renderMultiEmbedsInto()), chaque conteneur peut contenir PLUSIEURS .embed-item, un
+// par URL (posé avec son URL d'origine dans data-embed-url) — on ne relit donc plus loc.XUrl
+// ici, mais on retraite individuellement chaque .embed-item pas encore réussi.
 function reprocessStoryEmbedsIfNeeded(loc) {
     [
-        ['details-instagram-container', loc.instagramUrl, isInstagramPostUrl, renderInstagramEmbedOnDetails],
-        ['details-facebook-container', loc.facebookUrl, isFacebookPostUrl, renderFacebookEmbedOnDetails],
-        ['details-tiktok-container', loc.tiktokUrl, isTikTokVideoUrl, renderTikTokEmbedOnDetails],
-        ['details-pinterest-container', loc.pinterestUrl, isPinterestPinUrl, renderPinterestEmbedOnDetails],
-    ].forEach(([id, url, isValidUrl, renderFn]) => {
-        if (!url || !isValidUrl(url)) return;
+        ['details-instagram-container', renderInstagramEmbedOnDetails],
+        ['details-facebook-container', renderFacebookEmbedOnDetails],
+        ['details-tiktok-container', renderTikTokEmbedOnDetails],
+        ['details-pinterest-container', renderPinterestEmbedOnDetails],
+    ].forEach(([id, renderFn]) => {
         const container = document.getElementById(id);
-        // container.dataset.embedPending : un cycle de tentatives (pollForEmbedSuccess())
-        // est déjà en cours sur ce conteneur — ne pas en démarrer un 2e en parallèle (ex:
-        // onglet "Story" cliqué juste après l'ouverture de la fiche, avant que le 1er rendu
-        // ait eu le temps d'aboutir ou d'échouer).
-        if (!container || container.querySelector('iframe') || container.dataset.embedPending === '1') return;
-        renderFn(container, url);
+        if (!container) return;
+        container.querySelectorAll('.embed-item').forEach(item => {
+            const url = item.dataset.embedUrl;
+            // item.dataset.embedPending : un cycle de tentatives (pollForEmbedSuccess())
+            // est déjà en cours sur cet embed précis — ne pas en démarrer un 2e en parallèle
+            // (ex: onglet "Story" cliqué juste après l'ouverture de la fiche, avant que le
+            // 1er rendu ait eu le temps d'aboutir ou d'échouer).
+            if (!url || item.querySelector('iframe') || item.dataset.embedPending === '1') return;
+            renderFn(item, url);
+        });
     });
 }
 
@@ -5280,6 +5337,17 @@ function renderLocationRichContent(loc) {
     let facebookEmbedded = false;
     let tiktokEmbedded = false;
     let pinterestEmbedded = false;
+    // Réutilisé par extraLinkDefs plus bas : seules les URLs "en plus" qui n'ont PAS pu être
+    // embarquées ici (repli par défaut = tout le tableau, si le bloc ci-dessous ne s'exécute
+    // pas — voir la note sur videoContainer/videoSection) y restent affichées en lien texte.
+    let nonEmbeddableExtras = {
+        tweetUrls: loc.tweetUrls || [],
+        instagramUrls: loc.instagramUrls || [],
+        facebookUrls: loc.facebookUrls || [],
+        tiktokUrls: loc.tiktokUrls || [],
+        pinterestUrls: loc.pinterestUrls || [],
+        youtubeUrls: loc.youtubeUrls || []
+    };
     if (videoContainer && videoSection) {
         // Chacun des types de média a son propre conteneur, affiché ou masqué
         // INDÉPENDAMMENT des autres (demande du 07/09/2026 : un lien YouTube ET un lien
@@ -5295,65 +5363,114 @@ function renderLocationRichContent(loc) {
         if (pinterestContainer) { pinterestContainer.innerHTML = ""; pinterestContainer.classList.add('hidden'); }
         let anyMedia = false;
 
-        // Vidéo(s)/YouTube : les deux restent mutuellement exclusifs ENTRE EUX (ils partagent
-        // le même conteneur "vidéo"), videoEmbeds prenant la priorité — ce sont deux façons de
-        // renseigner la MÊME sorte de média, contrairement à Twitter/Instagram qui sont des
-        // types de contenu distincts.
+        // Vidéo(s)/YouTube : videoEmbeds (iframes bruts) prioritaire sur ytId/youtubeUrls
+        // s'il est renseigné — ce sont deux façons de renseigner la MÊME sorte de média, pas
+        // deux médias distincts (contrairement à Twitter/Instagram, mutuellement
+        // indépendants). BUG corrigé (demande du 19/09/2026, répétée, lieu "United Nations
+        // Headquarters" : "j'ai mis 2 liens Youtube, mais le deuxième lien n'apparait pas en
+        // embeded ; il apparait dans la section info") : ytId (champ "principal") ET
+        // youtubeUrls (liens "en plus", voir admin.html "+ Add another link") sont
+        // maintenant TOUS embarqués ici, dédupliqués par ID — auparavant seul ytId
+        // s'affichait en embed, youtubeUrls restant un simple lien texte dans l'onglet Info
+        // (voir extraLinkDefs plus bas).
         if (loc.videoEmbeds && loc.videoEmbeds.length > 0) {
             loc.videoEmbeds.forEach(vidSrc => { videoContainer.innerHTML += `<div class="video-wrapper"><iframe src="${vidSrc}" frameborder="0" allowfullscreen></iframe></div>`; });
             videoContainer.classList.remove('hidden');
             anyMedia = true;
-        } else if (loc.ytId) {
-            videoContainer.innerHTML = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${loc.ytId}" frameborder="0" allowfullscreen></iframe></div>`;
-            videoContainer.classList.remove('hidden');
-            anyMedia = true;
+        } else {
+            const ytIds = [];
+            const seenYtIds = new Set();
+            if (loc.ytId) { seenYtIds.add(loc.ytId); ytIds.push(loc.ytId); }
+            const failedYoutubeUrls = [];
+            (Array.isArray(loc.youtubeUrls) ? loc.youtubeUrls : []).forEach(url => {
+                const id = extractYouTubeIdForEdit(url);
+                if (!id) { failedYoutubeUrls.push(url); return; }
+                if (!seenYtIds.has(id)) { seenYtIds.add(id); ytIds.push(id); }
+            });
+            nonEmbeddableExtras.youtubeUrls = failedYoutubeUrls;
+            if (ytIds.length > 0) {
+                videoContainer.innerHTML = ytIds.map(id => `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe></div>`).join('');
+                videoContainer.classList.remove('hidden');
+                anyMedia = true;
+            }
         }
-        if (loc.tweetUrl && tweetContainer) {
-            // Post Twitter/X embarqué (voir admin.html, champ "Tweet / X post URL") : rendu
-            // dans son propre conteneur, PAS .video-wrapper — celui-ci impose un ratio 16:9
-            // fixe + overflow:hidden pensé pour un <iframe> vidéo, ce qui écrasait/rognait
-            // le widget Twitter (bien plus haut que large), d'où l'affichage "moche" signalé
-            // (demande du 06/09/2026). Le widget officiel garde ici sa hauteur naturelle, et
-            // cliquer dessus renvoie naturellement vers Twitter (comportement natif).
-            tweetContainer.classList.remove('hidden');
-            renderTweetEmbedOnDetails(tweetContainer, loc.tweetUrl);
-            anyMedia = true;
+        // Twitter/X, Instagram, Facebook, TikTok, Pinterest : même principe que YouTube
+        // ci-dessus — combine le champ "principal" + son tableau "en plus", dédupliqué, et
+        // embarque TOUTES les URLs pointant vers un post/vidéo précis (voir
+        // partitionEmbeddableUrls ci-dessus). Un simple lien de profil/page/board (jamais
+        // embarquable, voir isXPostUrl) reste dans nonEmbeddableExtras, affiché en lien texte
+        // plus bas (extraLinkDefs).
+        if (tweetContainer) {
+            // Post(s) Twitter/X embarqué(s) (voir admin.html, champ "Tweet / X post URL") :
+            // rendu(s) dans leur propre conteneur, PAS .video-wrapper — celui-ci impose un
+            // ratio 16:9 fixe + overflow:hidden pensé pour un <iframe> vidéo, ce qui
+            // écrasait/rognait le widget Twitter (bien plus haut que large), d'où l'affichage
+            // "moche" signalé (demande du 06/09/2026). Le widget officiel garde ici sa
+            // hauteur naturelle, et cliquer dessus renvoie naturellement vers Twitter
+            // (comportement natif).
+            const tw = partitionEmbeddableUrls(loc.tweetUrl, loc.tweetUrls, isTweetStatusUrl);
+            nonEmbeddableExtras.tweetUrls = tw.nonEmbeddable;
+            if (tw.embeddable.length > 0) {
+                tweetContainer.classList.remove('hidden');
+                renderMultiEmbedsInto(tweetContainer, tw.embeddable, renderTweetEmbedOnDetails);
+                anyMedia = true;
+            }
         }
-        if (loc.instagramUrl && isInstagramPostUrl(loc.instagramUrl) && instagramContainer) {
-            // Même chose pour un post/reel Instagram précis (demande du 07/09/2026) — un
-            // simple lien de profil (pas de post) n'a pas d'équivalent embarquable, voir
-            // isInstagramPostUrl(), et reste donc affiché comme lien "Follow" plus bas.
-            instagramContainer.classList.remove('hidden');
-            renderInstagramEmbedOnDetails(instagramContainer, loc.instagramUrl);
-            instagramEmbedded = true;
-            anyMedia = true;
+        if (instagramContainer) {
+            // Même chose pour un ou plusieurs post(s)/reel(s) Instagram précis (demande du
+            // 07/09/2026) — un simple lien de profil (pas de post) n'a pas d'équivalent
+            // embarquable, voir isInstagramPostUrl(), et reste donc affiché comme lien
+            // "Follow" plus bas.
+            const ig = partitionEmbeddableUrls(loc.instagramUrl, loc.instagramUrls, isInstagramPostUrl);
+            nonEmbeddableExtras.instagramUrls = ig.nonEmbeddable;
+            if (ig.embeddable.length > 0) {
+                instagramContainer.classList.remove('hidden');
+                renderMultiEmbedsInto(instagramContainer, ig.embeddable, renderInstagramEmbedOnDetails);
+                instagramEmbedded = true;
+                anyMedia = true;
+            }
         }
-        if (loc.facebookUrl && isFacebookPostUrl(loc.facebookUrl) && facebookContainer) {
-            // Même chose pour un post/vidéo/photo Facebook précis (demande du 18/09/2026) —
-            // un simple lien de profil/page (pas de post) n'a pas d'équivalent embarquable,
-            // voir isFacebookPostUrl(), et reste donc affiché comme lien "Follow" plus bas.
-            facebookContainer.classList.remove('hidden');
-            renderFacebookEmbedOnDetails(facebookContainer, loc.facebookUrl);
-            facebookEmbedded = true;
-            anyMedia = true;
+        if (facebookContainer) {
+            // Même chose pour un ou plusieurs post(s)/vidéo(s)/photo(s) Facebook précis
+            // (demande du 18/09/2026) — un simple lien de profil/page (pas de post) n'a pas
+            // d'équivalent embarquable, voir isFacebookPostUrl(), et reste donc affiché
+            // comme lien "Follow" plus bas.
+            const fb = partitionEmbeddableUrls(loc.facebookUrl, loc.facebookUrls, isFacebookPostUrl);
+            nonEmbeddableExtras.facebookUrls = fb.nonEmbeddable;
+            if (fb.embeddable.length > 0) {
+                facebookContainer.classList.remove('hidden');
+                renderMultiEmbedsInto(facebookContainer, fb.embeddable, renderFacebookEmbedOnDetails);
+                facebookEmbedded = true;
+                anyMedia = true;
+            }
         }
-        if (loc.tiktokUrl && isTikTokVideoUrl(loc.tiktokUrl) && tiktokContainer) {
-            // Même chose pour une vidéo TikTok précise (demande du 19/09/2026) — un simple
-            // lien de profil (pas une vidéo) n'a pas d'équivalent embarquable, voir
-            // isTikTokVideoUrl(), et reste donc affiché comme lien "Follow" plus bas.
-            tiktokContainer.classList.remove('hidden');
-            renderTikTokEmbedOnDetails(tiktokContainer, loc.tiktokUrl);
-            tiktokEmbedded = true;
-            anyMedia = true;
+        if (tiktokContainer) {
+            // Même chose pour une ou plusieurs vidéo(s) TikTok précise(s) (demande du
+            // 19/09/2026) — un simple lien de profil (pas une vidéo) n'a pas d'équivalent
+            // embarquable, voir isTikTokVideoUrl(), et reste donc affiché comme lien
+            // "Follow" plus bas.
+            const tk = partitionEmbeddableUrls(loc.tiktokUrl, loc.tiktokUrls, isTikTokVideoUrl);
+            nonEmbeddableExtras.tiktokUrls = tk.nonEmbeddable;
+            if (tk.embeddable.length > 0) {
+                tiktokContainer.classList.remove('hidden');
+                renderMultiEmbedsInto(tiktokContainer, tk.embeddable, renderTikTokEmbedOnDetails);
+                tiktokEmbedded = true;
+                anyMedia = true;
+            }
         }
-        if (loc.pinterestUrl && isPinterestPinUrl(loc.pinterestUrl) && pinterestContainer) {
-            // Même chose pour une épingle Pinterest précise (demande du 19/09/2026) — un
-            // simple lien de profil/board (pas une épingle) n'a pas d'équivalent embarquable,
-            // voir isPinterestPinUrl(), et reste donc affiché comme lien "Follow" plus bas.
-            pinterestContainer.classList.remove('hidden');
-            renderPinterestEmbedOnDetails(pinterestContainer, loc.pinterestUrl);
-            pinterestEmbedded = true;
-            anyMedia = true;
+        if (pinterestContainer) {
+            // Même chose pour une ou plusieurs épingle(s) Pinterest précise(s) (demande du
+            // 19/09/2026) — un simple lien de profil/board (pas une épingle) n'a pas
+            // d'équivalent embarquable, voir isPinterestPinUrl(), et reste donc affiché comme
+            // lien "Follow" plus bas.
+            const pin = partitionEmbeddableUrls(loc.pinterestUrl, loc.pinterestUrls, isPinterestPinUrl);
+            nonEmbeddableExtras.pinterestUrls = pin.nonEmbeddable;
+            if (pin.embeddable.length > 0) {
+                pinterestContainer.classList.remove('hidden');
+                renderMultiEmbedsInto(pinterestContainer, pin.embeddable, renderPinterestEmbedOnDetails);
+                pinterestEmbedded = true;
+                anyMedia = true;
+            }
         }
         videoSection.classList.toggle('hidden', !anyMedia);
     }
@@ -5421,9 +5538,13 @@ function renderLocationRichContent(loc) {
         // la modale crayon) : injectés en JS après les liens "principaux" ci-dessus plutôt
         // que codés en dur dans le HTML de chaque page (leur NOMBRE varie d'un lieu à
         // l'autre) — même approche que le reste des éléments injectés dynamiquement sur ce
-        // site (nav du bas, etc). Le tweet/Instagram/Facebook "principal" a déjà son embed
-        // plus haut ; ses liens en plus n'ont pas d'embed, juste un lien texte, comme
-        // TikTok/Pinterest.
+        // site (nav du bas, etc). BUG corrigé (demande du 19/09/2026, répétée : "je veux que
+        // TOUS les liens des réseaux sociaux apparaissent en embeded dans la section Story")
+        // : affichait ICI, en simple lien texte, TOUTES les URLs "en plus" (tweetUrls,
+        // instagramUrls...) sans exception — alors qu'elles sont maintenant embarquées plus
+        // haut si elles pointent vers un post/vidéo précis (voir nonEmbeddableExtras
+        // ci-dessus). Ne restent ici QUE celles qui n'ont pas pu l'être (simple lien de
+        // profil/page/board, sans équivalent embarquable).
         let extraCont = document.getElementById('details-social-extra-links');
         if (!extraCont) {
             extraCont = document.createElement('span');
@@ -5439,7 +5560,7 @@ function renderLocationRichContent(loc) {
             ['youtubeUrls', 'YouTube']
         ];
         const extraHtml = extraLinkDefs.map(([field, label]) => {
-            const urls = Array.isArray(loc[field]) ? loc[field] : [];
+            const urls = nonEmbeddableExtras[field] || [];
             return urls.map((url, i) => `<a href="${url}" target="_blank" rel="noopener">${label}${urls.length > 1 ? ' (' + (i + 1) + ')' : ''}</a>`).join(' ');
         }).filter(Boolean).join(' ');
         extraCont.innerHTML = extraHtml;

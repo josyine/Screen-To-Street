@@ -227,9 +227,16 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
    Le widget lui-même charge d'abord un <blockquote> de secours (texte brut + lien),
    remplacé par l'iframe Twitter une fois widgets.js chargé — ce secours ne doit jamais
    dépasser du conteneur non plus. */
-.tweet-embed-wrapper { margin-bottom: 18px; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.1); display: flex; justify-content: center; background: #fff; }
+/* flex-direction:column (demande du 19/09/2026, "TOUS les liens des réseaux sociaux" —
+   plusieurs posts embarqués pour une même plateforme, ex: 2 tweets) : à l'origine pensé pour
+   UN SEUL enfant (display:flex;justify-content:center), ce qui aurait aligné plusieurs
+   embeds côte à côte plutôt qu'empilés. Chaque embed vit dans son propre .embed-item
+   (voir renderMultiEmbedsInto() dans script.js), centré individuellement. */
+.tweet-embed-wrapper { margin-bottom: 18px; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.1); display: flex; flex-direction: column; align-items: center; gap: 16px; background: #fff; }
 .tweet-embed-wrapper iframe { max-width: 100%; }
 .tweet-embed-wrapper .twitter-tweet { margin: 0 !important; max-width: 100%; }
+.tweet-embed-wrapper .embed-item { width: 100%; display: flex; justify-content: center; }
+.tweet-embed-wrapper .embed-item:empty { display: none; }
 /* Lien de repli (demande du 18/09/2026, "ça créé un lien" au lieu de l'embed) — affiché
    uniquement si widgets.js/embed.js n'ont pas réussi à remplacer le blockquote par un
    <iframe> après quelques secondes, voir showEmbedFallbackLinkIfStuck() dans script.js. */
