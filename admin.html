@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260928">
+<link rel="stylesheet" href="style.css?v=20260929">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -82,6 +82,8 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .sub-tweet-preview{margin-bottom:8px;}
 .sub-instagram-preview{margin-bottom:8px;}
 .sub-facebook-preview{margin-bottom:8px;}
+.sub-tiktok-preview{margin-bottom:8px;}
+.sub-pinterest-preview{margin-bottom:8px;}
 .sub-story-wrap{position:relative;margin-bottom:12px;}
 .sub-story{font-size:13px;color:#334155;line-height:1.6;background:#faf9fc;border-radius:10px;padding:12px 14px;padding-right:44px;}
 .sub-story p{margin-bottom:8px;}
@@ -365,10 +367,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260928"></script>
-<script src="countries.js?v=20260928"></script>
-<script src="locations-data.js?v=20260928"></script>
-<script src="script.js?v=20260928"></script>
+<script type="module" src="firebase-init.js?v=20260929"></script>
+<script src="countries.js?v=20260929"></script>
+<script src="locations-data.js?v=20260929"></script>
+<script src="script.js?v=20260929"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -700,6 +702,58 @@ recomposée, sans texte ni légende.`;
         if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
     }
 
+    // Embed TikTok (demande du 19/09/2026, "je veux que tous les liens des réseaux sociaux
+    // soient embeded dans Story") — même mécanisme officiel sans clé API (embed.js), valable
+    // seulement pour une vidéo PRÉCISE, pas pour un simple lien de profil (voir
+    // isTikTokVideoUrl). Même correctif que renderTikTokEmbedOnDetails() dans script.js
+    // (fiche publique).
+    function isTikTokVideoUrl(url) {
+        return /^https?:\/\/(www\.|vm\.|vt\.)?tiktok\.com\/(@[\w.-]+\/video\/\d+|v\/\d+)/i.test((url || '').trim());
+    }
+    function extractTikTokVideoId(url) {
+        const m = (url || '').trim().match(/tiktok\.com\/(?:@[\w.-]+\/video\/|v\/)(\d+)/i);
+        return m ? m[1] : '';
+    }
+    async function renderTikTokEmbed(container, tiktokUrl) {
+        const videoId = extractTikTokVideoId(tiktokUrl);
+        container.innerHTML = `<blockquote class="tiktok-embed" cite="${escapeHtml(tiktokUrl)}" data-video-id="${escapeHtml(videoId)}" style="max-width:605px;min-width:325px;"><section></section></blockquote>`;
+        // embed.js de TikTok n'expose aucune fonction publique pour retraiter un conteneur
+        // précis après coup (contrairement à FB.XFBML.parse()/instgrm.Embeds.process()) — une
+        // NOUVELLE balise <script> à chaque appel force le nouveau scan nécessaire, même
+        // correctif que script.js.
+        const s = document.createElement('script');
+        s.src = 'https://www.tiktok.com/embed.js';
+        s.async = true;
+        document.body.appendChild(s);
+    }
+
+    // Embed Pinterest (demande du 19/09/2026, même principe que TikTok ci-dessus) — widget
+    // officiel sans clé API, valable seulement pour une épingle PRÉCISE, pas pour un simple
+    // lien de profil/board (voir isPinterestPinUrl). Même correctif que
+    // renderPinterestEmbedOnDetails() dans script.js (fiche publique).
+    function isPinterestPinUrl(url) {
+        return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/pin\/[\w-]+/i.test((url || '').trim());
+    }
+    let pinterestSdkLoading = null;
+    function loadPinterestSdkScript() {
+        if (window.PinUtils) return Promise.resolve();
+        if (pinterestSdkLoading) return pinterestSdkLoading;
+        pinterestSdkLoading = new Promise((resolve) => {
+            const s = document.createElement('script');
+            s.src = 'https://assets.pinterest.com/js/pinit.js';
+            s.async = true;
+            s.onload = resolve;
+            s.onerror = resolve;
+            document.body.appendChild(s);
+        });
+        return pinterestSdkLoading;
+    }
+    async function renderPinterestEmbed(container, pinterestUrl) {
+        container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="medium" href="${escapeHtml(pinterestUrl)}"></a>`;
+        await loadPinterestSdkScript();
+        if (window.PinUtils && typeof window.PinUtils.build === 'function') window.PinUtils.build(container);
+    }
+
     // Champs Group/Member/Country/City/Category/Year en SÉLECTION plutôt qu'en texte libre
     // (demande du 13/09/2026, "je ne dois pas pouvoir rédiger car je risque de faire des
     // erreurs") — les valeurs possibles viennent directement des lieux déjà publiés
@@ -811,10 +865,12 @@ recomposée, sans texte ni légende.`;
             <input type="url" class="sub-social-input" data-platform="facebook" placeholder="Facebook URL (optional) — a specific post/video link embeds a preview" value="${escapeHtml(sub.facebookUrl || '')}">
             <div class="sub-social-error hidden" data-platform="facebook" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a facebook.com URL.</div>
             <div class="sub-social-extra" data-platform="facebook" style="margin-bottom:6px;"></div>
-            <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional)" value="${escapeHtml(sub.tiktokUrl || '')}">
+            <div class="sub-tiktok-preview hidden"></div>
+            <input type="url" class="sub-social-input" data-platform="tiktok" placeholder="TikTok URL (optional) — a specific video link embeds a preview" value="${escapeHtml(sub.tiktokUrl || '')}">
             <div class="sub-social-error hidden" data-platform="tiktok" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a tiktok.com URL.</div>
             <div class="sub-social-extra" data-platform="tiktok" style="margin-bottom:6px;"></div>
-            <input type="url" class="sub-social-input" data-platform="pinterest" placeholder="Pinterest URL (optional)" value="${escapeHtml(sub.pinterestUrl || '')}">
+            <div class="sub-pinterest-preview hidden"></div>
+            <input type="url" class="sub-social-input" data-platform="pinterest" placeholder="Pinterest URL (optional) — a specific pin link embeds a preview" value="${escapeHtml(sub.pinterestUrl || '')}">
             <div class="sub-social-error hidden" data-platform="pinterest" style="font-size:10.5px;color:#D42759;margin-bottom:8px;">Doesn't look like a pinterest.com URL.</div>
             <div class="sub-social-extra" data-platform="pinterest" style="margin-bottom:6px;"></div>
 
@@ -1148,17 +1204,22 @@ recomposée, sans texte ni légende.`;
             if (sub.tweetUrl) refreshTweet();
         }
 
-        // Instagram/Facebook/TikTok : mêmes trois champs, juste une validation de domaine
-        // avant d'accepter la valeur dans `sub` — Instagram ET Facebook ont EN PLUS un embed
-        // (demande du 07/09/2026 pour Instagram, du 18/09/2026 pour Facebook, voir
-        // renderInstagramEmbed()/renderFacebookEmbed() plus haut), uniquement pour un post/
-        // reel/vidéo précis (isInstagramPostUrl/isFacebookPostUrl) ; TikTok/Pinterest
-        // restent sans embed, aucune méthode fiable sans clé API pour ces deux-là.
+        // Instagram/Facebook/TikTok/Pinterest : mêmes quatre champs, juste une validation de
+        // domaine avant d'accepter la valeur dans `sub` — les quatre ont maintenant un embed
+        // (demande du 07/09/2026 pour Instagram, du 18/09/2026 pour Facebook, du 19/09/2026
+        // pour TikTok/Pinterest, "je veux que tous les liens des réseaux sociaux soient
+        // embeded", voir renderInstagramEmbed()/renderFacebookEmbed()/renderTikTokEmbed()/
+        // renderPinterestEmbed() plus haut), uniquement pour un post/reel/vidéo/épingle
+        // précis (isInstagramPostUrl/isFacebookPostUrl/isTikTokVideoUrl/isPinterestPinUrl).
         const instagramPreview = card.querySelector('.sub-instagram-preview');
         const facebookPreview = card.querySelector('.sub-facebook-preview');
+        const tiktokPreview = card.querySelector('.sub-tiktok-preview');
+        const pinterestPreview = card.querySelector('.sub-pinterest-preview');
         const embeddablePlatforms = {
             instagram: { preview: instagramPreview, isPostUrl: isInstagramPostUrl, render: renderInstagramEmbed },
-            facebook: { preview: facebookPreview, isPostUrl: isFacebookPostUrl, render: renderFacebookEmbed }
+            facebook: { preview: facebookPreview, isPostUrl: isFacebookPostUrl, render: renderFacebookEmbed },
+            tiktok: { preview: tiktokPreview, isPostUrl: isTikTokVideoUrl, render: renderTikTokEmbed },
+            pinterest: { preview: pinterestPreview, isPostUrl: isPinterestPinUrl, render: renderPinterestEmbed }
         };
         const socialConfig = {
             instagram: { extract: extractInstagramUrl, field: 'instagramUrl' },
@@ -1270,7 +1331,9 @@ recomposée, sans texte ni légende.`;
                 allSiteLocationsCache = null;
                 setTimeout(() => card.remove(), 2500);
             } else {
-                resultEl.textContent = 'Failed: ' + res.code;
+                // message (demande du 19/09/2026) — voir la note dans
+                // adminUpdateLocationContent() (firebase-init.js).
+                resultEl.textContent = 'Failed: ' + res.code + (res.message ? ' — ' + res.message : '');
                 resultEl.className = 'sub-result err';
                 approveBtn.disabled = false; rejectBtn.disabled = false;
             }
@@ -1770,7 +1833,12 @@ recomposée, sans texte ni légende.`;
                 mergedFullDescription = fullDescription;
                 if (hasSkeletonChanges) Object.assign(loc, skeletonFields);
             } else {
-                resultEl.textContent = 'Failed: ' + (res.code || skeletonRes.code);
+                // message (demande du 19/09/2026) — voir la note dans
+                // adminUpdateLocationContent() (firebase-init.js) : le message Firestore
+                // complet nomme le CHAMP fautif, sans quoi "Failed: invalid-argument" ne
+                // donne aucune piste pour trouver la vraie cause.
+                const failedRes = res.success ? skeletonRes : res;
+                resultEl.textContent = 'Failed: ' + (failedRes.code || 'unknown') + (failedRes.message ? ' — ' + failedRes.message : '');
                 resultEl.className = 'sub-result err';
             }
             saveBtn.disabled = false;

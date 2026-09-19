@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260928">
+<link rel="stylesheet" href="style.css?v=20260929">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -924,6 +924,15 @@
                              un simple lien de profil/page reste affiché comme lien "Follow" (voir
                              #details-social-links). -->
                         <div class="tweet-embed-wrapper hidden" id="details-facebook-container"></div>
+                        <!-- Post TikTok / épingle Pinterest embarqués (demande du 19/09/2026,
+                             "je veux que tous les liens des réseaux sociaux soient embeded dans
+                             Story") — même principe que Twitter/Instagram/Facebook ci-dessus,
+                             uniquement pour un lien vers UNE vidéo/épingle précise (voir
+                             isTikTokVideoUrl()/isPinterestPinUrl() dans script.js) ; un simple
+                             lien de profil/board reste affiché comme lien "Follow" (voir
+                             #details-social-links). -->
+                        <div class="tweet-embed-wrapper hidden" id="details-tiktok-container"></div>
+                        <div class="tweet-embed-wrapper hidden" id="details-pinterest-container"></div>
                     </div>
 
                     <div class="story-section hidden" id="details-tip-section" style="margin-bottom:0;">
@@ -1379,12 +1388,12 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260928"></script>
-<script type="module" src="firebase-init.js?v=20260928"></script>
-<script src="locations-data.js?v=20260928"></script>
-<script src="script.js?v=20260928"></script>
+<script src="countries.js?v=20260929"></script>
+<script type="module" src="firebase-init.js?v=20260929"></script>
+<script src="locations-data.js?v=20260929"></script>
+<script src="script.js?v=20260929"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260928"></script>
+<script src="map-tour.js?v=20260929"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
