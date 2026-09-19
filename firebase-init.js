@@ -1222,7 +1222,7 @@ window.approveLocationSubmission = async function (submission) {
         const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
-        await setDoc(doc(db, 'locationContent', targetId), contentDoc, { merge: true });
+        await setDoc(doc(db, 'locationContent', targetId), stripUndefinedDeep(contentDoc), { merge: true });
 
         // Champs "squelette" (Groupe/Membre/Pays/Ville/Catégorie/Année, demande du
         // 13/09/2026, "je veux également pouvoir modifier la partie Group, member,
@@ -1360,11 +1360,33 @@ window.fetchLiveEvents = async function () {
 // lectures/jour en rechargeant les 200 lieux à chaque visite). La vraie protection reste
 // la règle Firestore de locationContent (write : admin uniquement) — ce isCurrentUserAdmin()
 // côté client n'est qu'un raccourci UX pour éviter un aller-retour réseau inutile.
+// Retire récursivement toute valeur `undefined` d'un objet/tableau avant écriture Firestore
+// (demande du 19/09/2026, "quand je veux supprimer le lien ça dit 'Failed: invalid-argument'")
+// — le SDK Firestore rejette `undefined` n'importe où dans un payload (contrairement à
+// `null` ou une chaîne vide), erreur qu'il remonte précisément sous ce code "invalid-argument".
+// Plutôt que de traquer laquelle des nombreuses cases (champ social vidé, lien "en plus"
+// supprimé, section retirée...) laisse encore passer un `undefined` quelque part côté
+// admin.html/script.js, ce filet de sécurité générique s'applique à toute écriture faite via
+// adminUpdateLocationContent()/adminUpdateLocationSkeleton() ci-dessous : plus jamais bloquée
+// pour cette raison, quelle que soit la fonction appelante.
+function stripUndefinedDeep(value) {
+    if (Array.isArray(value)) return value.map(stripUndefinedDeep).filter(v => v !== undefined);
+    if (value && typeof value === 'object' && typeof value.toDate !== 'function') {
+        const out = {};
+        Object.keys(value).forEach(k => {
+            const cleaned = stripUndefinedDeep(value[k]);
+            if (cleaned !== undefined) out[k] = cleaned;
+        });
+        return out;
+    }
+    return value;
+}
+
 window.adminUpdateLocationContent = async function (locationId, fields) {
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
-        await setDoc(doc(db, 'locationContent', String(locationId)), fields, { merge: true });
+        await setDoc(doc(db, 'locationContent', String(locationId)), stripUndefinedDeep(fields), { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Édition directe du lieu échouée :', e);
@@ -1396,7 +1418,7 @@ window.adminUpdateLocationSkeleton = async function (locationId, fields) {
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
-        await setDoc(doc(db, 'locationSkeletonOverrides', String(locationId)), fields, { merge: true });
+        await setDoc(doc(db, 'locationSkeletonOverrides', String(locationId)), stripUndefinedDeep(fields), { merge: true });
         return { success: true };
     } catch (e) {
         console.warn('Correction de la fiche échouée :', e);

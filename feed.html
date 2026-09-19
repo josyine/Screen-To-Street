@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260927">
+<link rel="stylesheet" href="style.css?v=20260928">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -119,8 +119,30 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
    visited.html/profile.html pour la modale elle-même. */
 .modal-content { padding: 0; }
 .close-btn { top: 12px; right: 18px; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.4); z-index: 10; }
-#modal-hero { height: 320px; background-size: cover; background-position: center; border-radius: 16px 16px 0 0; display: flex; align-items: flex-end; padding: 20px; }
-#modal-title { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
+#modal-hero { height: 320px; background-size: cover; background-position: center; border-radius: 16px 16px 0 0; display: flex; align-items: flex-end; padding: 20px; position: relative; overflow: hidden; }
+#modal-title { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.3); position: relative; z-index: 2; }
+/* Galerie "Mei's Pictures" (demande du 19/09/2026, "parfois pour un lieu il y a plusieurs
+   photos de Mei... le reste apparait quand on clique sur le post... comme dans Instagram...
+   on défile ensuite les photos à l'horizontal") : la tuile du feed (voir renderSacredGrid())
+   continue de n'afficher que la 1ère photo (loc.recreatedPhotos[0]) comme avant, mais un
+   clic dessus ouvre maintenant TOUTES les photos du lieu en défilement horizontal avec
+   scroll-snap, plutôt qu'uniquement la 1ère — voir openLocModal() dans script.js
+   (postContext.photos) et openSacredPlace() plus bas dans cette page. Masquée par défaut
+   (une seule <div class="modal-hero-slide">, pas de scroll) pour ne rien changer aux
+   autres usages de cette même modale (publication utilisateur, fiche lieu classique...),
+   seulement peuplée avec plusieurs slides quand postContext.photos a 2 éléments ou plus.
+   #modal-hero garde son background-image existant comme repli (voir openLocModal) tant que
+   le JS n'a pas eu le temps de peupler la galerie. */
+.modal-hero-gallery { position: absolute; inset: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; z-index: 1; }
+.modal-hero-gallery::-webkit-scrollbar { display: none; }
+.modal-hero-gallery.hidden { display: none; }
+.modal-hero-slide { flex: 0 0 100%; height: 100%; background-size: cover; background-position: center; scroll-snap-align: start; }
+#modal-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); pointer-events: none; z-index: 1; display: none; }
+#modal-hero.modal-hero-gallery-active::after { display: block; }
+.modal-hero-dots { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 2; }
+.modal-hero-dots.hidden { display: none; }
+.modal-hero-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.45); transition: background .2s; }
+.modal-hero-dot.active { background: #fff; }
 .modal-body { padding: 20px 26px 28px 26px; }
 #modal-meta { font-size: 12.5px; color: #D42759; font-weight: 700; margin-bottom: 16px; }
 .modal-sub-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
@@ -378,9 +400,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260927"></script>
-<script src="locations-data.js?v=20260927"></script>
-<script src="script.js?v=20260927"></script>
+<script type="module" src="firebase-init.js?v=20260928"></script>
+<script src="locations-data.js?v=20260928"></script>
+<script src="script.js?v=20260928"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -558,7 +580,11 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         if (!loc || typeof window.openLocModal !== 'function') return;
         sacredSwipeIndex = sacredLocs.indexOf(loc);
         const photo = firstRecreatedPhoto(loc);
-        window.openLocModal(locId, photo ? { photo } : undefined);
+        // Toutes les photos du lieu (demande du 19/09/2026) — pas seulement la 1ère : voir
+        // le carrousel horizontal ajouté dans openLocModal() (script.js), qui s'active dès
+        // que postContext.photos contient plus d'une photo.
+        const photos = Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length ? loc.recreatedPhotos : (photo ? [photo] : []);
+        window.openLocModal(locId, photo ? { photo, photos } : undefined);
     }
 
     // Swipe gauche/droite pour passer à la photo recréée suivante/précédente pendant que la
@@ -576,6 +602,12 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             touchStartX = e.touches[0].clientX;
         }, { passive: true });
         modalHero.addEventListener('touchend', (e) => {
+            // Désactivé quand la galerie multi-photos (demande du 19/09/2026) est active :
+            // le défilement horizontal natif entre les photos DU MÊME lieu (scroll-snap,
+            // voir openLocModal() dans script.js) ne doit pas se faire concurrence avec ce
+            // swipe-ci, qui change de LIEU entier — sinon les deux gestes interfèrent sur le
+            // même geste tactile horizontal.
+            if (modalHero.classList.contains('modal-hero-gallery-active')) return;
             if (sacredSwipeIndex === -1 || touchStartX === null) return;
             const deltaX = e.changedTouches[0].clientX - touchStartX;
             touchStartX = null;
