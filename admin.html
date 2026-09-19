@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260930">
+<link rel="stylesheet" href="style.css?v=20260931">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -367,10 +367,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260930"></script>
-<script src="countries.js?v=20260930"></script>
-<script src="locations-data.js?v=20260930"></script>
-<script src="script.js?v=20260930"></script>
+<script type="module" src="firebase-init.js?v=20260931"></script>
+<script src="countries.js?v=20260931"></script>
+<script src="locations-data.js?v=20260931"></script>
+<script src="script.js?v=20260931"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -841,6 +841,14 @@ recomposée, sans texte ni légende.`;
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', sub.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', sub.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', sub.category)}</div>
+                <!-- Adresse (demande du 19/09/2026, "je veux pouvoir modifier l'adresse
+                     d'un lieu via la page admin ou directement dans le detail d'un lieu") —
+                     texte libre (contrairement à Group/Country/City/Category ci-dessus,
+                     jamais une liste de valeurs réutilisables d'un lieu à l'autre), mais
+                     ramassée par le même mécanisme générique .sub-field-input (voir la
+                     boucle plus bas dans ce fichier) : aucun changement JS nécessaire
+                     au-delà de ce champ. -->
+                <div class="sub-meta-field sub-meta-field-wide"><label>Address</label><input type="text" class="sub-field-input" data-field="address" value="${escapeHtml(sub.address || '')}" placeholder="Street address"></div>
                 <div class="sub-meta-field sub-meta-field-wide"><label>Year — select every year that applies</label>${yearCheckboxGroupHtml(sub.year)}</div>
             </div>
             <div class="sub-photo-preview">${photoPreviewHtml(sub.img)}</div>
@@ -1478,6 +1486,11 @@ recomposée, sans texte ni légende.`;
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', loc.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', loc.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', loc.category)}</div>
+                <!-- Adresse (demande du 19/09/2026) — voir la même note dans renderCard()
+                     plus haut dans ce fichier : texte libre, ramassée par le mécanisme
+                     générique .sub-field-input déjà en place pour Group/Country/City/
+                     Category ci-dessus. -->
+                <div class="sub-meta-field sub-meta-field-wide"><label>Address</label><input type="text" class="sub-field-input" data-field="address" value="${escapeHtml(loc.address || '')}" placeholder="Street address"></div>
                 <div class="sub-meta-field sub-meta-field-wide"><label>Year — select every year that applies</label>${yearCheckboxGroupHtml(loc.year)}</div>
             </div>
 
