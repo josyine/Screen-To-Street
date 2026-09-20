@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-20T06:46:53.559Z.
+// Généré le 2026-09-20T12:34:27.453Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -8748,64 +8748,89 @@ window.STATIC_LOCATIONS = [
     "id": 192,
     "name": "San Francisco Museum of Modern Art (SFMOMA)",
     "group": "BTS",
-    "member": "Namjoon",
+    "member": "RM",
     "country": "United States",
     "city": "San Francisco, CA",
     "category": "Museum",
-    "year": "2026",
+    "year": "2026, 2027",
     "episodeLink": "https://www.sfmoma.org/press-release/rm-and-sfmoma-partner-on-first-exhibition-of-its-kind/",
-    "address": "151 Third St, San Francisco, CA 94103",
+    "address": "151 Third St, San Francisco, CA 94103, USA (The exhibition is located on Floor 7)",
     "lat": 37.7857,
     "lng": -122.4011,
-    "img": "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=600",
+    "img": "images/admin-upload-192-photo.jpg",
     "fullDescription": {
-      "en": "<p>\"RM x SFMOMA\" is the first museum exhibition RM has personally curated, bringing works from his private collection to the US for many for the first time.</p><p>The show cements a reputation Korean media had already given him: the Korea Art Market's 2025 report named RM one of the 20 most influential figures in the Korean art market, calling him a \"passionate art collector and cultural influencer.\"</p>",
-      "fr": "<p>« RM x SFMOMA » est la première exposition muséale personnellement organisée par RM, qui présente pour la première fois aux États-Unis des œuvres issues de sa collection privée.</p><p>Cette exposition confirme une réputation que les médias coréens lui attribuaient déjà : le rapport 2025 du Korea Art Market a désigné RM comme l'une des 20 personnalités les plus influentes du marché de l'art coréen, le qualifiant de « collectionneur d'art passionné et d'influenceur culturel ».</p>"
+      "fr": "<p>« RM x SFMOMA » est la première exposition muséale personnellement organisée par RM, qui présente pour la première fois aux États-Unis des œuvres issues de sa collection privée.</p><p>Cette exposition confirme une réputation que les médias coréens lui attribuaient déjà : le rapport 2025 du Korea Art Market a désigné RM comme l'une des 20 personnalités les plus influentes du marché de l'art coréen, le qualifiant de « collectionneur d'art passionné et d'influenceur culturel ».</p>",
+      "en": "<p>Located in the bustling South of Market (SoMa) neighborhood, the San Francisco Museum of Modern Art (SFMOMA) is one of the largest and most prominent museums of modern and contemporary art in the United States. Known for its striking architecture and world-class collections featuring masters like Henri Matisse, Agnes Martin, and Mark Rothko, it is a leading institution in the global art world. In the fall of 2026, the museum expanded its cultural dialogue by opening its doors to a groundbreaking, cross-cultural collaboration with one of the most influential pop-culture figures of the 21st century.</p><p>From October 3, 2026, to February 7, 2027: From October 3, 2026, to February 7, 2027, the museum's 7th floor was transformed to host RM x SFMOMA: Between You and Me. This landmark event marked the very first museum exhibition featuring artworks exclusively drawn from RM’s personal collection, co-curated by Namjoon himself. Here, his passion culminated in a stunning presentation of nearly 200 works, placing his beloved Korean masters—such as Yun Hyong-keun and Park Rehyun—in direct dialogue with international contemporary pieces from SFMOMA's holdings. RM described the exhibition as a \"sturdy bridge\" between East and West, firmly establishing him as a visionary art patron.</p><p>2026: Before acting as a curator for the museum, RM also explored SFMOMA as an avid, everyday art lover. Documenting his visit for fans, he shared photos of specific pieces from the museum's permanent collection that caught his eye. He specifically highlighted Henri Matisse's \"Woman with a Hat\" (1905)—one of the most representative works of Fauvism, famous for its vivid, unnatural colors and expressive brushstrokes. He also captured Alexander Calder's \"Fish\" (1947), a delicate, suspended mobile sculpture made of wire, metal, and fragments of color that perfectly reflects Calder's characteristic sense of movement and balance.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Plan around SF"
+          "en": "A Limited Engagement"
         },
         "text": {
-          "en": "SFMOMA sits in the SoMA district, walkable from Yerba Buena Gardens and the Contemporary Jewish Museum."
+          "en": "Please note that RM x SFMOMA is a highly exclusive, temporary exhibition running only until February 7, 2027. If you are reading this after the closing date, SFMOMA remains an absolute must-visit to understand the artistic environments RM draws so much inspiration from."
         }
       },
       {
         "title": {
-          "en": "Go bilingual"
+          "en": "Seek Out Yun Hyong-keun"
         },
         "text": {
-          "en": "Wall texts and labels for the show were written by RM himself, in both English and Korean."
+          "en": "When viewing the collection, pay special attention to the works of Yun Hyong-keun. RM has long cited the Dansaekhwa (Korean monochrome) master as one of his greatest personal and musical inspirations, and seeing Yun's meditative canvases in person helps decode the deep, philosophical themes of RM's solo album Indigo."
+        }
+      },
+      {
+        "title": {
+          "en": "The Encore Pass"
+        },
+        "text": {
+          "en": "If you are visiting San Francisco during the exhibition's run and plan to go more than once, look into the museum's special \"Encore Pass\" which offers unlimited repeat visits to RM's exhibit and exclusive pop-up store merchandise!"
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
+          "en": "How to get there"
         },
         "text": {
-          "en": "Ticketed special exhibition; book ahead once the show opens, as an RM-linked exhibit is expected to draw large crowds."
+          "en": "SFMOMA is incredibly accessible via public transit. Take the BART or Muni to Montgomery Street Station. From there, it is an easy 5-minute walk down 3rd Street to the museum's main entrance."
         }
       },
       {
         "title": {
-          "en": "What to expect"
+          "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "About 200 works pairing pieces from RM's personal collection (Yun Hyong-keun, Chang Ucchin, Kim Whanki and others) with SFMOMA's own holdings."
+          "en": "The museum is generally open from 10:00 AM to 5:00 PM (closed on Wednesdays). During its run, RM x SFMOMA operates as a specially surcharged exhibition (typically $10-$12 in addition to general museum admission). Timed-entry tickets must be booked well in advance online."
         }
       },
       {
         "title": {
-          "en": "Extras"
+          "en": "Accessibility"
         },
         "text": {
-          "en": "RM recorded a bilingual (English/Korean) audio guide himself and curated an in-gallery music playlist to accompany the art."
+          "en": "SFMOMA is fully ADA-compliant. The entire museum, including the 7th-floor galleries hosting RM's exhibition, features flat floors, spacious automatic doors, and large elevators, making it seamlessly accessible for wheelchair users and visitors with strollers."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "officialLink": "https://www.sfmoma.org/exhibition/rm-x-sfmoma/",
+    "tweetUrls": [],
+    "instagramUrl": "https://www.instagram.com/p/DU6yia7Abyz/",
+    "recreatedPhotos": [
+      "images/admin-upload-192-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "id": 193,
@@ -8928,33 +8953,82 @@ window.STATIC_LOCATIONS = [
     "year": "2024",
     "episode": "Jimin \"The Truth Untold\" — Los Angeles leg, late 2024",
     "episodeLink": "https://jiminthetruthuntold.com/",
-    "address": "516 S Mission Rd, Los Angeles, CA 90033",
+    "address": "516 S Mission Rd, Los Angeles, CA 90033, USA",
     "lat": 34.0402,
     "lng": -118.2115,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
+    "img": "images/admin-upload-195-photo.jpg",
     "fullDescription": {
-      "en": "<p>After its Seoul debut, Jimin's \"The Truth Untold\" exhibition crossed the Pacific for a Los Angeles run at Ace Mission Studios, a converted industrial space east of Downtown LA popular for large-scale pop-up experiences.</p><p>The LA leg drew both local and international ARMY who had missed the original Seoul dates, cementing the exhibition as a genuine world tour rather than a one-off Seoul event.</p>"
+      "en": "<p>Located just east of Downtown Los Angeles, across the Los Angeles River, Ace Mission Studios is a sprawling, converted industrial warehouse complex. With its raw concrete floors, exposed steel beams, and massive high-ceilinged rooms, it has become one of LA's premier venues for large-scale immersive pop-ups, art installations, and electronic music events. The surrounding area leans heavily into a gritty, urban aesthetic, serving as an edgy, creative extension of the neighboring, highly trendy Arts District.</p><p>After its highly successful debut in Seoul, Jimin's The Truth Untold: 전하지 못한 진심 exhibition crossed the Pacific to make its first international stop in Los Angeles in late 2024. Ace Mission Studios provided a fascinating architectural contrast for the event. The venue's raw, industrial backdrop perfectly juxtaposed the delicate elegance, stunning stage costumes, and deeply personal handwritten notes from Jimin's FACE and MUSE eras. For American ARMYs, walking through this massive warehouse space offered a deeply emotional, museum-quality immersion into his creative process, cementing LA's status as a foundational city in BTS's global journey.</p>"
     },
     "practicalInfo": [
       {
         "title": {
-          "en": "Format"
+          "en": "How to get there"
         },
         "text": {
-          "en": "Ticketed, limited-run pop-up exhibition tied to specific dates in late 2024 — check official channels before visiting, as it does not have a permanent presence."
+          "en": "The most efficient way to arrive is by rideshare (Uber/Lyft) or a rental car. If using public transit, you can take the Metro L Line (Gold) to Pico/Aliso Station, which is about a 15-minute walk away, though the pedestrian paths through the industrial zone are not always scenic."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The BTS exhibition is permanently closed. Ace Mission Studios only opens to the public during specifically ticketed events or festivals."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The grounds and main warehouse floors of Ace Mission Studios are flat and industrial, generally offering good accessibility for wheelchairs and strollers when public events are hosted there."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Plan around dates"
+          "en": "A Legacy Stop (The Exhibition is Closed)"
         },
         "text": {
-          "en": "Pop-up exhibitions like this one only run for a few weeks — confirm current dates on official HYBE/Weverse announcements before booking travel around it."
+          "en": "Just like the New York leg, the LA exhibition was a limited-time pop-up event that has now concluded. The warehouse is currently used for other private events, so you cannot go inside to see Jimin's displays, but fans still love driving by the building to document the site."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Arts District"
+        },
+        "text": {
+          "en": "Since you are right on the edge of Downtown LA, make a day of it! Cross the bridge into the official DTLA Arts District to explore incredible street art, industrial-chic coffee shops, and trendy breweries. It is one of the most photogenic, walkable neighborhoods in Los Angeles."
+        }
+      },
+      {
+        "title": {
+          "en": "Rideshare is Best"
+        },
+        "text": {
+          "en": "While LA is expanding its public transit, getting to this specific industrial pocket east of the river can be tricky on foot. Using Uber or Lyft is highly recommended to reach the studios safely and easily."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "instagramUrl": "https://www.instagram.com/reel/DDCwufvS3aO/",
+    "recreatedPhotos": [
+      "images/admin-upload-195-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://aceandmissionstudios.com/"
   },
   {
     "id": 196,
@@ -8967,40 +9041,83 @@ window.STATIC_LOCATIONS = [
     "year": "2025",
     "episode": "Jimin \"The Truth Untold\" — New York leg, May 31 to June 29, 2025",
     "episodeLink": "https://www.designscene.net/2025/06/bts-jimin-solo-exhibition.html",
-    "address": "30 Wall St, New York, NY 10005",
+    "address": "30 Wall Street, New York, NY 10005, USA.",
     "lat": 40.7075,
     "lng": -74.0092,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
+    "img": "images/admin-upload-196-photo.jpg",
     "fullDescription": {
-      "en": "<p>The final leg of Jimin's \"The Truth Untold\" exhibition landed in New York's Financial District in the summer of 2025, taking over the historic 30 Wall Street building for a five-week run.</p><p>Closing out the exhibition's Seoul-LA-New York journey in one of Manhattan's most iconic financial addresses gave the tour a fittingly grand finale, with lines wrapping around the block during opening weekend.</p>"
+      "en": "<p>Located in the beating heart of Manhattan's Financial District, 30 Wall Street is a striking piece of historic New York architecture. Surrounded by towering skyscrapers and iconic institutions like the New York Stock Exchange, this grand, neoclassical-style building has transitioned from its traditional financial roots to serve as a premium, expansive venue for high-profile immersive events and pop-culture exhibitions. Its imposing stone facade provides a dramatic contrast to the modern, interactive art installations often housed within.</p><p>In the summer of 2025 (May 31 to June 29), this historic Wall Street building was completely transformed to host the final leg of Jimin’s highly anticipated solo exhibition, The Truth Untold: 전하지 못한 진심. The immersive five-week event offered fans an incredibly intimate look into his creative process across his solo albums FACE and MUSE. Walking through the venue's grand halls, ARMYs were treated to unreleased behind-the-scenes footage, original stage costumes, handwritten notes, and stunning visual installations that perfectly captured Jimin's delicate, raw, and powerful artistic journey. Bringing such a vulnerable and personal pop-culture exhibition to the center of New York's rigid financial district created a beautifully poetic contrast.</p>"
     },
     "practicalInfo": [
-      {
-        "title": {
-          "en": "Format"
-        },
-        "text": {
-          "en": "Ticketed, limited-run pop-up exhibition (May 31 – June 29, 2025) — it has since closed."
-        }
-      },
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Wall Street subway station (4/5 lines) is a short walk away."
+          "en": "The Financial District is incredibly well-connected. Take the 4 or 5 Subway line directly to Wall Street Station, or the J or Z line to Broad Street."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The BTS exhibition is permanently closed. The exterior of 30 Wall Street and the surrounding public sidewalks can be viewed 24/7 for free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The sidewalks along Wall Street and the surrounding Financial District are wide, fully paved, and accessible for wheelchairs and strollers. However, be mindful that this area gets incredibly crowded with local office workers during weekday rush hours (8:00 AM - 9:00 AM and 5:00 PM - 6:00 PM)."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Exhibition closed"
+          "en": "A Legacy Stop (The Exhibition is Closed)"
         },
         "text": {
-          "en": "This was the final, time-limited stop of the tour — the address itself (a historic Financial District building) remains worth a look even though the exhibition is over."
+          "en": "Please note that The Truth Untold was a temporary pop-up event that concluded in June 2025. You cannot view Jimin's exhibition inside the building today, but the stunning facade of 30 Wall Street remains a fantastic photo op and a must-visit landmark for fans documenting the footprint of his solo era."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Financial District"
+        },
+        "text": {
+          "en": "Since you are already standing on Wall Street, take the opportunity to explore! The building is just steps away from the iconic New York Stock Exchange, the famous Fearless Girl statue, and Trinity Church."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk to the Water"
+        },
+        "text": {
+          "en": "After taking your photos in front of 30 Wall Street, walk just a few blocks south to the Battery (formerly Battery Park). It offers beautiful waterfront views of the Statue of Liberty and is a great place to sit and listen to FACE or MUSE while taking in the New York harbor."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "https://www.instagram.com/p/DJFAy1ayRsu/",
+    "tweetUrls": [],
+    "instagramUrls": [
+      "https://www.instagram.com/p/DA9vPvNhjeQ/"
+    ],
+    "officialLink": "https://30wall.com/",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-196-recreated-0.jpg"
     ]
   },
   {
@@ -9013,34 +9130,84 @@ window.STATIC_LOCATIONS = [
     "category": "MV Location",
     "year": "2024",
     "episode": "\"Rainy Days\" music video (V, Layover) — filmed on the top floor",
-    "address": "Avenida de América, 37, 28002 Madrid, Spain",
+    "address": "Avenida de América, 37, Chamartín, 28002 Madrid, Spain",
     "lat": 40.4381,
     "lng": -3.6763,
-    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Madrid%20-%20Edificio%20Torres%20Blancas%2001.JPG",
+    "img": "images/admin-upload-197-photo.jpg",
     "fullDescription": {
-      "en": "<p>Torres Blancas is one of Madrid's most distinctive modernist buildings, its curved, tree-like concrete silhouette designed by architect Francisco Javier Sáenz de Oíza in the 1960s — a striking, unmistakable landmark on the city's skyline.</p><p>V filmed part of the moody, sun-drenched \"Rainy Days\" music video from Layover on the building's top floor, its round windows and warm concrete framing some of the video's most striking shots.</p>"
+      "en": "<p>Torres Blancas is one of Madrid's most distinctive and celebrated modernist buildings. Designed by visionary architect Francisco Javier Sáenz de Oíza in the 1960s, it is a masterpiece of organic and brutalist architecture. Rather than a traditional rectangular skyscraper, the concrete building features a striking, cylindrical silhouette with curved balconies that fan out like the leaves and branches of a massive tree. Rising 71 meters above the city, this unmistakable landmark on Madrid's skyline was designed to be a vertical garden city, blending avant-garde concrete forms with the flow of natural light.</p><p>In 2023, V released his highly anticipated, jazz-infused solo album, Layover. The music video for the melancholic, lo-fi track \"Rainy Days\" was filmed inside a stunning penthouse apartment on the top floor of the Torres Blancas. The apartment's warm, retro interior, paired with the sweeping views of Madrid visible through the building's distinctive curved windows, perfectly matched the nostalgic and intimate vibe of V's solo project. The video beautifully captures him wandering the mid-century modern space, making a meal, and gazing out over the city skyline alongside a lookalike of his beloved Pomeranian, Yeontan, creating an incredibly cozy, cinematic atmosphere.</p>"
     },
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
+          "en": "How to get there"
         },
         "text": {
-          "en": "Torres Blancas is a private residential building — the interior filming location is not open to the public, but the exterior is a well-known Madrid architectural landmark visible from Avenida de América."
+          "en": "The building is extremely easy to reach via public transit. Take the Madrid Metro (Line 7) to Cartagena Station, which brings you out just steps away from the tower. Alternatively, the massive Avenida de América transport interchange (Lines 4, 6, 7, 9) is only a 5-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As it is a private residence, the exterior can be viewed 24/7 for free. Interior access is strictly prohibited for tourists."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The public sidewalks surrounding the building on Avenida de América are wide, flat, and fully accessible for wheelchairs and strollers, offering unobstructed views of the architecture from the street level."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Admire from outside"
+          "en": "Admire from the Outside"
         },
         "text": {
-          "en": "Since the interior isn't accessible to visitors, the best way to experience this location is to view (and photograph) the building's famous curved exterior from the street."
+          "en": "It is crucial to remember that Torres Blancas is a functioning, private residential building, not a public museum. You cannot go inside to find the apartment or access the rooftop. The building must be admired and photographed strictly from the street."
+        }
+      },
+      {
+        "title": {
+          "en": "The Perfect Photo Angle"
+        },
+        "text": {
+          "en": "To capture the building's dramatic, tree-like structure in its entirety, cross the street to the opposite side of Avenida de América. Using a wide-angle lens from a slight distance will allow you to frame the towering cylindrical balconies against the Madrid sky."
+        }
+      },
+      {
+        "title": {
+          "en": "Curate the"
+        },
+        "text": {
+          "en": "To fully immerse yourself in the experience, grab a coffee or a warm pastry from a nearby cafe, find a spot with a clear view of the building, and listen to \"Rainy Days\" on your headphones. The architecture pairs perfectly with V's deep, soothing vocals."
         }
       }
     ],
-    "episodeLink": "https://commons.wikimedia.org/wiki/Category:Kelenf%C3%B6ld_Power_Plant"
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "ytId": "yTsINmrAK4I",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-197-recreated-0.jpg",
+      "images/admin-upload-197-recreated-1.jpg"
+    ],
+    "episodeLink": "https://letstalkbts.quora.com/Taehyungs-MV-took-place-in-Torres-Blancas-The-Torres-Blancas-The-White-Towers-was-designed-by-Spanish-architect-Fran",
+    "officialLink": "https://fr.wikipedia.org/wiki/Torres_Blancas"
   },
   {
     "id": 198,
@@ -9122,12 +9289,13 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
     "tweetUrls": [],
     "tweetUrl": "https://x.com/jjklve_/status/1723613329669656726",
     "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://fr.wikipedia.org/wiki/Centrale_%C3%A9lectrique_de_Kelenf%C3%B6ld",
     "recreatedPhotos": [
-      "images/admin-upload-198-recreated-0.jpg"
+      "images/admin-upload-198-recreated-0.jpg",
+      "images/admin-upload-198-recreated-1.jpg"
     ]
   },
   {
