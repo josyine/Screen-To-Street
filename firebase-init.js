@@ -1564,6 +1564,34 @@ window.adminSetLocationVerified = async function (locationId, verified) {
     }
 };
 
+// Libellés de site modifiables depuis l'admin (demande du 20/09/2026, "je veux pouvoir
+// changer le nom 'Episode' en mode admin") — même mécanisme qu'un lieu masqué/vérifié
+// ci-dessus (siteConfig/labels, un seul document), déjà couvert par la règle générique
+// `match /siteConfig/{configId}` (firestore.rules) : aucune modification des règles
+// nécessaire. Appliqué par script.js en écrasant translations[lang].lEpisode pour toutes
+// les langues, donc une seule valeur (pas de traduction par langue) qui survit aux
+// changements de langue.
+window.fetchSiteLabels = async function () {
+    try {
+        const snap = await getDoc(doc(db, 'siteConfig', 'labels'));
+        return snap.exists() ? snap.data() : {};
+    } catch (e) {
+        console.warn('Lecture des libellés du site échouée :', e);
+        return {};
+    }
+};
+window.adminUpdateSiteLabels = async function (fields) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        await setDoc(doc(db, 'siteConfig', 'labels'), resolveDeleteMarkers(stripUndefinedDeep(fields)), { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Mise à jour des libellés du site échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Lu par map.html au chargement (voir firebase-ready) : les nouveaux lieux déjà approuvés
 // (voir approveLocationSubmission ci-dessus) sont fusionnés dans celebLocations à la
 // volée, jamais écrits dans script.js.

@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260943">
+<link rel="stylesheet" href="style.css?v=20260944">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -382,14 +382,29 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <button type="button" id="feed-backfill-btn" class="live-submit-btn" onclick="window.runFeedBackfill()">Rebuild feed index now</button>
                 <div id="feed-backfill-result" class="live-form-result hidden"></div>
             </div>
+
+            <!-- Libellé "Episode:" personnalisable (demande du 20/09/2026, "je veux pouvoir
+                 changer le nom 'Episode'... en mode admin") — un seul champ texte, appliqué
+                 tel quel dans les 8 langues du site (siteConfig/labels, voir
+                 window.fetchSiteLabels()/window.adminUpdateSiteLabels() dans
+                 firebase-init.js et applySiteLabelOverrides() dans script.js). Laisser vide
+                 revient au libellé traduit d'origine ("Episode:"/"Épisode :"/etc.). -->
+            <div class="live-form">
+                <h2>Location detail: "Episode" section title</h2>
+                <p class="sub" style="margin-bottom:14px;">Controls the title shown above the episode/description text on every location's detail page (Info tab). Applies to all languages. Leave empty to use the site's default translated label ("Episode:", "Épisode :", etc.).</p>
+                <label class="live-field-label" for="episode-label-input">Section title</label>
+                <input type="text" id="episode-label-input" class="live-field" placeholder="e.g. Description:">
+                <button type="button" id="episode-label-btn" class="live-submit-btn" onclick="window.saveEpisodeLabel()">Save</button>
+                <div id="episode-label-result" class="live-form-result hidden"></div>
+            </div>
         </div>
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260943"></script>
-<script src="countries.js?v=20260943"></script>
-<script src="locations-data.js?v=20260943"></script>
-<script src="script.js?v=20260943"></script>
+<script type="module" src="firebase-init.js?v=20260944"></script>
+<script src="countries.js?v=20260944"></script>
+<script src="locations-data.js?v=20260944"></script>
+<script src="script.js?v=20260944"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1498,6 +1513,44 @@ recomposée, sans texte ni légende.`;
         document.getElementById('admin-panel-live').classList.toggle('active', tab === 'live');
         document.getElementById('admin-panel-maintenance').classList.toggle('active', tab === 'maintenance');
         if (tab === 'live' && typeof window.loadLiveEventSubmissions === 'function') window.loadLiveEventSubmissions();
+        // Libellé "Episode:" (demande du 20/09/2026) : chargé paresseusement à l'ouverture
+        // de l'onglet, comme "Agenda" juste au-dessus, plutôt qu'au chargement initial de
+        // la page — même schéma que le commentaire un peu plus bas dans ce fichier.
+        if (tab === 'maintenance') loadEpisodeLabelOnce();
+    };
+
+    let episodeLabelLoaded = false;
+    async function loadEpisodeLabelOnce() {
+        if (episodeLabelLoaded) return;
+        episodeLabelLoaded = true;
+        const input = document.getElementById('episode-label-input');
+        if (!input || typeof window.fetchSiteLabels !== 'function') return;
+        try {
+            const labels = await window.fetchSiteLabels();
+            if (labels && labels.episodeLabel) input.value = labels.episodeLabel;
+        } catch (e) { /* tant pis, le champ reste vide */ }
+    }
+
+    window.saveEpisodeLabel = async function () {
+        const input = document.getElementById('episode-label-input');
+        const btn = document.getElementById('episode-label-btn');
+        const result = document.getElementById('episode-label-result');
+        const val = input.value.trim();
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+        result.classList.add('hidden');
+        if (typeof window.adminUpdateSiteLabels !== 'function') {
+            btn.disabled = false;
+            btn.textContent = 'Save';
+            result.textContent = 'Not available — firebase-init.js failed to load.';
+            result.classList.remove('hidden');
+            return;
+        }
+        const res = await window.adminUpdateSiteLabels({ episodeLabel: val || window.FIRESTORE_DELETE_FIELD_MARKER });
+        btn.disabled = false;
+        btn.textContent = 'Save';
+        result.textContent = res.success ? 'Saved.' : `Failed: ${res.code || 'unknown error'}`;
+        result.classList.remove('hidden');
     };
 
     // Reconstruction ponctuelle de l'index du fil global (voir
