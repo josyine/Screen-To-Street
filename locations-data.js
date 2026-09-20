@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-19T21:37:55.550Z.
+// Généré le 2026-09-20T06:46:53.559Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9056,29 +9056,78 @@ window.STATIC_LOCATIONS = [
     "address": "Hengermalom út 60, Budapest 1117, Hungary",
     "lat": 47.4744,
     "lng": 19.0396,
-    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Kelenf%C3%B6ldi%20H%C5%91er%C5%91m%C5%B1.jpg",
+    "img": "images/admin-upload-198-photo.jpg",
     "fullDescription": {
-      "en": "<p>Kelenföld Power Plant is a decommissioned Art Deco power station in Budapest, celebrated for its ornate 1920s-30s industrial architecture and often used as a filming location thanks to its dramatic, atmospheric interior halls.</p><p>Jungkook filmed scenes for \"Standing Next to You,\" the lead single from his solo album GOLDEN, inside the plant's grand machine hall — its retro-futuristic control panels and warm lighting giving the video's dance sequences a striking industrial-glam backdrop.</p>"
+      "en": "<p>The Kelenföld Power Plant (Kelenföldi Erőmű) is a staggering monument to Europe's industrial past. Located in South Buda along the banks of the Danube, the plant first opened in 1914, but its crown jewel—the breathtaking Art Deco control room—was added in the late 1920s. Designed by architects Kálmán Reichl and Virgil Borbíró, the control room features a mesmerizing, geometric glass ceiling that bathes the dials and machinery in natural light. While much of the plant has been decommissioned and left to beautifully decay, its dramatic, atmospheric interior halls have made it a highly sought-after filming location for Hollywood blockbusters and international music videos.</p><p>In late 2023, Jungkook traveled to Budapest to film the music video for \"Standing Next to You,\" the retro-funk lead single of his debut solo album, GOLDEN. The cavernous, gritty halls of the Kelenföld Power Plant served as the perfect contrasting backdrop for his sleek, Michael Jackson-inspired choreography. The video brilliantly utilizes the vast industrial spaces, with Jungkook and his dancers performing in front of massive turbines, under the iconic Art Deco glass ceiling of the control room, and through the shadowy, concrete corridors. The location's raw, weathered elegance perfectly amplifies the cinematic and mature scale of Jungkook's solo debut.</p>"
     },
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
+          "en": "How to get there"
         },
         "text": {
-          "en": "A working heritage site — the plant occasionally opens for guided tours and events; it is not a standard walk-in tourist attraction, so check current opening details before visiting."
+          "en": "The plant is located in the Újbuda district. Take Tram 1 to the Hengermalom út / Szerémi út stop, or take the M4 Metro line to Bikás park and walk about 15 minutes. However, your meeting point will depend entirely on the tour company you book with."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "There are no regular public opening hours. Access is granted exclusively through pre-booked guided tours, which typically cost around €35 to €50 depending on the length and focus (photography vs. history) of the tour."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Due to its nature as a century-old, partially abandoned industrial site, Kelenföld is unfortunately not accessible. Visitors must be prepared to navigate steep, narrow staircases, uneven flooring, and dimly lit corridors without the aid of modern elevators."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Combine with"
+          "en": "Book an Official Tour (No Walk-ins)"
         },
         "text": {
-          "en": "Budapest has several other Art Deco and industrial-heritage sites nearby worth pairing with a visit here if the plant itself is closed to the public on the day."
+          "en": "This is a partially active, highly restricted industrial site. You cannot walk in or explore on your own. To see the famous control room and turbine halls, you must book a specialized industrial heritage or photography tour through local Hungarian companies (such as Budapest Scene)."
+        }
+      },
+      {
+        "title": {
+          "en": "Safety First"
+        },
+        "text": {
+          "en": "Because this is an aging industrial facility, safety is paramount. You will likely be required to wear a hard hat during your tour. Wear closed-toe, thick-soled shoes—never sandals or heels—as the floors can be uneven, dusty, and littered with debris."
+        }
+      },
+      {
+        "title": {
+          "en": "Look Up"
+        },
+        "text": {
+          "en": "The absolute highlight of the location is the legendary Art Deco control room ceiling. Make sure to bring a camera that handles low-light environments well, and use a wide-angle lens to capture the full geometric beauty of the glass roof exactly as it appears in the music video's dance breaks."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "UNo0TG9LwwI",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "tweetUrl": "https://x.com/jjklve_/status/1723613329669656726",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-198-recreated-0.jpg"
     ]
   },
   {
@@ -9139,93 +9188,150 @@ window.STATIC_LOCATIONS = [
     "year": "2023",
     "episode": "Agust D Tour 'D-Day' — Seoul leg, June 24-25 2023",
     "episodeLink": "https://en.wikipedia.org/wiki/D-Day_Tour",
-    "address": "10 Baekjegobun-ro 45-gil, Songpa-gu, Seoul",
+    "address": "25 Olympic-ro, Songpa-gu, Seoul",
     "lat": 37.5168,
     "lng": 127.0719,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
+    "img": "images/admin-upload-200-photo.jpg",
     "fullDescription": {
-      "en": "<p>Jamsil Indoor Stadium, sitting right beside Seoul Olympic Stadium in the wider Jamsil Sports Complex, hosted the opening Seoul shows of Agust D's \"D-Day\" solo tour in June 2023 — the very first stop of SUGA's debut solo world tour.</p><p>As the hometown opening of a genuinely historic tour (the first solo world tour by a BTS member), these two nights carried extra emotional weight for the Seoul crowd, setting the tone for the year-long run that would follow.</p>"
+      "en": "<p>Jamsil Indoor Stadium, also known as Jamsil Arena, is a major sporting and entertainment venue located within the sprawling Jamsil Sports Complex. Originally built to host basketball events for the 1986 Asian Games and the 1988 Summer Olympics, the arena features a distinctive circular design and can hold approximately 11,000 spectators. Sitting right beside the massive Seoul Olympic Stadium, it is a historic pillar of South Korea's live entertainment industry, regularly hosting professional sports and serving as a crucial rite-of-passage venue for K-pop artists before they graduate to the main stadium next door.</p><p>In June 2023, this arena became a monumental site in BTS's Chapter 2. On June 24 and 25, Jamsil Indoor Stadium hosted the spectacular opening Seoul shows of SUGA's Agust D \"D-Day\" Tour—making him the very first BTS member to embark on a solo world tour. While BTS as a full group had long conquered the 70,000-seat Olympic Stadium right next door, SUGA deliberately utilized the enclosed, intense environment of the Indoor Stadium for his solo debut. The venue's acoustics and intimate, theater-like atmosphere were perfect for the raw, fiery, and deeply personal narrative of the \"D-Day\" setlist, allowing him to connect fiercely with fans as he delivered a heavily theatrical hip-hop and rock performance.</p>"
     },
     "practicalInfo": [
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Indoor arena within the Jamsil Sports Complex, still active for concerts and sporting events — check the venue calendar before visiting."
-        }
-      },
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Sports Complex Station (Seoul Subway Line 2), short walk to the Jamsil Sports Complex."
+          "en": "Take Seoul Subway Line 2 or Line 9 to Sports Complex Station. Use Exit 6 or 7, which will lead you directly into the main plaza of the complex. The Indoor Stadium is an easy 5-minute walk straight ahead from the station exits."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor grounds of the Jamsil Sports Complex are open 24/7 and are completely free to explore. Access to the inside of the arena requires a valid ticket for a scheduled event."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The exterior complex is fully paved, flat, and extremely spacious, making it perfectly accessible for wheelchairs and strollers. If attending an event inside, note that while the 1980s architecture is older, elevator access and designated accessible seating zones are available."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Combine with"
+          "en": "Explore the Sports Complex"
         },
         "text": {
-          "en": "Seoul Olympic Stadium (site of BTS's 2022 \"Yet to Come\" 10th-anniversary concert) is right next door — an easy double stop on the same visit."
+          "en": "While you cannot enter the arena without a concert or sports ticket, the entire Jamsil Sports Complex is an open public park. Walk the grounds to see the Olympic monuments and compare the Indoor Stadium's size to the towering Olympic Stadium next door—a brilliant physical representation of BTS's incredible career growth."
+        }
+      },
+      {
+        "title": {
+          "en": "Attend a Local Game"
+        },
+        "text": {
+          "en": "If you want to see the exact interior where SUGA performed but there are no concerts scheduled during your trip, check the local sports schedule! The arena is the home court for the Seoul Samsung Thunders professional basketball team from October to April, and tickets are usually easy to purchase."
+        }
+      },
+      {
+        "title": {
+          "en": "Pair with Hangang Park"
+        },
+        "text": {
+          "en": "The sports complex sits right on the edge of the Han River. After visiting the venue, take the pedestrian underpass directly to Jamsil Hangang Park for a relaxing riverside sunset walk or some convenience store ramen."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "ytId": "VPRLfV57hZQ",
+    "recreatedPhotos": [
+      "images/admin-upload-200-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "id": 201,
     "name": "Gwangju K-Pop Star Street (Chungjang-ro)",
     "group": "BTS",
-    "member": "JHope",
+    "member": "J-Hope",
     "country": "South Korea",
     "city": "Gwangju, Dong-gu",
     "category": "Landmark",
     "year": "2024",
-    "episode": "j-hope's hometown street, murals + \"Hope World\" message sculpture; final episode of Hope on the Street filmed here",
-    "episodeLink": "https://english.visitkorea.or.kr/svc/contents/infoBscView.do?menuSn=508&vcontsId=177161",
-    "address": "94 Chungjang-ro, Dong-gu, Gwangju",
+    "episode": "",
+    "episodeLink": "",
+    "address": "Chungjang-ro Area (specifically the alleys connecting to Geumnam-ro), Dong-gu, Gwangju",
     "lat": 35.1499,
     "lng": 126.9169,
     "img": "images/admin-upload-201-photo.jpg",
     "fullDescription": {
-      "en": "<p>This downtown Gwangju street was renovated into a K-pop landmark honoring the city's own stars, anchored by a \"Hope World\" mural and a message sculpture holding 21,800 fan notes to j-hope; his 2024 docuseries Hope on the Street closed its six episodes back here, reuniting him with Neuron, the dance crew he trained with before debuting.</p><p>Renovated into a K-pop landmark honoring the city's own stars, the street is anchored by a \"Hope World\" mural and a message sculpture holding 21,800 fan notes to j-hope. His 2024 docuseries Hope on the Street closed its six episodes back here, reuniting him with Neuron, the dance crew he trained with before debuting.</p>"
+      "en": "<p>Located in the heart of Gwangju’s bustling downtown district, the K-Pop Star Street (also known as K-Pop Star Alley) is a vibrant, pedestrian-friendly zone dedicated entirely to the city’s most famous musical exports. Gwangju has a proud history of producing some of South Korea's most talented dancers and idols, and this street celebrates that legacy with colorful murals, celebrity handprints, and interactive street art. It serves not only as a major tourist attraction but also as a powerful symbol of civic pride, inspiring the next generation of local youth pursuing the arts.</p><p>Renovated into a K-pop landmark honoring the city's own stars, the street is anchored by a massive \"Hope World\" mural and a beautiful message sculpture holding exactly 21,800 fan notes dedicated to j-hope (cleverly referencing his February 18th birthday). His 2024 docuseries Hope on the Street closed its six episodes back here, reuniting him with Neuron, the underground street dance crew he trained with before debuting. Dancing with his old crew in front of a monument built to celebrate his global success provided a deeply emotional, full-circle conclusion to his solo documentary.</p>"
     },
     "practicalInfo": [
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Open-air public street, free, best visited evening for the lit media facades."
-        }
-      },
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Geumnamno 4-ga Station, Exit 1, short walk."
+          "en": "Take the Gwangju Subway (Line 1) to Geumnamno 4(sa)-ga Station. Use Exit 1 or 2, and walk straight into the pedestrian shopping district. The street is clearly marked with large K-pop signage and star monuments."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a public street, it is open 24/7 and completely free to explore. It is beautifully illuminated at night, though visiting during the daytime is recommended to clearly see the details of the fan messages and murals."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The pedestrian street is fully paved, flat, and closed to heavy car traffic, making it highly accessible and comfortable for wheelchairs, strollers, and large groups."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Don't miss"
+          "en": "The 21,800 Messages Sculpture"
         },
         "text": {
-          "en": "The bench decorated with BTS song titles, which became a fan landmark after j-hope posted a proof-shot there himself."
+          "en": "Take your time viewing the massive HOPE sculpture. It is composed of thousands of real messages submitted by global fans. The sheer scale of the installation makes for a beautiful photo backdrop, especially when framed alongside the nearby \"Hope World\" mural."
         }
       },
       {
         "title": {
-          "en": "Best time"
+          "en": "Film a Dance Cover"
         },
         "text": {
-          "en": "Evening, for the lit media facades along the street."
+          "en": "If there was ever a place in Gwangju to film your own dance cover, this is it! The street is designed to celebrate performance, and you will often see young local dancers practicing or filming their routines exactly where j-hope and Neuron danced in the docuseries finale."
+        }
+      },
+      {
+        "title": {
+          "en": "Connect the Dots"
+        },
+        "text": {
+          "en": "This location pairs perfectly with Joy Dance Academy (covered earlier in this guide). You can easily walk between the two sites to trace the exact physical path j-hope took from being an ambitious young student to becoming a celebrated global icon."
         }
       }
     ],
@@ -9233,7 +9339,19 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "ytId": "",
     "tweetUrl": "https://x.com/taebokkiii/status/1494214270824828930",
-    "instagramUrl": ""
+    "instagramUrl": "",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-201-recreated-0.jpg"
+    ],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://english.visitkorea.or.kr/svc/contents/infoBscView.do?menuSn=508&vcontsId=177161"
   },
   {
     "id": 202,
@@ -9243,44 +9361,87 @@ window.STATIC_LOCATIONS = [
     "country": "USA",
     "city": "New York",
     "category": "Landmark",
-    "year": "2018-2021",
+    "year": "2018, 2019, 2020, 2021",
     "episode": "RM's three UNICEF Generation Unlimited / LOVE MYSELF speeches (Sept 24 2018, 2020, Sept 20 2021) — the \"Permission to Dance\" video was also filmed here",
-    "episodeLink": "https://www.youtube.com/watch?v=ZhJ-LAQ6e_Y",
+    "episodeLink": "",
     "ytId": "ZhJ-LAQ6e_Y",
-    "address": "405 E 42nd St, New York, NY 10017",
+    "address": "46th Street & 1st Avenue, New York, NY 10017, USA. (You must enter through the dedicated Visitor Check-in Office at 801 1st Avenue before proceeding to the security gate).",
     "lat": 40.7489,
     "lng": -73.968,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
+    "img": "images/admin-upload-202-photo.jpg",
     "fullDescription": {
-      "en": "<p>The United Nations Headquarters became an unlikely but deeply meaningful BTS location when RM addressed the General Assembly three times between 2018 and 2021, speaking on behalf of the group for the UNICEF Generation Unlimited and LOVE MYSELF campaigns — each speech built around the message \"speak yourself.\"</p><p>The site took on a different kind of significance again when BTS filmed part of the \"Permission to Dance\" music video there in 2021, dancing from the General Assembly Hall out to the gardens overlooking the East River — turning one of the world's most solemn diplomatic stages into the backdrop for one of their most joyful releases.</p>"
+      "en": "<p>Situated on the eastern shore of Manhattan along the East River, the United Nations Headquarters is the heart of global diplomacy. This sprawling, mid-century modernist complex is technically international territory, belonging to all member states. While it is primarily a place for world leaders to debate global security, climate change, and human rights within the iconic green-and-gold General Assembly Hall, it became a deeply meaningful, unlikely pilgrimage site for pop culture when it opened its doors to the world's biggest music group.</p><p>2018: In September 2018, BTS made history by addressing the United Nations General Assembly for the first time during the launch of UNICEF's Generation Unlimited campaign. Standing at the podium, RM delivered his profoundly moving \"Speak Yourself\" speech. Building upon the group's \"Love Myself\" campaign, he urged youth worldwide to find their voices and speak their truth, regardless of their background, skin color, or gender identity.</p><p>2020: During the height of the global COVID-19 pandemic, BTS returned to the 75th UN General Assembly—this time virtually. The members delivered a heartfelt, pre-recorded video message offering comfort and solidarity to a younger generation facing unprecedented isolation and uncertainty, famously concluding with the reassuring promise: \"Life goes on, let's live on.\"</p><p>2021: In September 2021, BTS returned physically to the UN Headquarters, now holding formal diplomatic titles as South Korea's \"Special Presidential Envoys for Future Generations and Culture.\" After delivering speeches on youth resilience and climate change, they broke the internet by unveiling a special performance video for \"Permission to Dance.\" The members started their choreography right at the podium of the grand General Assembly Hall, danced through the marble lobbies, and eventually transitioned out to the UN plaza overlooking the East River, flawlessly bridging the gap between global politics and joyful, universal pop music.</p>"
     },
     "practicalInfo": [
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Guided public tours of UN Headquarters are available (ticketed, ID required) — the General Assembly Hall itself may not always be accessible depending on the day's official proceedings."
-        }
-      },
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Grand Central–42nd St subway station, then a 10–15 minute walk east toward the East River."
+          "en": "Take the New York City Subway (Lines 4, 5, 6, 7, or the S shuttle) to Grand Central Terminal. From there, it is a brisk, scenic 15-minute walk east along 42nd Street toward the river."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Visitor Centre is generally open Monday through Friday from 9:00 AM to 5:00 PM. Guided tour tickets must be purchased in advance online (usually costing around $26 USD for adults). Walk-in tickets are extremely rare, so book weeks ahead of your trip."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a major international institution, the UN Headquarters is fully ADA-compliant and highly accessible. There are ramps, spacious elevators, and designated wheelchair access points throughout the entire tour route and the General Assembly Hall."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Rewatch first"
+          "en": "Book the Official Guided Tour"
         },
         "text": {
-          "en": "Re-watching RM's 2018 \"speak yourself\" speech and the \"Permission to Dance\" music video before visiting makes recognizing the exact spots (the Assembly Hall, the riverside gardens) much more rewarding."
+          "en": "You cannot simply walk into the United Nations. To see the legendary General Assembly Hall where RM delivered his speeches and where the group danced, you must book an official UN Guided Tour. If there are no high-level meetings taking place, the tour will take you directly into the iconic green hall!"
+        }
+      },
+      {
+        "title": {
+          "en": "The Plaza Photo Op"
+        },
+        "text": {
+          "en": "While you might not be able to dance freely across the official campus grounds like BTS did, the exterior of the building (specifically the visitor's plaza featuring the famous \"Non-Violence\" knotted gun sculpture) offers excellent opportunities to take photos with the towering glass Secretariat building behind you."
+        }
+      },
+      {
+        "title": {
+          "en": "Treat it Like an Airport"
+        },
+        "text": {
+          "en": "Security here is incredibly strict. You must bring a valid, government-issued passport to enter. Do not bring large backpacks or liquids, as you will have to pass through airport-style security screening before accessing the visitor's lobby."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-202-recreated-0.jpg",
+      "images/admin-upload-202-recreated-1.jpg"
+    ],
+    "officialLink": "https://www.un.org/visit",
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=9SmQOZWNyWE"
     ]
   },
   {
@@ -9292,36 +9453,88 @@ window.STATIC_LOCATIONS = [
     "city": "Castle Hill",
     "category": "Bon Voyage",
     "year": "2019",
-    "address": "Porters Ski Area Access Road, Castle Hill",
+    "address": "Great Alpine Highway (State Highway 73), Castle Hill, New Zealand. (Porter's Lodge is located just a few kilometers away on the same highway)",
     "lat": -43.2167,
     "lng": 171.7163,
-    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "img": "images/admin-upload-203-photo.jpg",
     "fullDescription": {
-      "en": "<p>Castle Hill is a vast limestone boulder field in the high country of Canterbury, its weathered rock formations scattered across open tussock grassland beneath the Craigieburn Range — one of the most photographed rock-climbing and bouldering spots in New Zealand. Porter's Lodge sits nearby, a mountain lodge built to serve the neighbouring Porters ski field, the kind of no-frills alpine base that road-trippers use to break up the drive across the South Island.</p><p>The group stopped here early in their Bon Voyage Season 4 road trip through the South Island, using the lodge as a rest point between the wide, empty landscapes that define this stretch of State Highway 73. It's a quieter, less staged moment than most of the season's headline activities — just seven people and a genuinely remote part of the country.</p>",
-      "fr": "<p>Castle Hill est un vaste champ de blocs de calcaire dans l'arrière-pays de Canterbury, ses formations rocheuses façonnées par l'érosion parsemant une prairie de tussack à ciel ouvert sous la chaîne des Craigieburn — l'un des sites d'escalade et de bloc les plus photographiés de Nouvelle-Zélande. Porter's Lodge se trouve à proximité, un lodge de montagne construit pour desservir le domaine skiable voisin de Porters, le genre de base alpine sans chichi qu'utilisent les voyageurs pour couper la traversée de l'île du Sud.</p><p>Le groupe s'y est arrêté au début de son road trip à travers l'île du Sud pour Bon Voyage Saison 4, utilisant le lodge comme point de pause entre les paysages vastes et vides qui caractérisent ce tronçon de la route nationale 73. C'est un moment plus discret, moins mis en scène que la plupart des activités phares de la saison — juste sept personnes dans une partie authentiquement isolée du pays.</p>"
+      "fr": "<p>Castle Hill est un vaste champ de blocs de calcaire dans l'arrière-pays de Canterbury, ses formations rocheuses façonnées par l'érosion parsemant une prairie de tussack à ciel ouvert sous la chaîne des Craigieburn — l'un des sites d'escalade et de bloc les plus photographiés de Nouvelle-Zélande. Porter's Lodge se trouve à proximité, un lodge de montagne construit pour desservir le domaine skiable voisin de Porters, le genre de base alpine sans chichi qu'utilisent les voyageurs pour couper la traversée de l'île du Sud.</p><p>Le groupe s'y est arrêté au début de son road trip à travers l'île du Sud pour Bon Voyage Saison 4, utilisant le lodge comme point de pause entre les paysages vastes et vides qui caractérisent ce tronçon de la route nationale 73. C'est un moment plus discret, moins mis en scène que la plupart des activités phares de la saison — juste sept personnes dans une partie authentiquement isolée du pays.</p>",
+      "en": "<p>Castle Hill (officially known as Kura Tawhiti Conservation Area) is a vast, otherworldly limestone boulder field located in the high country of Canterbury. Its weathered, giant rock formations are scattered across open tussock grassland beneath the towering Craigieburn Range, making it one of the most photographed rock-climbing and bouldering spots in New Zealand. Just a short drive away sits Porter's Lodge, a rustic mountain lodge originally built to serve the neighboring Porters ski field. Today, it functions as the quintessential, no-frills alpine base that road-trippers rely on to rest, warm up, and break up the long drive across the South Island's mountainous interior.</p><p>During episodes 1 and 2 of Bon Voyage Season 4, BTS parked their campervans to explore the majestic expanse of Castle Hill. The members were visibly in awe of the sheer scale of the landscape, running through the maze of giant limestone boulders and scrambling up the rocks to take sweeping, cinematic group photos against the panoramic mountain backdrop. It was a moment of pure, childlike exploration. Afterward, embracing the true South Island road-trip lifestyle, the rugged, cozy atmosphere of the nearby Porter's Lodge provided the perfect alpine rest stop to escape the biting mountain winds and refuel before continuing their journey toward Lake Tekapo.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Bring warm layers"
+          "en": "Dress for the Alpine Wind"
         },
         "text": {
-          "en": "Castle Hill sits at altitude in an exposed high-country basin — weather changes fast, even in summer, so pack layers regardless of the season."
+          "en": "Do not let a sunny day fool you! Castle Hill is located in an exposed alpine pass, meaning the wind can be incredibly fierce and freezing year-round. Channel your inner BTS and make sure you bring a thick, zip-up windbreaker (like their famous Kathmandu jackets) before stepping out of your car."
         }
       },
       {
         "title": {
-          "en": "Stick to marked areas"
+          "en": "The Epic Boulder Photo"
         },
         "text": {
-          "en": "The boulder field is on private/leased land with public walking access on marked tracks only — respect the roped-off conservation areas around fragile rock formations."
+          "en": "You do not need to be a professional rock climber to recreate their photos. There are dozens of easily accessible, low-lying boulders near the main path. Safely climb atop one of the flat rocks, have your photographer stand lower on the grass, and shoot upward to capture the dramatic sky and mountains behind you."
+        }
+      },
+      {
+        "title": {
+          "en": "Warm Up at Porter's Lodge"
+        },
+        "text": {
+          "en": "After spending an hour battling the wind at the boulder field, drive just a few minutes down the road to Porter's Lodge. Grab a hot coffee, a hot chocolate, or a hearty plate of fries by the fireplace. It is the authentic Kiwi road-tripper experience."
         }
       }
     ],
     "directions": {
       "en": "Castle Hill sits directly on State Highway 73 between Christchurch and Arthur's Pass, roughly a 90-minute drive from Christchurch.",
       "fr": "Castle Hill se trouve directement sur la route nationale 73 entre Christchurch et Arthur's Pass, à environ 1h30 de route de Christchurch."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "Fc63hgdzTJc",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Castle Hill is located about a 1.5-hour drive west of Christchurch. You must drive a rental car or campervan along the spectacularly scenic State Highway 73 (Great Alpine Highway). The parking lot is located directly off the main highway, making it an incredibly easy stop."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Kura Tawhiti / Castle Hill conservation area is a public natural site, open 24/7 with completely free admission. Porter's Lodge operates daily, usually from early morning until late evening for food and drinks."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The initial walking track from the parking lot to the edge of the boulder field is relatively flat, well-formed, and easy to navigate for strollers and most visitors. However, exploring deeper into the site requires walking on uneven, grassy terrain and navigating steep, rocky slopes, which is not accessible for wheelchairs."
+        }
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-203-recreated-0.jpg"
+    ],
+    "episodeLink": "https://weverse.io/bts/media/1-6451072",
+    "officialLink": "https://www.booking.com/hotel/nz/porters-alpine-lodge.en.html?group_adults=1;no_rooms=1&aid=818288&label=affnetcj-11916287_pub-5108952_site-101543398_pname-Go+Travel+Un+Limited_clkid-df64dd0df2ee4feabe67cc7f3-673243_cjevent-6f169b40b47611f1835b011c0a82b832&utm_source=affnetcj&utm_medium=bannerindex&utm_campaign=xx&utm_term=index-11916287&chal_t=1789855619558&force_referer=https%3A%2F%2Fwww.flyhoneystars.com%2F"
   },
   {
     "id": 204,
@@ -9332,10 +9545,10 @@ window.STATIC_LOCATIONS = [
     "city": "Christchurch",
     "category": "Bon Voyage",
     "year": "2019",
-    "address": "Christchurch",
+    "address": "Speight's Ale House (Tower Junction branch), 2 Troup Drive, Riccarton, Christchurch 8011",
     "lat": -43.5321,
     "lng": 172.6362,
-    "img": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600",
+    "img": "images/admin-upload-204-photo.jpg",
     "fullDescription": {
       "fr": "<p>Speight's est l'une des brasseries les plus connues de Nouvelle-Zélande, fondée à Dunedin en 1876 et construite autour d'une identité de \"Southern Man\" simple et sans prétention. Sa chaîne d'Ale House sert une cuisine de pub kiwi classique — tourtes à la viande, fish and chips, steak — accompagnée des bières maison de la brasserie, et fait office d'étape fiable et décontractée dans la plupart des grandes villes de l'île du Sud.</p><p>Le groupe a déjeuné dans l'un des Speight's Ale House de Christchurch le premier jour de son road trip en Nouvelle-Zélande, un repas de pub simple avant de continuer plus loin dans l'arrière-pays de l'île du Sud.</p>",
       "en": "<p>Speight's is one of New Zealand's best-known and most beloved breweries. Founded further south in Dunedin in 1876, the brand was built around a hearty, unpretentious \"Southern Man\" identity that celebrates the rugged outdoor lifestyle of the South Island. Today, its Ale House chain serves as a reliable, welcoming, and casual stop in most major New Zealand towns. The menu is heavily focused on classic, filling Kiwi pub food—think savory meat pies, crispy fish and chips, and thick steaks—served alongside the brewery's own signature tap beers.</p><p>When BTS traveled to New Zealand for Bon Voyage Season 4, they landed in Christchurch to kick off their massive campervan road trip. Navigating a foreign country, driving massive RVs, and adjusting to the chilly alpine air required serious energy. A stop at a classic Kiwi pub like Speight's Ale House provided the perfect, hearty welcome to the South Island. The members have always loved diving into large, shared meals full of meat and fries, and this environment perfectly matched the relaxed, brotherhood-focused vibe of the entire Bon Voyage series. For fans, visiting a Speight's Ale House is the best way to taste the everyday, authentic New Zealand pub culture that fueled the group's adventures.</p>"
@@ -9372,7 +9585,6 @@ window.STATIC_LOCATIONS = [
     },
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "",
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
@@ -9380,13 +9592,9 @@ window.STATIC_LOCATIONS = [
     "ytId": "DyywoYyr-2w",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
     "tweetUrls": [],
-    "recreatedPhoto": "",
     "practicalInfo": [
       {
         "title": {
@@ -9412,7 +9620,14 @@ window.STATIC_LOCATIONS = [
           "en": "Most Speight's Ale Houses, including the central Christchurch locations, are located on the ground floor with wide double doors, spacious dining rooms, and flat surfaces, making them highly accessible for wheelchair users and families with strollers."
         }
       }
-    ]
+    ],
+    "officialLink": "https://www.speightstowerjunction.co.nz/",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-204-recreated-0.jpg",
+      "images/admin-upload-204-recreated-1.jpg"
+    ],
+    "episodeLink": "https://weverse.io/bts/media/1-6451220"
   },
   {
     "id": 205,
@@ -10833,65 +11048,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
-  },
-  {
-    "id": "new-37Ztk5NoqShGM7H5EFlX",
-    "name": "Kaikoura Coast Highway",
-    "group": "BTS",
-    "member": "RM, Jin, Suga, J-Hope, Jimin, V, Jungkook",
-    "country": "New Zealand",
-    "city": "Kaikoura",
-    "category": "Landmarks",
-    "year": "2019",
-    "address": "Kaikoura, Canterbury 7300, New Zealand",
-    "lat": -42.4008,
-    "lng": 173.6814,
-    "img": "images/admin-upload-new-37Ztk5NoqShGM7H5EFlX-photo.jpg",
-    "addedAt": 1789415973715,
-    "tiktokUrls": [],
-    "imgCredit": "Frando / CC BY-2.5",
-    "instagramUrls": [],
-    "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Running along New Zealand's dramatic South Island coastline, the Kaikōura Coast Highway (State Highway 1) is celebrated as one of the world's most breathtaking drives. Flanked by the towering, snow-dusted peaks of the Seaward Kaikōura Range on one side and the deep blue expanse of the Pacific Ocean on the other, this legendary stretch of road features rugged cliffs, rocky shorelines, and thriving marine habitats. While BTS did not film an official season of Bon Voyage or a reality show directly on this specific coastal corridor (their South Island routes focused heavily on Christchurch, Mount Cook, and Queenstown), the highway is frequently explored by ARMYs mapping out extended New Zealand travel itineraries inspired by the members' deep appreciation for the country’s majestic landscape.</p><p>While the members spent their official New Zealand filming schedule further south and inland during BTS Bon Voyage Season 4, the wider South Island road-trip culture is heavily intertwined with the group's legacy. Fans touring the country often include the Kaikōura Coast Highway as a scenic extension of a New Zealand pilgrimage, echoing the members' love for open-road adventures, nature photography, and breathtaking natural backdrops.</p>"
-    },
-    "tiktokUrl": "",
-    "ytId": "cv01XJQFQ1k",
-    "facebookUrl": "",
-    "tweetUrl": "",
-    "episodeLink": "https://www.koreaherald.com/article/2160618",
-    "tipsList": [
-      {
-        "title": "Best Time to Visit:",
-        "text": "Drive the highway between October and April to enjoy peak summer weather, clear coastal visibility, and safer road conditions."
-      },
-      {
-        "title": "Wildlife Stops:",
-        "text": "Make a mandatory stop at the Ohau Point Seal Colony along the highway to spot wild New Zealand fur seals lounging lazily on the rocks or playfully swimming in the coastal pools."
-      },
-      {
-        "title": "Photography Spots:",
-        "text": "Pull over only at designated public coastal viewpoints or rest areas. The contrast of the sheer mountain walls plunging straight into the ocean provides a stunning, cinematic frame for landscape photography."
-      },
-      {
-        "title": "Practical Safety Note:",
-        "text": "Check the official NZTA Journey Planner before setting off, as weather events and historical seismic activity in the region can occasionally impact coastal road conditions."
-      }
-    ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.kaikoura.co.nz",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Drive along State Highway 1 northbound from Christchurch (approx. 2.5 hours) for stunning coastal views throughout the drive."
-        }
-      }
-    ],
-    "tweetUrls": []
   },
   {
     "group": "BTS",
