@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-20T12:34:27.453Z.
+// Généré le 2026-09-20T16:56:08.247Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -448,29 +448,37 @@ window.STATIC_LOCATIONS = [
     "category": "Fashion",
     "year": "2026",
     "ytId": "1TdxCtgX53w",
-    "address": "63 Rue de Monceau, Paris",
+    "address": "63 Rue de Monceau, 75008 Paris, France",
     "lat": 48.8795,
     "lng": 2.3117,
-    "img": "https://img.youtube.com/vi/1TdxCtgX53w/hqdefault.jpg",
+    "img": "images/admin-upload-7-photo.jpg",
     "fullDescription": {
-      "en": "<p>Overlooking Parc Monceau, this preserved early-20th-century private mansion houses an extraordinary collection of 18th-century French decorative arts, its rooms kept exactly as they were when the Camondo family lived there.</p><p>The museum's opulent, perfectly preserved interiors made it a striking setting for a high-fashion appearance tied to Jimin, and the location has since drawn fans interested in both music and fine French heritage architecture.</p>",
-      "fr": "<p>Donnant sur le Parc Monceau, cet hôtel particulier du début du XXe siècle parfaitement préservé abrite une collection exceptionnelle d'arts décoratifs français du XVIIIe siècle, ses pièces étant conservées telles qu'elles étaient du vivant de la famille Camondo.</p><p>Les intérieurs somptueux et intacts du musée en ont fait un décor saisissant pour une apparition mode haut de gamme liée à Jimin, et le lieu attire depuis des fans intéressés à la fois par la musique et par le patrimoine architectural français.</p>"
+      "fr": "<p>Donnant sur le Parc Monceau, cet hôtel particulier du début du XXe siècle parfaitement préservé abrite une collection exceptionnelle d'arts décoratifs français du XVIIIe siècle, ses pièces étant conservées telles qu'elles étaient du vivant de la famille Camondo.</p><p>Les intérieurs somptueux et intacts du musée en ont fait un décor saisissant pour une apparition mode haut de gamme liée à Jimin, et le lieu attire depuis des fans intéressés à la fois par la musique et par le patrimoine architectural français.</p>",
+      "en": "<p>The Musée Nissim de Camondo is a breathtaking, tragic, and flawlessly preserved jewel of Parisian history. Located in the 8th arrondissement and overlooking the lush, romantic Parc Monceau, this elegant private mansion was built in 1911 by Count Moïse de Camondo. He designed it specifically to house his extraordinary, world-class collection of 18th-century French furniture and decorative arts. Upon his death, he bequeathed the house and its contents to the French state in memory of his son, Nissim, who died in World War I, with the strict condition that nothing inside could ever be moved or changed. Today, the rooms remain exactly as they were a century ago, offering an incredibly intimate glimpse into the grand Parisian lifestyle of the Belle Époque.</p><p>During his time in Paris in 2026, Jimin stepped away from the intense spotlight and frenetic energy of the city to visit this quiet, historically rich museum. Known for his own elegant aesthetic and deep appreciation for meticulous craftsmanship—traits that perfectly align with his role as a global ambassador for heritage luxury houses like Dior and Tiffany &amp; Co.—Jimin's visit to the Musée Nissim de Camondo was a moment of profound cultural immersion. Wandering through the perfectly preserved salons, dining rooms, and private apartments, he was able to experience the delicate artistry and timeless beauty of 18th-century France in an atmosphere that feels much more like a private home than a traditional museum.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Book a timed ticket"
+          "en": "A Walk in Parc Monceau"
         },
         "text": {
-          "en": "The museum limits daily visitor numbers to protect the period rooms — buying a timed ticket online in advance is strongly recommended."
+          "en": "The mansion was deliberately built to overlook Parc Monceau. After exploring the museum's interiors, exit the gates and take a leisurely stroll through this stunning park. With its classic statues, weeping willows, and ancient ruins, it is the perfect place to reflect on the beauty of the museum, just as Jimin would."
         }
       },
       {
         "title": {
-          "en": "Pair with Parc Monceau"
+          "en": "Focus on the Details"
         },
         "text": {
-          "en": "The museum overlooks Parc Monceau — a quiet park visit before or after makes a natural extension of the stop."
+          "en": "The beauty of this museum lies in its breathtaking craftsmanship. Take your time to closely admire the intricate wood paneling, the Sèvres porcelain, and the masterful tapestry work. It is exactly this kind of artisanal dedication that draws artists and fashion icons to the mansion."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the Silence"
+        },
+        "text": {
+          "en": "Because it is a preserved home rather than a massive gallery, the museum maintains a very quiet, almost reverent atmosphere. It is an ideal spot for a peaceful, introverted afternoon away from the crowds of the Champs-Élysées."
         }
       }
     ],
@@ -481,7 +489,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The museum limits daily visitor numbers to protect the period rooms — buying a timed ticket online in advance is strongly recommended.",
       "fr": "Le musée limite le nombre de visiteurs quotidiens pour protéger ses pièces d'époque — il est vivement recommandé d'acheter un billet horodaté en ligne à l'avance."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "https://www.instagram.com/p/DaAi3K-AudY/?img_index=6&stkn=Nm9wbWJ0em9paXNx",
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Paris Métro (Line 2) to Monceau or Villiers stations. Alternatively, Line 3 also connects to Villiers. From the station, it is a very short, scenic 5-minute walk to the museum's grand entrance gates."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The museum is generally open Wednesday through Sunday from 10:00 AM to 5:30 PM (closed on Mondays and Tuesdays). Adult admission is typically around €12. It is highly recommended to book your ticket online in advance."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a historic early-20th-century mansion, accessibility is somewhat limited. While the ground floor is accessible, reaching the upper private apartments and the lower kitchen levels requires navigating historic staircases, as modern elevators could not be installed without altering the preserved architecture."
+        }
+      }
+    ],
+    "officialLink": "https://madparis.fr/Musee-Nissim-de-Camondo-125",
+    "episodeLink": "https://wwd.com/fashion-news/fashion-scoops/jimin-dior-morning-show-paris-fashion-heatwave-1239028935/",
+    "recreatedPhotos": [
+      "images/admin-upload-7-recreated-0.jpg",
+      "images/admin-upload-7-recreated-1.jpg"
+    ]
   },
   {
     "id": 8,
@@ -577,35 +629,43 @@ window.STATIC_LOCATIONS = [
     "id": 10,
     "name": "Palais de Tokyo",
     "group": "BTS",
-    "member": "Jimin",
+    "member": "Jimin, V",
     "country": "France",
     "city": "Paris",
     "category": "Museum",
-    "year": "2019",
-    "ytId": "PalaisTokyo1",
+    "year": "2019, 2022",
+    "ytId": "",
     "address": "13 Av. du Président Wilson, Paris",
     "lat": 48.8643,
     "lng": 2.2965,
     "img": "images/admin-upload-10-photo.jpg",
     "fullDescription": {
-      "en": "<p>One of Europe's largest spaces dedicated to contemporary art, Palais de Tokyo occupies a monumental 1937 Art Deco building facing the Seine, known for its raw concrete interiors and constantly rotating, boundary-pushing exhibitions.</p><p>Jimin's appearance here tied into a fashion and art moment that fit the venue's avant-garde identity perfectly, and its industrial-chic architecture has since become a favourite backdrop for fans' own photos.</p>",
-      "fr": "<p>L'un des plus grands espaces d'Europe dédiés à l'art contemporain, le Palais de Tokyo occupe un bâtiment monumental de style Art déco datant de 1937, face à la Seine, reconnu pour ses intérieurs en béton brut et ses expositions sans cesse renouvelées et avant-gardistes.</p><p>L'apparition de Jimin ici s'inscrivait dans un moment mode et art parfaitement en phase avec l'identité avant-gardiste du lieu, et son architecture industrielle-chic est depuis devenue un décor de prédilection pour les photos des fans.</p>"
+      "fr": "<p>L'un des plus grands espaces d'Europe dédiés à l'art contemporain, le Palais de Tokyo occupe un bâtiment monumental de style Art déco datant de 1937, face à la Seine, reconnu pour ses intérieurs en béton brut et ses expositions sans cesse renouvelées et avant-gardistes.</p><p>L'apparition de Jimin ici s'inscrivait dans un moment mode et art parfaitement en phase avec l'identité avant-gardiste du lieu, et son architecture industrielle-chic est depuis devenue un décor de prédilection pour les photos des fans.</p>",
+      "en": "<p>One of Europe's largest spaces dedicated to contemporary art, Palais de Tokyo occupies a monumental 1937 Art Deco building facing the Seine. Unlike traditional museums, it is famous for its raw, stripped-back concrete interiors and constantly rotating, boundary-pushing exhibitions. It serves as a rebellious, highly creative hub for modern artists and Parisian youth, featuring expansive galleries, trendy restaurants, and massive outdoor staircases that offer stunning views of the Eiffel Tower.</p><p>2019: In the fall of 2019, during BTS's first-ever official extended period of rest, Jimin chose Paris as one of his personal vacation destinations. Breaking away from intense global tour schedules, he explored the French capital like a regular tourist—riding the metro, wandering the streets, and documenting his quiet trip in a vlog for ARMYs. One of the standout locations he visited and photographed was the Palais de Tokyo. The building's raw, artistic atmosphere and its monumental concrete staircases served as the perfect, edgy backdrop for his relaxed, chic Parisian holiday photos, showcasing Jimin effortlessly blending into the city's modern art scene.</p><p>2022, V: On June 26, 2022, the atmosphere at the Palais de Tokyo was anything but quiet. The museum transformed into the roaring epicenter of Paris Fashion Week as it hosted the CELINE Men's Summer 2023 runway show by Hedi Slimane. V (Taehyung) made a show-stopping appearance, arriving alongside his close friend Park Bo-gum and BLACKPINK's Lisa. His presence drew unprecedented, deafening crowds of fans who gathered all around the museum's exterior just to catch a glimpse of him. Wearing a striking red leather jacket and a sequined top, V's appearance at the Palais officially cemented his status as a global fashion icon and marked a major milestone in his solo career.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Go in the evening"
+          "en": "The Staircase Photo Op"
         },
         "text": {
-          "en": "The building stays open late most evenings — an evening visit avoids the daytime museum crowds entirely."
+          "en": "To recreate Jimin's casual vacation photos, head to the exterior staircases of the Palais de Tokyo. The sweeping concrete steps paired with the Parisian architecture make for a perfect, effortlessly cool photo."
         }
       },
       {
         "title": {
-          "en": "Look up, not just around"
+          "en": "A Late-Night Art Run"
         },
         "text": {
-          "en": "The raw concrete interiors of the 1937 Art Deco building are as much a draw as whatever exhibition is currently on display."
+          "en": "Unlike most Parisian museums that close by 6:00 PM, Palais de Tokyo is famous for staying open until midnight! It is the perfect place to visit after dinner if you want to experience the city's contemporary art scene without feeling rushed."
+        }
+      },
+      {
+        "title": {
+          "en": "Eiffel Tower Views"
+        },
+        "text": {
+          "en": "The esplanade situated between the Palais de Tokyo and the neighboring Musée d'Art Moderne offers one of the most stunning, unobstructed views of the Eiffel Tower across the river. It is a fantastic spot to relax after your museum visit."
         }
       }
     ],
@@ -620,22 +680,50 @@ window.STATIC_LOCATIONS = [
     "pinterestUrls": [],
     "tiktokUrls": [],
     "pinterestUrl": "",
-    "instagramUrls": [],
     "youtubeUrls": [],
     "tiktokUrl": "",
     "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [
-      "images/admin-upload-10-recreated-0.jpg",
-      "images/admin-upload-10-recreated-1.jpg"
-    ],
     "episodeLink": "",
     "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "",
-    "practicalInfo": [],
     "tweetUrls": [],
-    "imgCredit": "Screentostreet"
+    "imgCredit": "Screentostreet",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The museum is easily accessible via the Paris Métro. Take Line 9 to Iéna station or Alma-Marceau station. Both are just a short, 5-minute walk from the main entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from 12:00 PM (noon) to 12:00 AM (midnight), closed on Tuesdays. General admission tickets for the exhibitions cost around €12. The exterior terraces and staircases are public and free to access 24/7."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum is fully accessible, featuring ramps, large elevators to all exhibition floors, and accessible facilities. However, the exterior public staircases connecting down to the river level can be steep, so wheelchair users should stick to the main entrances on Avenue du Président Wilson."
+        }
+      }
+    ],
+    "tweetUrl": "https://x.com/bts_twt/status/1179694702217420800?s=46",
+    "officialLink": "https://palaisdetokyo.com/",
+    "instagramUrl": "https://www.instagram.com/p/CfT5A5kv_jI/?img_index=5&stkn=MjBya3RuaTVuN2I3",
+    "instagramUrls": [
+      "https://www.instagram.com/p/Cfyf_Kfhd98/"
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-10-recreated-0.jpg",
+      "images/admin-upload-10-recreated-1.jpg",
+      "images/admin-upload-10-recreated-2.jpg"
+    ]
   },
   {
     "id": 11,
@@ -8685,7 +8773,7 @@ window.STATIC_LOCATIONS = [
     "id": 191,
     "name": "Leeum Museum of Art",
     "group": "BTS",
-    "member": "Namjoon",
+    "member": "RM",
     "country": "South Korea",
     "city": "Seoul",
     "category": "Museum",
@@ -8694,54 +8782,84 @@ window.STATIC_LOCATIONS = [
     "address": "60-16 Itaewon-ro 55-gil, Yongsan-gu, Seoul",
     "lat": 37.5384,
     "lng": 126.9995,
-    "img": "https://images.unsplash.com/photo-1554907984-15263bfd63bd?w=600",
+    "img": "images/admin-upload-191-photo.jpg",
     "fullDescription": {
-      "en": "<p>RM's frequent visits to Leeum — including the 2019 David Hockney solo show — are credited by Korean media with sparking the \"Namjoon Tour\", where fans retrace the galleries and museums he posts about on social media.</p><p>Officially recognized by South Korea's tourism board: VisitKorea's \"RM's Pick: Seoul Art Tour\" itinerary names Leeum among the five key stops on his art trail, alongside SeMA, Gana Art Center and the National Museum of Korea.</p>",
-      "fr": "<p>Les visites fréquentes de RM au Leeum — dont l'exposition personnelle de David Hockney en 2019 — sont créditées par les médias coréens d'avoir lancé le « Namjoon Tour », où les fans refont le parcours des galeries et musées qu'il partage sur les réseaux sociaux.</p><p>Reconnu officiellement par l'office du tourisme sud-coréen : l'itinéraire « RM's Pick: Seoul Art Tour » de VisitKorea cite le Leeum parmi les cinq étapes clés de son parcours artistique, aux côtés du SeMA, du Gana Art Center et du Musée national de Corée.</p>"
+      "fr": "<p>Les visites fréquentes de RM au Leeum — dont l'exposition personnelle de David Hockney en 2019 — sont créditées par les médias coréens d'avoir lancé le « Namjoon Tour », où les fans refont le parcours des galeries et musées qu'il partage sur les réseaux sociaux.</p><p>Reconnu officiellement par l'office du tourisme sud-coréen : l'itinéraire « RM's Pick: Seoul Art Tour » de VisitKorea cite le Leeum parmi les cinq étapes clés de son parcours artistique, aux côtés du SeMA, du Gana Art Center et du Musée national de Corée.</p>",
+      "en": "<p>Operated by the Samsung Foundation of Culture, the Leeum Museum of Art is one of South Korea's most prestigious and architecturally stunning art institutions. Tucked away in the upscale, quiet residential hills of the Hannam-dong neighborhood, the museum complex was designed by a trio of world-renowned architects (Mario Botta, Jean Nouvel, and Rem Koolhaas). It houses an extraordinary, world-class collection that seamlessly bridges ancient traditional Korean antiquities and cutting-edge international contemporary art, making it a cornerstone of Seoul's cultural landscape.</p><p>RM's deep, well-documented love for fine art has had a massive cultural impact, and the Leeum Museum of Art is widely considered the ultimate epicenter of this phenomenon. His frequent, thoughtful visits here are credited by Korean media with officially sparking the \"Namjoon Tour\"—a beautiful trend where thousands of fans passionately retrace his steps to experience the exact galleries and installations he posts about on social media.</p><p>2019: The concept of the \"Namjoon Tour\" truly exploded in the public eye during his visit to the museum's massive David Hockney solo show in 2019. By sharing his quiet moments of contemplation in front of Hockney's vibrant works, RM proved that a museum trip could be just as engaging for his global fanbase as a music show. This visit established Leeum as the very first mandatory pilgrimage site for art-loving ARMYs.</p><p>2021-2023: Over the years, Leeum has become RM's regular cultural sanctuary. His visits reflect a deep, evolving curriculum of both traditional Korean heritage and avant-garde installations. He has quietly attended a staggering number of the museum's shows, including Dust, Beyond_, and Lee Bul: From 1998 to Now. In 2023 alone, he highlighted the spectacular Joseon White Porcelain exhibition—showcasing his profound love for ancient Korean ceramics—as well as Suki Seokyeong Kang's acclaimed contemporary solo exhibition. By continually documenting these visits, RM has single-handedly introduced millions of fans to the vast timeline of Korean art history.</p><p>2024: RM's dedication to \"Namjooning\" never faded, even when his schedule drastically changed. In early 2024, while actively serving in the South Korean military, fans spotted RM utilizing his leave to visit the Leeum Museum of Art once again. This time, he was there to experience \"VOICES,\" a sprawling, sensory exhibition by French contemporary artist Philippe Parreno. Seeing him prioritize an art exhibition during his precious military downtime beautifully reinforced how essential museums are to his personal well-being.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Don't rush"
+          "en": "Embrace the Art of"
         },
         "text": {
-          "en": "The three museum buildings each have a distinct architectural identity; budget at least 2 hours."
+          "en": "Don't just rush through the halls to take photos! \"Namjooning\" is about taking your time, reflecting, and appreciating the art and the quiet atmosphere. Spend a slow afternoon wandering the galleries at your own pace, and bring a notebook or a sketchbook just like he often does."
         }
       },
       {
         "title": {
-          "en": "Audio guide"
+          "en": "Explore the Architecture"
         },
         "text": {
-          "en": "Highly recommended; free English guided tours run weekends at 3pm."
+          "en": "The museum itself is a masterpiece. Take time to appreciate Mario Botta's terracotta Museum 1 (housing traditional art) and Jean Nouvel's rusted stainless steel Museum 2 (housing contemporary art). The outdoor sculpture garden is also a breathtaking photo spot."
+        }
+      },
+      {
+        "title": {
+          "en": "Seek Out the Permanent Collection"
+        },
+        "text": {
+          "en": "Beyond the temporary shows RM attended, the museum's permanent collection houses works by artists he deeply admires, including the Korean monochrome master Yun Hyong-keun, Kim Whanki, and Mark Rothko."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Closed Mondays; timed-entry tickets recommended in advance, especially on weekends."
-        }
-      },
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "Three connected buildings (Mario Botta, Jean Nouvel, Rem Koolhaas) housing traditional Korean art, modern/contemporary art, and an outdoor sculpture garden."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Hangangjin Station (Line 6), Exit 1, short uphill walk."
+          "en": "Take Seoul Subway Line 6 to Hangangjin Station. Use Exit 1 and walk straight for about 5 minutes, then turn right up the hill into the Hannam-dong residential area following the clearly marked museum signs."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open Tuesday to Sunday from 10:00 AM to 6:00 PM (closed on Mondays). General admission to the permanent collection is often free, but special exhibitions require paid tickets (usually around 15,000 to 18,000 KRW). Regardless of whether it is free or paid, advance online reservations are highly recommended."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a top-tier modern institution, the museum is highly accessible. It features smooth ramps, spacious glass elevators, and flat surfaces throughout all exhibition halls, making it incredibly comfortable and easy to navigate for wheelchair users and visitors with strollers."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-191-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.leeumhoam.org/",
+    "tweetUrl": "https://x.com/setiogi/status/1847188474115326244?s=46",
+    "tweetUrls": [
+      "https://x.com/setiogi/status/1979904283593035873?s=46",
+      "https://x.com/knjssource/status/1731975783306952811?s=46",
+      "https://x.com/setiogi/status/1637404061652725762?s=46",
+      "https://x.com/setiogi/status/1773575771908436248?s=46"
     ]
   },
   {
@@ -10949,6 +11067,94 @@ window.STATIC_LOCATIONS = [
         },
         "text": {
           "en": "The pedestrian paths on both sides of the stream are flat and paved. Wheelchair and stroller ramps are available at regular intervals to access the street level from the waterway (though crossing the water via the stepping stones is not accessible)."
+        }
+      }
+    ]
+  },
+  {
+    "id": "new-0oN3K5qtqaLdvkoaEWER",
+    "name": "Hotel Le Bristol Paris",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Hotel",
+    "year": "2026",
+    "address": "112 Rue du Faubourg Saint-Honoré, 75008 Paris, France",
+    "lat": 48.8718,
+    "lng": 2.3142,
+    "img": "images/admin-upload-new-0oN3K5qtqaLdvkoaEWER-photo.jpg",
+    "addedAt": 1789916911522,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "https://www.instagram.com/p/DbFz2PfE_cB/?img_index=14&stkn=MWZkczl0c2dsbzgydg==",
+    "officialLink": "https://www.oetkercollection.com/hotels/le-bristol-paris/",
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The hotel is located in the heart of the 8th arrondissement. Take the Paris Métro (Line 9 or 13) to Miromesnil station, which is a very short, scenic 3-minute walk away. Alternatively, Franklin D. Roosevelt (Line 1) is a 10-minute walk through the luxury district."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The hotel lobbies and restaurants are open daily, but you must have a reservation to dine or have tea. Afternoon Tea at Café Antonia typically runs from 3:00 PM to 6:00 PM and costs around €75 to €90 per person. Always book well in advance."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a world-class luxury palace, Le Bristol provides impeccable accessibility. The main entrance on Faubourg Saint-Honoré, the ground-floor restaurants, and the courtyard garden are perfectly flat and fully accommodating for wheelchair users and strollers, with dedicated staff available to assist 24/7."
+        }
+      }
+    ],
+    "ytId": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-0oN3K5qtqaLdvkoaEWER-recreated-0.jpg"
+    ],
+    "imgCredit": "Screentostreet",
+    "fullDescription": {
+      "en": "<p>Hotel Le Bristol Paris is an iconic, ultra-luxury palace hotel located on the prestigious Rue du Faubourg Saint-Honoré in the city's 8th arrondissement. First opened in 1925 during the Roaring Twenties, this historic estate is globally renowned for its flawless classic French elegance, its three-star Michelin gastronomy, and its exquisite, incredibly rare private courtyard garden. For nearly a century, Le Bristol has served as a heavily guarded, favorite sanctuary for international royalty, global icons, and world-class artists seeking absolute discretion and Parisian perfection.</p><p>V's love affair with Paris and its romantic, vintage aesthetics is deeply tied to his well-documented love for the film Midnight in Paris. Back in 2019, Taehyung famously spent his free time in the city embarking on a dedicated pilgrimage, visiting and photographing various filming locations from the movie. His stay at Hotel Le Bristol during the Parisian leg of the 2026 Arirang tour was the ultimate continuation of this cinematic journey—the hotel famously served as the on-screen residence for the movie's main characters! While the tour itself brought intense energy, massive crowds, and spectacular stadium performances, Le Bristol provided the perfect contrasting sanctuary. Stepping away from the roar of the concerts, V was able to recharge by immersing himself directly into his favorite fictional universe, surrounded by the hotel's timeless, 1920s elegance.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Experience the Elegance (Without the Room Rate)"
+        },
+        "text": {
+          "en": "Booking a suite at Le Bristol costs thousands of euros per night, but you can still experience the magic! Book a reservation for the legendary \"Tea Time\" at Café Antonia inside the hotel. It is a splurge, but enjoying delicate French pastries in the same lavish environment V relaxed in makes for an unforgettable afternoon."
+        }
+      },
+      {
+        "title": {
+          "en": "The Midnight in Paris Walk"
+        },
+        "text": {
+          "en": "Since you are already at one of the film's major locations, follow V's 2019 itinerary! Put on a chic, vintage outfit, admire the facade of Le Bristol, and then take a romantic walk through Paris at night, channeling that exact cinematic nostalgia that Taehyung loves so much."
+        }
+      },
+      {
+        "title": {
+          "en": "Meet the Resident Cat"
+        },
+        "text": {
+          "en": "Keep an eye out for Socrate, the beautiful Birman cat who permanently lives at the hotel! Much like V's deep love for animals (and his famous Pomeranian, Yeontan), Le Bristol's feline mascot roams the lobbies and gardens freely, adding a surprisingly cozy touch to the grand palace."
         }
       }
     ]
