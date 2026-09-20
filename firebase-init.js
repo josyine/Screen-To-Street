@@ -1225,7 +1225,13 @@ window.approveLocationSubmission = async function (submission) {
         // "Location submissions" — voir renderCard() dans admin.html) manquait ici : la
         // carte pouvait déjà écrire sub.recreatedPhoto, mais Approve ne le republiait
         // jamais faute d'être dans cette liste.
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'youtubeUrls'];
+        // BUG corrigé (demande du 20/09/2026, trouvé en corrigeant le même symptôme pour
+        // YouTube) : pinterestUrl/pinterestUrls manquaient ici alors que tous les autres
+        // réseaux (tweet/instagram/facebook/tiktok, principal + "en plus") y sont bien —
+        // une épingle Pinterest saisie sur une NOUVELLE soumission (pas une correction d'un
+        // lieu déjà publié, qui passe par adminUpdateLocationContent() sans cette liste
+        // fixe) était donc silencieusement ignorée à l'Approve, jamais republiée.
+        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'pinterestUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'pinterestUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), resolveDeleteMarkers(stripUndefinedDeep(contentDoc)), { merge: true });
