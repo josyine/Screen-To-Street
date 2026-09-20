@@ -1471,6 +1471,44 @@ window.fetchAllRecreatedPhotos = async function () {
     }
 };
 
+// Reconstruction ponctuelle de l'index (demande du 20/09/2026, "Mei's pictures n'apparaissent
+// ni sur ordinateur ni sur mobile") — même symptôme, même cause que
+// window.adminBackfillFeedPosts() plus haut : locationPhotos/ ne couvre que les écritures
+// FAITES APRÈS le correctif précédent (syncLocationPhotosIndex() ci-dessus), donc TOUT lieu
+// dont la photo avait été enregistrée avant cette date n'y a encore aucun document — feed.html
+// (window.fetchAllRecreatedPhotos()) ne les trouvait donc plus du tout. Le repli sur
+// celebLocations (locations-data.js) dans feed.html ne suffisait pas : le script d'export
+// statique référence des fichiers images/admin-upload-*-recreated*.jpg qui, pour la plupart
+// des lieux, n'ont jamais été réellement committés (bug séparé, préexistant, dans
+// export-locations.js — hors du périmètre de ce correctif) — ces chemins statiques 404ent
+// silencieusement, laissant la tuile sans photo visible. locationContent/ (la vraie base64,
+// déjà utilisée avec succès par la fiche lieu elle-même) reste donc la seule source fiable
+// pour ce backfill.
+window.adminBackfillLocationPhotos = async function () {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const snap = await getDocs(collection(db, 'locationContent'));
+        const writes = [];
+        let written = 0;
+        snap.forEach(d => {
+            const data = d.data();
+            const photos = Array.isArray(data.recreatedPhotos) && data.recreatedPhotos.length
+                ? data.recreatedPhotos
+                : (data.recreatedPhoto ? [data.recreatedPhoto] : []);
+            if (photos.length) {
+                writes.push(setDoc(doc(db, 'locationPhotos', d.id), { photos }));
+                written++;
+            }
+        });
+        await Promise.all(writes);
+        return { success: true, written };
+    } catch (e) {
+        console.warn('Reconstruction de l\'index "Mei\'s Pictures" échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 window.adminUpdateLocationContent = async function (locationId, fields) {
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
