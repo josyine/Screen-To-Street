@@ -14,7 +14,7 @@
 // IMPORTANT : ne touche jamais aux requêtes cross-origin (Firebase/Firestore, polices
 // Google, tuiles Leaflet...) — seuls les fichiers statiques du même domaine sont
 // concernés, jamais les données live du compte.
-const CACHE_VERSION = 'stns-static-v20260913f';
+const CACHE_VERSION = 'stns-static-v20260920g';
 
 // Bibliothèques externes figées par version dans leur URL (unpkg pour Leaflet,
 // gstatic pour le SDK Firebase) : contrairement à Firestore/Auth (données live,
@@ -68,20 +68,35 @@ self.addEventListener('fetch', (event) => {
     // met énormément de temps à charger" rapporté juste après l'introduction de ce
     // fichier.
     //
-    // Fichiers statiques (JS/CSS/manifest/icônes) : cache d'abord, réseau en secours,
-    // puis on rafraîchit le cache en tâche de fond (stale-while-revalidate) pour que la
-    // prochaine navigation profite déjà d'une éventuelle mise à jour sans jamais faire
-    // attendre l'utilisateur dessus.
+    // BUG corrigé (demande du 20/09/2026, "la page feed ne fonctionne toujours pas sur
+    // mobile... même en navigation privée", persistant après plusieurs correctifs déjà
+    // livrés côté script.js/feed.html) : ce gestionnaire servait ces fichiers en
+    // "cache d'abord" (stale-while-revalidate) — la page en cours recevait TOUJOURS la
+    // version déjà en cache, même périmée, le réseau ne servant qu'à rafraîchir le cache
+    // pour la PROCHAINE visite. Sur une PWA installée sur l'écran d'accueil iOS en
+    // particulier, la mise à jour du Service Worker lui-même (sw.js) est notoirement peu
+    // fiable côté WebKit — un appareil resté bloqué sur un ancien sw.js reste alors
+    // bloqué indéfiniment sur d'anciennes versions de script.js/feed.html même après
+    // publication d'un correctif, quel que soit le nombre de fois où le code source est
+    // corrigé côté dépôt. Passé en "réseau d'abord, cache en secours" : chaque chargement
+    // tente désormais le réseau EN PREMIER (la version la plus fraîche gagne dès qu'elle
+    // est disponible), le cache ne servant plus que de repli hors-ligne/réseau en échec —
+    // couplé au cache-busting ?v=... déjà en place (voir script.js/feed.html), ceci
+    // élimine ce risque de version figée sans sacrifier le repli hors-ligne recherché à
+    // l'origine (demande du 11/09/2026).
     const isStaticAsset = /\.(js|css|png|jpg|jpeg|svg|webp|json)(\?.*)?$/.test(url.pathname);
     if (isStaticAsset) {
         event.respondWith(
             caches.open(CACHE_VERSION).then(async (cache) => {
-                const cached = await cache.match(req);
-                const network = fetch(req).then((res) => {
+                try {
+                    const res = await fetch(req);
                     if (res && res.ok) cache.put(req, res.clone());
                     return res;
-                }).catch(() => cached);
-                return cached || network;
+                } catch (e) {
+                    const cached = await cache.match(req);
+                    if (cached) return cached;
+                    throw e;
+                }
             })
         );
         return;
