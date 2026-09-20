@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260948">
+<link rel="stylesheet" href="style.css?v=20260949">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -177,7 +177,10 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 
 /* Onglet Photos : grille dominante façon Instagram */
 .profile-photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-.profile-photo-tile { aspect-ratio: 1 / 1; background-size: cover; background-position: center; border-radius: 4px; cursor: pointer; transition: 0.15s; }
+/* padding-bottom en % plutôt qu'aspect-ratio (demande du 20/09/2026, même correctif que
+   .feed-tile dans feed.html — aspect-ratio n'est pas supporté avant Safari 15/iOS 15, ce
+   qui effondrerait silencieusement ces tuiles à hauteur 0 sur un appareil plus ancien). */
+.profile-photo-tile { position: relative; width: 100%; padding-bottom: 100%; background-size: cover; background-position: center; border-radius: 4px; cursor: pointer; transition: 0.15s; }
 .profile-photo-tile:hover { opacity: 0.85; }
 
 /* Onglet Badges (demande du 13/09/2026, "un peu comme Pokemon GO") : grille façon
@@ -660,9 +663,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20260948"></script>
-<script src="locations-data.js?v=20260948"></script>
-<script src="script.js?v=20260948"></script>
+<script type="module" src="firebase-init.js?v=20260949"></script>
+<script src="locations-data.js?v=20260949"></script>
+<script src="script.js?v=20260949"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
