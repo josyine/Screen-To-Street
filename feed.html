@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260944">
+<link rel="stylesheet" href="style.css?v=20260945">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -400,9 +400,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260944"></script>
-<script src="locations-data.js?v=20260944"></script>
-<script src="script.js?v=20260944"></script>
+<script type="module" src="firebase-init.js?v=20260945"></script>
+<script src="locations-data.js?v=20260945"></script>
+<script src="script.js?v=20260945"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -511,6 +511,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     // elles-mêmes. "Sacred Places" (tous les lieux du site) est un contenu totalement
     // différent (celebLocations, pas feedPhotos) — voir renderSacredGrid() plus bas.
     let currentFeedTab = 'community';
+    // Échec du chargement initial de "Community" (demande du 20/09/2026, "je veux pouvoir
+    // voir les photos de Community... fait en sorte que ça fonctionne") — jusqu'ici, un
+    // premier échec (timeout réseau mobile, voir loadFeed() plus bas) laissait feedPhotos
+    // vide DÉFINITIVEMENT : revenir sur cet onglet ne faisait que filterFeed() sur ce
+    // tableau toujours vide, sans jamais retenter la lecture Firestore — aucun moyen de
+    // récupérer sans recharger toute la page. Voir la branche "community" ci-dessous.
+    let communityLoadFailed = false;
     window.switchFeedTab = function (tab) {
         currentFeedTab = tab;
         document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
@@ -519,6 +526,8 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             loadSavedFeed();
         } else if (tab === 'sacred') {
             renderSacredGrid();
+        } else if (communityLoadFailed) {
+            loadFeed();
         } else {
             filterFeed(document.getElementById('feed-search-input').value);
         }
@@ -549,14 +558,18 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     // swipe entre photos (voir wireSacredSwipe() plus bas).
     let sacredLocs = [];
     let sacredSwipeIndex = -1;
-    // Contenu Firestore le plus récent, par-dessus le catalogue statique (demande du
-    // 19/09/2026, "il manque des photos" dans cet onglet) — voir la note sur
-    // window.fetchAllLocationContent() dans firebase-init.js : le catalogue statique
-    // (celebLocations) n'est republié que toutes les 6h, donc une photo Mei tout juste
-    // ajoutée via admin.html y resterait invisible jusqu'au prochain export sans cette
-    // superposition. Une promesse plutôt qu'un simple objet : si l'onglet est cliqué
-    // plusieurs fois avant la fin de la 1ère lecture, les appels suivants attendent la
-    // MÊME requête au lieu d'en déclencher une nouvelle à chaque clic.
+    // Photos les plus récentes, par-dessus le catalogue statique (demande du 19/09/2026,
+    // "il manque des photos" dans cet onglet) — voir window.fetchAllRecreatedPhotos() dans
+    // firebase-init.js (index léger locationPhotos/, PAS l'ancien
+    // window.fetchAllLocationContent() qui téléchargeait la collection locationContent
+    // ENTIÈRE — descriptions multilingues, tips, liens sociaux de CHAQUE lieu — rien que
+    // pour en extraire ce champ ; c'était la cause du "la page feed charge à l'infini sur
+    // mobile" rapporté le 20/09/2026, ce téléchargement n'ayant en plus aucun timeout ici
+    // contrairement à loadFeed()/loadSavedFeed() plus bas). Une promesse plutôt qu'un
+    // simple objet : si l'onglet est cliqué plusieurs fois avant la fin de la 1ère lecture,
+    // les appels suivants attendent la MÊME requête au lieu d'en déclencher une nouvelle à
+    // chaque clic. Remise à null en cas d'échec/timeout pour permettre un nouvel essai en
+    // revenant sur l'onglet, comme loadSavedFeed().
     let sacredContentPromise = null;
     async function renderSacredGrid() {
         const grid = document.getElementById('feed-grid');
@@ -566,23 +579,42 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             loadingEl.classList.remove('hidden');
             emptyEl.classList.add('hidden');
             grid.innerHTML = '';
-            sacredContentPromise = typeof window.fetchAllLocationContent === 'function'
-                ? window.fetchAllLocationContent()
+            sacredContentPromise = typeof window.fetchAllRecreatedPhotos === 'function'
+                ? withTimeout(window.fetchAllRecreatedPhotos(), 15000)
                 : Promise.resolve({});
         }
-        const liveContent = await sacredContentPromise;
+        let livePhotos;
+        try {
+            livePhotos = await sacredContentPromise;
+        } catch (e) {
+            console.warn('Chargement des photos "Mei\'s Pictures" échoué :', e);
+            sacredContentPromise = null;
+            loadingEl.classList.add('hidden');
+            if (currentFeedTab !== 'sacred') return;
+            grid.innerHTML = '';
+            emptyEl.textContent = 'Loading failed — check your connection and try again.';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
         loadingEl.classList.add('hidden');
         // L'utilisateur a déjà changé d'onglet pendant l'attente réseau ci-dessus (même
         // garde que loadFeed() pour "community") : ne pas dessiner par-dessus l'onglet
         // entre-temps affiché.
         if (currentFeedTab !== 'sacred') return;
         const baseLocs = typeof celebLocations !== 'undefined' ? celebLocations : [];
-        // Object.assign({}, loc, ...) plutôt qu'une mutation de celebLocations : même
-        // convention que fetchLocationContent() ailleurs sur le site (script.js), pour ne
-        // jamais faire fuiter du contenu Firestore potentiellement plus frais vers d'autres
-        // usages de ce tableau partagé.
-        const allLocs = baseLocs.map(loc => liveContent[String(loc.id)] ? Object.assign({}, loc, liveContent[String(loc.id)]) : loc);
-        sacredLocs = allLocs.filter(loc => (Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length) || loc.recreatedPhoto);
+        // Object.assign({}, loc, {recreatedPhotos}) plutôt qu'une mutation de celebLocations :
+        // même convention que fetchLocationContent() ailleurs sur le site (script.js), pour
+        // ne jamais faire fuiter du contenu Firestore potentiellement plus frais vers
+        // d'autres usages de ce tableau partagé. livePhotos[id].photos prime sur le
+        // catalogue statique (repli sur recreatedPhotos/recreatedPhoto du squelette pour un
+        // lieu jamais republié via cet index, ex: migration en cours).
+        sacredLocs = baseLocs.map(loc => {
+            const entry = livePhotos[String(loc.id)];
+            const photos = (entry && Array.isArray(entry.photos) && entry.photos.length)
+                ? entry.photos
+                : ((Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length) ? loc.recreatedPhotos : (loc.recreatedPhoto ? [loc.recreatedPhoto] : []));
+            return photos.length ? Object.assign({}, loc, { recreatedPhotos: photos }) : null;
+        }).filter(Boolean);
         if (!sacredLocs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No recreated photos yet.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');
         grid.innerHTML = '';
@@ -717,6 +749,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     async function loadFeed() {
         const loadingEl = document.getElementById('feed-loading');
         const emptyEl = document.getElementById('feed-empty');
+        // Réinitialise l'état visuel à chaque appel, y compris un nouvel essai déclenché
+        // par switchFeedTab() ci-dessus (demande du 20/09/2026) — sans ça, un essai après
+        // un échec repartirait avec #feed-loading déjà masqué et le message d'erreur
+        // toujours affiché jusqu'à la fin de CE nouvel appel.
+        communityLoadFailed = false;
+        loadingEl.classList.remove('hidden');
+        emptyEl.classList.add('hidden');
         try {
             if (typeof window.fetchGlobalPhotoFeed !== 'function') throw new Error('fetchGlobalPhotoFeed unavailable');
             feedPhotos = await withTimeout(window.fetchGlobalPhotoFeed(), 15000);
@@ -741,6 +780,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             renderFeedGrid(feedPhotos);
         } catch (e) {
             console.warn('Chargement du fil de photos échoué :', e);
+            communityLoadFailed = true;
             loadingEl.classList.add('hidden');
             if (currentFeedTab === 'community') {
                 emptyEl.textContent = 'Loading failed — check your connection and try again.';
