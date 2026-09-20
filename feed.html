@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260948">
+<link rel="stylesheet" href="style.css?v=20260949">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -91,7 +91,21 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
 /* Grille façon Instagram : 3 colonnes, tuiles carrées, gap minime (capture fournie par
    l'utilisateur le 08/09/2026). */
 .feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; max-width: 900px; margin: 0 auto; }
-.feed-tile { position: relative; aspect-ratio: 1 / 1; background-size: cover; background-position: center; cursor: pointer; transition: 0.15s; overflow: hidden; }
+/* BUG corrigé (demande du 20/09/2026, "la page feed ne fonctionne toujours pas sur
+   mobile... la page s'affiche mais sans photos") : `aspect-ratio` (seule propriété qui
+   donnait une hauteur à cette tuile — aucune hauteur explicite ni contenu en flux normal
+   par ailleurs) n'est supporté que depuis Safari 15/iOS 15 (sept. 2021). Sur un appareil
+   resté sur une version plus ancienne de Safari/WebKit — impossible à tester ici, ce
+   bac à sable ne dispose que de Chromium, qui n'a pas ce problème — la tuile s'effondre
+   silencieusement à hauteur 0 : le fond (la photo) et tout ce qui est positionné dedans
+   restent bien posés dans le DOM (aucune erreur JS, aucun élément manquant) mais
+   deviennent invisibles, correspondant exactement au symptôme "la page s'affiche mais
+   sans photos" — le reste du site (carte, connexion...) n'utilise jamais cette
+   propriété, ce qui expliquerait qu'il continue de fonctionner normalement sur le même
+   appareil. Remplacé par l'astuce "padding-bottom en %" (même technique déjà utilisée
+   pour .video-wrapper dans map.html) : universellement supportée, y compris par les très
+   anciens navigateurs. */
+.feed-tile { position: relative; width: 100%; padding-bottom: 100%; background-size: cover; background-position: center; cursor: pointer; transition: 0.15s; overflow: hidden; }
 .feed-tile:hover { opacity: 0.85; }
 /* Avatar + likes en overlay par tuile (demande du 11/09/2026, capture d'écran fournie :
    "petit avatar en overlay + nombre de likes"). L'avatar redirige vers le profil de
@@ -400,9 +414,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260948"></script>
-<script src="locations-data.js?v=20260948"></script>
-<script src="script.js?v=20260948"></script>
+<script type="module" src="firebase-init.js?v=20260949"></script>
+<script src="locations-data.js?v=20260949"></script>
+<script src="script.js?v=20260949"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {

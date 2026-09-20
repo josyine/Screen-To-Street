@@ -830,7 +830,11 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .loc-visitors-sheet { max-height: 78vh; overflow-y: auto; }
 .loc-visitors-sheet-title { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 14px; padding: 0 8px; }
 .loc-visitors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
-.loc-visitors-tile { position: relative; aspect-ratio: 1 / 1; background-size: cover; background-position: center; cursor: pointer; border-radius: 8px; overflow: hidden; }
+/* padding-bottom en % plutôt qu'aspect-ratio (demande du 20/09/2026, même correctif que
+   .feed-tile dans feed.html — aspect-ratio n'est pas supporté avant Safari 15/iOS 15,
+   ce qui effondrerait silencieusement ces tuiles à hauteur 0 sur un appareil plus
+   ancien). */
+.loc-visitors-tile { position: relative; width: 100%; padding-bottom: 100%; background-size: cover; background-position: center; cursor: pointer; border-radius: 8px; overflow: hidden; }
 .loc-visitors-tile-avatar { position: absolute; left: 5px; bottom: 5px; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.9); color: #fff; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
 
 /* Duo Message + Engrenage du haut à droite, mobile uniquement (demande du 08/09/2026) —
