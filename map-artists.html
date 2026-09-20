@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260951">
+<link rel="stylesheet" href="style.css?v=20260952">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none; cursor:pointer;}
@@ -445,17 +445,17 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      le nombre de lieux/pays par groupe ci-dessous, au lieu des chiffres figés à la création
      de cette page (voir correctGroupNumbers() plus bas) — le reste du contenu (bios,
      sections narratives) reste écrit à la main, seuls les CHIFFRES sont automatiques. -->
-<script src="locations-data.js?v=20260951"></script>
+<script src="locations-data.js?v=20260952"></script>
 <!-- Firebase (demande du 13/09/2026, "je veux également pouvoir modifier les pages
      Explore Destinations et Explore Artists") — même besoin/mêmes notes que
      map-destinations.html : cette page était jusqu'ici 100% statique. -->
-<script type="module" src="firebase-init.js?v=20260951"></script>
+<script type="module" src="firebase-init.js?v=20260952"></script>
 <!-- Contenu partagé "Explore Artists" (demande du 12/09/2026, "le contenu de
      map-artists.html et artists.html doit être le même") : GROUPS, GROUP_DETAILS et le
      rendu de la fiche détaillée viennent maintenant tous les deux de
      artists-content.js, chargé à l'identique par artists.html — voir ce fichier pour la
      donnée et la logique partagées. -->
-<script src="artists-content.js?v=20260951"></script>
+<script src="artists-content.js?v=20260952"></script>
 <script>
     function toggleMenu(menuId, evt) {
         document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== menuId) m.classList.add('hidden'); });

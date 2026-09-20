@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260951">
+<link rel="stylesheet" href="style.css?v=20260952">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -90,7 +90,35 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
 
 /* Grille façon Instagram : 3 colonnes, tuiles carrées, gap minime (capture fournie par
    l'utilisateur le 08/09/2026). */
-.feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; max-width: 900px; margin: 0 auto; }
+/* BUG CRITIQUE corrigé (demande du 20/09/2026, "problème d'affichage !!! sur ordinateur,
+   quand je réduis la taille de la fenêtre les posts ne s'affichent pas... réduire la
+   taille des posts sur mobile" — trouvé par l'utilisateur lui-même en réduisant la
+   fenêtre, LE vrai indice qui manquait après plusieurs correctifs data/réseau/cache qui
+   ne pouvaient rien changer à ceci) : `.feed-page` passe en `display:flex;
+   flex-direction:column` sous 760px (voir plus bas, pour que `order:-1` fasse remonter la
+   barre de recherche) — `.feed-grid` en devient alors un ENFANT FLEX. Sans `width`
+   explicite ici, une grille CSS dont les colonnes sont en `fr` (comme `repeat(3, 1fr)`)
+   ne se met PAS fiablement à la largeur du conteneur flex via le comportement par défaut
+   `align-items:stretch` : confirmé en testant (Playwright, Chromium — donc reproductible
+   sans appareil mobile réel, juste en réduisant la largeur de la fenêtre, exactement
+   comme l'a remarqué l'utilisateur) que `.feed-grid` s'effondre à 4px de large/0 de haut
+   pile sous 760px — les 3 colonnes `1fr` à 0px, ne laissant que les 2 espacements de 2px
+   entre elles. Toutes les tuiles existent bien dans le DOM (aucune erreur JS, aucune
+   donnée manquante) mais sont invisibles, à 0×0px — exactement le symptôme "rien
+   n'apparait", peu importe le compte, le mode de navigation ou l'état de connexion
+   Firestore, puisque AUCUN de ces facteurs n'intervient ici : c'est un pur bug de mise en
+   page, présent sur TOUT appareil dont l'écran est sous 760px de large (donc TOUJOURS sur
+   mobile) depuis la création de cette grille — ce qui explique pourquoi aucun des
+   correctifs précédents (données, race condition, Service Worker, aspect-ratio,
+   long-polling Firestore, cache Mei's Pictures) n'a jamais pu le résoudre : ils
+   corrigeaient chacun un vrai problème réel, mais aucun ne touchait à cette mise en page.
+   `.feed-search-wrap`, juste au-dessus, n'a PAS ce problème (vérifié) : un `<input>` en
+   flux normal s'étire correctement même sans largeur explicite, contrairement à une
+   grille en `fr`. `width: 100%` ici lève l'ambiguïté pour la grille dans les deux
+   contextes (bloc centré sur desktop, enfant flex sur mobile) sans rien changer à
+   l'affichage desktop existant (déjà centré par `margin: 0 auto` avec cette même largeur
+   effective). */
+.feed-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; width: 100%; max-width: 900px; margin: 0 auto; }
 /* BUG corrigé (demande du 20/09/2026, "la page feed ne fonctionne toujours pas sur
    mobile... la page s'affiche mais sans photos") : `aspect-ratio` (seule propriété qui
    donnait une hauteur à cette tuile — aucune hauteur explicite ni contenu en flux normal
@@ -414,9 +442,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260951"></script>
-<script src="locations-data.js?v=20260951"></script>
-<script src="script.js?v=20260951"></script>
+<script type="module" src="firebase-init.js?v=20260952"></script>
+<script src="locations-data.js?v=20260952"></script>
+<script src="script.js?v=20260952"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
