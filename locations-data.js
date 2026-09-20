@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-20T16:56:08.247Z.
+// Généré le 2026-09-20T21:45:04.267Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -544,30 +544,38 @@ window.STATIC_LOCATIONS = [
     "city": "Paris",
     "category": "Landmark",
     "year": "2019",
-    "ytId": "Montmartre1",
-    "address": "Rue Foyatier, Paris",
+    "ytId": "dl3QLdm2uts",
+    "address": "5 Rue Saint-Éleuthère, 75018 Paris, France",
     "lat": 48.8856,
     "lng": 2.3432,
-    "img": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600",
+    "img": "images/admin-upload-8-photo.jpg",
     "fullDescription": {
-      "en": "<p>The steep, iconic staircase of Rue Foyatier climbs the Montmartre hill toward the Sacré-Cœur basilica, its central funicular track flanked by nearly 300 steps that have appeared in countless films and photographs.</p><p>Jimin was photographed here during a quiet stroll through the neighbourhood, adding one more layer to the staircase's already legendary status among visitors chasing the perfect Parisian panorama.</p>",
-      "fr": "<p>L'escalier abrupt et emblématique de la rue Foyatier grimpe la butte Montmartre en direction de la basilique du Sacré-Cœur, sa voie centrale de funiculaire encadrée par près de 300 marches qui ont figuré dans d'innombrables films et photographies.</p><p>Jimin y a été photographié lors d'une promenade tranquille dans le quartier, ajoutant une couche supplémentaire au statut déjà légendaire de cet escalier auprès des visiteurs en quête du panorama parisien parfait.</p>"
+      "fr": "<p>L'escalier abrupt et emblématique de la rue Foyatier grimpe la butte Montmartre en direction de la basilique du Sacré-Cœur, sa voie centrale de funiculaire encadrée par près de 300 marches qui ont figuré dans d'innombrables films et photographies.</p><p>Jimin y a été photographié lors d'une promenade tranquille dans le quartier, ajoutant une couche supplémentaire au statut déjà légendaire de cet escalier auprès des visiteurs en quête du panorama parisien parfait.</p>",
+      "en": "<p>Tucked right beside the magnificent Sacré-Cœur basilica, Rue Saint-Éleuthère is a quintessential Montmartre street. Lined with classic Parisian lampposts, historic facades, and steep cobblestone steps, it offers a beautifully atmospheric perspective of the famous artists' neighborhood. Because it sits at the very top of the Montmartre hill, the street captures the romantic, bohemian spirit of the 18th arrondissement perfectly, serving as a picturesque pathway that has inspired generations of painters and photographers.</p><p>During his extended vacation in the fall of 2019, Jimin fully embraced the timeless charm of Montmartre. Wandering away from the most crowded tourist viewpoints, he took the time to explore the winding alleys and steep inclines of the neighborhood. As seen in the file EGhFVnYXkAA1bOk.jpg, he was photographed on the steps of 5 Rue Saint-Éleuthère. Dressed casually in a long-sleeved white top with black text, black pants, black shoes, and a black shoulder bag, Jimin is captured walking up the stone stairs. He looks back over his shoulder with a bright smile, reaching his hand out toward the camera, perfectly capturing the joyful, carefree magic of an autumn afternoon in Paris.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Climb early"
+          "en": "The Perfect Framing"
         },
         "text": {
-          "en": "Climb up early in the morning for soft light and far fewer tourists on the steps."
+          "en": "Make sure to include the classic Parisian lamppost on the left and the leafy trees in the background so the setting perfectly matches the original image."
         }
       },
       {
         "title": {
-          "en": "Count the steps"
+          "en": "Nail the Exact Pose"
         },
         "text": {
-          "en": "The staircase runs almost 300 steps up to the Sacré-Cœur — pace yourself, or take the funicular running alongside it if you'd rather skip the climb."
+          "en": "To recreate Jimin's iconic vacation snap, stand on the stone steps, keeping the central metal handrail in the middle and the paved slope on your right. Walk up a few steps, look back over your shoulder with a smile, and reach your hand out toward the photographer."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with the Wall of Love"
+        },
+        "text": {
+          "en": "Since Rue Saint-Éleuthère is just a short walk up the hill from the Square Jehan Rictus, you can seamlessly combine this stop with the \"Mur des je t'aime\" for a complete Jimin-inspired Montmartre pilgrimage."
         }
       }
     ],
@@ -578,52 +586,50 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Climb up early in the morning for soft light and far fewer tourists on the steps.",
       "fr": "Montez tôt le matin pour profiter d'une lumière douce et de bien moins de touristes sur les marches."
-    }
-  },
-  {
-    "id": 9,
-    "name": "Wall of Love",
-    "group": "BTS",
-    "member": "Jimin",
-    "country": "France",
-    "city": "Paris",
-    "category": "Landmark",
-    "year": "2019",
-    "ytId": "WallOfLove1",
-    "address": "Square Jehan Rictus, Paris",
-    "lat": 48.8848,
-    "lng": 2.3386,
-    "img": "https://images.unsplash.com/photo-1522093005080-d132e14a2e6f?w=600",
-    "fullDescription": {
-      "en": "<p>Tucked inside a small park at the foot of Montmartre, the Wall of Love (\"Le Mur des Je t'aime\") is a striking 40-square-metre mural where the phrase \"I love you\" is painted in over 250 languages and dialects across deep blue enamel tiles.</p><p>Jimin's visit to this quiet, romantic corner of Paris turned it into an unofficial pilgrimage spot for fans, many of whom now search the tiles for their own native language before taking a photo.</p>",
-      "fr": "<p>Niché dans un petit parc au pied de Montmartre, le Mur des Je t'aime est une saisissante fresque de 40 mètres carrés où la phrase \"je t'aime\" est peinte en plus de 250 langues et dialectes sur des carreaux d'émail bleu profond.</p><p>La visite de Jimin dans ce coin romantique et paisible de Paris en a fait un lieu de pèlerinage officieux pour les fans, dont beaucoup cherchent désormais leur propre langue maternelle sur les carreaux avant de prendre une photo.</p>"
     },
-    "tipsList": [
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "practicalInfo": [
       {
         "title": {
-          "en": "Find the Korean tile"
+          "en": "How to get there"
         },
         "text": {
-          "en": "Look for 'Je t'aime' in Korean near the lower-left section of the wall — it's the tile most fans photograph first."
+          "en": "The easiest way to reach the top of the hill without a strenuous climb is to take the Paris Métro (Line 2) to Anvers station, walk up to the Montmartre Funicular, and ride it to the top. From the Sacré-Cœur plaza, Rue Saint-Éleuthère is just a one-minute walk to the west."
         }
       },
       {
         "title": {
-          "en": "Scan the whole wall"
+          "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "With over 250 languages spread across the tiles, it's worth scanning the full 40-square-metre mural rather than stopping at the first phrase you recognise."
+          "en": "The street is a public pedestrian pathway, open 24/7 for free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Like much of historic Montmartre, this specific street features steep inclines, uneven cobblestones, and stairs, making it challenging for wheelchair users and strollers. However, the nearby plaza directly in front of the Sacré-Cœur is flat and accessible via the funicular."
         }
       }
     ],
-    "directions": {
-      "en": "Take Metro Line 12 to Abbesses; the square is a 2-minute walk from the station, right next to the metro entrance.",
-      "fr": "Prenez la ligne 12 du métro jusqu'à Abbesses ; le square se trouve à 2 minutes à pied de la station, juste à côté de l'entrée du métro."
-    },
-    "tip": {
-      "en": "Look for 'Je t'aime' in Korean near the lower-left section of the wall — it's the tile most fans photograph first.",
-      "fr": "Cherchez « je t'aime » en coréen près de la partie inférieure gauche du mur — c'est le carreau que la plupart des fans photographient en premier."
-    }
+    "tweetUrl": "https://x.com/graphicfighter/status/1182271146399555585?s=46",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-8-recreated-0.jpg"
+    ],
+    "officialLink": "https://fr.wikipedia.org/wiki/Montmartre"
   },
   {
     "id": 10,
@@ -768,51 +774,6 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The building is a private office space today — admire the exterior from the street rather than trying to enter.",
       "fr": "Le bâtiment est aujourd'hui un espace de bureaux privé — admirez l'extérieur depuis la rue plutôt que de tenter d'y entrer."
-    }
-  },
-  {
-    "id": 12,
-    "name": "The First BTS Dorm",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "Landmark",
-    "year": "2013 - 2015",
-    "ytId": "RhJqNFQCU_Q",
-    "address": "29 Nonhyeon-ro 119-gil",
-    "lat": 37.5133,
-    "lng": 127.0321,
-    "img": "https://img.youtube.com/vi/RhJqNFQCU_Q/hqdefault.jpg",
-    "fullDescription": {
-      "en": "<p>Long before their sprawling, more comfortable later dorms, all seven members of BTS lived together in a compact, two-room apartment on this residential street — a living arrangement famously chronicled in early vlogs and reality segments for its cramped bunk beds and shared everything.</p><p>The building itself is unremarkable from the outside, but its role in shaping the group's early bond and work ethic has made it one of the most sentimental stops on any BTS-focused itinerary.</p>",
-      "fr": "<p>Bien avant leurs dortoirs plus vastes et confortables des années suivantes, les sept membres de BTS ont vécu ensemble dans un appartement compact de deux pièces sur cette rue résidentielle — un cadre de vie rendu célèbre par les premiers vlogs et segments de télé-réalité pour ses lits superposés exigus et tout ce qui s'y partageait.</p><p>Le bâtiment lui-même n'a rien de remarquable vu de l'extérieur, mais son rôle dans la formation des liens et de l'éthique de travail du groupe à ses débuts en fait l'une des étapes les plus chargées d'émotion de tout itinéraire consacré à BTS.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Respect the residents"
-        },
-        "text": {
-          "en": "This is a private residential building — please stay on the public street and keep noise to a minimum out of respect for current residents."
-        }
-      },
-      {
-        "title": {
-          "en": "Don't expect a landmark"
-        },
-        "text": {
-          "en": "The building itself is unremarkable from the outside — the significance is entirely in what it represents, not in anything visibly special to see."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Take the Suin-Bundang Line to Apgujeong Rodeo Station and walk roughly 10 minutes south through the Nonhyeon-dong side streets.",
-      "fr": "Prenez la ligne Suin-Bundang jusqu'à la station Apgujeong Rodeo et marchez environ 10 minutes vers le sud à travers les rues de Nonhyeon-dong."
-    },
-    "tip": {
-      "en": "This is a private residential building — please stay on the public street and keep noise to a minimum out of respect for current residents.",
-      "fr": "Il s'agit d'un immeuble résidentiel privé — merci de rester sur la voie publique et de limiter le bruit par respect pour les résidents actuels."
     }
   },
   {
@@ -3696,60 +3657,85 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
-    "year": "2015 - 2017",
-    "ytId": "nbRKyymm4Eg",
-    "episodeLink": "https://www.youtube.com/watch?v=nbRKyymm4Eg",
-    "address": "Nonhyeon-dong, Gangnam-gu",
-    "lat": 37.515,
-    "lng": 127.033,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Seoul_residential_street.jpg",
+    "year": "2015, 2016, 2017",
+    "ytId": "",
+    "episodeLink": "",
+    "address": "Nonhyeon-dong area, Gangnam-gu, Seoul. (Note: The exact street address is intentionally omitted from this guide out of respect for the current residents, as the building offers no public access or fan-oriented memorials).",
+    "lat": 37.5173,
+    "lng": 127.0268,
+    "img": "images/admin-upload-70-photo.jpg",
     "fullDescription": {
-      "en": "<p>Moving into this slightly larger dorm in 2015 marked the beginning of their most critical era. They finally had a bit more space as \"I Need U\" skyrocketed them to fame.</p><p>This dorm was featured in the 2015 Festa broadcasts, showing a chaotic but happier environment as they began winning awards.</p>",
-      "fr": "<p>Emménager dans ce dortoir légèrement plus grand en 2015 a marqué le début de l'ère la plus décisive de BTS, alors que « I Need U » propulsait la popularité du groupe.</p><p>Ce dortoir apparaît dans les diffusions Festa de 2015, montrant un foyer chaotique mais visiblement plus heureux, tandis que les membres commençaient à remporter leurs premiers trophées d'émissions musicales.</p>"
+      "fr": "<p>Emménager dans ce dortoir légèrement plus grand en 2015 a marqué le début de l'ère la plus décisive de BTS, alors que « I Need U » propulsait la popularité du groupe.</p><p>Ce dortoir apparaît dans les diffusions Festa de 2015, montrant un foyer chaotique mais visiblement plus heureux, tandis que les membres commençaient à remporter leurs premiers trophées d'émissions musicales.</p>",
+      "en": "<p>In 2015, coinciding with the release of The Most Beautiful Moment in Life, Pt. 1 and their emotional first-ever music show win with \"I Need U,\" BTS finally moved out of their infamous single-bedroom apartment. They relocated to this significantly larger, multi-level house in the Gangnam district. This spacious residence marked a monumental milestone, giving the seven members enough room to divide into roommate pairs rather than sleeping in one cramped room. Today, this beautiful former second dorm has been fully renovated and opened to the public as a bakery and coffee shop named Café Hyuga (휴가, meaning \"vacation\" or \"rest\").</p><p>This second dorm is deeply associated with a golden era for older ARMYs, serving as the primary backdrop for their 2015 and 2016 content, including early V Live broadcasts, birthday surprises, and the iconic 2015 BTS Festa. In an incredible turn of events for fans, the cafe owners thoughtfully kept the structural integrity of the house intact. Fans can now actually walk through the exact rooms where the members used to live, sleep, and write music during their rapid ascent to global fame.</p><p>In a beautiful, full-circle moment for the fandom, RM (Namjoon) made a quiet, discreet return to his old home as a customer. He shared photos of his nostalgic visit on his personal Instagram account (@rkive). Most notably, he photographed the cafe's dedicated message walls, which are completely covered in colorful post-it notes left by visiting ARMYs from all over the world, showing his deep appreciation for the fans who continue to honor their history.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Respect privacy"
+          "en": "The @rkive Post-It Wall"
         },
         "text": {
-          "en": "Remember this is just neighborhood history now."
+          "en": "Channel your inner Namjoon by visiting the exact wall of post-it notes he featured on his Instagram. Bring a pen, write your own message of love and gratitude, and add it to the thousands of others. You never know when a member might quietly visit again to read them!"
         }
       },
       {
         "title": {
-          "en": "Explore Nonhyeon"
+          "en": "Explore the Layout"
         },
         "text": {
-          "en": "The streets here are filled with small eateries they likely visited."
+          "en": "Take your time walking through the cafe to figure out the original floor plan. Fans have meticulously matched the current cafe rooms (like the main seating area) to old BTS videos filmed in the dorm's living room and kitchen."
+        }
+      },
+      {
+        "title": {
+          "en": "Try the Bakery Signatures"
+        },
+        "text": {
+          "en": "Aside from its historical significance, Café Hyuga is genuinely beloved for its pastries. Their signature black salt bread (sometimes affectionately called Bulletproof salt bread) is a must-try while you soak in the atmosphere."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Important Notice"
-        },
-        "text": {
-          "en": "Private residence. Location is famous for being their \"breakthrough\" era dorm."
-        }
-      },
-      {
-        "title": {
-          "en": "Vibe"
-        },
-        "text": {
-          "en": "A slight upgrade from the cramped first dorm, representing their rising success."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Nonhyeon area."
+          "en": "The neighborhood is easily accessible via the Seoul Subway. Take Line 7 to Hakdong Station (Exit 4). The cafe is about a 7-minute walk through the rolling residential streets."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Café Hyuga is generally open daily from 9:00 AM to 9:30 PM. There is no admission fee, but visitors are expected to purchase a drink or food item to sit and enjoy the space."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The cafe is situated in a hilly neighborhood and requires navigating stairs to enter the building and move between the renovated floors, making it challenging for wheelchair users."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-70-recreated-0.jpg",
+      "images/admin-upload-70-recreated-1.jpg"
     ]
   },
   {
@@ -7749,61 +7735,87 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
-    "year": "2013-2015",
+    "year": "2013, 2014, 2015",
     "ytId": "wtVKQDEZoF0",
     "episodeLink": "https://www.youtube.com/watch?v=wtVKQDEZoF0",
-    "address": "9-8 Nonhyeon-dong, Gangnam-gu",
-    "lat": 37.515,
-    "lng": 127.0215,
-    "img": "https://images.unsplash.com/photo-1546874177-9e664107314e?w=600",
+    "address": "10-31 Nonhyeon-dong, Gangnam-gu, Seoul, South Korea",
+    "lat": 37.5169,
+    "lng": 127.0267,
+    "img": "images/admin-upload-160-photo.jpg",
     "fullDescription": {
-      "en": "<p>This infamous small, cramped 3rd-floor apartment was where all 7 members shared a single bedroom, sleeping on bunk beds, surrounded by shoes and clothes.</p><p>The dorm was heavily featured in their debut anniversary broadcasts and Rookie King, representing the ultimate symbol of their shared struggles.</p>",
-      "fr": "<p>Ce petit appartement exigu du 3e étage, tristement célèbre, est celui où les 7 membres partageaient une seule chambre, dormant sur des lits superposés entourés de chaussures et de vêtements.</p><p>Ce dortoir est apparu abondamment dans les diffusions anniversaire de leurs débuts et dans Rookie King, symbole ultime de leurs galères partagées.</p>"
+      "fr": "<p>Ce petit appartement exigu du 3e étage, tristement célèbre, est celui où les 7 membres partageaient une seule chambre, dormant sur des lits superposés entourés de chaussures et de vêtements.</p><p>Ce dortoir est apparu abondamment dans les diffusions anniversaire de leurs débuts et dans Rookie King, symbole ultime de leurs galères partagées.</p>",
+      "en": "<p>Located in the quiet residential neighborhood of Nonhyeon-dong in the Gangnam district, this unassuming brick building holds the raw, authentic origin story of the biggest pop group in the world. On the third floor was the infamous, incredibly cramped apartment where all seven members of BTS lived together as trainees and newly debuted rookies. Sharing a single, tiny bedroom squeezed with three sets of bunk beds and one regular bed, the members navigated a chaotic space overflowing with clothes, shoes, and diet food. Today, this dorm remains legendary among fans as the ultimate symbol of the group's humble beginnings, their grueling trainee days, and the unbreakable brotherhood they forged in the tightest of quarters.</p><p>For ARMYs, standing outside this building feels like stepping into a time machine. This specific apartment was the backdrop for many of BTS's earliest and most vulnerable moments, heavily featured in their pre-debut vlogs, their first anniversary broadcast, and their 2013 reality show Rookie King. While they have all since moved into some of South Korea's most luxurious real estate, the members frequently reflect on this cramped third-floor apartment with deep nostalgia. The most notable recent official content linked to this location is the Run BTS! 2022 Special Episode - Telepathy (aired in August 2022). When the members were tasked with traveling separately to a place linked to their shared memories, a majority of them—RM, Jin, Jimin, and V—instinctively navigated straight back to this very first dorm, cementing its status as the foundational core of their teamwork and history.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Keep your distance"
+          "en": "Respect Private Property"
         },
         "text": {
-          "en": "View it respectfully from the street."
+          "en": "Unlike their third dorm (which is now Café Hyuga), please remember that this first dorm building remains a private, occupied residential apartment block. While taking a quiet photo of the exterior from the street is fine, fans must absolutely not enter the building, ring buzzers, or disturb the current residents."
         }
       },
       {
         "title": {
-          "en": "Notice the steep hills"
+          "en": "Walk to Hakdong Park"
         },
         "text": {
-          "en": "You'll quickly realize how fit they had to be to walk these hills daily!"
+          "en": "Just a few blocks away from the dorm is Hakdong Park. The members frequently visited this small neighborhood park to get some fresh air away from the cramped apartment, practice their choreography late at night, or sit on the swings to talk about their uncertain futures. It is an essential, quiet stop on this debut-era walking tour."
+        }
+      },
+      {
+        "title": {
+          "en": "Eat at Yoojung Sikdang"
+        },
+        "text": {
+          "en": "Complete your 2013 pilgrimage by walking down the street to Yoojung Sikdang (14 Dosan-daero 28-gil), the small restaurant where the members ate nearly every single day as trainees. The owners still lovingly maintain the space as a shrine to the group."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Important Notice"
-        },
-        "text": {
-          "en": "This is now a private residential building or redeveloped area. Do not trespass."
-        }
-      },
-      {
-        "title": {
-          "en": "Photo spot"
-        },
-        "text": {
-          "en": "The small alleyways leading up to the building were often featured in their early Twitter posts."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Near Sinsa Station (Line 3), exit 1."
+          "en": "The neighborhood is easily accessible via the Seoul Subway. Take Line 7 to Hakdong Station (Exit 7) or Line 3 to Sinsa Station (Exit 1). The dorm is about a 10- to 15-minute walk through the residential streets from either station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a private residence, it is strictly closed to the public. The exterior can be viewed for free from the public street, though daytime visits are strongly recommended out of respect for the neighbors."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Nonhyeon-dong area is heavily paved but is characterized by steep, rolling hills and narrow sidewalks. Wheelchair users and visitors with strollers may find the incline challenging, but the street directly in front of the building is fully paved."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-160-recreated-0.jpg"
+    ],
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=RhJqNFQCU_Q"
+    ],
+    "officialLink": "https://www.bluehousenh.com/en",
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "id": 161,
