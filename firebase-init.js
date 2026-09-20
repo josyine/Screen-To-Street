@@ -21,7 +21,7 @@ import {
     EmailAuthProvider,
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, limitToLast, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { initializeFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, limitToLast, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -34,7 +34,28 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
+// BUG corrigé (demande répétée du 20/09/2026, "la page feed ne fonctionne toujours pas
+// sur mobile... rien n'apparait dans Community et Mei's picture... connecté ET en version
+// gratuite" — même symptôme sur les DEUX comptes, en navigation privée ET normale) :
+// getFirestore() par défaut utilise un canal de streaming (WebChannel/gRPC-Web) pour
+// parler à Firestore. Sur certains réseaux mobiles (proxy transparent d'opérateur,
+// box/routeur, filtrage DNS/contenu), ce type de connexion longue durée est bloqué ou
+// coupé silencieusement — sans erreur JS, la requête reste simplement pendante jusqu'à
+// notre propre timeout (withTimeout() dans feed.html), d'où "la page s'affiche mais sans
+// photos" malgré 4 correctifs précédents individuellement vérifiés (données, race
+// condition, cache du Service Worker, CSS aspect-ratio) qui ne pouvaient rien changer à un
+// problème de transport réseau. Comme ce blocage dépend du RÉSEAU (pas du compte ni du
+// mode de navigation), il touche logiquement les deux comptes testés ET la navigation
+// privée ET normale, sur mobile uniquement (desktop de l'utilisateur passant probablement
+// par un réseau/box différent, moins susceptible d'interférer) — exactement le symptôme
+// rapporté. experimentalAutoDetectLongPolling fait basculer automatiquement sur du
+// long-polling HTTP classique (requêtes courtes et répétées, bien plus tolérant aux
+// proxys/pare-feux) quand ce type de blocage est détecté, sans rien changer sur les
+// réseaux qui fonctionnaient déjà avec le canal de streaming.
+const db = initializeFirestore(firebaseApp, {
+    experimentalAutoDetectLongPolling: true,
+    useFetchStreams: false
+});
 const googleProvider = new GoogleAuthProvider();
 
 window.firebaseAuth = auth;
