@@ -5984,6 +5984,18 @@ function ensureLocationEditModal() {
                  (locationSkeletonOverrides) que Group/Country/City ci-dessus. -->
             <label style="${labelStyle}">Address</label>
             <input type="text" id="location-edit-address" style="${fieldStyle} margin-bottom:14px;">
+            <!-- Latitude/Longitude (demande du 20/09/2026, "je veux pouvoir modifier les infos
+                 de Latitude et longitude") : jusqu'ici affichées nulle part dans ce modal, donc
+                 aucun moyen de corriger un pin mal placé sans toucher script.js directement —
+                 même champ squelette (locationSkeletonOverrides) que Group/Country/City/Address
+                 ci-dessus, écrit dans loc.lat/loc.lng et repris par renderLocations(true) (voir
+                 saveLocationEdit() plus bas) pour déplacer le marqueur sans recharger la page. -->
+            <div style="display:flex; gap:8px;">
+                <div style="flex:1;"><label style="${labelStyle}">Latitude</label><input type="number" step="any" id="location-edit-lat" style="${fieldStyle}"></div>
+                <div style="flex:1;"><label style="${labelStyle}">Longitude</label><input type="number" step="any" id="location-edit-lng" style="${fieldStyle}"></div>
+            </div>
+            <div id="location-edit-latlng-error" class="hidden" style="${errStyle}">Latitude must be between -90 and 90, longitude between -180 and 180.</div>
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Moves the pin on the map — leave both empty to keep the current position.</div>
             <label style="${labelStyle}">Date — select every year that applies</label>
             <div id="location-edit-year" style="margin-bottom:14px;"></div>
             <!-- Episode (demande du 19/09/2026, "je veux pouvoir supprimer la partie Episode
@@ -6043,9 +6055,22 @@ function ensureLocationEditModal() {
                  (sub-link-input, renderCard/renderExistingLocationCard) mais manquait ici —
                  même champ (episodeLink), publié via adminUpdateLocationContent(). Distinct
                  de "Official website" ci-dessus : une source/référence pour CE moment précis
-                 (épisode, article, post officiel...), pas le site du lieu lui-même. -->
+                 (épisode, article, post officiel...), pas le site du lieu lui-même.
+                 Bouton "×" ajouté (demande du 20/09/2026, "il y a un link que je n'arrive pas
+                 à supprimer... First BTS Dormitory") : la mécanique de sauvegarde vidait déjà
+                 correctement ce champ (episodeLink: '' est bien écrit puis fusionné par
+                 fetchLocationContent()/renderLocationRichContent()) — le vrai problème était
+                 l'absence de tout moyen visible de vider RAPIDEMENT un champ URL en un clic,
+                 seul un select-all+Suppr manuel dans le champ texte fonctionnait, facile à
+                 rater. Un clic ici vide le champ ET déclenche un évènement 'input' (poser
+                 la valeur à '' seul, en JS, n'en déclenche aucun) pour que locationEditTouched
+                 se pose bien, exactement comme si le champ avait été vidé au clavier — Save
+                 enregistre alors la suppression normalement. -->
             <label style="${labelStyle}">Link (optional)</label>
-            <input type="url" id="location-edit-link" style="${fieldStyle}" placeholder="https://...">
+            <div style="display:flex; gap:6px; align-items:center;">
+                <input type="url" id="location-edit-link" style="${fieldStyle} flex:1;" placeholder="https://...">
+                <button type="button" id="location-edit-link-clear-btn" title="Clear this link" style="flex-shrink:0; width:32px; height:32px; border-radius:50%; border:1.5px solid #e2e8f0; background:#fff; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+            </div>
             <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">A source/reference link for this location (episode, article, official post...) — shown as "Link" on the location page, or hidden entirely if left empty.</div>
 
             <label style="${labelStyle}">Photo credit / copyright (optional)</label>
@@ -6081,6 +6106,17 @@ function ensureLocationEditModal() {
         </div>`;
     document.body.appendChild(modal);
     wireLocationEditPhotoInputOnce(modal);
+    // Bouton "×" du champ "Link" (voir le commentaire au-dessus de ce champ dans le HTML
+    // ci-dessus) : vide le champ et déclenche un évènement 'input' manuellement, puisque
+    // poser `.value = ''` en JS n'en déclenche aucun tout seul — sans ça, le listener
+    // 'input' du modal (juste en dessous) ne poserait jamais locationEditTouched à true,
+    // et Save ignorerait ce champ comme "resté intact depuis l'ouverture".
+    document.getElementById('location-edit-link-clear-btn').addEventListener('click', () => {
+        const input = document.getElementById('location-edit-link');
+        input.value = '';
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.focus();
+    });
     // BUG corrigé (demande du 20/09/2026, "le 'additionnal Youtube URL' ne fonctionne
     // toujours pas") — même cause que dans admin.html (renderExistingLocationCard) : la
     // 2e lecture Firestore (fetchLocationContent, voir openLocationEditModal plus bas)
@@ -6277,6 +6313,14 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
         document.getElementById('location-edit-address').value = data.address || '';
+        // Latitude/Longitude (demande du 20/09/2026) : contrairement aux autres champs
+        // squelette ci-dessus, `lat`/`lng` sont des NOMBRES — `|| ''` seul se comporterait
+        // mal pour une coordonnée valant exactement 0 (l'équateur ou le méridien de
+        // Greenwich, `0 || ''` valant `''` comme n'importe quelle valeur "vide"), d'où la
+        // vérification explicite `!= null` à la place.
+        document.getElementById('location-edit-lat').value = (data.lat != null) ? data.lat : '';
+        document.getElementById('location-edit-lng').value = (data.lng != null) ? data.lng : '';
+        document.getElementById('location-edit-latlng-error').classList.add('hidden');
         document.getElementById('location-edit-episode').value = data.episode || '';
         document.getElementById('location-edit-episode-label').value = data.episodeLabel || '';
         document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
@@ -6287,10 +6331,13 @@ window.openLocationEditModal = async function (locId) {
         // Episode mais je ne peux pas actuellement") : voir saveLocationEdit() plus bas, qui
         // n'inclut désormais un de ces champs dans la sauvegarde que s'il a RÉELLEMENT changé
         // depuis l'ouverture — vide y compris — pour qu'un champ volontairement vidé (ex:
-        // Episode) se sauvegarde bien vide au lieu d'être silencieusement ignoré.
+        // Episode) se sauvegarde bien vide au lieu d'être silencieusement ignoré. lat/lng
+        // gardés en nombres ici (pas en chaîne comme les autres) pour comparer proprement à
+        // la valeur flottante parsée du champ dans saveLocationEdit().
         locationEditOriginalSkeletonValues = {
             group: data.group || '', country: data.country || '', city: data.city || '',
-            address: data.address || '', episode: data.episode || '', episodeLabel: data.episodeLabel || ''
+            address: data.address || '', episode: data.episode || '', episodeLabel: data.episodeLabel || '',
+            lat: (data.lat != null) ? data.lat : null, lng: (data.lng != null) ? data.lng : null
         };
     };
     const fillForm = (data) => {
@@ -6492,6 +6539,12 @@ async function saveLocationEdit(locId, modal) {
     const countryVal = document.getElementById('location-edit-country').value.trim();
     const cityVal = document.getElementById('location-edit-city').value.trim();
     const addressVal = document.getElementById('location-edit-address').value.trim();
+    // Latitude/Longitude (demande du 20/09/2026) : lus comme chaînes trim() d'abord (comme
+    // les autres champs) — parsés en nombre plus bas seulement si non vides, pour distinguer
+    // "champ resté vide" (aucun changement voulu) de "0 tapé explicitement" (une coordonnée
+    // valide, l'équateur/le méridien de Greenwich).
+    const latRawVal = document.getElementById('location-edit-lat').value.trim();
+    const lngRawVal = document.getElementById('location-edit-lng').value.trim();
     const episodeVal = document.getElementById('location-edit-episode').value.trim();
     const episodeLabelVal = document.getElementById('location-edit-episode-label').value.trim();
     const yearVal = collectYearCheckboxValue(document.getElementById('location-edit-year'));
@@ -6502,6 +6555,25 @@ async function saveLocationEdit(locId, modal) {
         if (val && !extracted) { errEl.classList.remove('hidden'); hasError = true; }
         else errEl.classList.add('hidden');
     };
+    // Latitude/Longitude (demande du 20/09/2026) : parsées ici (pas plus haut, avec les
+    // autres champs texte) pour pouvoir réutiliser hasError/le message d'erreur commun à
+    // tout le formulaire — un lieu avec une coordonnée invalide ne doit pas silencieusement
+    // garder son ancienne position, ni planter toute la sauvegarde sans explication (même
+    // philosophie que checkField() ci-dessus pour les liens).
+    const latLngErrEl = document.getElementById('location-edit-latlng-error');
+    let latVal = null, lngVal = null, latLngChanged = false;
+    if (latRawVal !== '' || lngRawVal !== '') {
+        latVal = parseFloat(latRawVal);
+        lngVal = parseFloat(lngRawVal);
+        const valid = Number.isFinite(latVal) && Number.isFinite(lngVal) && latVal >= -90 && latVal <= 90 && lngVal >= -180 && lngVal <= 180;
+        if (!valid) { latLngErrEl.classList.remove('hidden'); hasError = true; }
+        else {
+            latLngErrEl.classList.add('hidden');
+            latLngChanged = latVal !== locationEditOriginalSkeletonValues.lat || lngVal !== locationEditOriginalSkeletonValues.lng;
+        }
+    } else {
+        latLngErrEl.classList.add('hidden');
+    }
     // BUG corrigé (demande du 14/09/2026, "je change la date... mais la date ne change
     // pas") : 2e cause du même symptôme — ces 5 champs étaient TOUJOURS revalidés, même
     // quand l'admin n'y avait pas touché. Un lieu dont un lien déjà enregistré ne repasse
@@ -6631,6 +6703,10 @@ async function saveLocationEdit(locId, modal) {
     if (countryVal !== (locationEditOriginalSkeletonValues.country || '')) skeletonFields.country = countryVal;
     if (cityVal !== (locationEditOriginalSkeletonValues.city || '')) skeletonFields.city = cityVal;
     if (addressVal !== (locationEditOriginalSkeletonValues.address || '')) skeletonFields.address = addressVal;
+    // Latitude/Longitude (demande du 20/09/2026) : toujours les DEUX ensemble (jamais une
+    // seule coordonnée à moitié modifiée) — latLngChanged posé plus haut, une fois la
+    // validation de plage passée.
+    if (latLngChanged) { skeletonFields.lat = latVal; skeletonFields.lng = lngVal; }
     if (episodeVal !== (locationEditOriginalSkeletonValues.episode || '')) skeletonFields.episode = episodeVal;
     if (episodeLabelVal !== (locationEditOriginalSkeletonValues.episodeLabel || '')) skeletonFields.episodeLabel = episodeLabelVal;
     if (yearVal) skeletonFields.year = yearVal;
