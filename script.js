@@ -348,9 +348,22 @@ window.avatarColorForUsername = function (username) {
 // re-télécharger/re-valider en réseau à chaque navigation — voir sw.js. Enregistré après
 // le "load" pour ne jamais retarder l'affichage de la page en cours, et sans danger pour
 // la version navigateur classique (accélère aussi les visites suivantes là-bas).
+// BUG corrigé (demande du 20/09/2026, "la page feed ne fonctionne toujours pas sur
+// mobile... même en navigation privée") : registration.update() force un contrôle
+// immédiat d'une nouvelle version de sw.js au lieu d'attendre l'intervalle interne du
+// navigateur (peu fiable sur une PWA iOS installée sur l'écran d'accueil, connue pour
+// ne quasiment jamais revérifier sw.js d'elle-même — un appareil pouvait donc rester
+// bloqué indéfiniment sur un ancien sw.js, et donc sur d'anciennes versions de
+// script.js/feed.html, quel que soit le nombre de correctifs publiés côté dépôt depuis).
+// Voir aussi le passage de sw.js en "réseau d'abord" pour les fichiers statiques
+// eux-mêmes (même demande) — les deux correctifs se complètent : celui-ci accélère la
+// détection d'un sw.js mis à jour, l'autre garantit que même un sw.js déjà à jour ne
+// serve plus jamais un script.js/firebase-init.js périmé.
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+            reg.update().catch(() => {});
+        }).catch(() => {});
     });
 }
 
