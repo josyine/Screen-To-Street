@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260946">
+<link rel="stylesheet" href="style.css?v=20260947">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -400,9 +400,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260946"></script>
-<script src="locations-data.js?v=20260946"></script>
-<script src="script.js?v=20260946"></script>
+<script type="module" src="firebase-init.js?v=20260947"></script>
+<script src="locations-data.js?v=20260947"></script>
+<script src="script.js?v=20260947"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -570,6 +570,33 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     // les appels suivants attendent la MÊME requête au lieu d'en déclencher une nouvelle à
     // chaque clic. Remise à null en cas d'échec/timeout pour permettre un nouvel essai en
     // revenant sur l'onglet, comme loadSavedFeed().
+    // BUG corrigé (demande du 20/09/2026, "Mei's pictures n'apparait toujours pas sur
+    // mobile") : contrairement à loadFeed() (Community), qui n'est appelée QUE depuis le
+    // listener "firebase-ready"/son repli 8s (voir tout en bas de ce fichier),
+    // renderSacredGrid() se déclenche directement au clic sur l'onglet — y compris AVANT que
+    // le <script type="module" src="firebase-init.js"> ait fini de charger (un module ES,
+    // plus lent à s'exécuter qu'un <script> classique, sur un réseau mobile plus lent). Si
+    // l'onglet était tapé à cet instant précis, window.fetchAllRecreatedPhotos n'existait pas
+    // encore : le code ci-dessous figeait alors sacredContentPromise sur `Promise.resolve({})`
+    // — un résultat vide mis en cache DÉFINITIVEMENT pour le reste de la visite, jamais
+    // réessayé même une fois Firebase chargé quelques instants plus tard. La grille retombait
+    // alors sur le repli recreatedPhoto(s) du catalogue statique (celebLocations) — repli lui
+    // -même peu fiable (voir la note sur window.adminBackfillLocationPhotos() dans
+    // firebase-init.js : la plupart des fichiers images/admin-upload-*-recreated*.jpg qu'il
+    // référence ne sont jamais réellement committés) — d'où des tuiles sans photo visible.
+    // Plus courant sur mobile (page perçue comme chargée, donc tapée plus vite, avant que le
+    // module Firebase ait fini), plus rare sur desktop — expliquant le symptôme "marche sur
+    // ordinateur, pas sur mobile". On attend maintenant "firebase-ready" (ou 8s au maximum,
+    // même délai que le repli de loadFeed() plus bas) avant de conclure que Firebase est
+    // indisponible.
+    function waitForFirebaseReady(maxMs) {
+        return new Promise((resolve) => {
+            if (typeof window.fetchAllRecreatedPhotos === 'function') { resolve(); return; }
+            const onReady = () => { clearTimeout(timer); resolve(); };
+            window.addEventListener('firebase-ready', onReady, { once: true });
+            const timer = setTimeout(() => { window.removeEventListener('firebase-ready', onReady); resolve(); }, maxMs);
+        });
+    }
     let sacredContentPromise = null;
     async function renderSacredGrid() {
         const grid = document.getElementById('feed-grid');
@@ -579,9 +606,12 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             loadingEl.classList.remove('hidden');
             emptyEl.classList.add('hidden');
             grid.innerHTML = '';
-            sacredContentPromise = typeof window.fetchAllRecreatedPhotos === 'function'
-                ? withTimeout(window.fetchAllRecreatedPhotos(), 15000)
-                : Promise.resolve({});
+            sacredContentPromise = (async () => {
+                if (typeof window.fetchAllRecreatedPhotos !== 'function') await waitForFirebaseReady(8000);
+                return typeof window.fetchAllRecreatedPhotos === 'function'
+                    ? withTimeout(window.fetchAllRecreatedPhotos(), 15000)
+                    : {};
+            })();
         }
         let livePhotos;
         try {
