@@ -127,6 +127,23 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // Index dénormalisé des photos "Mei's Pictures" (demande du 20/09/2026, "la page feed
+    // charge à l'infini sur mobile") — même principe que feedPosts plus bas : un document
+    // {photos: [...]} PAR LIEU, ne contenant QUE les photos (pas le reste de
+    // locationContent : descriptions multilingues, tips, liens sociaux...), tenu à jour en
+    // fan-out par window.adminUpdateLocationContent()/approveLocationSubmission()
+    // (firebase-init.js) chaque fois que recreatedPhoto(s) change. feed.html
+    // (window.fetchAllRecreatedPhotos()) n'a alors plus qu'à scanner CETTE collection légère
+    // pour l'onglet "Mei's Pictures", au lieu de télécharger l'intégralité de
+    // locationContent (base64 des photos de CHAQUE lieu EN PLUS de tout son contenu texte)
+    // rien que pour en extraire deux champs — c'était la cause du chargement infini sur
+    // mobile.
+    match /locationPhotos/{locationId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
     // Avis publics ("Reviews") sur un lieu : un avis par personne et par lieu, stocké
     // dans une sous-collection pour pouvoir lire tous les avis d'UN lieu sans lire
     // toute la collection.

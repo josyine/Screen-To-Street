@@ -1235,6 +1235,12 @@ window.approveLocationSubmission = async function (submission) {
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), resolveDeleteMarkers(stripUndefinedDeep(contentDoc)), { merge: true });
+        // Index "Mei's Pictures" (voir syncLocationPhotosIndex() plus bas dans ce fichier,
+        // demande du 20/09/2026) : une soumission approuvée peut déjà porter des photos
+        // recréées (voir le commentaire ci-dessus sur recreatedPhoto), qui doivent donc
+        // apparaître dans cet index léger comme n'importe quelle autre écriture de
+        // recreatedPhoto(s).
+        if ('recreatedPhotos' in contentDoc || 'recreatedPhoto' in contentDoc) await syncLocationPhotosIndex(targetId, contentDoc);
 
         // Champs "squelette" (Groupe/Membre/Pays/Ville/Catégorie/Année, demande du
         // 13/09/2026, "je veux également pouvoir modifier la partie Group, member,
@@ -1427,11 +1433,50 @@ function resolveDeleteMarkers(value) {
     return value;
 }
 
+// Index dénormalisé "Mei's Pictures" (locationPhotos/{locationId}, voir firestore.rules) —
+// demande du 20/09/2026, "la page feed charge à l'infini sur mobile... je veux pouvoir voir
+// les photos de Community et de Mei's picture". Cause du symptôme : feed.html lisait
+// jusqu'ici fetchAllLocationContent() (plus bas, maintenant retirée) pour cet onglet — un
+// getDocs() sur TOUTE la collection locationContent, donc les descriptions multilingues,
+// tips, liens sociaux etc. de CHAQUE lieu du site, rien que pour en extraire
+// recreatedPhoto(s). Combiné aux photos elles-mêmes (base64, jusqu'à ~1 Mo par lieu selon le
+// commentaire de resolveDeleteMarkers ci-dessus), ce téléchargement pouvait peser plusieurs
+// dizaines de Mo sur un site avec ne serait-ce qu'une quarantaine de lieux illustrés — sans
+// aucun timeout côté feed.html pour ce téléchargement précis (contrairement à
+// loadFeed()/loadSavedFeed(), déjà protégés), d'où un "Loading..." qui ne se résolvait
+// jamais sur mobile. Cette fonction ne renvoie QUE {photos: [...]} par lieu — même principe
+// que feedPosts pour le fil "Community" juste au-dessus dans ce fichier — tenu à jour en
+// fan-out par syncLocationPhotosIndex() ci-dessous à chaque écriture de recreatedPhoto(s).
+async function syncLocationPhotosIndex(locationId, fields) {
+    try {
+        const ref = doc(db, 'locationPhotos', String(locationId));
+        const photos = Array.isArray(fields.recreatedPhotos) && fields.recreatedPhotos.length
+            ? fields.recreatedPhotos
+            : (fields.recreatedPhoto && fields.recreatedPhoto !== DELETE_FIELD_MARKER ? [fields.recreatedPhoto] : []);
+        if (photos.length) await setDoc(ref, { photos });
+        else await deleteDoc(ref);
+    } catch (e) {
+        console.warn('Synchronisation de l\'index "Mei\'s Pictures" échouée :', e);
+    }
+}
+window.fetchAllRecreatedPhotos = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'locationPhotos'));
+        const result = {};
+        snap.forEach(d => { result[d.id] = d.data(); });
+        return result;
+    } catch (e) {
+        console.warn('Lecture groupée des photos "Mei\'s Pictures" échouée :', e);
+        return {};
+    }
+};
+
 window.adminUpdateLocationContent = async function (locationId, fields) {
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
         await setDoc(doc(db, 'locationContent', String(locationId)), resolveDeleteMarkers(stripUndefinedDeep(fields)), { merge: true });
+        if ('recreatedPhotos' in fields || 'recreatedPhoto' in fields) await syncLocationPhotosIndex(locationId, fields);
         return { success: true };
     } catch (e) {
         console.warn('Édition directe du lieu échouée :', e);
@@ -1443,29 +1488,6 @@ window.adminUpdateLocationContent = async function (locationId, fields) {
         // côté du code pour rendre la cause réelle diagnosticable sans accès direct à la
         // console du navigateur de l'admin.
         return { success: false, code: e && e.code || 'unknown', message: e && e.message };
-    }
-};
-
-// Lecture groupée de TOUT locationContent (demande du 19/09/2026, "je veux que les photos
-// de Mei... apparaissent automatiquement dans la section Mei's Pictures de la page feed...
-// il manque des photos") — feed.html (window.renderSacredGrid()) ne lisait jusqu'ici que
-// le catalogue statique (locations-data.js), republié seulement toutes les 6h par un
-// workflow planifié (voir .github/workflows/export-locations.yml) : une photo tout juste
-// ajoutée via l'icône crayon/admin.html restait invisible dans cet onglet jusqu'au
-// prochain export, alors qu'elle apparaît déjà instantanément sur la fiche du lieu
-// (map.html, qui superpose ce même type de lecture Firestore par-dessus le catalogue
-// statique, voir window.fetchLocationContent() ci-dessus). Même principe qu'
-// fetchLocationSkeletonOverrides() juste en dessous : une seule requête groupée par
-// visite, pas une lecture par lieu affiché.
-window.fetchAllLocationContent = async function () {
-    try {
-        const snap = await getDocs(collection(db, 'locationContent'));
-        const result = {};
-        snap.forEach(d => { result[d.id] = d.data(); });
-        return result;
-    } catch (e) {
-        console.warn('Lecture groupée du contenu des lieux échouée :', e);
-        return {};
     }
 };
 
