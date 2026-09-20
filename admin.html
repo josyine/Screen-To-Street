@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260941">
+<link rel="stylesheet" href="style.css?v=20260942">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -386,10 +386,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260941"></script>
-<script src="countries.js?v=20260941"></script>
-<script src="locations-data.js?v=20260941"></script>
-<script src="script.js?v=20260941"></script>
+<script type="module" src="firebase-init.js?v=20260942"></script>
+<script src="countries.js?v=20260942"></script>
+<script src="locations-data.js?v=20260942"></script>
+<script src="script.js?v=20260942"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1778,6 +1778,28 @@ recomposée, sans texte ni légende.`;
         const extraFieldWidgets = {};
         const extraValidators = { tweetUrls: extractTweetUrl, instagramUrls: extractInstagramUrl, facebookUrls: extractFacebookUrl, tiktokUrls: extractTikTokUrl, pinterestUrls: extractPinterestUrl, youtubeUrls: extractYouTubeUrl };
 
+        // BUG corrigé (demande du 20/09/2026, "le 'additionnal Youtube URL' ne fonctionne
+        // toujours pas") — cause réelle, invisible sans reproduire le timing exact :
+        // fillFields() ci-dessous est appelée DEUX fois, une fois immédiatement avec les
+        // données locales, puis une seconde fois une fois fetchLocationContent() résolu
+        // (plus bas) — et à CHAQUE appel, elle recrée entièrement tous les widgets
+        // (createMultiUrlField/createTitledListField/createVisitSectionsField/
+        // createPhotoGalleryField), effaçant tout ce qui a été tapé entre les deux. Si
+        // l'admin ouvrait la carte et commençait à taper une "Additional YouTube video URL"
+        // avant que cette 2e lecture Firestore ait eu le temps de répondre (quasi garanti
+        // dès que "Existing locations" affiche plusieurs cartes en parallèle, chacune avec
+        // sa propre lecture), le rappel de fillFields() effaçait silencieusement la ligne
+        // tout juste ajoutée — Save envoyait alors un tableau vide, sans le moindre message
+        // d'erreur pour expliquer pourquoi "ça ne marche pas". Un simple drapeau, posé dès
+        // la première interaction réelle avec la carte (frappe, coche, clic sur "+"...),
+        // évite ce second appel dès que l'admin a commencé à éditer quoi que ce soit ici.
+        let cardTouched = false;
+        card.addEventListener('input', () => { cardTouched = true; });
+        card.addEventListener('change', () => { cardTouched = true; });
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.mu-add-btn, .mu-remove, .tl-add-btn, .tl-remove, .vs-add-btn, .vs-remove, .pg-upload-btn, .pg-url-toggle-btn, .pg-url-confirm-btn, .pg-remove')) cardTouched = true;
+        });
+
         // Pré-remplit avec les données locales (immédiat), puis avec le contenu Firestore
         // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
         // logique qu'openLocationEditModal()/openDetailsPanel() dans script.js.
@@ -1846,7 +1868,11 @@ recomposée, sans texte ni légende.`;
         fillFields(loc);
         if (typeof window.fetchLocationContent === 'function') {
             window.fetchLocationContent(loc.id).then(remote => {
-                if (remote) fillFields(Object.assign({}, loc, remote));
+                // cardTouched : voir le correctif du 20/09/2026 juste au-dessus — ne
+                // recrée plus tous les widgets par-dessus une édition déjà commencée par
+                // l'admin (perdue en silence sinon, y compris "Additional YouTube video
+                // URL" et toute autre modification en cours sur cette carte).
+                if (remote && !cardTouched) fillFields(Object.assign({}, loc, remote));
             });
         }
 

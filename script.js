@@ -6057,6 +6057,20 @@ function ensureLocationEditModal() {
         </div>`;
     document.body.appendChild(modal);
     wireLocationEditPhotoInputOnce(modal);
+    // BUG corrigé (demande du 20/09/2026, "le 'additionnal Youtube URL' ne fonctionne
+    // toujours pas") — même cause que dans admin.html (renderExistingLocationCard) : la
+    // 2e lecture Firestore (fetchLocationContent, voir openLocationEditModal plus bas)
+    // rappelle fillForm(), qui recrée locationEditExtraWidgets (createMultiUrlField) à
+    // partir de zéro — effaçant en silence une "Additional YouTube video URL" (ou tout
+    // autre champ) tout juste tapée si l'admin a commencé à éditer avant que cette
+    // lecture ait répondu. Attaché une seule fois ici (modal réutilisé à chaque
+    // ouverture, voir le early return ci-dessus) ; locationEditTouched est remis à faux
+    // à chaque ouverture dans openLocationEditModal().
+    modal.addEventListener('input', () => { locationEditTouched = true; });
+    modal.addEventListener('change', () => { locationEditTouched = true; });
+    modal.addEventListener('click', (e) => {
+        if (e.target.closest('.mu-add-btn, .mu-remove, .vs-add-btn, .vs-remove, .tl-add-btn, .tl-remove, .pg-upload-btn, .pg-url-toggle-btn, .pg-url-confirm-btn, .pg-remove')) locationEditTouched = true;
+    });
     return modal;
 }
 
@@ -6179,6 +6193,11 @@ let locationEditOriginalRawLinks = {};
 // fillSkeletonFields()/saveLocationEdit() plus bas : permet de sauvegarder un champ VIDÉ
 // volontairement (ex: Episode supprimé), sans jamais écraser un champ resté intact.
 let locationEditOriginalSkeletonValues = {};
+// Voir le correctif du 20/09/2026 dans ensureLocationEditModal() — remis à faux à chaque
+// ouverture du modal (openLocationEditModal), posé à vrai dès la première interaction
+// réelle avec un champ du modal (frappe, coche, "+ Add another link"...), pour ne plus
+// jamais écraser une édition en cours quand la 2e lecture Firestore répond.
+let locationEditTouched = false;
 // "Practical information & access" (demande du 19/09/2026) — même éditeur/widget
 // (createTitledListField) et même champ (practicalInfo) que la fiche "Existing locations"
 // d'admin.html, pour ne pas les faire diverger.
@@ -6205,6 +6224,7 @@ window.openLocationEditModal = async function (locId) {
     const loc = celebLocations.find(l => l.id === locId);
     if (!loc) return;
     locationEditCurrentId = locId;
+    locationEditTouched = false;
 
     const modal = ensureLocationEditModal();
     document.getElementById('location-edit-title').textContent = `Edit — ${loc.name}`;
@@ -6339,7 +6359,12 @@ window.openLocationEditModal = async function (locId) {
         // fillSkeletonFields() n'est PAS rappelé ici — voir le commentaire au-dessus de sa
         // définition : Group/Member/Country/City/Year ne viennent jamais de `remote`, les
         // rappeler ici ne ferait qu'écraser une correction déjà en cours de saisie.
-        if (remote && locationEditCurrentId === locId) fillForm(Object.assign({}, loc, remote));
+        // locationEditTouched : même principe, étendu le 20/09/2026 à fillForm() elle-même
+        // (voir le correctif dans ensureLocationEditModal()) — sans ce garde-fou, taper une
+        // "Additional YouTube video URL" (ou toute autre modification de ce modal) pendant
+        // que cette lecture est encore en vol se faisait effacer en silence dès qu'elle
+        // répondait.
+        if (remote && locationEditCurrentId === locId && !locationEditTouched) fillForm(Object.assign({}, loc, remote));
     }
 
     const saveBtn = document.getElementById('location-edit-save-btn');
