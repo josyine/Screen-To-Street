@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260949">
+<link rel="stylesheet" href="style.css?v=20260950">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none; cursor:pointer;}
@@ -605,7 +605,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      pour recalculer en vrai le nombre de lieux/villes/groupes par pays ci-dessous (voir
      correctDestinationNumbers() plus bas) au lieu des chiffres figés à la création de
      cette page. -->
-<script src="locations-data.js?v=20260949"></script>
+<script src="locations-data.js?v=20260950"></script>
 <!-- Firebase (demande du 13/09/2026, "je veux pouvoir modifier les pages Explore
      Destinations ... depuis le mode admin") : cette page était jusqu'ici 100% statique,
      sans aucun accès à Firestore ni à isCurrentUserAdmin() — nécessaire pour savoir qui a
@@ -613,13 +613,13 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      éléments de page absents ici comme la nav du bas mobile) via le même événement
      "firebase-ready" que le reste du site (voir onAuthStateChanged tout en bas de
      firebase-init.js) pour connaître l'état de connexion. -->
-<script type="module" src="firebase-init.js?v=20260949"></script>
+<script type="module" src="firebase-init.js?v=20260950"></script>
 <!-- Contenu partagé "Explore Destinations" (demande du 12/09/2026, "le contenu de
      map-destinations.html et destinations.html doit être le même") : COUNTRIES,
      COUNTRY_DETAILS et le rendu de la fiche détaillée viennent maintenant tous les deux
      de destinations-content.js, chargé à l'identique par destinations.html — voir ce
      fichier pour la donnée et la logique partagées. -->
-<script src="destinations-content.js?v=20260949"></script>
+<script src="destinations-content.js?v=20260950"></script>
 <script>
     function toggleMenu(menuId, evt) {
         document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== menuId) m.classList.add('hidden'); });
