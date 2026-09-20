@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260945">
+<link rel="stylesheet" href="style.css?v=20260946">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -383,6 +383,20 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <div id="feed-backfill-result" class="live-form-result hidden"></div>
             </div>
 
+            <!-- Index "Mei's Pictures" (demande du 20/09/2026, "Mei's pictures n'apparaissent
+                 ni sur ordinateur ni sur mobile") — même principe que "Rebuild the feed index"
+                 juste au-dessus : locationPhotos/ ne couvre que les photos enregistrées APRÈS
+                 ce correctif (voir window.adminBackfillLocationPhotos()/
+                 syncLocationPhotosIndex() dans firebase-init.js) ; tout ce qui existait avant
+                 doit être copié une fois depuis locationContent/ pour redevenir visible dans
+                 cet onglet de feed.html. -->
+            <div class="live-form">
+                <h2>Rebuild the "Mei's Pictures" index</h2>
+                <p class="sub" style="margin-bottom:14px;">Feed.html's "Mei's Pictures" tab now reads from a lightweight index (photos only, one document per location) instead of downloading every location's full content just to find its photos — much faster. This index is kept up to date automatically for anything saved from now on. Photos saved before this change won't appear there until you run this once to backfill them.</p>
+                <button type="button" id="location-photos-backfill-btn" class="live-submit-btn" onclick="window.runLocationPhotosBackfill()">Rebuild "Mei's Pictures" index now</button>
+                <div id="location-photos-backfill-result" class="live-form-result hidden"></div>
+            </div>
+
             <!-- Libellé "Episode:" personnalisable (demande du 20/09/2026, "je veux pouvoir
                  changer le nom 'Episode'... en mode admin") — un seul champ texte, appliqué
                  tel quel dans les 8 langues du site (siteConfig/labels, voir
@@ -401,10 +415,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260945"></script>
-<script src="countries.js?v=20260945"></script>
-<script src="locations-data.js?v=20260945"></script>
-<script src="script.js?v=20260945"></script>
+<script type="module" src="firebase-init.js?v=20260946"></script>
+<script src="countries.js?v=20260946"></script>
+<script src="locations-data.js?v=20260946"></script>
+<script src="script.js?v=20260946"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1574,6 +1588,31 @@ recomposée, sans texte ni légende.`;
         btn.textContent = 'Rebuild feed index now';
         result.textContent = res.success
             ? `Done — ${res.written} post${res.written === 1 ? '' : 's'} indexed.`
+            : `Failed: ${res.code || 'unknown error'}`;
+        result.classList.remove('hidden');
+    };
+
+    // Reconstruction ponctuelle de l'index "Mei's Pictures" (voir
+    // window.adminBackfillLocationPhotos() dans firebase-init.js et la note dans le HTML
+    // ci-dessus) — bouton "Maintenance", demande du 20/09/2026.
+    window.runLocationPhotosBackfill = async function () {
+        const btn = document.getElementById('location-photos-backfill-btn');
+        const result = document.getElementById('location-photos-backfill-result');
+        btn.disabled = true;
+        btn.textContent = 'Rebuilding…';
+        result.classList.add('hidden');
+        if (typeof window.adminBackfillLocationPhotos !== 'function') {
+            btn.disabled = false;
+            btn.textContent = 'Rebuild "Mei\'s Pictures" index now';
+            result.textContent = 'Not available — firebase-init.js failed to load.';
+            result.classList.remove('hidden');
+            return;
+        }
+        const res = await window.adminBackfillLocationPhotos();
+        btn.disabled = false;
+        btn.textContent = 'Rebuild "Mei\'s Pictures" index now';
+        result.textContent = res.success
+            ? `Done — ${res.written} location${res.written === 1 ? '' : 's'} indexed.`
             : `Failed: ${res.code || 'unknown error'}`;
         result.classList.remove('hidden');
     };
