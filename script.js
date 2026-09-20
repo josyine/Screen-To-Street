@@ -1628,12 +1628,6 @@ let verifiedLocationIdsCache = [];
 // Filtre "Verified only" (demande du 15/09/2026, admin uniquement) — voir
 // window.toggleVerifiedOnlyFilter() et renderLocations() plus bas.
 let verifiedOnlyFilter = false;
-// Libellés de site modifiables depuis l'admin (demande du 20/09/2026, "je veux pouvoir
-// changer le nom 'Episode' en mode admin") — chargé une seule fois, voir le handler
-// 'firebase-ready' plus bas (window.fetchSiteLabels(), firebase-init.js) et
-// applySiteLabelOverrides() qui écrase translations[lang].lEpisode pour toutes les
-// langues quand une valeur personnalisée est enregistrée.
-let siteLabelsCache = {};
 let currentGeneratedItinerary = [];
 let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -2257,16 +2251,6 @@ window.addEventListener('firebase-ready', async (e) => {
                         if (anyRemoved && typeof renderLocations === 'function') renderLocations(true);
                     }
                 } catch (err) { /* tant pis, le lieu reste visible jusqu'au prochain export statique */ }
-            })(),
-            // Libellé "Episode:" personnalisable par l'admin (demande du 20/09/2026) — lu
-            // pour tout visiteur, connecté ou non (comme les 3 lectures ci-dessus), puisque
-            // c'est un simple habillage de texte affiché sur la fiche lieu publique.
-            (async () => {
-                if (typeof window.fetchSiteLabels !== 'function') return;
-                try {
-                    siteLabelsCache = await window.fetchSiteLabels();
-                    applySiteLabelOverrides();
-                } catch (err) { /* tant pis, le libellé par défaut ("Episode:") reste affiché */ }
             })(),
         ]);
     }
@@ -3905,20 +3889,6 @@ window.changeLang = function(lang) {
     localStorage.setItem('lang', lang);
     updateUI();
 };
-
-// Libellé "Episode:" personnalisable par l'admin (demande du 20/09/2026, voir
-// siteLabelsCache/window.fetchSiteLabels() plus haut) : écrase translations[lang].lEpisode
-// pour CHAQUE langue avec la même valeur (un seul champ admin, pas une traduction par
-// langue) puis rappelle updateUI() pour que le changement s'applique immédiatement, y
-// compris si l'admin est déjà sur la fiche lieu. Rejouée automatiquement à chaque
-// changement de langue (window.changeLang ci-dessus) puisqu'elle a modifié l'objet
-// translations lui-même, pas juste le DOM.
-function applySiteLabelOverrides() {
-    if (siteLabelsCache && siteLabelsCache.episodeLabel) {
-        Object.keys(translations).forEach(lang => { translations[lang].lEpisode = siteLabelsCache.episodeLabel; });
-        updateUI();
-    }
-}
 
 function updateUI() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -6008,9 +5978,20 @@ function ensureLocationEditModal() {
                  de le modifier ni de le vider — même champ squelette (locationSkeletonOverrides)
                  que Group/Country/City/Address ci-dessus, vide = section "Episode:" masquée sur
                  la fiche (voir renderLocationMetaFields()). -->
+            <!-- Titre de la section personnalisable PAR LIEU (demande du 20/09/2026, "je veux
+                 pouvoir modifier le Location detail: 'Episode' section title directement via
+                 le detail d'un lieu... changer lieu par lieu") — remplace un précédent réglage
+                 global (siteConfig/labels, retiré) : même champ squelette
+                 (locationSkeletonOverrides) que Episode/Group/Country ci-dessus/dessous, voir
+                 saveLocationEdit() plus bas et renderLocationMetaFields() pour l'affichage.
+                 Optionnel : laissé vide, le libellé traduit par défaut ("Episode:"/"Épisode :"/
+                 etc.) reste utilisé pour ce lieu. -->
+            <label style="${labelStyle}">Section title (optional)</label>
+            <input type="text" id="location-edit-episode-label" style="${fieldStyle} margin-bottom:4px;" placeholder="e.g. Description:">
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:10px;">Replaces the "Episode:" title below, for this location only. Leave empty to use the site's default label.</div>
             <label style="${labelStyle}">Episode (optional)</label>
             <textarea id="location-edit-episode" rows="2" style="${fieldStyle} margin-bottom:4px; resize:vertical;" placeholder="e.g. j-hope's hometown street, murals + &quot;Hope World&quot; message sculpture..."></textarea>
-            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Shown as "Episode:" in the location's Info tab — leave empty to hide it entirely.</div>
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Shown as "Episode:" (or the custom title above) in the location's Info tab — leave empty to hide it entirely.</div>
 
             <label style="${labelStyle}">YouTube video URL</label>
             <input type="url" id="location-edit-youtube" style="${fieldStyle}" placeholder="https://www.youtube.com/watch?v=...">
@@ -6284,6 +6265,7 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-city').value = data.city || '';
         document.getElementById('location-edit-address').value = data.address || '';
         document.getElementById('location-edit-episode').value = data.episode || '';
+        document.getElementById('location-edit-episode-label').value = data.episodeLabel || '';
         document.getElementById('location-edit-year').innerHTML = yearCheckboxGroupHtml(data.year);
         // Bouton "Closed" (demande du 19/09/2026) — reflète l'état actuel du nom.
         locationEditClosedState = (data.name || '').startsWith('[CLOSED] ');
@@ -6295,7 +6277,7 @@ window.openLocationEditModal = async function (locId) {
         // Episode) se sauvegarde bien vide au lieu d'être silencieusement ignoré.
         locationEditOriginalSkeletonValues = {
             group: data.group || '', country: data.country || '', city: data.city || '',
-            address: data.address || '', episode: data.episode || ''
+            address: data.address || '', episode: data.episode || '', episodeLabel: data.episodeLabel || ''
         };
     };
     const fillForm = (data) => {
@@ -6498,6 +6480,7 @@ async function saveLocationEdit(locId, modal) {
     const cityVal = document.getElementById('location-edit-city').value.trim();
     const addressVal = document.getElementById('location-edit-address').value.trim();
     const episodeVal = document.getElementById('location-edit-episode').value.trim();
+    const episodeLabelVal = document.getElementById('location-edit-episode-label').value.trim();
     const yearVal = collectYearCheckboxValue(document.getElementById('location-edit-year'));
 
     let hasError = false;
@@ -6636,6 +6619,7 @@ async function saveLocationEdit(locId, modal) {
     if (cityVal !== (locationEditOriginalSkeletonValues.city || '')) skeletonFields.city = cityVal;
     if (addressVal !== (locationEditOriginalSkeletonValues.address || '')) skeletonFields.address = addressVal;
     if (episodeVal !== (locationEditOriginalSkeletonValues.episode || '')) skeletonFields.episode = episodeVal;
+    if (episodeLabelVal !== (locationEditOriginalSkeletonValues.episodeLabel || '')) skeletonFields.episodeLabel = episodeLabelVal;
     if (yearVal) skeletonFields.year = yearVal;
     // Bouton "Closed" (demande du 19/09/2026) — préfixe/déprefixe le nom avec "[CLOSED] "
     // selon la bascule locale, sans jamais empiler le préfixe plusieurs fois. Le générateur
@@ -6734,6 +6718,13 @@ function renderLocationMetaFields(loc) {
 
     const dEpi = document.getElementById('details-episode');
     const dEpiCont = document.getElementById('details-episode-container');
+    const dEpiLabel = document.getElementById('details-episode-label');
+    // Titre de section personnalisable PAR LIEU (demande du 20/09/2026, "je veux pouvoir
+    // modifier... directement via le detail d'un lieu... changer lieu par lieu") : plus de
+    // data-i18n sur ce <b> (voir map.html) — loc.episodeLabel (locationSkeletonOverrides,
+    // éditable via le crayon, voir saveLocationEdit() plus bas) prime, avec repli sur le
+    // libellé traduit par défaut si ce lieu n'a pas de titre personnalisé.
+    if (dEpiLabel) dEpiLabel.textContent = loc.episodeLabel || t('lEpisode');
     // display:block, même raison que dLinkCont (renderLocationRichContent).
     if (dEpi && dEpiCont) { if(loc.episode) { dEpi.textContent = loc.episode; dEpiCont.style.display = 'block'; } else { dEpiCont.style.display = 'none'; } }
 
