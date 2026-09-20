@@ -1628,6 +1628,12 @@ let verifiedLocationIdsCache = [];
 // Filtre "Verified only" (demande du 15/09/2026, admin uniquement) — voir
 // window.toggleVerifiedOnlyFilter() et renderLocations() plus bas.
 let verifiedOnlyFilter = false;
+// Libellés de site modifiables depuis l'admin (demande du 20/09/2026, "je veux pouvoir
+// changer le nom 'Episode' en mode admin") — chargé une seule fois, voir le handler
+// 'firebase-ready' plus bas (window.fetchSiteLabels(), firebase-init.js) et
+// applySiteLabelOverrides() qui écrase translations[lang].lEpisode pour toutes les
+// langues quand une valeur personnalisée est enregistrée.
+let siteLabelsCache = {};
 let currentGeneratedItinerary = [];
 let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -2251,6 +2257,16 @@ window.addEventListener('firebase-ready', async (e) => {
                         if (anyRemoved && typeof renderLocations === 'function') renderLocations(true);
                     }
                 } catch (err) { /* tant pis, le lieu reste visible jusqu'au prochain export statique */ }
+            })(),
+            // Libellé "Episode:" personnalisable par l'admin (demande du 20/09/2026) — lu
+            // pour tout visiteur, connecté ou non (comme les 3 lectures ci-dessus), puisque
+            // c'est un simple habillage de texte affiché sur la fiche lieu publique.
+            (async () => {
+                if (typeof window.fetchSiteLabels !== 'function') return;
+                try {
+                    siteLabelsCache = await window.fetchSiteLabels();
+                    applySiteLabelOverrides();
+                } catch (err) { /* tant pis, le libellé par défaut ("Episode:") reste affiché */ }
             })(),
         ]);
     }
@@ -3889,6 +3905,20 @@ window.changeLang = function(lang) {
     localStorage.setItem('lang', lang);
     updateUI();
 };
+
+// Libellé "Episode:" personnalisable par l'admin (demande du 20/09/2026, voir
+// siteLabelsCache/window.fetchSiteLabels() plus haut) : écrase translations[lang].lEpisode
+// pour CHAQUE langue avec la même valeur (un seul champ admin, pas une traduction par
+// langue) puis rappelle updateUI() pour que le changement s'applique immédiatement, y
+// compris si l'admin est déjà sur la fiche lieu. Rejouée automatiquement à chaque
+// changement de langue (window.changeLang ci-dessus) puisqu'elle a modifié l'objet
+// translations lui-même, pas juste le DOM.
+function applySiteLabelOverrides() {
+    if (siteLabelsCache && siteLabelsCache.episodeLabel) {
+        Object.keys(translations).forEach(lang => { translations[lang].lEpisode = siteLabelsCache.episodeLabel; });
+        updateUI();
+    }
+}
 
 function updateUI() {
     document.querySelectorAll('[data-i18n]').forEach(el => {
