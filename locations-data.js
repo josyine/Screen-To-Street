@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-21T06:53:15.977Z.
+// Généré le 2026-09-21T14:27:35.758Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -3651,7 +3651,7 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 70,
-    "name": "Second BTS Dormitory",
+    "name": "Second BTS Dormitory \"Blue Dorm\"",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
@@ -7665,30 +7665,30 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 158,
-    "name": "Old Big Hit Studio (Cheonggu Bldg)",
+    "name": "Old Big Hit Studio (Cheonggu Building)",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
-    "year": "2013-2016",
-    "ytId": "-uAHvGQtmT4",
-    "episodeLink": "https://youtu.be/-uAHvGQtmT4",
-    "address": "10-31 Nonhyeon-dong, Gangnam-gu",
-    "lat": 37.5155,
-    "lng": 127.0305,
-    "img": "https://images.unsplash.com/photo-1522093005080-d132e14a2e6f?w=600",
+    "year": "2013, 2014, 2015, 2016",
+    "ytId": "aXhkPYxPG3s",
+    "episodeLink": "",
+    "address": "10-31 Nonhyeon-dong, Gangnam-gu, Seoul (Street address: 13-20 Dosan-daero 16-gil).",
+    "lat": 37.5169,
+    "lng": 127.0267,
+    "img": "images/admin-upload-158-photo.jpg",
     "fullDescription": {
-      "en": "<p>The basement of the Cheonggu Building is the legendary birthplace of BTS, where the seven members sweat through years of grueling choreography practice.</p><p>The exterior walls became a massive canvas where thousands of fans wrote messages in permanent marker, standing as a quiet monument to their humble beginnings.</p>",
-      "fr": "<p>Le sous-sol du bâtiment Cheonggu est le lieu de naissance légendaire de BTS, où les sept membres ont sué pendant des années sur des chorégraphies épuisantes.</p><p>Les murs extérieurs sont devenus une immense toile où des milliers de fans ont écrit des messages au marqueur indélébile, un monument discret à leurs débuts modestes.</p>"
+      "fr": "<p>Le sous-sol du bâtiment Cheonggu est le lieu de naissance légendaire de BTS, où les sept membres ont sué pendant des années sur des chorégraphies épuisantes.</p><p>Les murs extérieurs sont devenus une immense toile où des milliers de fans ont écrit des messages au marqueur indélébile, un monument discret à leurs débuts modestes.</p>",
+      "en": "<p>Before the massive HYBE headquarters in Yongsan existed, there was the Cheonggu Building. Located in the winding residential streets of Nonhyeon-dong, this unassuming commercial building was the nerve center of Big Hit Entertainment during BTS's debut and early rise to fame. While the agency’s notoriously cramped offices occupied the second floor, the real history was made underground. The basement of the Cheonggu Building housed their legendary, famously tiny dance practice studio. This windowless room—with its plain white walls, scuffed floor, and fogged-up mirrors—is where all seven members sweat through years of grueling, relentless choreography practice. It is the literal birthplace of their famous synchronization.</p><p>For ARMYs, the Cheonggu Building is a pilgrimage site of immense historical weight. Fans around the world spent years watching BTS's early dance practice videos (for tracks like \"No More Dream,\" \"Boy In Luv,\" and \"Danger\") filmed right in this basement. Because the agency was so small, the members also regularly filmed early \"Bangtan Bomb\" logs and vlogs in the tight stairwells and on the street directly in front of the building. Today, though HYBE has long since moved on to much larger, state-of-art spaces, the exterior walls of the Cheonggu Building remain covered in layers of loving graffiti, messages, and signatures left by fans from every corner of the globe who travel here to honor the group's humble, hard-fought beginnings.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Respect the neighborhood"
+          "en": "Recreate the Bangtan Bombs"
         },
         "text": {
-          "en": "Keep noise levels down and do not attempt to enter private property."
+          "en": "Stand by the front entrance or walk down the slight incline of the street outside the building. This exact spot was used as a backdrop for numerous chaotic, funny, and emotional early vlogs from 2013 and 2014."
         }
       },
       {
@@ -7696,35 +7696,59 @@ window.STATIC_LOCATIONS = [
           "en": "Do the Trainee Walk"
         },
         "text": {
-          "en": "Walk from this building to Yoojung Sikdang to trace their exact daily commute."
+          "en": "Because the Cheonggu Building is just a few streets away from Hakdong Park, their early dorms, and Yoojung Sikdang, you can easily combine all these locations into one powerful \"Rookie Era\" walking tour of the Nonhyeon-dong neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "The Graffiti Wall"
+        },
+        "text": {
+          "en": "The exterior brick walls of the building serve as a living guestbook for ARMYs. Bring a marker to carefully add your own small message of gratitude among the thousands of others."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Important Notice"
-        },
-        "text": {
-          "en": "The building is occupied by private businesses. You cannot enter the basement."
-        }
-      },
-      {
-        "title": {
-          "en": "Photo opportunities"
-        },
-        "text": {
-          "en": "The main attraction is the exterior walls where BTS filmed early vlogs."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Located just a few streets away from Hakdong Park."
+          "en": "The neighborhood is easily accessible via the Seoul Subway. Take Line 3 to Sinsa Station (Exit 1) or Line 7 to Hakdong Station (Exit 7). The building is nestled in a hilly residential area, about a 10- to 15-minute walk from either station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The building currently houses private businesses, and the former Big Hit interior spaces are strictly closed to the public. However, fans are free to visit the exterior 24/7 to view the graffiti walls and take photos from the street."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Like much of the Nonhyeon-dong area, the streets surrounding the building feature steep inclines. Wheelchair users and those with strollers may find the uphill walk from the main avenues quite challenging, though the street directly outside the building is fully paved."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-158-recreated-0.jpg"
     ]
   },
   {
@@ -8212,67 +8236,92 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 182,
-    "name": "Spain (Mallorca / Historic Streets)",
+    "name": "Cuevas de Artà",
     "group": "BTS",
     "member": "V",
     "country": "Spain",
     "city": "Mallorca",
-    "category": "Bon Voyage",
+    "category": "MV Location",
     "year": "2023",
-    "ytId": "HYzyRHA9A8o",
-    "episodeLink": "https://www.youtube.com/watch?v=HYzyRHA9A8o",
-    "address": "Palma de Mallorca, Spain",
-    "lat": 39.5696,
-    "lng": 2.6502,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Mallorca_coastline.jpg",
+    "ytId": "HYzyRHAHJl8",
+    "episodeLink": "https://larepublica.pe/cultura-asiatica/bts/2023/08/09/taehyung-de-bts-en-que-pais-se-grabo-el-mv-love-me-again-no-fue-en-corea-del-sur-layover-kpop-europa-espana-v-196533",
+    "address": "Cuevas de Artà, Carretera de las Cuevas, s/n, 07589 Canyamel, Balearic Islands, Spain.",
+    "lat": 39.656,
+    "lng": 3.4393,
+    "img": "images/admin-upload-182-photo.jpg",
     "fullDescription": {
-      "en": "<p>For his soulful R&B solo tracks Love Me Again and Rainy Days, V traveled to the Mediterranean island of Mallorca in Spain. The glowing cave sequences and the vintage hotel hallway scenes were shot across the island.</p><p>The warm, golden lighting of the Mallorcan caves and the nostalgic European hotel rooms created a cozy, intimate atmosphere that perfectly embodied Taehyung's distinct retro artistic vision.</p>",
-      "fr": "<p>Pour ses titres solo R&B tout en soul « Love Me Again » et « Rainy Days », V s'est rendu sur l'île méditerranéenne de Majorque, en Espagne. Les scènes de grottes lumineuses et de couloirs d'hôtel vintage ont été tournées à travers l'île.</p><p>La lumière chaude et dorée des grottes majorquines et les chambres d'hôtel européennes nostalgiques ont créé une atmosphère intime et cosy, parfaitement fidèle à la vision artistique rétro si particulière de Taehyung.</p>"
+      "fr": "<p>Pour ses titres solo R&B tout en soul « Love Me Again » et « Rainy Days », V s'est rendu sur l'île méditerranéenne de Majorque, en Espagne. Les scènes de grottes lumineuses et de couloirs d'hôtel vintage ont été tournées à travers l'île.</p><p>La lumière chaude et dorée des grottes majorquines et les chambres d'hôtel européennes nostalgiques ont créé une atmosphère intime et cosy, parfaitement fidèle à la vision artistique rétro si particulière de Taehyung.</p>",
+      "en": "<p>Mallorca, the crown jewel of Spain’s Balearic Islands, is globally renowned for its dramatic limestone mountains, crystal-clear Mediterranean waters, and spectacular underground cave systems. Located on the island's eastern coast, the Cuevas de Artà (Caves of Artà) are a breathtaking natural wonder. Inside, massive subterranean chambers are filled with towering stalactites and stalagmites that have taken millions of years to form, creating a deeply mystical, almost otherworldly atmosphere.</p><p>For the visual rollout of his 2023 debut solo album Layover, V leaned heavily into a vintage, romantic, and soulful aesthetic, selecting Spain as his primary cinematic backdrop. To capture the melancholic, R&amp;B vibe of the track Love Me Again, V filmed his performance deep inside the Cuevas de Artà. Dressed in glittering sequins that contrasted beautifully with the raw, naturally resonant stone, he sang among the rock formations illuminated by warm, glowing lights. Beyond the caves, V also took advantage of Mallorca's stunning coastline, filming the carefree, sun-drenched beach sequences for his Slow Dancing music video on the shores of Camp de Mar, fully embracing the island's tranquil Mediterranean spirit.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Historic Old Town"
+          "en": "The Golden Cave Experience"
         },
         "text": {
-          "en": "Explore the cobblestone streets and Gothic architecture of Palma's old town to feel the European aesthetic."
+          "en": "When visiting the Cuevas de Artà, pay special attention to the lighting and the natural acoustics. The guided tours highlight the dramatic scale of the chambers, giving you the exact moody, echoing atmosphere Taehyung experienced while singing Love Me Again."
         }
       },
       {
         "title": {
-          "en": "Cave Explorations"
+          "en": "Channel the Layover Aesthetic"
         },
         "text": {
-          "en": "Mallorca is famous for its breathtaking underground cave systems (like Cuevas del Drach) that inspired the music video's look."
+          "en": "V’s wardrobe for this era was unapologetically retro and glamorous. Bring a vintage camera or wear something with a subtle touch of sparkle to take photos in the caves that match his glamorous-yet-grungy vibe."
+        }
+      },
+      {
+        "title": {
+          "en": "From Cave to Coast"
+        },
+        "text": {
+          "en": "After exploring the underground caves in the morning, make the drive across the island to Camp de Mar. Sit on the sand, listen to Slow Dancing, and recreate the relaxed, barefoot Mediterranean energy V showcased in the video."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Public streets and historic European cave/hotel locations."
-        }
-      },
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "Breathtaking Mediterranean coastal views, ancient stone alleyways, and cozy vintage European hotel interiors."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Flew into Palma de Mallorca Airport (PMI) from mainland Europe."
+          "en": "The caves are located on the eastern side of Mallorca, about an hour's drive from the capital city of Palma. Renting a car is highly recommended for exploring the island freely, as public transit to the remote caves can be infrequent."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The caves are open year-round, typically from 10:00 AM to 5:00 PM (hours extend slightly in the summer). Admission is around €16 for adults, and the guided tour takes about 40 minutes."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Due to the natural environment, the caves involve navigating steep stone staircases and uneven, often damp pathways, making them largely inaccessible for wheelchair users and strollers."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "officialLink": "https://www.cuevasdearta.com/es/",
+    "recreatedPhotos": [
+      "images/admin-upload-182-recreated-0.jpg",
+      "images/admin-upload-182-recreated-1.jpg"
+    ],
+    "instagramUrl": "https://www.instagram.com/p/Cz7r_dvPrru/?img_index=7&stkn=cnF4ZWQzM2VobXg3",
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "id": 183,
@@ -11172,6 +11221,90 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": "new-0xNmn1cTlhh8zdRTkbj8",
+    "name": "Souk Madinat Jumeirah",
+    "group": "BTS",
+    "member": "All",
+    "country": "United Arab Emirates",
+    "city": "Dubai",
+    "category": "Landmark",
+    "year": "2016",
+    "address": "King Salman Bin Abdulaziz Al Saud St, Dubai, United Arab Emirates",
+    "lat": 25.1328,
+    "lng": 55.1862,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Souk_Madinat_Jumeirah_Dubai.jpg/1200px-Souk_Madinat_Jumeirah_Dubai.jpg",
+    "addedAt": 1789987128335,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Souk Madinat Jumeirah is an ornate Middle Eastern bazaar integrated into a luxury resort complex along the coastline of Dubai, United Arab Emirates. Designed with traditional wind towers, carved wooden archways, and vibrant indoor market stalls, the souk offers everything from spices and textiles to handmade handicrafts. Intricate water canals meander through the complex, allowing visitors to travel between shops and restaurants on traditional wooden abra boats against views of the iconic Burj Al Arab.</p><p>BTS visited Souk Madinat Jumeirah during the filming of their BTS Summer Package 2016 in Dubai, exploring the traditional market lanes and riding abra boats along the canals. The members bought local souvenirs, posed against the Arabian architecture, and enjoyed the exotic cultural setting together. Fans visiting Dubai often head to Souk Madinat Jumeirah to walk through the marketplace alleys seen in the package and capture photos with the Burj Al Arab in the background.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Abra boat ride"
+        },
+        "text": {
+          "en": "Book a short abra boat ride along the resort canals for the best outdoor views of the resort architecture."
+        }
+      },
+      {
+        "title": {
+          "en": "Burj Al Arab photos"
+        },
+        "text": {
+          "en": "Head to the outdoor restaurant terrace area for an unobstructed photo backdrop with the Burj Al Arab."
+        }
+      },
+      {
+        "title": {
+          "en": "Indoor comfort"
+        },
+        "text": {
+          "en": "The souk is fully air-conditioned indoors, making it an ideal daytime stop during hot summer months in Dubai."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.jumeirah.com/en/recreation-professionals/events-and-meetings/dubai/madinat-jumeirah/souk-madinat-jumeirah",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Dubai Metro Red Line to Mall of the Emirates Station, then take a 10-minute taxi ride directly to the resort entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "country": "South Korea",
     "lat": 35.1408,
     "city": "Gwangju",
@@ -11348,6 +11481,341 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": "new-1FSUUwl5amFCMieDwHDA",
+    "name": "Grand Palais Éphémère",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Fashion",
+    "year": "2023",
+    "address": "2 Place Joffre, 75007 Paris, France",
+    "lat": 48.8532,
+    "lng": 2.3025,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Grand_Palais_%C3%89ph%C3%A9m%C3%A8re_Paris.jpg/1200px-Grand_Palais_%C3%89ph%C3%A9m%C3%A8re_Paris.jpg",
+    "addedAt": 1789987138775,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>The Grand Palais Éphémère is a temporary exhibition hall located on the Champ de Mars in Paris, designed by renowned architect Wilmotte &amp; Associates. Constructed in 2021 to host major cultural, artistic, and sporting events while the historic Grand Palais undergoes extensive renovations, this eco-friendly wooden structure overlooks the iconic Eiffel Tower. It regularly hosts high-profile art fairs, luxury fashion house runways, and international cultural exhibitions in the heart of the French capital. The impressive venue features modular wooden arches and a massive clear span that offers adaptable indoor space for world-class staging.</p><p>In January 2023, during Paris Fashion Week Menswear Fall/Winter 2023-2024, the venue hosted major high-fashion presentations that brought global star power to Paris. BTS member V (Kim Taehyung) and other members attended high-profile events around this district, collaborating with luxury fashion houses and attending major shows. Their presence attracted massive crowds of enthusiastic fans and global media outlets along the Champ de Mars outside the venue, creating viral moments across social media platforms. This location stands out as a prime symbol of BTS's massive footprint in the global luxury fashion industry and their special connection to Paris.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best time to visit"
+        },
+        "text": {
+          "en": "Visit in the late afternoon to take exterior photos with both the hall and the Eiffel Tower lit up in the background."
+        }
+      },
+      {
+        "title": {
+          "en": "Avoid the crowds"
+        },
+        "text": {
+          "en": "Check event schedules ahead of time; non-event days offer a much quieter walk around the Champ de Mars park grounds."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with nearby sights"
+        },
+        "text": {
+          "en": "Walk directly north along the lawns of Champ de Mars toward the Eiffel Tower for classic Paris photos."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.grandpalais.fr/fr/le-grand-palais-ephemere",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Paris Metro Line 8 to École Militaire station or Line 6, 8, or 10 to La Motte-Picquet - Grenelle station, then walk 3-5 minutes across Champ de Mars."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
+    "id": "new-1hatgSs2LMoliC4fFyPm",
+    "name": "National Gallery of Art",
+    "group": "BTS",
+    "member": "RM",
+    "country": "United States",
+    "city": "Washington, D.C.",
+    "category": "Museum",
+    "year": "2022",
+    "address": "Constitution Ave. NW, Washington, DC 20565, United States",
+    "lat": 38.8913,
+    "lng": -77.0199,
+    "img": "",
+    "addedAt": 1789987187546,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located on the National Mall in Washington, D.C., the National Gallery of Art is one of the world's premier art museums. Its collections span from the Middle Ages to modern masterworks across its West and East Buildings connected by a light-sculpted underground walkway.</p><p>When BTS visited Washington, D.C. in May 2022 to meet US President Joe Biden at the White House, RM spent his free time visiting the National Gallery of Art, sharing photos of works by Mark Rothko and Alexander Calder.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Always free admission"
+        },
+        "text": {
+          "en": "Admission is completely free year-round; no advance tickets required for permanent galleries."
+        }
+      },
+      {
+        "title": {
+          "en": "Concourse walkway"
+        },
+        "text": {
+          "en": "Walk through Leo Villareal's *Multiverse* light installation in the underground tunnel connecting the East and West buildings."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.nga.gov",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Washington Metro (Green or Yellow Line) to Archives-Navy Memorial-Penn Quarter Station, then walk 3 blocks south."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
+    "id": "new-1u0UUNL2BCscYEhr07gw",
+    "name": "Oryukdo Skywalk",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "South Korea",
+    "city": "Busan",
+    "category": "Landmark",
+    "year": "2015",
+    "address": "137 Oryukdo-ro, Nam-gu, Busan, South Korea",
+    "lat": 35.1017,
+    "lng": 129.1232,
+    "img": "",
+    "addedAt": 1789987212040,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Oryukdo Skywalk is a glass-bottomed horseshoe-shaped viewing bridge situated on the coastal cliffs of Seungdumal Point in Busan. Built on a 35-meter-high coastal rock cliff, the transparent walkway extends 15 meters over the ocean, giving visitors the sensation of walking above crashing coastal waves while looking out towards the famous Oryukdo Islets.</p><p>In 2015, Jimin visited the Oryukdo Skywalk while spending personal vacation time in his hometown of Busan. He recorded a vlog showcasing the sweeping coastal view and his trip around the city, sharing his deep affection for Busan with fans worldwide and putting the skywalk on every ARMY's Busan travel list.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Shoe covers required"
+        },
+        "text": {
+          "en": "Visitors must wear protective cloth covers over their shoes before stepping onto the glass skywalk floor to prevent scratches."
+        }
+      },
+      {
+        "title": {
+          "en": "Check weather conditions"
+        },
+        "text": {
+          "en": "The glass walkway may temporarily close during strong winds, heavy rain, or severe ocean swells for visitor safety."
+        }
+      },
+      {
+        "title": {
+          "en": "Sunset views"
+        },
+        "text": {
+          "en": "Visit in the late afternoon for breathtaking ocean sunset views across the coastal cliffs."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Busan Subway Line 2 to Kyungsung Univ. / Pukyong Nat'l Univ. Station (Exit 5), then take local Bus 27 or 131 directly to Oryukdo Skywalk stop."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
+    "id": "new-2LGcTZJG0izlFK23EBq2",
+    "name": "Jardin des Tuileries",
+    "group": "BTS",
+    "member": "RM, Jimin",
+    "category": "Landmarks",
+    "year": "2019, 2023, 2025",
+    "address": "Place de la Concorde, 75001 Paris, France",
+    "lat": 48.8635,
+    "lng": 2.3275,
+    "img": "images/admin-upload-new-2LGcTZJG0izlFK23EBq2-photo.jpg",
+    "addedAt": 1789991078251,
+    "country": "France",
+    "city": "Paris",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best time for photos"
+        },
+        "text": {
+          "en": "Visit during golden hour shortly before sunset to capture beautiful lighting along the central promenade framing the Obelisk and Arc de Triomphe."
+        }
+      },
+      {
+        "title": {
+          "en": "Relaxation spot"
+        },
+        "text": {
+          "en": "Grab one of the classic green Parisian park chairs around Grand Bassin Octogonal to rest just as locals and visitors have done for decades."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine your visit"
+        },
+        "text": {
+          "en": "Walk to the western edge of the gardens to visit Musée de l'Orangerie, where RM appreciated Monet's famous Water Lilies."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://www.louvre.fr/en/explore/the-gardens/tuileries-garden",
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1054015605760757762",
+    "ytId": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The garden is incredibly central and easy to reach. You can take the Paris Métro Line 1, 8, or 12 to Concorde station (western entrance), or Line 1 to Tuileries station (facing the center of the park)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The garden is a public park and is free to enter. Hours vary by season, generally opening around 7:00 AM and closing between 7:30 PM (in winter) and 11:00 PM (in summer)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Tuileries Garden is largely flat and features wide gravel paths that are accessible for wheelchair users and strollers. Note that a few elevated terraces (like the Terrasse des Feuillants) require navigating small inclines."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Jardin des Tuileries is a historic public garden located between the Louvre Museum and Place de la Concorde in the 1st arrondissement of Paris. Created by Catherine de' Medici in 1564, it was redesigned in the classic French formal garden style by the renowned landscape architect André Le Nôtre in 1664. The park features manicured lawns, grand fountains, historic marble statues, and the iconic green metal chairs where Parisians love to rest. Today, it remains one of the most visited public spaces in Paris, offering magnificent, sweeping views down the Champs-Élysées toward the Arc de Triomphe.</p><p>2019, RM: The Jardin des Tuileries holds distinctly different memories for the members of BTS, showcasing the park's versatility. In the fall of 2019, during his official extended break, RM walked through these historic gardens as part of his classic \"Namjooning\" itinerary. Because the Tuileries seamlessly connect the Louvre Museum to the Place de la Concorde, it was the perfect scenic strolling path for him to enjoy the open-air sculptures, the crisp autumn air, and the relaxed, artistic Parisian atmosphere.</p><p>2023, Jimin: On January 20, 2023, the gardens became the center of a massive pop culture moment when Jimin attended the Dior Men's Fall-Winter 2023-2024 show. Freshly announced as the global ambassador for Dior, his highly anticipated arrival turned the tranquil park into an absolute frenzy. Dior constructed a massive temporary structure directly within the Tuileries grounds for the event, and thousands of ARMYs packed the edges of the gardens to support his solo fashion debut.</p><p>2025, Jimin: Jimin's deep association with the brand brought him back to the Tuileries Garden on October 1, 2025, to attend the Christian Dior Womenswear Spring/Summer 2026 show. Continuing his reigning status as a global ambassador, his presence at the venue once again proved his massive artistic sensibility and his powerful influence in the intertwining worlds of high fashion and music.</p>"
+    },
+    "instagramUrl": "https://www.instagram.com/reel/DPbTGGaiNF2/?stkn=MWE4NWhreWwxdjRqag==",
+    "instagramUrls": [
+      "https://www.instagram.com/p/CnpQz0IIqxV/?stkn=MWljcGRlODU3bmlrdg=="
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-2LGcTZJG0izlFK23EBq2-recreated-0.jpg",
+      "images/admin-upload-new-2LGcTZJG0izlFK23EBq2-recreated-1.jpg"
+    ]
+  },
+  {
     "category": "MV Location",
     "name": "Yongma Land",
     "lat": 37.5951,
@@ -11434,6 +11902,178 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "id": "new-39ajySYbZ90ZfHYLzvEB",
+    "name": "Le Carreau du Temple",
+    "group": "BTS",
+    "member": "J-Hope",
+    "country": "France",
+    "city": "Paris",
+    "category": "Fashion",
+    "year": "2023",
+    "address": "4 Rue Eugène Spuller, 75003 Paris, France",
+    "lat": 48.8647,
+    "lng": 2.3631,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Carreau_du_Temple_Paris.jpg/1280px-Carreau_du_Temple_Paris.jpg",
+    "addedAt": 1789991088996,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Le Carreau du Temple is a historic covered market hall built in the 19th century in the Haut-Marais district of Paris. Restored into a vibrant cultural and sports center in 2014, the building features striking glass-and-iron architecture designed in the classic industrial style of Paris's Baltard era. Today, it hosts major contemporary art exhibitions, trade fairs, design markets, and high-fashion runway shows during Paris Fashion Week.</p><p>In January 2023, J-Hope attended the Louis Vuitton Men's Fall-Winter 2023 show held at Le Carreau du Temple. Arriving as a newly appointed brand ambassador, J-Hope drew massive crowds of fans and global media who lined up along Rue Eugène Spuller to witness his red-carpet entry. His presence at this venue highlighted his status as a global fashion icon and created an unforgettable moment for Parisian ARMYs.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best time to visit"
+        },
+        "text": {
+          "en": "Explore the surrounding Marais district on a weekday afternoon to combine your visit with local art galleries and vintage boutiques."
+        }
+      },
+      {
+        "title": {
+          "en": "Avoid the crowds"
+        },
+        "text": {
+          "en": "Check the venue's public schedule in advance, as interior access is restricted during private fashion events or corporate filming."
+        }
+      },
+      {
+        "title": {
+          "en": "Photo opportunities"
+        },
+        "text": {
+          "en": "Capture the stunning iron arches from the main entrance along Rue Eugène Spuller or from the square outside."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.carreaudutemple.eu/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Metro Line 3 to Temple station or Lines 3, 5, 8, 9, 11 to République station, both just a short walk from the venue."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
+    "id": "new-3aw4trkkmhUkSTSWanVG",
+    "name": "Cour Carrée du Louvre",
+    "group": "BTS",
+    "member": "RM, J-Hope",
+    "country": "France",
+    "city": "Paris",
+    "category": "Museums",
+    "year": "2019, 2023",
+    "address": "Cour Carrée du Louvre, 75001 Paris, France",
+    "lat": 48.8604,
+    "lng": 2.3376,
+    "img": "images/admin-upload-new-3aw4trkkmhUkSTSWanVG-photo.jpg",
+    "addedAt": 1789991111392,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best time to visit"
+        },
+        "text": {
+          "en": "Visit early in the morning before 9:00 AM or in the late evening to enjoy the courtyard illuminated without large tourist crowds."
+        }
+      },
+      {
+        "title": {
+          "en": "Avoid the crowds"
+        },
+        "text": {
+          "en": "Access Cour Carrée from the eastern entrance (Passage Saint-Germain l'Auxerrois) rather than the crowded main Pyramid area."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine your visit"
+        },
+        "text": {
+          "en": "Combine your stop with a walk through Jardin des Tuileries nearby, where Jimin attended the Dior Men's show during the same Paris Fashion Week."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.louvre.fr",
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "fullDescription": {
+      "en": "<p>The Palais du Louvre is one of the most majestic and iconic monuments in Paris, spanning centuries of art history and architecture. At the heart of this vast museum complex are two major courtyards. The Cour Napoléon is famous worldwide for its monumental glass Pyramid, inaugurated in 1989, which contrasts beautifully with the classical facades surrounding it. Just adjacent is the Cour Carrée, a masterpiece of French Renaissance architecture that offers a more enclosed, historic space, regularly serving as a spectacular backdrop for Paris Fashion Week runway shows.</p><p>2019, RM: In 2019, during his official extended break, RM enjoyed a classic visit to the museum. True to his love for art and \"Namjooning,\" he took his time exploring the iconic grounds. As seen in the file images.jpg, RM was photographed in the Cour Napoléon, standing and balancing on a rectangular stone block. Dressed in a long brown coat, a black beanie, a patterned scarf, and black-and-white sneakers, he showcased a relaxed, autumnal style with the famous glass Pyramid rising in the background.</p><p>2023, J-Hope: A few years later, in January 2023, the atmosphere was radically different when j-hope visited the adjacent Cour Carrée. Invited as a global ambassador to the Louis Vuitton Men's Fall-Winter fashion show, his appearance transformed the surrounding streets into a rock concert, with thousands of ARMYs gathering outside to cheer for him. Dressed in a striking Louis Vuitton camouflage ensemble, j-hope perfectly blended his cutting-edge street style with the centuries-old grandeur of the historic courtyard.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The most iconic access point is via the Palais-Royal - Musée du Louvre metro station (Lines 1 and 7)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The exterior courtyards (Cour Napoléon and Cour Carrée) are public pedestrian spaces accessible 24/7 for free, meaning you do not need to purchase a ticket to the interior museum galleries to visit these specific photo spots."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The entire exterior surface connecting the Cour Napoléon to the Cour Carrée is smoothly paved, offering fully accessible navigation for wheelchair users and strollers."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-3aw4trkkmhUkSTSWanVG-recreated-0.jpg"
+    ],
+    "imgCredit": "Screentostreet",
+    "tweetUrl": "https://x.com/BTS_twt/status/1054015605760757762",
+    "ytId": "PCsmKhzNTT8"
   },
   {
     "group": "BTS",
@@ -11882,6 +12522,90 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "id": "new-6mS4vSBlKjq38QXGPkex",
+    "name": "Palais Garnier",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2022",
+    "address": "Place de l'Opéra, 75009 Paris, France",
+    "lat": 48.872,
+    "lng": 2.3316,
+    "img": "",
+    "addedAt": 1789991128477,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Palais Garnier, also known as Opéra Garnier, is a historic 1,979-seat opera house built from 1861 to 1875 for the Paris Opera. Designed by architect Charles Garnier in the opulent Second Empire style, the building is renowned for its grand marble staircase, ceiling painted by Marc Chagall, massive bronze chandelier, and gilded reception halls. It stands as a timeless symbol of French architectural grandeur and artistic heritage in the heart of Paris.</p><p>During his visits to Paris, Kim Taehyung (V) explored the surrounding avenues of Place de l'Opéra and photographed the striking neo-baroque facade of Palais Garnier. V posted stylish artistic street photos in front of the grand opera house, capturing the mood of Parisian architecture and sharing his love for classical art aesthetics with millions of followers on social media.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Self-guided tour"
+        },
+        "text": {
+          "en": "Purchase an official visitor ticket online to explore the Grand Escalier and Grand Foyer when no opera rehearsals are taking place."
+        }
+      },
+      {
+        "title": {
+          "en": "Photo angle"
+        },
+        "text": {
+          "en": "Recreate V's aesthetic photos by standing near the traffic island on Avenue de l'Opéra facing the main facade."
+        }
+      },
+      {
+        "title": {
+          "en": "Evening view"
+        },
+        "text": {
+          "en": "Visit after dusk when the external stone sculptures and gilded rooftop statues are fully illuminated."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.operadepariss.fr",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Metro Line 3, 7, or 8 to Opéra station, which exits right onto Place de l'Opéra in front of the steps."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": "new-6s64K2xAPRELCZCbVIbV",
@@ -12412,6 +13136,94 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": "new-9xocMhCT39Hzkg0QvSK6",
+    "name": "Bourse de Commerce - Pinault Collection",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Museum",
+    "year": "2022",
+    "address": "2 Rue de Viarmes, 75001 Paris, France",
+    "lat": 48.863,
+    "lng": 2.343,
+    "img": "images/admin-upload-new-9xocMhCT39Hzkg0QvSK6-photo.jpg",
+    "addedAt": 1789991153460,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book tickets online"
+        },
+        "text": {
+          "en": "Timed-entry tickets are required for entry and frequently sell out days in advance. Secure your reservation online prior to your visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Photo tips"
+        },
+        "text": {
+          "en": "Head to the top circular walkway designed by Tadao Ando to capture the exact perspective of the grand rotunda ceiling that RM shared on Instagram."
+        }
+      },
+      {
+        "title": {
+          "en": "Free entry timing"
+        },
+        "text": {
+          "en": "The museum offers free entry on the first Saturday evening of every month between 5:00 PM and 9:00 PM (advance booking required)."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.pinaultcollection.com/fr/boursedecommerce",
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "ytId": "nxUOxsimI8o",
+    "imgCredit": "Screentostreet",
+    "fullDescription": {
+      "en": "<p>The Bourse de Commerce is a historic 18th-century grain exchange building situated in the very heart of central Paris. It is instantly recognizable by its extraordinary 19th-century iron-and-glass dome and a beautifully restored historical fresco depicting global trade. In 2021, the landmark was given a second life when acclaimed Japanese architect Tadao Ando converted it into a cutting-edge contemporary art museum to house billionaire François Pinault's extensive private art collection. Ando’s brilliant architectural intervention seamlessly pairs a massive, minimalist concrete cylinder built directly inside the rotunda with the surrounding historic classical architecture, creating a mesmerizing dialogue between the past and the present.</p><p>During his European travels in the summer of 2022, RM—widely known for his profound love of fine art, museums, and \"Namjooning\"—made the Bourse de Commerce an essential stop on his Parisian itinerary. As a well-documented admirer of Tadao Ando’s architectural work (having also visited Ando-designed spaces like Museum SAN in South Korea), RM was naturally drawn to this newly opened masterpiece. He shared photos on his Instagram exploring the museum's rotating contemporary exhibitions, but fans can get an even better look by watching his official 2022 European travel vlog. If you skip exactly to the 31:44 mark of the vlog, you can watch RM personally walking through the Bourse de Commerce, taking in the art, and admiring the breathtaking symmetry of the rotunda's interior. For RM, a visit here perfectly combined two of his greatest passions: boundary-pushing contemporary art and brilliant, minimalist architecture set against a deeply historical backdrop.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The museum is exceptionally well-connected. Take the Paris Métro Line 1 to Louvre - Rivoli, or take Lines 1, 4, 7, 11, or 14 to the massive Châtelet - Les Halles transit hub, which is just a 3-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open Wednesday through Monday from 11:00 AM to 7:00 PM (with extended evening hours on Fridays until 9:00 PM). Closed on Tuesdays. General admission is approximately €14. Booking tickets online in advance is highly recommended."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Following its 2021 renovation, the Bourse de Commerce is fully accessible to visitors with reduced mobility. It features spacious elevators to all gallery levels, smooth flooring, and fully accessible facilities."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-9xocMhCT39Hzkg0QvSK6-recreated-0.jpg"
+    ],
+    "episodeLink": "https://www.en-vols.com/evasion/voyage/paris-adresses-preferees-bts-sejour/"
+  },
+  {
     "id": "new-D2pf3IFWKTH64FaUCAdd",
     "year": "2021",
     "category": "Museum",
@@ -12500,6 +13312,82 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": "new-DqImztkmc2EcuUGyXRPE",
+    "name": "Grand Palais Éphémère",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmarks",
+    "year": "2022",
+    "address": "2 Place Joffre, 75007 Paris, France",
+    "lat": 48.8533,
+    "lng": 2.3019,
+    "img": "",
+    "addedAt": 1789991198842,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated on the Champ de Mars directly facing the Eiffel Tower, the Grand Palais Éphémère is a temporary wooden exhibition hall designed by architect Jean-Michel Wilmotte. Built to host major art, fashion, and cultural events while the main Grand Palais undergoes renovation, it stands as a modern architectural masterpiece in Paris.</p><p>In June 2022, Kim Taehyung (V) attended the Celine Men's Summer 2023 Fashion Show held inside this venue during Paris Fashion Week. His appearance alongside Park Bo-gum and BLACKPINK's Lisa created worldwide excitement, drawing thousands of fans to the Champ de Mars area.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Photography spot"
+        },
+        "text": {
+          "en": "Walk around the Champ de Mars side of the building to capture photos of the timber structure with the Eiffel Tower in the background."
+        }
+      },
+      {
+        "title": {
+          "en": "Check event schedules"
+        },
+        "text": {
+          "en": "Access to the interior depends on public exhibitions; verify the official Grand Palais agenda prior to visiting."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.grandpalais.fr/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Metro Line 8 to École Militaire station or Line 6, 8, 10 to La Motte-Picquet - Grenelle. The venue is located right outside École Militaire."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "img": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-photo.jpg",
     "name": "Sungnyemun Gate (Namdaemun)",
     "year": "2021",
@@ -12586,6 +13474,82 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "id": "new-HrHCN0x2OgHcNPcuMR0c",
+    "name": "Musée d'Orsay",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Museum",
+    "year": "2021",
+    "address": "1 Rue de la Légion d'Honneur, 75007 Paris, France",
+    "lat": 48.8599,
+    "lng": 2.3266,
+    "img": "",
+    "addedAt": 1789991215220,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Housed in a grand Beaux-Arts railway station built for the 1900 World's Fair, the Musée d'Orsay holds the world's largest collection of Impressionist and Post-Impressionist masterpieces by artists such as Monet, Renoir, Van Gogh, and Cézanne.</p><p>RM visited the museum during his stay in Paris, spending time admiring iconic works by Claude Monet and Vincent van Gogh. RM's documented love for classic impressionism inspired many fans to visit the specific galleries featuring his favorite painters.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Avoid peak morning crowds"
+        },
+        "text": {
+          "en": "Book a ticket for late afternoon or Thursday night opening (open until 9:45 PM) when galleries are much quieter."
+        }
+      },
+      {
+        "title": {
+          "en": "Giant Clock Photo"
+        },
+        "text": {
+          "en": "Head to the top floor gallery behind the massive station clock face for a scenic view of the Seine and Louvre."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.musee-orsay.fr/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take RER Line C to Musée d'Orsay station, or Metro Line 12 to Solférino station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "address": "54 Samcheong-ro, Jongno-gu, Seoul, South Korea",
