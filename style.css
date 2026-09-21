@@ -824,6 +824,14 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
         content: ''; position: absolute; top: 2px; right: 2px; width: 8px; height: 8px;
         border-radius: 50%; background: #D42759; border: 1.5px solid #fff;
     }
+    /* BUG corrigé (demande du 21/09/2026, "quand j'ouvre le menu de gauche... il faut
+       enlever l'affichage de la flèche chevron... afficher le chevron que lorsqu'on est
+       sur la map") : ce chevron reste par ailleurs TOUJOURS présent dans le DOM (voir
+       injectLocVisitorsChevron() dans script.js), il flottait donc par-dessus le menu
+       hamburger (filtres, liste des lieux) une fois ouvert — même toggle "menu-open" que
+       .mobile-bottom-nav/.mobile-map-search ci-dessus/plus bas, posé sur toggleMobileMenu().
+       */
+    .loc-visitors-chevron-tab.menu-open { display: none !important; }
 }
 
 /* PWA installée (mode standalone) : bug rapporté le 11/09/2026 — sans le footer du

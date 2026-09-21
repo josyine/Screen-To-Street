@@ -3030,6 +3030,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (topIcons) topIcons.classList.toggle('menu-open', isOpen);
             const mobileSearch = document.getElementById('mobile-map-search');
             if (mobileSearch) mobileSearch.classList.toggle('menu-open', isOpen);
+            // Chevron "photos des visiteurs" (demande du 21/09/2026, "il faut afficher le
+            // chevron que lorsqu'on est sur la map") : même toggle que les éléments
+            // ci-dessus — masqué tant que le menu (filtres, liste des lieux) occupe l'écran,
+            // ré-affiché à la fermeture. Voir .loc-visitors-chevron-tab.menu-open (style.css).
+            const chevronTab = document.getElementById('loc-visitors-chevron-tab');
+            if (chevronTab) chevronTab.classList.toggle('menu-open', isOpen);
         }
     };
 
@@ -3162,7 +3168,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Juste un raccourci pour retrouver un lieu sur la carte (demande du
             // 11/09/2026), pas une manière d'ouvrir sa fiche — même choix que la
             // recherche de la sidebar (#search-input) juste au-dessus dans ce fichier.
-            if (loc && map) map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
+            if (loc && map) {
+                map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
+                // BUG corrigé (demande du 21/09/2026, "il faut que ça me redirige sur le
+                // lieu sur la carte") : sur mobile, le clavier virtuel est encore ouvert au
+                // moment du clic — blur() juste au-dessus le referme, mais l'animation de
+                // fermeture (et donc le redimensionnement du viewport/de la carte) prend
+                // encore quelques centaines de ms après ce flyTo(). Leaflet ignore ce
+                // changement de taille tant qu'invalidateSize() n'est pas appelé, laissant
+                // le lieu visé décalé hors du cadre malgré une animation qui semblait avoir
+                // eu lieu. Même délai que openDetailsPanel() plus bas dans ce fichier, qui
+                // corrige exactement le même souci de timing.
+                setTimeout(() => {
+                    map.invalidateSize();
+                    map.flyTo([loc.lat, loc.lng], 16, { duration: 0.3 });
+                }, 450);
+            }
         });
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#mobile-map-search')) mobileSearchResults.classList.add('hidden');
