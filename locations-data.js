@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-20T21:45:04.267Z.
+// Généré le 2026-09-21T06:53:15.977Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -3725,18 +3725,18 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
     "tweetUrls": [],
     "imgCredit": "AI-generated illustrative image",
     "recreatedPhotos": [
       "images/admin-upload-70-recreated-0.jpg",
       "images/admin-upload-70-recreated-1.jpg"
-    ]
+    ],
+    "officialLink": "https://www.instagram.com/hyuga_1531",
+    "tiktokUrl": "https://www.tiktok.com/@stellfagan/video/7509959876689382678"
   },
   {
     "id": 71,
