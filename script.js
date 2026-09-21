@@ -1638,9 +1638,10 @@ let lastRenderedLocationForEmbeds = null;
 // Lieux marqués "vérifiés" par un admin (demande du 13/09/2026) — chargé une seule fois,
 // admins uniquement, voir le handler 'firebase-ready' plus bas et renderLocations().
 let verifiedLocationIdsCache = [];
-// Filtre "Verified only" (demande du 15/09/2026, admin uniquement) — voir
-// window.toggleVerifiedOnlyFilter() et renderLocations() plus bas.
-let verifiedOnlyFilter = false;
+// Filtre "Verified" (demande du 15/09/2026, admin uniquement ; étendu le 21/09/2026 pour
+// pouvoir aussi n'afficher QUE les lieux non vérifiés) — 'all' | 'verified' | 'unverified',
+// voir window.setVerifiedFilterMode() et renderLocations() plus bas.
+let verifiedFilterMode = 'all';
 let currentGeneratedItinerary = [];
 let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -2296,13 +2297,15 @@ window.addEventListener('firebase-ready', async (e) => {
         window.__isAdminUser = true;
         const adminEditBtn = document.getElementById('details-admin-edit-btn');
         if (adminEditBtn) adminEditBtn.classList.remove('hidden');
-        // KPI "verified" + bouton de filtre "Verified only" (demande du 15/09/2026) : comme
-        // la pastille de vérification ci-dessous, réservés aux admins — jamais visibles d'un
-        // visiteur normal.
+        // KPI "verified" + pastilles de filtre "Verified only"/"Unverified only" (demande
+        // du 15/09/2026, étendu le 21/09/2026) : comme la pastille de vérification
+        // ci-dessous, réservés aux admins — jamais visibles d'un visiteur normal.
         const adminVerifiedKpi = document.getElementById('admin-verified-kpi-pill');
         if (adminVerifiedKpi) adminVerifiedKpi.classList.remove('hidden');
         const verifiedFilterBtn = document.getElementById('verified-filter-btn');
         if (verifiedFilterBtn) verifiedFilterBtn.classList.remove('hidden');
+        const unverifiedFilterBtn = document.getElementById('unverified-filter-btn');
+        if (unverifiedFilterBtn) unverifiedFilterBtn.classList.remove('hidden');
         // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) : lue
         // UNE SEULE FOIS ici, réservée aux admins (jamais chargée pour un visiteur
         // normal) — voir renderLocations() plus bas, qui s'appuie sur ce cache. N'a
@@ -4166,20 +4169,27 @@ window.resetMapFilters = function () {
     if (!groupSelect) return;
     groupSelect.value = 'All';
     if (yearSelect) yearSelect.value = 'All';
-    verifiedOnlyFilter = false;
+    verifiedFilterMode = 'all';
     const verifiedBtn = document.getElementById('verified-filter-btn');
     if (verifiedBtn) verifiedBtn.classList.remove('active');
+    const unverifiedBtn = document.getElementById('unverified-filter-btn');
+    if (unverifiedBtn) unverifiedBtn.classList.remove('active');
     initializeFilters();
     renderLocations();
 };
 
-// Bouton "Verified only" du bloc filtres (demande du 15/09/2026, admin uniquement) :
-// bascule verifiedOnlyFilter et redessine la carte/liste avec renderLocations() ci-dessus,
-// qui applique déjà le filtre dans son propre prédicat.
-window.toggleVerifiedOnlyFilter = function () {
-    verifiedOnlyFilter = !verifiedOnlyFilter;
-    const btn = document.getElementById('verified-filter-btn');
-    if (btn) btn.classList.toggle('active', verifiedOnlyFilter);
+// Pastilles "Verified only"/"Unverified only" du bloc filtres (demande du 15/09/2026,
+// admin uniquement ; étendu le 21/09/2026, "je veux pouvoir soit sélectionner tous les
+// lieux vérifiés, ou n'afficher que les lieux non vérifiés") : mutuellement exclusives —
+// cliquer la pastille déjà active repasse en "all" (aucun filtre), cliquer l'autre bascule
+// directement dessus sans étape intermédiaire. redessine la carte/liste avec
+// renderLocations() ci-dessus, qui applique déjà le filtre dans son propre prédicat.
+window.setVerifiedFilterMode = function (mode) {
+    verifiedFilterMode = (verifiedFilterMode === mode) ? 'all' : mode;
+    const verifiedBtn = document.getElementById('verified-filter-btn');
+    if (verifiedBtn) verifiedBtn.classList.toggle('active', verifiedFilterMode === 'verified');
+    const unverifiedBtn = document.getElementById('unverified-filter-btn');
+    if (unverifiedBtn) unverifiedBtn.classList.toggle('active', verifiedFilterMode === 'unverified');
     renderLocations();
 };
 
@@ -4245,10 +4255,12 @@ function renderLocations(skipFitBounds) {
         return (fGroup === "All" || loc.group === fGroup) && (fMember === "All" || loc.member === fMember || loc.member === "All") &&
                (activeCategory === "All" || loc.category === activeCategory) && (fYear === "All" || loc.year === fYear) &&
                (fCountry === "All" || loc.country === fCountry) && (loc.name.toLowerCase().includes(searchTerm) || (loc.city && loc.city.toLowerCase().includes(searchTerm))) &&
-               // Filtre "Verified only" (demande du 15/09/2026, admin uniquement) — sans effet
-               // pour un visiteur normal (verifiedOnlyFilter ne peut jamais passer à true en
-               // dehors du bouton admin, lui-même masqué hors admin).
-               (!verifiedOnlyFilter || verifiedLocationIdsCache.includes(String(loc.id)));
+               // Filtre "Verified"/"Unverified" (demande du 15/09/2026, admin uniquement,
+               // étendu le 21/09/2026) — sans effet pour un visiteur normal
+               // (verifiedFilterMode ne peut jamais quitter 'all' en dehors des boutons
+               // admin, eux-mêmes masqués hors admin).
+               (verifiedFilterMode === 'all' ||
+                (verifiedFilterMode === 'verified') === verifiedLocationIdsCache.includes(String(loc.id)));
     });
 
     // Tri par ordre de nouveauté (les lieux les plus récemment ajoutés au site en
@@ -5969,7 +5981,16 @@ function ensureLocationEditModal() {
                  existant a ces champs codés en dur dans script.js, jamais éditables avant
                  ce correctif. Doivent correspondre EXACTEMENT à une valeur déjà utilisée
                  ailleurs (ex: le nom d'un groupe) pour que les filtres Explore continuent de
-                 fonctionner — pas de validation stricte ici, panneau réservé aux admins. -->
+                 fonctionner — pas de validation stricte ici, panneau réservé aux admins.
+                 Titre (demande du 21/09/2026, "je veux également pouvoir modifier le
+                 titre du lieu") : même mécanisme squelette que les champs ci-dessous —
+                 s'écrit dans loc.name, jamais dans locationContent. SANS le préfixe
+                 "[CLOSED] " (géré séparément par le bouton "Mark as closed" plus bas, voir
+                 saveLocationEdit()) : ce champ n'édite QUE le vrai nom du lieu, pour ne pas
+                 avoir à retaper/retenir ce préfixe à chaque sauvegarde. -->
+            <label style="${labelStyle}">Title</label>
+            <input type="text" id="location-edit-title" style="${fieldStyle} margin-bottom:4px;">
+            <div id="location-edit-title-error" class="hidden" style="${errStyle}">The title cannot be empty.</div>
             <div style="display:flex; gap:8px;">
                 <div style="flex:1;"><label style="${labelStyle}">Group</label><input type="text" id="location-edit-group" style="${fieldStyle}"></div>
             </div>
@@ -6308,6 +6329,13 @@ window.openLocationEditModal = async function (locId) {
     // remplit donc plus qu'une seule fois, à l'ouverture — voir fillSkeletonFields()
     // ci-dessous, appelée uniquement pour le remplissage initial.
     const fillSkeletonFields = (data) => {
+        // Titre (demande du 21/09/2026) : préfixe "[CLOSED] " retiré avant affichage — ce
+        // champ n'édite que le vrai nom, le préfixe reste géré par locationEditClosedState/
+        // le bouton "Mark as closed" (voir plus bas).
+        const rawName = data.name || '';
+        const titleWithoutClosedPrefix = rawName.startsWith('[CLOSED] ') ? rawName.slice(9) : rawName;
+        document.getElementById('location-edit-title').value = titleWithoutClosedPrefix;
+        document.getElementById('location-edit-title-error').classList.add('hidden');
         document.getElementById('location-edit-group').value = data.group || '';
         document.getElementById('location-edit-member').innerHTML = memberMultiSelectHtml(data.member);
         document.getElementById('location-edit-country').value = data.country || '';
@@ -6335,6 +6363,7 @@ window.openLocationEditModal = async function (locId) {
         // gardés en nombres ici (pas en chaîne comme les autres) pour comparer proprement à
         // la valeur flottante parsée du champ dans saveLocationEdit().
         locationEditOriginalSkeletonValues = {
+            title: titleWithoutClosedPrefix,
             group: data.group || '', country: data.country || '', city: data.city || '',
             address: data.address || '', episode: data.episode || '', episodeLabel: data.episodeLabel || '',
             lat: (data.lat != null) ? data.lat : null, lng: (data.lng != null) ? data.lng : null
@@ -6534,6 +6563,10 @@ async function saveLocationEdit(locId, modal) {
     const pinterestVal = document.getElementById('location-edit-pinterest').value.trim();
     const officialLinkVal = document.getElementById('location-edit-official-link').value.trim();
     const linkVal = document.getElementById('location-edit-link').value.trim();
+    // Titre (demande du 21/09/2026) : lu avant le reste des champs squelette, sur le même
+    // modèle. La validation (non-vide) se fait plus bas, avec les autres checkField() — un
+    // titre vide casserait l'affichage de ce lieu partout sur le site (carte, listes...).
+    const titleVal = document.getElementById('location-edit-title').value.trim();
     const groupVal = document.getElementById('location-edit-group').value.trim();
     const memberVal = collectMemberCheckboxValue(document.getElementById('location-edit-member'));
     const countryVal = document.getElementById('location-edit-country').value.trim();
@@ -6555,6 +6588,12 @@ async function saveLocationEdit(locId, modal) {
         if (val && !extracted) { errEl.classList.remove('hidden'); hasError = true; }
         else errEl.classList.add('hidden');
     };
+    // Titre (demande du 21/09/2026) : un titre vide casserait l'affichage de ce lieu partout
+    // sur le site (carte, listes, itinéraire...) — bloqué ici avant toute écriture, comme
+    // les liens mal formés ci-dessus/lat-lng plus bas.
+    const titleErrEl = document.getElementById('location-edit-title-error');
+    if (!titleVal) { titleErrEl.classList.remove('hidden'); hasError = true; }
+    else titleErrEl.classList.add('hidden');
     // Latitude/Longitude (demande du 20/09/2026) : parsées ici (pas plus haut, avec les
     // autres champs texte) pour pouvoir réutiliser hasError/le message d'erreur commun à
     // tout le formulaire — un lieu avec une coordonnée invalide ne doit pas silencieusement
@@ -6714,10 +6753,13 @@ async function saveLocationEdit(locId, modal) {
     // selon la bascule locale, sans jamais empiler le préfixe plusieurs fois. Le générateur
     // d'itinéraire (voir window.initItineraryGenerator() plus haut) exclut tout lieu dont le
     // nom commence par ce préfixe.
+    // Titre (demande du 21/09/2026) : titleVal (le champ édité) remplace désormais l'ancien
+    // nom comme base — auparavant ce bloc ne faisait que rejouer le nom déjà en place
+    // (aucun champ ne permettait de le changer), le préfixe [CLOSED] étant la SEULE chose
+    // qui pouvait varier ici.
     const locForName = celebLocations.find(l => l.id === locId);
     const currentName = (locForName && locForName.name) || '';
-    const baseName = currentName.startsWith('[CLOSED] ') ? currentName.slice(9) : currentName;
-    const finalName = locationEditClosedState ? '[CLOSED] ' + baseName : baseName;
+    const finalName = locationEditClosedState ? '[CLOSED] ' + titleVal : titleVal;
     if (finalName !== currentName) skeletonFields.name = finalName;
     const hasSkeletonChanges = Object.keys(skeletonFields).length > 0;
 

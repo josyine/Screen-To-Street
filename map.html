@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260953">
+<link rel="stylesheet" href="style.css?v=20260954">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -554,13 +554,24 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- Filtre "Verified only" (demande du 15/09/2026, admin uniquement) :
-                             masqué par défaut, dévoilé pour un admin dans le handler
-                             'firebase-ready' de script.js. N'affiche que les lieux vérifiés
-                             (voir window.toggleVerifiedOnlyFilter() dans script.js). -->
-                        <div id="verified-filter-btn" class="verified-filter-chip hidden" style="margin-top:10px; display:inline-flex; align-items:center; gap:6px;" onclick="if(window.toggleVerifiedOnlyFilter) window.toggleVerifiedOnlyFilter();">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <span>Verified only</span>
+                        <!-- Filtre "Verified" (demande du 15/09/2026, admin uniquement, étendu
+                             le 21/09/2026 "je veux pouvoir soit sélectionner tous les lieux
+                             vérifiés, ou n'afficher que les lieux non vérifiés") : masqués par
+                             défaut, dévoilés pour un admin dans le handler 'firebase-ready' de
+                             script.js. Deux pastilles MUTUELLEMENT EXCLUSIVES plutôt qu'une
+                             seule bascule on/off — cliquer la pastille déjà active revient à
+                             "All" (aucun filtre), cliquer l'autre bascule directement dessus,
+                             jamais les deux actives en même temps (voir
+                             window.setVerifiedFilterMode() dans script.js). -->
+                        <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+                            <div id="verified-filter-btn" class="verified-filter-chip hidden" style="display:inline-flex; align-items:center; gap:6px;" onclick="if(window.setVerifiedFilterMode) window.setVerifiedFilterMode('verified');">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                <span>Verified only</span>
+                            </div>
+                            <div id="unverified-filter-btn" class="verified-filter-chip hidden" style="display:inline-flex; align-items:center; gap:6px;" onclick="if(window.setVerifiedFilterMode) window.setVerifiedFilterMode('unverified');">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"></line></svg>
+                                <span>Unverified only</span>
+                            </div>
                         </div>
                     </div>
 
@@ -1409,12 +1420,12 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260953"></script>
-<script type="module" src="firebase-init.js?v=20260953"></script>
-<script src="locations-data.js?v=20260953"></script>
-<script src="script.js?v=20260953"></script>
+<script src="countries.js?v=20260954"></script>
+<script type="module" src="firebase-init.js?v=20260954"></script>
+<script src="locations-data.js?v=20260954"></script>
+<script src="script.js?v=20260954"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260953"></script>
+<script src="map-tour.js?v=20260954"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
