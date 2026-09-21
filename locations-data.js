@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-21T14:27:35.758Z.
+// Généré le 2026-09-21T22:44:55.294Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -1866,36 +1866,44 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 35,
-    "name": "Cafe Magnate",
+    "name": "ZM-Illennial (Formerly Café Magnate)",
     "group": "BTS",
     "member": "Jimin",
     "country": "South Korea",
     "city": "Busan",
     "category": "Cafe",
     "year": "2019",
-    "address": "135 Jinnam-ro, Nam-gu",
-    "lat": 35.1379,
-    "lng": 129.1074,
-    "img": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600",
+    "address": "135 Jinnam-ro, Nam-gu, Busan, South Korea",
+    "lat": 35.13869,
+    "lng": 129.08013,
+    "img": "images/admin-upload-35-photo.jpg",
     "fullDescription": {
-      "en": "<p>Cafe Magnate is owned and run by Jimin's father, tucked into a quiet stretch of Busan's Nam-gu district, well outside the usual fan-mapped circuit of Seoul cafés. It's an unassuming spot by design — coffee, simple desserts, and the kind of low-key neighbourhood atmosphere you'd expect from a family-run business rather than anything built for attention.</p><p>Fans who make the trip down from Seoul tend to describe the same thing: a place that feels genuinely local, run by someone who happens to be Jimin's father rather than a shrine to Jimin himself, which is exactly what gives it its particular charm.</p>",
-      "fr": "<p>Cafe Magnate est tenu par le père de Jimin, niché dans un coin tranquille du quartier de Nam-gu à Busan, bien à l'écart du circuit habituel des cafés séoulites répertoriés par les fans. C'est un lieu volontairement discret — du café, des desserts simples, et l'ambiance de quartier posée que l'on attend d'un commerce familial plutôt que d'un endroit pensé pour attirer l'attention.</p><p>Les fans qui font le déplacement depuis Séoul décrivent souvent la même chose : un lieu qui paraît sincèrement local, tenu par quelqu'un qui se trouve être le père de Jimin plutôt qu'un sanctuaire dédié à Jimin lui-même — et c'est précisément ce qui en fait tout le charme.</p>"
+      "fr": "<p>Cafe Magnate est tenu par le père de Jimin, niché dans un coin tranquille du quartier de Nam-gu à Busan, bien à l'écart du circuit habituel des cafés séoulites répertoriés par les fans. C'est un lieu volontairement discret — du café, des desserts simples, et l'ambiance de quartier posée que l'on attend d'un commerce familial plutôt que d'un endroit pensé pour attirer l'attention.</p><p>Les fans qui font le déplacement depuis Séoul décrivent souvent la même chose : un lieu qui paraît sincèrement local, tenu par quelqu'un qui se trouve être le père de Jimin plutôt qu'un sanctuaire dédié à Jimin lui-même — et c'est précisément ce qui en fait tout le charme.</p>",
+      "en": "<p>Located in a quiet industrial-turned-commercial pocket of Busan's Nam-gu district, ZM-Illennial (originally opened as Café Magnate) is a spacious, beautifully designed bakery-café owned and operated by Jimin's father. Housed in a converted former warehouse space, the café features high ceilings, industrial aesthetics, and a warm atmosphere. In 2024, the café officially rebranded from Magnate to ZM-Illennial due to trademark updates by an unrelated company. The new name combines \"Millennial\" with \"Z\" to represent a lasting connection with younger generations.</p><p>Fans who make the trip down from Seoul tend to describe the same thing: a place that feels genuinely local, run by someone who happens to be Jimin's father rather than a shrine to Jimin himself, which is exactly what gives it its particular charm.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Keep it low-key"
+          "en": "Meet Jimin’s Father"
         },
         "text": {
-          "en": "This is a working family business, not a fan attraction — keep visits brief and low-key out of respect for the owners and other customers."
+          "en": "If you are fortunate during your visit, you might catch Jimin's dad managing the space or welcoming guests with a kind smile and handshake."
         }
       },
       {
         "title": {
-          "en": "Don't expect a shrine"
+          "en": "Check Out the Displays"
         },
         "text": {
-          "en": "This is a genuine neighbourhood family business rather than anything built around Jimin — the low-key, ordinary atmosphere is exactly the point."
+          "en": "Take time to look at the dedicated corners featuring signed memorabilia, fan-art, and special items connected to Jimin."
+        }
+      },
+      {
+        "title": {
+          "en": "Try the Bakery Signatures"
+        },
+        "text": {
+          "en": "Don't miss out on their popular coffee drinks, lattes, and fresh daily pastries (such as their carrot cake or specialty breads)."
         }
       }
     ],
@@ -1906,7 +1914,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "This is a working family business, not a fan attraction — keep visits brief and low-key out of respect for the owners and other customers.",
       "fr": "C'est un commerce familial en activité, pas une attraction pour fans — restez brefs et discrets par respect pour les propriétaires et les autres clients."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-35-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Busan Subway Line 2 to Motgol Station (Exit 4), then walk about 10–13 minutes through the neighborhood, or take a local bus to the Yeonpo Elementary School stop."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from approximately 10:00 AM to 10:00 PM. Free admission (food/drink purchase expected)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The café features a spacious ground-level layout with accessible parking, though navigating transit from the nearby subway requires walking up a slight incline."
+        }
+      }
+    ],
+    "episodeLink": "https://www.wondertour.kr/TravelGuide/?bmode=view&idx=168213651",
+    "officialLink": "https://www.instagram.com/zmillennial_cafe_official/?hl=fr",
+    "instagramUrl": "",
+    "tiktokUrl": "https://www.tiktok.com/@lyviatohir/video/7651933921587875090"
   },
   {
     "id": 36,
@@ -1950,50 +2002,6 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Pair the visit with a walk through Seochon's gallery streets — several small independent art spaces sit within a few minutes' walk.",
       "fr": "Combinez la visite avec une balade dans les rues à galeries de Seochon — plusieurs petits espaces d'art indépendants se trouvent à quelques minutes à pied."
-    }
-  },
-  {
-    "id": 37,
-    "name": "Cafe Hyuga",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "Cafe",
-    "year": "2022",
-    "address": "16 Nonhyeon-ro 119-gil, Gangnam-gu",
-    "lat": 37.5133,
-    "lng": 127.0321,
-    "img": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600",
-    "fullDescription": {
-      "en": "<p>Cafe Hyuga occupies a small, minimalist space just off Nonhyeon-ro, on the exact same street where BTS's first cramped dorm once stood in their earliest years. Whether that's coincidence or a quiet nod to where it all started, it's a detail that hasn't gone unnoticed by long-time fans mapping the group's history.</p><p>The café itself keeps things simple — clean lines, filtered light, coffee taken seriously — the kind of understated spot that rewards fans who know exactly what street they're standing on and why it matters.</p>",
-      "fr": "<p>Cafe Hyuga occupe un petit espace minimaliste juste à côté de Nonhyeon-ro, dans la rue exacte où se trouvait le tout premier dortoir exigu de BTS à leurs débuts. Coïncidence ou clin d'œil discret à leurs origines, c'est un détail qui n'a pas échappé aux fans de longue date qui retracent l'histoire du groupe sur la carte.</p><p>Le café en lui-même reste volontairement sobre — des lignes épurées, une lumière filtrée, du café pris au sérieux — le genre de lieu discret qui prend tout son sens pour les fans qui savent exactement dans quelle rue ils se trouvent et pourquoi elle compte.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Combine with the first-dorm street"
-        },
-        "text": {
-          "en": "Combine this stop with the nearby first-dorm street for a short, walkable early-BTS history loop in one afternoon."
-        }
-      },
-      {
-        "title": {
-          "en": "Notice the street itself"
-        },
-        "text": {
-          "en": "The café sits on the exact same street as BTS's first cramped dorm — a detail easy to miss unless you already know to look for it."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Take the Suin-Bundang Line to Apgujeong Rodeo Station and walk about 10 minutes south into Nonhyeon-dong.",
-      "fr": "Prenez la ligne Suin-Bundang jusqu'à la station Apgujeong Rodeo et marchez environ 10 minutes vers le sud, dans Nonhyeon-dong."
-    },
-    "tip": {
-      "en": "Combine this stop with the nearby first-dorm street for a short, walkable early-BTS history loop in one afternoon.",
-      "fr": "Combinez cette étape avec la rue du premier dortoir toute proche pour une petite boucle à pied sur les débuts de BTS, en une seule après-midi."
     }
   },
   {
@@ -3651,22 +3659,22 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 70,
-    "name": "Second BTS Dormitory \"Blue Dorm\"",
+    "name": "The 4th Dorm (Café Hyuga)",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
-    "year": "2015, 2016, 2017",
-    "ytId": "",
+    "year": "2016, 2017",
+    "ytId": "c1mXPOfXjJc",
     "episodeLink": "",
-    "address": "Nonhyeon-dong area, Gangnam-gu, Seoul. (Note: The exact street address is intentionally omitted from this guide out of respect for the current residents, as the building offers no public access or fan-oriented memorials).",
-    "lat": 37.5173,
-    "lng": 127.0268,
+    "address": "16 Nonhyeon-ro 119-gil, Gangnam-gu, Seoul",
+    "lat": 37.51026,
+    "lng": 127.03046,
     "img": "images/admin-upload-70-photo.jpg",
     "fullDescription": {
       "fr": "<p>Emménager dans ce dortoir légèrement plus grand en 2015 a marqué le début de l'ère la plus décisive de BTS, alors que « I Need U » propulsait la popularité du groupe.</p><p>Ce dortoir apparaît dans les diffusions Festa de 2015, montrant un foyer chaotique mais visiblement plus heureux, tandis que les membres commençaient à remporter leurs premiers trophées d'émissions musicales.</p>",
-      "en": "<p>In 2015, coinciding with the release of The Most Beautiful Moment in Life, Pt. 1 and their emotional first-ever music show win with \"I Need U,\" BTS finally moved out of their infamous single-bedroom apartment. They relocated to this significantly larger, multi-level house in the Gangnam district. This spacious residence marked a monumental milestone, giving the seven members enough room to divide into roommate pairs rather than sleeping in one cramped room. Today, this beautiful former second dorm has been fully renovated and opened to the public as a bakery and coffee shop named Café Hyuga (휴가, meaning \"vacation\" or \"rest\").</p><p>This second dorm is deeply associated with a golden era for older ARMYs, serving as the primary backdrop for their 2015 and 2016 content, including early V Live broadcasts, birthday surprises, and the iconic 2015 BTS Festa. In an incredible turn of events for fans, the cafe owners thoughtfully kept the structural integrity of the house intact. Fans can now actually walk through the exact rooms where the members used to live, sleep, and write music during their rapid ascent to global fame.</p><p>In a beautiful, full-circle moment for the fandom, RM (Namjoon) made a quiet, discreet return to his old home as a customer. He shared photos of his nostalgic visit on his personal Instagram account (@rkive). Most notably, he photographed the cafe's dedicated message walls, which are completely covered in colorful post-it notes left by visiting ARMYs from all over the world, showing his deep appreciation for the fans who continue to honor their history.</p>"
+      "en": "<p>As BTS's global popularity exploded with the release of Wings and \"Blood Sweat &amp; Tears,\" they relocated to their third dorm: a spacious, multi-level house still located in the Gangnam district. This beautiful residence gave them a true taste of comfort and space. In a massive win for fans, the building was recently renovated and transformed into a public bakery and coffee shop named Café Hyuga (meaning \"vacation\" or \"rest\"), keeping the original structural layout intact.</p><p>Fans can now walk through and drink coffee in what used to be the members' actual living room and kitchen. Furthermore, eagle-eyed fans can catch a fascinating visual reference to this specific fourth dorm around the 34th minute of Run BTS! Episode 34, where footage of the house appears. In a heartwarming, full-circle moment years later, RM (Namjoon) made a quiet, discreet return to his old home as a customer, sharing photos of his nostalgic visit on his personal Instagram account (@rkive) and highlighting the cafe's message walls covered in colorful Post-it notes left by visiting fans.</p>"
     },
     "tipsList": [
       {
@@ -3674,15 +3682,7 @@ window.STATIC_LOCATIONS = [
           "en": "The @rkive Post-It Wall"
         },
         "text": {
-          "en": "Channel your inner Namjoon by visiting the exact wall of post-it notes he featured on his Instagram. Bring a pen, write your own message of love and gratitude, and add it to the thousands of others. You never know when a member might quietly visit again to read them!"
-        }
-      },
-      {
-        "title": {
-          "en": "Explore the Layout"
-        },
-        "text": {
-          "en": "Take your time walking through the cafe to figure out the original floor plan. Fans have meticulously matched the current cafe rooms (like the main seating area) to old BTS videos filmed in the dorm's living room and kitchen."
+          "en": "Bring a pen, write your own message of love, and stick it on the exact wall Namjoon photographed for his Instagram."
         }
       },
       {
@@ -3690,7 +3690,15 @@ window.STATIC_LOCATIONS = [
           "en": "Try the Bakery Signatures"
         },
         "text": {
-          "en": "Aside from its historical significance, Café Hyuga is genuinely beloved for its pastries. Their signature black salt bread (sometimes affectionately called Bulletproof salt bread) is a must-try while you soak in the atmosphere."
+          "en": "Café Hyuga is genuinely beloved for its pastries. Their signature black salt bread (affectionately called \"Bulletproof salt bread\") is a must-try."
+        }
+      },
+      {
+        "title": {
+          "en": "Match the Rooms"
+        },
+        "text": {
+          "en": "Fans have meticulously mapped the current cafe seating areas to old BTS broadcasts filmed in their former living room and kitchen."
         }
       }
     ],
@@ -3700,7 +3708,7 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "The neighborhood is easily accessible via the Seoul Subway. Take Line 7 to Hakdong Station (Exit 4). The cafe is about a 7-minute walk through the rolling residential streets."
+          "en": "About a 7-minute walk from Hakdong Station (Line 7, Exit 4)."
         }
       },
       {
@@ -3708,7 +3716,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "Café Hyuga is generally open daily from 9:00 AM to 9:30 PM. There is no admission fee, but visitors are expected to purchase a drink or food item to sit and enjoy the space."
+          "en": "Open daily from 9:00 AM to 9:30 PM. No admission fee, but a food/drink purchase is expected."
         }
       },
       {
@@ -3716,7 +3724,7 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": "The cafe is situated in a hilly neighborhood and requires navigating stairs to enter the building and move between the renovated floors, making it challenging for wheelchair users."
+          "en": "Navigating stairs is required to enter the building and move between the renovated floors, making it challenging for wheelchair users."
         }
       }
     ],
@@ -3728,7 +3736,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "tweetUrl": "",
     "facebookUrls": [],
-    "instagramUrl": "",
     "tweetUrls": [],
     "imgCredit": "AI-generated illustrative image",
     "recreatedPhotos": [
@@ -3736,7 +3743,8 @@ window.STATIC_LOCATIONS = [
       "images/admin-upload-70-recreated-1.jpg"
     ],
     "officialLink": "https://www.instagram.com/hyuga_1531",
-    "tiktokUrl": "https://www.tiktok.com/@stellfagan/video/7509959876689382678"
+    "instagramUrl": "https://www.instagram.com/p/CjhV8N6vNWm/",
+    "tiktokUrl": ""
   },
   {
     "id": 71,
@@ -7753,22 +7761,22 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 160,
-    "name": "First BTS Dormitory",
+    "name": "The 1st BTS Dorm (The Blue Dorm)",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
-    "year": "2013, 2014, 2015",
-    "ytId": "wtVKQDEZoF0",
+    "year": "2010, 2011, 2012",
+    "ytId": "RhJqNFQCU_Q",
     "episodeLink": "https://www.youtube.com/watch?v=wtVKQDEZoF0",
-    "address": "10-31 Nonhyeon-dong, Gangnam-gu, Seoul, South Korea",
-    "lat": 37.5169,
-    "lng": 127.0267,
+    "address": "논현로149길 (Nonhyeon-ro 149-gil), Gangnam-gu, Seoul, South Korea.",
+    "lat": 37.51793,
+    "lng": 127.02709,
     "img": "images/admin-upload-160-photo.jpg",
     "fullDescription": {
       "fr": "<p>Ce petit appartement exigu du 3e étage, tristement célèbre, est celui où les 7 membres partageaient une seule chambre, dormant sur des lits superposés entourés de chaussures et de vêtements.</p><p>Ce dortoir est apparu abondamment dans les diffusions anniversaire de leurs débuts et dans Rookie King, symbole ultime de leurs galères partagées.</p>",
-      "en": "<p>Located in the quiet residential neighborhood of Nonhyeon-dong in the Gangnam district, this unassuming brick building holds the raw, authentic origin story of the biggest pop group in the world. On the third floor was the infamous, incredibly cramped apartment where all seven members of BTS lived together as trainees and newly debuted rookies. Sharing a single, tiny bedroom squeezed with three sets of bunk beds and one regular bed, the members navigated a chaotic space overflowing with clothes, shoes, and diet food. Today, this dorm remains legendary among fans as the ultimate symbol of the group's humble beginnings, their grueling trainee days, and the unbreakable brotherhood they forged in the tightest of quarters.</p><p>For ARMYs, standing outside this building feels like stepping into a time machine. This specific apartment was the backdrop for many of BTS's earliest and most vulnerable moments, heavily featured in their pre-debut vlogs, their first anniversary broadcast, and their 2013 reality show Rookie King. While they have all since moved into some of South Korea's most luxurious real estate, the members frequently reflect on this cramped third-floor apartment with deep nostalgia. The most notable recent official content linked to this location is the Run BTS! 2022 Special Episode - Telepathy (aired in August 2022). When the members were tasked with traveling separately to a place linked to their shared memories, a majority of them—RM, Jin, Jimin, and V—instinctively navigated straight back to this very first dorm, cementing its status as the foundational core of their teamwork and history.</p>"
+      "en": "<p>Documented by historical tweets from Suga and Jimin at the time, BTS moved into what most people think of as their “first dorm” on May 12–13, 2013, just before their official debut. Located on the 3rd floor (Unit 302) at 9-8, Nonhyeon-dong, Gangnam-gu, Seoul (also indexed under 17-3 Nonhyeon-dong 143-gil), this apartment was built exclusively for the seven members, who lived here until about a year after debut. The layout featured a single shared bedroom set up like a dorm with bunk beds where all seven members slept, alongside a walk-in clothes closet and a cot for their manager to sleep over if needed. It sat in the very same block as the old BigHit offices at 10-31 Nonhyeon-dong. Although that former agency building is no longer owned by HYBE/BigHit and its future is uncertain, its exterior walls are currently covered with ARMY and MOA (TXT fandom) graffiti.</p><p>This apartment holds a legendary status in fandom history and is immortalized in early media. Clips of this first apartment can be seen in their very first Rookie King episode and in the Bangtan Bomb documenting their first-year anniversary / First Festa party. Its iconic status was further cemented during the Run BTS! Telepathy special episode, where Jin, V, Jimin, and RM met here in the first round; j-hope went there in the second round; and SUGA caught j-hope there in the third round.</p>"
     },
     "tipsList": [
       {
@@ -7802,7 +7810,7 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "The neighborhood is easily accessible via the Seoul Subway. Take Line 7 to Hakdong Station (Exit 7) or Line 3 to Sinsa Station (Exit 1). The dorm is about a 10- to 15-minute walk through the residential streets from either station."
+          "en": "Take Seoul Subway Line 7 to Hakdong Station (Exit 7) or Line 3 to Sinsa Station (Exit 1), then walk through the residential alleys."
         }
       },
       {
@@ -7832,14 +7840,15 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
+    "officialLink": "https://www.bluehousenh.com/en",
+    "imgCredit": "AI-generated illustrative image",
     "recreatedPhotos": [
-      "images/admin-upload-160-recreated-0.jpg"
+      "images/admin-upload-160-recreated-0.jpg",
+      "images/admin-upload-160-recreated-1.jpg"
     ],
     "youtubeUrls": [
-      "https://www.youtube.com/watch?v=RhJqNFQCU_Q"
-    ],
-    "officialLink": "https://www.bluehousenh.com/en",
-    "imgCredit": "AI-generated illustrative image"
+      "https://www.youtube.com/watch?v=wtVKQDEZoF0"
+    ]
   },
   {
     "id": 161,
@@ -11652,20 +11661,15 @@ window.STATIC_LOCATIONS = [
     "address": "137 Oryukdo-ro, Nam-gu, Busan, South Korea",
     "lat": 35.1017,
     "lng": 129.1232,
-    "img": "",
+    "img": "images/admin-upload-new-1u0UUNL2BCscYEhr07gw-photo.jpg",
     "addedAt": 1789987212040,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Oryukdo Skywalk is a glass-bottomed horseshoe-shaped viewing bridge situated on the coastal cliffs of Seungdumal Point in Busan. Built on a 35-meter-high coastal rock cliff, the transparent walkway extends 15 meters over the ocean, giving visitors the sensation of walking above crashing coastal waves while looking out towards the famous Oryukdo Islets.</p><p>In 2015, Jimin visited the Oryukdo Skywalk while spending personal vacation time in his hometown of Busan. He recorded a vlog showcasing the sweeping coastal view and his trip around the city, sharing his deep affection for Busan with fans worldwide and putting the skywalk on every ARMY's Busan travel list.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
     "tipsList": [
       {
         "title": {
@@ -11694,7 +11698,6 @@ window.STATIC_LOCATIONS = [
     ],
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
     "practicalInfo": [
       {
         "title": {
@@ -11722,7 +11725,17 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrls": [],
-    "recreatedPhoto": ""
+    "pinterestUrl": "",
+    "fullDescription": {
+      "en": "<p>The Oryukdo Skywalk is a glass-bottomed horseshoe-shaped viewing bridge situated on the coastal cliffs of Seungdumal Point in Busan. Built on a 35-meter-high coastal rock cliff, the transparent walkway extends 15 meters over the ocean, giving visitors the sensation of walking above crashing coastal waves while looking out towards the famous Oryukdo Islets.</p><p>In 2015, Jimin visited the Oryukdo Skywalk while spending personal vacation time in his hometown of Busan. He recorded a vlog showcasing the sweeping coastal view and his trip around the city, sharing his deep affection for Busan with fans worldwide and putting the skywalk on every ARMY's Busan travel list. Walking where Jimin walked allows fans to retrace his personal roots and experience the same stunning sea breezes that inspired him in his hometown.</p>"
+    },
+    "episodeLink": "https://www.gukjenews.com/news/articleView.html?idxno=2452723",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-new-1u0UUNL2BCscYEhr07gw-recreated-0.jpg"
+    ],
+    "ytId": "O2oDIzSaqvU",
+    "officialLink": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=6cb1642d-b578-462f-82c6-b1c1ef468af7&utm_source=googlemap"
   },
   {
     "id": "new-2LGcTZJG0izlFK23EBq2",
@@ -13726,6 +13739,269 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "id": "new-manual-1790001265057-lc06qt",
+    "name": "The 2nd BTS Dorm",
+    "group": "BTS",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2012, 2013, 2014",
+    "address": "논현로121길 (Nonhyeon-ro 121-길), Gangnam-gu, Seoul, South Korea.",
+    "lat": 37.51724,
+    "lng": 127.02437,
+    "member": "All",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The location is a short walk from Hakdong Station (Seoul Subway Line 7). Take Exit 5 or 6 and navigate the quiet residential alleys to reach the building."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Blue House Nonhyeon operates as a private business. Daytime admission (which typically includes time to explore, take photos, and relax) starts around ₩40,000, while overnight stays vary by room. Booking in advance via their official website or social media channels is strictly required."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The apartment is located on the 3rd floor of an older residential building with no elevator. Unfortunately, it is not accessible for wheelchair users, and visitors should be prepared to carry their luggage up the stairs if they are staying overnight."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "img": "images/admin-upload-new-manual-1790001265057-lc06qt-photo.jpg",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790001265057-lc06qt-recreated-0.jpg"
+    ],
+    "tweetUrl": "https://x.com/BTS_twt/status/333113050263588864?s=20",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Experience an Overnight Stay"
+        },
+        "text": {
+          "en": "You can book an overnight stay at this location as listed on dedicated travel sites, allowing you to walk the halls of their second dorm building."
+        }
+      },
+      {
+        "title": {
+          "en": "Recreate Bon Voyage S1"
+        },
+        "text": {
+          "en": "Watch the frantic opening episode of Bon Voyage where they scramble to pack their bags within 50 minutes to picture the exact energy of this apartment."
+        }
+      },
+      {
+        "title": {
+          "en": "Relive Telepathy Moments"
+        },
+        "text": {
+          "en": "Trace the footsteps of the members who converged on this specific location during the second round of the Run BTS! Telepathy episode."
+        }
+      }
+    ],
+    "officialLink": "https://www.bluehousenh.com/en",
+    "fullDescription": {
+      "en": "<p>As immortalized by their nostalgic track \"Moving On,\" BTS eventually moved into a larger three-bedroom apartment. Living here from late 2014 until mid-to-late 2016, this residence marked a major upgrade where they were finally divided into roommate pairs and trios rather than a single shared room. According to Jin's accounts in Beyond the Story, the room split placed Jin and Suga together, Jungkook and RM together, and j-hope, V, and Jimin sharing the largest bedroom.</p><p>This apartment is deeply etched into fandom history. It is famously featured in the chaotic packing madness of Bon Voyage Season 1 (filmed in spring 2016), where the members were given just 50 minutes to grab what they could and rush out the door. Its nostalgic value was further proven during the Run BTS! Telepathy episode, where Jin, V, Jimin, and RM met up with Jungkook here in the second round.</p><p>As of February 2026, fans can actually book an overnight stay in this building on the third floor (apartment 3F). While the interior is decorated and styled to evoke memories of their very first apartment, and while the exact third-floor unit may be brighter and sunnier than their original living footage, it matches the general layout and places fans directly inside the second dorm building.</p>"
+    },
+    "ytId": ""
+  },
+  {
+    "id": "new-manual-1790003051518-pby71g",
+    "name": "The 3rd BTS Dorm (Nonhyeon-dong)",
+    "group": "BTS",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2015, 2016",
+    "address": "강남대로132길 (Gangnam-daero 132-gil), Gangnam-gu, Seoul, South Korea.",
+    "lat": 37.51295,
+    "lng": 127.02469,
+    "img": "images/admin-upload-new-manual-1790003051518-pby71g-photo.jpg",
+    "member": "All",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible via Seoul Subway Line 7 (Hakdong Station)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Private residential property. Interior access is strictly prohibited. Exterior street view only."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The surrounding Nonhyeon-dong streets feature typical steep Gangnam hills and residential alleys."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "ytId": "YgAnBUqPmh0",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Rewatch Bon Voyage S1 Ep1"
+        },
+        "text": {
+          "en": "Before exploring the neighborhood context, watch the opening scenes of their 2016 reality trip to spot the authentic interior layout, living room, and bedrooms of this specific apartment."
+        }
+      },
+      {
+        "title": {
+          "en": "Listen to"
+        },
+        "text": {
+          "en": "Play the track \"Move\" from The Most Beautiful Moment in Life: Young Forever while walking through Nonhyeon-dong to fully immerse yourself in the emotional weight of their transition from rookies to rising stars."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect Local Privacy"
+        },
+        "text": {
+          "en": "Like many early residential sites in Gangnam, this apartment block remains a private, occupied building. Fans must admire the exterior context respectfully from public sidewalks."
+        }
+      }
+    ],
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=r8WkGspG81Q"
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790003051518-pby71g-recreated-0.jpg"
+    ],
+    "fullDescription": {
+      "en": "<p>Following their breakout success and first music show wins during The Most Beautiful Moment in Life era, BTS finally moved out of their cramped single-room quarters into a much larger apartment located at Gangnam. As the members joyfully discussed during their May 2015 Changmin's Gayo Plaza interview, this new multi-bedroom residence was roughly twice the size of their previous home and comfortably accommodated eight people, including their manager. For the first time, they transitioned from sleeping in one giant shared room to designated roommate pairs and individual arrangements: Jin and Suga shared a room; V, Jimin, and j-hope shared another; and Jungkook had a separate space (though he was famously known to occasionally sleep under the dining table). The apartment also featured two bathrooms instead of just one, a luxury that meant they no longer had to physically step over members sleeping on the floor just to walk around.</p><p>This third apartment holds a deeply emotional and nostalgic place in BTS history, serving as the backdrop for iconic fandom milestones. It was right here that they filmed portions of the 2015 BTS Festa celebrations (released around June 11, 2015). Fans can also see the exact layout and chaotic atmosphere of this home in the historic opening episode of Bon Voyage Season 1 (May 2016), which captured their frantic packing right before leaving for Northern Europe. Above all, the bittersweet experience of leaving their previous cramped life behind and moving into this home directly inspired the heartfelt track \"Move\" (Isa), capturing the sweat, tears, and growth tied to these walls.</p>"
+    }
+  },
+  {
+    "id": "new-manual-1790021935296-8l918r",
+    "name": "Perrotin Gallery",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "76 Rue de Turenne, 75003 Paris, France",
+    "lat": 48.86047,
+    "lng": 2.36472,
+    "img": "images/admin-upload-new-manual-1790021935296-8l918r-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "LPLT / CC BY-SA 3.0",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tweetUrl": "https://x.com/BTS_twt/status/1179686404005101568?s=20",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790021935296-8l918r-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Finding the spot"
+        },
+        "text": {
+          "en": "Once you enter through the main courtyard at 76 Rue de Turenne, head straight towards the main interior staircase where Jimin sat. It features the distinct black wrought-iron double curved staircases with a central classical statue and gold-framed artworks on the white walls above."
+        }
+      },
+      {
+        "title": {
+          "en": "Photography & Etiquette"
+        },
+        "text": {
+          "en": "Since this is a working art gallery, be respectful of the staff and visitors. Security or gallery staff are usually fine with quick photos, but avoid blocking the stairs for too long."
+        }
+      },
+      {
+        "title": {
+          "en": "Best time to visit"
+        },
+        "text": {
+          "en": "Go right when they open on a weekday (Tuesday or Wednesday morning) to avoid large crowds and get a clear shot on the stairs without other people in the background."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://www.perrotin.com/en",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Easily accessible via Paris Métro. The closest stations are Saint-Paul (Line 1), Chemin Vert (Line 8), or Filles du Calvaire (Line 8), allowing a short and pleasant walk through the historic streets of the Marais."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open Tuesday through Saturday from 10:00 AM to 6:00 PM (hours may vary slightly depending on current exhibitions). Admission is completely free, and no booking is required for general gallery visits."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor exhibition spaces are accessible, though older historic buildings in Paris can have specific architectural limitations."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "fullDescription": {
+      "en": "<p>Located at 76 Rue de Turenne in the vibrant Marais district, Perrotin Gallery is one of the most prestigious and influential contemporary art galleries in the world. Founded by Emmanuel Perrotin in 1990 when he was only 21 years old, the gallery has played a pivotal role in launching and supporting the careers of iconic contemporary artists such as Takashi Murakami, Maurizio Cattelan, and JR.</p><p>The Rue de Turenne location is set within a magnificent historic Parisian architectural environment, a stunning 18th, century complex featuring classic wrought-iron staircases, stately stone architecture, and classic moldings that effortlessly bridge historic Parisian heritage with cutting-edge modern art exhibitions.</p><p>In June 2019, Jimin traveled to Paris alongside the other members of BTS for their massive, sold-out concerts at the Stade de France during the Love Yourself: Speak Yourself world tour. Taking advantage of their stay in the French capital, Jimin visited the renowned Perrotin Gallery in the Marais district.  He later shared a memorable photo of himself posing on the gallery's grand interior staircase, framed by its elegant wrought-iron railings and classical artwork. Since then, this picturesque spot has become a popular location for ARMYs visiting Paris who want to retrace Jimin's footsteps.</p>"
+    },
+    "tiktokUrl": "",
+    "ytId": ""
   },
   {
     "group": "BTS",
