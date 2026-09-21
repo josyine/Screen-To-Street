@@ -2297,6 +2297,11 @@ window.addEventListener('firebase-ready', async (e) => {
         window.__isAdminUser = true;
         const adminEditBtn = document.getElementById('details-admin-edit-btn');
         if (adminEditBtn) adminEditBtn.classList.remove('hidden');
+        // Édition directe du titre, tout en haut de la fiche (demande du 21/09/2026,
+        // "je veux pouvoir modifier directement via le titre tout en haut") — distinct
+        // du champ Title du modal crayon ci-dessus, voir wireInlineTitleEdit() plus bas.
+        const titleEditBtn = document.getElementById('details-title-edit-btn');
+        if (titleEditBtn) titleEditBtn.classList.remove('hidden');
         // KPI "verified" + pastilles de filtre "Verified only"/"Unverified only" (demande
         // du 15/09/2026, étendu le 21/09/2026) : comme la pastille de vérification
         // ci-dessous, réservés aux admins — jamais visibles d'un visiteur normal.
@@ -5906,6 +5911,22 @@ function collectMemberCheckboxValue(container) {
     });
     return checked.length ? checked.join(', ') : 'All';
 }
+// Catégorie en <select> plutôt qu'en texte libre (demande du 21/09/2026, "je veux
+// également pouvoir modifier la catégorie du lieu directement via le detail d'un
+// lieu") — mêmes clés que catTranslations (voir getCatName() plus haut), la liste
+// canonique déjà utilisée partout ailleurs sur le site pour ce champ, plutôt qu'une
+// liste dérivée de celebLocations comme admin.html (evite de réintroduire des
+// doublons singulier/pluriel, voir tâche #298 "Normalize duplicate singular/plural
+// category values"). La valeur ACTUELLE du lieu reste toujours incluse même si elle
+// n'est plus dans catTranslations (ex: ancienne valeur), même logique que
+// metaFieldSelectHtml() dans admin.html.
+function categorySelectOptionsHtml(currentValue) {
+    const current = (currentValue || '').toString();
+    const keys = Object.keys(catTranslations);
+    if (current && !keys.includes(current)) keys.unshift(current);
+    const blankOption = current ? '' : '<option value="">—</option>';
+    return blankOption + keys.map(k => `<option value="${escapeHtml(k)}"${k === current ? ' selected' : ''}>${escapeHtml(getCatName(k))}</option>`).join('');
+}
 
 function ensureLocationEditModal() {
     let modal = document.getElementById('location-edit-modal');
@@ -5993,6 +6014,11 @@ function ensureLocationEditModal() {
             <div id="location-edit-title-error" class="hidden" style="${errStyle}">The title cannot be empty.</div>
             <div style="display:flex; gap:8px;">
                 <div style="flex:1;"><label style="${labelStyle}">Group</label><input type="text" id="location-edit-group" style="${fieldStyle}"></div>
+                <!-- Catégorie (demande du 21/09/2026) : <select> plutôt qu'un champ texte,
+                     voir categorySelectOptionsHtml() plus haut — options reconstruites à
+                     chaque ouverture du modal dans fillSkeletonFields() pour toujours
+                     inclure la valeur actuelle du lieu. -->
+                <div style="flex:1;"><label style="${labelStyle}">Category</label><select id="location-edit-category" style="${fieldStyle}"></select></div>
             </div>
             <label style="${labelStyle}">Member(s) — select every member that applies</label>
             <div id="location-edit-member" style="margin-bottom:10px;"></div>
@@ -6337,6 +6363,7 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-title').value = titleWithoutClosedPrefix;
         document.getElementById('location-edit-title-error').classList.add('hidden');
         document.getElementById('location-edit-group').value = data.group || '';
+        document.getElementById('location-edit-category').innerHTML = categorySelectOptionsHtml(data.category);
         document.getElementById('location-edit-member').innerHTML = memberMultiSelectHtml(data.member);
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
@@ -6364,7 +6391,7 @@ window.openLocationEditModal = async function (locId) {
         // la valeur flottante parsée du champ dans saveLocationEdit().
         locationEditOriginalSkeletonValues = {
             title: titleWithoutClosedPrefix,
-            group: data.group || '', country: data.country || '', city: data.city || '',
+            group: data.group || '', category: data.category || '', country: data.country || '', city: data.city || '',
             address: data.address || '', episode: data.episode || '', episodeLabel: data.episodeLabel || '',
             lat: (data.lat != null) ? data.lat : null, lng: (data.lng != null) ? data.lng : null
         };
@@ -6568,6 +6595,7 @@ async function saveLocationEdit(locId, modal) {
     // titre vide casserait l'affichage de ce lieu partout sur le site (carte, listes...).
     const titleVal = document.getElementById('location-edit-title').value.trim();
     const groupVal = document.getElementById('location-edit-group').value.trim();
+    const categoryVal = document.getElementById('location-edit-category').value.trim();
     const memberVal = collectMemberCheckboxValue(document.getElementById('location-edit-member'));
     const countryVal = document.getElementById('location-edit-country').value.trim();
     const cityVal = document.getElementById('location-edit-city').value.trim();
@@ -6738,6 +6766,7 @@ async function saveLocationEdit(locId, modal) {
     // vide y compris.
     const skeletonFields = {};
     if (groupVal !== (locationEditOriginalSkeletonValues.group || '')) skeletonFields.group = groupVal;
+    if (categoryVal !== (locationEditOriginalSkeletonValues.category || '')) skeletonFields.category = categoryVal;
     if (memberVal) skeletonFields.member = memberVal;
     if (countryVal !== (locationEditOriginalSkeletonValues.country || '')) skeletonFields.country = countryVal;
     if (cityVal !== (locationEditOriginalSkeletonValues.city || '')) skeletonFields.city = cityVal;
@@ -6819,7 +6848,87 @@ async function saveLocationEdit(locId, modal) {
 // mis à jour en mémoire (Object.assign) et bien écrit dans Firestore, mais le texte "Date"
 // affiché sur la fiche déjà ouverte restait figé sur l'ancienne valeur jusqu'à un rechargement
 // complet de la page. Extrait en fonction à part pour pouvoir la rappeler après coup.
+// Édition directe du titre, en place, tout en haut de la fiche (demande du 21/09/2026,
+// "je veux pouvoir modifier directement via le titre tout en haut... tu laisses le titre
+// actuel du lieu et moi je peux le modifier par dessus") — DISTINCT du champ "Title" du
+// modal crayon (ensureLocationEditModal()/saveLocationEdit() plus haut), qui reste
+// disponible pour éditer ce même champ (loc.name, via locationSkeletonOverrides) parmi
+// tous les autres. Ici, seul le titre affiché devient éditable, sans ouvrir tout le
+// modal. Wiring paresseux (dataset.wired), rappelé à chaque renderLocationMetaFields() —
+// même convention que le bouton copyright dans renderLocationHeroBg().
+function wireInlineTitleEditOnce() {
+    const editBtn = document.getElementById('details-title-edit-btn');
+    if (!editBtn || editBtn.dataset.wired) return;
+    editBtn.dataset.wired = '1';
+    const titleEl = document.getElementById('details-title');
+    const inputEl = document.getElementById('details-title-input');
+    const saveBtn = document.getElementById('details-title-save-btn');
+    const cancelBtn = document.getElementById('details-title-cancel-btn');
+    const errEl = document.getElementById('details-title-error');
+
+    const exitEditMode = () => {
+        titleEl.classList.remove('hidden');
+        editBtn.classList.remove('hidden');
+        inputEl.classList.add('hidden');
+        saveBtn.classList.add('hidden');
+        cancelBtn.classList.add('hidden');
+        errEl.classList.add('hidden');
+    };
+    const enterEditMode = () => {
+        const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
+        if (!loc) return;
+        // Même repli du préfixe "[CLOSED] " que le modal crayon (voir fillSkeletonFields()
+        // plus haut) : ce champ n'édite que le vrai nom, jamais le préfixe.
+        const rawName = loc.name || '';
+        inputEl.value = rawName.startsWith('[CLOSED] ') ? rawName.slice(9) : rawName;
+        errEl.classList.add('hidden');
+        titleEl.classList.add('hidden');
+        editBtn.classList.add('hidden');
+        inputEl.classList.remove('hidden');
+        saveBtn.classList.remove('hidden');
+        cancelBtn.classList.remove('hidden');
+        inputEl.focus();
+        inputEl.select();
+    };
+    const doSave = async () => {
+        const locId = currentLocationIdForMemory;
+        const loc = celebLocations.find(l => l.id === locId);
+        if (!loc) { exitEditMode(); return; }
+        const newTitle = inputEl.value.trim();
+        if (!newTitle) {
+            errEl.textContent = 'The title cannot be empty.';
+            errEl.classList.remove('hidden');
+            return;
+        }
+        const isClosed = (loc.name || '').startsWith('[CLOSED] ');
+        const finalName = isClosed ? '[CLOSED] ' + newTitle : newTitle;
+        if (finalName === loc.name) { exitEditMode(); return; }
+        saveBtn.disabled = true;
+        const res = (typeof window.adminUpdateLocationSkeleton === 'function')
+            ? await window.adminUpdateLocationSkeleton(locId, { name: finalName })
+            : { success: false };
+        saveBtn.disabled = false;
+        if (res && res.success) {
+            loc.name = finalName;
+            renderLocationMetaFields(loc);
+            if (typeof renderLocations === 'function') renderLocations(true);
+            exitEditMode();
+        } else {
+            errEl.textContent = 'Could not save. Please try again.';
+            errEl.classList.remove('hidden');
+        }
+    };
+    editBtn.addEventListener('click', enterEditMode);
+    cancelBtn.addEventListener('click', exitEditMode);
+    saveBtn.addEventListener('click', doSave);
+    inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); doSave(); }
+        else if (e.key === 'Escape') { e.preventDefault(); exitEditMode(); }
+    });
+}
+
 function renderLocationMetaFields(loc) {
+    wireInlineTitleEditOnce();
     const badge = document.getElementById('detail-badge');
     if(badge) badge.textContent = `${loc.group} · ${getCatName(loc.category)}`;
 

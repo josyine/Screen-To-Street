@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260954">
+<link rel="stylesheet" href="style.css?v=20260955">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -647,7 +647,27 @@
                     </button>
                     <div class="detail-hero-bottom">
                         <span class="detail-hero-badge" id="detail-badge">Category</span>
-                        <div class="detail-hero-title" id="details-title">Location Name</div>
+                        <!-- Édition directe du titre (demande du 21/09/2026, "je veux pouvoir
+                             modifier directement via le titre tout en haut... tu laisses le
+                             titre actuel et moi je peux le modifier par dessus") : distinct du
+                             champ Title du modal crayon (#details-admin-edit-btn ci-dessus) —
+                             ici, le titre affiché lui-même devient éditable en place. Réservé
+                             aux admins (window.__isAdminUser, voir script.js). Logique de
+                             bascule affichage/édition dans wireInlineTitleEdit() (script.js). -->
+                        <div class="detail-hero-title-row" id="details-title-row" style="display:flex; align-items:center; gap:6px;">
+                            <div class="detail-hero-title" id="details-title">Location Name</div>
+                            <button type="button" id="details-title-edit-btn" class="detail-title-edit-btn hidden" title="Edit this title" aria-label="Edit this title">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                            <input type="text" id="details-title-input" class="detail-hero-title-input hidden">
+                            <button type="button" id="details-title-save-btn" class="detail-title-save-btn hidden" title="Save" aria-label="Save">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+                            </button>
+                            <button type="button" id="details-title-cancel-btn" class="detail-title-cancel-btn hidden" title="Cancel" aria-label="Cancel">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                        <div id="details-title-error" class="hidden" style="font-size:10.5px; color:#ffb4c4; margin:-6px 0 6px;">The title cannot be empty.</div>
                         <div class="detail-hero-sub">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#e6dff2" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                             <span id="details-location-sub">City, Country</span>
@@ -1420,12 +1440,12 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260954"></script>
-<script type="module" src="firebase-init.js?v=20260954"></script>
-<script src="locations-data.js?v=20260954"></script>
-<script src="script.js?v=20260954"></script>
+<script src="countries.js?v=20260955"></script>
+<script type="module" src="firebase-init.js?v=20260955"></script>
+<script src="locations-data.js?v=20260955"></script>
+<script src="script.js?v=20260955"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260954"></script>
+<script src="map-tour.js?v=20260955"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
