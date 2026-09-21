@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260957">
+<link rel="stylesheet" href="style.css?v=20260958">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -442,9 +442,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260957"></script>
-<script src="locations-data.js?v=20260957"></script>
-<script src="script.js?v=20260957"></script>
+<script type="module" src="firebase-init.js?v=20260958"></script>
+<script src="locations-data.js?v=20260958"></script>
+<script src="script.js?v=20260958"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -574,6 +574,56 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             filterFeed(document.getElementById('feed-search-input').value);
         }
     };
+
+    // Restauration de l'onglet + position de défilement au retour du bouton "More
+    // details" de la fiche lieu (demande du 21/09/2026, "quand je clique sur 'More
+    // detail'... quand je reviens en arrière il faut revenir où on était dans la page
+    // feed") : #modal-more-details (partagé avec profile.html/visited.html/wishlist.html,
+    // voir openLocModal() dans script.js) navigue en vrai vers map.html?loc=ID (pas de
+    // target="_blank"), donc le bouton "Précédent" du navigateur recharge ENTIÈREMENT
+    // cette page — onglet et défilement repartaient alors à zéro (COMMUNITY, tout en
+    // haut) au lieu de rester là où la personne avait cliqué, ce qui ressemblait à un
+    // bug d'affichage (grille vide "Loading…" à la place de ce qu'elle regardait).
+    // Sauvegardés juste avant de quitter la page (voir le clic sur #modal-more-details
+    // plus bas), restaurés au chargement suivant, puis effacés aussitôt pour ne jamais
+    // fausser une visite normale ultérieure de cette page (ex: revenir dessus plus tard
+    // depuis un signet).
+    const FEED_RETURN_STATE_KEY = 'feedReturnScrollState';
+    function restoreFeedReturnState() {
+        let saved = null;
+        try { saved = JSON.parse(sessionStorage.getItem(FEED_RETURN_STATE_KEY) || 'null'); } catch (e) {}
+        if (!saved || typeof saved.scrollY !== 'number') return;
+        try { sessionStorage.removeItem(FEED_RETURN_STATE_KEY); } catch (e) {}
+        if (saved.tab && saved.tab !== 'community') window.switchFeedTab(saved.tab);
+        // Le contenu de l'onglet restauré se dessine de façon asynchrone (Firestore) — on
+        // retente jusqu'à ce que la page soit assez haute pour atteindre la position
+        // visée, avec un plafond pour ne jamais boucler indéfiniment (ex: grille vide,
+        // lecture en erreur).
+        let attemptsLeft = 30;
+        const tryScroll = () => {
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (maxScroll >= saved.scrollY || attemptsLeft <= 0) {
+                window.scrollTo(0, Math.min(saved.scrollY, Math.max(maxScroll, 0)));
+                return;
+            }
+            attemptsLeft--;
+            setTimeout(tryScroll, 150);
+        };
+        tryScroll();
+    }
+    // Appelée plus bas dans ce fichier (pas ici) : renderSacredGrid()/loadSavedFeed(),
+    // déclenchées par le switchFeedTab() ci-dessus si l'onglet sauvegardé n'est pas
+    // "community", référencent des variables (ex: sacredContentPromise) déclarées via
+    // `let` plus loin dans ce script — un appel ici, avant que ces déclarations aient
+    // été exécutées, lèverait une ReferenceError ("temporal dead zone").
+    const modalMoreDetailsBtn = document.getElementById('modal-more-details');
+    if (modalMoreDetailsBtn) {
+        modalMoreDetailsBtn.addEventListener('click', () => {
+            try {
+                sessionStorage.setItem(FEED_RETURN_STATE_KEY, JSON.stringify({ tab: currentFeedTab, scrollY: window.scrollY }));
+            } catch (e) {}
+        });
+    }
 
     // Onglet "Mei's Pictures" (demande du 15/09/2026, "l'onglet 'Sacred places' ne
     // fonctionne pas... je n'aime pas le nom... renomme... affiche les photos de 'Recreate
@@ -866,9 +916,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             // Ne dessine la grille Community que si cet onglet est TOUJOURS actif (demande
             // du 14/09/2026, ajout de "sacred") : cette lecture Firestore est asynchrone et
             // peut résoudre après que la personne a déjà changé d'onglet (en particulier
-            // "sacred", restauré immédiatement au chargement par restoreSacredReturnState()
-            // ci-dessous, donc souvent avant même que cette requête ait fini) — sans cette
-            // garde, la grille Community réapparaîtrait par-dessus en silence.
+            // un onglet restauré au chargement par restoreFeedReturnState() plus haut,
+            // donc souvent avant même que cette requête ait fini) — sans cette garde, la
+            // grille Community réapparaîtrait par-dessus en silence.
             if (currentFeedTab !== 'community') { loadingEl.classList.add('hidden'); return; }
             loadingEl.classList.add('hidden');
             if (!feedPhotos.length) { document.getElementById('feed-empty').textContent = 'No public photos yet.'; document.getElementById('feed-empty').classList.remove('hidden'); return; }
@@ -920,6 +970,12 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     // et si la fonction est toujours indisponible, loadFeed() bascule proprement sur son
     // message "Loading failed" existant — un échec visible et actionnable, jamais un
     // spinner bloqué pour toujours.
+    // Restaure l'onglet/le défilement sauvegardés (voir restoreFeedReturnState() plus
+    // haut) AVANT loadFeed() ci-dessous : si l'onglet sauvegardé n'est pas "community",
+    // currentFeedTab doit déjà avoir changé au moment où loadFeed() se déclenche, pour
+    // que sa propre garde (`if (currentFeedTab !== 'community') return;`) l'empêche bien
+    // de dessiner Community par-dessus l'onglet restauré.
+    restoreFeedReturnState();
     let feedLoadStarted = false;
     window.addEventListener('firebase-ready', () => {
         if (feedLoadStarted) return;
