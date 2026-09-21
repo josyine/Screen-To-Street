@@ -4352,15 +4352,18 @@ function renderLocations(skipFitBounds) {
         card.addEventListener('click', () => {
             if (isNew) dismissNewLocationBadge(loc.id);
             map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
-            // Recherche active (demande du 11/09/2026) : "juste une aide pour rediriger
-            // vers le lieu sur la map", donc PAS d'ouverture de la fiche détail dans ce
-            // cas précis — seulement quand on clique depuis la liste normale (parcours
-            // par filtres, champ de recherche vide), comportement inchangé.
             // Sur mobile, cette liste vit dans le menu déroulant de la carte (hamburger) —
             // un tap dessus ouvrait seulement le pin (demande du 13/09/2026), mais plus
             // depuis (demande du 14/09/2026, "quand je clique sur un lieu dans le menu, je
             // veux que ça ouvre la page détail du lieu") : même comportement qu'ordinateur.
-            if (!searchInput.value.trim()) window.openDetailsPanel(loc.id);
+            // BUG corrigé (demande du 21/09/2026, "je veux que lorsque je clique sur le
+            // lieu que ça ouvre le detail du lieu à gauche + que ça redirige vers le lieu
+            // sur la carte") : une recherche active (demande du 11/09/2026, "juste une aide
+            // pour rediriger vers le lieu sur la map") désactivait jusqu'ici l'ouverture de
+            // la fiche détail — le clic ne faisait plus que voler vers le lieu sur la carte
+            // dès que le champ de recherche contenait du texte. Ouvre systématiquement la
+            // fiche détail désormais, recherche active ou non.
+            window.openDetailsPanel(loc.id);
         });
         locationListElement.appendChild(card);
     });
