@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-22T17:42:31.144Z.
+// Généré le 2026-09-22T22:23:07.452Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -381,8 +381,8 @@ window.STATIC_LOCATIONS = [
     "year": "2019",
     "ytId": "",
     "address": "39 Rue du Roi de Sicile, Paris",
-    "lat": 48.8569,
-    "lng": 2.3572,
+    "lat": 48.85673,
+    "lng": 2.35615,
     "img": "images/admin-upload-6-photo.jpg",
     "fullDescription": {
       "fr": "<p>Petite gelateria discrète au cœur du Marais, Pozzetto est appréciée des Parisiens pour ses glaces italiennes authentiques, turbinées lentement et servies dans les traditionnels \"pozzetti\" plutôt qu'en boules empilées.</p><p>Jimin y a été aperçu lors d'un passage à Paris, et la ruelle pavée à l'extérieur — bordée de vieilles façades en pierre — est depuis devenue un détour discret mais très apprécié pour les fans qui flânent dans le Marais.</p>",
@@ -436,7 +436,35 @@ window.STATIC_LOCATIONS = [
     "pinterestUrls": [],
     "pinterestUrl": "",
     "episodeLink": "https://feaforall.com/k-pop/article/when-did-jimin-go-to-paris/",
-    "recreatedPhoto": "images/admin-upload-6-recreated.jpg"
+    "recreatedPhotos": [
+      "images/admin-upload-6-recreated-0.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ]
   },
   {
     "id": 7,
@@ -9048,58 +9076,85 @@ window.STATIC_LOCATIONS = [
     "category": "Concert",
     "year": "2022",
     "episodeLink": "https://en.wikipedia.org/wiki/BTS:_Yet_to_Come_in_Cinemas",
-    "address": "344 World Cup-daero, Yeonje-gu, Busan",
+    "address": "344 World Cup-daero, Yeonje-gu, Busan, South Korea",
     "lat": 35.1902,
     "lng": 129.0578,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
+    "img": "images/admin-upload-193-photo.jpg",
     "fullDescription": {
-      "en": "<p>On October 15, 2022, BTS performed for free in front of the city of Busan to support its bid for the 2030 World Expo, playing to a completely packed stadium broadcast live around the world.</p><p>Just two days later, the announcement of their mandatory military service dropped, turning this concert into an emotionally loaded moment for fans — later immortalized on the big screen in the concert film \"BTS: Yet to Come in Cinemas,\" released in February 2023 across 110 countries.</p>",
-      "fr": "<p>Le 15 octobre 2022, BTS y a donné un concert gratuit devant environ 55 000 fans, en soutien à la candidature de Busan pour l'Exposition universelle 2030, retransmis dans le monde entier sur Weverse.</p><p>Ce concert s'est révélé être la dernière prestation du groupe au complet avant l'annonce de leur incorporation militaire, seulement deux jours plus tard, lui conférant une portée durable aux yeux des fans ; une version cinéma en a ensuite été tirée sous le titre « BTS: Yet to Come in Cinemas ».</p>"
+      "fr": "<p>Le 15 octobre 2022, BTS y a donné un concert gratuit devant environ 55 000 fans, en soutien à la candidature de Busan pour l'Exposition universelle 2030, retransmis dans le monde entier sur Weverse.</p><p>Ce concert s'est révélé être la dernière prestation du groupe au complet avant l'annonce de leur incorporation militaire, seulement deux jours plus tard, lui conférant une portée durable aux yeux des fans ; une version cinéma en a ensuite été tirée sous le titre « BTS: Yet to Come in Cinemas ».</p>",
+      "en": "<p>Built originally to host matches for the 2002 FIFA World Cup and the 2002 Asian Games, the Busan Asiad Main Stadium is a massive open-air sports and cultural arena featuring a distinctive tensile membrane roof designed to resemble a traditional Korean paper lantern. On October 15, 2022, this iconic venue became the center of the global music world when BTS returned to host their historic, free-of-charge concert titled Yet to Come in Busan. Staged as a massive promotional event to support the city of Busan's official bid to host the 2030 World Expo, the concert drew over 50,000 ecstatic fans inside the stadium while being broadcast live to millions more across streaming platforms worldwide.</p><p>This concert stands as one of the most emotional and monumental milestones in recent BTS history, marking their final full-group performance before beginning their individual military service enlistments. Stepping into the stadium allows ARMYs to retrace the electric atmosphere of that unforgettable night, where the members performed career-spanning hits from \"Dynamite\" and \"Butter\" to deeply emotional tracks like \"Spring Day\" and \"Yet to Come.\" The energy of the venue still echoes with the unity of a packed stadium turning purple under glowing ARMY Bombs.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Look out for"
+          "en": "Relive the Live Stream"
         },
         "text": {
-          "en": "The first live performance of \"Run BTS,\" from the anthology album Proof, captured that night."
+          "en": "Rewatch the official concert broadcast online to map out the stage placement on the stadium pitch and picture where the massive ocean of purple light stretched across the stands."
         }
       },
       {
         "title": {
-          "en": "Combine with"
+          "en": "Explore Sports Complex Area"
         },
         "text": {
-          "en": "Haeundae Beach, where a giant outdoor screening was also held that same evening."
+          "en": "Take time to walk around the wider Busan Asiad Sports Complex grounds, which celebrate the city's rich athletic and major-event history."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Busan Landmarks"
+        },
+        "text": {
+          "en": "Pair your visit to the stadium with a trip to other iconic Busan spots tied to the members, such as Jimin's hometown neighborhoods or the coastal walks."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Multi-use stadium still in active use (football, athletics); check the schedule before visiting outside of an event."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Sports Complex Station (Busan Metro Line 3), direct exit toward the stadium."
+          "en": "Take Busan Subway Line 3 to Sports Complex Station (Exit 9), followed by a short, straightforward walk directly to the stadium gates."
         }
       },
       {
         "title": {
-          "en": "Context"
+          "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "The concert, announced to support Busan's bid for the 2030 World Expo, drew around 50,000 attendees on site and nearly 49 million streaming views on Weverse."
+          "en": "The outdoor stadium grounds and surrounding park are accessible 24/7. Interior access, stadium tours, or event entry depend on scheduled sporting matches, stadium policies, or major concert bookings."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Modern municipal sports facility featuring ramps, wide concourses, elevator access, and designated accessible seating sectors."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tiktokUrl": "",
+    "ytId": "c7wByYDxktE",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=iOaQhK0rVi4"
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-193-recreated-0.jpg"
+    ],
+    "officialLink": "https://fr.wikipedia.org/wiki/Stade_Asiade_de_Pusan"
   },
   {
     "id": 194,
@@ -11517,7 +11572,7 @@ window.STATIC_LOCATIONS = [
     "address": "3 Avenue du Général Eisenhower, 75008 Paris, France",
     "lat": 48.8661,
     "lng": 2.3125,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Grand_Palais_%C3%89ph%C3%A9m%C3%A8re_Paris.jpg/1200px-Grand_Palais_%C3%89ph%C3%A9m%C3%A8re_Paris.jpg",
+    "img": "images/admin-upload-new-1FSUUwl5amFCMieDwHDA-photo.jpg",
     "addedAt": 1789987138775,
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -11525,13 +11580,9 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "episodeLink": "",
     "facebookUrls": [],
-    "officialLink": "https://www.grandpalais.fr/fr/le-grand-palais-ephemere",
     "tweetUrls": [],
-    "recreatedPhoto": "",
-    "imgCredit": "",
     "pinterestUrl": "",
     "instagramUrl": "https://www.instagram.com/reel/DLvHlyksEm2/",
     "ytId": "",
@@ -11592,6 +11643,11 @@ window.STATIC_LOCATIONS = [
     ],
     "instagramUrls": [
       "https://www.instagram.com/reel/DWfhCeJFjjA/"
+    ],
+    "officialLink": "https://www.grandpalais.fr/fr",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-new-1FSUUwl5amFCMieDwHDA-recreated-0.jpg"
     ]
   },
   {
@@ -12569,19 +12625,15 @@ window.STATIC_LOCATIONS = [
     "address": "Place de l'Opéra, 75009 Paris, France",
     "lat": 48.872,
     "lng": 2.3316,
-    "img": "",
+    "img": "images/admin-upload-new-6mS4vSBlKjq38QXGPkex-photo.jpg",
     "addedAt": 1789991128477,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Palais Garnier, also known as Opéra Garnier, is a historic 1,979-seat opera house built from 1861 to 1875 for the Paris Opera. Designed by architect Charles Garnier in the opulent Second Empire style, the building is renowned for its grand marble staircase, ceiling painted by Marc Chagall, massive bronze chandelier, and gilded reception halls. It stands as a timeless symbol of French architectural grandeur and artistic heritage in the heart of Paris.</p><p>During his visits to Paris, Kim Taehyung (V) explored the surrounding avenues of Place de l'Opéra and photographed the striking neo-baroque facade of Palais Garnier. V posted stylish artistic street photos in front of the grand opera house, capturing the mood of Parisian architecture and sharing his love for classical art aesthetics with millions of followers on social media.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "episodeLink": "",
     "tipsList": [
       {
@@ -12612,13 +12664,20 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "",
     "officialLink": "https://www.operadepariss.fr",
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "ytId": "pk7ESz6vtyA",
+    "imgCredit": "Screentostreet",
+    "fullDescription": {
+      "en": "<p>The Palais Garnier, also known as the Opéra Garnier, is a magnificent 1,979-seat historic opera house built between 1861 and 1875 for the Paris Opera. Designed by architect Charles Garnier in the opulent Second Empire style, the building is world-renowned for its grand marble staircase, breathtaking ceiling painted by Marc Chagall, massive bronze chandelier, and glistening gilded reception halls. It stands timelessly as a stunning symbol of French architectural grandeur, classical culture, and artistic heritage in the heart of Paris.</p><p>The Palais Garnier holds a special, permanent place in Taehyung's artistic catalog. Fans can spot the majestic exterior of the opera house directly in his self-directed music video for his English solo track \"Winter Bear\", specifically at 0:58, where footage of Paris is woven into the cinematic visual journey. Beyond his music video, during his solo travels and fashion schedules in Paris, Kim Taehyung (V) also spent time exploring the historic boulevards surrounding the Place de l'Opéra, sharing stylish street photographs that captured his deep appreciation for classical European architecture and vintage aesthetics.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Metro Line 3, 7, or 8 to Opéra station, which exits right onto Place de l'Opéra in front of the steps."
+          "en": "Take Paris Métro Line 3, 7, or 8 to Opéra station, which brings you out directly steps away from the front plaza."
         }
       },
       {
@@ -12626,7 +12685,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Open daily for self-guided or guided tours typically from 10:00 AM to 5:00 PM (hours can occasionally shift depending on evening opera or ballet performances). Advance ticket booking online is recommended."
         }
       },
       {
@@ -12634,12 +12693,13 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Accessible via specific ramped entrances and elevators for visitors with reduced mobility, though some historic upper-tier areas require navigating stairs."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "recreatedPhotos": [
+      "images/admin-upload-new-6mS4vSBlKjq38QXGPkex-recreated-0.jpg"
+    ]
   },
   {
     "id": "new-6s64K2xAPRELCZCbVIbV",
@@ -13258,6 +13318,90 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "https://www.en-vols.com/evasion/voyage/paris-adresses-preferees-bts-sejour/"
   },
   {
+    "id": "new-Bc0PADu3K3KA7okYPcwo",
+    "name": "Hôtel Salomon de Rothschild",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Fashion",
+    "year": "2023",
+    "address": "11 Rue Berryer, 75008 Paris, France",
+    "lat": 48.8753,
+    "lng": 2.3044,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/44/Hotel_Salomon_de_Rothschild_Paris.jpg",
+    "addedAt": 1790111443066,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Hôtel Salomon de Rothschild is a grand 19th-century French hôtel particulier situated in the prestigious 8th arrondissement of Paris, close to the Champs-Élysées. Built between 1872 and 1878 for Baroness Adèle von Rothschild, the estate features neoclassical architecture, elaborate interior gilding, historic tapestries, and serene private gardens. Today managed by the Fondation Nationale des Arts Graphiques et Plastiques, the mansion hosts upscale events, private art exhibitions, high-fashion dinner galas, and Paris Fashion Week presentations.</p><p>During Paris Fashion Week, the venue regularly welcomes international luxury ambassadors and stars. BTS member Kim Taehyung (V), as global brand ambassador for Celine, attended high-profile private Celine dinners and official fashion gatherings hosted at the venue. Fans congregated outside the wrought-iron gates on Rue Berryer to cheer for Taehyung as he arrived in high-fashion couture. The location has solidified its status among fashion-minded ARMYs as a landmark associated with V's iconic style appearances in Paris.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Viewing from outside"
+        },
+        "text": {
+          "en": "The mansion interior is private except during ticketed cultural exhibitions or private events, but the grand facade and gardens can be admired from Rue Berryer."
+        }
+      },
+      {
+        "title": {
+          "en": "Best time for photography"
+        },
+        "text": {
+          "en": "Visit in the early morning for peaceful lighting on the stone gates and garden greenery before street traffic builds up."
+        }
+      },
+      {
+        "title": {
+          "en": "Nearby fashion stops"
+        },
+        "text": {
+          "en": "Walk 10 minutes to the iconic Celine flagship store on Avenue Montaigne to complete your BTS fashion tour."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.hotel-salomon-rothschild.com/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Métro Line 1 or Line 2 to George V or Charles de Gaulle - Étoile station and walk 5 minutes down Rue Berryer."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "id": "new-D2pf3IFWKTH64FaUCAdd",
     "year": "2021",
     "category": "Museum",
@@ -13445,20 +13589,21 @@ window.STATIC_LOCATIONS = [
     "address": "1 Rue de la Légion d'Honneur, 75007 Paris, France",
     "lat": 48.8599,
     "lng": 2.3266,
-    "img": "",
+    "img": "images/admin-upload-new-HrHCN0x2OgHcNPcuMR0c-photo.jpg",
     "addedAt": 1789991215220,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Housed in a grand Beaux-Arts railway station built for the 1900 World's Fair, the Musée d'Orsay holds the world's largest collection of Impressionist and Post-Impressionist masterpieces by artists such as Monet, Renoir, Van Gogh, and Cézanne.</p><p>RM visited the museum during his stay in Paris, spending time admiring iconic works by Claude Monet and Vincent van Gogh. RM's documented love for classic impressionism inspired many fans to visit the specific galleries featuring his favorite painters.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.musee-orsay.fr/",
+    "tweetUrls": [],
+    "pinterestUrl": "",
     "tipsList": [
       {
         "title": {
@@ -13470,23 +13615,118 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "Giant Clock Photo"
+          "en": "Locate the Giant ClocksGiant Clock Photo"
         },
         "text": {
-          "en": "Head to the top floor gallery behind the massive station clock face for a scenic view of the Seine and Louvre."
+          "en": "Make sure to visit the upper levels near the impressionist galleries to stand behind the massive, ornate station clocks—popular photography spots that frame a stunning, panoramic view across the Seine River toward the Tuileries Garden and the Louvre."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with a Paris Art Walk"
+        },
+        "text": {
+          "en": "Pair your visit to the Musée d'Orsay with a scenic walk across the Seine via the pedestrian bridge Passerelle Léopold-Sédar-Senghor, linking you directly to the vibrant contemporary galleries on the Right Bank."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.musee-orsay.fr/",
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take RER Line C to Musée d'Orsay station, or Metro Line 12 to Solférino station."
+          "en": "Take Paris Métro Line 12 to Solférino station, or RER Line C directly to the Musée d'Orsay station, which sits right outside the main entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open Tuesday through Sunday from 9:30 AM to 6:00 PM (extended late-night hours until 9:45 PM on Thursdays; closed on Mondays). Advance timed-entry ticket reservations online are strongly recommended to avoid long queues."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully accessible facility equipped with step-free entrances, spacious elevators, ramps between galleries, and complimentary wheelchair loans available at the cloakroom."
+        }
+      }
+    ],
+    "ytId": "nxUOxsimI8o",
+    "fullDescription": {
+      "en": "<p>Housed inside a magnificent grand Beaux-Arts railway station originally built for the 1900 Universal Exposition (Exposition Universelle), the Musée d'Orsay stands as one of Europe's most breathtaking architectural and cultural monuments. The museum boasts the world’s largest and most comprehensive collection of Impressionist and Post-Impressionist masterpieces. Visitors walk through halls filled with iconic canvases by legendary masters such as Claude Monet, Pierre-Auguste Renoir, Vincent van Gogh, Paul Cézanne, Edgar Degas, and Édouard Manet, tracing the profound evolution of modern Western art.</p><p>Globally renowned for his sophisticated eye for fine art and his dedication to gallery-hopping, RM (Kim Namjoon) visited the Musée d'Orsay during his personal travels in Paris. Fans can catch a direct visual confirmation of this trip in his recorded travel footage, where Namjoon can be clearly seen exploring the museum's galleries at 33 minutes and 09 seconds (33:09) in the video. As an avid art collector and patron whose public influence has significantly boosted museum attendance and modern art appreciation among younger generations, Namjoon spent hours quietly absorbing the museum's monumental collections. For ARMYs, walking through the Orsay is a deeply inspiring pilgrimage that mirrors RM’s own creative mindset, connecting the classical masterpieces that fuel his lyrics, introspection, and personal aesthetic to his real-life cultural expeditions.</p>"
+    },
+    "recreatedPhotos": [
+      "images/admin-upload-new-HrHCN0x2OgHcNPcuMR0c-recreated-0.jpg"
+    ],
+    "imgCredit": "Screentostreet"
+  },
+  {
+    "id": "new-JkEgRxLK90D3OHJYU7gs",
+    "name": "Pont Neuf",
+    "group": "BTS",
+    "member": "J-Hope",
+    "country": "France",
+    "city": "Paris",
+    "category": "Fashion",
+    "year": "2023",
+    "address": "Pont Neuf, 75001 Paris, France",
+    "lat": 48.857,
+    "lng": 2.3413,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Pont_Neuf_Paris.jpg",
+    "addedAt": 1790111459055,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Pont Neuf is the oldest standing bridge across the river Seine in Paris, France. Constructed between 1578 and 1607, the stone arch bridge connects the Left and Right Banks of Paris while passing across the western tip of the Île de la Cité. Featuring 12 stone arches and ornamental mascaron carvings, Pont Neuf is designated as an official French historic monument and part of the UNESCO World Heritage Banks of the Seine. It stands directly in front of the historic La Samaritaine department store and Louis Vuitton global headquarters, making it a symbolic crossroads of Parisian history and luxury fashion.</p><p>In June 2023, Pont Neuf was entirely transformed into an exclusive gold-paved runway for Pharrell Williams' debut Louis Vuitton Men's Spring-Summer 2024 collection. BTS member J-Hope, who served as a House Ambassador for Louis Vuitton, was among the primary superstar guests invited to Paris to attend the historic open-air fashion event. Photographs and videos of J-Hope at Pont Neuf circulated worldwide, showcasing his tailored outfit against the sunset over the Seine. The bridge remains a key Paris landmark for fans interested in BTS's global fashion influence.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best photo vantage point"
+        },
+        "text": {
+          "en": "Walk down to Square du Vert-Galant at the tip of Île de la Cité for a view of the stone arches from water level."
+        }
+      },
+      {
+        "title": {
+          "en": "Evening walk"
+        },
+        "text": {
+          "en": "Visit at dusk when the streetlamps illuminate the bridge arches, reflecting golden lights across the Seine."
+        }
+      },
+      {
+        "title": {
+          "en": "Nearby attractions"
+        },
+        "text": {
+          "en": "Combine your walk with a visit to La Samaritaine across the street or the nearby Sainte-Chapelle."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.paris.fr/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Paris Métro Line 7 directly to Pont Neuf station, or lines 1, 4, 7, 11, 14 to Châtelet station."
         }
       },
       {
@@ -13947,6 +14187,101 @@ window.STATIC_LOCATIONS = [
     },
     "tiktokUrl": "",
     "ytId": ""
+  },
+  {
+    "id": "new-manual-1790110905270-romcnq",
+    "name": "Rue des Rosiers",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "27 Rue des Rosiers, 75004, Paris",
+    "lat": 48.85751,
+    "lng": 2.35832,
+    "img": "images/admin-upload-new-manual-1790110905270-romcnq-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Chabe01 / CC BY-SA 4.0",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tweetUrl": "https://x.com/BTS_twt/status/1179686404005101568?s=20",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790110905270-romcnq-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best Times for a Peaceful Stroll"
+        },
+        "text": {
+          "en": "Rue des Rosiers is a bustling pedestrian street that gets very crowded on weekends and afternoon peak hours. To recreate Jimin's photo without huge crowds in the background, visit early in the morning (before 11:00 AM) or during quiet weekday mornings."
+        }
+      },
+      {
+        "title": {
+          "en": "Recreate the Photo Spot"
+        },
+        "text": {
+          "en": "Stand on the sidewalk directly opposite L'As du Fallafel facade to capture the iconic red and green storefront in the background, matching the perspective from Jimin's famous Paris photo."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Hidden Gems nearby"
+        },
+        "text": {
+          "en": "After snapping your photo, take a walk through the charming cobbled alleys of Le Marais. Just a few steps down at No. 10 Rue des Rosiers, enter through the small alleyway to reach Jardin des Rosiers - Joseph Migneret, a hidden green courtyard perfect for relaxing away from the street bustle."
+        }
+      },
+      {
+        "title": {
+          "en": "Keep Shabbat Hours in Mind"
+        },
+        "text": {
+          "en": "Many boutique shops and traditional bakeries along Rue des Rosiers close early on Friday afternoons and remain closed all day Saturday for Shabbat. Sunday is one of the liveliest days to visit, as the entire street becomes fully pedestrianized and full of life."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://www.parismarais.com/fr/decouvrez-le-marais/les-quartiers-du-marais/la-rue-des-rosiers.html",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Metro: Line 1 (Saint-Paul station) — 3-minute walk. Walk north up Rue Malher, turn left onto Rue des Rosiers, and continue to #27.\n\nMetro: Line 1, 5, 8 (Bastille station) or Line 1, 11 (Hôtel de Ville station) — 8 to 10-minute walk.\n\nBus: Lines 69, 76, 96 (Saint-Paul stop)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Hours: Sunday – Thursday: 11:00 AM – 11:00 PM | Friday: 11:00 AM – 4:00 PM (closes early for Shabbat) | Saturday: Closed.\n\nAdmission: Free street access. Sandwiches range between €8.50 and €10."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The street is cobblestoned and narrow, but fully flat and accessible for wheelchair users.\n\nThe venue offers both a fast takeaway window and indoor seating (though the restaurant interior is fairly tight)."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "fullDescription": {
+      "en": "<p>Located in the historic Le Marais district (4th arrondissement), Rue des Rosiers, literally \"Street of the Rosebushes\", is one of Paris's most iconic and culturally vibrant thoroughfares. Its name dates back to the 13th century, referring to the rosebushes that once grew along the inner side of the ancient city ramparts built under King Philip II Augustus.\nBy the 19th and early 20th centuries, the street became the beating heart of Parisian Jewish life (Pletzl, Yiddish for \"little place\"), welcoming successive waves of Jewish immigrants fleeing persecution in Eastern Europe, and later from North Africa in the mid-20th century. This rich heritage is reflected today in its traditional bakeries, bookshops, synagogues, and kosher eateries.\nAt No. 27 stands L'As du Fallafel, a world-renowned culinary institution founded in 1979 by Marianne and Yomi Peretz. Famous for its pita sandwiches packed with fried eggplant, falafel balls, hummus, and signature red sauce, it has become a global destination for food lovers and travelers visiting Paris.</p><p>In June 2019, BTS visited Paris for two sold-out Love Yourself: Speak Yourself stadium shows at the Stade de France on June 7–8. During his free time around the concerts, Jimin took the opportunity to explore the historic Le Marais neighborhood.</p><p>He strolled down Rue des Rosiers and stopped at number 27 to enjoy a famous falafel sandwich from L'As du Fallafel. Footage and photos of this moment were later shared in official BTS vlog content and social media posts later that summer (in August and October 2019), making 27 Rue des Rosiers a classic, iconic stop for ARMYs visiting Paris.</p>"
+    }
   },
   {
     "group": "BTS",
