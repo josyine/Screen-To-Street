@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-22T12:46:42.591Z.
+// Généré le 2026-09-22T17:42:31.144Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -8124,59 +8124,77 @@ window.STATIC_LOCATIONS = [
     "city": "Seoul",
     "category": "Museum",
     "year": "2019",
-    "ytId": "3u6yXh_xQxg",
-    "episodeLink": "https://www.youtube.com/watch?v=3u6yXh_xQxg",
-    "address": "300 Olympic-ro, Songpa-gu, Seoul",
+    "ytId": "",
+    "episodeLink": "",
+    "address": "300 Olympic-ro, Songpa-gu, Seoul, South Korea (Lotte World Tower & Mall, 7th Floor)",
     "lat": 37.5125,
     "lng": 127.1025,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Lotte_World_Tower_2017.jpg",
+    "img": "images/admin-upload-180-photo.jpg",
     "fullDescription": {
-      "en": "<p>Both RM and V have visited exhibitions here, notably the James Jean exhibition. The artist they viewed here eventually created the spectacular Seven Phases artwork based on the BTS members, which was later displayed at the HYBE Insight museum.</p><p>Located high up in the Lotte World Tower complex, the museum hosts vibrant, pop-culture-adjacent contemporary art. It is a great location for fans who want a mix of shopping, entertainment, and modern art.</p>",
-      "fr": "<p>RM et V ont tous deux visité des expositions ici, notamment celle de James Jean. Cet artiste a par la suite créé l'œuvre spectaculaire Seven Phases inspirée des membres de BTS, exposée plus tard au musée HYBE Insight.</p><p>Perché en hauteur dans le complexe Lotte World Tower, le musée présente un art contemporain vivant, proche de la pop culture — une belle étape pour les fans qui veulent mêler shopping, divertissement et art moderne.</p>"
+      "fr": "<p>RM et V ont tous deux visité des expositions ici, notamment celle de James Jean. Cet artiste a par la suite créé l'œuvre spectaculaire Seven Phases inspirée des membres de BTS, exposée plus tard au musée HYBE Insight.</p><p>Perché en hauteur dans le complexe Lotte World Tower, le musée présente un art contemporain vivant, proche de la pop culture — une belle étape pour les fans qui veulent mêler shopping, divertissement et art moderne.</p>",
+      "en": "<p>Located inside the massive Lotte World Tower complex in Songpa-gu, Seoul, the Lotte Museum of Art is a premier contemporary cultural space dedicated to showcasing cutting-edge visual arts, global contemporary masters, and large-scale modern installations. Over the years, it has established itself as a vibrant hub for Seoul's modern art scene, frequently hosting world-class exhibitions that blend pop culture, street art, and fine design.</p><p>This museum holds a strong connection to BTS's creative circles. In June 2026, j-hope visited the museum to experience the massive solo exhibition I Believe in Me by the renowned Japanese graphic artist VERDY. Furthermore, the museum has previously hosted landmark modern showcases like James Jean's Eternal Journey, reflecting the members' (including RM and V) deep passion for contemporary art and creative cross-overs. Visiting the Lotte Museum of Art places fans directly on the cultural trail frequented by BTS members to support global artists and find inspiration.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "James Jean Connection"
+          "en": "Trace j-hope's Gallery Visits"
         },
         "text": {
-          "en": "Knowing that this exhibition sparked a direct collaboration with BTS makes walking through the gallery even more special."
+          "en": "Step into the same contemporary spaces where members like j-hope explore immersive modern art exhibitions and support international creators."
         }
       },
       {
         "title": {
-          "en": "Lotte Mall"
+          "en": "Explore the Lotte Complex"
         },
         "text": {
-          "en": "Since it is inside the Lotte World Mall, you can combine this with a visit to the Star Avenue (BTS-170)."
+          "en": "Combine your museum visit with a walk around Jamsil’s massive cultural and shopping hub, which offers great views of Seokchon Lake."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Pricing"
-        },
-        "text": {
-          "en": "Admission is approximately 15,000 KRW."
-        }
-      },
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "A modern art museum located on the 7th floor of the Lotte World Tower."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Jamsil Station (Lines 2 and 8)."
+          "en": "Take Seoul Subway Line 2 or Line 8 to Jamsil Station, which connects directly to the Lotte World Mall complex."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily generally from 10:30 AM to 7:00 PM (closing hours may extend slightly on weekends; ticket prices vary depending on the active seasonal exhibition)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully modern, indoor facility equipped with elevators, escalators, and complete ADA-compliant accessibility."
         }
       }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "instagramUrls": [
+      "https://www.instagram.com/p/DZSv9wBBkGA/"
+    ],
+    "instagramUrl": "https://www.instagram.com/p/DZRcypMjx2K/?img_index=1",
+    "officialLink": "https://www.lottemuseum.com/Mobile/en",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-180-recreated-0.jpg"
     ]
   },
   {
@@ -9390,12 +9408,12 @@ window.STATIC_LOCATIONS = [
     "tweetUrls": [],
     "ytId": "yTsINmrAK4I",
     "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://letstalkbts.quora.com/Taehyungs-MV-took-place-in-Torres-Blancas-The-Torres-Blancas-The-White-Towers-was-designed-by-Spanish-architect-Fran",
+    "officialLink": "https://fr.wikipedia.org/wiki/Torres_Blancas",
     "recreatedPhotos": [
       "images/admin-upload-197-recreated-0.jpg",
       "images/admin-upload-197-recreated-1.jpg"
-    ],
-    "episodeLink": "https://letstalkbts.quora.com/Taehyungs-MV-took-place-in-Torres-Blancas-The-Torres-Blancas-The-White-Towers-was-designed-by-Spanish-architect-Fran",
-    "officialLink": "https://fr.wikipedia.org/wiki/Torres_Blancas"
+    ]
   },
   {
     "id": 198,
@@ -9482,8 +9500,7 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://fr.wikipedia.org/wiki/Centrale_%C3%A9lectrique_de_Kelenf%C3%B6ld",
     "recreatedPhotos": [
-      "images/admin-upload-198-recreated-0.jpg",
-      "images/admin-upload-198-recreated-1.jpg"
+      "images/admin-upload-198-recreated-0.jpg"
     ]
   },
   {
@@ -10608,15 +10625,14 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [
-      "images/admin-upload-211-recreated-0.jpg"
-    ],
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
-    "recreatedPhoto": "images/admin-upload-211-recreated.jpg",
     "imgCredit": "AI-generated illustrative image",
-    "officialLink": "https://www.everland.com/everland/home/main"
+    "officialLink": "https://www.everland.com/everland/home/main",
+    "recreatedPhotos": [
+      "images/admin-upload-211-recreated-0.jpg"
+    ]
   },
   {
     "id": 212,
@@ -11111,9 +11127,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhotos": [
-      "images/admin-upload-new-0GsQ7YXKUoWXQaA4PgII-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -11139,6 +11152,9 @@ window.STATIC_LOCATIONS = [
           "en": "The pedestrian paths on both sides of the stream are flat and paved. Wheelchair and stroller ramps are available at regular intervals to access the street level from the waterway (though crossing the water via the stepping stones is not accessible)."
         }
       }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-0GsQ7YXKUoWXQaA4PgII-recreated-0.jpg"
     ]
   },
   {
@@ -11491,66 +11507,70 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-1FSUUwl5amFCMieDwHDA",
-    "name": "Grand Palais Éphémère",
+    "name": "Grand Palais",
     "group": "BTS",
     "member": "V",
     "country": "France",
     "city": "Paris",
     "category": "Fashion",
-    "year": "2023",
-    "address": "2 Place Joffre, 75007 Paris, France",
-    "lat": 48.8532,
-    "lng": 2.3025,
+    "year": "2025",
+    "address": "3 Avenue du Général Eisenhower, 75008 Paris, France",
+    "lat": 48.8661,
+    "lng": 2.3125,
     "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Grand_Palais_%C3%89ph%C3%A9m%C3%A8re_Paris.jpg/1200px-Grand_Palais_%C3%89ph%C3%A9m%C3%A8re_Paris.jpg",
     "addedAt": 1789987138775,
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>The Grand Palais Éphémère is a temporary exhibition hall located on the Champ de Mars in Paris, designed by renowned architect Wilmotte &amp; Associates. Constructed in 2021 to host major cultural, artistic, and sporting events while the historic Grand Palais undergoes extensive renovations, this eco-friendly wooden structure overlooks the iconic Eiffel Tower. It regularly hosts high-profile art fairs, luxury fashion house runways, and international cultural exhibitions in the heart of the French capital. The impressive venue features modular wooden arches and a massive clear span that offers adaptable indoor space for world-class staging.</p><p>In January 2023, during Paris Fashion Week Menswear Fall/Winter 2023-2024, the venue hosted major high-fashion presentations that brought global star power to Paris. BTS member V (Kim Taehyung) and other members attended high-profile events around this district, collaborating with luxury fashion houses and attending major shows. Their presence attracted massive crowds of enthusiastic fans and global media outlets along the Champ de Mars outside the venue, creating viral moments across social media platforms. This location stands out as a prime symbol of BTS's massive footprint in the global luxury fashion industry and their special connection to Paris.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
     "recreatedPhotos": [],
     "episodeLink": "",
+    "facebookUrls": [],
+    "officialLink": "https://www.grandpalais.fr/fr/le-grand-palais-ephemere",
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrl": "https://www.instagram.com/reel/DLvHlyksEm2/",
+    "ytId": "",
     "tipsList": [
       {
         "title": {
-          "en": "Best time to visit"
+          "en": "Trace Taehyung's Fashion Week Route"
         },
         "text": {
-          "en": "Visit in the late afternoon to take exterior photos with both the hall and the Eiffel Tower lit up in the background."
+          "en": "Walk along the grand avenues between the Grand Palais and the Petit Palais to retrace the steps of Taehyung's high-profile arrivals and ambassador appearances."
         }
       },
       {
         "title": {
-          "en": "Avoid the crowds"
+          "en": "Marvel at the Architecture"
         },
         "text": {
-          "en": "Check event schedules ahead of time; non-event days offer a much quieter walk around the Champ de Mars park grounds."
+          "en": "Take time to admire the breathtaking glass vaulted roof of the Grand Palais, a stunning backdrop that regularly hosts the world's most innovative runway productions."
         }
       },
       {
         "title": {
-          "en": "Combine with nearby sights"
+          "en": "Respect Event Security"
         },
         "text": {
-          "en": "Walk directly north along the lawns of Champ de Mars toward the Eiffel Tower for classic Paris photos."
+          "en": "When major fashion houses host private dinners or shows here, public access around the immediate entrances is restricted for safety and privacy."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.grandpalais.fr/fr/le-grand-palais-ephemere",
+    "fullDescription": {
+      "en": "<p>The Grand Palais is one of Paris’s most magnificent and historic architectural masterpieces, easily recognized by its iconic glass-and-iron nave. Located right next to the Champs-Élysées and adjacent to the Petit Palais, it serves as a premier cultural venue and a world-stage for elite global fashion shows, major art exhibitions, and high-profile luxury events during Paris Fashion Week.</p><p>This historic district became a major hotspot for the fandom when V (Kim Taehyung) arrived in Paris for Fashion Week activities. Most notably, in July 2025, Taehyung attended an exclusive, high-profile Celine pre-show private dinner party hosted at the neighboring historic palace landmark. Dressed impeccably as a global ambassador for the luxury fashion house, his presence drew massive crowds of enthusiastic international fans and media outlets lining the surrounding Parisian streets, generating viral moments across social media platforms. This location highlights BTS's monumental influence in the global luxury fashion sector and their special connection to the city of Paris.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Paris Metro Line 8 to École Militaire station or Line 6, 8, or 10 to La Motte-Picquet - Grenelle station, then walk 3-5 minutes across Champ de Mars."
+          "en": "Take Paris Métro Line 1 or Line 13 to Champs-Élysées – Clemenceau station, which exits right next to the Grand Palais and Petit Palais complex."
         }
       },
       {
@@ -11558,7 +11578,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Exterior grounds and surrounding park areas are accessible 24/7. Interior exhibition hours and access depend entirely on current museum schedules or private corporate event bookings."
         }
       },
       {
@@ -11566,12 +11586,13 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Fully accessible modern exhibition spaces with ramps, elevators, and step-free entry routes from the main avenue."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "instagramUrls": [
+      "https://www.instagram.com/reel/DWfhCeJFjjA/"
+    ]
   },
   {
     "id": "new-1hatgSs2LMoliC4fFyPm",
@@ -12652,9 +12673,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Fuzheado / CC BY-SA 4.0",
     "pinterestUrls": [],
     "pinterestUrl": "",
-    "recreatedPhotos": [
-      "images/admin-upload-new-6s64K2xAPRELCZCbVIbV-recreated-0.jpg"
-    ],
     "tipsList": [
       {
         "title": {
@@ -12714,6 +12732,9 @@ window.STATIC_LOCATIONS = [
           "en": "The Pavilions and the main arrival hall are fully wheelchair accessible with flat surfaces and elevators. However, the 300-acre outdoor landscape features crushed granite paths, rolling hills, and unpaved woodland trails that can be challenging to navigate. Wheelchairs are available to borrow on a first-come, first-served basis."
         }
       }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-6s64K2xAPRELCZCbVIbV-recreated-0.jpg"
     ]
   },
   {
@@ -13323,82 +13344,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
-  },
-  {
-    "id": "new-DqImztkmc2EcuUGyXRPE",
-    "name": "Grand Palais Éphémère",
-    "group": "BTS",
-    "member": "V",
-    "country": "France",
-    "city": "Paris",
-    "category": "Landmarks",
-    "year": "2022",
-    "address": "2 Place Joffre, 75007 Paris, France",
-    "lat": 48.8533,
-    "lng": 2.3019,
-    "img": "",
-    "addedAt": 1789991198842,
-    "pinterestUrls": [],
-    "tiktokUrls": [],
-    "instagramUrls": [],
-    "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Situated on the Champ de Mars directly facing the Eiffel Tower, the Grand Palais Éphémère is a temporary wooden exhibition hall designed by architect Jean-Michel Wilmotte. Built to host major art, fashion, and cultural events while the main Grand Palais undergoes renovation, it stands as a modern architectural masterpiece in Paris.</p><p>In June 2022, Kim Taehyung (V) attended the Celine Men's Summer 2023 Fashion Show held inside this venue during Paris Fashion Week. His appearance alongside Park Bo-gum and BLACKPINK's Lisa created worldwide excitement, drawing thousands of fans to the Champ de Mars area.</p>"
-    },
-    "tiktokUrl": "",
-    "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Photography spot"
-        },
-        "text": {
-          "en": "Walk around the Champ de Mars side of the building to capture photos of the timber structure with the Eiffel Tower in the background."
-        }
-      },
-      {
-        "title": {
-          "en": "Check event schedules"
-        },
-        "text": {
-          "en": "Access to the interior depends on public exhibitions; verify the official Grand Palais agenda prior to visiting."
-        }
-      }
-    ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.grandpalais.fr/",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Metro Line 8 to École Militaire station or Line 6, 8, 10 to La Motte-Picquet - Grenelle. The venue is located right outside École Militaire."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": ""
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": ""
-        }
-      }
-    ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
   },
   {
     "img": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-photo.jpg",
@@ -14739,11 +14684,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Tim de Groot / CC0 1.0",
     "pinterestUrls": [],
     "pinterestUrl": "",
-    "recreatedPhotos": [
-      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-0.jpg",
-      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-1.jpg",
-      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-2.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -14795,6 +14735,10 @@ window.STATIC_LOCATIONS = [
           "en": "While the desert is scorching during the day, temperatures drop significantly as soon as the sun goes down. If you are staying for the evening BBQ camp like BTS did, definitely bring a light jacket or sweater."
         }
       }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-0.jpg",
+      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-1.jpg"
     ]
   },
   {
