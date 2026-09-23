@@ -572,7 +572,13 @@ recomposée, sans texte ni légende.`;
                 const resized = typeof resizeTripCoverDataUrl === 'function'
                     ? await resizeTripCoverDataUrl(event.target.result, 1024)
                     : event.target.result;
-                saveMeiReferenceImage(resized);
+                // Recadrage après upload (demande du 23/09/2026) — voir
+                // window.openImageCropModal() dans script.js.
+                const cropped = typeof window.openImageCropModal === 'function'
+                    ? await new Promise((resolve) => window.openImageCropModal(resized, resolve))
+                    : resized;
+                if (cropped === null) return;
+                saveMeiReferenceImage(cropped);
                 if (nameEl) nameEl.textContent = file.name;
                 renderMeiReferencePreview();
             };
@@ -1284,7 +1290,13 @@ recomposée, sans texte ni légende.`;
                     const resized = typeof resizeTripCoverDataUrl === 'function'
                         ? await resizeTripCoverDataUrl(event.target.result, 1200)
                         : event.target.result;
-                    sub.img = resized;
+                    // Recadrage après upload (demande du 23/09/2026) — voir
+                    // window.openImageCropModal() dans script.js.
+                    const cropped = typeof window.openImageCropModal === 'function'
+                        ? await new Promise((resolve) => window.openImageCropModal(resized, resolve))
+                        : resized;
+                    if (cropped === null) return;
+                    sub.img = cropped;
                     photoPreview.innerHTML = photoPreviewHtml(sub.img);
                     if (photoInput) photoInput.value = '';
                     if (photoUploadName) photoUploadName.textContent = file.name;
@@ -1784,7 +1796,7 @@ recomposée, sans texte ni légende.`;
                 photoUploadBtn.disabled = true;
                 photoUploadBtn.textContent = 'Uploading…';
                 try {
-                    currentImg = typeof fileToResizedDataUrl === 'function'
+                    const resized = typeof fileToResizedDataUrl === 'function'
                         ? await fileToResizedDataUrl(file, 1200)
                         : await new Promise((resolve, reject) => {
                             const reader = new FileReader();
@@ -1792,9 +1804,17 @@ recomposée, sans texte ni légende.`;
                             reader.onerror = () => reject(new Error('Could not read file'));
                             reader.readAsDataURL(file);
                         });
-                    photoPreview.innerHTML = photoPreviewHtml(currentImg);
-                    if (photoInput) photoInput.value = '';
-                    if (photoUploadName) photoUploadName.textContent = file.name;
+                    // Recadrage après upload (demande du 23/09/2026) — voir
+                    // window.openImageCropModal() dans script.js.
+                    const cropped = typeof window.openImageCropModal === 'function'
+                        ? await new Promise((resolve) => window.openImageCropModal(resized, resolve))
+                        : resized;
+                    if (cropped !== null) {
+                        currentImg = cropped;
+                        photoPreview.innerHTML = photoPreviewHtml(currentImg);
+                        if (photoInput) photoInput.value = '';
+                        if (photoUploadName) photoUploadName.textContent = file.name;
+                    }
                 } catch (err) {
                     if (photoUploadName) photoUploadName.textContent = 'Upload failed: ' + err.message;
                 } finally {

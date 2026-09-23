@@ -306,8 +306,18 @@ window.createPhotoGalleryField = function (container, opts) {
                         reader.onerror = () => reject(new Error('Could not read file'));
                         reader.readAsDataURL(file);
                     });
-                photos.push(resized);
-                render();
+                // Recadrage après upload (demande du 23/09/2026) — voir
+                // window.openImageCropModal() plus bas dans ce fichier.
+                if (typeof window.openImageCropModal === 'function') {
+                    window.openImageCropModal(resized, (cropped) => {
+                        if (cropped === null) return; // cropping cancelled — don't add this photo
+                        photos.push(cropped);
+                        render();
+                    });
+                } else {
+                    photos.push(resized);
+                    render();
+                }
             } catch (err) {
                 console.warn('Import de photo (galerie) échoué :', err);
                 window.alert("Couldn't read this photo. Try a different file, or paste a URL instead.");
@@ -6477,6 +6487,83 @@ async function fileToResizedDataUrl(file, maxSize) {
     return typeof resizeTripCoverDataUrl === 'function' ? resizeTripCoverDataUrl(dataUrl, maxSize) : dataUrl;
 }
 
+// Recadrage après upload, en mode admin (demande du 23/09/2026, "fais en sorte qu'en mode
+// admin, on puisse recadrer une photo après l'avoir uploadée") — un seul modal partagé,
+// posé sur script.js (chargé aussi bien par admin.html que par map.html) pour couvrir tous
+// les champs d'upload de photo côté admin d'un coup : header photo (Existing locations,
+// Location submissions, modal crayon), photo de référence Mei, et la galerie "Mei's
+// Pictures" (window.createPhotoGalleryField(), un seul point d'accroche pour ses 3
+// instances). Cropper.js chargé à la demande depuis un CDN, même principe que
+// loadHeic2AnyScriptOnce() ci-dessus.
+let _cropperLoadPromise = null;
+function loadCropperScriptOnce() {
+    if (window.Cropper) return Promise.resolve();
+    if (_cropperLoadPromise) return _cropperLoadPromise;
+    _cropperLoadPromise = new Promise((resolve, reject) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css';
+        document.head.appendChild(link);
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Cropper.js failed to load'));
+        document.body.appendChild(s);
+    });
+    return _cropperLoadPromise;
+}
+// dataUrl : la photo tout juste importée (déjà redimensionnée/compressée, voir
+// fileToResizedDataUrl/resizeTripCoverDataUrl ci-dessus — le recadrage travaille dessus,
+// pas besoin d'un second passage de compression après coup, getCroppedCanvas() suffit).
+// onDone(resultDataUrl) : appelé avec la photo recadrée (bouton "Apply crop"), la photo
+// D'ORIGINE inchangée (bouton "Skip cropping" — le recadrage reste optionnel), ou `null`
+// (bouton "Cancel" — l'appelant doit alors ne RIEN changer à son état précédent, mais est
+// bien rappelé pour pouvoir terminer proprement son propre flux, ex: réactiver un bouton
+// "Uploading…" resté désactivé).
+window.openImageCropModal = async function (dataUrl, onDone) {
+    let cropper = null;
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed; inset:0; z-index:11000; background:rgba(20,16,30,0.55); display:flex; align-items:center; justify-content:center; padding:20px;';
+    overlay.innerHTML = `
+        <div style="background:#fff; border-radius:16px; padding:18px; max-width:520px; width:100%; box-shadow:0 20px 50px rgba(0,0,0,.3);">
+            <div style="font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; margin-bottom:12px; color:#1e293b;">Crop photo</div>
+            <div style="max-height:60vh; overflow:hidden; background:#111; border-radius:10px;">
+                <img id="crop-modal-img" src="${dataUrl}" style="display:block; max-width:100%;">
+            </div>
+            <div style="display:flex; gap:8px; margin-top:16px; justify-content:flex-end; flex-wrap:wrap;">
+                <button type="button" id="crop-modal-cancel" style="border:1.5px solid #e2e8f0; background:#fff; color:#64748b; border-radius:100px; padding:9px 16px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Cancel</button>
+                <button type="button" id="crop-modal-skip" style="border:1.5px solid #e2e8f0; background:#fff; color:#1e293b; border-radius:100px; padding:9px 16px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Skip cropping</button>
+                <button type="button" id="crop-modal-apply" style="border:none; background:linear-gradient(135deg,#8b5cf6,#D42759); color:#fff; border-radius:100px; padding:9px 18px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Apply crop</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const cleanup = () => {
+        if (cropper) { cropper.destroy(); cropper = null; }
+        overlay.remove();
+    };
+    overlay.querySelector('#crop-modal-cancel').addEventListener('click', () => { cleanup(); onDone(null); });
+    overlay.querySelector('#crop-modal-skip').addEventListener('click', () => { cleanup(); onDone(dataUrl); });
+    overlay.querySelector('#crop-modal-apply').addEventListener('click', () => {
+        if (!cropper) { cleanup(); onDone(dataUrl); return; }
+        const canvas = cropper.getCroppedCanvas({ maxWidth: 2000, maxHeight: 2000, imageSmoothingQuality: 'high' });
+        const result = canvas ? canvas.toDataURL('image/jpeg', 0.9) : dataUrl;
+        cleanup();
+        onDone(result);
+    });
+
+    try {
+        await loadCropperScriptOnce();
+        const imgEl = overlay.querySelector('#crop-modal-img');
+        cropper = new window.Cropper(imgEl, { viewMode: 1, autoCropArea: 1, background: false, responsive: true });
+    } catch (err) {
+        // Cropper.js indisponible (CDN bloqué...) : on ne bloque jamais l'upload pour
+        // autant, les boutons Skip/Apply(=Skip ici, faute de cropper) restent utilisables.
+        console.warn('Cropper.js indisponible, recadrage désactivé pour cette photo :', err);
+    }
+};
+
 // Import direct depuis la galerie pour la photo d'en-tête (demande du 07/09/2026 : ce
 // modal "crayon" n'avait jusqu'ici aucun champ photo du tout) — pas de Firebase Storage sur
 // ce site 100% statique, donc redimensionnée/compressée côté client en dataURL, même
@@ -6509,11 +6596,14 @@ function wireLocationEditPhotoInputOnce(modal) {
         btn.disabled = true;
         try {
             const resized = await fileToResizedDataUrl(file, 1200);
-            locationEditPendingImg = resized;
-            locationEditImgTouched = true;
-            if (urlInput) urlInput.value = '';
-            updateLocationEditPhotoPreview(resized);
-            document.getElementById('location-edit-photo-name').textContent = file.name;
+            window.openImageCropModal(resized, (cropped) => {
+                if (cropped === null) return; // cropping cancelled — leave any previous photo untouched
+                locationEditPendingImg = cropped;
+                locationEditImgTouched = true;
+                if (urlInput) urlInput.value = '';
+                updateLocationEditPhotoPreview(cropped);
+                document.getElementById('location-edit-photo-name').textContent = file.name;
+            });
         } catch (err) {
             console.warn('Import de la photo échoué :', err);
             errorEl.textContent = isHeicFile(file)
