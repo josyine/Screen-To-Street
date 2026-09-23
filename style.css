@@ -125,6 +125,21 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .filter-select { border: 1px solid var(--border-color); border-radius: 100px; background: #fff; color: #1e293b; font-size: 12px; padding: 8px 10px; width: 100%; outline: none; cursor: pointer; appearance: none; }
 .filter-select:focus { border-color: var(--primary-magenta); }
 
+/* Multi-sélection GROUP/MEMBER/AREA/YEAR (demande du 23/09/2026) — le <select multiple>
+   original reste dans le DOM (masqué, voir .hidden sur .filter-select dans map.html) comme
+   source de vérité ; ce bouton + panneau de cases à cocher est la seule chose visible.
+   Voir window.buildMultiSelectUI()/wireMultiSelectOnce() dans script.js. */
+.multi-select-field { position: relative; }
+.multi-select-btn { border: 1px solid var(--border-color); border-radius: 100px; background: #fff; color: #1e293b; font-size: 12px; padding: 8px 10px; width: 100%; outline: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 6px; font-family: 'Poppins', sans-serif; text-align: left; }
+.multi-select-btn:hover, .multi-select-btn.open { border-color: var(--primary-magenta); }
+.multi-select-btn .msb-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.multi-select-btn svg { flex-shrink: 0; transition: transform .15s; }
+.multi-select-btn.open svg { transform: rotate(180deg); }
+.multi-select-panel { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 1200; background: #fff; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 12px 28px rgba(0,0,0,.15); padding: 6px; max-height: 220px; overflow-y: auto; }
+.multi-select-option { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; font-size: 12px; color: #1e293b; cursor: pointer; }
+.multi-select-option:hover { background: #f8fafc; }
+.multi-select-option input[type="checkbox"] { accent-color: var(--primary-magenta); width: 14px; height: 14px; flex-shrink: 0; }
+
 .section-title { font-size: 11px; font-weight: 700; letter-spacing: .8px; color: #64748b; margin-bottom: 10px; text-transform: uppercase;}
 .category-buttons { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 5px; scrollbar-width: none; padding-bottom: 5px; }
 .category-buttons::-webkit-scrollbar { display: none; }
