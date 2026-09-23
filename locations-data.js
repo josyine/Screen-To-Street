@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-23T06:27:22.975Z.
+// Généré le 2026-09-23T12:56:35.113Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -11815,6 +11815,90 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=6cb1642d-b578-462f-82c6-b1c1ef468af7&utm_source=googlemap"
   },
   {
+    "id": "new-1YHG2wTbociBwV3LULdQ",
+    "name": "Sunshine Studio",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Nonsan",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "1021-10 Bonghwang-ro, Yeonmu-eup, Nonsan-si, Chungcheongnam-do, South Korea",
+    "lat": 36.1281,
+    "lng": 127.1065,
+    "img": "",
+    "addedAt": 1790157830843,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Sunshine Studio is an open film set complex located in Nonsan, Chungcheongnam-do. Jointly constructed by the city of Nonsan and major Korean media producers, it recreates Hanseong (early 20th-century Seoul) during the Korean Empire era, featuring classic electric streetcars, Western-style hotels, traditional hanok, and brick buildings from the early 1900s.</p><p>BTS shot visual media content and photo promotions on the historic streetcar tracks and retro building facades inside Sunshine Studio. The set's early 20th-century aesthetic provided a distinctive historic backdrop, drawing K-drama and K-pop fans to explore the vintage streetscapes of old Seoul.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Rent vintage period attire"
+        },
+        "text": {
+          "en": "Experience rental shops inside the studio offer early 20th-century dresses and traditional suits to wear while walking the streets."
+        }
+      },
+      {
+        "title": {
+          "en": "Streetcar photo spot"
+        },
+        "text": {
+          "en": "Take photos on board the stationary vintage electric streetcar located on the central paved street."
+        }
+      },
+      {
+        "title": {
+          "en": "Glory Hotel cafe"
+        },
+        "text": {
+          "en": "Visit the replica Glory Hotel building on site for coffee and second-floor balcony views across the entire filming set."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "http://www.sunshinestudio.co.kr",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take KTX train to Nonsan Station, then take local Bus 201 or 216 to the Sunshine Studio / Yeonmu-eup stop."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "id": "new-2LGcTZJG0izlFK23EBq2",
     "name": "Jardin des Tuileries",
     "group": "BTS",
@@ -13283,9 +13367,6 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "",
     "ytId": "nxUOxsimI8o",
     "imgCredit": "Screentostreet",
-    "fullDescription": {
-      "en": "<p>The Bourse de Commerce is a historic 18th-century grain exchange building situated in the very heart of central Paris. It is instantly recognizable by its extraordinary 19th-century iron-and-glass dome and a beautifully restored historical fresco depicting global trade. In 2021, the landmark was given a second life when acclaimed Japanese architect Tadao Ando converted it into a cutting-edge contemporary art museum to house billionaire François Pinault's extensive private art collection. Ando’s brilliant architectural intervention seamlessly pairs a massive, minimalist concrete cylinder built directly inside the rotunda with the surrounding historic classical architecture, creating a mesmerizing dialogue between the past and the present.</p><p>During his European travels in the summer of 2022, RM—widely known for his profound love of fine art, museums, and \"Namjooning\"—made the Bourse de Commerce an essential stop on his Parisian itinerary. As a well-documented admirer of Tadao Ando’s architectural work (having also visited Ando-designed spaces like Museum SAN in South Korea), RM was naturally drawn to this newly opened masterpiece. He shared photos on his Instagram exploring the museum's rotating contemporary exhibitions, but fans can get an even better look by watching his official 2022 European travel vlog. If you skip exactly to the 31:44 mark of the vlog, you can watch RM personally walking through the Bourse de Commerce, taking in the art, and admiring the breathtaking symmetry of the rotunda's interior. For RM, a visit here perfectly combined two of his greatest passions: boundary-pushing contemporary art and brilliant, minimalist architecture set against a deeply historical backdrop.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -13315,70 +13396,79 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-new-9xocMhCT39Hzkg0QvSK6-recreated-0.jpg"
     ],
-    "episodeLink": "https://www.en-vols.com/evasion/voyage/paris-adresses-preferees-bts-sejour/"
+    "episodeLink": "https://www.en-vols.com/evasion/voyage/paris-adresses-preferees-bts-sejour/",
+    "fullDescription": {
+      "en": "<p>The Bourse de Commerce is a historic 18th-century grain exchange building situated in the very heart of central Paris. It is instantly recognizable by its extraordinary 19th-century iron-and-glass dome and a beautifully restored historical fresco depicting global trade. In 2021, the landmark was given a second life when acclaimed Japanese architect Tadao Ando converted it into a cutting-edge contemporary art museum to house billionaire François Pinault's extensive private art collection. Ando’s brilliant architectural intervention seamlessly pairs a massive, minimalist concrete cylinder built directly inside the rotunda with the surrounding historic classical architecture, creating a mesmerizing dialogue between the past and the present.</p><p>During his European travels in the summer of 2022, RM, widely known for his profound love of fine art, museums, and \"Namjooning\", made the Bourse de Commerce an essential stop on his Parisian itinerary. As a well-documented admirer of Tadao Ando’s architectural work (having also visited Ando-designed spaces like Museum SAN in South Korea), RM was naturally drawn to this newly opened masterpiece. He shared photos on his Instagram exploring the museum's rotating contemporary exhibitions, but fans can get an even better look by watching his official 2022 European travel vlog. If you skip exactly to the 31:44 mark of the vlog, you can watch RM personally walking through the Bourse de Commerce, taking in the art, and admiring the breathtaking symmetry of the rotunda's interior. For RM, a visit here perfectly combined two of his greatest passions: boundary-pushing contemporary art and brilliant, minimalist architecture set against a deeply historical backdrop.</p>"
+    }
   },
   {
     "id": "new-Bc0PADu3K3KA7okYPcwo",
-    "name": "Hôtel Salomon de Rothschild",
+    "name": "Big Love",
     "group": "BTS",
-    "member": "V",
+    "member": "Jungkook",
     "country": "France",
     "city": "Paris",
-    "category": "Fashion",
-    "year": "2023",
-    "address": "11 Rue Berryer, 75008 Paris, France",
-    "lat": 48.8753,
-    "lng": 2.3044,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/4/44/Hotel_Salomon_de_Rothschild_Paris.jpg",
+    "category": "Restaurants",
+    "year": "2026",
+    "address": "30 Rue Debelleyme, 75003 Paris, France",
+    "lat": 48.8614,
+    "lng": 2.3637,
+    "img": "images/admin-upload-new-Bc0PADu3K3KA7okYPcwo-photo.jpg",
     "addedAt": 1790111443066,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Hôtel Salomon de Rothschild is a grand 19th-century French hôtel particulier situated in the prestigious 8th arrondissement of Paris, close to the Champs-Élysées. Built between 1872 and 1878 for Baroness Adèle von Rothschild, the estate features neoclassical architecture, elaborate interior gilding, historic tapestries, and serene private gardens. Today managed by the Fondation Nationale des Arts Graphiques et Plastiques, the mansion hosts upscale events, private art exhibitions, high-fashion dinner galas, and Paris Fashion Week presentations.</p><p>During Paris Fashion Week, the venue regularly welcomes international luxury ambassadors and stars. BTS member Kim Taehyung (V), as global brand ambassador for Celine, attended high-profile private Celine dinners and official fashion gatherings hosted at the venue. Fans congregated outside the wrought-iron gates on Rue Berryer to cheer for Taehyung as he arrived in high-fashion couture. The location has solidified its status among fashion-minded ARMYs as a landmark associated with V's iconic style appearances in Paris.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "episodeLink": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "instagramUrl": "https://www.instagram.com/reel/Da3S6EoKtvY/",
+    "ytId": "",
     "tipsList": [
       {
         "title": {
-          "en": "Viewing from outside"
+          "en": "Dine in the Marais"
         },
         "text": {
-          "en": "The mansion interior is private except during ticketed cultural exhibitions or private events, but the grand facade and gardens can be admired from Rue Berryer."
+          "en": "Combine your meal with a relaxing stroll through the historic, art-filled streets of Le Marais, one of Paris's favorite neighborhoods for fashion boutiques and galleries."
         }
       },
       {
         "title": {
-          "en": "Best time for photography"
+          "en": "Try the Italian Specialties"
         },
         "text": {
-          "en": "Visit in the early morning for peaceful lighting on the stone gates and garden greenery before street traffic builds up."
+          "en": "Order some of their signature vegetarian pasta dishes or famous desserts while soaking in the lively, energetic atmosphere that attracts global stars."
         }
       },
       {
         "title": {
-          "en": "Nearby fashion stops"
+          "en": "Expect a Wait"
         },
         "text": {
-          "en": "Walk 10 minutes to the iconic Celine flagship store on Avenue Montaigne to complete your BTS fashion tour."
+          "en": "Because Big Love does not always take advance reservations for all tables and is extremely popular, be prepared to queue or arrive early to secure a table."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.hotel-salomon-rothschild.com/",
+    "fullDescription": {
+      "en": "<p>Located at 30 Rue Debelleyme in the trendy Marais district of the 3rd arrondissement, Big Love is a wildly popular, vibrant Italian vegetarian trattoria operated by the acclaimed Big Mamma restaurant group. Known for its warm, buzzing atmosphere, authentic Italian comfort food, and exceptional gluten-free or vegetarian handmade pastas and pizzas, it stands as one of the most sought-after culinary hotspots in Paris.</p><p>This charming Marais trattoria became a buzzing focal point for the fandom when Jungkook was spotted dining here on July 16, 2026. Enjoying the restaurant's signature relaxed vibe and Italian dishes during his time in the French capital, his visit added Big Love to the map of personal dining spots frequented by BTS members in Paris.</p>"
+    },
+    "officialLink": "https://www.bigmammagroup.com/fr/restaurants-italiens/biglove",
+    "recreatedPhotos": [
+      "images/admin-upload-new-Bc0PADu3K3KA7okYPcwo-recreated-0.jpg"
+    ],
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Métro Line 1 or Line 2 to George V or Charles de Gaulle - Étoile station and walk 5 minutes down Rue Berryer."
+          "en": "Take Paris Métro Line 8 to Filles du Calvaire or Saint-Sébastien – Froissart station, then walk a short distance through the Marais streets."
         }
       },
       {
@@ -13386,7 +13476,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Open daily for lunch and dinner (typically 12:00 PM – 2:30 PM and 7:00 PM – 10:45 PM; hours can vary). Walk-ins are common, so checking their official booking system in advance is recommended."
         }
       },
       {
@@ -13394,12 +13484,10 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Street-level entry in a historic Parisian neighborhood; indoor seating features standard restaurant layouts."
         }
       }
-    ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    ]
   },
   {
     "id": "new-D2pf3IFWKTH64FaUCAdd",
@@ -14282,6 +14370,401 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Located in the historic Le Marais district (4th arrondissement), Rue des Rosiers, literally \"Street of the Rosebushes\", is one of Paris's most iconic and culturally vibrant thoroughfares. Its name dates back to the 13th century, referring to the rosebushes that once grew along the inner side of the ancient city ramparts built under King Philip II Augustus.\nBy the 19th and early 20th centuries, the street became the beating heart of Parisian Jewish life (Pletzl, Yiddish for \"little place\"), welcoming successive waves of Jewish immigrants fleeing persecution in Eastern Europe, and later from North Africa in the mid-20th century. This rich heritage is reflected today in its traditional bakeries, bookshops, synagogues, and kosher eateries.\nAt No. 27 stands L'As du Fallafel, a world-renowned culinary institution founded in 1979 by Marianne and Yomi Peretz. Famous for its pita sandwiches packed with fried eggplant, falafel balls, hummus, and signature red sauce, it has become a global destination for food lovers and travelers visiting Paris.</p><p>In June 2019, BTS visited Paris for two sold-out Love Yourself: Speak Yourself stadium shows at the Stade de France on June 7–8. During his free time around the concerts, Jimin took the opportunity to explore the historic Le Marais neighborhood.</p><p>He strolled down Rue des Rosiers and stopped at number 27 to enjoy a famous falafel sandwich from L'As du Fallafel. Footage and photos of this moment were later shared in official BTS vlog content and social media posts later that summer (in August and October 2019), making 27 Rue des Rosiers a classic, iconic stop for ARMYs visiting Paris.</p>"
     }
+  },
+  {
+    "id": "new-manual-1790152668290-mpru8n",
+    "name": "Rue Aubriot",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "1 Rue Aubriot, 75004, Paris",
+    "lat": 48.85825,
+    "lng": 2.35679,
+    "img": "images/admin-upload-new-manual-1790152668290-mpru8n-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Chabe01 / CC BY-SA 4.0",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tweetUrl": "https://x.com/BTS_twt/status/1179694702217420800?s=20",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate Jimin's Aesthetic Shot"
+        },
+        "text": {
+          "en": "Stand at the corner of Rue Aubriot facing the classic Parisian apartment building facades. Natural daylight during morning or late afternoon gives the best lighting to match the soft tone of his photos."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect Residential Peace"
+        },
+        "text": {
+          "en": "Rue Aubriot is a very quiet, mostly residential street. Make sure to keep noise levels low while taking photos, especially near apartment doorways."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with nearby BTS Spots"
+        },
+        "text": {
+          "en": "Rue Aubriot is only a short 3-minute walk from Rue des Rosiers. You can easily visit both locations on the same walking tour through Le Marais!"
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://fr.wikipedia.org/wiki/Rue_Aubriot",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Metro: Line 1 (Saint-Paul station) — 4-minute walk.\n\nMetro: Line 1, 11 (Hôtel de Ville station) — 5-minute walk.\n\nBus: Lines 69, 76, 96 (Hôtel de Ville / Saint-Paul stop)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Hours: Open 24/7 (Public street).\n\nAdmission: Free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat asphalt and cobblestone sidewalks, fully accessible for strollers and wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "fullDescription": {
+      "en": "<p>Located in the heart of the iconic Le Marais district (4th arrondissement), Rue Aubriot is a charming, narrow cobblestone street named after Hugues Aubriot, Provost of Paris during the reign of King Charles V in the 14th century. Tucked away between Rue Sainte-Croix de la Bretonnerie and Rue des Blancs-Manteaux, this street is renowned for its classic Haussmannian stone facades, elegant wrought-iron balconies, historic courtyards, and quiet Parisian neighborhood atmosphere.</p><p>In June 2019, during BTS’s stay in Paris for their Love Yourself: Speak Yourself concerts at the Stade de France, Jimin took time to explore the picturesque streets of Le Marais. He paused on Rue Aubriot to pose for a series of candid, aesthetic photos against the backdrop of its classic Parisian street corner and Haussmannian architecture.</p>"
+    },
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790152668290-mpru8n-recreated-0.jpg"
+    ]
+  },
+  {
+    "id": "new-manual-1790154825436-ei1raq",
+    "name": "Boulevard des Filles du Calvaire",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "1 Boulevard des Filles du Calvaire",
+    "lat": 48.86108,
+    "lng": 2.36698,
+    "img": "images/admin-upload-new-manual-1790154825436-ei1raq-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "VVVCFFrance / CC BY-SA 4.0",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located at the intersection of the 3rd and 11th arrondissements near the Upper Marais, 1 Boulevard des Filles du Calvaire is a classic Parisian street corner situated on one of the grands boulevards built over the former Charles V city walls. The boulevard was named after a convent of Benedictine nuns founded in 1633. Today, this vibrant neighborhood is renowned for its trendy concept stores (such as Merci), art galleries, gourmet burger spots like Blend, and colorful street art murals that frequently adorn the facades along the boulevard.</p><p>In June 2019, while in Paris for BTS’s Love Yourself: Speak Yourself stadium tour, Jimin took a private stroll through the Marais district. He stopped at 1 Boulevard des Filles du Calvaire to pose next to an eye-catching street art mural created by the Los Angeles-based artist Kai (featuring his signature \"IF / Love\" character artwork).</p>"
+    },
+    "tweetUrl": "https://x.com/BTS_twt/status/1179686404005101568?s=20",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790154825436-ei1raq-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Street Art Changes Over Time"
+        },
+        "text": {
+          "en": "Keep in mind that street art in Paris is constantly evolving. While the exact mural by Kai from Jimin's 2019 trip may have changed or been repainted over the years, the building corner and street setup remain identical for matching his photo stance!"
+        }
+      },
+      {
+        "title": {
+          "en": "Recreate the Pose"
+        },
+        "text": {
+          "en": "Stand at the street corner near the entrance of the boulevard facing toward the shops (Blend / Merci area) to match the angle of Jimin's Twitter photo."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Shopping in Le Marais"
+        },
+        "text": {
+          "en": "This location is right across from famous fashion and lifestyle concept stores like Merci (Boulevard Beaumarchais), making it an easy addition to a broader walking and shopping tour through Le Marais."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://fr.wikipedia.org/wiki/Boulevard_des_Filles-du-Calvaire",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Metro: Line 8 (Filles du Calvaire station) — 1-minute walk (located right near the station exit).\n\nMetro: Line 8 (Sébastien Froissart) or Line 9 (Oberkampf) — 5-minute walk.\n\nBus: Lines 91, 20, 65 (Filles du Calvaire stop)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Hours: Open 24/7 (Public street).\n\nAdmission: Free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Wide, flat sidewalks with smooth paved surfaces, fully accessible for strollers and wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": []
+  },
+  {
+    "id": "new-manual-1790155898908-hiinve",
+    "name": "Beefbar Paris",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Restaurant",
+    "year": "2025",
+    "address": "6 Rue Marbeuf, 75008 Paris, France",
+    "lat": 48.8672,
+    "lng": 2.3048,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in an opulent, historic 19th-century building originally designed by architect Émile Hergault near the Champs-Élysées, Beefbar Paris is an upscale, internationally renowned restaurant that redefines traditional meat houses with chic Art Deco interiors, high-end gastronomy, and a glamorous atmosphere.</p><p>This luxury dining destination became a hot topic for the fandom in July 2025, when V (Kim Taehyung) visited the restaurant during his high-profile trip to Paris for Celine fashion week events. Embracing a casual yet luxurious meal, Taehyung delighted fans by sharing personal photos on Instagram featuring the restaurant's signature high-end steak alongside a classic glass of Coca-Cola, instantly turning his meal into a viral moment and adding Beefbar to the ultimate BTS Paris itinerary.</p>"
+    },
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "https://www.instagram.com/p/DL8RqLqz-q8/?img_index=10&stkn=MWxnNGl3bHZwajdheQ==",
+    "tiktokUrl": "",
+    "ytId": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate Taehyung's Order"
+        },
+        "text": {
+          "en": "Sit back in the chic dining room and order a premium cut of meat paired with a classic Coca-Cola to channel Taehyung's memorable 2025 Instagram post."
+        }
+      },
+      {
+        "title": {
+          "en": "Admire the Art Deco Architecture"
+        },
+        "text": {
+          "en": "Take a moment to look around the dining room's stunning historical ceilings and elegant design elements, which blend classic Parisian heritage with modern luxury."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Fashion District Walks"
+        },
+        "text": {
+          "en": "Since the restaurant is situated right near the high-end shopping avenues of the 8th arrondissement, pair your meal with a stroll through Paris's premier luxury district."
+        }
+      }
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Paris Métro Line 1 or Line 9 to Franklin D. Roosevelt station, then walk a few minutes toward Avenue George V and Rue Marbeuf."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily for lunch and dinner (typically from 12:00 PM to 2:30 PM and 7:00 PM to 11:00 PM). Advance table reservations online are strongly recommended due to its popularity among international visitors and fashion insiders."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Accessible street-level entrance with luxury interior layout, elevators, and attentive staff assistance."
+        }
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://beefbar.com/paris/",
+    "img": "images/admin-upload-new-manual-1790155898908-hiinve-photo.jpg",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790155898908-hiinve-recreated-0.jpg",
+      "images/admin-upload-new-manual-1790155898908-hiinve-recreated-1.jpg"
+    ]
+  },
+  {
+    "id": "new-manual-1790156734226-wkupvy",
+    "name": "Place Saint Georges",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "Place Saint Georges",
+    "lat": 48.87841,
+    "lng": 2.33756,
+    "img": "images/admin-upload-new-manual-1790156734226-wkupvy-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Mbzt / CC BY 4.0",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located at the heart of the 9th arrondissement in the trendy Nouvelle Athènes neighborhood, Place Saint-Georges is a picturesque circular square created in 1824. Famous for its central fountain and the statue of 19th-century caricaturist Paul Gavarni, the square is surrounded by grand neo-classical and neo-Renaissance townhouses (hôtels particuliers), including the historic Hôtel Guimard. Its charming cobblestones, elegant architecture, and classic Parisian street lamps make it one of the most romantic spots in the neighborhood.</p><p>During his stay in Paris in 2019, Jimin spent time exploring the city's charming neighborhoods. He was filmed strolling through Place Saint-Georges, enjoying a walk around the circular square and its historic architecture, before filming a short birthday video message for Jungkook</p>"
+    },
+    "tweetUrl": "https://x.com/BTS_twt/status/1167879081456615424?s=20",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Take a Daytime Walk"
+        },
+        "text": {
+          "en": "Visit Place Saint-Georges during the day to appreciate the intricate details of the surrounding 19th-century mansions and enjoy the lively neighborhood atmosphere."
+        }
+      },
+      {
+        "title": {
+          "en": "Locate the Spot"
+        },
+        "text": {
+          "en": "Stand near the central fountain and the Metro Line 12 entrance facing the grand private mansions (Hôtel Guimard) to capture the main view of the square."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore South Pigalle (SoPi)"
+        },
+        "text": {
+          "en": "Place Saint-Georges is right in the heart of SoPi, an area packed with lively cafés, artisan bakeries, and boutique shops, making it a great starting point for a walk toward Montmartre."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://fr.wikipedia.org/wiki/Place_Saint-Georges_(Paris)",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Metro: Line 12 (Saint-Georges station) — The station exit opens directly onto the center of the square.\n\nMetro: Line 2, 12 (Pigalle station) or Line 7 (Le Peletier) — 5 to 7-minute walk.\n\nBus: Lines 26, 40, 74 (Saint-Georges stop)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Hours: Open 24/7 (Public square).\n\nAdmission: Free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved and cobblestone surfaces around the central fountain, fully accessible for wheelchairs and strollers."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790156734226-wkupvy-recreated-0.jpg"
+    ]
+  },
+  {
+    "id": "new-manual-1790167785996-vshzyf",
+    "name": "Playground Duperré",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "22 Rue Duperré, 75009, Paris",
+    "lat": 48.88217,
+    "lng": 2.33546,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [],
+    "instagramUrls": [],
+    "tipsList": [],
+    "facebookUrls": [],
+    "officialLink": "https://www.paris.fr/pages/un-terrain-de-basket-style-et-atypique-a-pigalle-18886",
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": ""
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "group": "BTS",
