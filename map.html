@@ -29,7 +29,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260958">
+<!-- BUG corrigé (demande du 22/09/2026, capture d'écran fournie : "quand je reviens en
+     arrière l'affichage bug" — la page s'affichait entièrement sans mise en forme,
+     police par défaut du navigateur, comme si style.css n'avait jamais chargé) : le
+     bouton "Précédent" du navigateur (ex: après "More details" depuis feed.html, voir
+     PR #135) revient parfois sur cette page pendant une brève fenêtre où le CDN de
+     GitHub Pages n'a pas encore fini de propager le dernier déploiement à tous ses
+     nœuds — cette balise <link> peut alors recevoir un 404 ou une réponse vide pour
+     style.css, sans qu'aucun code JS de ce site n'en soit informé ni ne puisse réagir
+     (une balise <link> qui échoue ne lève ni erreur JS ni exception interceptable
+     autrement que via son propre événement "error"). onerror force UN SEUL rechargement
+     complet de la page dès que cet événement se déclenche (sessionStorage empêche une
+     boucle infinie si la panne n'est pas transitoire, ex: réellement hors-ligne) ;
+     onload efface ce garde-fou dès qu'un chargement réussit, pour qu'un futur échec
+     isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
+     posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
+     pages du site. -->
+<link rel="stylesheet" href="style.css?v=20260959" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -1440,12 +1456,12 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260958"></script>
-<script type="module" src="firebase-init.js?v=20260958"></script>
-<script src="locations-data.js?v=20260958"></script>
-<script src="script.js?v=20260958"></script>
+<script src="countries.js?v=20260959"></script>
+<script type="module" src="firebase-init.js?v=20260959"></script>
+<script src="locations-data.js?v=20260959"></script>
+<script src="script.js?v=20260959"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260958"></script>
+<script src="map-tour.js?v=20260959"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
