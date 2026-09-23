@@ -5299,16 +5299,18 @@ function renderLocationRichContent(loc) {
     const descBtsEl = document.getElementById('details-desc-bts');
     if(descPlaceEl) {
         const descHtml = getLocText(loc.fullDescription);
-        const temp = document.createElement('div');
-        temp.innerHTML = descHtml || '';
-        let paragraphs = Array.from(temp.querySelectorAll('p'));
-        if(paragraphs.length === 0 && descHtml) {
-            const onlyP = document.createElement('p');
-            onlyP.innerHTML = descHtml;
-            paragraphs = [onlyP];
-        }
-        descPlaceEl.innerHTML = paragraphs.length > 0 ? paragraphs[0].outerHTML : '';
-        if(paragraphs.length > 1) {
+        // splitFullDescriptionHtml() (plus bas dans ce fichier) sépare "story of this
+        // place" de "Following in BTS's footsteps" via un marqueur explicite quand il est
+        // présent, ce qui laisse "story of this place" contenir plusieurs paragraphes sans
+        // qu'ils ne se retrouvent mal classés ici (BUG corrigé le 23/09/2026) ; sans
+        // marqueur (lieux enregistrés avant ce correctif), retombe sur l'ancienne
+        // convention par position (1er paragraphe = story, les suivants = BTS).
+        const { storyHtml, btsHtml } = splitFullDescriptionHtml(descHtml || '');
+        descPlaceEl.innerHTML = storyHtml;
+        const btsTemp = document.createElement('div');
+        btsTemp.innerHTML = btsHtml;
+        const btsParagraphs = Array.from(btsTemp.querySelectorAll('p'));
+        if(btsParagraphs.length > 0) {
             // Visites multiples (demande du 15/09/2026, "parfois les membres vont plusieurs
             // fois au même endroit... je veux qu'à chaque visite tu rédiges un paragraphe,
             // en mettant un petit titre. Par exemple : 2023, Jimin & Jhope : xxxxx puis
@@ -5318,7 +5320,7 @@ function renderLocationRichContent(loc) {
             // Membre(s) :" mis en gras automatiquement ici si le paragraphe en commence par
             // un — pour que ça s'applique aussi aux paragraphes déjà écrits sans migration
             // de données, plutôt que d'ajouter un vrai champ structuré.
-            descBtsEl.innerHTML = paragraphs.slice(1).map(p => {
+            descBtsEl.innerHTML = btsParagraphs.map(p => {
                 p.innerHTML = p.innerHTML.replace(/^(\d{4}(?:\s*[-–]\s*\d{4})?[^:<]{0,60}):\s*/, '<b>$1:</b> ');
                 return p.outerHTML;
             }).join('');
@@ -5695,26 +5697,59 @@ function htmlParagraphsToPlainText(html) {
 function plainTextToHtmlParagraphs(text) {
     return (text || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
 }
-// Sépare un fullDescription HTML en texte "story of this place" (1er paragraphe) et texte
-// "BTS's footsteps" (paragraphes suivants, joints par une ligne vide) — demande du
-// 13/09/2026 ("sépare le texte en sections dédiées"), même découpe que
-// renderLocationRichContent() plus haut (descPlaceEl = paragraphs[0], descBtsEl =
-// paragraphs.slice(1)), pour qu'admin.html édite exactement ce que la fiche publique
-// affiche sous chacun des deux titres.
-function splitFullDescriptionForEdit(html) {
-    if (!html) return { placeText: '', btsText: '' };
+// Sépare un fullDescription HTML en son HTML "story of this place" et son HTML
+// "BTS's footsteps". BUG corrigé (demande du 23/09/2026, "je veux rédiger plusieurs
+// paragraphes [dans Info]... ça affiche le deuxième paragraphe dans Story of this
+// place") : l'ancienne découpe se basait uniquement sur la POSITION des <p> (1er = story,
+// les suivants = BTS), donc dès qu'on écrivait 2 paragraphes dans le champ "story of this
+// place" lui-même (une ligne vide entre les deux, la même convention que partout ailleurs
+// sur ce site), le 2e paragraphe se retrouvait mal classé au mauvais endroit à l'affichage
+// (voir renderLocationRichContent() plus haut) puisque rien ne distinguait plus "2e
+// paragraphe du champ story" de "1er paragraphe du champ BTS". FULL_DESCRIPTION_SECTION_MARKER
+// (un commentaire HTML, invisible partout où ce HTML est affiché via innerHTML) sépare
+// désormais explicitement les deux champs à la sauvegarde (voir combineStoryAndFootsteps()
+// juste en dessous), pour que "story of this place" puisse contenir autant de paragraphes
+// que l'admin veut. Un fullDescription déjà enregistré AVANT ce correctif (les ~330 lieux
+// existants, tous générés par l'agent IA) n'a jamais ce marqueur : splitFullDescriptionHtml()
+// retombe alors sur l'ancienne convention par position, à l'identique d'avant — aucune
+// migration de données nécessaire, aucun lieu existant n'est donc affecté par ce correctif.
+const FULL_DESCRIPTION_SECTION_MARKER = '<!--stss:footsteps-->';
+function splitFullDescriptionHtml(html) {
+    html = html || '';
+    const markerIdx = html.indexOf(FULL_DESCRIPTION_SECTION_MARKER);
+    if (markerIdx !== -1) {
+        return {
+            storyHtml: html.slice(0, markerIdx),
+            btsHtml: html.slice(markerIdx + FULL_DESCRIPTION_SECTION_MARKER.length)
+        };
+    }
+    // Lieu enregistré avant ce correctif (pas de marqueur) : ancienne convention par
+    // position, jamais changée ici (voir commentaire ci-dessus).
     const temp = document.createElement('div');
     temp.innerHTML = html;
     let paragraphs = Array.from(temp.querySelectorAll('p'));
-    if (paragraphs.length === 0) {
+    if (paragraphs.length === 0 && html) {
         const onlyP = document.createElement('p');
         onlyP.innerHTML = html;
         paragraphs = [onlyP];
     }
     return {
-        placeText: paragraphs.length > 0 ? paragraphs[0].textContent.trim() : '',
-        btsText: paragraphs.slice(1).map(p => p.textContent.trim()).join('\n\n')
+        storyHtml: paragraphs.length > 0 ? paragraphs[0].outerHTML : '',
+        btsHtml: paragraphs.slice(1).map(p => p.outerHTML).join('')
     };
+}
+// Recombine les 2 champs "story of this place" / "Following in BTS's footsteps" (texte
+// brut, un paragraphe par ligne vide) en un seul fullDescription.en HTML, avec le marqueur
+// ci-dessus TOUJOURS posé (même si l'un des deux champs est vide) pour qu'une relecture
+// ultérieure sache sans ambiguïté où s'arrête "story" et où commence "BTS" — voir
+// splitFullDescriptionHtml() ci-dessus.
+function combineStoryAndFootsteps(storyText, btsText) {
+    return plainTextToHtmlParagraphs(storyText) + FULL_DESCRIPTION_SECTION_MARKER + plainTextToHtmlParagraphs(btsText);
+}
+function splitFullDescriptionForEdit(html) {
+    if (!html) return { placeText: '', btsText: '' };
+    const { storyHtml, btsHtml } = splitFullDescriptionHtml(html);
+    return { placeText: htmlParagraphsToPlainText(storyHtml), btsText: htmlParagraphsToPlainText(btsHtml) };
 }
 
 // Éditeur "une section par visite" pour Following in BTS's footsteps (demande du
@@ -6726,11 +6761,11 @@ async function saveLocationEdit(locId, modal) {
 
     // Ne remplace QUE la clé "en" de fullDescription, jamais les autres langues déjà
     // traduites (locationEditExistingFullDescription posé par openLocationEditModal).
-    // Recombine les 2 sections en un seul texte (demande du 14/09/2026) — même convention
-    // que admin.html (renderExistingLocationCard()/renderCard()) : un paragraphe par
-    // section, séparées par une ligne vide.
-    const combinedStory = [storyPlaceText.trim(), storyBtsText.trim()].filter(Boolean).join('\n\n');
-    const fullDescription = Object.assign({}, locationEditExistingFullDescription, { en: plainTextToHtmlParagraphs(combinedStory) });
+    // Recombine les 2 sections en un seul fullDescription.en (demande du 14/09/2026) —
+    // même convention que admin.html (renderExistingLocationCard()/renderCard()), voir
+    // combineStoryAndFootsteps() plus haut dans ce fichier (BUG corrigé le 23/09/2026 :
+    // "story of this place" peut désormais contenir plusieurs paragraphes).
+    const fullDescription = Object.assign({}, locationEditExistingFullDescription, { en: combineStoryAndFootsteps(storyPlaceText, storyBtsText) });
     const fields = Object.assign({
         fullDescription,
         ytId: ytId || '',

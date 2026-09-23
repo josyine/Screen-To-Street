@@ -1433,8 +1433,9 @@ recomposée, sans texte ni légende.`;
             // script.js).
             if (storyPlaceEl) {
                 const btsText = buildFootstepsPlainText(footstepsWidget ? footstepsWidget.collect() : []);
-                const combined = [storyPlaceEl.value.trim(), btsText.trim()].filter(Boolean).join('\n\n');
-                sub.fullDescription = Object.assign({}, sub.fullDescription, { en: plainTextToHtmlParagraphs(combined) });
+                // combineStoryAndFootsteps() (script.js) : "story of this place" peut
+                // désormais contenir plusieurs paragraphes (BUG corrigé le 23/09/2026).
+                sub.fullDescription = Object.assign({}, sub.fullDescription, { en: combineStoryAndFootsteps(storyPlaceEl.value, btsText) });
             }
             approveBtn.disabled = true; rejectBtn.disabled = true;
             const res = await window.approveLocationSubmission(sub);
@@ -1965,9 +1966,10 @@ recomposée, sans texte ni légende.`;
             }
 
             const btsText = buildFootstepsPlainText(footstepsWidget ? footstepsWidget.collect() : []);
-            const combinedStory = [storyPlaceEl.value.trim(), btsText.trim()].filter(Boolean).join('\n\n');
+            // combineStoryAndFootsteps() (script.js) : "story of this place" peut
+            // désormais contenir plusieurs paragraphes (BUG corrigé le 23/09/2026).
             const fullDescription = Object.assign({}, mergedFullDescription, {
-                en: plainTextToHtmlParagraphs(combinedStory)
+                en: combineStoryAndFootsteps(storyPlaceEl.value, btsText)
             });
             const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', pinterestUrl: pinterestUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim() }, extraCollected);
             if (practicalFieldWidget) fields.practicalInfo = practicalFieldWidget.collect().values;
