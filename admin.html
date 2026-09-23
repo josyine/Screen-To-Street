@@ -1644,6 +1644,24 @@ recomposée, sans texte ni légende.`;
                 <div class="sub-meta-field sub-meta-field-wide"><label>Year — select every year that applies</label>${yearCheckboxGroupHtml(loc.year)}</div>
             </div>
 
+            <!-- Header photo (demande du 23/09/2026, "je ne peux pas ajouter de photo du
+                 lieu ; la photo ne s'enregistre pas") — cet onglet "Existing locations"
+                 n'avait jusqu'ici AUCUN champ pour loc.img : seul le modal crayon de
+                 map.html (window.ensureLocationEditModal(), script.js) pouvait le faire, ce
+                 qui explique le "ne s'enregistre pas" (il n'y avait tout simplement rien à
+                 sauvegarder ici). Même paire URL/upload que "Location submissions" plus
+                 haut (photoPreviewHtml, .sub-photo-*), mais fileToResizedDataUrl() (script.js)
+                 au lieu d'un FileReader brut pour supporter le HEIC comme le modal crayon. -->
+            <label class="sub-section-label">Header photo</label>
+            <div class="sub-photo-preview">${photoPreviewHtml(loc.img)}</div>
+            <input type="url" class="sub-photo-input" placeholder="Photo URL" value="${escapeHtml((loc.img || '').startsWith('data:') ? '' : (loc.img || ''))}">
+            <div class="sub-photo-upload-row">
+                <button type="button" class="sub-photo-upload-btn">Upload from device</button>
+                <input type="file" class="sub-photo-file-input hidden" accept="image/*,.heic,.heif">
+                <span class="sub-photo-upload-name">${(loc.img || '').startsWith('data:') ? 'Uploaded photo' : ''}</span>
+            </div>
+            <div class="sub-photo-hint" style="margin-bottom:14px;">Paste an image URL above, or use "Upload from device" — either one sets this location's header photo.</div>
+
             <!-- Sections "story" (demande du 13/09/2026, "reprenne l'affichage de Location
                  submissions, notamment les 2 sections pour The story of this place et
                  Following in BTS's footsteps") — même découpe/labels/placeholders que
@@ -1744,6 +1762,47 @@ recomposée, sans texte ni légende.`;
         const storyPlaceEl = card.querySelector('.loc-story-place-textarea');
         const storyBtsEditorEl = card.querySelector('.loc-story-bts-editor');
         let footstepsWidget = null;
+        // Header photo (voir la note plus haut sur le template de cette carte).
+        const photoInput = card.querySelector('.sub-photo-input');
+        const photoPreview = card.querySelector('.sub-photo-preview');
+        const photoUploadBtn = card.querySelector('.sub-photo-upload-btn');
+        const photoFileInput = card.querySelector('.sub-photo-file-input');
+        const photoUploadName = card.querySelector('.sub-photo-upload-name');
+        let currentImg = loc.img || '';
+        if (photoInput) {
+            photoInput.addEventListener('change', () => {
+                currentImg = photoInput.value.trim();
+                photoPreview.innerHTML = photoPreviewHtml(currentImg);
+                if (photoUploadName) photoUploadName.textContent = '';
+            });
+        }
+        if (photoUploadBtn && photoFileInput) {
+            photoUploadBtn.addEventListener('click', () => photoFileInput.click());
+            photoFileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                photoUploadBtn.disabled = true;
+                photoUploadBtn.textContent = 'Uploading…';
+                try {
+                    currentImg = typeof fileToResizedDataUrl === 'function'
+                        ? await fileToResizedDataUrl(file, 1200)
+                        : await new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => resolve(ev.target.result);
+                            reader.onerror = () => reject(new Error('Could not read file'));
+                            reader.readAsDataURL(file);
+                        });
+                    photoPreview.innerHTML = photoPreviewHtml(currentImg);
+                    if (photoInput) photoInput.value = '';
+                    if (photoUploadName) photoUploadName.textContent = file.name;
+                } catch (err) {
+                    if (photoUploadName) photoUploadName.textContent = 'Upload failed: ' + err.message;
+                } finally {
+                    photoUploadBtn.disabled = false;
+                    photoUploadBtn.textContent = 'Upload from device';
+                }
+            });
+        }
         const tweetInput = card.querySelector('.sub-tweet-input');
         const tweetError = card.querySelector('.sub-tweet-error');
         const videoInput = card.querySelector('.sub-video-input');
@@ -1844,6 +1903,16 @@ recomposée, sans texte ni légende.`;
         // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
         // logique qu'openLocationEditModal()/openDetailsPanel() dans script.js.
         const fillFields = (data) => {
+            // img peut avoir été mis à jour depuis (via le modal crayon de map.html, qui
+            // écrit aussi dans locationContent/{id}) sans que le catalogue statique
+            // (locations-data.js) n'ait encore été republié — on préfère donc toujours la
+            // valeur Firestore la plus fraîche si elle existe.
+            if (Object.prototype.hasOwnProperty.call(data, 'img')) {
+                currentImg = data.img || '';
+                if (photoInput) photoInput.value = (currentImg || '').startsWith('data:') ? '' : (currentImg || '');
+                if (photoPreview) photoPreview.innerHTML = photoPreviewHtml(currentImg);
+                if (photoUploadName) photoUploadName.textContent = (currentImg || '').startsWith('data:') ? 'Uploaded photo' : '';
+            }
             const split = splitFullDescriptionForEdit(data.fullDescription && data.fullDescription.en);
             storyPlaceEl.value = split.placeText;
             if (storyBtsEditorEl && typeof window.createVisitSectionsField === 'function') {
@@ -1971,7 +2040,7 @@ recomposée, sans texte ni légende.`;
             const fullDescription = Object.assign({}, mergedFullDescription, {
                 en: combineStoryAndFootsteps(storyPlaceEl.value, btsText)
             });
-            const fields = Object.assign({ fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', pinterestUrl: pinterestUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim() }, extraCollected);
+            const fields = Object.assign({ img: currentImg || '', fullDescription, ytId: ytId || '', tweetUrl: tweetUrl || '', instagramUrl: instagramUrl || '', facebookUrl: facebookUrl || '', tiktokUrl: tiktokUrl || '', pinterestUrl: pinterestUrl || '', episodeLink: linkInput.value.trim(), officialLink: officialLinkInput.value.trim() }, extraCollected);
             if (practicalFieldWidget) fields.practicalInfo = practicalFieldWidget.collect().values;
             if (tipsFieldWidget) fields.tipsList = tipsFieldWidget.collect().values;
             // "Mei's Pictures" (demande du 18/09/2026) — recreatedPhotos est le tableau

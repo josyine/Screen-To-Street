@@ -162,6 +162,25 @@ model id in the script (`gemini-3.6-flash-image`) may need adjusting to whatever
 image-generation model is actually available on your Google AI Studio account when you run
 this — model ids change over time.
 
+## Audit the pending queue for duplicates (`check-submission-duplicates.js`)
+
+One-off audit of everything currently sitting in `locationSubmissions` (status `pending`) —
+useful after a long pause of the AI agent, or a big manual batch import — against every
+already-published location, using the exact same distance/name check the agent uses before
+proposing (see "Anti-duplicate check" below). Only checks brand-new-location proposals (no
+`matchedLocId`); a submission with `matchedLocId` is a deliberate correction to an existing
+location, never a duplicate.
+
+```
+cd admin-scripts
+npm install
+node check-submission-duplicates.js            # report only, changes nothing
+node check-submission-duplicates.js --reject    # also rejects every duplicate found
+```
+
+Same service-account setup as the other scripts here (`serviceAccountKey.json` or
+`FIREBASE_SERVICE_ACCOUNT`).
+
 ## Anti-duplicate check (`duplicate-check.js`)
 
 Checking whether an AI-proposed location already exists **by name** is unreliable:

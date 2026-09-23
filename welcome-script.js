@@ -69,7 +69,8 @@ const dict = {
         emailOrUsernameLabel: "Email or username",
         
         step1Title: "Account", emailCheck: "Create your account with an email and password.",
-        emailLabel: "Email address", password: "Password", btnContinue: "Continue",
+        emailLabel: "Email address", password: "Password", confirmPassword: "Confirm password", btnContinue: "Continue",
+        errPasswordMismatch: "Passwords don't match.",
         
         step2Title: "Profile", step2Desc: "Tell us a bit about yourself.",
         usernameLabel: "Username", fname: "First Name", lname: "Last Name",
@@ -125,7 +126,8 @@ const dict = {
         emailOrUsernameLabel: "E-mail ou nom d'utilisateur",
         
         step1Title: "Compte", emailCheck: "Créez votre compte avec un e-mail et un mot de passe.",
-        emailLabel: "Adresse e-mail", password: "Mot de passe", btnContinue: "Continuer",
+        emailLabel: "Adresse e-mail", password: "Mot de passe", confirmPassword: "Confirmer le mot de passe", btnContinue: "Continuer",
+        errPasswordMismatch: "Les mots de passe ne correspondent pas.",
         
         step2Title: "Profil", step2Desc: "Parlez-nous un peu de vous.",
         usernameLabel: "Nom d'utilisateur", fname: "Prénom", lname: "Nom",
@@ -575,12 +577,22 @@ if(btnToStep2) {
     btnToStep2.addEventListener('click', async () => { 
         const emailInput = document.getElementById('user-email');
         const passInput = document.getElementById('user-password');
+        const passConfirmInput = document.getElementById('user-password-confirm');
         if(!emailInput.checkValidity()) { emailInput.reportValidity(); return; }
         if(!passInput.checkValidity()) { passInput.reportValidity(); return; }
+        if(passConfirmInput && !passConfirmInput.checkValidity()) { passConfirmInput.reportValidity(); return; }
         clearAuthError();
 
         const emailVal = emailInput.value.trim();
         const passVal = passInput.value;
+        // Demande du 23/09/2026, "ajoute Confirmer le password, afin d'ajouter une
+        // sécurité en plus" — vérifié ici plutôt que via l'attribut HTML pattern (un
+        // second champ ne peut pas référencer la valeur du premier en pur HTML).
+        if (passConfirmInput && passConfirmInput.value !== passVal) {
+            showAuthError(curDict().errPasswordMismatch);
+            passConfirmInput.focus();
+            return;
+        }
         const originalLabel = btnToStep2.textContent;
         btnToStep2.disabled = true;
         btnToStep2.textContent = '...';
@@ -594,15 +606,29 @@ if(btnToStep2) {
             btnToStep2.textContent = originalLabel;
             showStep(2);
         } catch (createErr) {
+            // Demande du 23/09/2026, "si je mets une adresse mail et un mot de passe d'un
+            // compte déjà présent, il faut connecter le compte directement" : plutôt que de
+            // simplement signaler l'e-mail comme déjà pris, on retente une connexion avec
+            // le même e-mail/mot de passe tapés ici — si ça correspond bien à un compte
+            // existant, on connecte directement au lieu de forcer un aller-retour vers
+            // l'écran de connexion.
+            if (createErr.code === 'auth/email-already-in-use') {
+                try {
+                    const cred = await signInWithEmailAndPassword(auth, emailVal, passVal);
+                    await loadExistingProfileAndRedirect(cred.user);
+                    return;
+                } catch (loginErr) {
+                    btnToStep2.disabled = false;
+                    btnToStep2.textContent = originalLabel;
+                    showAuthError(curDict().errEmailInUse);
+                    const loginEmailInput = document.getElementById('login-email');
+                    if (loginEmailInput) loginEmailInput.value = emailVal;
+                    return;
+                }
+            }
             btnToStep2.disabled = false;
             btnToStep2.textContent = originalLabel;
-            if (createErr.code === 'auth/email-already-in-use') {
-                showAuthError(curDict().errEmailInUse);
-                const loginEmailInput = document.getElementById('login-email');
-                if (loginEmailInput) loginEmailInput.value = emailVal;
-            } else {
-                showAuthError(friendlyAuthError(createErr.code));
-            }
+            showAuthError(friendlyAuthError(createErr.code));
         }
     });
 }

@@ -2927,6 +2927,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // bouge pendant qu'elle est ouverte (pan, zoom), on la ferme plutôt que de la
         // laisser dériver loin du marqueur qu'elle décrivait.
         map.on('movestart zoomstart', () => { if (typeof hideMapHoverTip === 'function') hideMapHoverTip(); });
+        // Tap ailleurs sur la carte (hors marqueur — Leaflet n'y propage pas cet événement
+        // depuis un marqueur) : referme la bulle tap-tap mobile plutôt que de la laisser
+        // "armée" indéfiniment sur un lieu qu'on ne regarde plus.
+        map.on('click', () => { if (typeof hideMapHoverTip === 'function') hideMapHoverTip(); });
 
         // Voile de chargement (voir .map-loading-overlay, style.css) : masqué dès que
         // les tuiles de la vue actuelle ont fini de charger (succès ou échec — à ce
@@ -3264,14 +3268,14 @@ document.addEventListener('DOMContentLoaded', () => {
 const iconsSVG = {
     "Run BTS": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h18"/><path d="M4 8.5 5.5 4h3L7 8.5"/><path d="M9.3 8.5 10.8 4h3l-1.5 4.5"/><path d="M14.7 8.5 16.2 4h3l-1.5 4.5"/><rect x="3" y="8.5" width="18" height="11.5" rx="1.5"/></svg>`,
     "Bon Voyage": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
-    "Restaurants": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>`,
+    "Restaurant": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>`,
     "Cafe": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>`,
-    "Museums": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>`,
+    "Museum": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>`,
     "MV Location": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>`,
-    "Concerts": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    "Concert": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
     "Fashion": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a8.59 8.59 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>`,
     "Pop-up Store": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
-    "Landmarks": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="4" y="8" rx="2" ry="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+    "Landmark": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="4" y="8" rx="2" ry="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
     "Default": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`
 };
 
@@ -3279,9 +3283,9 @@ const iconsSVG = {
 const groupColors = { "BTS": "#8b5cf6", "Blackpink": "#ec4899", "Twice": "#f43f5e", "Seventeen": "#3b82f6", "Katseye": "#10b981", "TXT": "#f59e0b" };
 
 const filterData = {
-    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "Museums", "Restaurants", "Cafe", "MV Location", "Concerts", "Fashion", "Landmarks", "Pop-up Store"] },
-    "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurants", "MV Location", "Pop-up Store", "Concerts", "Fashion"] },
-    "General": { categories: ["Cafe", "Concerts", "Fashion", "Landmarks", "Museums", "Restaurants", "Pop-up Store"] }
+    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store"] },
+    "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    "General": { categories: ["Cafe", "Concert", "Fashion", "Landmark", "Museum", "Restaurant", "Pop-up Store"] }
 };
 
 // Catalogue statique (demande du 13/09/2026, "mets toutes les données des lieux en brut
@@ -3295,6 +3299,16 @@ const filterData = {
 // admin-scripts/ pour lancer un export à la demande). .slice() pour ne jamais partager la
 // même référence de tableau que window.STATIC_LOCATIONS.
 let celebLocations = (window.STATIC_LOCATIONS || []).slice();
+
+// Normalise les catégories au singulier (demande du 23/09/2026, "je ne veux garder que
+// Landmark, regroupe les 2 catégories") : certains lieux publiés viennent encore de
+// Firestore (newLocations/locationSkeletonOverrides) au pluriel — voir
+// admin-scripts/fix-category-names.js, jamais exécuté faute de compte de service dans cet
+// environnement. On corrige donc aussi ici, côté client, pour que les filtres/icônes ne
+// voient plus jamais qu'une seule forme (celle déjà utilisée partout ailleurs dans ce
+// fichier : iconsSVG, filterData, catTranslations, ITI_CATEGORY_PROFILE).
+const CATEGORY_SINGULARIZE = { 'Landmarks': 'Landmark', 'Museums': 'Museum', 'Restaurants': 'Restaurant', 'Concerts': 'Concert' };
+celebLocations.forEach(loc => { if (CATEGORY_SINGULARIZE[loc.category]) loc.category = CATEGORY_SINGULARIZE[loc.category]; });
 
 // ==========================================
 // Messages éphémères "nouveau lieu ajouté"
@@ -3430,7 +3444,7 @@ const translations = {
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} is live now — {event} in {city}", tourModeLiveNowOne: "Live now", tourModeLiveNowCount: "{n} live now", tourModeMoreCount: "+{n} more",
         tourModeEyebrow: "Tour Mode", tourModeChooseTour: "Choose a tour", tourModeStep: "Step {n} of {total}",
         tourModeHighlights: "Highlights", tourModeSurpriseSong: "Surprise song:", tourModeNoHighlightsYet: "No highlights added yet for this show.", tourModeNoSurpriseSongYet: "Not announced yet.",
-        mapLoading: "Loading map…",
+        mapLoading: "Loading map…", viewDetails: "View", multiSelectCount: "selected",
         demoTourBtn: "Tour",
         newLocationToastLabel: "New location added", newLocationsSummaryToast: "{n} new locations for {group}",
         paywallTitle: "You've reached your free limit (3/3)", paywallBody: "Loving the secret map? There are still 500+ addresses left to discover! Unlock every filming location, iconic restaurant, and address your idols frequent to plan the trip of your dreams.",
@@ -3497,7 +3511,7 @@ const translations = {
         tourModeGenericLabel: "Tournée", tourModeMemberLiveIn: "{member} est en direct — {event} à {city}", tourModeLiveNowOne: "En direct maintenant", tourModeLiveNowCount: "{n} en direct maintenant", tourModeMoreCount: "+{n} autres",
         tourModeEyebrow: "Mode Tournée", tourModeChooseTour: "Choisir une tournée", tourModeStep: "Étape {n} sur {total}",
         tourModeHighlights: "Temps forts", tourModeSurpriseSong: "Chanson surprise :", tourModeNoHighlightsYet: "Aucun temps fort ajouté pour ce concert pour le moment.", tourModeNoSurpriseSongYet: "Pas encore annoncée.",
-        mapLoading: "Chargement de la carte…",
+        mapLoading: "Chargement de la carte…", viewDetails: "Voir", multiSelectCount: "sélectionnés",
         demoTourBtn: "Visite",
         newLocationToastLabel: "Nouveau lieu ajouté", newLocationsSummaryToast: "{n} nouveaux lieux pour {group}",
         paywallTitle: "Vous avez atteint votre limite gratuite (3/3)", paywallBody: "La carte secrète vous plaît ? Il reste encore plus de 500 adresses à découvrir ! Débloquez l'intégralité des lieux de tournages, restaurants iconiques et adresses fréquentées par vos idoles pour préparer le voyage de vos rêves.",
@@ -3564,7 +3578,7 @@ const translations = {
         tourModeGenericLabel: "Gira", tourModeMemberLiveIn: "{member} está en directo — {event} en {city}", tourModeLiveNowOne: "En directo ahora", tourModeLiveNowCount: "{n} en directo ahora", tourModeMoreCount: "+{n} más",
         tourModeEyebrow: "Modo Gira", tourModeChooseTour: "Elegir una gira", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Momentos destacados", tourModeSurpriseSong: "Canción sorpresa:", tourModeNoHighlightsYet: "Aún no se han añadido momentos destacados para este concierto.", tourModeNoSurpriseSongYet: "Aún no anunciada.",
-        mapLoading: "Cargando el mapa…",
+        mapLoading: "Cargando el mapa…", viewDetails: "Ver", multiSelectCount: "seleccionados",
         demoTourBtn: "Recorrido",
         newLocationToastLabel: "Nuevo lugar añadido", newLocationsSummaryToast: "{n} nuevos lugares para {group}",
         paywallTitle: "Has alcanzado tu límite gratuito (3/3)", paywallBody: "¿Te gusta el mapa secreto? ¡Todavía quedan más de 500 direcciones por descubrir! Desbloquea todos los lugares de rodaje, restaurantes icónicos y direcciones que frecuentan tus ídolos para preparar el viaje de tus sueños.",
@@ -3627,7 +3641,7 @@ const translations = {
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} è in diretta — {event} a {city}", tourModeLiveNowOne: "In diretta ora", tourModeLiveNowCount: "{n} in diretta ora", tourModeMoreCount: "+{n} altri",
         tourModeEyebrow: "Modalità Tour", tourModeChooseTour: "Scegli un tour", tourModeStep: "Tappa {n} di {total}",
         tourModeHighlights: "Momenti salienti", tourModeSurpriseSong: "Canzone a sorpresa:", tourModeNoHighlightsYet: "Nessun momento saliente ancora aggiunto per questo concerto.", tourModeNoSurpriseSongYet: "Non ancora annunciata.",
-        mapLoading: "Caricamento della mappa…",
+        mapLoading: "Caricamento della mappa…", viewDetails: "Vedi", multiSelectCount: "selezionati",
         demoTourBtn: "Tour",
         newLocationToastLabel: "Nuovo luogo aggiunto", newLocationsSummaryToast: "{n} nuovi luoghi per {group}",
         paywallTitle: "Hai raggiunto il tuo limite gratuito (3/3)", paywallBody: "Ti piace la mappa segreta? Ci sono ancora più di 500 indirizzi da scoprire! Sblocca tutti i luoghi delle riprese, i ristoranti iconici e gli indirizzi frequentati dai tuoi idoli per preparare il viaggio dei tuoi sogni.",
@@ -3690,7 +3704,7 @@ const translations = {
         tourModeGenericLabel: "Turnê", tourModeMemberLiveIn: "{member} está ao vivo agora — {event} em {city}", tourModeLiveNowOne: "Ao vivo agora", tourModeLiveNowCount: "{n} ao vivo agora", tourModeMoreCount: "+{n} mais",
         tourModeEyebrow: "Modo Turnê", tourModeChooseTour: "Escolher uma turnê", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Melhores momentos", tourModeSurpriseSong: "Música surpresa:", tourModeNoHighlightsYet: "Nenhum destaque adicionado ainda para este show.", tourModeNoSurpriseSongYet: "Ainda não anunciada.",
-        mapLoading: "Carregando o mapa…",
+        mapLoading: "Carregando o mapa…", viewDetails: "Ver", multiSelectCount: "selecionados",
         demoTourBtn: "Tour guiado",
         newLocationToastLabel: "Novo local adicionado", newLocationsSummaryToast: "{n} novos locais para {group}",
         paywallTitle: "Você atingiu seu limite gratuito (3/3)", paywallBody: "Está gostando do mapa secreto? Ainda há mais de 500 endereços para descobrir! Desbloqueie todos os locais de filmagem, restaurantes icônicos e endereços frequentados pelos seus ídolos para planejar a viagem dos seus sonhos.",
@@ -3753,7 +3767,7 @@ const translations = {
         tourModeGenericLabel: "투어", tourModeMemberLiveIn: "{member} 라이브 중 — {city}에서 {event}", tourModeLiveNowOne: "지금 라이브", tourModeLiveNowCount: "지금 {n}건 라이브", tourModeMoreCount: "+{n}개 더보기",
         tourModeEyebrow: "투어 모드", tourModeChooseTour: "투어 선택", tourModeStep: "{total}단계 중 {n}단계",
         tourModeHighlights: "하이라이트", tourModeSurpriseSong: "깜짝 곡:", tourModeNoHighlightsYet: "이 공연의 하이라이트가 아직 등록되지 않았습니다.", tourModeNoSurpriseSongYet: "아직 발표되지 않았습니다.",
-        mapLoading: "지도를 불러오는 중…",
+        mapLoading: "지도를 불러오는 중…", viewDetails: "보기", multiSelectCount: "개 선택됨",
         demoTourBtn: "투어",
         newLocationToastLabel: "새로운 장소 추가됨", newLocationsSummaryToast: "{group}의 새로운 장소 {n}개",
         paywallTitle: "무료 열람 한도에 도달했습니다 (3/3)", paywallBody: "비밀 지도가 마음에 드시나요? 아직 500개 이상의 주소가 더 남아있어요! 촬영지, 인기 맛집, 그리고 아이돌이 자주 찾는 장소까지 모두 잠금 해제하고 꿈꾸던 여행을 준비해 보세요.",
@@ -3816,7 +3830,7 @@ const translations = {
         tourModeGenericLabel: "ツアー", tourModeMemberLiveIn: "{member}がライブ配信中 — {city}で{event}", tourModeLiveNowOne: "現在ライブ中", tourModeLiveNowCount: "現在{n}件ライブ中", tourModeMoreCount: "他+{n}件",
         tourModeEyebrow: "ツアーモード", tourModeChooseTour: "ツアーを選択", tourModeStep: "ステップ {n}/{total}",
         tourModeHighlights: "ハイライト", tourModeSurpriseSong: "サプライズソング：", tourModeNoHighlightsYet: "この公演のハイライトはまだ追加されていません。", tourModeNoSurpriseSongYet: "まだ発表されていません。",
-        mapLoading: "地図を読み込み中…",
+        mapLoading: "地図を読み込み中…", viewDetails: "見る", multiSelectCount: "件選択中",
         demoTourBtn: "ツアー",
         newLocationToastLabel: "新しい場所が追加されました", newLocationsSummaryToast: "{group}の新しいスポット{n}件",
         paywallTitle: "無料閲覧の上限に達しました (3/3)", paywallBody: "シークレットマップは気に入りましたか？まだ500件以上の住所が残っています！ロケ地、人気レストラン、推しがよく訪れる場所をすべて解放して、夢の旅行を計画しましょう。",
@@ -3879,7 +3893,7 @@ const translations = {
         tourModeGenericLabel: "巡演", tourModeMemberLiveIn: "{member} 直播中 — 于{city}参加{event}", tourModeLiveNowOne: "现在直播中", tourModeLiveNowCount: "现在{n}个直播中", tourModeMoreCount: "+{n}个更多",
         tourModeEyebrow: "巡演模式", tourModeChooseTour: "选择巡演", tourModeStep: "第 {n} 步，共 {total} 步",
         tourModeHighlights: "精彩瞬间", tourModeSurpriseSong: "惊喜曲目：", tourModeNoHighlightsYet: "该场演出暂无精彩瞬间记录。", tourModeNoSurpriseSongYet: "尚未公布。",
-        mapLoading: "地图加载中…",
+        mapLoading: "地图加载中…", viewDetails: "查看", multiSelectCount: "已选择",
         demoTourBtn: "导览",
         newLocationToastLabel: "新增地点", newLocationsSummaryToast: "{group}的{n}个新地点",
         paywallTitle: "已达到免费浏览上限 (3/3)", paywallBody: "喜欢这份秘密地图吗？还有500多个地址等你发现！解锁全部取景地、人气餐厅和爱豆常去的地方，规划你的梦想之旅。",
@@ -3895,12 +3909,12 @@ const translations = {
 
 const catTranslations = {
     "Run BTS": "Run BTS", "Bon Voyage": "Bon Voyage", 
-    "Restaurants": {en: "Restaurants", fr: "Restaurants"}, 
-    "Cafe": {en: "Cafe", fr: "Café"}, 
-    "Museums": {en: "Museums", fr: "Musées"}, 
-    "MV Location": "MV Location", "Concerts": "Concerts", 
-    "Fashion": {en: "Fashion", fr: "Mode"}, 
-    "Landmarks": {en: "Landmarks", fr: "Lieux mythiques"}, 
+    "Restaurant": {en: "Restaurant", fr: "Restaurant"},
+    "Cafe": {en: "Cafe", fr: "Café"},
+    "Museum": {en: "Museum", fr: "Musée"},
+    "MV Location": "MV Location", "Concert": "Concert",
+    "Fashion": {en: "Fashion", fr: "Mode"},
+    "Landmark": {en: "Landmark", fr: "Lieu mythique"},
     "Pop-up Store": "Pop-up Store"
 };
 
@@ -3983,6 +3997,8 @@ function updateUI() {
     if(yearSelect) {
         const yearOpt = yearSelect.querySelector('option[value="All"]');
         if(yearOpt) yearOpt.textContent = t('allYears');
+        buildMultiSelectUI('year-select');
+        wireMultiSelectOnce('year-select');
     }
 
     if(document.getElementById('group-select')) {
@@ -4134,46 +4150,171 @@ window.updateCreateTripCategories = function() {
 // ==========================================
 // 4. AFFICHAGE DES LIEUX ET FILTRES (MAP.HTML)
 // ==========================================
+// Multi-sélection GROUP/MEMBER/AREA/YEAR (demande du 23/09/2026, "ajoute la multi
+// sélection pour tous les filtres") : le <select multiple> original (voir map.html) reste
+// la source de vérité — options peuplées exactement comme avant par initializeFilters() —
+// ce bouton + panneau de cases à cocher n'en est qu'une vue. (Dé)cocher une case (dé)coche
+// l'<option> correspondante puis redéclenche un 'change' natif sur le select, pour que le
+// listener déjà posé plus bas (initializeFilters()/renderLocations()) continue de
+// fonctionner sans le moindre changement.
+const MULTI_SELECT_ALL_LABEL_KEYS = { 'group-select': 'allGroups', 'member-select': 'allMembers', 'country-select': 'allAreas', 'year-select': 'allYears' };
+function getMultiValues(selectEl) {
+    if (!selectEl) return ['All'];
+    const values = Array.from(selectEl.selectedOptions || []).map(o => o.value);
+    return values.length ? values : ['All'];
+}
+function buildMultiSelectUI(selectId) {
+    const selectEl = document.getElementById(selectId);
+    const panel = document.querySelector(`.multi-select-panel[data-target="${selectId}"]`);
+    const btn = document.querySelector(`.multi-select-btn[data-target="${selectId}"]`);
+    if (!selectEl || !panel || !btn) return;
+    const selected = getMultiValues(selectEl);
+    const allLabel = t(MULTI_SELECT_ALL_LABEL_KEYS[selectId] || 'allGroups');
+    panel.innerHTML = Array.from(selectEl.options).map(o => `
+        <label class="multi-select-option">
+            <input type="checkbox" value="${escapeHtml(o.value)}"${selected.includes(o.value) ? ' checked' : ''}>
+            <span>${escapeHtml(o.textContent)}</span>
+        </label>
+    `).join('');
+    const labelEl = btn.querySelector('.msb-label');
+    if (!labelEl) return;
+    if (selected.includes('All')) { labelEl.textContent = allLabel; return; }
+    if (selected.length === 1) {
+        const opt = Array.from(selectEl.options).find(o => o.value === selected[0]);
+        labelEl.textContent = opt ? opt.textContent : selected[0];
+        return;
+    }
+    labelEl.textContent = `${selected.length} ${t('multiSelectCount')}`;
+}
+function wireMultiSelectOnce(selectId) {
+    const panel = document.querySelector(`.multi-select-panel[data-target="${selectId}"]`);
+    const btn = document.querySelector(`.multi-select-btn[data-target="${selectId}"]`);
+    const selectEl = document.getElementById(selectId);
+    if (!panel || !btn || !selectEl || btn._hasListener) return;
+    btn._hasListener = true;
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const willOpen = panel.classList.contains('hidden');
+        document.querySelectorAll('.multi-select-panel').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.multi-select-btn').forEach(b => b.classList.remove('open'));
+        if (willOpen) { panel.classList.remove('hidden'); btn.classList.add('open'); }
+    });
+    panel.addEventListener('click', (e) => e.stopPropagation());
+    panel.addEventListener('change', (e) => {
+        const cb = e.target;
+        if (!cb || cb.tagName !== 'INPUT') return;
+        const options = Array.from(selectEl.options);
+        if (cb.value === 'All') {
+            if (cb.checked) options.forEach(o => { o.selected = (o.value === 'All'); });
+            else cb.checked = true; // "All" ne peut pas rester décoché sans qu'un autre choix ne le remplace
+        } else {
+            const optEl = options.find(o => o.value === cb.value);
+            if (optEl) optEl.selected = cb.checked;
+            options.forEach(o => { if (o.value === 'All') o.selected = false; });
+            const anySelected = options.some(o => o.value !== 'All' && o.selected);
+            if (!anySelected) options.forEach(o => { o.selected = (o.value === 'All'); });
+        }
+        buildMultiSelectUI(selectId);
+        selectEl.dispatchEvent(new Event('change'));
+    });
+    document.addEventListener('click', () => {
+        panel.classList.add('hidden');
+        btn.classList.remove('open');
+    });
+}
+
+let activeCategories = ["All"];
 function initializeFilters() {
     const groupSelect = document.getElementById('group-select');
     const memberSelect = document.getElementById('member-select');
     const countrySelect = document.getElementById('country-select');
     const categoryButtonsContainer = document.getElementById('category-buttons');
     if(!groupSelect) return;
-    
+
     const unlockedGroups = getUnlockedGroups();
     let availableLocs = celebLocations.filter(loc => unlockedGroups.includes(loc.group));
 
     const availableGroups = [...new Set(availableLocs.map(l => l.group))].sort();
-    
+
     if(groupSelect.options.length === 0 || groupSelect.options[0].text !== t('allGroups')) {
         groupSelect.innerHTML = `<option value="All">${t('allGroups')}</option>`;
         availableGroups.forEach(g => groupSelect.innerHTML += `<option value="${g}">${g}</option>`);
+        Array.from(groupSelect.options).forEach(o => { o.selected = (o.value === 'All'); });
     }
 
-    const selectedGroup = groupSelect.value;
+    // Plusieurs groupes peuvent désormais être sélectionnés à la fois (demande du
+    // 23/09/2026) — Member/Country/Category montrent alors l'union de ce que propose
+    // chacun des groupes sélectionnés, comme si on les avait filtrés un par un puis
+    // fusionné les listes (fallback sur "General" si "All" ou aucun groupe spécifique).
+    const selectedGroups = getMultiValues(groupSelect);
+    const specificGroups = selectedGroups.includes('All') ? [] : selectedGroups;
+    const previousMemberValues = getMultiValues(memberSelect);
+    const previousCountryValues = getMultiValues(countrySelect);
     memberSelect.innerHTML = `<option value="All">${t('allMembers')}</option>`;
     countrySelect.innerHTML = `<option value="All">${t('allAreas')}</option>`;
-    
-    categoryButtonsContainer.innerHTML = `<div class="cat-card active" data-cat="All">${t('allCategories')}</div>`;
-    activeCategory = "All";
-    
-    const filteredByGroup = selectedGroup === "All" ? availableLocs : availableLocs.filter(l => l.group === selectedGroup);
-    [...new Set(filteredByGroup.map(loc => loc.country))].sort().forEach(c => countrySelect.innerHTML += `<option value="${c}">${c}</option>`);
 
-    let catsToShow = (selectedGroup !== "All" && filterData[selectedGroup]) ? filterData[selectedGroup].categories : filterData["General"].categories;
-    if(selectedGroup !== "All" && filterData[selectedGroup]) filterData[selectedGroup].members.forEach(m => memberSelect.innerHTML += `<option value="${m}">${m}</option>`);
-    
+    categoryButtonsContainer.innerHTML = `<div class="cat-card active" data-cat="All">${t('allCategories')}</div>`;
+    activeCategories = ["All"];
+
+    const filteredByGroup = specificGroups.length === 0 ? availableLocs : availableLocs.filter(l => specificGroups.includes(l.group));
+    [...new Set(filteredByGroup.map(loc => loc.country))].sort().forEach(c => countrySelect.innerHTML += `<option value="${c}">${c}</option>`);
+    // Reconduit les pays encore valides pour la nouvelle liste de groupes (sinon changer de
+    // groupe effacerait silencieusement la sélection Country/Member déjà faite).
+    Array.from(countrySelect.options).forEach(o => { o.selected = previousCountryValues.includes(o.value); });
+    if (!Array.from(countrySelect.options).some(o => o.selected)) countrySelect.options[0].selected = true;
+
+    let catsToShow;
+    if (specificGroups.length === 0) {
+        catsToShow = filterData["General"].categories;
+    } else {
+        const catSet = new Set();
+        specificGroups.forEach(g => { if (filterData[g]) filterData[g].categories.forEach(c => catSet.add(c)); });
+        catsToShow = catSet.size ? Array.from(catSet) : filterData["General"].categories;
+    }
+    if (specificGroups.length > 0) {
+        const memberSet = new Set();
+        specificGroups.forEach(g => { if (filterData[g]) filterData[g].members.forEach(m => memberSet.add(m)); });
+        memberSet.forEach(m => memberSelect.innerHTML += `<option value="${m}">${m}</option>`);
+    }
+    Array.from(memberSelect.options).forEach(o => { o.selected = previousMemberValues.includes(o.value); });
+    if (!Array.from(memberSelect.options).some(o => o.selected)) memberSelect.options[0].selected = true;
+
     catsToShow.forEach(cat => categoryButtonsContainer.innerHTML += `<div class="cat-card" data-cat="${cat}">${getCatName(cat)}</div>`);
 
-    document.querySelectorAll('.cat-card').forEach(btn => {
+    // Chips de catégorie en multi-sélection (demande du 23/09/2026) : "All" reste
+    // exclusif (choisir "All" désélectionne tout le reste, et inversement), mais
+    // plusieurs catégories précises peuvent être actives ensemble. Scopé à
+    // categoryButtonsContainer (pas document.querySelectorAll('.cat-card') global) : la
+    // classe .cat-card est réutilisée ailleurs (itinéraire, création de trip — voir
+    // .iti-cat-pill/.create-trip-cat-pill dans ce même fichier) pour un tout autre widget,
+    // qui ne doit ni déclencher renderLocations() ni polluer activeCategories.
+    categoryButtonsContainer.querySelectorAll('.cat-card').forEach(btn => {
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.cat-card').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            activeCategory = this.getAttribute('data-cat');
+            const cat = this.getAttribute('data-cat');
+            if (cat === 'All') {
+                categoryButtonsContainer.querySelectorAll('.cat-card').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                activeCategories = ['All'];
+            } else {
+                const allChip = categoryButtonsContainer.querySelector('.cat-card[data-cat="All"]');
+                if (allChip) allChip.classList.remove('active');
+                this.classList.toggle('active');
+                activeCategories = Array.from(categoryButtonsContainer.querySelectorAll('.cat-card.active')).map(b => b.getAttribute('data-cat'));
+                if (activeCategories.length === 0) {
+                    if (allChip) allChip.classList.add('active');
+                    activeCategories = ['All'];
+                }
+            }
             renderLocations();
         });
     });
+
+    buildMultiSelectUI('group-select');
+    buildMultiSelectUI('member-select');
+    buildMultiSelectUI('country-select');
+    wireMultiSelectOnce('group-select');
+    wireMultiSelectOnce('member-select');
+    wireMultiSelectOnce('country-select');
 
     if(!groupSelect._hasListener) {
         groupSelect._hasListener = true;
@@ -4193,8 +4334,11 @@ window.resetMapFilters = function () {
     const groupSelect = document.getElementById('group-select');
     const yearSelect = document.getElementById('year-select');
     if (!groupSelect) return;
-    groupSelect.value = 'All';
-    if (yearSelect) yearSelect.value = 'All';
+    Array.from(groupSelect.options).forEach(o => { o.selected = (o.value === 'All'); });
+    if (yearSelect) {
+        Array.from(yearSelect.options).forEach(o => { o.selected = (o.value === 'All'); });
+        buildMultiSelectUI('year-select');
+    }
     verifiedFilterMode = 'all';
     const verifiedBtn = document.getElementById('verified-filter-btn');
     if (verifiedBtn) verifiedBtn.classList.remove('active');
@@ -4275,12 +4419,25 @@ function renderLocations(skipFitBounds) {
     const unlockedGroups = getUnlockedGroups();
     let availableLocs = celebLocations.filter(loc => unlockedGroups.includes(loc.group));
 
-    const fGroup = groupSelect.value, fMember = memberSelect.value, fYear = yearSelect.value, fCountry = countrySelect.value, searchTerm = searchInput.value.toLowerCase();
+    // Multi-sélection (demande du 23/09/2026) : chaque filtre est désormais une liste de
+    // valeurs (getMultiValues(), voir plus haut) plutôt qu'une seule — "OR" entre les
+    // valeurs d'un même filtre (ex: Group = BTS OU Blackpink), "AND" entre les filtres
+    // (Group ET Member ET Year...), exactement comme avant pour un seul choix par filtre.
+    const fGroups = getMultiValues(groupSelect), fMembers = getMultiValues(memberSelect),
+          fYears = getMultiValues(yearSelect), fCountries = getMultiValues(countrySelect),
+          searchTerm = searchInput.value.toLowerCase();
 
     const filteredLocations = availableLocs.filter(loc => {
-        return (fGroup === "All" || loc.group === fGroup) && (fMember === "All" || loc.member === fMember || loc.member === "All") &&
-               (activeCategory === "All" || loc.category === activeCategory) && (fYear === "All" || loc.year === fYear) &&
-               (fCountry === "All" || loc.country === fCountry) && (loc.name.toLowerCase().includes(searchTerm) || (loc.city && loc.city.toLowerCase().includes(searchTerm))) &&
+        // loc.year peut contenir plusieurs années séparées par une virgule (demande du
+        // 13/09/2026 côté admin, voir collectYearCheckboxValue()) — un lieu y correspond
+        // dès qu'UNE de ses années fait partie des années sélectionnées ici.
+        const locYears = (loc.year || '').split(',').map(y => y.trim()).filter(Boolean);
+        return (fGroups.includes("All") || fGroups.includes(loc.group)) &&
+               (fMembers.includes("All") || fMembers.includes(loc.member) || loc.member === "All") &&
+               (activeCategories.includes("All") || activeCategories.includes(loc.category)) &&
+               (fYears.includes("All") || locYears.some(y => fYears.includes(y))) &&
+               (fCountries.includes("All") || fCountries.includes(loc.country)) &&
+               (loc.name.toLowerCase().includes(searchTerm) || (loc.city && loc.city.toLowerCase().includes(searchTerm))) &&
                // Filtre "Verified"/"Unverified" (demande du 15/09/2026, admin uniquement,
                // étendu le 21/09/2026) — sans effet pour un visiteur normal
                // (verifiedFilterMode ne peut jamais quitter 'all' en dehors des boutons
@@ -4408,6 +4565,7 @@ function showMapHoverTip(loc, marker) {
     const artistEl = document.getElementById('map-hover-tip-artist');
     const titleEl = document.getElementById('map-hover-tip-title');
     const metaEl = document.getElementById('map-hover-tip-meta');
+    const detailBtn = document.getElementById('map-hover-tip-detail-btn');
     if (!tip || !iconEl || !artistEl || !titleEl || !metaEl) return;
 
     const baseColor = groupColors[loc.group] || '#334e68';
@@ -4418,6 +4576,15 @@ function showMapHoverTip(loc, marker) {
     artistEl.textContent = (loc.member && loc.member !== 'All') ? `${loc.group} · ${loc.member}` : (loc.group || '');
     titleEl.textContent = loc.name || '';
     metaEl.textContent = [loc.category, [loc.city, loc.country].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
+    // Bouton "Voir" (mobile uniquement, voir CSS) — saute directement au détail sans
+    // attendre un 2e tap sur le marqueur.
+    if (detailBtn) {
+        detailBtn.onclick = (e) => {
+            e.stopPropagation();
+            hideMapHoverTip();
+            window.openDetailsPanel(loc.id);
+        };
+    }
 
     positionMapHoverTip(marker);
     tip.classList.add('open');
@@ -4425,6 +4592,17 @@ function showMapHoverTip(loc, marker) {
 function hideMapHoverTip() {
     const tip = document.getElementById('map-hover-tip');
     if (tip) tip.classList.remove('open');
+    mobileTapArmedLocId = null;
+}
+
+// Tap-tap mobile (demande du 23/09/2026) : sur mobile un 1er tap sur un marqueur affiche la
+// bulle (avec un bouton "Voir" pour aller directement au détail), un 2e tap sur le MÊME
+// marqueur ouvre le détail directement — mémorise l'id du lieu dont la bulle est
+// actuellement ouverte via un tap (remis à null par hideMapHoverTip() ci-dessus, donc
+// aussi bien au déplacement/zoom de la carte (voir plus bas) qu'à un tap ailleurs).
+let mobileTapArmedLocId = null;
+function isMobileMapViewport() {
+    return !!(window.matchMedia && window.matchMedia('(max-width: 760px)').matches);
 }
 
 function addSingleLocationMarker(loc) {
@@ -4443,7 +4621,23 @@ function addSingleLocationMarker(loc) {
     const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markerGroup);
     marker.__locId = loc.id;
     marker.__baseColor = baseColor;
-    marker.on('click', () => window.openDetailsPanel(loc.id));
+    // Tap-tap mobile (demande du 23/09/2026) : 1er tap = bulle résumé (nom/groupe/membre,
+    // voir showMapHoverTip) + bouton "Voir", 2e tap sur le MÊME marqueur = détail
+    // directement — reprend le comportement desktop (survol = bulle, clic = détail)
+    // inchangé, voir isMobileMapViewport().
+    marker.on('click', () => {
+        if (isMobileMapViewport()) {
+            if (mobileTapArmedLocId === loc.id) {
+                hideMapHoverTip();
+                window.openDetailsPanel(loc.id);
+            } else {
+                mobileTapArmedLocId = loc.id;
+                showMapHoverTip(loc, marker);
+            }
+            return;
+        }
+        window.openDetailsPanel(loc.id);
+    });
     marker.on('mouseover', () => showMapHoverTip(loc, marker));
     marker.on('mouseout', () => hideMapHoverTip());
 }
@@ -7275,7 +7469,7 @@ window.openDetailsPanel = function(id) {
 
 // Catégories pour lesquelles on demande, en plus de la note générale, une note de
 // qualité de la nourriture et de rapport qualité/prix (demande du 06/09/2026).
-const FOOD_RELATED_CATEGORIES = ['Cafe', 'Restaurants'];
+const FOOD_RELATED_CATEGORIES = ['Cafe', 'Restaurant'];
 
 // Widget d'étoiles générique : plusieurs coexistent maintenant dans le formulaire "I
 // visited this place" (note générale + food/valeur pour les Cafe/Restaurants), tous
@@ -8316,15 +8510,15 @@ function estimateTransitLeg(fromLoc, toLoc) {
 // qu'un café) plutôt qu'un créneau fixe unique pour tous, comme c'était le cas avant.
 const ITI_CATEGORY_PROFILE = {
     'Cafe':         { openHour: 8,  closeHour: 20, visitMinutes: 45 },
-    'Restaurants':  { openHour: 11, closeHour: 22, visitMinutes: 75 },
-    'Museums':      { openHour: 10, closeHour: 18, visitMinutes: 100 },
+    'Restaurant':   { openHour: 11, closeHour: 22, visitMinutes: 75 },
+    'Museum':       { openHour: 10, closeHour: 18, visitMinutes: 100 },
     'Pop-up Store': { openHour: 10, closeHour: 20, visitMinutes: 45 },
     'Fashion':      { openHour: 10, closeHour: 20, visitMinutes: 40 },
-    'Concerts':     { openHour: 9,  closeHour: 19, visitMinutes: 30 },
+    'Concert':      { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'Run BTS':      { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'Bon Voyage':   { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'MV Location':  { openHour: 9,  closeHour: 19, visitMinutes: 30 },
-    'Landmarks':    { openHour: 9,  closeHour: 19, visitMinutes: 40 }
+    'Landmark':     { openHour: 9,  closeHour: 19, visitMinutes: 40 }
 };
 const ITI_DEFAULT_PROFILE = { openHour: 9, closeHour: 19, visitMinutes: 45 };
 function getCategoryProfile(cat) { return ITI_CATEGORY_PROFILE[cat] || ITI_DEFAULT_PROFILE; }

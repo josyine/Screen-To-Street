@@ -420,13 +420,30 @@
      positionnée par addSingleLocationMarker() dans script.js. */
   .map-hover-tip { position: absolute; z-index: 1500; pointer-events: none; display: none; transform: translate(-50%, calc(-100% - 14px)); }
   .map-hover-tip.open { display: block; }
-  .map-hover-tip-card { background: #fff; border-radius: 12px; padding: 10px 12px; box-shadow: 0 12px 28px rgba(0,0,0,.22); display: flex; align-items: center; gap: 10px; max-width: 230px; position: relative; }
+  .map-hover-tip-card { background: #fff; border-radius: 12px; padding: 10px 12px; box-shadow: 0 12px 28px rgba(0,0,0,.22); max-width: 230px; position: relative; }
   .map-hover-tip-arrow { position: absolute; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); bottom: -5px; left: 50%; margin-left: -6px; box-shadow: 3px 3px 6px rgba(0,0,0,.05); }
+  .map-hover-tip-body { display: flex; align-items: center; gap: 10px; }
   .map-hover-tip-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .map-hover-tip-icon svg { width: 16px; height: 16px; }
   .map-hover-tip-artist { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
   .map-hover-tip-title { font-size: 12.5px; font-weight: 800; color: var(--text-main); line-height: 1.3; }
   .map-hover-tip-meta { font-size: 10.5px; color: var(--muted-text); margin-top: 2px; }
+  /* Bouton "Voir" dans la bulle (demande du 23/09/2026, tap-tap mobile : 1er tap = bulle
+     résumé, bouton pour aller directement au détail ; 2e tap sur le même marqueur = détail
+     directement) — masqué sur desktop où la bulle reste un pur survol sans interaction. */
+  .map-hover-tip-detail-btn { display: none; }
+  @media (max-width: 760px) {
+      /* pointer-events réactivé uniquement sur mobile : sur desktop la bulle doit rester
+         non cliquable (voir la note de .map-hover-tip plus haut, mouseout du marqueur). */
+      .map-hover-tip { pointer-events: auto; }
+      .map-hover-tip-detail-btn {
+          display: block; width: 100%; margin-top: 8px; border: none; border-radius: 8px;
+          background: var(--brand-gradient, linear-gradient(135deg, #8b5cf6, #D42759));
+          color: #fff; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 700;
+          padding: 7px 0; cursor: pointer;
+      }
+      .map-hover-tip-card { max-width: 200px; }
+  }
 
   /* Bulle "qu'est-ce qui s'est passé ce jour-là" du calendrier Live (demande du
      11/09/2026) — même principe que .map-hover-tip ci-dessus (carte + petite flèche),
@@ -546,28 +563,51 @@
                         <button type="button" id="reset-filters-btn" class="reset-filters-btn" title="Reset filters" onclick="if(window.resetMapFilters) window.resetMapFilters();">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H9L4.5 15.5a2 2 0 0 1 0-2.8L13.7 3.5a2 2 0 0 1 2.8 0l5.5 5.5a2 2 0 0 1 0 2.8L14 20"/><path d="M18 13.5 8.5 4"/></svg>
                         </button>
+                        <!-- Filtres GROUP/MEMBER/AREA/YEAR passés en multi-sélection (demande du
+                             23/09/2026, "ajoute la multi sélection pour tous les filtres" + "je
+                             veux qu'il n'y ait qu'une année en sélection" pour YEAR — comprendre
+                             une seule année PAR OPTION, plus la plage groupée "2013 - 2017"
+                             supprimée, mais plusieurs années restent sélectionnables ensemble).
+                             Chaque <select multiple> ci-dessous reste la source de vérité (options
+                             peuplées exactement comme avant par initializeFilters(), voir script.js)
+                             mais est masqué visuellement : window.buildMultiSelectUI()/
+                             wireMultiSelectOnce() (script.js) le pilotent depuis un petit bouton +
+                             panneau de cases à cocher, en ne faisant que (dé)cocher les <option> et
+                             redéclencher un évènement 'change' natif dessus — tout le reste
+                             (initializeFilters/renderLocations/resetMapFilters) continue de lire
+                             ces <select> normalement, juste avec plusieurs options sélectionnées. -->
                         <div class="filters-grid">
-                            <div>
+                            <div class="multi-select-field">
                                 <div class="filter-item-label" data-i18n="filterGroup">GROUP</div>
-                                <select id="group-select" class="filter-select"></select>
+                                <select id="group-select" class="filter-select hidden" multiple></select>
+                                <button type="button" class="multi-select-btn" data-target="group-select"><span class="msb-label"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                                <div class="multi-select-panel hidden" data-target="group-select"></div>
                             </div>
-                            <div>
+                            <div class="multi-select-field">
                                 <div class="filter-item-label" data-i18n="filterMember">MEMBER</div>
-                                <select id="member-select" class="filter-select"></select>
+                                <select id="member-select" class="filter-select hidden" multiple></select>
+                                <button type="button" class="multi-select-btn" data-target="member-select"><span class="msb-label"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                                <div class="multi-select-panel hidden" data-target="member-select"></div>
                             </div>
-                            <div>
+                            <div class="multi-select-field">
                                 <div class="filter-item-label" data-i18n="filterArea">AREA</div>
-                                <select id="country-select" class="filter-select"></select>
+                                <select id="country-select" class="filter-select hidden" multiple></select>
+                                <button type="button" class="multi-select-btn" data-target="country-select"><span class="msb-label"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                                <div class="multi-select-panel hidden" data-target="country-select"></div>
                             </div>
-                            <div>
+                            <div class="multi-select-field">
                                 <div class="filter-item-label" data-i18n="filterYear">YEAR</div>
-                                <select id="year-select" class="filter-select">
-                                    <option value="All" data-i18n="allYears">All Years</option>
+                                <select id="year-select" class="filter-select hidden" multiple>
+                                    <option value="All" data-i18n="allYears" selected>All Years</option>
                                     <option value="2026">2026</option><option value="2023">2023</option>
                                     <option value="2021">2021</option><option value="2020">2020</option>
                                     <option value="2019">2019</option><option value="2018">2018</option>
-                                    <option value="2017">2017</option><option value="2013 - 2017">2013 - 2017</option>
+                                    <option value="2017">2017</option><option value="2016">2016</option>
+                                    <option value="2015">2015</option><option value="2014">2014</option>
+                                    <option value="2013">2013</option>
                                 </select>
+                                <button type="button" class="multi-select-btn" data-target="year-select"><span class="msb-label"></span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                                <div class="multi-select-panel hidden" data-target="year-select"></div>
                             </div>
                         </div>
                         <!-- Filtre "Verified" (demande du 15/09/2026, admin uniquement, étendu
@@ -1209,12 +1249,18 @@
         <div class="map-hover-tip" id="map-hover-tip">
             <div class="map-hover-tip-card">
                 <div class="map-hover-tip-arrow"></div>
-                <div class="map-hover-tip-icon" id="map-hover-tip-icon"></div>
-                <div>
-                    <div class="map-hover-tip-artist" id="map-hover-tip-artist"></div>
-                    <div class="map-hover-tip-title" id="map-hover-tip-title"></div>
-                    <div class="map-hover-tip-meta" id="map-hover-tip-meta"></div>
+                <div class="map-hover-tip-body">
+                    <div class="map-hover-tip-icon" id="map-hover-tip-icon"></div>
+                    <div>
+                        <div class="map-hover-tip-artist" id="map-hover-tip-artist"></div>
+                        <div class="map-hover-tip-title" id="map-hover-tip-title"></div>
+                        <div class="map-hover-tip-meta" id="map-hover-tip-meta"></div>
+                    </div>
                 </div>
+                <!-- Bouton "Voir le détail" (demande du 23/09/2026) : mobile uniquement (voir
+                     .map-hover-tip-detail-btn en CSS) — sur desktop la bulle reste un simple
+                     résumé au survol, cliquer le marqueur ouvre directement le détail. -->
+                <button type="button" class="map-hover-tip-detail-btn" id="map-hover-tip-detail-btn" data-i18n="viewDetails">View</button>
             </div>
         </div>
         <div id="map-loading-overlay" class="map-loading-overlay hidden">
