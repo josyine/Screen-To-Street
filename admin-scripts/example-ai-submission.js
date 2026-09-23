@@ -362,6 +362,11 @@ exacte pour chaque évènement :
 }
 
 (async function main() {
-    await runAgent();
+    // runAgent() (propositions de LIEUX) mis en pause (demande du 23/09/2026, "j'en ai
+    // déjà 330" dans locationSubmissions) : la queue de relecture admin.html est déjà
+    // largement remplie, plus besoin d'en ajouter automatiquement 4x/jour pour le moment.
+    // Pour reprendre : décommente simplement l'appel ci-dessous, rien d'autre à changer
+    // (le planning .github/workflows/ai-agent.yml n'a pas besoin d'être touché).
+    // await runAgent();
     await runLiveEventAgent();
 })();
