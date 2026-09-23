@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-23T17:55:21.933Z.
+// Généré le 2026-09-23T22:25:46.601Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -2784,19 +2784,19 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "city": "Seoul",
     "category": "Restaurant",
-    "year": "2015",
-    "address": "Sinsa-dong, Gangnam-gu",
-    "lat": 37.5178,
-    "lng": 127.0201,
-    "img": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600",
+    "year": "2017",
+    "address": "22 Bongeunsa-ro 4-gil, Yeoksam-dong, Gangnam-gu, Séoul",
+    "lat": 37.5034,
+    "lng": 127.02645,
+    "img": "images/admin-upload-53-photo.jpg",
     "fullDescription": {
-      "en": "<p>Decorated to look exactly like what its name promises — vintage washing machines built into the walls, laundry baskets repurposed as light fixtures — this Gangnam pizzeria became a permanent part of BTS lore the moment it was chosen as the backdrop for the group's photoshoot for The Most Beautiful Moment in Life, Pt.2 (the \"Her\" version), all soft lighting and oversized sweaters against the laundromat kitsch.</p><p>The pizza itself is genuinely good, which helps, but most visitors are really there to stand in the same corner booth from the album photos, tracing the exact angle the camera used, before ordering something to justify the table.</p>",
-      "fr": "<p>Décorée exactement comme son nom le promet — de vieilles machines à laver encastrées dans les murs, des paniers à linge reconvertis en luminaires — cette pizzeria de Gangnam est entrée durablement dans la légende de BTS le jour où elle a été choisie comme décor pour le photoshoot de l'album The Most Beautiful Moment in Life, Pt.2 (version « Her »), lumière douce et pulls surdimensionnés sur fond de kitsch de laverie.</p><p>La pizza est réellement bonne, ce qui aide, mais la plupart des visiteurs viennent surtout se poster dans le même coin banquette que sur les photos de l'album, en retrouvant l'angle exact de la caméra, avant de commander quelque chose pour justifier la table.</p>"
+      "fr": "<p>Décorée exactement comme son nom le promet — de vieilles machines à laver encastrées dans les murs, des paniers à linge reconvertis en luminaires — cette pizzeria de Gangnam est entrée durablement dans la légende de BTS le jour où elle a été choisie comme décor pour le photoshoot de l'album The Most Beautiful Moment in Life, Pt.2 (version « Her »), lumière douce et pulls surdimensionnés sur fond de kitsch de laverie.</p><p>La pizza est réellement bonne, ce qui aide, mais la plupart des visiteurs viennent surtout se poster dans le même coin banquette que sur les photos de l'album, en retrouvant l'angle exact de la caméra, avant de commander quelque chose pour justifier la table.</p>",
+      "en": "<p>Hidden in the vibrant neighborhoods of Gangnam, this unique spot was creatively designed to look exactly like a classic retro laundromat—complete with vintage washing machines built straight into the walls and laundry baskets repurposed as chic light fixtures. Beneath the playful laundromat kitsch lies a cozy pizzeria and café that quickly captured the public's imagination for its quirky, photogenic interior design.</p><!--stss:footsteps--><p>This location became a permanent fixture of BTS history and fandom lore when it was chosen as the backdrop for the group's official concept photoshoot for The Most Beautiful Moment in Life, Pt. 2 (specifically the \"Her\" version). In these iconic photos, the members posed amidst the washing machines wearing soft lighting, oversized knit sweaters, and casual streetwear, perfectly embodying the bittersweet, youthful aesthetic of the HYYH era. Visiting this space lets ARMYs step directly into one of the most beloved visual chapters of BTS's career.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Ask for the corner booth"
+          "en": "Ask for the corner baooth"
         },
         "text": {
           "en": "The corner booth used in the photoshoot is the most requested table — arrive off-peak (early afternoon) if you specifically want to sit there."
@@ -2809,6 +2809,14 @@ window.STATIC_LOCATIONS = [
         "text": {
           "en": "The corner booth was the exact backdrop for the group's HYYH Pt.2 'Her' photoshoot — worth tracing the same camera angle before you order."
         }
+      },
+      {
+        "title": {
+          "en": "Explore Gangnam's Hidden Gems"
+        },
+        "text": {
+          "en": "Combine your stop here with a walk through the surrounding streets of Gangnam to discover other local cafes and creative spaces frequented by artists and locals alike."
+        }
       }
     ],
     "directions": {
@@ -2818,7 +2826,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The corner booth used in the photoshoot is the most requested table — arrive off-peak (early afternoon) if you specifically want to sit there.",
       "fr": "La banquette d'angle utilisée pour le photoshoot est la table la plus demandée — venez en heure creuse (début d'après-midi) si vous tenez à vous y installer."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 9 or Shinbundang Line to Sinnonhyeon Station (Exit 5), then walk a short distance down Bongeunsa-ro 4-gil."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily for dining (typically from around 11:30 AM to 10:30 PM). Free admission (food or drink purchase expected)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Street-level access in an urban Seoul commercial block with standard indoor restaurant seating."
+        }
+      }
+    ],
+    "officialLink": "https://www.instagram.com/laundrypizza/?hl=fr",
+    "episodeLink": "https://thekoreanlass.wordpress.com/2018/04/07/laundry-pizza/",
+    "recreatedPhotos": [
+      "images/admin-upload-53-recreated-0.jpg"
+    ],
+    "tweetUrl": "https://x.com/bighit_music/status/905808192906551296?s=46"
   },
   {
     "id": 54,
@@ -3640,50 +3692,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
-  },
-  {
-    "id": 69,
-    "name": "Dongjak Bridge",
-    "group": "BTS",
-    "member": "V",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "Fashion",
-    "year": "2015",
-    "address": "Dongjak Bridge",
-    "lat": 37.5085,
-    "lng": 126.972,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
-    "fullDescription": {
-      "en": "<p>Officially featured later in the Love Yourself era highlight reels, Dongjak Bridge was already a frequent backdrop for early Big Hit visual tests and vlogs.</p><p>The bridge's striking blue architecture and train tracks running down its middle create a cinematic, nostalgic atmosphere deeply tied to the HYYH era's visual identity.</p>",
-      "fr": "<p>Mise en avant plus tard dans les images de l'ère Love Yourself, la passerelle de Dongjak servait déjà de décor récurrent pour les premiers essais visuels et vlogs de Big Hit.</p><p>L'architecture bleue frappante du pont et les voies ferrées qui le traversent en son centre créent une atmosphère cinématographique et nostalgique, étroitement liée à l'identité visuelle de l'ère HYYH.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Go at sunset"
-        },
-        "text": {
-          "en": "Visit in the late afternoon — the light here at sunset is unbeatable for photography."
-        }
-      },
-      {
-        "title": {
-          "en": "Look for the train tracks"
-        },
-        "text": {
-          "en": "The bridge's train tracks running down its middle, alongside its striking blue architecture, are what gave it the nostalgic, cinematic look tied to the HYYH era."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Take Line 4 or 9 to Dongjak Station; the bridge's observatory cafés on the towers are also worth a stop.",
-      "fr": "Prenez la ligne 4 ou 9 jusqu'à la station Dongjak ; les cafés-belvédères installés sur les tours du pont valent aussi le détour."
-    },
-    "tip": {
-      "en": "Visit in the late afternoon — the light here at sunset is unbeatable for photography.",
-      "fr": "Venez en fin d'après-midi — la lumière du coucher de soleil y est idéale pour la photographie."
-    }
   },
   {
     "id": 70,
@@ -5498,37 +5506,45 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 108,
-    "name": "Nodeul Island",
+    "name": "Dongjak Bridge",
     "group": "BTS",
-    "member": "Namjoon",
+    "member": "V",
     "country": "South Korea",
     "city": "Seoul",
-    "category": "Fashion",
+    "category": "MV Location",
     "year": "2017",
-    "ytId": "7VPje5VvYfk",
-    "address": "445 Yangnyeong-ro, Yongsan-gu",
-    "lat": 37.5175,
-    "lng": 126.9575,
-    "img": "https://img.youtube.com/vi/7VPje5VvYfk/hqdefault.jpg",
+    "ytId": "",
+    "address": "Dongjak-daero, Dongjak-gu / Yongsan-gu, Seoul, South Korea",
+    "lat": 37.5114,
+    "lng": 126.9836,
+    "img": "images/admin-upload-108-photo.jpg",
     "fullDescription": {
-      "en": "<p>In the dramatic Love Yourself highlight reels, RM's storyline features him riding a bus and watching a girl drop her hair tie, before getting off at a bus stop on a bridge — a scene filmed on the Hangang Bridge, right at the entrance to Nodeul Island.</p><p>The island itself is a lovely place to relax, and fans love recreating Namjoon's pensive bus-stop look before heading down to its grassy riverbanks to listen to his solo music.</p>",
-      "fr": "<p>Dans les dramatiques Love Yourself highlight reels, l'histoire de RM le montre dans un bus, regardant une jeune femme laisser tomber son élastique à cheveux, avant de descendre à un arrêt sur un pont — une scène tournée sur le pont Hangang, juste à l'entrée de l'île de Nodeul.</p><p>L'île elle-même est un endroit charmant pour se détendre, et les fans adorent recréer le regard pensif de Namjoon à l'arrêt de bus avant de descendre vers les berges herbeuses pour écouter sa musique en solo.</p>"
+      "fr": "<p>Dans les dramatiques Love Yourself highlight reels, l'histoire de RM le montre dans un bus, regardant une jeune femme laisser tomber son élastique à cheveux, avant de descendre à un arrêt sur un pont — une scène tournée sur le pont Hangang, juste à l'entrée de l'île de Nodeul.</p><p>L'île elle-même est un endroit charmant pour se détendre, et les fans adorent recréer le regard pensif de Namjoon à l'arrêt de bus avant de descendre vers les berges herbeuses pour écouter sa musique en solo.</p>",
+      "en": "<p>The Dongjak Bridge is a prominent multi-level bridge crossing the Han River in Seoul, connecting the Dongjak and Yongsan districts. Famous not only in the K-Pop world but also as a beloved setting in numerous K-Dramas, it is uniquely designed with pedestrian walkways and rooftop observation cafes (Noeul Cafe and Dubureu Cafe) right above the river, offering sweeping panoramic views of Seoul's skyline, river traffic, and stunning sunsets.</p><!--stss:footsteps--><p>This bridge holds an unforgettable place in ARMY history. It served as the exact location where V (Kim Taehyung) shot his iconic concept photo for the Love Yourself: Her album rollout in 2017. In the poignant teaser image, an innocent-looking V is captured sitting on the bridge after a fresh rain, deep in thought as he gazes down at his shadow reflected in the puddles. Visiting Dongjak Bridge allows fans to step straight into one of the most beloved visual eras of BTS history.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Find the exact bus stop"
+          "en": "Recreate V's Iconic Pose"
         },
         "text": {
-          "en": "The actual bus stop used in the video sits right on the bridge, near the island's entrance."
+          "en": "Find a spot along the pedestrian walkway to recreate V's thoughtful pose, especially right after a rain shower when the wet pavement mirrors his famous album teaser."
         }
       },
       {
         "title": {
-          "en": "Head down to the riverbank"
+          "en": "Visit the Bridge Cafes"
         },
         "text": {
-          "en": "Beyond the bus-stop scene, Nodeul Island's grassy riverbanks are a genuinely relaxing spot to sit with RM's solo music, much as fans describe doing after finding the bus stop."
+          "en": "Head up to the observation cafes built directly into the bridge structures (such as the sunset cafes) for a cozy cup of coffee while looking out over the Han River."
+        }
+      },
+      {
+        "title": {
+          "en": "Catch the Golden Hour"
+        },
+        "text": {
+          "en": "Plan your visit around late afternoon to watch an incredible sunset over the water, transforming the Seoul skyline into the golden hues seen throughout BTS's media."
         }
       }
     ],
@@ -5539,7 +5555,50 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The actual bus stop used in the video sits right on the bridge, near the island's entrance.",
       "fr": "L'arrêt de bus réellement utilisé dans le clip se trouve juste sur le pont, près de l'entrée de l'île."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "https://annyeongindia.com/top-5-places-for-bts-army-to-visit-in-south-korea/",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 4 to Dongjak Station, which features exits directly connected to the bridge and its riverside walking paths."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor pedestrian walkways along the bridge are accessible 24/7. The observation cafes have independent operating hours, typically from mid-morning to late evening."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Equipped with stairs and elevator access points from the subway station level up to the pedestrian walkways on the bridge."
+        }
+      }
+    ],
+    "imgCredit": "张元柏 / CC BY-SA 3.0",
+    "officialLink": "https://en.wikipedia.org/wiki/Dongjak_Bridge",
+    "recreatedPhotos": [
+      "images/admin-upload-108-recreated-0.jpg"
+    ],
+    "tweetUrl": "https://x.com/bighit_music/status/895993210316533760?s=46"
   },
   {
     "id": 109,
@@ -13755,66 +13814,64 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-JkEgRxLK90D3OHJYU7gs",
-    "name": "Pont Neuf",
+    "name": "Maison de l'UNESCO",
     "group": "BTS",
     "member": "J-Hope",
     "country": "France",
     "city": "Paris",
     "category": "Fashion",
     "year": "2023",
-    "address": "Pont Neuf, 75001 Paris, France",
-    "lat": 48.857,
-    "lng": 2.3413,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Pont_Neuf_Paris.jpg",
+    "address": "7 Place de Fontenoy, 75007 Paris, France",
+    "lat": 48.8504,
+    "lng": 2.3085,
+    "img": "images/admin-upload-new-JkEgRxLK90D3OHJYU7gs-photo.jpg",
     "addedAt": 1790111459055,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Pont Neuf is the oldest standing bridge across the river Seine in Paris, France. Constructed between 1578 and 1607, the stone arch bridge connects the Left and Right Banks of Paris while passing across the western tip of the Île de la Cité. Featuring 12 stone arches and ornamental mascaron carvings, Pont Neuf is designated as an official French historic monument and part of the UNESCO World Heritage Banks of the Seine. It stands directly in front of the historic La Samaritaine department store and Louis Vuitton global headquarters, making it a symbolic crossroads of Parisian history and luxury fashion.</p><p>In June 2023, Pont Neuf was entirely transformed into an exclusive gold-paved runway for Pharrell Williams' debut Louis Vuitton Men's Spring-Summer 2024 collection. BTS member J-Hope, who served as a House Ambassador for Louis Vuitton, was among the primary superstar guests invited to Paris to attend the historic open-air fashion event. Photographs and videos of J-Hope at Pont Neuf circulated worldwide, showcasing his tailored outfit against the sunset over the Seine. The bridge remains a key Paris landmark for fans interested in BTS's global fashion influence.</p>"
-    },
-    "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "pinterestUrl": "",
     "tipsList": [
       {
         "title": {
-          "en": "Best photo vantage point"
+          "en": "Trace j-hope's Arrival Route"
         },
         "text": {
-          "en": "Walk down to Square du Vert-Galant at the tip of Île de la Cité for a view of the stone arches from water level."
+          "en": "Walk around the grand plaza area of Place de l'Fontenoy where fans and photographers gathered to catch a glimpse of j-hope as he stepped out for the show."
         }
       },
       {
         "title": {
-          "en": "Evening walk"
+          "en": "Appreciate the Architecture"
         },
         "text": {
-          "en": "Visit at dusk when the streetlamps illuminate the bridge arches, reflecting golden lights across the Seine."
+          "en": "Take time to admire the unique modernist design and monumental outdoor sculptures that decorate the UNESCO headquarters grounds."
         }
       },
       {
         "title": {
-          "en": "Nearby attractions"
+          "en": "Combine with Paris Landmarks"
         },
         "text": {
-          "en": "Combine your walk with a visit to La Samaritaine across the street or the nearby Sainte-Chapelle."
+          "en": "Located in the 7th arrondissement, the site is just a short distance from other iconic Parisian landmarks like the Eiffel Tower and the École Militaire."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.paris.fr/",
+    "fullDescription": {
+      "en": "<p>The Maison de l'UNESCO (UNESCO Headquarters), located at 7 Place de Fontenoy in Paris's 7th arrondissement, serves as the global administrative center for the United Nations Educational, Scientific and Cultural Organization. Beyond its diplomatic significance, the striking modernist architectural complex—featuring works by renowned international architects and artists like Picasso and Calder—frequently plays host to major cultural exhibitions and prestigious fashion events. On January 21, 2023, during Paris Fashion Week Menswear Fall/Winter 2023-2024, the venue transformed into the high-fashion runway for the Hermès menswear collection presentation.</p><!--stss:footsteps--><p>This iconic architectural landmark became a massive focal point for global media and the fandom when j-hope (Jung Hoseok) attended the Hermès runway show as an invited guest of honor. Dressed in a sophisticated, stylish ensemble from the luxury house, j-hope's arrival caused immense excitement outside the venue, drawing roaring crowds of international fans and flashing cameras. His front-row appearance at the Hermès presentation underscored his rising status as a global fashion icon and added UNESCO's headquarters to the map of essential BTS Parisian landmarks.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Paris Métro Line 7 directly to Pont Neuf station, or lines 1, 4, 7, 11, 14 to Châtelet station."
+          "en": "Take Paris Métro Line 6 to Cambronne or Ségur, or Line 10 to École Militaire, followed by a short walk to Place de l'Fontenoy."
         }
       },
       {
@@ -13822,7 +13879,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "As an active international diplomatic headquarters, the interior grounds and buildings are generally restricted to official delegates, pre-booked guided tours, or special cultural exhibition attendees. Exterior views of the plaza are accessible from the street."
         }
       },
       {
@@ -13830,12 +13887,18 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Modern architectural compound featuring flat surrounding plazas and accessible pathways, though interior access rules follow strict security guidelines."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "tiktokUrl": "https://www.tiktok.com/@lucy.dimitrova/video/7191260921631689990",
+    "ytId": "uM10H8LfaWU",
+    "episodeLink": "https://kpopping.com/kpics/230122-BTS-J-hope-at-the-Hermes-Paris-Men-s-Winter-2023-show",
+    "officialLink": "https://house.unesco.org/fr/visit-us",
+    "recreatedPhotos": [
+      "images/admin-upload-new-JkEgRxLK90D3OHJYU7gs-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "address": "54 Samcheong-ro, Jongno-gu, Seoul, South Korea",
@@ -14269,12 +14332,12 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "episodeLink": "",
     "instagramUrl": "",
-    "fullDescription": {
-      "en": "<p>Located at 76 Rue de Turenne in the vibrant Marais district, Perrotin Gallery is one of the most prestigious and influential contemporary art galleries in the world. Founded by Emmanuel Perrotin in 1990 when he was only 21 years old, the gallery has played a pivotal role in launching and supporting the careers of iconic contemporary artists such as Takashi Murakami, Maurizio Cattelan, and JR.</p><p>The Rue de Turenne location is set within a magnificent historic Parisian architectural environment, a stunning 18th, century complex featuring classic wrought-iron staircases, stately stone architecture, and classic moldings that effortlessly bridge historic Parisian heritage with cutting-edge modern art exhibitions.</p><p>In June 2019, Jimin traveled to Paris alongside the other members of BTS for their massive, sold-out concerts at the Stade de France during the Love Yourself: Speak Yourself world tour. Taking advantage of their stay in the French capital, Jimin visited the renowned Perrotin Gallery in the Marais district.  He later shared a memorable photo of himself posing on the gallery's grand interior staircase, framed by its elegant wrought-iron railings and classical artwork. Since then, this picturesque spot has become a popular location for ARMYs visiting Paris who want to retrace Jimin's footsteps.</p>"
-    },
     "tiktokUrl": "",
     "ytId": "",
-    "imgCredit": "LPLT / Wikimedia Commons / CC BY-SA 3.0"
+    "imgCredit": "LPLT / Wikimedia Commons / CC BY-SA 3.0",
+    "fullDescription": {
+      "en": "<p>Located at 76 Rue de Turenne in the vibrant Marais district, Perrotin Gallery is one of the most prestigious and influential contemporary art galleries in the world. Founded by Emmanuel Perrotin in 1990 when he was only 21 years old, the gallery has played a pivotal role in launching and supporting the careers of iconic contemporary artists such as Takashi Murakami, Maurizio Cattelan, and JR.</p><!--stss:footsteps--><p>The Rue de Turenne location is set within a magnificent historic Parisian architectural environment, a stunning 18th, century complex featuring classic wrought-iron staircases, stately stone architecture, and classic moldings that effortlessly bridge historic Parisian heritage with cutting-edge modern art exhibitions.</p><p>In June 2019, Jimin traveled to Paris alongside the other members of BTS for their massive, sold-out concerts at the Stade de France during the Love Yourself: Speak Yourself world tour. Taking advantage of their stay in the French capital, Jimin visited the renowned Perrotin Gallery in the Marais district.  He later shared a memorable photo of himself posing on the gallery's grand interior staircase, framed by its elegant wrought-iron railings and classical artwork. Since then, this picturesque spot has become a popular location for ARMYs visiting Paris who want to retrace Jimin's footsteps.</p>"
+    }
   },
   {
     "id": "new-manual-1790110905270-romcnq",
@@ -14291,7 +14354,6 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-manual-1790110905270-romcnq-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "Chabe01 / CC BY-SA 4.0",
     "instagramUrls": [],
     "youtubeUrls": [],
     "tweetUrl": "https://x.com/BTS_twt/status/1179686404005101568?s=20",
@@ -14368,8 +14430,9 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "ytId": "",
     "fullDescription": {
-      "en": "<p>Located in the historic Le Marais district (4th arrondissement), Rue des Rosiers, literally \"Street of the Rosebushes\", is one of Paris's most iconic and culturally vibrant thoroughfares. Its name dates back to the 13th century, referring to the rosebushes that once grew along the inner side of the ancient city ramparts built under King Philip II Augustus.\nBy the 19th and early 20th centuries, the street became the beating heart of Parisian Jewish life (Pletzl, Yiddish for \"little place\"), welcoming successive waves of Jewish immigrants fleeing persecution in Eastern Europe, and later from North Africa in the mid-20th century. This rich heritage is reflected today in its traditional bakeries, bookshops, synagogues, and kosher eateries.\nAt No. 27 stands L'As du Fallafel, a world-renowned culinary institution founded in 1979 by Marianne and Yomi Peretz. Famous for its pita sandwiches packed with fried eggplant, falafel balls, hummus, and signature red sauce, it has become a global destination for food lovers and travelers visiting Paris.</p><p>In June 2019, BTS visited Paris for two sold-out Love Yourself: Speak Yourself stadium shows at the Stade de France on June 7–8. During his free time around the concerts, Jimin took the opportunity to explore the historic Le Marais neighborhood.</p><p>He strolled down Rue des Rosiers and stopped at number 27 to enjoy a famous falafel sandwich from L'As du Fallafel. Footage and photos of this moment were later shared in official BTS vlog content and social media posts later that summer (in August and October 2019), making 27 Rue des Rosiers a classic, iconic stop for ARMYs visiting Paris.</p>"
-    }
+      "en": "<p>Located in the historic Le Marais district (4th arrondissement), Rue des Rosiers, literally \"Street of the Rosebushes\", is one of Paris's most iconic and culturally vibrant thoroughfares. Its name dates back to the 13th century, referring to the rosebushes that once grew along the inner side of the ancient city ramparts built under King Philip II Augustus.\nBy the 19th and early 20th centuries, the street became the beating heart of Parisian Jewish life (Pletzl, Yiddish for \"little place\"), welcoming successive waves of Jewish immigrants fleeing persecution in Eastern Europe, and later from North Africa in the mid-20th century. This rich heritage is reflected today in its traditional bakeries, bookshops, synagogues, and kosher eateries.\nAt No. 27 stands L'As du Fallafel, a world-renowned culinary institution founded in 1979 by Marianne and Yomi Peretz. Famous for its pita sandwiches packed with fried eggplant, falafel balls, hummus, and signature red sauce, it has become a global destination for food lovers and travelers visiting Paris.</p><!--stss:footsteps--><p>In June 2019, BTS visited Paris for two sold-out Love Yourself: Speak Yourself stadium shows at the Stade de France on June 7–8. During his free time around the concerts, Jimin took the opportunity to explore the historic Le Marais neighborhood.</p><p>He strolled down Rue des Rosiers and stopped at number 27 to enjoy a famous falafel sandwich from L'As du Fallafel. Footage and photos of this moment were later shared in official BTS vlog content and social media posts later that summer (in August and October 2019), making 27 Rue des Rosiers a classic, iconic stop for ARMYs visiting Paris.</p>"
+    },
+    "imgCredit": "Chabe01 / Wikimedia Commons / CC BY-SA 4.0"
   },
   {
     "id": "new-manual-1790152668290-mpru8n",
@@ -14450,13 +14513,13 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "tiktokUrl": "",
     "ytId": "",
-    "fullDescription": {
-      "en": "<p>Located in the heart of the iconic Le Marais district (4th arrondissement), Rue Aubriot is a charming, narrow cobblestone street named after Hugues Aubriot, Provost of Paris during the reign of King Charles V in the 14th century. Tucked away between Rue Sainte-Croix de la Bretonnerie and Rue des Blancs-Manteaux, this street is renowned for its classic Haussmannian stone facades, elegant wrought-iron balconies, historic courtyards, and quiet Parisian neighborhood atmosphere.</p><p>In June 2019, during BTS’s stay in Paris for their Love Yourself: Speak Yourself concerts at the Stade de France, Jimin took time to explore the picturesque streets of Le Marais. He paused on Rue Aubriot to pose for a series of candid, aesthetic photos against the backdrop of its classic Parisian street corner and Haussmannian architecture.</p>"
-    },
     "recreatedPhotos": [
       "images/admin-upload-new-manual-1790152668290-mpru8n-recreated-0.jpg"
     ],
-    "imgCredit": "Chabe01 / Wikimedia Commons / CC BY-SA 4.0"
+    "imgCredit": "Chabe01 / Wikimedia Commons / CC BY-SA 4.0",
+    "fullDescription": {
+      "en": "<p>Located in the heart of the iconic Le Marais district (4th arrondissement), Rue Aubriot is a charming, narrow cobblestone street named after Hugues Aubriot, Provost of Paris during the reign of King Charles V in the 14th century. Tucked away between Rue Sainte-Croix de la Bretonnerie and Rue des Blancs-Manteaux, this street is renowned for its classic Haussmannian stone facades, elegant wrought-iron balconies, historic courtyards, and quiet Parisian neighborhood atmosphere.</p><!--stss:footsteps--><p>In June 2019, during BTS’s stay in Paris for their Love Yourself: Speak Yourself concerts at the Stade de France, Jimin took time to explore the picturesque streets of Le Marais. He paused on Rue Aubriot to pose for a series of candid, aesthetic photos against the backdrop of its classic Parisian street corner and Haussmannian architecture.</p>"
+    }
   },
   {
     "id": "new-manual-1790154825436-ei1raq",
@@ -14476,9 +14539,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "VVVCFFrance / CC BY-SA 4.0",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located at the intersection of the 3rd and 11th arrondissements near the Upper Marais, 1 Boulevard des Filles du Calvaire is a classic Parisian street corner situated on one of the grands boulevards built over the former Charles V city walls. The boulevard was named after a convent of Benedictine nuns founded in 1633. Today, this vibrant neighborhood is renowned for its trendy concept stores (such as Merci), art galleries, gourmet burger spots like Blend, and colorful street art murals that frequently adorn the facades along the boulevard.</p><p>In June 2019, while in Paris for BTS’s Love Yourself: Speak Yourself stadium tour, Jimin took a private stroll through the Marais district. He stopped at 1 Boulevard des Filles du Calvaire to pose next to an eye-catching street art mural created by the Los Angeles-based artist Kai (featuring his signature \"IF / Love\" character artwork).</p>"
-    },
     "tweetUrl": "https://x.com/BTS_twt/status/1179686404005101568?s=20",
     "recreatedPhotos": [
       "images/admin-upload-new-manual-1790154825436-ei1raq-recreated-0.jpg"
@@ -14537,7 +14597,16 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "tweetUrls": []
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "fullDescription": {
+      "en": "<p>Located at the intersection of the 3rd and 11th arrondissements near the Upper Marais, 1 Boulevard des Filles du Calvaire is a classic Parisian street corner situated on one of the grands boulevards built over the former Charles V city walls. The boulevard was named after a convent of Benedictine nuns founded in 1633. Today, this vibrant neighborhood is renowned for its trendy concept stores (such as Merci), art galleries, gourmet burger spots like Blend, and colorful street art murals that frequently adorn the facades along the boulevard.</p><!--stss:footsteps--><p>In June 2019, while in Paris for BTS’s Love Yourself: Speak Yourself stadium tour, Jimin took a private stroll through the Marais district. He stopped at 1 Boulevard des Filles du Calvaire to pose next to an eye-catching street art mural created by the Los Angeles-based artist Kai (featuring his signature \"IF / Love\" character artwork).</p>"
+    },
+    "tiktokUrl": "",
+    "ytId": ""
   },
   {
     "id": "new-manual-1790155898908-hiinve",
@@ -14645,9 +14714,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Mbzt / CC BY 4.0",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located at the heart of the 9th arrondissement in the trendy Nouvelle Athènes neighborhood, Place Saint-Georges is a picturesque circular square created in 1824. Famous for its central fountain and the statue of 19th-century caricaturist Paul Gavarni, the square is surrounded by grand neo-classical and neo-Renaissance townhouses (hôtels particuliers), including the historic Hôtel Guimard. Its charming cobblestones, elegant architecture, and classic Parisian street lamps make it one of the most romantic spots in the neighborhood.</p><p>During his stay in Paris in 2019, Jimin spent time exploring the city's charming neighborhoods. He was filmed strolling through Place Saint-Georges, enjoying a walk around the circular square and its historic architecture, before filming a short birthday video message for Jungkook</p>"
-    },
     "tweetUrl": "https://x.com/BTS_twt/status/1167879081456615424?s=20",
     "tipsList": [
       {
@@ -14712,7 +14778,10 @@ window.STATIC_LOCATIONS = [
     "ytId": "",
     "recreatedPhotos": [
       "images/admin-upload-new-manual-1790156734226-wkupvy-recreated-0.jpg"
-    ]
+    ],
+    "fullDescription": {
+      "en": "<p>Located at the heart of the 9th arrondissement in the trendy Nouvelle Athènes neighborhood, Place Saint-Georges is a picturesque circular square created in 1824. Famous for its central fountain and the statue of 19th-century caricaturist Paul Gavarni, the square is surrounded by grand neo-classical and neo-Renaissance townhouses (hôtels particuliers), including the historic Hôtel Guimard. Its charming cobblestones, elegant architecture, and classic Parisian street lamps make it one of the most romantic spots in the neighborhood.</p><!--stss:footsteps--><p>During his stay in Paris in 2019, Jimin spent time exploring the city's charming neighborhoods. He was filmed strolling through Place Saint-Georges, enjoying a walk around the circular square and its historic architecture, before filming a short birthday video message for Jungkook</p>"
+    }
   },
   {
     "id": "new-manual-1790167785996-vshzyf",
@@ -14969,11 +15038,11 @@ window.STATIC_LOCATIONS = [
     "tweetUrl": "",
     "episodeLink": "",
     "instagramUrl": "",
-    "fullDescription": {
-      "en": "<p>Located at 2 Place du Tertre in the heart of Montmartre (18th arrondissement), La Bohème du Tertre (also known as La Bohème Montmartre) is a classic Parisian brasserie positioned right on Montmartre’s most iconic historic square. Famous for its red awning, outdoor terrace, and traditional French bistro fare, it sits amidst the lively open-air art market where street painters and portrait artists have gathered since the late 19th century. The square itself carries the rich bohemian heritage of famous artists like Picasso, Van Gogh, and Toulouse-Lautrec who lived and worked in Montmartre.</p><p>During his stay in Paris in 2019, Jimin spent time exploring the hilltop neighborhood of Montmartre. He took a walk through Place du Tertre and paused near the terrace of La Bohème du Tertre, enjoying the vibrant atmosphere, street art culture, and historic charm of the area, a moment featured at the 0:11 mark of his official Paris vlog on BANGTANTV.</p>"
-    },
     "tiktokUrl": "",
-    "imgCredit": "flightlog / Wikimedia Commons / CC BY 2.0"
+    "imgCredit": "flightlog / Wikimedia Commons / CC BY 2.0",
+    "fullDescription": {
+      "en": "<p>Located at 2 Place du Tertre in the heart of Montmartre (18th arrondissement), La Bohème du Tertre (also known as La Bohème Montmartre) is a classic Parisian brasserie positioned right on Montmartre’s most iconic historic square. Famous for its red awning, outdoor terrace, and traditional French bistro fare, it sits amidst the lively open-air art market where street painters and portrait artists have gathered since the late 19th century. The square itself carries the rich bohemian heritage of famous artists like Picasso, Van Gogh, and Toulouse-Lautrec who lived and worked in Montmartre.</p><!--stss:footsteps--><p>During his stay in Paris in 2019, Jimin spent time exploring the hilltop neighborhood of Montmartre. He took a walk through Place du Tertre and paused near the terrace of La Bohème du Tertre, enjoying the vibrant atmosphere, street art culture, and historic charm of the area, a moment featured at the 0:11 mark of his official Paris vlog on BANGTANTV.</p>"
+    }
   },
   {
     "group": "BTS",
