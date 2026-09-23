@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-23T12:56:35.113Z.
+// Généré le 2026-09-23T17:55:21.933Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -14204,7 +14204,6 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-manual-1790021935296-8l918r-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "LPLT / CC BY-SA 3.0",
     "instagramUrls": [],
     "youtubeUrls": [],
     "tweetUrl": "https://x.com/BTS_twt/status/1179686404005101568?s=20",
@@ -14274,7 +14273,8 @@ window.STATIC_LOCATIONS = [
       "en": "<p>Located at 76 Rue de Turenne in the vibrant Marais district, Perrotin Gallery is one of the most prestigious and influential contemporary art galleries in the world. Founded by Emmanuel Perrotin in 1990 when he was only 21 years old, the gallery has played a pivotal role in launching and supporting the careers of iconic contemporary artists such as Takashi Murakami, Maurizio Cattelan, and JR.</p><p>The Rue de Turenne location is set within a magnificent historic Parisian architectural environment, a stunning 18th, century complex featuring classic wrought-iron staircases, stately stone architecture, and classic moldings that effortlessly bridge historic Parisian heritage with cutting-edge modern art exhibitions.</p><p>In June 2019, Jimin traveled to Paris alongside the other members of BTS for their massive, sold-out concerts at the Stade de France during the Love Yourself: Speak Yourself world tour. Taking advantage of their stay in the French capital, Jimin visited the renowned Perrotin Gallery in the Marais district.  He later shared a memorable photo of himself posing on the gallery's grand interior staircase, framed by its elegant wrought-iron railings and classical artwork. Since then, this picturesque spot has become a popular location for ARMYs visiting Paris who want to retrace Jimin's footsteps.</p>"
     },
     "tiktokUrl": "",
-    "ytId": ""
+    "ytId": "",
+    "imgCredit": "LPLT / Wikimedia Commons / CC BY-SA 3.0"
   },
   {
     "id": "new-manual-1790110905270-romcnq",
@@ -14386,7 +14386,6 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-manual-1790152668290-mpru8n-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "Chabe01 / CC BY-SA 4.0",
     "instagramUrls": [],
     "youtubeUrls": [],
     "tweetUrl": "https://x.com/BTS_twt/status/1179694702217420800?s=20",
@@ -14456,7 +14455,8 @@ window.STATIC_LOCATIONS = [
     },
     "recreatedPhotos": [
       "images/admin-upload-new-manual-1790152668290-mpru8n-recreated-0.jpg"
-    ]
+    ],
+    "imgCredit": "Chabe01 / Wikimedia Commons / CC BY-SA 4.0"
   },
   {
     "id": "new-manual-1790154825436-ei1raq",
@@ -14728,22 +14728,59 @@ window.STATIC_LOCATIONS = [
     "lng": 2.33546,
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "recreatedPhotos": [],
     "instagramUrls": [],
-    "tipsList": [],
     "facebookUrls": [],
     "officialLink": "https://www.paris.fr/pages/un-terrain-de-basket-style-et-atypique-a-pigalle-18886",
     "youtubeUrls": [],
+    "tweetUrls": [],
+    "img": "images/admin-upload-new-manual-1790167785996-vshzyf-photo.jpg",
+    "pinterestUrl": "",
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790167785996-vshzyf-recreated-0.jpg"
+    ],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check Opening Times & Respect Local Games"
+        },
+        "text": {
+          "en": "The court is actively used by local basketball players. Visit early in the morning (around 10:00 AM) if you want to take photos of the colorful walls without disturbing active games."
+        }
+      },
+      {
+        "title": {
+          "en": "Mind the Art Redesigns"
+        },
+        "text": {
+          "en": "The artwork on the court and walls is periodically repainted with new color schemes and patterns. While the colors might look different from when Jimin visited, the unique street-art atmosphere remains identical."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Place Saint-Georges"
+        },
+        "text": {
+          "en": "Playground Duperré is located just a 5-minute walk from Place Saint-Georges, making it super easy to visit both of Jimin's 9th arrondissement spots in one go!"
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "imgCredit": "Screentostreet",
     "fullDescription": {
-      "en": ""
+      "en": "<p>Hidden between two classic 19th-century apartment buildings on Rue Duperré, Playground Duperré (Pigalle Duperré) is one of the most famous and visually striking basketball courts in the world. Originally created in 2009 by Stephane Ashpool (founder of the fashion brand Pigalle) and Nike, this compact courtyard court is renowned for its bold, ever-evolving geometric patterns and vibrant color gradients. It stands as a unique fusion of sport, art, architecture, and street culture right in the heart of Paris.</p><p>During his stay in Paris in 2019, Jimin explored the Pigalle district and stopped by Playground Duperré. He took a walk inside this artistic basketball court, posing for photos against its iconic colorful walls and geometric artwork, a moment featured right at the 0:03 mark of his official Paris vlog on BANGTANTV.</p>"
     },
+    "ytId": "dl3QLdm2uts",
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": ""
+          "en": "Metro: Line 2, 12 (Pigalle station) — 2-minute walk.\n\nMetro: Line 12 (Saint-Georges station) — 5-minute walk.\n\nBus: Lines 30, 40, 54 (Pigalle stop)."
         }
       },
       {
@@ -14751,7 +14788,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Hours: Generally open daily from 10:00 AM to 8:00 PM (subject to local street access and community play).\n\nAdmission: Free."
         }
       },
       {
@@ -14759,12 +14796,184 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Ground-level street entry, accessible for wheelchairs and strollers, though space can be limited when games are being played."
+        }
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1790168859601-lx8rcz",
+    "name": "Stravinsky Fountain",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "Place Igor-Stravinsky, 75004, Paris",
+    "lat": 48.85963,
+    "lng": 2.35161,
+    "img": "images/admin-upload-new-manual-1790168859601-lx8rcz-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "ChrisSampson87 /  Wikimedia Commons / CC BY-SA 4.0",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located on Place Igor-Stravinsky right next to the Centre Pompidou in the 4th arrondissement, the Fontaine Stravinsky (also known as the Fontaine des Automates) is a whimsical, world-famous public fountain created in 1983 by artists Niki de Saint Phalle and Jean Tinguely. The fountain features 16 kinetic, water-spouting sculptures, ranging from playful black mechanical structures to vibrant, colorful resin figures, that continuously move and spray water. Each sculpture visually represents a musical piece by the legendary Russian composer Igor Stravinsky, making it a unique landmark where modern art meets urban space in the heart of Paris.</p><p>During his stay in Paris in 2019, Jimin visited the vibrant Centre Pompidou area and took a stroll around Place Igor-Stravinsky. He paused to admire the whimsical moving sculptures of the Fontaine Stravinsky, a playful moment captured at the 0:16 mark of his official Paris vlog on BANGTANTV.</p>"
+    },
+    "ytId": "dl3QLdm2uts",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Spot Niki de Saint Phalle's Colorful Sculptures"
+        },
+        "text": {
+          "en": "Walk around the entire perimeter of the fountain pool to see all 16 sculptures in motion, including the famous colorful lip sculpture (The Love) and the bird sculpture."
+        }
+      },
+      {
+        "title": {
+          "en": "Photo Angle & Lighting"
+        },
+        "text": {
+          "en": "Position yourself on the side of the fountain facing toward the colorful street art mural by Jef Aérosol (Chuuuttt!!!) on the adjacent building wall for a fantastic artistic backdrop alongside the fountain."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Le Marais Tour"
+        },
+        "text": {
+          "en": "The fountain is just a few minutes' walk from other BTS Paris spots like Rue Aubriot and Rue des Rosiers, making it a perfect starting point for a walking tour through the neighborhood!"
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://en.wikipedia.org/wiki/Stravinsky_Fountain",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Metro: Line 11 (Rambuteau station) — 3-minute walk.\n\nMetro: Line 1, 11 (Hôtel de Ville station) or Line 1, 4, 7, 11, 14 (Châtelet station) — 5-minute walk.\n\nBus: Lines 29, 38, 47, 75 (Centre Pompidou / Rambuteau stop)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Hours: Open 24/7 (Public square). Fountain water mechanism generally operates daily during daytime hours.\n\nAdmission: Free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat pedestrian plaza around the fountain, fully accessible for wheelchairs and strollers."
         }
       }
     ],
     "tweetUrls": [],
-    "recreatedPhoto": ""
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790168859601-lx8rcz-recreated-0.jpg"
+    ]
+  },
+  {
+    "id": "new-manual-1790170246987-dy0v5r",
+    "name": "La Bohème du Tertre",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Restaurant",
+    "year": "2019",
+    "address": "2 Place du Tertre, 75018, Paris",
+    "lat": 48.88669,
+    "lng": 2.3411,
+    "img": "images/admin-upload-new-manual-1790170246987-dy0v5r-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "ytId": "dl3QLdm2uts",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790170246987-dy0v5r-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visit Early to Beat the Tourist Crowds"
+        },
+        "text": {
+          "en": "Place du Tertre is one of the most visited locations in Paris. To enjoy a peaceful walk like Jimin and get clean photos of the historic square and La Bohème facade, visit before 10:00 AM."
+        }
+      },
+      {
+        "title": {
+          "en": "Get a Portrait Drawn"
+        },
+        "text": {
+          "en": "To fully immerse yourself in the bohemian vibe of the square right in front of La Bohème, take time to watch the local artists at work or have a quick sketch done by one of the licensed painters on the square."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Sacré-Cœur"
+        },
+        "text": {
+          "en": "The iconic Basilica of the Sacré-Cœur is less than a 2-minute walk from Place du Tertre, making it very easy to visit both famous Montmartre landmarks together!"
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://labohememontmartre.fr/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Funicular / Metro: Take Metro Line 2 to Anvers, then ride the Montmartre Funicular (Funiculaire de Montmartre) up the hill, followed by a 2-minute walk to Place du Tertre.\n\nMetro: Line 12 (Abbesses station) — walk up the scenic Montmartre staircases or take the Montmartrobus.\n\nBus: Montmartrobus (Line 40 - Norvins or Place du Tertre stop)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Hours: Open daily, generally from 7:00 AM to 1:00 AM.\n\nAdmission: Free access to the square. Drinks and meals available at standard restaurant prices."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Montmartre is steep with many staircases and cobblestone streets. However, accessing Place du Tertre via the Funicular or Montmartrobus provides a smoother route for strollers and visitors with limited mobility."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "fullDescription": {
+      "en": "<p>Located at 2 Place du Tertre in the heart of Montmartre (18th arrondissement), La Bohème du Tertre (also known as La Bohème Montmartre) is a classic Parisian brasserie positioned right on Montmartre’s most iconic historic square. Famous for its red awning, outdoor terrace, and traditional French bistro fare, it sits amidst the lively open-air art market where street painters and portrait artists have gathered since the late 19th century. The square itself carries the rich bohemian heritage of famous artists like Picasso, Van Gogh, and Toulouse-Lautrec who lived and worked in Montmartre.</p><p>During his stay in Paris in 2019, Jimin spent time exploring the hilltop neighborhood of Montmartre. He took a walk through Place du Tertre and paused near the terrace of La Bohème du Tertre, enjoying the vibrant atmosphere, street art culture, and historic charm of the area, a moment featured at the 0:11 mark of his official Paris vlog on BANGTANTV.</p>"
+    },
+    "tiktokUrl": "",
+    "imgCredit": "flightlog / Wikimedia Commons / CC BY 2.0"
   },
   {
     "group": "BTS",
