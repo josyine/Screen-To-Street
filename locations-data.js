@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-24T17:54:55.434Z.
+// Généré le 2026-09-24T22:39:52.942Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -5230,7 +5230,7 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 102,
-    "name": "Gyeonggi English Village",
+    "name": "Gyeonggi Future Education Yangpyeong Campus (Yangpyeong English Village)",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
@@ -5238,30 +5238,38 @@ window.STATIC_LOCATIONS = [
     "category": "MV Location",
     "year": "2014",
     "episode": "War of Hormone",
-    "ytId": "HMzt6TeIUKw",
-    "address": "92 Yeonsu-ro, Yongmun-myeon, Yangpyeong-gun",
-    "lat": 37.5145,
-    "lng": 127.5215,
-    "img": "https://img.youtube.com/vi/HMzt6TeIUKw/hqdefault.jpg",
+    "ytId": "XQmpVHUi-0A",
+    "address": "209 Yeonsu-ro, Yongmun-myeon, Yangpyeong-gun, Gyeonggi-do, South Korea",
+    "lat": 37.49857,
+    "lng": 127.57694,
+    "img": "images/admin-upload-102-photo.jpg",
     "fullDescription": {
-      "en": "<p>If the European-style streets in the \"War of Hormone\" music video looked a little out of place for Korea, that's because they were filmed at this surreal mock-European village, built for English-immersion programmes.</p><p>The playful, rebellious one-take video had the members dancing around red-brick buildings, phone booths and vintage cars — a nostalgic trip back to one of their most energetic teenage-era concepts.</p>",
-      "fr": "<p>Si les rues de style européen du clip « War of Hormone » semblaient un peu déplacées en Corée, c'est parce qu'elles ont été tournées dans ce village surréaliste imitant l'Europe, construit pour des programmes d'immersion en anglais.</p><p>Ce clip espiègle et rebelle, tourné en un seul plan, montrait les membres dansant parmi des bâtiments en briques rouges, des cabines téléphoniques et des voitures anciennes — un retour nostalgique à l'un de leurs concepts adolescents les plus énergiques.</p>"
+      "fr": "<p>Si les rues de style européen du clip « War of Hormone » semblaient un peu déplacées en Corée, c'est parce qu'elles ont été tournées dans ce village surréaliste imitant l'Europe, construit pour des programmes d'immersion en anglais.</p><p>Ce clip espiègle et rebelle, tourné en un seul plan, montrait les membres dansant parmi des bâtiments en briques rouges, des cabines téléphoniques et des voitures anciennes — un retour nostalgique à l'un de leurs concepts adolescents les plus énergiques.</p>",
+      "en": "<p>The exact filming location for BTS's iconic video is the Gyeonggi English Village Yangpyeong Camp (now operated as the Gyeonggi Future Education Yangpyeong Campus). Built as an immersive educational facility designed to replicate a small Western town, the sprawling property features classic retro architecture, vintage street signage, and charming storefronts reminiscent of a mid-20th-century American town rather than standard Korean urban design.</p><!--stss:footsteps--><p>This eccentric village serves as the lively, energetic backdrop for one of BTS's most beloved early-era music videos from their Dark &amp; Wild album. Filmed in an impressive, dynamic long-take (plan-séquence) style down the campus's main street, the members burst with raw rookie energy, wearing retro outfits, playfully teasing each other, and dancing dynamically against the backdrop of 1950s American-style buildings. For ARMYs visiting Yangpyeong, walking down this exact paved street lets you step straight into the vibrant, mischievous world of 2014 BTS, allowing you to match your steps to the famous continuous camera shot from the music video.</p><p>Because the \"War of Hormone\" music video was shot using a simulated one-take format (plan-séquence), the members had to synchronize their choreography, comedic acting, and precise timing across the entire length of the street without major errors. This required the group to execute numerous high-energy run-throughs under the director's watchful eye.</p><p>Before BTS immortalized the location for the fandom, the distinct faux-Western village architecture was frequently used as a backdrop for various South Korean entertainment productions and television shows. Years after its release, the campus street layout and decorative storefront facades remain remarkably well-preserved and recognizable, allowing visiting fans to easily line up shots matching the original music video frames.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Walk the central avenue"
+          "en": "Recreate the MV Walk"
         },
         "text": {
-          "en": "Walk down the central avenue where Jimin did his iconic jump and Jungkook dragged his lollipop."
+          "en": "Walk down the central campus street where the members danced and lip-synced in the plan-séquence, keeping an eye out for the specific building façades recognized from the video."
         }
       },
       {
         "title": {
-          "en": "Spot the vintage cars"
+          "en": "Respect Campus Guidelines"
         },
         "text": {
-          "en": "The mock village's parked vintage cars and red phone booths are some of its most distinctive props — look for the same ones that appear throughout the one-take video."
+          "en": "Because parts of the facility are utilized for educational programs, visitors should keep noise levels down and adhere to local campus rules."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Yangpyeong Nature"
+        },
+        "text": {
+          "en": "Pair your trip to the campus with a visit to other scenic spots in the Yangpyeong region, such as the famous Dumulmeori riverside."
         }
       }
     ],
@@ -5272,7 +5280,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Walk down the central avenue where Jimin did his iconic jump and Jungkook dragged his lollipop.",
       "fr": "Descendez l'avenue centrale où Jimin a fait son saut emblématique et où Jungkook traînait sa sucette."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Gyeongui-Jungang Line to Yongmun Station, then take a short 15-minute taxi or local bus ride directly to the campus gates."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily generally from 9:00 AM to 6:00 PM. General walking access to the outdoor street sets is available, though policies can shift depending on active campus student schedules."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved outdoor campus pathways and flat street layouts, making it easy to stroll through the exterior film sets."
+        }
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "",
+    "recreatedPhotos": [
+      "images/admin-upload-102-recreated-0.jpg",
+      "images/admin-upload-102-recreated-1.jpg"
+    ]
   },
   {
     "id": 103,
@@ -5284,30 +5336,38 @@ window.STATIC_LOCATIONS = [
     "category": "MV Location",
     "year": "2015",
     "episode": "HYYH On Stage: Prologue",
-    "ytId": "BVwAVbKAFPI",
-    "address": "Seoul National University, Gwanak-gu",
-    "lat": 37.4595,
-    "lng": 126.9525,
-    "img": "https://img.youtube.com/vi/BVwAVbKAFPI/hqdefault.jpg",
+    "ytId": "Bt8648TNX1M",
+    "address": "Gwanak-san forested area, near Seoul National University, Gwanak-gu, Seoul, South Korea.",
+    "lat": 37.4598,
+    "lng": 126.9539,
+    "img": "images/admin-upload-103-photo.jpg",
     "fullDescription": {
-      "en": "<p>Hidden in the forested mountains behind the prestigious Seoul National University lies an abandoned outdoor swimming pool — a gritty, graffiti-covered ruin that served as the primary filming location for the legendary HYYH On Stage: Prologue short film.</p><p>This is where the members played in the empty pool, where Jin recorded them on his camcorder, and where some of the storyline's most heartbreaking scenes were established.</p>",
-      "fr": "<p>Cachée dans les montagnes boisées derrière la prestigieuse Université nationale de Séoul se trouve une piscine extérieure abandonnée — une ruine brute couverte de graffitis, principal lieu de tournage du légendaire court-métrage HYYH On Stage: Prologue.</p><p>C'est ici que les membres ont joué dans la piscine vide, que Jin les a filmés avec son caméscope, et que certaines des scènes les plus déchirantes de cette histoire ont pris forme.</p>"
+      "fr": "<p>Cachée dans les montagnes boisées derrière la prestigieuse Université nationale de Séoul se trouve une piscine extérieure abandonnée — une ruine brute couverte de graffitis, principal lieu de tournage du légendaire court-métrage HYYH On Stage: Prologue.</p><p>C'est ici que les membres ont joué dans la piscine vide, que Jin les a filmés avec son caméscope, et que certaines des scènes les plus déchirantes de cette histoire ont pris forme.</p>",
+      "en": "<p>Tucked away deep within the forested mountains behind the prestigious Seoul National University campus lies a striking urban exploration site: an abandoned outdoor swimming pool. Surrounded by dense trees and covered in vibrant, gritty street art and graffiti, this eerie and isolated concrete ruin became the dramatic heartbeat of the Bangtan Universe when it was chosen as the primary filming location for the legendary HYYH On Stage: Prologue short film.</p><!--stss:footsteps--><p>This desolate pool is etched into the core of BTS lore. In the Prologue video, it serves as the melancholic campsite where the members gather, play, and share fleeting moments of youth before the darker, tragic realities of the storyline set in. Notably, it is the dramatic backdrop for Taehyung's emotional leap into the sea in the narrative, as well as Jin recording the group on his old-school camera. Visiting the site offers a surreal pilgrimage for ARMYs looking to experience the raw, cinematic atmosphere that defined the golden era of the Most Beautiful Moment in Life (HYYH) storyline.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Find the diving board area"
+          "en": "Respect the Area and Safety"
         },
         "text": {
-          "en": "You can still see the remnants of the diving-board area where Taehyung's emotional jump was filmed."
+          "en": "Because this is an abandoned, off-the-beaten-path structure near a university mountain forest, exercise extreme caution, wear sturdy walking shoes, and be mindful of local access rules or structural wear."
         }
       },
       {
         "title": {
-          "en": "Know it's genuinely abandoned"
+          "en": "Recreate the Prologue Vibe"
         },
         "text": {
-          "en": "This is a real, derelict ruin rather than a maintained attraction — expect graffiti and decay rather than anything preserved for visitors."
+          "en": "Channel the bittersweet, nostalgic cinematography of the short film by taking in the contrast between the rough concrete graffiti walls and the surrounding quiet woods."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Seoul Nature Trails"
+        },
+        "text": {
+          "en": "Pair your journey with a hike through the scenic green spaces surrounding the Seoul National University ridge trails."
         }
       }
     ],
@@ -5318,53 +5378,50 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "You can still see the remnants of the diving-board area where Taehyung's emotional jump was filmed.",
       "fr": "On peut encore voir les vestiges de la zone du plongeoir où le saut chargé d'émotion de Taehyung a été filmé."
-    }
-  },
-  {
-    "id": 104,
-    "name": "Ihwa Mural Village",
-    "group": "BTS",
-    "member": "Namjoon",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "MV Location",
-    "year": "2015",
-    "episode": "I Need U",
-    "ytId": "BEFNhMkdVz4",
-    "address": "49 Naksan 4-gil, Jongno-gu",
-    "lat": 37.5805,
-    "lng": 127.0065,
-    "img": "https://img.youtube.com/vi/BEFNhMkdVz4/hqdefault.jpg",
-    "fullDescription": {
-      "en": "<p>In the \"I Need U\" music video, RM is seen walking up a steep, narrow staircase with a lollipop in his mouth — those gritty, atmospheric alleyway shots were filmed around this hillside mural village near Naksan Park.</p><p>The steep stairs and the view of the city below capture the struggling-youth aesthetic of the era perfectly, and the village itself is known for its art and stunning views.</p>",
-      "fr": "<p>Dans le clip « I Need U », on voit RM monter un escalier étroit et raide, une sucette à la bouche — ces plans bruts et atmosphériques de ruelles ont été tournés autour de ce village de fresques à flanc de colline, près de Naksan Park.</p><p>L'escalier raide et la vue sur la ville en contrebas capturent parfaitement l'esthétique de jeunesse en difficulté de cette époque, et le village lui-même est réputé pour son art et ses vues magnifiques.</p>"
     },
-    "tipsList": [
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-103-recreated-0.jpg"
+    ],
+    "practicalInfo": [
       {
         "title": {
-          "en": "Continue to Naksan Park"
+          "en": "How to get there"
         },
         "text": {
-          "en": "After finding the alleyways, keep walking up to Naksan Park for one of the best night views of the old city walls."
+          "en": "Take Seoul Subway Line 2 to Seoul National University Station (Exit 3), take a local campus bus up toward the university grounds, and hike the established mountain trails leading into the Gwanaksan forested ridges behind the campus."
         }
       },
       {
         "title": {
-          "en": "Find the staircase"
+          "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "The steep, narrow staircase RM climbed with a lollipop in the video is one of the village's most recognisable alleys — worth seeking out specifically rather than just wandering the murals generally."
+          "en": "Public mountain area accessible during daylight hours. No formal admission or ticketing, though visitors should note it is an unmanaged, rustic ruin site."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Rugged, unpaved mountain terrain involving steep hiking trails, uneven ground, and concrete ruins; not wheelchair accessible."
         }
       }
     ],
-    "directions": {
-      "en": "Take Line 4 to Hyehwa Station (Exit 2) and walk up the hill toward Naksan Park; this is a quiet residential area, so please keep noise to a minimum.",
-      "fr": "Prenez la ligne 4 jusqu'à la station Hyehwa (sortie 2) et montez la colline en direction de Naksan Park ; c'est un quartier résidentiel calme, merci de limiter le bruit."
-    },
-    "tip": {
-      "en": "After finding the alleyways, keep walking up to Naksan Park for one of the best night views of the old city walls.",
-      "fr": "Après avoir repéré les ruelles, continuez à monter jusqu'à Naksan Park pour l'une des plus belles vues nocturnes sur les anciens remparts de la ville."
-    }
+    "episodeLink": "https://www.koreaboo.com/news/bts-hyyh-abandoned-pool-demolished-set-location-filming-mv/",
+    "officialLink": "https://www.seoulkoreatour.net/places/seoul-1/hallyu-2/snu-abandoned-swimming-pool-%EC%84%9C%EC%9A%B8%EB%8C%80%ED%8F%90%EC%88%98%EC%98%81%EC%9E%A5-%EC%B4%AC%EC%98%81/"
   },
   {
     "id": 105,
@@ -5376,22 +5433,22 @@ window.STATIC_LOCATIONS = [
     "category": "MV Location",
     "year": "2015",
     "episode": "Run",
-    "ytId": "HMzt6TeIUKw",
-    "address": "San 56-1 Sillim-dong, Gwanak-gu",
-    "lat": 37.4745,
-    "lng": 126.9345,
-    "img": "https://img.youtube.com/vi/HMzt6TeIUKw/hqdefault.jpg",
+    "ytId": "wKysONrSmew",
+    "address": "South Korea, Gyeonggi-do, Goyang-si, Deokyang-gu, Hwajeon-dong, 583-3",
+    "lat": 37.60248,
+    "lng": 126.86875,
+    "img": "images/admin-upload-105-photo.jpg",
     "fullDescription": {
-      "en": "<p>One of the most chaotic, iconic scenes in the \"Run\" music video — the seven members blocking traffic inside a tunnel, throwing drinks at cars and sprinting from the police — was filmed in this long, loud traffic tunnel.</p><p>Walking down the tunnel's raised pedestrian path, dimly lit and yellow-hued, is enough to get the \"Run\" bassline running through your head, even without recreating any of the more reckless stunts.</p>",
-      "fr": "<p>L'une des scènes les plus chaotiques et emblématiques du clip « Run » — les sept membres bloquant la circulation dans un tunnel, jetant des boissons sur les voitures et fuyant la police en courant — a été tournée dans ce long tunnel routier bruyant.</p><p>Marcher sur le trottoir surélevé du tunnel, faiblement éclairé et baigné de teintes jaunes, suffit à faire résonner la basse de « Run » dans votre tête, même sans recréer les cascades les plus téméraires.</p>"
+      "fr": "<p>L'une des scènes les plus chaotiques et emblématiques du clip « Run » — les sept membres bloquant la circulation dans un tunnel, jetant des boissons sur les voitures et fuyant la police en courant — a été tournée dans ce long tunnel routier bruyant.</p><p>Marcher sur le trottoir surélevé du tunnel, faiblement éclairé et baigné de teintes jaunes, suffit à faire résonner la basse de « Run » dans votre tête, même sans recréer les cascades les plus téméraires.</p>",
+      "en": "<p>Nestled in the bustling heart of central Seoul near the vibrant neighborhoods of Yongsan and Hannam-dong, this unassuming urban underpass serves as a critical commuter artery for the city's fast-paced daily life. Yet, beneath its ordinary concrete exterior lies a legendary piece of global pop-culture history. In late 2015, this very tunnel was hand-picked by production teams to become the chaotic, high-energy backdrop for some of the most emotionally charged and iconic sequences in BTS's breakthrough music video for \"Run\", the title track anchoring The Most Beautiful Moment in Life, Pt. 2.</p><!--stss:footsteps--><p>This gritty concrete passage is etched permanently into the lore of the Bangtan Universe and the hearts of ARMYs worldwide. In the \"Run\" music video, the tunnel acts as a visceral canvas for the bittersweet, reckless abandon of youth. It is the site of that unforgettable, chaotic group sequence where all seven members—wild, free, and shedding the heavy pressures of the world—boldly block traffic inside the tunnel, toss drinks playfully toward cars, burst into laughter, and sprint shoulder-to-shoulder through the concrete shadows. For fans visiting Seoul, walking near this location offers a profound sense of connection to the brotherhood, rebellion, and raw emotion that defined the golden age of the HYYH era, bringing the cinematic narrative straight out of the screen and into the real world.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Stay on the sidewalk"
+          "en": "Channel the HYYH Era Energy"
         },
         "text": {
-          "en": "Stay on the raised pedestrian sidewalk — this is an active vehicle tunnel, so never walk in the road."
+          "en": "As you walk through the area, take a moment to imagine the adrenaline of the music video shoot, picturing the members laughing and chasing each other through the concrete corridor."
         }
       },
       {
@@ -5400,6 +5457,14 @@ window.STATIC_LOCATIONS = [
         },
         "text": {
           "en": "This is a genuinely loud, active vehicle tunnel — the noise and traffic are part of what made the original chase scene feel so chaotic on screen."
+        }
+      },
+      {
+        "title": {
+          "en": "Prioritize Absolute Street Safety"
+        },
+        "text": {
+          "en": "Because this is an active urban roadway and commuter underpass in a busy metropolitan district, never attempt to block traffic or step onto the vehicle lanes. Always remain strictly on the designated pedestrian walkways, sidewalks, and crosswalks."
         }
       }
     ],
@@ -5410,42 +5475,93 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Stay on the raised pedestrian sidewalk — this is an active vehicle tunnel, so never walk in the road.",
       "fr": "Restez sur le trottoir piéton surélevé — c'est un tunnel routier en activité, ne marchez jamais sur la chaussée."
-    }
-  },
-  {
-    "id": 106,
-    "name": "Sihwa Seawall",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Ansan",
-    "category": "MV Location",
-    "year": "2015",
-    "episode": "Run",
-    "ytId": "MBvunpC8Yw4",
-    "address": "Daebudo, Danwon-gu, Ansan-si",
-    "lat": 37.3125,
-    "lng": 126.6205,
-    "img": "https://img.youtube.com/vi/MBvunpC8Yw4/hqdefault.jpg",
-    "fullDescription": {
-      "en": "<p>The bittersweet ending of the \"Run\" music video, with the members walking together beside the ocean before Jimin holds up a burning Polaroid, was filmed along this massive coastal embankment.</p><p>The seawall also appears in the HYYH On Stage: Prologue short film, where the members sit on the rocks looking out at the sea — arguably the ultimate HYYH-era location, symbolising the edge of the world and the bond of youth.</p>",
-      "fr": "<p>La fin douce-amère du clip « Run », où les membres marchent ensemble au bord de l'océan avant que Jimin ne brandisse un Polaroid en train de brûler, a été tournée le long de cette immense digue côtière.</p><p>La digue apparaît aussi dans le court-métrage HYYH On Stage: Prologue, où les membres sont assis sur les rochers à regarder la mer — sans doute le lieu ultime de l'ère HYYH, symbole du bord du monde et du lien de la jeunesse.</p>"
     },
-    "tipsList": [
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "episodeLink": "https://www.koreaetour.com/bts-shooting-places/",
+    "practicalInfo": [
       {
         "title": {
-          "en": "Sit on the rocks"
+          "en": "How to get there"
         },
         "text": {
-          "en": "You can carefully sit on the large coastal rocks, just like the members did in the Prologue film."
+          "en": "Take Seoul Subway Line 3 to Hwajeong Station, then follow local transit routes or a short walk toward the nearby roadway underpass structures."
         }
       },
       {
         "title": {
-          "en": "Go for the horizon"
+          "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "The seawall's appeal is the sheer scale of open sea and sky in front of it — the same 'edge of the world' feeling that made it such a fitting symbolic location for the HYYH era."
+          "en": "Accessible 24/7 as public urban infrastructure."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Standard urban sidewalks and pedestrian underpass pathways with stair or ramp access depending on the exact entry side."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-105-recreated-0.jpg"
+    ],
+    "tweetUrl": "https://x.com/bts_facts/status/669172957944524800?s=46"
+  },
+  {
+    "id": 106,
+    "name": "Lake Sihwa",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Hwaseong",
+    "category": "MV Location",
+    "year": "2017",
+    "episode": "",
+    "ytId": "xEeFrLSkMm8",
+    "address": "1031-8, Sa-dong, Sangnok-gu, Ansan, Gyeonggi-do, South Korea (Sihwaho Lake Reed Marsh Park)",
+    "lat": 37.27578,
+    "lng": 126.84182,
+    "img": "images/admin-upload-106-photo.jpg",
+    "fullDescription": {
+      "fr": "<p>La fin douce-amère du clip « Run », où les membres marchent ensemble au bord de l'océan avant que Jimin ne brandisse un Polaroid en train de brûler, a été tournée le long de cette immense digue côtière.</p><p>La digue apparaît aussi dans le court-métrage HYYH On Stage: Prologue, où les membres sont assis sur les rochers à regarder la mer — sans doute le lieu ultime de l'ère HYYH, symbole du bord du monde et du lien de la jeunesse.</p>",
+      "en": "<p>Located within the expansive reclaimed tidal lands of Lake Sihwa in Hwaseong (Gyeonggi Province), Woo-eum Island (Woo eum-do) is a unique area whose name translates poetically from the shape resembling a cow or the sounds echoing across the plains. Once a true island before land reclamation connected it to the mainland, this vast, windswept landscape features wide open fields, dramatic skies, and solitary trees. It became legendary among global music fans as the emotional backdrop for the closing scenes of BTS’s masterpiece music video for \"Spring Day\" (from You Never Walk Alone).</p><!--stss:footsteps--><p>This desolate field holds a sacred, emotional place in ARMY lore as the setting for the climax of the \"Spring Day\" music video. Toward the end of the video, as the members are finally reunited in the bleak landscape, Jimin is seen carrying the pair of shoes he retrieved from the beach at Jumunjin, gently hanging them on the bare branches of a solitary tree standing in a snowy field.</p><p>This poignant gesture carries profound cultural and emotional layers. Hanging shoes on a tree or telephone wire is a traditional motif used across various cultures to mark a memorial where someone passed away or to honor those who have lost their lives. Furthermore, numerous fans, analysts, and music critics deeply connect the overarching imagery in \"Spring Day\"—including the towering mountain of laundry and the shoes hanging on the tree—to the tragic 2014 Sewol Ferry Disaster in South Korea, which claimed the lives of hundreds of high school students, making the tree act as a silent, heartbreaking memorial. Ultimately, the video's powerful visual transition moving from a cold, bare winter tree to the final breathtaking shot where the tree bursts into full spring cherry blossoms encapsulates the central message of the song: that even after the deepest, coldest winter of sorrow, spring and healing will eventually come.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Trace the Spring Day Journey"
+        },
+        "text": {
+          "en": "Pair your virtual or physical exploration of Woo-eum Island with a trip to Jumunjin Beach (Gangneung), connecting the famous bus stop album-cover shoot with the final tree scene of the music video."
+        }
+      },
+      {
+        "title": {
+          "en": "Catch the Golden Hour"
+        },
+        "text": {
+          "en": "If you visit the Hwaseong wetland and lake areas, plan your timing around sunset to witness the striking, melancholic light that mirrors the fading twilight in the video."
+        }
+      },
+      {
+        "title": {
+          "en": "Navigate with Care"
+        },
+        "text": {
+          "en": "Because the area spans large reclaimed tidelands and open plains near Lake Sihwa, it requires careful planning using local Korean mapping applications (such as Naver Map or KakaoMap) rather than standard international map pins."
         }
       }
     ],
@@ -5456,7 +5572,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "You can carefully sit on the large coastal rocks, just like the members did in the Prologue film.",
       "fr": "Vous pouvez vous asseoir avec précaution sur les grands rochers côtiers, exactement comme les membres dans le court-métrage Prologue."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "episodeLink": "https://thekoreanlass.wordpress.com/2019/04/29/travel-bts-spring-day-mv-filming-locations/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible primarily by car or local regional transit from Hwaseong/Ansan areas; navigating to the open plains near the Sihwa Lake embankment and Songsan-myeon requires utilizing local Korean navigation tools."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open public landscape areas accessible during daylight hours. No ticketing or formal admission."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Open dirt paths, natural fields, and reclaimed terrain; uneven ground requiring comfortable walking shoes."
+        }
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-106-recreated-0.jpg",
+      "images/admin-upload-106-recreated-1.jpg"
+    ]
   },
   {
     "id": 107,
@@ -8282,70 +8442,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Screentostreet",
     "recreatedPhotos": [
       "images/admin-upload-180-recreated-0.jpg"
-    ]
-  },
-  {
-    "id": 181,
-    "name": "Palace Theatre (Los Angeles)",
-    "group": "BTS",
-    "member": "Jimin",
-    "country": "United States",
-    "city": "Los Angeles, CA",
-    "category": "Concert",
-    "year": "2023",
-    "ytId": "w6sJ3io9gqg",
-    "episodeLink": "https://www.youtube.com/watch?v=w6sJ3io9gqg",
-    "address": "630 S Broadway, Los Angeles, CA",
-    "lat": 34.043,
-    "lng": -118.2519,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Los_Angeles_Downtown_Skyline.jpg",
-    "fullDescription": {
-      "en": "<p>The grand, sweeping performance spaces filled with marching dancers in Jimin's powerful hip-hop track Set Me Free Pt. 2 utilized the historic theater district of downtown Los Angeles, echoing classical architecture.</p><p>The ornate detailing, balconies, and majestic arches of historic Broadway theaters provide an imposing, theatrical stage that elevates Jimin's fierce choreography to an artistic masterpiece.</p>",
-      "fr": "<p>Les vastes espaces scéniques traversés par des danseurs en formation dans le puissant titre hip-hop de Jimin « Set Me Free Pt. 2 » ont été tournés dans le quartier historique des théâtres du centre-ville de Los Angeles, à l'architecture classique.</p><p>Les détails ornementés, les balcons et les arches majestueuses de ces théâtres historiques de Broadway offrent une scène théâtrale imposante, qui élève la chorégraphie féroce de Jimin au rang d'œuvre d'art.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Historic Broadway"
-        },
-        "text": {
-          "en": "Walk down South Broadway to view the magnificent historic movie palaces that line the street."
-        }
-      },
-      {
-        "title": {
-          "en": "Architectural Tours"
-        },
-        "text": {
-          "en": "Check local LA preservation groups (like LA Conservancy) which occasionally offer walking tours inside these historic theaters."
-        }
-      }
-    ],
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Exterior viewing; interior access depends on scheduled theatre events or guided architectural tours."
-        }
-      },
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "One of the oldest ornate movie palaces in Broadway Theater District, featuring a stunning French Baroque exterior."
-        }
-      },
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Downtown LA, near Pershing Square."
-        }
-      }
     ]
   },
   {
