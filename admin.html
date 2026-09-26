@@ -1546,9 +1546,12 @@ recomposée, sans texte ni légende.`;
         const res = await window.adminBackfillFeedPosts();
         btn.disabled = false;
         btn.textContent = 'Rebuild feed index now';
+        // message (demande du 26/09/2026, "je n'arrive pas à 'Rebuild feed index now'") :
+        // même convention que la carte "Existing locations" plus bas — le code Firestore
+        // seul ("permission-denied") ne dit pas QUELLE règle bloque, le message complet si.
         result.textContent = res.success
             ? `Done — ${res.written} post${res.written === 1 ? '' : 's'} indexed.`
-            : `Failed: ${res.code || 'unknown error'}`;
+            : `Failed: ${res.code || 'unknown error'}${res.message ? ' — ' + res.message : ''}`;
         result.classList.remove('hidden');
     };
 
@@ -1573,7 +1576,7 @@ recomposée, sans texte ni légende.`;
         btn.textContent = 'Rebuild "Mei\'s Pictures" index now';
         result.textContent = res.success
             ? `Done — ${res.written} location${res.written === 1 ? '' : 's'} indexed.`
-            : `Failed: ${res.code || 'unknown error'}`;
+            : `Failed: ${res.code || 'unknown error'}${res.message ? ' — ' + res.message : ''}`;
         result.classList.remove('hidden');
     };
 
