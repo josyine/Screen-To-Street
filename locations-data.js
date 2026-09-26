@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-26T17:21:35.137Z.
+// Généré le 2026-09-26T22:07:46.486Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -15139,6 +15139,94 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Located at 2 Place du Tertre in the heart of Montmartre (18th arrondissement), La Bohème du Tertre (also known as La Bohème Montmartre) is a classic Parisian brasserie positioned right on Montmartre’s most iconic historic square. Famous for its red awning, outdoor terrace, and traditional French bistro fare, it sits amidst the lively open-air art market where street painters and portrait artists have gathered since the late 19th century. The square itself carries the rich bohemian heritage of famous artists like Picasso, Van Gogh, and Toulouse-Lautrec who lived and worked in Montmartre.</p><!--stss:footsteps--><p>During his stay in Paris in 2019, Jimin spent time exploring the hilltop neighborhood of Montmartre. He took a walk through Place du Tertre and paused near the terrace of La Bohème du Tertre, enjoying the vibrant atmosphere, street art culture, and historic charm of the area, a moment featured at the 0:11 mark of his official Paris vlog on BANGTANTV.</p>"
     }
+  },
+  {
+    "id": "new-manual-1790456991163-kdvj6x",
+    "name": "Bomunsa Temple",
+    "address": "508 Samsan-myeon, Ganghwa-gun, Incheon, South Korea",
+    "lat": 37.68881,
+    "lng": 126.32166,
+    "member": "All",
+    "country": "South Korea",
+    "city": "Ganghwado Island (Incheon)",
+    "year": "2016, 2026",
+    "category": "Landmark",
+    "group": "BTS",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Leave a Wish Tile"
+        },
+        "text": {
+          "en": "Participate in the temple's traditional tile-writing experience, where visitors can pen personal wishes or messages inspired by the members' visits."
+        }
+      },
+      {
+        "title": {
+          "en": "Climb to the Cliffside Buddha"
+        },
+        "text": {
+          "en": "Take the stone staircase up to the eye-level viewing platform carved into the rock face for an incredible panoramic view of the sea and surrounding islands."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Ganghwado Island"
+        },
+        "text": {
+          "en": "Combine your temple visit with a broader tour of Ganghwado's historic fortifications, coastal viewpoints, and local cafes."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible from Seoul/Incheon via bus or car to Ganghwado Island, crossing the Ganghwa Bridge or Seokmodo Mineral Hot Springs bridge over to Seokmodo Island where Bomunsa is located."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from early morning (around 8:00 AM) to sunset. Standard temple admission fees apply."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Involves steep stone staircases, mountain walking paths, and inclines leading up to the cliffside grotto; wear comfortable walking shoes."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "episodeLink": "https://www.mk.co.kr/en/musics/12037828?utm_source=gemini",
+    "ytId": "jvvuHBGKuR0",
+    "imgCredit": "Bernard Gagnon / CC0 1.0",
+    "officialLink": "https://french.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=109690",
+    "tweetUrl": "https://x.com/BTS_twt/status/805787726192574464?lang=de",
+    "fullDescription": {
+      "en": "<p>Perched on the dramatic, rocky slopes of Mangmunsan mountain on Ganghwado Island (Incheon), Bomunsa Temple is one of South Korea's most ancient and spiritually significant Buddhist sanctuaries, founded in 635 AD. Overlooking the western sea, the temple grounds are renowned for their breathtaking natural scenery, serene atmosphere, and monumental rock-carved features, including a majestic 9-meter-tall seated Buddha carved directly into the cliffside and a serene 13.5-meter-long reclining Buddha.</p><!--stss:footsteps--><p>Bomunsa Temple holds a legendary, full-circle place in BTS history, bridging their early struggles with their unprecedented global success across a span of ten years.</p><p>2016: In 2016, the members visited the temple during a promotional video shoot as they earnestly prayed for the success of their upcoming album Wings. During this emotional visit, they famously left their mark by inscribing personal wishes—including the iconic message \"Wings Big Hit\"—onto a traditional temple wish tile.</p><p>2026, Suga, V: Exactly a decade later, in May 2026, Suga and V returned to the sacred site as global superstars to complete a penalty mission. Fans can spot V and Suga arriving at the temple starting right around 31:12 in the official YouTube episode titled \"자비 없는 세기의 족구 대결 | BTS’s TRIP EP.3\" (Run BTS! 2.0). While tackling their punishment on screen, the two members filmed a heartfelt mini-vlog on the temple grounds and offered new prayers, wishing for massive success for the year 2026 and their landmark world tour for the album Arirang. Today, the temple remains an essential pilgrimage site for ARMYs, who continue to leave their own wish tiles alongside messages honoring the group's decade-long journey.</p>"
+    },
+    "img": "https://img.youtube.com/vi/jvvuHBGKuR0/hqdefault.jpg",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790456991163-kdvj6x-recreated-0.jpg",
+      "images/admin-upload-new-manual-1790456991163-kdvj6x-recreated-1.jpg"
+    ]
   },
   {
     "group": "BTS",
