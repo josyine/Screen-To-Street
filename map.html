@@ -371,6 +371,22 @@
   .live-cal-day.has-event { background: var(--primary-magenta); color: #fff; font-weight: 700; cursor: pointer; }
   .live-cal-day.has-event:hover { background: #b81f4a; }
 
+  /* Onglet "Map" du panneau Live (demande du 26/09/2026, "ajoute l'onglet Map... garde
+     le même affichage que pour Tour") : réutilise directement les classes
+     .tour-mode-mapwrap/.tour-mode-rail/.tour-mode-rail-list/.tour-mode-stop-info/
+     .tour-mode-nav (définies plus haut pour le panneau Mode Tournée) pour un rendu
+     identique — ce conteneur reprend juste le même comportement flex responsive
+     (row desktop / column mobile) que .tour-mode-panel, SANS son position:fixed:inset:0
+     puisqu'il est imbriqué dans .live-panel-card plutôt qu'un calque plein écran à part.
+     Voir renderLiveMapView()/window.liveMapNavigate() dans script.js. */
+  .live-panel-mapview { flex: 1; min-height: 0; display: flex; overflow: hidden; }
+  .live-panel-mapview.hidden { display: none; }
+  #live-map-prev { background: #f1f5f9; color: var(--text-main); }
+  #live-map-next { background: var(--primary-magenta); color: #fff; }
+  @media (max-width: 800px) {
+      .live-panel-mapview { flex-direction: column; }
+  }
+
   /* Bulle infos concert : apparaît au clic sur un pin de la carte (ou sur une étape du
      rail, qui pointe alors la même bulle vers son pin) — voir tour-mode.js.
      position:fixed (positionnée en JS par rapport à la fenêtre, pas au conteneur de la
@@ -1352,6 +1368,7 @@
         <div class="live-panel-view-tabs">
             <button class="live-panel-view-tab active" type="button" data-view="list" onclick="window.switchLiveView('list')" data-i18n="liveViewList">List</button>
             <button class="live-panel-view-tab" type="button" data-view="calendar" onclick="window.switchLiveView('calendar')" data-i18n="liveViewCalendar">Calendar</button>
+            <button class="live-panel-view-tab" type="button" data-view="map" onclick="window.switchLiveView('map')" data-i18n="liveViewMap">Map</button>
         </div>
         <div class="live-panel-avatars" id="live-panel-avatars"></div>
         <div class="live-panel-timeline" id="live-panel-timeline"></div>
@@ -1368,6 +1385,35 @@
                 <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
             </div>
             <div class="live-cal-grid" id="live-cal-grid"></div>
+        </div>
+        <!-- Vue Map (demande du 26/09/2026, "garde le même affichage que pour Tour, avec la
+             carte, les boutons Previous/Next, la liste des prochaines activités, la
+             sélection de l'artiste") : réutilise les classes .tour-mode-* pour un rendu
+             identique au panneau Mode Tournée. La sélection d'artiste n'est pas dupliquée
+             ici — elle vit déjà dans .live-panel-header ci-dessus (.group-switcher), commune
+             aux 3 onglets. Alimentée par getLiveTimelineEntries() (voir script.js) : les
+             prochaines destinations de BTS au sens large (tournée + solo + jalons +
+             évènements admin approuvés), pas seulement la tournée en cours. -->
+        <div class="live-panel-mapview hidden" id="live-panel-mapview">
+            <div class="tour-mode-mapwrap" id="live-map-mapwrap">
+                <span class="tour-mode-map-pill" id="live-map-pill"></span>
+                <div id="live-map-container" style="position:absolute; inset:0;"></div>
+            </div>
+            <div class="tour-mode-rail">
+                <div class="tour-mode-rail-list" id="live-map-rail-list"></div>
+                <div class="tour-mode-stop-info">
+                    <div class="tour-mode-stop-tag-row" id="live-map-stop-tag-row">
+                        <span class="tour-mode-stop-tag-dot"></span>
+                        <span class="tour-mode-stop-tag-text" id="live-map-stop-tag-text"></span>
+                    </div>
+                    <div class="tour-mode-stop-title" id="live-map-stop-title"></div>
+                    <div class="tour-mode-stop-sub" id="live-map-stop-sub"></div>
+                </div>
+                <div class="tour-mode-nav">
+                    <button id="live-map-prev" class="tour-mode-nav-btn" onclick="window.liveMapNavigate(-1)" type="button">← <span data-i18n="tourModePrev">Previous</span></button>
+                    <button id="live-map-next" class="tour-mode-nav-btn" onclick="window.liveMapNavigate(1)" type="button"><span data-i18n="tourModeNext">Next</span> →</button>
+                </div>
+            </div>
         </div>
         <div class="live-panel-footer" data-i18n="liveTimelineFooterNote">Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.</div>
     </div>
