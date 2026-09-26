@@ -2932,6 +2932,19 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', alignLocateBtnWithZoomControl);
         const mainTileLayer = createOSMTileLayer(map).addTo(map);
         markerGroup = L.layerGroup().addTo(map);
+        // BUG rapporté le 26/09/2026 ("sur mobile, quand je clique sur un lieu et que je
+        // clique sur 'view', ça ne fait rien") : le bouton "Voir" de la bulle tap-tap
+        // (.map-hover-tip, voir showMapHoverTip()) est positionné PAR-DESSUS la carte mais
+        // n'est pas un vrai contrôle Leaflet — sans ceci, Leaflet intercepte le
+        // touchstart/touchend dessus pour son propre pan/zoom tactile avant que le clic du
+        // bouton n'ait la moindre chance de se déclencher. L.DomEvent.disableClickPropagation
+        // (+ disableScrollPropagation, au cas où la bulle grandirait un jour) est le
+        // correctif standard de Leaflet pour tout élément HTML superposé à la carte.
+        const hoverTipEl = document.getElementById('map-hover-tip');
+        if (hoverTipEl) {
+            L.DomEvent.disableClickPropagation(hoverTipEl);
+            L.DomEvent.disableScrollPropagation(hoverTipEl);
+        }
         // La bulle de résumé au survol (voir showMapHoverTip/addSingleLocationMarker) est
         // positionnée par rapport aux pixels de la carte au moment du survol : si la carte
         // bouge pendant qu'elle est ouverte (pan, zoom), on la ferme plutôt que de la
