@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-26T12:22:28.786Z.
+// Généré le 2026-09-26T17:21:35.137Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -4431,15 +4431,15 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
-    "year": "2014",
-    "ytId": "2w2h_kF_qVE",
-    "address": "40 Sinbanpo-ro 11-gil, Seocho-gu",
-    "lat": 37.5125,
-    "lng": 126.997,
-    "img": "https://img.youtube.com/vi/2w2h_kF_qVE/hqdefault.jpg",
+    "year": "2017, 2023, 2026",
+    "ytId": "J5ZkwX_9xMo",
+    "address": "40 Sinbanpo-ro 11-gil, Seocho-gu, Seoul, South Korea.",
+    "lat": 37.5121,
+    "lng": 126.99942,
+    "img": "images/admin-upload-85-photo.jpg",
     "fullDescription": {
-      "en": "<p>In several early vlogs and late-night social posts, the members visited the Banpo section of the Han River, a common spot to reflect on their trainee days and the pressure of upcoming album releases.</p><p>The Banpo Bridge, famous for its water-and-light Moonlight Rainbow Fountain show, is a staple of Seoul youth culture, and sitting by the river here connects fans to those quiet nights the members once spent seeking comfort by the water.</p>",
-      "fr": "<p>Dans plusieurs vlogs et publications tardives, les membres ont visité la section de Banpo sur le fleuve Han, un endroit habituel pour réfléchir à leurs années de stagiaires et à la pression des sorties d'albums à venir.</p><p>Le pont de Banpo, célèbre pour son spectacle de la fontaine arc-en-ciel au clair de lune, est un incontournable de la culture jeune de Séoul, et s'asseoir au bord du fleuve ici relie les fans à ces soirées calmes où les membres cherchaient du réconfort près de l'eau.</p>"
+      "fr": "<p>Dans plusieurs vlogs et publications tardives, les membres ont visité la section de Banpo sur le fleuve Han, un endroit habituel pour réfléchir à leurs années de stagiaires et à la pression des sorties d'albums à venir.</p><p>Le pont de Banpo, célèbre pour son spectacle de la fontaine arc-en-ciel au clair de lune, est un incontournable de la culture jeune de Séoul, et s'asseoir au bord du fleuve ici relie les fans à ces soirées calmes où les membres cherchaient du réconfort près de l'eau.</p>",
+      "en": "<p>Stretching alongside the banks of the Han River, Banpo Hangang Park is one of Seoul's most popular recreational riverside green spaces. Known for its lush lawns, stunning views of the city skyline, and the world-famous Banpo Bridge Moonlight Rainbow Fountain—the longest bridge fountain in the world featuring thousands of LED nozzles—the park serves as a major cultural hub and gathering place for locals and tourists alike.</p><!--stss:footsteps--><p>2017: Banpo Hangang Park holds a special connection to BTS through both official promotional media and massive city-wide celebrations. The park previously served as the scenic filming backdrop for BTS' Life in Seoul, a promotional video created in collaboration with the Seoul Metropolitan Government. In the footage, the members are seen enjoying a relaxed, classic riverside picnic, eating delivered foods like pizza and fried chicken while taking in the sweeping views of the Han River.</p><p>2023: The location's bond with the fandom expanded dramatically in June 2023, when Seoul celebrated the 10th anniversary of BTS's debut (BTS FESTA). During this landmark celebration, the Banpo Bridge Moonlight Rainbow Fountain and multiple iconic city landmarks were lit up in purple—the official color of the fandom—while special media displays and events filled the park to honor a decade of the group's journey.</p><p>2026: Furthermore, in March 2026, Banpo Hangang Park and the bridge fountain once again became a central stage for city-wide festivities welcoming BTS's historic group return and the release of their album Arirang. During the comeback weekend, the 1,140-meter-long bridge hosted a spectacular, large-scale fountain and LED light show dynamically synchronized to BTS's music, turning the Han River into a glowing tribute.</p>"
     },
     "tipsList": [
       {
@@ -4452,10 +4452,10 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "Sit by the water"
+          "en": "Recreate a Riverside Picnic"
         },
         "text": {
-          "en": "The members used this stretch of river to reflect during trainee-era pressure — sitting by the water here connects to that same quiet, off-camera side of their early years."
+          "en": "Grab some traditional Korean fried chicken (chimaek) and snacks for a picnic on the grass just like the members did in their promotional videos."
         }
       }
     ],
@@ -4466,7 +4466,52 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Come in the evening to watch the bridge light up and spray water in time with music.",
       "fr": "Venez en soirée pour voir le pont s'illuminer et projeter de l'eau en rythme avec la musique."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 3, 7, or 9 to Express Bus Terminal Station (Exit 8/8-1) and walk about 10–15 minutes down toward the river."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Park grounds are open 24/7. Fountain show timings vary by season (typically running from April to October during evening slots, with special event schedules during major city celebrations). Free admission."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully paved walking and cycling paths along the riverside, equipped with ramps and elevators leading down from the street and bridge levels."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-85-recreated-0.jpg"
+    ],
+    "episodeLink": "https://www.chosun.com/english/kpop-culture-en/2026/03/21/QQN4PDEWOZEARAWH4WTRI3N3GQ/",
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=Fg7sQwZwgUo"
+    ],
+    "officialLink": "https://en.wikipedia.org/wiki/Banpo_Bridge"
   },
   {
     "id": 86,
@@ -4556,51 +4601,6 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Go after sunset for one of the most romantic night views in all of Seoul.",
       "fr": "Venez après le coucher du soleil pour l'une des plus belles vues nocturnes de tout Séoul."
-    }
-  },
-  {
-    "id": 88,
-    "name": "Bongeunsa Temple",
-    "group": "BTS",
-    "member": "Namjoon",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "Landmark",
-    "year": "2014",
-    "ytId": "mD0D00_90l0",
-    "address": "531 Bongeunsa-ro, Gangnam-gu",
-    "lat": 37.515,
-    "lng": 127.0585,
-    "img": "https://img.youtube.com/vi/mD0D00_90l0/hqdefault.jpg",
-    "fullDescription": {
-      "en": "<p>Located just a few subway stops from their old Gangnam practice rooms, RM used to visit this massive, peaceful Buddhist temple to find quiet in the middle of the chaotic city — one of the earliest examples of what fans now call \"Namjooning.\"</p><p>The temple features a giant stone Buddha statue, and standing in its grounds while hearing the traffic of Gangnam right outside offers a genuinely meditative contrast.</p>",
-      "fr": "<p>À quelques stations de métro seulement de leurs anciennes salles de répétition de Gangnam, RM avait pour habitude de venir dans cet immense temple bouddhiste paisible pour trouver le calme au cœur de la ville chaotique — l'un des tout premiers exemples de ce que les fans appellent aujourd'hui le « Namjooning ».</p><p>Le temple abrite une statue de Bouddha en pierre géante, et se tenir dans son enceinte tout en entendant la circulation de Gangnam juste à l'extérieur offre un contraste véritablement méditatif.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Book a temple session"
-        },
-        "text": {
-          "en": "You can actually book a short meditation session or tea time with monks at this temple."
-        }
-      },
-      {
-        "title": {
-          "en": "Notice the contrast"
-        },
-        "text": {
-          "en": "The temple's quiet grounds sit just a few subway stops from the old Gangnam practice rooms — the contrast between the traffic outside and the calm within is much of the point."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Take Line 9 to Bongeunsa Station (Exit 1); the temple sits directly across the street from the massive COEX Mall.",
-      "fr": "Prenez la ligne 9 jusqu'à la station Bongeunsa (sortie 1) ; le temple se trouve juste en face de l'immense centre commercial COEX."
-    },
-    "tip": {
-      "en": "You can actually book a short meditation session or tea time with monks at this temple.",
-      "fr": "Il est possible de réserver une courte séance de méditation ou un moment de thé avec les moines de ce temple."
     }
   },
   {
