@@ -6952,6 +6952,7 @@ window.openLocationEditModal = async function (locId) {
             title: titleWithoutClosedPrefix,
             group: data.group || '', category: data.category || '', country: data.country || '', city: data.city || '',
             address: data.address || '', episode: data.episode || '', episodeLabel: data.episodeLabel || '',
+            year: data.year || '',
             lat: (data.lat != null) ? data.lat : null, lng: (data.lng != null) ? data.lng : null
         };
     };
@@ -7312,17 +7313,17 @@ async function saveLocationEdit(locId, modal) {
 
     // group/member/country/city/address/episode/year : hors de locationContent (voir la
     // note dans ensureLocationEditModal) — écrits dans locationSkeletonOverrides via un
-    // second appel. member/year restent uniquement pour les champs réellement remplis (rien
-    // à vider volontairement là — laissé vide, ça veut dire "non touché"). Pour les 5 champs
-    // texte, en revanche (group/country/city/address/episode), une valeur vide n'est plus
-    // ignorée : BUG corrigé (demande du 19/09/2026, "je veux pouvoir supprimer la partie
-    // Episode mais je ne peux pas actuellement") — l'ancienne règle "vide = ignoré" empêchait
-    // aussi bien de vider Episode que Group/Country/City/Address volontairement, quoi qu'on
-    // fasse dans le champ. Comparé à sa valeur d'ORIGINE (locationEditOriginalSkeletonValues,
-    // posée à l'ouverture du modal, voir fillSkeletonFields()) plutôt qu'à une simple
-    // présence : un champ resté intact — vide au chargement, vide au clic sur Save — n'est
-    // donc toujours pas ré-écrit inutilement, mais un champ explicitement vidé l'est bien,
-    // vide y compris.
+    // second appel. member reste uniquement pour les cases réellement cochées (aucune case
+    // cochée veut dire "All", pas "vider le champ"). Pour les 6 autres champs, en revanche
+    // (group/country/city/address/episode/year), une valeur vide n'est plus ignorée : BUG
+    // corrigé (demande du 19/09/2026, "je veux pouvoir supprimer la partie Episode mais je
+    // ne peux pas actuellement", puis du 26/09/2026 pour year, "je veux pouvoir ne pas
+    // sélectionner de date") — l'ancienne règle "vide = ignoré" empêchait aussi bien de vider
+    // Episode/Year que Group/Country/City/Address volontairement, quoi qu'on fasse dans le
+    // champ. Comparé à sa valeur d'ORIGINE (locationEditOriginalSkeletonValues, posée à
+    // l'ouverture du modal, voir fillSkeletonFields()) plutôt qu'à une simple présence : un
+    // champ resté intact — vide au chargement, vide au clic sur Save — n'est donc toujours
+    // pas ré-écrit inutilement, mais un champ explicitement vidé l'est bien, vide y compris.
     const skeletonFields = {};
     if (groupVal !== (locationEditOriginalSkeletonValues.group || '')) skeletonFields.group = groupVal;
     if (categoryVal !== (locationEditOriginalSkeletonValues.category || '')) skeletonFields.category = categoryVal;
@@ -7336,7 +7337,12 @@ async function saveLocationEdit(locId, modal) {
     if (latLngChanged) { skeletonFields.lat = latVal; skeletonFields.lng = lngVal; }
     if (episodeVal !== (locationEditOriginalSkeletonValues.episode || '')) skeletonFields.episode = episodeVal;
     if (episodeLabelVal !== (locationEditOriginalSkeletonValues.episodeLabel || '')) skeletonFields.episodeLabel = episodeLabelVal;
-    if (yearVal) skeletonFields.year = yearVal;
+    // Year (demande du 26/09/2026, "je veux pouvoir ne pas sélectionner de date") : même
+    // comparaison à la valeur d'ORIGINE que group/country/city/address/episode ci-dessus,
+    // au lieu d'un simple `if (yearVal)` — sinon décocher TOUTES les cases (pour un lieu
+    // sans date connue) était silencieusement ignoré, la sauvegarde gardant l'ancienne
+    // année au lieu de la vider comme demandé.
+    if (yearVal !== (locationEditOriginalSkeletonValues.year || '')) skeletonFields.year = yearVal;
     // Bouton "Closed" (demande du 19/09/2026) — préfixe/déprefixe le nom avec "[CLOSED] "
     // selon la bascule locale, sans jamais empiler le préfixe plusieurs fois. Le générateur
     // d'itinéraire (voir window.initItineraryGenerator() plus haut) exclut tout lieu dont le
@@ -7513,7 +7519,9 @@ function renderLocationMetaFields(loc) {
     if(dAddr) dAddr.textContent = loc.address;
 
     const dDate = document.getElementById('details-date');
-    if(dDate) dDate.textContent = loc.year;
+    // "—" quand aucune date n'est renseignée (demande du 26/09/2026, "je veux pouvoir ne pas
+    // sélectionner de date") — sans quoi la ligne affichait "Date:" suivi de rien du tout.
+    if(dDate) dDate.textContent = loc.year || '—';
 
     const dEpi = document.getElementById('details-episode');
     const dEpiCont = document.getElementById('details-episode-container');
