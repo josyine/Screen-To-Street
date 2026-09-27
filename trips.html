@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20260959" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260961" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -256,10 +256,32 @@
   .loc-row {display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f1f5f9;}
   .loc-row:last-child {border-bottom:none;}
   .loc-thumb {width:44px;height:44px;border-radius:9px;background-size:cover;background-position:center;flex-shrink:0;}
-  .loc-name {font-size:13.5px;font-weight:700;color:#212832;}
-  .loc-meta {font-size:11px;color:#94a3b8;}
-  .add-to-trip-btn { margin-left: auto; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 5px; padding: 6px 12px; font-size: 11px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; }
+  /* min-width:0 (demande du 27/09/2026, "dans Recommended for this trip, il faut ajouter
+     un bouton add") : le bouton "+ Add" existait déjà (voir quickAddLoc() dans script.js),
+     mais ce bloc info n'avait pas de min-width propre — un <div style="flex:1"> garde par
+     défaut un min-width:auto, donc un nom de lieu un peu long ne rétrécissait jamais,
+     poussait .add-to-trip-btn hors de la largeur visible sur un écran mobile étroit
+     (invisible sans scroll horizontal) au lieu de tronquer le texte. */
+  .loc-info { min-width: 0; overflow: hidden; }
+  .loc-name {font-size:13.5px;font-weight:700;color:#212832; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .loc-meta {font-size:11px;color:#94a3b8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .add-to-trip-btn { margin-left: auto; flex-shrink: 0; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 5px; padding: 6px 12px; font-size: 11px; font-weight: 700; color: #64748b; cursor: pointer; transition: 0.2s; }
   .add-to-trip-btn:hover { background: #D42759; color: #fff; border-color: #D42759; }
+
+  /* Détail d'un lieu du voyage (demande du 27/09/2026) — #loc-modal, même règles locales
+     que visited.html (partagées par window.openLocModal()/closeLocModal() dans script.js,
+     voir la note sur le balisage plus haut dans le HTML). */
+  .day-loc { cursor: pointer; }
+  #modal-hero { height: 220px; background-size: cover; background-position: center; border-radius: 16px 16px 0 0; display: flex; align-items: flex-end; padding: 20px; }
+  #modal-title { color: #fff; font-size: 22px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
+  .modal-body { padding: 22px 26px 28px 26px; }
+  #modal-meta { font-size: 12.5px; color: #D42759; font-weight: 700; margin-bottom: 16px; }
+  .modal-sub-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+  #modal-meta-box { background: #f8fafc; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; font-size: 12.5px; line-height: 2; color: #334155; }
+  #modal-desc { font-size: 13px; line-height: 1.8; color: #3f495c; margin-bottom: 18px; }
+  #modal-map { width: 100%; height: 200px; border-radius: 12px; margin-bottom: 16px; }
+  .modal-map-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #2E3644; font-size: 12.5px; font-weight: 600; transition: .2s; }
+  .modal-map-link:hover { border-color: #D42759; color: #D42759; }
 
   /* Amélioration visuelle Drag & Drop */
   .itinerary-box {background:#faf9fc; border:1px solid #e2e8f0; border-radius:20px; padding:30px;}
@@ -279,7 +301,7 @@
   .drag-over-top { border-top: 3px solid #D42759 !important; }
   .drag-over-bottom { border-bottom: 3px solid #D42759 !important; }
   
-  .drag-handle {color:#cbd5e1;flex-shrink:0; font-size: 18px;}
+  .drag-handle {color:#cbd5e1;flex-shrink:0; font-size: 18px; touch-action: none;}
   .x-btn {cursor:pointer;padding:4px;flex-shrink:0; font-size: 16px; font-weight: bold; color: #94a3b8; transition: 0.2s; margin-left:auto;}
   .x-btn:hover { color: #D42759; }
 
@@ -329,6 +351,22 @@
       .edit-banner { padding: 16px; }
       .itinerary-box { padding: 16px; }
       .day-card { padding: 14px 16px; }
+
+      /* BUG rapporté le 27/09/2026 : "YOUR ITINERARY"/"UNASSIGNED LOCATIONS"/"RECOMMENDED
+         FOR THIS TRIP"/le bouton "+ Add more locations" collaient au bord gauche de
+         l'écran, alors que "Location Filters"/"Trip Duration & Dates" juste au-dessus
+         paraissaient décalés vers la droite — pas un vrai décalage de leur part, ils
+         vivent dans .edit-banner (padding 16px ci-dessus) alors que .trips-main/
+         .trip-detail-wrapper n'ont plus AUCUN padding latéral sur mobile (voir "Pleine
+         largeur, sans marge" plus haut) : ces libellés/ce bouton, hors de tout
+         .edit-banner, n'avaient donc plus la moindre marge. Un simple margin-left
+         (même valeur que le padding de .edit-banner) les aligne sans toucher à la
+         pleine largeur des cartes en dessous (.itinerary-box/#loc-list), volontairement
+         inchangée. */
+      #i18n-your-iti, #saved-locs-label, #i18n-reco, #add-more-locations-btn { margin-left: 16px; }
+
+      .modal-body { padding: 18px 18px 22px 18px; }
+      #modal-hero { height: 170px; border-radius: 12px 12px 0 0; }
 
       /* BUG rapporté le 12/09/2026 : le popup "Invite" (#share-trip-modal, voir
          ensureShareTripModal() dans script.js) débordait sur mobile — padding fixe de
@@ -612,7 +650,7 @@
                 <div class="section-label" id="saved-locs-label" style="margin-top: 40px;">UNASSIGNED LOCATIONS (0)</div>
                 <div id="loc-list" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" style="min-height: 50px; padding: 10px; border: 1px dashed #cbd5e1; background: #fff; border-radius: 12px;"></div>
 
-                <button class="gen-btn ghost" style="margin-top:15px;" onclick="openAddModal()">
+                <button class="gen-btn ghost" id="add-more-locations-btn" style="margin-top:15px;" onclick="openAddModal()">
                     <span id="i18n-add-more">+ Add more locations</span>
                 </button>
 
@@ -624,6 +662,37 @@
             </div>
         </div>
     </main>
+</div>
+
+<!-- Détail d'un lieu du voyage (demande du 27/09/2026, "quand je clique sur un lieu du
+     trip, je veux que ça ouvre une page de détail du lieu... un bouton croix pour fermer
+     cette page et revenir sur le trip") — même modale partagée que visited.html/
+     wishlist.html/profile.html (#loc-modal, window.openLocModal()/closeLocModal() dans
+     script.js) plutôt qu'une nouvelle page dédiée : la croix de fermeture existe déjà
+     nativement dans ce composant. -->
+<div id="loc-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeLocModal()">&times;</span>
+        <div id="modal-hero"><div id="modal-title"></div></div>
+        <div class="modal-body">
+            <div id="modal-meta"></div>
+            <span class="modal-sub-label" id="modal-details-label">Details</span>
+            <div id="modal-meta-box"></div>
+            <span class="modal-sub-label" id="modal-about-label">About this place</span>
+            <div id="modal-desc"></div>
+            <div id="modal-map"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span id="modal-map-link-text">Open in Google Maps</span>
+                </a>
+                <a id="modal-more-details" href="map.html" class="modal-map-link" style="border-color:#D42759; color:#D42759;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    More details
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal Add More Locations -->
@@ -861,9 +930,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20260959"></script>
-<script src="locations-data.js?v=20260959"></script>
-<script src="script.js?v=20260959"></script>
+<script type="module" src="firebase-init.js?v=20260961"></script>
+<script src="locations-data.js?v=20260961"></script>
+<script src="script.js?v=20260961"></script>
 
 </body>
 </html>
