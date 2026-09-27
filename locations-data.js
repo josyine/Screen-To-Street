@@ -8,11 +8,11 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-27T13:13:27.468Z.
+// Généré le 2026-09-27T17:54:37.207Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
-    "name": "Cafe Camptong",
+    "name": "[CLOSED] Cafe Camptong",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
@@ -23,8 +23,8 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "https://weverse.io/bts/media/3-104694116",
     "ytId": "yiqe-aegVk0",
     "address": "27 Apgujeong-ro 42-gil, Gangnam-gu",
-    "lat": 37.5255,
-    "lng": 127.0375,
+    "lat": 37.52699,
+    "lng": 127.03533,
     "img": "https://img.youtube.com/vi/yiqe-aegVk0/hqdefault.jpg",
     "fullDescription": {
       "ko": "<p>강남의 심장부, 트렌디한 압구정 골목에 자리 잡고 있던 카페 캠프통은 '글램핑'을 테마로 한 5층 규모의 거대한 도심 속 오아시스였습니다. 인조 잔디, 아늑한 실내 텐트, 캠핑 의자, 꼬마전구 등 콘셉트를 극대화하여 서울을 떠나지 않고도 시골로 탈출한 듯한 느낌을 주었습니다. 아쉽게도 이 상징적인 장소는 영구 폐업했지만, 이 주소는 아미들에게 여전히 필수 순례지로 남아있습니다. 그도 그럴 것이 이곳은 2020년 말 <em>달려라 방탄!</em> 118, 119화가 촬영된 곳으로, 프로그램 역사상 가장 혼란스럽고 기억에 남는 보물찾기의 무대가 되었기 때문입니다. 건물 정면에 서면 그 전설적인 촬영 날의 분위기로 순식간에 빠져들 수 있습니다.</p><p>카페의 미로 같은 내부는 일곱 멤버가 열띤 포스트잇 찾기(유명한 '포토 스토리' 에피소드)를 벌이는 진정한 놀이터로 변했습니다. 이 촬영에 얽힌 일화들은 전설적입니다. 포스트잇을 읽지도 않고 강박적으로 다 뜯어버리던 진의 '다람쥐 증후군'과 결국 자신에게 화살로 돌아온 마키아벨리적 계획은 잊을 수 없습니다. 정국이 다른 멤버들을 피하기 위해 전력 질주하며 카메라맨을 말 그대로 기진맥진하게 만든 곳도 바로 이 계단입니다. 찰나의 동맹, '포토 존'에서 포즈를 인정받기 위한 막내 라인(지민, 뷔)의 유쾌한 배신, 텐트 안에서 상황을 침착하게 분석하려던 슈가 등 건물은 하루 종일 멤버들의 웃음과 비명으로 가득 찼습니다.</p>",
@@ -34,119 +34,57 @@ window.STATIC_LOCATIONS = [
       "fr": "<p>Autrefois niché dans les ruelles branchées d'Apgujeong, au cœur de Gangnam, le Cafe Camptong était une immense oasis urbaine de cinq étages dédiée au \"glamping\" (le camping glamour). Le concept était poussé à l'extrême : fausse pelouse, tentes d'intérieur douillettes, chaises de camping et guirlandes lumineuses offraient une évasion rustique sans quitter Séoul. Bien que cet établissement emblématique ait malheureusement fermé ses portes définitivement, son adresse reste un lieu de pèlerinage incontournable pour les ARMYs. Et pour cause : c'est ici qu'ont été tournés les épisodes 118 et 119 de <em>Run BTS!</em> fin 2020, devenant le théâtre de l'une des chasses au trésor les plus chaotiques et mémorables de l'histoire de l'émission. Se tenir devant la façade permet de se replonger instantanément dans cette journée de tournage mythique.</p><p>L'intérieur labyrinthique du café s'était alors transformé en un véritable terrain de jeu où les sept membres se sont affrontés lors d'une chasse aux post-it frénétique (le fameux arc \"Photo Story\"). Les anecdotes de ce tournage sont légendaires : on repense inévitablement au \"syndrome de l'écureuil\" de Jin, qui arrachait compulsivement tous les post-it trouvés sans même les lire, un plan machiavélique qui s'est finalement retourné contre lui. C'est aussi dans ces escaliers que Jungkook a littéralement épuisé son caméraman à force de sprinter à toute vitesse pour échapper aux autres. Entre les alliances éphémères, les trahisons hilarantes de la Maknae Line (Jimin et V) pour valider leurs poses dans les \"Photo Zones\", et Suga qui tentait d'analyser calmement la situation depuis une tente, le bâtiment a résonné de leurs rires et de leurs cris toute la journée.</p>",
       "es": "<p>Una vez ubicado en los callejones de moda de Apgujeong, en el corazón de Gangnam, Cafe Camptong era un enorme oasis urbano de cinco pisos dedicado al \"glamping\" (camping glamoroso). El concepto se llevó al extremo: césped artificial, acogedoras tiendas de campaña en el interior, sillas de camping y luces de cadena ofrecían un escape rústico sin salir de Seúl. Aunque este emblemático establecimiento lamentablemente ha cerrado sus puertas de forma permanente, su dirección sigue siendo un lugar de peregrinación de visita obligada para l@s ARMYs. Y por una buena razón: aquí es donde se filmaron los episodios 118 y 119 de <em>Run BTS!</em> a finales de 2020, convirtiéndose en el escenario de una de las búsquedas del tesoro más caóticas y memorables de la historia del programa. Pararse frente a la fachada te permite sumergirte instantáneamente en ese legendario día de rodaje.</p><p>El laberíntico interior del café se transformó en un verdadero patio de recreo donde los siete miembros se enfrentaron en una frenética búsqueda de post-its (el famoso arco de \"Photo Story\"). Las anécdotas de este rodaje son legendarias: inevitablemente pensamos en el \"síndrome de la ardilla\" de Jin, quien arrancaba compulsivamente todos los post-its que encontraba sin siquiera leerlos, un plan maquiavélico que al final se volvió en su contra. También fue en estas escaleras donde Jungkook literalmente agotó a su camarógrafo al correr a toda velocidad para escapar de los demás. Entre alianzas fugaces, traiciones hilarantes de la Maknae Line (Jimin y V) para validar sus poses en las \"Photo Zones\", y Suga intentando analizar con calma la situación desde una tienda de campaña, el edificio resonó con sus risas y gritos durante todo el día.</p>",
       "zh": "<p>Cafe Camptong曾经坐落在江南中心时尚的狎鸥亭小巷中，是一个占地五层、以“豪华露营”为主题的巨大都市绿洲。这里的概念发挥到了极致：人造草坪、舒适的室内帐篷、露营椅和串灯，让你无需离开首尔就能享受乡村般的逃离。尽管这家标志性的店面遗憾地已永久关闭，但它的地址依然是ARMY们必去的朝圣地。原因很简单：这里是2020年底<em>Run BTS!</em>第118和119集的拍摄地，也是该节目历史上最混乱、最令人难忘的寻宝游戏舞台。站在建筑正面，你可以瞬间沉浸在那个传奇拍摄日的回忆中。</p><p>咖啡馆迷宫般的内部变成了一个真正的游乐场，七名成员在这里展开了疯狂的便利贴寻找战（著名的“照片故事”篇）。这次拍摄的轶事堪称传奇：不可避免地会让人想起Jin的“松鼠综合症”，他强迫症般地撕下所有找到的便利贴，看都不看一眼，这个马基雅维利式的计划最终让他自食其果。同样是在这些楼梯上，Jungkook为了躲避其他成员全速冲刺，让他的摄像师累得半死。在短暂的结盟、忙内小分队（Jimin和V）为了在“拍照区”认证姿势而上演的搞笑背叛，以及Suga试图在帐篷里冷静分析局势之间，整栋建筑一整天都回荡着他们的笑声和尖叫声。</p>",
-      "en": "<p>Once nestled in the trendy alleys of Apgujeong, in the heart of Gangnam, Cafe Camptong was a massive five-story urban oasis dedicated to \"glamping\" (glamorous camping). The concept was pushed to the extreme: fake grass, cozy indoor tents, camping chairs, and string lights offered a rustic escape without leaving Seoul. Although this iconic establishment has unfortunately closed its doors for good, its address remains a must-visit pilgrimage site for ARMYs. And for good reason: this is where episodes 118 and 119 of Run BTS! were filmed in late 2020, becoming the stage for one of the most chaotic and memorable scavenger hunts in the show's history. Standing in front of the facade lets you instantly relive that legendary filming day.</p><p>The café's labyrinthine interior became a true playground where the seven members faced off in a frantic post-it hunt (the famous \"Photo Story\" arc). The stories from this shoot are legendary: it's impossible not to think of Jin's \"squirrel syndrome,\" compulsively snatching up every post-it he found without even reading them, a Machiavellian plan that ultimately backfired on him. It was also on these stairs that Jungkook literally wore out his cameraman by sprinting at full speed to escape the others. Between fleeting alliances, the Maknae Line's (Jimin and V) hilarious betrayals to get their poses validated in the \"Photo Zones,\" and Suga calmly trying to analyze the situation from inside a tent, the building echoed with their laughter and screams all day long.</p>"
+      "en": "<p>Once nestled in the trendy alleys of Apgujeong, in the heart of Gangnam, Cafe Camptong was a massive five-story urban oasis dedicated to \"glamping\" (glamorous camping). The concept was pushed to the extreme: fake grass, cozy indoor tents, camping chairs, and string lights offered a rustic escape without leaving Seoul. Although this iconic establishment has unfortunately closed its doors for good, its address remains a must-visit pilgrimage site for ARMYs. And for good reason: this is where episodes 118 and 119 of Run BTS! were filmed in late 2020, becoming the stage for one of the most chaotic and memorable scavenger hunts in the show's history. Standing in front of the facade lets you instantly relive that legendary filming day.</p><!--stss:footsteps--><p>The café's labyrinthine interior became a true playground where the seven members faced off in a frantic post-it hunt (the famous \"Photo Story\" arc). The stories from this shoot are legendary: it's impossible not to think of Jin's \"squirrel syndrome,\" compulsively snatching up every post-it he found without even reading them, a Machiavellian plan that ultimately backfired on him. It was also on these stairs that Jungkook literally wore out his cameraman by sprinting at full speed to escape the others. Between fleeting alliances, the Maknae Line's (Jimin and V) hilarious betrayals to get their poses validated in the \"Photo Zones,\" and Suga calmly trying to analyze the situation from inside a tent, the building echoed with their laughter and screams all day long.</p>"
     },
     "practicalInfo": [
       {
         "title": {
-          "en": "Location status",
-          "fr": "Statut du lieu",
-          "es": "Estado del lugar",
-          "it": "Stato del luogo",
-          "ko": "장소 상태",
-          "ja": "場所の状況",
-          "pt": "Status do local",
-          "zh": "地点状态"
+          "en": "How to get there"
         },
         "text": {
-          "en": "Permanently closed. The original establishment with its tents and indoor rooftop no longer exists. However, the building and the alley (at 27 Apgujeong-ro 42-gil, Gangnam-gu) remain accessible public spaces. It's the perfect opportunity to take a souvenir photo of the complex's exterior and check off this legendary milestone on your pilgrimage map.",
-          "fr": "Fermé définitivement. L'établissement d'origine avec ses tentes et son rooftop intérieur n'existe plus. Cependant, le bâtiment et la ruelle (au 27 Apgujeong-ro 42-gil, Gangnam-gu) restent des espaces publics accessibles. C'est l'occasion parfaite pour prendre une photo souvenir de l'extérieur du complexe et marquer ce point de passage mythique sur votre carte de pèlerinage.",
-          "es": "Cerrado permanentemente. El establecimiento original con sus tiendas y su azotea interior ya no existe. Sin embargo, el edificio y el callejón (en 27 Apgujeong-ro 42-gil, Gangnam-gu) siguen siendo espacios públicos accesibles. Es la oportunidad perfecta para tomar una foto de recuerdo del exterior del complejo y marcar este punto de paso mítico en tu mapa de peregrinación.",
-          "it": "Chiuso definitivamente. La struttura originale con le sue tende e il rooftop interno non esiste più. Tuttavia, l'edificio e il vicolo (al 27 Apgujeong-ro 42-gil, Gangnam-gu) rimangono spazi pubblici accessibili. È l'occasione perfetta per scattare una foto ricordo dell'esterno del complesso e segnare questo punto mitico sulla tua mappa di pellegrinaggio.",
-          "ko": "영구 폐업. 텐트와 실내 루프탑이 있던 원래 시설은 더 이상 존재하지 않습니다. 하지만 건물과 골목(강남구 압구정로42길 27)은 여전히 접근 가능한 공공장소입니다. 건물 외관을 배경으로 기념사진을 찍고, 순례 지도에 이 전설적인 장소를 표시할 완벽한 기회입니다.",
-          "ja": "永久閉店。テントや屋内屋上があった元の施設はもう存在しません。しかし、建物と路地（江南区狎鴎亭路42街27）は依然としてアクセス可能な公共スペースです。建物の外観の記念写真を撮り、巡礼マップにこの伝説的な場所をマークする絶好の機会です。",
-          "pt": "Permanentemente fechado. O estabelecimento original com suas tendas e terraço interno não existe mais. No entanto, o prédio e o beco (em 27 Apgujeong-ro 42-gil, Gangnam-gu) continuam sendo espaços públicos acessíveis. É a oportunidade perfeita para tirar uma foto de lembrança do exterior do complexo e marcar este marco lendário no seu mapa de peregrinação.",
-          "zh": "永久关闭。最初带有帐篷和室内屋顶的设施已不复存在。然而，建筑和所在的小巷（江南区狎鸥亭路42街27号）仍然是可进入的公共空间。这是拍摄建筑外观纪念照、在你的朝圣地图上标记这个传奇地点的绝佳机会。"
+          "en": "Take Seoul Subway Line 2 or the Bundang Line to Seolleung Station or Gangnam-gu Office Station, followed by a short walk into the local commercial streets to view the exterior structure."
         }
       },
       {
         "title": {
-          "en": "How to get there",
-          "fr": "Comment s'y rendre",
-          "es": "Cómo llegar",
-          "it": "Come arrivare",
-          "ko": "가는 방법",
-          "ja": "アクセス方法",
-          "pt": "Como chegar",
-          "zh": "如何前往"
+          "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "Take the Suin-Bundang subway line to Apgujeong Rodeo station and use exit 5. You will need to walk about 8 minutes north. The walk is very pleasant as it takes you through the lively Rodeo shopping streets, lined with boutiques and storefronts typical of Gangnam's luxurious atmosphere.",
-          "fr": "Empruntez la ligne de métro Suin-Bundang jusqu'à la station Apgujeong Rodeo et prenez la sortie 5. Il vous faudra marcher environ 8 minutes vers le nord. Le trajet est très agréable car il vous fait traverser les rues commerçantes animées de Rodeo, bordées de boutiques et vitrines typiques de l'atmosphère luxueuse de Gangnam.",
-          "es": "Toma la línea de metro Suin-Bundang hasta la estación Apgujeong Rodeo y toma la salida 5. Tendrás que caminar unos 8 minutos hacia el norte. El trayecto es muy agradable ya que te hace atravesar las animadas calles comerciales de Rodeo, bordeadas de boutiques y escaparates típicos del ambiente lujoso de Gangnam.",
-          "it": "Prendi la linea della metropolitana Suin-Bundang fino alla stazione Apgujeong Rodeo e prendi l'uscita 5. Dovrai camminare per circa 8 minuti verso nord. Il tragitto è molto piacevole in quanto ti fa attraversare le animate strade dello shopping di Rodeo, fiancheggiate da boutique e vetrine tipiche della lussuosa atmosfera di Gangnam.",
-          "ko": "수인분당선을 타고 압구정로데오역에서 내려 5번 출구로 나옵니다. 북쪽으로 약 8분 정도 걸어가야 합니다. 강남 특유의 고급스러운 분위기를 느낄 수 있는 부티크와 쇼윈도가 늘어선 활기찬 로데오 쇼핑거리를 지나게 되어 걷는 길이 매우 즐겁습니다.",
-          "ja": "水仁・盆唐線に乗り、狎鴎亭ロデオ駅の5番出口を出ます。北へ約8分歩きます。江南の豪華な雰囲気を象徴するブティックやショーウィンドウが並ぶ、活気あるロデオのショッピングストリートを抜けるため、歩くのもとても楽しいです。",
-          "pt": "Pegue a linha de metrô Suin-Bundang até a estação Apgujeong Rodeo e use a saída 5. Você precisará caminhar cerca de 8 minutos para o norte. A caminhada é muito agradável, pois leva você pelas animadas ruas comerciais de Rodeo, repletas de butiques e vitrines típicas da luxuosa atmosfera de Gangnam.",
-          "zh": "乘坐水仁·盆唐线至狎鸥亭罗德奥站，从5号出口出站。你需要向北步行约8分钟。这段路非常惬意，因为你将穿过热闹的罗德奥商业街，两旁林立着充满江南奢华气息的精品店和橱窗。"
+          "en": "Permanently Closed. Interior access is not permitted; exterior viewing only."
         }
       },
       {
         "title": {
-          "en": "What to do around the cafe?",
-          "fr": "Que faire autour du café ?",
-          "es": "¿Qué hacer alrededor del café?",
-          "it": "Cosa fare nei dintorni del caffè?",
-          "ko": "카페 주변에서 할 일",
-          "ja": "カフェの周辺で何をする？",
-          "pt": "O que fazer ao redor do café?",
-          "zh": "在咖啡馆周围做什么？"
+          "en": "Accessibility"
         },
         "text": {
-          "en": "Since you can no longer eat or drink on site, take advantage of being in this highly strategic neighborhood! Just a few minutes' walk away, you can reach the famous K-Star Road to admire the well-known \"GangnamDols,\" or walk to Hakdong Park and the area around BTS's old dorm, foundational places from their trainee days.",
-          "fr": "Puisque vous ne pouvez plus consommer sur place, profitez d'être dans ce quartier hautement stratégique ! À quelques minutes de marche de là, vous pouvez rejoindre la célèbre K-Star Road pour admirer les fameux \"GangnamDols\", ou marcher jusqu'au parc Hakdong et aux environs de l'ancien dortoir de BTS, des lieux fondateurs de leur époque de trainees.",
-          "es": "Ya que no puedes consumir en el lugar, ¡aprovecha estar en este barrio altamente estratégico! A pocos minutos a pie, puedes llegar a la famosa K-Star Road para admirar los famosos \"GangnamDols\", o caminar hasta el parque Hakdong y los alrededores del antiguo dormitorio de BTS, lugares fundamentales de su época de aprendices.",
-          "it": "Poiché non puoi più consumare sul posto, approfitta di essere in questo quartiere altamente strategico! A pochi minuti di cammino, puoi raggiungere la famosa K-Star Road per ammirare i noti \"GangnamDols\", oppure camminare fino al parco Hakdong e ai dintorni del vecchio dormitorio dei BTS, luoghi fondamentali dei loro giorni da trainee.",
-          "ko": "더 이상 이곳에서 커피를 마실 수는 없지만, 이 전략적인 동네에 있다는 사실을 활용하세요! 걸어서 몇 분만 가면 유명한 '강남돌'을 볼 수 있는 K-Star Road가 있고, 연습생 시절의 발자취가 남은 학동공원과 BTS의 옛 숙소 주변까지 걸어갈 수 있습니다.",
-          "ja": "ここで飲食することはもうできませんが、この戦略的なエリアにいることを最大限に活用しましょう！歩いて数分のところに、有名な「江南ドル（GangnamDol）」を楽しめるK-Star Roadがあります。また、練習生時代の原点である鶴洞公園やBTSの旧宿舎周辺まで歩いて行くこともできます。",
-          "pt": "Já que você não pode mais consumir no local, aproveite estar neste bairro altamente estratégico! A poucos minutos de caminhada, você pode chegar à famosa K-Star Road para admirar os conhecidos \"GangnamDols\", ou caminhar até o Parque Hakdong e os arredores do antigo dormitório do BTS, lugares fundamentais dos seus tempos de trainee.",
-          "zh": "既然你已经不能在这里消费了，那就充分利用在这个极具战略意义的街区的时间吧！步行几分钟，你就可以到达著名的韩流明星大道（K-Star Road）欣赏著名的“江南熊（GangnamDols）”，或者步行去鹤洞公园和防弹少年团旧宿舍附近，那些是他们练习生时代的重要地点。"
+          "en": "Located on standard urban sidewalks in a busy Gangnam commercial block."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Immersion tip",
-          "fr": "Le conseil immersion.",
-          "es": "Consejo de inmersión",
-          "it": "Consiglio per l'immersione",
-          "ko": "몰입 팁",
-          "ja": "没入感のためのヒント",
-          "pt": "Conselho de imersão",
-          "zh": "沉浸式提示"
+          "en": "A Note on Visiting"
         },
         "text": {
-          "en": "Before heading to this address, don't hesitate to re-watch episode 119 of Run BTS! in your hotel room. This will let you perfectly recognize the building's exterior architecture and the street where the members arrived, making your visit to the storefront much more vivid and full of nostalgia.",
-          "fr": "Avant de vous rendre à cette adresse, n'hésitez pas à re-visionner l'épisode 119 de Run BTS! dans votre chambre d'hôtel. Cela vous permettra de reconnaître parfaitement l'architecture extérieure du bâtiment et la rue où les membres sont arrivés, rendant votre visite devant la devanture beaucoup plus vivante et remplie de nostalgie.",
-          "es": "Antes de ir a esta dirección, no dudes en volver a ver el episodio 119 de Run BTS! en tu habitación de hotel para reconocer perfectamente la arquitectura exterior del edificio y la calle por donde llegaron los miembros.",
-          "it": "Prima di recarti a questo indirizzo, non esitare a riguardare l'episodio 119 di Run BTS! nella tua camera d'albergo per riconoscere perfettamente l'architettura esterna dell'edificio e la strada da cui sono arrivati i membri.",
-          "ko": "이곳을 방문하기 전, 호텔 방에서 달려라 방탄! 119화를 다시 시청해 보세요. 건물의 외관과 멤버들이 도착했던 거리를 완벽하게 알아볼 수 있을 것입니다.",
-          "ja": "この場所に向かう前に、ホテルの部屋でRun BTS!のエピソード119をもう一度見直すことをお勧めします。建物の外観やメンバーが到着した通りを完璧に認識できるようになります。",
-          "pt": "Antes de ir a este endereço, não hesite em rever o episódio 119 de Run BTS! no seu quarto de hotel para reconhecer perfeitamente a arquitetura exterior do edifício e a rua onde os membros chegaram.",
-          "zh": "在前往这个地址之前，不要犹豫在酒店房间里重温一遍Run BTS!的第119集，这样你就能完美认出建筑的外观和成员们到达的街道。"
+          "en": "Because the cafe is definitely and permanently closed, you will only be able to view the exterior building rather than go inside or order a coffee. Plan accordingly if you are mapping out your Gangnam itinerary!"
         }
       },
       {
         "title": {
-          "en": "Where to take a real coffee break?",
-          "fr": "Où faire une vraie pause café ?",
-          "es": "¿Dónde tomar un verdadero descanso para el café?",
-          "it": "Dove fare una vera pausa caffè?",
-          "ko": "진짜 커피 브레이크는 어디서?",
-          "ja": "本当のコーヒーブレイクはどこで？",
-          "pt": "Onde fazer uma verdadeira pausa para o café?",
-          "zh": "去哪里享受真正的咖啡休息时间？"
+          "en": "Reminisce on the Episodes"
         },
         "text": {
-          "en": "With Cafe Camptong closed, fall back on other historic addresses in the neighborhood for your snack. Gangnam is full of other cafés and restaurants the members used to frequent in their younger days: use the app's map mode to find the nearest open BTS location to rest after your walk!",
-          "fr": "Le Cafe Camptong étant fermé, rabattez-vous sur d'autres adresses historiques du quartier pour votre goûter. Le quartier de Gangnam regorge d'autres cafés et restaurants fréquentés par les membres dans leur jeunesse : utilisez le mode carte de l'application pour trouver le lieu BTS ouvert le plus proche pour vous reposer après votre marche !",
-          "es": "Como el Cafe Camptong está cerrado, recurre a otras direcciones históricas del barrio para tu merienda. ¡Utiliza el modo mapa de la aplicación para encontrar el lugar de BTS abierto más cercano!",
-          "it": "Essendo il Cafe Camptong chiuso, ripiega su altri indirizzi storici del quartiere per la tua merenda. Utilizza la modalità mappa dell'app per trovare il luogo BTS aperto più vicino!",
-          "ko": "카페 캠프통이 폐업했으니, 간식을 즐기려면 근처의 다른 역사적인 장소들을 방문해 보세요. 앱의 지도 모드를 사용해 가장 가까운 영업 중인 BTS 관련 장소를 찾아보세요!",
-          "ja": "Cafe Camptongは閉店しているので、おやつには近隣の他の歴史的な場所を利用しましょう。アプリのマップモードを使って、一番近くの営業しているBTS関連の場所を見つけてください！",
-          "pt": "Como o Cafe Camptong está fechado, recorra a outros endereços históricos do bairro para o seu lanche. Use o modo mapa do aplicativo para encontrar o local BTS aberto mais próximo!",
-          "zh": "既然Cafe Camptong关门了，去街区里其他有历史意义的地点吃点点心吧。使用应用程序的地图模式寻找最近的正在营业的防弹少年团相关地点！"
+          "en": "Rewatch Episodes 118 and 119 of Run BTS! before heading to the address to picture the members running through the studio rooms and hallways."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Surrounding Gangnam Hotspots"
+        },
+        "text": {
+          "en": "Since you are already in the district, combine your exterior photo stop with a visit to other nearby BTS landmarks or trendy local spots in Gangnam."
         }
       }
     ],
@@ -160,7 +98,15 @@ window.STATIC_LOCATIONS = [
       "https://www.youtube.com/watch?v=wlHS-fpJrm0"
     ],
     "tiktokUrl": "",
-    "tweetUrls": []
+    "tweetUrls": [],
+    "pinterestUrls": [],
+    "pinterestUrl": "",
+    "officialLink": "",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-1-recreated-0.jpg",
+      "images/admin-upload-1-recreated-1.jpg"
+    ]
   },
   {
     "id": 2,
@@ -5184,38 +5130,46 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 101,
-    "name": "Maze Land",
+    "name": "BTS Cafe Young Forever",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
     "city": "Jeju Island",
     "category": "MV Location",
     "year": "2016",
-    "episode": "Epilogue: Young Forever",
-    "ytId": "BEFNhMkdVz4",
-    "address": "2134-47 Bijarim-ro, Gujwa-eup, Jeju-si",
-    "lat": 33.4995,
-    "lng": 126.7285,
-    "img": "https://img.youtube.com/vi/BEFNhMkdVz4/hqdefault.jpg",
+    "episode": "",
+    "ytId": "zrMEKtVQTOk",
+    "address": "2109-36, Namjo-ro, Jocheon-eup, Jeju-si, Jeju-do, South Korea",
+    "lat": 33.45401,
+    "lng": 126.65798,
+    "img": "images/admin-upload-101-photo.jpg",
     "fullDescription": {
-      "en": "<p>Before they reached the runway, the members were shown wandering through a vast, confusing labyrinth for the \"Epilogue: Young Forever\" video — filmed at Maze Land, one of Jeju Island's most famous eco-parks, known for its intricate stone walls.</p><p>Getting lost in the same stone corridors where RM, Jin and Jimin once wandered makes for a fun, slightly melancholic adventure, adding to the realism of feeling lost in youth.</p>",
-      "fr": "<p>Avant d'atteindre la piste, les membres étaient filmés errant dans un vaste labyrinthe déroutant pour le clip « Epilogue: Young Forever » — tourné à Maze Land, l'un des parcs écologiques les plus célèbres de l'île de Jeju, réputé pour ses murs de pierre labyrinthiques.</p><p>Se perdre dans les mêmes couloirs de pierre où RM, Jin et Jimin ont autrefois erré donne lieu à une aventure amusante et légèrement mélancolique, renforçant ce sentiment réaliste de se perdre dans sa jeunesse.</p>"
+      "fr": "<p>Avant d'atteindre la piste, les membres étaient filmés errant dans un vaste labyrinthe déroutant pour le clip « Epilogue: Young Forever » — tourné à Maze Land, l'un des parcs écologiques les plus célèbres de l'île de Jeju, réputé pour ses murs de pierre labyrinthiques.</p><p>Se perdre dans les mêmes couloirs de pierre où RM, Jin et Jimin ont autrefois erré donne lieu à une aventure amusante et légèrement mélancolique, renforçant ce sentiment réaliste de se perdre dans sa jeunesse.</p>",
+      "en": "<p>Nestled in the peaceful highlands of Jocheon on Jeju Island, BTS Cafe Young Forever is far more than just a themed cafe—it stands as a sacred pilgrimage site for ARMYs visiting the island. This sprawling property is the actual, authentic filming location where the jacket photos and music video behind-the-scenes content for BTS's legendary special album The Most Beautiful Moment in Life: Young Forever were shot in March 2016. Walking onto the grounds feels like stepping straight through the screen and into a living museum dedicated to the golden era of HYYH.</p><!--stss:footsteps--><p>From the moment you arrive, the location envelops you in BTS history. The exterior parking lot and gallery buildings are adorned with vibrant artistic murals, including a massive, breathtaking mural featuring all seven members.</p><p>What makes this space truly special is its incredible commitment to preserving real artifacts from the 2016 photoshoot:</p><p>The Original Hot Air Balloon Basket: Positioned at the back of the cafe, fans can see and stand near the actual hot air balloon basket used during the official jacket photoshoot on March 16, 2016.</p><p>The BTS 'Ramyeon' Table: You can sit down and enjoy a drink at the exact table where the members ate ramyeon and joked around during their break, surrounded by heartwarming gifts left by international fans. The cafe has meticulously preserved the props and atmosphere captured in the official behind-the-scenes \"Episode\" videos.</p><p>The Great Field: Looking out from the cafe's large windows, you can view the wide grassy fields where the members ran and played during the historic shoot.</p><p>To honor the members, the cafe features a creative Signature Menu where each drink reflects a member's personality: RM's sophisticated Shakerato, Jin's soft Rosy Latte (with a subtle rose scent), Suga's refreshing Lemony, j-hope's energetic Coco-presso, Jimin's nutty Creamy Latte, V's sweet-and-savory Injeolmi Latte, and Jungkook's berry-infused Espre-berry. For fans wanting an immersive stay, a cozy glamping site sits right across from the cafe, offering forest BBQs and campfire vibes reminiscent of Bon Voyage.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Head to the Stone Maze"
+          "en": "Recreate the Photoshoot Poses"
         },
         "text": {
-          "en": "Head specifically to the Stone Maze section — that's where the video was primarily shot."
+          "en": "Snap photos near the original hot air balloon basket and the famous ramyeon table to mirror the Young Forever concept imagery."
         }
       },
       {
         "title": {
-          "en": "Let yourself get lost"
+          "en": "Try a Member's Drink"
         },
         "text": {
-          "en": "The maze's intricate stone corridors are designed to genuinely disorient visitors — part of the fun (and the point of the original video) is not rushing straight to the exit."
+          "en": "Order a signature beverage tailored to your bias—such as V's Injeolmi Latte or Jungkook's Espre-berry—while browsing the indoor art gallery exhibits."
+        }
+      },
+      {
+        "title": {
+          "en": "Rent a Car for Convenience"
+        },
+        "text": {
+          "en": "Because the cafe is tucked away in the peaceful highlands of Jocheon, renting a car is strongly recommended over public transit to make your travel seamless."
         }
       }
     ],
@@ -5226,7 +5180,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Head specifically to the Stone Maze section — that's where the video was primarily shot.",
       "fr": "Dirigez-vous précisément vers la section du labyrinthe de pierre — c'est là que le clip a été principalement tourné."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "While public transport is possible from Jeju Airport (taking Red Bus No. 121, transferring to Blue Bus No. 231, and walking from the 'Igipun Mission Memorial' stop), renting a car is the most convenient option. By car, follow the route toward Jocheon-eup, look for the CU convenience store near the area, and turn right into the uphill alley immediately after the store."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from 9:00 AM to 7:00 PM. Standard cafe purchase required for entry."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved courtyard and indoor cafe spaces with accessible entries, surrounded by open grassy fields and gentle highland slopes."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://theklocal.com/bts-cafe-young-forever-jeju/",
+    "recreatedPhotos": [
+      "images/admin-upload-101-recreated-0.jpg",
+      "images/admin-upload-101-recreated-1.jpg"
+    ]
   },
   {
     "id": 102,
@@ -14981,12 +14979,8 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-manual-1790168859601-lx8rcz-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "ChrisSampson87 /  Wikimedia Commons / CC BY-SA 4.0",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located on Place Igor-Stravinsky right next to the Centre Pompidou in the 4th arrondissement, the Fontaine Stravinsky (also known as the Fontaine des Automates) is a whimsical, world-famous public fountain created in 1983 by artists Niki de Saint Phalle and Jean Tinguely. The fountain features 16 kinetic, water-spouting sculptures, ranging from playful black mechanical structures to vibrant, colorful resin figures, that continuously move and spray water. Each sculpture visually represents a musical piece by the legendary Russian composer Igor Stravinsky, making it a unique landmark where modern art meets urban space in the heart of Paris.</p><p>During his stay in Paris in 2019, Jimin visited the vibrant Centre Pompidou area and took a stroll around Place Igor-Stravinsky. He paused to admire the whimsical moving sculptures of the Fontaine Stravinsky, a playful moment captured at the 0:16 mark of his official Paris vlog on BANGTANTV.</p>"
-    },
     "ytId": "dl3QLdm2uts",
     "tipsList": [
       {
@@ -15051,7 +15045,11 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "recreatedPhotos": [
       "images/admin-upload-new-manual-1790168859601-lx8rcz-recreated-0.jpg"
-    ]
+    ],
+    "imgCredit": "ChrisSampson87 / CC BY-SA 4.0",
+    "fullDescription": {
+      "en": "<p>Located on Place Igor-Stravinsky right next to the Centre Pompidou in the 4th arrondissement, the Fontaine Stravinsky (also known as the Fontaine des Automates) is a whimsical, world-famous public fountain created in 1983 by artists Niki de Saint Phalle and Jean Tinguely. The fountain features 16 kinetic, water-spouting sculptures, ranging from playful black mechanical structures to vibrant, colorful resin figures, that continuously move and spray water. Each sculpture visually represents a musical piece by the legendary Russian composer Igor Stravinsky, making it a unique landmark where modern art meets urban space in the heart of Paris.</p><!--stss:footsteps--><p>During his stay in Paris in 2019, Jimin visited the vibrant Centre Pompidou area and took a stroll around Place Igor-Stravinsky. He paused to admire the whimsical moving sculptures of the Fontaine Stravinsky, a playful moment captured at the 0:16 mark of his official Paris vlog on BANGTANTV.</p>"
+    }
   },
   {
     "id": "new-manual-1790170246987-dy0v5r",
