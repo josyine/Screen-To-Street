@@ -2411,7 +2411,17 @@ window.addEventListener('firebase-ready', async (e) => {
     // déjà plus lent — désormais entièrement sautés hors de map.html, et lancées en
     // parallèle (Promise.all, chacune indépendante des deux autres) plutôt qu'en série là
     // où elles s'exécutent encore.
-    if (document.getElementById('map')) {
+    // BUG corrigé (demande du 27/09/2026, "j'ai renommé 'Maze Land' par 'BTS Cafe Young
+    // Forever', mais dans feed, Mei's Picture ça affiche encore 'Maze Land'") — même famille
+    // que les 3 correctifs commentés ci-dessous (newLocations/locationSkeletonOverrides/
+    // hiddenLocations) : cette fusion dans le celebLocations PARTAGÉ était limitée à
+    // map.html (document.getElementById('map')) pour la perf du 19/09/2026 — à l'époque la
+    // seule page à en avoir besoin. renderSacredGrid()/openLocModal() (feed.html) lisent ce
+    // même tableau global pour le nom affiché sur chaque tuile "Mei's Pictures" et dans sa
+    // modale de détail, mais feed.html n'a pas de #map : ces 3 fusions n'y tournaient donc
+    // jamais, laissant les corrections d'admin (renommage inclus) invisibles sur cette page
+    // précise tant que le prochain export statique planifié ne les avait pas gravées en dur.
+    if (document.getElementById('map') || document.getElementById('feed-grid')) {
         await Promise.all([
             // BUG corrigé (demande du 19/09/2026, "Dans Location submissions, lorsque je
             // publie un lieu il ne se publie plus dans map") — même famille de bug que les
