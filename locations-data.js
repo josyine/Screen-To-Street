@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-27T17:54:37.207Z.
+// Généré le 2026-09-27T22:28:57.425Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -25,7 +25,7 @@ window.STATIC_LOCATIONS = [
     "address": "27 Apgujeong-ro 42-gil, Gangnam-gu",
     "lat": 37.52699,
     "lng": 127.03533,
-    "img": "https://img.youtube.com/vi/yiqe-aegVk0/hqdefault.jpg",
+    "img": "images/admin-upload-1-photo.jpg",
     "fullDescription": {
       "ko": "<p>강남의 심장부, 트렌디한 압구정 골목에 자리 잡고 있던 카페 캠프통은 '글램핑'을 테마로 한 5층 규모의 거대한 도심 속 오아시스였습니다. 인조 잔디, 아늑한 실내 텐트, 캠핑 의자, 꼬마전구 등 콘셉트를 극대화하여 서울을 떠나지 않고도 시골로 탈출한 듯한 느낌을 주었습니다. 아쉽게도 이 상징적인 장소는 영구 폐업했지만, 이 주소는 아미들에게 여전히 필수 순례지로 남아있습니다. 그도 그럴 것이 이곳은 2020년 말 <em>달려라 방탄!</em> 118, 119화가 촬영된 곳으로, 프로그램 역사상 가장 혼란스럽고 기억에 남는 보물찾기의 무대가 되었기 때문입니다. 건물 정면에 서면 그 전설적인 촬영 날의 분위기로 순식간에 빠져들 수 있습니다.</p><p>카페의 미로 같은 내부는 일곱 멤버가 열띤 포스트잇 찾기(유명한 '포토 스토리' 에피소드)를 벌이는 진정한 놀이터로 변했습니다. 이 촬영에 얽힌 일화들은 전설적입니다. 포스트잇을 읽지도 않고 강박적으로 다 뜯어버리던 진의 '다람쥐 증후군'과 결국 자신에게 화살로 돌아온 마키아벨리적 계획은 잊을 수 없습니다. 정국이 다른 멤버들을 피하기 위해 전력 질주하며 카메라맨을 말 그대로 기진맥진하게 만든 곳도 바로 이 계단입니다. 찰나의 동맹, '포토 존'에서 포즈를 인정받기 위한 막내 라인(지민, 뷔)의 유쾌한 배신, 텐트 안에서 상황을 침착하게 분석하려던 슈가 등 건물은 하루 종일 멤버들의 웃음과 비명으로 가득 찼습니다.</p>",
       "pt": "<p>Outrora aninhado nas vielas da moda de Apgujeong, no coração de Gangnam, o Cafe Camptong era um enorme oásis urbano de cinco andares dedicado ao \"glamping\" (acampamento glamoroso). O conceito foi levado ao extremo: grama falsa, tendas internas aconchegantes, cadeiras de acampamento e luzes de corda ofereciam uma fuga rústica sem sair de Seul. Embora este estabelecimento icônico infelizmente tenha fechado suas portas permanentemente, seu endereço continua sendo um local de peregrinação obrigatório para os ARMYs. E por um bom motivo: foi aqui que os episódios 118 e 119 de <em>Run BTS!</em> foram filmados no final de 2020, tornando-se o palco de uma das caças ao tesouro mais caóticas e memoráveis da história do programa. Ficar em frente à fachada permite que você mergulhe instantaneamente de volta naquele lendário dia de filmagem.</p><p>O interior labiríntico do café se transformou em um verdadeiro playground onde os sete membros se enfrentaram em uma caçada frenética por post-its (o famoso arco \"Photo Story\"). As anedotas dessa filmagem são lendárias: pensa-se inevitavelmente na \"síndrome do esquilo\" de Jin, que arrancava compulsivamente todos os post-its encontrados sem sequer lê-los, um plano maquiavélico que acabou se voltando contra ele. Foi também nestas escadas que Jungkook literalmente exauriu o seu cinegrafista correndo a toda velocidade para escapar dos outros. Entre alianças fugazes, as hilárias traições da Maknae Line (Jimin e V) para validar suas poses nas \"Photo Zones\", e Suga tentando analisar calmamente a situação de dentro de uma tenda, o prédio ecoou com seus risos e gritos o dia todo.</p>",
@@ -1031,37 +1031,45 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 19,
-    "name": "Happy Meadow Ranch",
+    "name": "Happy Meadow Ranch (Hanwoo Burger)",
     "group": "BTS",
-    "member": "All",
+    "member": "J-Hope, V",
     "country": "South Korea",
     "city": "Chuncheon",
-    "category": "Bon Voyage",
-    "year": "2020",
+    "category": "Landmark",
+    "year": "2020, 2025",
     "ytId": "F14vk9qPRM0",
-    "address": "330-48 Chunhwa-ro",
-    "lat": 37.9547,
-    "lng": 127.6975,
-    "img": "https://img.youtube.com/vi/F14vk9qPRM0/hqdefault.jpg",
+    "address": "Nam-san-myeon, Chuncheon-si, Gangwon-do, South Korea",
+    "lat": 37.97905,
+    "lng": 127.69484,
+    "img": "images/admin-upload-19-photo.jpg",
     "fullDescription": {
-      "en": "<p>A working horse ranch set against the rolling green hills of Chuncheon, Happy Meadow Ranch offers wide-open pastures, stables and riding trails that feel a world away from Seoul, just an hour or so outside the capital.</p><p>The members visited during a Bon Voyage travel segment to try horseback riding for the first time, and the ranch's laid-back, countryside charm made for one of the show's most relaxed and good-humoured episodes.</p>",
-      "fr": "<p>Ranch équestre en activité niché au milieu des collines verdoyantes de Chuncheon, Happy Meadow Ranch offre de vastes pâturages, des écuries et des sentiers de randonnée à cheval qui semblent à des lieues de Séoul, à seulement une heure environ de la capitale.</p><p>Les membres l'ont visité lors d'un segment de voyage de Bon Voyage pour s'essayer à l'équitation pour la première fois, et le charme décontracté et champêtre du ranch a donné lieu à l'un des épisodes les plus détendus et les plus drôles de l'émission.</p>"
+      "fr": "<p>Ranch équestre en activité niché au milieu des collines verdoyantes de Chuncheon, Happy Meadow Ranch offre de vastes pâturages, des écuries et des sentiers de randonnée à cheval qui semblent à des lieues de Séoul, à seulement une heure environ de la capitale.</p><p>Les membres l'ont visité lors d'un segment de voyage de Bon Voyage pour s'essayer à l'équitation pour la première fois, et le charme décontracté et champêtre du ranch a donné lieu à l'un des épisodes les plus détendus et les plus drôles de l'émission.</p>",
+      "en": "<p>Nestled against the rolling green hills and serene countryside of Chuncheon in Gangwon Province, Happy Meadow Ranch is a spacious, working horse ranch that feels a world away from the bustling concrete landscapes of Seoul, despite being located just an hour or so outside the capital. Spanning vast acres of open pastures, rustic wooden stables, and scenic riding trails, the ranch operates as an active agricultural and equestrian tourism site where visitors can interact with farm animals, ride horses, and experience the peaceful, pastoral rhythm of rural South Korean life.</p><!--stss:footsteps--><p>2020, J-Hope, V: This picturesque ranch holds a special place in BTS history, having served as a memorable filming location and dining spot during the production of In the SOOP BTS ver. in the summer of 2020. During the show, the members enjoyed the sweeping, pastoral views and the peaceful atmosphere of the countryside. The ranch and its iconic food offering gained a massive surge of international popularity after V and J-Hope were featured enjoying the famous Hanwoo Burger on site. The burger itself is celebrated for its exceptional quality, as the patties are prepared freshly each day using exclusively premium Hanwoo beef (Grade 1 or higher), prized for its incredible tenderness and rich flavor.</p><p>2025, V: Adding an extra layer of history to the location, V returned to the ranch in 2025, delighting fans by revisiting the peaceful grounds and interacting with the animals. For ARMYs visiting Chuncheon, walking the grassy hills allows you to retrace the members' footsteps, take in the breathtaking valley views, and savor the exact local delicacy that captured the group's hearts.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Book a riding lesson"
+          "en": "Feed the animals like V"
         },
         "text": {
-          "en": "Riding lessons for beginners are available on-site and can be booked the same day if it isn't too busy."
+          "en": "Take the time to interact with and feed the animals on the ranch, mirroring V's delightful visit during his return to the property."
         }
       },
       {
         "title": {
-          "en": "It's closer than you think"
+          "en": "Pair with Chuncheon's Lake Attractions"
         },
         "text": {
-          "en": "The ranch sits just an hour or so outside Seoul, making it an easy countryside day trip rather than a full excursion."
+          "en": "Since you are visiting Chuncheon, combine your trip to the ranch with other regional highlights, such as the scenic lakeside areas or local spots."
+        }
+      },
+      {
+        "title": {
+          "en": "Taste the Famous Hanwoo Burger"
+        },
+        "text": {
+          "en": "Order the ranch's signature Hanwoo Burger made with fresh, premium Korean beef, just like V and J-Hope enjoyed during their time filming."
         }
       }
     ],
@@ -1072,7 +1080,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Riding lessons for beginners are available on-site and can be booked the same day if it isn't too busy.",
       "fr": "Des cours d'équitation pour débutants sont proposés sur place et peuvent être réservés le jour même si l'affluence le permet."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/vantelom1/status/1929103844975198512",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible primarily via car or local transit from Chuncheon city center; taking a taxi from the nearest ITX-Chuncheon station is recommended for convenience."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily during standard daytime hours. General admission and ranch activity fees apply."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Open dirt paths, grassy pastures, and farm terrain; comfortable walking shoes are strongly recommended."
+        }
+      }
+    ],
+    "officialLink": "https://share.google/czIBzMmHHmc6eptuC",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-19-recreated-0.jpg",
+      "images/admin-upload-19-recreated-1.jpg"
+    ]
   },
   {
     "id": 20,
@@ -2827,30 +2879,38 @@ window.STATIC_LOCATIONS = [
     "city": "Yongin",
     "category": "MV Location",
     "year": "2020",
-    "episode": "Agust D — Daechwita",
+    "episode": "",
     "address": "birobong-ro 507beon-gil, Yongin",
-    "lat": 37.2761,
-    "lng": 127.2044,
-    "img": "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600",
+    "lat": 37.12024,
+    "lng": 127.33786,
+    "img": "images/admin-upload-54-photo.jpg",
     "fullDescription": {
-      "en": "<p>Built originally as a historical drama set — its hanok streets, royal court halls and traditional gates have hosted countless K-dramas over the years — Yongin Daejanggeum Park became something else entirely when SUGA chose it as the setting for his solo track \"Daechwita\" under his Agust D alias, reimagining himself as a rebellious king striding through the palace grounds in a video that ranks among the most stylish things BTS has ever put out individually.</p><p>Walking the same courtyards now, it's easy to see why it worked: the architecture is imposing enough to hold its own against SUGA's presence, and the video's blend of traditional Korean aesthetics with a thoroughly modern, defiant energy is baked right into the location itself.</p>",
-      "fr": "<p>Construit à l'origine comme décor de drama historique — ses rues de hanoks, ses salles de cour royale et ses portes traditionnelles ont accueilli d'innombrables K-dramas au fil des années — le parc Daejanggeum de Yongin est devenu tout autre chose lorsque SUGA l'a choisi comme cadre de son titre solo « Daechwita », sous son alias Agust D, se réinventant en roi rebelle arpentant les allées du palais dans un clip qui compte parmi les plus stylés jamais sortis individuellement par un membre de BTS.</p><p>En parcourant aujourd'hui les mêmes cours, on comprend facilement pourquoi ça fonctionne : l'architecture est assez imposante pour tenir tête à la présence de SUGA, et le mélange d'esthétique coréenne traditionnelle et d'énergie résolument moderne et frondeuse du clip est en quelque sorte inscrit dans le lieu lui-même.</p>"
+      "fr": "<p>Construit à l'origine comme décor de drama historique — ses rues de hanoks, ses salles de cour royale et ses portes traditionnelles ont accueilli d'innombrables K-dramas au fil des années — le parc Daejanggeum de Yongin est devenu tout autre chose lorsque SUGA l'a choisi comme cadre de son titre solo « Daechwita », sous son alias Agust D, se réinventant en roi rebelle arpentant les allées du palais dans un clip qui compte parmi les plus stylés jamais sortis individuellement par un membre de BTS.</p><p>En parcourant aujourd'hui les mêmes cours, on comprend facilement pourquoi ça fonctionne : l'architecture est assez imposante pour tenir tête à la présence de SUGA, et le mélange d'esthétique coréenne traditionnelle et d'énergie résolument moderne et frondeuse du clip est en quelque sorte inscrit dans le lieu lui-même.</p>",
+      "en": "<p>Built originally as a massive outdoor historical drama set spanning over a million square meters in Yongin, Yongin Daejanggeum Park is South Korea's largest open-air film studio. Designed with meticulous historical accuracy, its sprawling traditional hanok streets, majestic royal court halls, bustling marketplace quarters, and ancient palace gates have served as the picturesque backdrop for countless legendary historical K-Dramas (sageuk) over the years. However, the park took on a global cultural phenomenon when Suga chose it as the exclusive setting for his blockbuster solo music video \"Daechwita\" under his Agust D alias.</p><!--stss:footsteps--><p>This historical complex became an absolute epicenter for the fandom when \"Daechwita\" dropped in May 2020. In the music video, Suga reimagines himself as a striking, dual-faceted king—one a tyrannical ruler, the other a rebellious commoner—striding with fierce charisma through the palace courtyards and traditional alleys. The juxtaposition of ancient Korean architecture with modern trap beats, traditional swords, and contemporary streetwear created one of the most visually stunning and culturally rich videos in BTS solo history.</p><p>Adding to the excitement for ARMYs, the music video also features a hilarious and unexpected cameo appearance by fellow members Jin and Jungkook. Around the 1:00 mark of the video, Jin and Jungkook can be spotted dressed in traditional historical guard costumes, getting into a comical scuffle in the background while Suga walks past unbothered. For fans visiting Yongin, walking through these gates allows you to retrace Agust D's exact footsteps and find the very courtyard corners where Jin and Jungkook delivered their memorable background comedic timing.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Check filming days"
+          "en": "Recreate the"
         },
         "text": {
-          "en": "The park still actively hosts drama shoots — check ahead, as certain areas occasionally close to visitors during filming days."
+          "en": "Walk down the grand palace stone pathways and traditional alleyways where Suga famously marched with his crew and slashed through the historical set."
         }
       },
       {
         "title": {
-          "en": "See it as a set, not just a park"
+          "en": "Spot the Cameo Spots"
         },
         "text": {
-          "en": "This is a working historical-drama filming location as much as a park — its imposing hanok streets and royal court halls are what gave 'Daechwita' its striking visual scale."
+          "en": "Keep an eye out for the specific background courtyards around the 1-minute mark of the video where Jin and Jungkook filmed their hilarious guard altercation."
+        }
+      },
+      {
+        "title": {
+          "en": "Plan for a Day Trip from Seoul"
+        },
+        "text": {
+          "en": "Because the park is located in the suburban hills of Yongin (Gyeonggi Province), set aside a full morning or afternoon for travel and exploration."
         }
       }
     ],
@@ -2861,7 +2921,52 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The park still actively hosts drama shoots — check ahead, as certain areas occasionally close to visitors during filming days.",
       "fr": "Le parc accueille encore régulièrement des tournages de drama — vérifiez avant de venir, certaines zones ferment parfois aux visiteurs les jours de tournage."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "qGjAWJ2zWWI",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "강상일의 노르딕워킹 / CC BY 3.0",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take a subway or bus from Seoul to Yongin (or Suwon/Giheung), followed by a local bus or taxi directly to the Daejanggeum Park entrance (taking a taxi from the nearest major transit hub is highly recommended for convenience)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily (typically from 9:00 AM to 6:00 PM during summer; closing slightly earlier in winter). Standard adult admission fee applies."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Extensive outdoor historical complex featuring gravel pathways, traditional stone steps, inclines, and rough terrain across simulated ancient village layouts; comfortable walking shoes are essential."
+        }
+      }
+    ],
+    "officialLink": "http://djgpark.imbc.com/",
+    "episodeLink": "https://www.koreaetour.com/yongin-daejanggeum-park/",
+    "recreatedPhotos": [
+      "images/admin-upload-54-recreated-0.jpg",
+      "images/admin-upload-54-recreated-1.jpg"
+    ]
   },
   {
     "id": 55,
@@ -2962,29 +3067,37 @@ window.STATIC_LOCATIONS = [
     "category": "MV Location",
     "year": "2016",
     "episode": "Epilogue: Young Forever",
-    "address": "Mosan-dong, Jecheon",
-    "lat": 37.1289,
-    "lng": 128.2444,
-    "img": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600",
+    "address": "Mosan-dong, Jecheon-si, Chungcheongbuk-do, South Korea",
+    "lat": 37.16283,
+    "lng": 128.2138,
+    "img": "images/admin-upload-57-photo.jpg",
     "fullDescription": {
-      "en": "<p>A disused rural airstrip in the hills outside Jecheon, this wide expanse of empty runway and open sky became the backdrop for the group running, jumping and simply being seven kids let loose in \"Epilogue: Young Forever\" — one of the videos fans consistently point to as the moment BTS's visual language shifted from tightly choreographed sets toward something rawer and more emotionally direct.</p><p>There's nothing built for visitors here — no signage, no facilities — just runway markings slowly fading into grass and a horizon big enough to explain exactly why a director would choose it for a song about chasing something you can't quite catch.</p>",
-      "fr": "<p>Ancienne piste d'aviation rurale désaffectée dans les collines aux abords de Jecheon, cette vaste étendue de tarmac vide sous un grand ciel ouvert est devenue le décor du groupe en train de courir, sauter et simplement être sept jeunes lâchés en liberté dans « Epilogue: Young Forever » — l'un des clips que les fans citent systématiquement comme le moment où le langage visuel de BTS a basculé de mises en scène très chorégraphiées vers quelque chose de plus brut et de plus directement émotionnel.</p><p>Rien n'est aménagé pour les visiteurs ici — aucun panneau, aucune installation — juste un marquage de piste qui s'efface lentement dans l'herbe et un horizon assez vaste pour expliquer précisément pourquoi un réalisateur choisirait cet endroit pour une chanson qui parle de courir après quelque chose qu'on ne peut jamais tout à fait attraper.</p>"
+      "fr": "<p>Ancienne piste d'aviation rurale désaffectée dans les collines aux abords de Jecheon, cette vaste étendue de tarmac vide sous un grand ciel ouvert est devenue le décor du groupe en train de courir, sauter et simplement être sept jeunes lâchés en liberté dans « Epilogue: Young Forever » — l'un des clips que les fans citent systématiquement comme le moment où le langage visuel de BTS a basculé de mises en scène très chorégraphiées vers quelque chose de plus brut et de plus directement émotionnel.</p><p>Rien n'est aménagé pour les visiteurs ici — aucun panneau, aucune installation — juste un marquage de piste qui s'efface lentement dans l'herbe et un horizon assez vaste pour expliquer précisément pourquoi un réalisateur choisirait cet endroit pour une chanson qui parle de courir après quelque chose qu'on ne peut jamais tout à fait attraper.</p>",
+      "en": "<p>Located in the scenic city of Jecheon in North Chungcheong Province, Jecheon Mosan Airfield is a historic, vast open-air airfield that dates back decades. Surrounded by sprawling grassy plains, distant mountains, and long stretches of open runway, the expansive facility provides a rare sense of immense freedom and nostalgic isolation away from the dense concrete landscapes of Seoul.</p><!--stss:footsteps--><p>This wide-open airfield is etched permanently into BTS history as the iconic filming location for the music video of \"Epilogue: Young Forever\", released in April 2016 as part of their special compilation album The Most Beautiful Moment in Life: Young Forever.</p><p>In the emotional music video, the airfield serves as a powerful metaphor for youth, freedom, and endless horizons. It is the unforgettable setting where all seven members run together through a chain-link fenced maze and out into the vast, open runway as the sun dips below the horizon. For ARMYs visiting Jecheon, walking down this expansive airfield allows you to step directly into the bittersweet, nostalgic atmosphere of the HYYH era, feeling the same wind and open sky that inspired one of the fandom's most beloved anthems.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Bring sturdy shoes"
+          "en": "Recreate the HYYH Runway Run"
         },
         "text": {
-          "en": "The site is remote and unmaintained — sturdy shoes are essential, and it's best visited with a car rather than attempted on foot from town."
+          "en": "Walk or jog along the open paths of the airfield to channel the iconic group sequence where the members sprint toward freedom in the music video."
         }
       },
       {
         "title": {
-          "en": "Don't expect facilities"
+          "en": "Catch the Golden Hour"
         },
         "text": {
-          "en": "There's no signage or infrastructure here — just fading runway markings and open sky, so treat it as a genuinely remote stop rather than a tourist site."
+          "en": "Plan your visit around late afternoon to capture the same sweeping, melancholic sunset lighting that forms the emotional backdrop of the \"Young Forever\" video."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Jecheon's Natural Scenery"
+        },
+        "text": {
+          "en": "Combine your trip to the airfield with a visit to other nearby natural attractions in Jecheon, such as the picturesque Uirimji Reservoir or the surrounding mountainous trails."
         }
       }
     ],
@@ -2995,7 +3108,52 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The site is remote and unmaintained — sturdy shoes are essential, and it's best visited with a car rather than attempted on foot from town.",
       "fr": "Le site est isolé et non entretenu — de bonnes chaussures sont indispensables, et il vaut mieux s'y rendre en voiture plutôt qu'à pied depuis la ville."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "LbvE0FV_70U",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "episodeLink": "https://english.visitkorea.or.kr/svc/whereToGo/hdrdslt/hdrdsltView.do?crsSn=407110",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-57-recreated-0.jpg",
+      "images/admin-upload-57-recreated-1.jpg"
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take an express train (KTX-Eum or ITX) from Seoul's Cheongnyangni Station to Jecheon Station, followed by a short local bus or taxi ride directly to the Mosan Airfield grounds."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open public outdoor space accessible during daylight hours. No ticketing or admission fees required."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, wide-open outdoor grounds and tarmac surfaces, though visitors should wear comfortable walking shoes for exploring the sprawling area."
+        }
+      }
+    ]
   },
   {
     "id": 58,
@@ -3834,51 +3992,6 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Visit on a Friday or Saturday night to watch the current generation of young dancers cover BTS songs right where they once stood.",
       "fr": "Venez un vendredi ou samedi soir pour voir la génération actuelle de jeunes danseurs reprendre des chansons de BTS, à l'endroit même où ils se sont produits."
-    }
-  },
-  {
-    "id": 73,
-    "name": "Namsangol Hanok Village",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "Landmark",
-    "year": "2013",
-    "ytId": "2w2h_kF_qVE",
-    "address": "28 Toegye-ro 34-gil, Jung-gu",
-    "lat": 37.5595,
-    "lng": 126.994,
-    "img": "https://img.youtube.com/vi/2w2h_kF_qVE/hqdefault.jpg",
-    "fullDescription": {
-      "en": "<p>For their first Chuseok (Korean Thanksgiving) after debuting, BTS filmed a special episode of Rookie King at this restored traditional village, wearing hanboks and playing chaotic traditional games.</p><p>The location blends BTS history with Korean heritage: fans can walk through the exact courtyards where the members once wrestled and playfully argued over game rules, with Namsan Tower visible in the background.</p>",
-      "fr": "<p>Pour leur premier Chuseok (fête des récoltes coréenne) après leurs débuts, BTS a tourné un épisode spécial de Rookie King dans ce village traditionnel restauré, en hanbok et au fil de jeux traditionnels chaotiques.</p><p>Ce lieu mêle histoire de BTS et patrimoine coréen : les fans peuvent traverser les cours exactes où les membres se sont livrés à des joutes de ssireum et ont chahuté sur les règles du jeu, avec la Namsan Tower en toile de fond.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Find the wrestling ring"
-        },
-        "text": {
-          "en": "Find the main open dirt courtyard where the members set up their traditional wrestling (ssireum) ring."
-        }
-      },
-      {
-        "title": {
-          "en": "Look for the tower in the background"
-        },
-        "text": {
-          "en": "Namsan Tower is visible from the village's courtyards — the same backdrop that appeared behind the members during their traditional-games episode here."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Take Line 3 or 4 to Chungmuro Station (Exit 3 or 4); admission to the village is completely free.",
-      "fr": "Prenez la ligne 3 ou 4 jusqu'à la station Chungmuro (sortie 3 ou 4) ; l'entrée du village est entièrement gratuite."
-    },
-    "tip": {
-      "en": "Find the main open dirt courtyard where the members set up their traditional wrestling (ssireum) ring.",
-      "fr": "Repérez la cour principale en terre battue où les membres avaient installé leur ring de lutte traditionnelle (ssireum)."
     }
   },
   {
@@ -5044,32 +5157,40 @@ window.STATIC_LOCATIONS = [
     "member": "All",
     "country": "South Korea",
     "city": "Samcheok",
-    "category": "Fashion",
+    "category": "MV Location",
     "year": "2021",
-    "ytId": "BVwAVbKAFPI",
-    "address": "Maengbang Beach, Samcheok-si, Gangwon-do",
-    "lat": 37.2515,
-    "lng": 129.232,
-    "img": "https://img.youtube.com/vi/BVwAVbKAFPI/hqdefault.jpg",
+    "ytId": "6318pLyv12E",
+    "address": "Maengbang Beach, 221 Samcheok-ro, Dogye-eup / Geundeok-myeon area, Samcheok-si, Gangwon-do, South Korea",
+    "lat": 37.39369,
+    "lng": 129.22593,
+    "img": "images/admin-upload-99-photo.jpg",
     "fullDescription": {
-      "en": "<p>To celebrate the global success of \"Butter,\" the local government perfectly recreated the bright, summery beach set used for the single's concept photos — complete with yellow umbrellas, sunbeds and a volleyball net.</p><p>Fans can lie on the actual yellow sunbeds, pose with the striped parasols, and sit next to the referee chair where Jimin was photographed — a vividly fun stop capturing the energy of the group's English-single era.</p>",
-      "fr": "<p>Pour célébrer le succès mondial de « Butter », la municipalité a reconstitué à l'identique le décor de plage estival et lumineux utilisé pour les photos concept du single — parasols jaunes, transats et filet de volley inclus.</p><p>Les fans peuvent s'allonger sur les vrais transats jaunes, poser avec les parasols rayés, et s'asseoir près de la chaise d'arbitre où Jimin avait été photographié — une étape joyeuse et haute en couleur qui capture toute l'énergie de l'ère des singles anglais du groupe.</p>"
+      "fr": "<p>Pour célébrer le succès mondial de « Butter », la municipalité a reconstitué à l'identique le décor de plage estival et lumineux utilisé pour les photos concept du single — parasols jaunes, transats et filet de volley inclus.</p><p>Les fans peuvent s'allonger sur les vrais transats jaunes, poser avec les parasols rayés, et s'asseoir près de la chaise d'arbitre où Jimin avait été photographié — une étape joyeuse et haute en couleur qui capture toute l'énergie de l'ère des singles anglais du groupe.</p>",
+      "en": "<p>Nestled along the pristine, sandy coastline of Samcheok in Gangwon Province, Maengbang-haesuyokchang has long been cherished as one of the most scenic natural beaches on South Korea's eastern coast. Historically renowned for its crystal-clear turquoise waters, gently sloping shoreline, and smooth white sands, the coast is also uniquely characterized by its lush, towering rows of coastal pine trees (sonamu) that line the dunes, providing a natural windbreak and a tranquil shaded sanctuary right beside the crashing waves of the East Sea. For generations, local fishers and domestic travelers visited this serene stretch of coastline for its peaceful atmosphere, vibrant clam-digging tidal flats, and uninterrupted horizons before it evolved into a world-famous pop-culture landmark.</p><!--stss:footsteps--><p>This stunning stretch of coastline offers ARMYs a chance to step straight into the bright, cheerful visuals of the Butter era. When the single dropped in May 2021, its promotional images captured the members lounging against a backdrop of retro summer leisure items. To honor this, the local tourism board meticulously recreated the exact scene on Maengbang Beach, equipping the shore with the signature yellow and white striped beach umbrellas, matching sunbeds, a beach volleyball net, and custom surfboards bearing the official Butter branding.</p><p>Walking onto this stretch of the beach feels like stepping into the music video's promotional shoot. Fans can pose on the sunbeds, stand by the net, and gaze out at the same rolling waves of the East Sea that inspired the single's summery palette. The setup serves as a testament to the immense cultural impact of BTS, as thousands of visitors make the pilgrimage to the eastern coast each year to recreate the members' iconic promotional poses. Beyond the Butter installations, the surrounding area features coastal walking paths and pine forest trails that offer a peaceful counterpoint to the vibrant energy of the fan site.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Bring props for photos"
+          "en": "Recreate the Butter Concept Photos"
         },
         "text": {
-          "en": "Bring small props like the Butter album or yellow balloons — fans often do to make their photos pop."
+          "en": "Pose on the sunbeds under the yellow umbrellas or line up by the volleyball net with friends to mirror the legendary promotional photos released by Big Hit Music."
         }
       },
       {
         "title": {
-          "en": "Find the referee chair"
+          "en": "Combine with East Coast Exploration"
         },
         "text": {
-          "en": "The referee chair where Jimin was photographed is one of the set's most specific, recognisable pieces — look for it alongside the yellow sunbeds and striped parasols."
+          "en": "Pair your visit to Maengbang Beach with a broader tour of Samcheok's famous coastal landmarks, such as the Haedong Yonggungsa-style seaside drives, nearby marine cable cars, and local seafood markets."
+        }
+      },
+      {
+        "title": {
+          "en": "Check Seasonal Weather Conditions"
+        },
+        "text": {
+          "en": "Because the beach is located on South Korea's open eastern coast, plan your visit during daylight hours and check local weather forecasts, as high winds or heavy coastal rains can occasionally prompt the temporary removal of portable set props like umbrellas."
         }
       }
     ],
@@ -5080,7 +5201,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Bring small props like the Butter album or yellow balloons — fans often do to make their photos pop.",
       "fr": "Apportez de petits accessoires comme l'album Butter ou des ballons jaunes — c'est ce que font souvent les fans pour dynamiser leurs photos."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take an express bus or KTX train from Seoul to Samcheok Station or Donghae Station, followed by a short local bus or taxi ride directly to Maengbang Beach (renting a car or taking a direct taxi from the terminal is recommended for ease of travel along the coast)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The beach and outdoor photo installations are accessible 24/7. Completely free of charge, with no admission tickets required."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Open sandy beach terrain with wooden boardwalk approaches near the parking and dune areas; walking on the loose sand to reach the exact photo installations requires comfortable footwear."
+        }
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://thesoulofseoul.net/bts-butter-beach-samcheok/",
+    "officialLink": "https://french.visitkorea.or.kr/svc/whereToGo/locIntrdn/rgnContentsView.do?vcontsId=91064",
+    "recreatedPhotos": [
+      "images/admin-upload-99-recreated-0.jpg",
+      "images/admin-upload-99-recreated-1.jpg"
+    ]
   },
   {
     "id": 100,
@@ -10767,11 +10932,11 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "https://starsofheavens.com/2018/05/16/everland-theme-park-during-tulip-festival/",
     "ytId": "e81ad5MpfQ0",
     "address": "199 Everland-ro, Pogok-eup, Cheoin-gu, Yongin-si",
-    "lat": 37.2945,
-    "lng": 127.202,
+    "lat": 37.29401,
+    "lng": 127.20243,
     "img": "images/admin-upload-211-photo.jpg",
     "fullDescription": {
-      "en": "<p>Everland is South Korea's largest and most famous theme park, boasting massive roller coasters, a sprawling safari, and beautiful seasonal flower gardens. The park is split into several intricately themed zones, with the \"American Adventure\" zone being one of the most visually striking. Specifically, the \"Rockville\" area within this zone is a vibrant homage to 1950s America, featuring classic diners, vintage cars, and retro storefronts. Home to the adrenaline-pumping Rockspin swing ride, this colorful, highly aesthetic section of the park has become a go-to filming backdrop for K-pop TV specials and music videos.</p><p>In September 2020, BTS took over the Rockville area to film their spectacular performance of \"Dynamite\" for the America's Got Talent (AGT) broadcast. This was an incredibly historic moment for the group: it was their very first television performance of the song following its release, perfectly timed to celebrate the track's monumental debut at #1 on the US Billboard Hot 100 chart. Dressed in flawless 1970s disco-inspired outfits, the members danced their way through the retro gas station, diner sets, and right past the towering Rockspin ride. The bright, cinematic backdrop of Everland perfectly matched the song's joyful, explosive energy, creating one of the most iconic performances of the \"Dynamite\" era.</p>"
+      "en": "<p>Everland is South Korea's largest and most famous theme park, boasting massive roller coasters, a sprawling safari, and beautiful seasonal flower gardens. The park is split into several intricately themed zones, with the \"American Adventure\" zone being one of the most visually striking. Specifically, the \"Rockville\" area within this zone is a vibrant homage to 1950s America, featuring classic diners, vintage cars, and retro storefronts. Home to the adrenaline-pumping Rockspin swing ride, this colorful, highly aesthetic section of the park has become a go-to filming backdrop for K-pop TV specials and music videos.</p><!--stss:footsteps--><p>In September 2020, BTS took over the Rockville area to film their spectacular performance of \"Dynamite\" for the America's Got Talent (AGT) broadcast. This was an incredibly historic moment for the group: it was their very first television performance of the song following its release, perfectly timed to celebrate the track's monumental debut at #1 on the US Billboard Hot 100 chart. Dressed in flawless 1970s disco-inspired outfits, the members danced their way through the retro gas station, diner sets, and right past the towering Rockspin ride. The bright, cinematic backdrop of Everland perfectly matched the song's joyful, explosive energy, creating one of the most iconic performances of the \"Dynamite\" era.</p>"
     },
     "practicalInfo": [
       {
