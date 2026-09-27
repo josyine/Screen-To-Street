@@ -3248,34 +3248,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Factorisé hors de toggleMobileMenu() (demande du 27/09/2026, "sur mobile, quand je
+    // clique sur un lieu puis sur 'View', ça fait juste disparaître la bulle") — en
+    // creusant ce rapport (répété une 3e fois malgré le correctif Leaflet déjà en place
+    // pour le bouton lui-même, voir showMapHoverTip()/disableClickPropagation ci-dessous),
+    // BUG trouvé : window.openDetailsPanel() ouvre bien #app-sidebar sur mobile (classes
+    // "open"/"expanded", vérifié), mais ne masque jamais .mobile-bottom-nav/#mobile-top-icons
+    // (contrairement à toggleMobileMenu(), le SEUL autre endroit qui ouvrait #app-sidebar
+    // jusqu'ici) — z-index de la nav du bas (3500, style.css) plus élevé que celui de la
+    // sidebar (3000) : la pilule de nav du bas restait donc flottante PAR-DESSUS la fiche
+    // fraîchement ouverte, laissant l'impression qu'"rien ne s'affiche" après un tap sur
+    // "View" alors que la fiche s'ouvrait bel et bien dessous. Extrait ici pour que
+    // openDetailsPanel()/closeDetailsPanel() (script.js) appliquent le même masquage que le
+    // bouton hamburger, quel que soit le point d'entrée qui ouvre la sidebar.
+    function setMobileChromeHidden(hidden) {
+        // Menu ouvert sur mobile : le bouton hamburger devient un bouton "retour à la
+        // carte" (icône croix) et la barre d'icônes du bas (.top-nav, demande du
+        // 08/09/2026 : déplacée en bas façon Instagram, voir style.css) est masquée le
+        // temps que le menu occupe tout l'écran. #mobile-menu-btn est maintenant HORS de
+        // .top-nav dans le HTML (un voisin, pas un enfant), donc on le retrouve par id
+        // plutôt que via btn.closest('.top-nav') qui ne le contiendrait plus.
+        const btn = document.getElementById('mobile-menu-btn');
+        if (btn) btn.classList.toggle('is-open', hidden);
+        const topNav = document.querySelector('.top-nav');
+        if (topNav) topNav.classList.toggle('menu-open', hidden);
+        const bottomNav = document.getElementById('mobile-bottom-nav');
+        if (bottomNav) bottomNav.classList.toggle('menu-open', hidden);
+        const topIcons = document.getElementById('mobile-top-icons');
+        if (topIcons) topIcons.classList.toggle('menu-open', hidden);
+        const mobileSearch = document.getElementById('mobile-map-search');
+        if (mobileSearch) mobileSearch.classList.toggle('menu-open', hidden);
+        // Chevron "photos des visiteurs" (demande du 21/09/2026, "il faut afficher le
+        // chevron que lorsqu'on est sur la map") : même toggle que les éléments
+        // ci-dessus — masqué tant que le menu (filtres, liste des lieux) occupe l'écran,
+        // ré-affiché à la fermeture. Voir .loc-visitors-chevron-tab.menu-open (style.css).
+        const chevronTab = document.getElementById('loc-visitors-chevron-tab');
+        if (chevronTab) chevronTab.classList.toggle('menu-open', hidden);
+    }
+    window.setMobileChromeHidden = setMobileChromeHidden;
+
     window.toggleMobileMenu = function() {
         const sidebar = document.getElementById('app-sidebar');
         if (sidebar) {
             sidebar.classList.toggle('open');
             if (!sidebar.classList.contains('open')) sidebar.classList.remove('expanded');
-            const isOpen = sidebar.classList.contains('open');
-            // Menu ouvert sur mobile : le bouton hamburger devient un bouton "retour à la
-            // carte" (icône croix) et la barre d'icônes du bas (.top-nav, demande du
-            // 08/09/2026 : déplacée en bas façon Instagram, voir style.css) est masquée le
-            // temps que le menu occupe tout l'écran. #mobile-menu-btn est maintenant HORS de
-            // .top-nav dans le HTML (un voisin, pas un enfant), donc on le retrouve par id
-            // plutôt que via btn.closest('.top-nav') qui ne le contiendrait plus.
-            const btn = document.getElementById('mobile-menu-btn');
-            if (btn) btn.classList.toggle('is-open', isOpen);
-            const topNav = document.querySelector('.top-nav');
-            if (topNav) topNav.classList.toggle('menu-open', isOpen);
-            const bottomNav = document.getElementById('mobile-bottom-nav');
-            if (bottomNav) bottomNav.classList.toggle('menu-open', isOpen);
-            const topIcons = document.getElementById('mobile-top-icons');
-            if (topIcons) topIcons.classList.toggle('menu-open', isOpen);
-            const mobileSearch = document.getElementById('mobile-map-search');
-            if (mobileSearch) mobileSearch.classList.toggle('menu-open', isOpen);
-            // Chevron "photos des visiteurs" (demande du 21/09/2026, "il faut afficher le
-            // chevron que lorsqu'on est sur la map") : même toggle que les éléments
-            // ci-dessus — masqué tant que le menu (filtres, liste des lieux) occupe l'écran,
-            // ré-affiché à la fermeture. Voir .loc-visitors-chevron-tab.menu-open (style.css).
-            const chevronTab = document.getElementById('loc-visitors-chevron-tab');
-            if (chevronTab) chevronTab.classList.toggle('menu-open', isOpen);
+            setMobileChromeHidden(sidebar.classList.contains('open'));
         }
     };
 
@@ -7643,6 +7660,14 @@ window.openDetailsPanel = function(id) {
 
     const appSidebarEl = document.getElementById('app-sidebar');
     if(appSidebarEl) { appSidebarEl.classList.add('open'); appSidebarEl.classList.add('expanded'); }
+    // BUG corrigé (demande du 27/09/2026, "sur mobile... quand je clique sur View, ça fait
+    // juste disparaître la bulle") — voir setMobileChromeHidden() : jusqu'ici seul
+    // toggleMobileMenu() (le bouton hamburger) masquait la nav du bas/les icônes du haut en
+    // ouvrant #app-sidebar ; ouvrir ce même panneau depuis un tap sur un marqueur (ou un
+    // clic dans la liste) ne le faisait jamais, laissant la nav du bas flotter PAR-DESSUS
+    // la fiche fraîchement ouverte (z-index plus élevé, voir style.css) — donnant
+    // l'impression que rien ne s'affichait après un tap sur "View".
+    if (typeof window.setMobileChromeHidden === 'function') window.setMobileChromeHidden(true);
 
     setTimeout(() => { if(map) map.invalidateSize(); }, 450);
 
@@ -8375,6 +8400,11 @@ window.closeDetailsPanel = function() {
     // carte (et, dans le guide de démo, par-dessus le menu profil des étapes suivantes).
     const sidebar = document.getElementById('app-sidebar');
     if(sidebar) { sidebar.classList.remove('expanded'); sidebar.classList.remove('open'); }
+    // Symétrique du masquage posé dans openDetailsPanel() (voir sa note du 27/09/2026) :
+    // referme le sidebar sur mobile équivaut toujours à "retour à la carte" ici (jamais un
+    // simple retour à la liste, voir le commentaire juste au-dessus), donc restaurer la nav
+    // du bas/les icônes du haut est toujours correct à ce stade.
+    if (typeof window.setMobileChromeHidden === 'function') window.setMobileChromeHidden(false);
 
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
