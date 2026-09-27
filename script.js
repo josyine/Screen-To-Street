@@ -10666,7 +10666,7 @@ window.renderTrip = function() {
                     recoList.innerHTML += `
                         <div class="loc-row">
                             <div class="loc-thumb" style="background-image:url('${loc.img}');"></div>
-                            <div style="flex:1;"><div class="loc-name">${loc.name}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
+                            <div class="loc-info"><div class="loc-name">${loc.name}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
                             <button class="add-to-trip-btn edit-only" style="display:block;" onclick="quickAddLoc(${loc.id})">+ Add</button>
                         </div>
                     `;
@@ -10928,6 +10928,7 @@ window.createLocRow = function(loc) {
     div.setAttribute('ondragover', 'allowDrop(event)');
     div.setAttribute('ondrop', 'drop(event)');
     div.setAttribute('ondragleave', 'dragLeave(event)');
+    div.setAttribute('onclick', `openTripLocDetail(event, ${loc.id})`);
     div.innerHTML = `
         <span class="drag-handle edit-only" style="display:inline;">⠿</span>
         ${loc.name}
@@ -10944,12 +10945,25 @@ window.createLocRowHtml = function(loc) {
     // jamais vraie, et le trait indicateur .drag-over-top/.drag-over-bottom (déjà stylé
     // en CSS) ne s'affichait jamais entre deux lieux pendant un glisser-déposer.
     return `
-        <div class="day-loc" data-id="${loc.id}" draggable="true" ondragstart="dragStart(event, 'loc')" ondragend="dragEnd(event)" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)">
+        <div class="day-loc" data-id="${loc.id}" draggable="true" ondragstart="dragStart(event, 'loc')" ondragend="dragEnd(event)" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" onclick="openTripLocDetail(event, ${loc.id})">
             <span class="drag-handle edit-only" style="display:inline;">⠿</span>
             ${loc.name}
             <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${loc.id})">✕</span>
         </div>
     `;
+}
+
+// Détail d'un lieu du voyage (demande du 27/09/2026, "quand je clique sur un lieu du trip,
+// je veux que ça ouvre une page de détail du lieu... un bouton croix pour fermer cette page
+// et revenir sur le trip") — réutilise la même modale partagée que visited.html/wishlist.html
+// (window.openLocModal()/closeLocModal(), #loc-modal ajouté au HTML de trips.html) plutôt
+// qu'une nouvelle page dédiée : la croix de fermeture existe déjà nativement dans ce
+// composant, il suffisait de le brancher ici.
+window.openTripLocDetail = function(e, locId) {
+    // Ignore un clic sur la poignée de glisser-déposer ou le bouton "retirer du voyage" —
+    // ce sont des actions PROPRES à la ligne, pas une intention d'ouvrir le détail du lieu.
+    if (e.target.closest('.drag-handle') || e.target.closest('.x-btn')) return;
+    if (typeof window.openLocModal === 'function') window.openLocModal(locId);
 }
 
 // DRAG & DROP DES LIEUX ET DES JOURS
@@ -11038,6 +11052,94 @@ window.drop = function(e) {
     }
     window.saveTrip();
 }
+
+// Glisser-déposer TACTILE des lieux (demande du 27/09/2026, "sur mobile, je veux pouvoir
+// glisser les lieux de position") — le drag & drop ci-dessus (dragStart/allowDrop/drop)
+// utilise l'API HTML5 Drag and Drop (évènements dragstart/dragover/drop) : aucun navigateur
+// mobile ne déclenche ces évènements pour une interaction tactile, ce n'est pas un bug
+// propre à ce site, juste une API jamais prévue pour le toucher. Implémentation séparée
+// ci-dessous (touchstart/touchmove/touchend) qui aboutit au MÊME réordonnancement DOM que
+// window.drop() plus haut (avant/après selon le milieu de la ligne survolée, ou ajout à la
+// fin de #loc-list / .day-items d'un autre jour), pour rester cohérente avec le
+// comportement desktop — window.saveTrip() persiste le nouvel ordre dans les deux cas.
+let touchDragLocEl = null;
+function touchDragFindTarget(x, y) {
+    const el = document.elementFromPoint(x, y);
+    if (!el) return null;
+    const row = el.closest('.day-loc');
+    if (row && row !== touchDragLocEl) return { row };
+    const list = el.closest('#loc-list');
+    if (list) return { container: list };
+    const dayCard = el.closest('.day-card');
+    if (dayCard) {
+        const items = dayCard.querySelector('.day-items');
+        if (items) return { container: items };
+    }
+    return null;
+}
+function touchDragClearIndicators() {
+    document.querySelectorAll('.day-loc.drag-over-top, .day-loc.drag-over-bottom').forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+}
+// Défilement automatique près des bords de l'écran : un itinéraire de plusieurs jours
+// dépasse largement la hauteur d'un écran mobile, sans ceci impossible de déplacer un lieu
+// au-delà de ce qui est déjà visible au moment du premier contact.
+function touchDragAutoScroll(clientY) {
+    const margin = 70;
+    if (clientY < margin) window.scrollBy(0, -14);
+    else if (clientY > window.innerHeight - margin) window.scrollBy(0, 14);
+}
+function onTouchDragMove(e) {
+    if (!touchDragLocEl) return;
+    e.preventDefault(); // empêche le défilement de la page pendant le glisser
+    const touch = e.touches[0];
+    touchDragAutoScroll(touch.clientY);
+    touchDragClearIndicators();
+    const target = touchDragFindTarget(touch.clientX, touch.clientY);
+    if (target && target.row) {
+        const rect = target.row.getBoundingClientRect();
+        const relY = touch.clientY - rect.top;
+        target.row.classList.add(relY < rect.height / 2 ? 'drag-over-top' : 'drag-over-bottom');
+    }
+}
+function onTouchDragEnd(e) {
+    if (!touchDragLocEl) return;
+    document.removeEventListener('touchmove', onTouchDragMove);
+    document.removeEventListener('touchend', onTouchDragEnd);
+    document.removeEventListener('touchcancel', onTouchDragEnd);
+    touchDragLocEl.classList.remove('dragging');
+    touchDragClearIndicators();
+    const touch = e.changedTouches[0];
+    const target = touchDragFindTarget(touch.clientX, touch.clientY);
+    if (target) {
+        if (target.row) {
+            const rect = target.row.getBoundingClientRect();
+            const relY = touch.clientY - rect.top;
+            if (relY < rect.height / 2) target.row.before(touchDragLocEl);
+            else target.row.after(touchDragLocEl);
+        } else if (target.container) {
+            target.container.appendChild(touchDragLocEl);
+        }
+    }
+    touchDragLocEl = null;
+    window.saveTrip();
+}
+// Attaché à la poignée ⠿ (.drag-handle) uniquement, jamais à toute la ligne : sinon un
+// simple défilement vertical du doigt en touchant le NOM d'un lieu déclencherait un
+// glisser-déposer au lieu de faire défiler la page — même compromis que la plupart des
+// listes réordonnables tactiles (Trello, l'app Notes iOS...). La poignée du TITRE d'un jour
+// (réordonner des jours entiers) n'est volontairement pas concernée ici — voir le guard
+// `.closest('.day-loc')` plus bas, hors du périmètre de cette demande.
+document.addEventListener('touchstart', (e) => {
+    const handle = e.target.closest('.drag-handle');
+    if (!handle) return;
+    const row = handle.closest('.day-loc');
+    if (!row) return;
+    touchDragLocEl = row;
+    row.classList.add('dragging');
+    document.addEventListener('touchmove', onTouchDragMove, { passive: false });
+    document.addEventListener('touchend', onTouchDragEnd);
+    document.addEventListener('touchcancel', onTouchDragEnd);
+}, { passive: true });
 
 // Factorisé hors de addDay() pour être réutilisé par syncItineraryDaysToDates()
 // ci-dessous (demande du 07/09/2026) — même carte, même comportement drag & drop.
