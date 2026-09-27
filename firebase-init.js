@@ -1018,6 +1018,16 @@ window.listMyLikedPhotoKeys = async function () {
 // scan complet que l'ancien fetchGlobalPhotoFeed() (un getDoc() par compte) : coûteux,
 // mais UNE SEULE FOIS pour un admin plutôt qu'à CHAQUE chargement de feed.html par
 // N'IMPORTE QUEL visiteur — exactement le problème que cette optimisation corrige.
+// BUG corrigé (demande du 26/09/2026, "je n'arrive pas à 'Rebuild feed index now'") : ce
+// backfill utilisait _upsertFeedPost() ci-dessus, qui AVALE volontairement ses propres
+// erreurs (ne doit jamais bloquer la publication normale d'un avis/d'une photo). Réutilisé
+// tel quel ici, ça masquait complètement un vrai échec d'écriture (ex: règle Firestore pas
+// encore publiée pour feedPosts, ou write refusé) : la boucle continuait sans lever
+// d'erreur, `written` comptait les écritures TENTÉES (pas réussies), et le bouton finissait
+// par afficher "Done — N posts indexed" alors qu'AUCUN document n'avait réellement été
+// écrit — impossible à distinguer d'un vrai succès depuis l'écran Maintenance. Écrit donc
+// directement ici (même doc/même merge:true que _upsertFeedPost) SANS avaler les erreurs,
+// pour qu'un vrai échec remonte jusqu'au catch ci-dessous et s'affiche comme tel.
 window.adminBackfillFeedPosts = async function () {
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
@@ -1033,17 +1043,17 @@ window.adminBackfillFeedPosts = async function () {
             const writes = [];
             Object.values(data.reviews || {}).forEach(r => {
                 if (!r.photo) return;
-                writes.push(_upsertFeedPost(u.uid, String(r.locationId), {
-                    username: u.username, locationId: r.locationId, locationName: r.locationName || '',
+                writes.push(setDoc(doc(db, 'feedPosts', feedPostKey(u.uid, String(r.locationId))), {
+                    uid: u.uid, itemId: String(r.locationId), username: u.username, locationId: r.locationId, locationName: r.locationName || '',
                     photo: r.photo, caption: r.notes || '', updatedAt: r.updatedAt || serverTimestamp(), standalone: false
-                }));
+                }, { merge: true }));
             });
             Object.entries(data.photos || {}).forEach(([photoId, p]) => {
                 if (!p.photo) return;
-                writes.push(_upsertFeedPost(u.uid, photoId, {
-                    username: u.username, locationId: p.locationId || null, locationName: p.locationName || '',
+                writes.push(setDoc(doc(db, 'feedPosts', feedPostKey(u.uid, photoId)), {
+                    uid: u.uid, itemId: photoId, username: u.username, locationId: p.locationId || null, locationName: p.locationName || '',
                     photo: p.photo, caption: p.caption || '', updatedAt: p.updatedAt || serverTimestamp(), standalone: true
-                }));
+                }, { merge: true }));
             });
             await Promise.all(writes);
             written += writes.length;
@@ -1052,7 +1062,12 @@ window.adminBackfillFeedPosts = async function () {
         return { success: true, written };
     } catch (e) {
         console.warn('Reconstruction de l\'index du fil échouée :', e);
-        return { success: false, code: e && e.code || 'unknown' };
+        // message (même raison que adminUpdateLocationContent() plus bas) : "Failed:
+        // permission-denied" seul ne dit pas QUELLE règle Firestore bloque l'écriture —
+        // utile ici en particulier, puisque cette action réécrit des documents au nom
+        // d'AUTRES comptes (voir la règle feedPosts dans firestore.rules, qui exige que
+        // l'appelant soit listé dans admins/{uid}).
+        return { success: false, code: e && e.code || 'unknown', message: e && e.message };
     }
 };
 
@@ -1526,7 +1541,12 @@ window.adminBackfillLocationPhotos = async function () {
         return { success: true, written };
     } catch (e) {
         console.warn('Reconstruction de l\'index "Mei\'s Pictures" échouée :', e);
-        return { success: false, code: e && e.code || 'unknown' };
+        // message (même raison que ci-dessus pour adminBackfillFeedPosts) — utile en
+        // particulier si la règle locationPhotos de firestore.rules (ajoutée le 20/09/2026,
+        // voir le commentaire au-dessus de ce match block) n'a jamais été republiée dans la
+        // console Firebase : "Failed: permission-denied" sans message ne le laisserait pas
+        // deviner.
+        return { success: false, code: e && e.code || 'unknown', message: e && e.message };
     }
 };
 
