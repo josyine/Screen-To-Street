@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-28T07:25:25.435Z.
+// Généré le 2026-09-28T15:47:45.299Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -5785,36 +5785,44 @@ window.STATIC_LOCATIONS = [
     "id": 107,
     "name": "Hwangmaesan County Park",
     "group": "BTS",
-    "member": "Namjoon",
+    "member": "RM",
     "country": "South Korea",
     "city": "Hapcheon",
     "category": "MV Location",
     "year": "2022",
     "episode": "Wild Flower",
-    "ytId": "BVwAVbKAFPI",
-    "address": "Hwangmaesan-ro, Gahoe-myeon, Hapcheon-gun",
-    "lat": 35.5455,
-    "lng": 128.0455,
-    "img": "https://img.youtube.com/vi/BVwAVbKAFPI/hqdefault.jpg",
+    "ytId": "u18be_kRmC0",
+    "address": "Hwangmaesan-ro, Gahoe-myeon, Hapcheon-gun / Sancheong-gun, Gyeongsangnam-do, South Korea",
+    "lat": 35.48193,
+    "lng": 128.0037,
+    "img": "images/admin-upload-107-photo.jpg",
     "fullDescription": {
-      "en": "<p>For his solo track \"Wild Flower,\" RM wanted a location that felt earthy, vast and grounded, choosing this breathtaking mountain — filmed specifically in autumn, when its hills are covered in silver grass.</p><p>Standing in the sweeping fields where Namjoon walked amid fireworks is a quietly moving experience, the wind and silence perfectly matching his desire to be a wild flower rather than a firework.</p>",
-      "fr": "<p>Pour son titre en solo « Wild Flower », RM voulait un lieu au caractère brut, vaste et ancré, et a choisi cette montagne à couper le souffle — filmée précisément en automne, quand ses collines se couvrent d'herbes argentées.</p><p>Se tenir dans les vastes champs où Namjoon a marché parmi les feux d'artifice est une expérience discrètement bouleversante, le vent et le silence faisant écho à son désir d'être une fleur sauvage plutôt qu'un feu d'artifice.</p>"
+      "fr": "<p>Pour son titre en solo « Wild Flower », RM voulait un lieu au caractère brut, vaste et ancré, et a choisi cette montagne à couper le souffle — filmée précisément en automne, quand ses collines se couvrent d'herbes argentées.</p><p>Se tenir dans les vastes champs où Namjoon a marché parmi les feux d'artifice est une expérience discrètement bouleversante, le vent et le silence faisant écho à son désir d'être une fleur sauvage plutôt qu'un feu d'artifice.</p>",
+      "en": "<p>Rising majestically in South Gyeongsang Province across the border of Hapcheon and Sancheong counties, Hwangmaesan Mountain is one of South Korea's most breathtaking natural landmarks. Renowned for its dramatic granite peaks, sweeping ridgelines, and vast rolling plateaus, the mountain undergoes a stunning seasonal transformation. While it draws spring travelers for its blanket of royal azaleas, it is equally famous for its autumn splendor, when the high-altitude fields are completely covered in swaying, silver eulalia grass (silver grass) that shimmers golden under the autumn sun.</p><!--stss:footsteps--><p>This majestic mountain served as the breathtaking, epic backdrop for RM's solo track \"Wild Flower\" (featuring Youjeen), the lead single of his 2022 solo album Indigo. For the music video, RM wanted a location that felt earthy, vast, and deeply grounded. Filmed specifically during late autumn when the mountain hillsides were blanketed in thick silver grass, the visual captures RM performing on the windy ridge against a sprawling, cinematic horizon.</p><p>For ARMYs making the pilgrimage to Hwangmaesan, hiking up to the silver grass plateau allows you to stand right where RM stood, looking out over the vast mountain ranges. The location perfectly mirrors the song's core themes: seeking calm and endurance amidst the roaring winds, like a wild flower rooted firmly in wide-open earth rather than a blazing flame that quickly burns out.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Hike to the plateau"
+          "en": "Hike the Silver Grass Fields"
         },
         "text": {
-          "en": "Hike up to the main plateau to find the exact silver-grass fields used in the video's drone shots."
+          "en": "Visit during the autumn season (typically October to November) to witness the hills covered in swaying silver grass just as they appeared in the music video."
         }
       },
       {
         "title": {
-          "en": "Time it for autumn"
+          "en": "Catch the Sunrise or Sunset"
         },
         "text": {
-          "en": "The silver-grass fields that give the mountain its look are specifically an autumn phenomenon — visiting outside that season will show a very different, greener landscape."
+          "en": "The high-altitude plateau offers some of the most spectacular lighting and cloud-sea views in South Korea, making it a favorite spot for landscape photographers."
+        }
+      },
+      {
+        "title": {
+          "en": "Dress in Layers for Mountain Weather"
+        },
+        "text": {
+          "en": "Because the filming site sits high on an exposed mountain ridge, winds can be strong and temperatures drop quickly; pack windbreakers and sturdy hiking shoes."
         }
       }
     ],
@@ -5825,7 +5833,51 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Hike up to the main plateau to find the exact silver-grass fields used in the video's drone shots.",
       "fr": "Montez jusqu'au plateau principal pour retrouver les champs d'herbe argentée exacts utilisés dans les plans aériens du clip."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "https://recree.io/posts/kpop-bts-rm-wild-flower-mv-filming-location-hwangmaesan-county-park-hapcheon-recree",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.hc.go.kr/hwangmaesan.web",
+    "tweetUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible primarily by car or tour bus from Hapcheon or Jinju; driving up to the high-altitude parking lot (Hwangmaesan Auto Camping Site parking area) significantly reduces the hiking time to the silver grass fields."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open 24/7 as a public provincial park area. Free admission (parking fees may apply during peak seasons)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Involves wooden boardwalks, gravel trails, and gentle slope walking paths across mountain terrain; comfortable hiking footwear is essential."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-107-recreated-0.jpg",
+      "images/admin-upload-107-recreated-1.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "id": 108,
