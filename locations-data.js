@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-29T14:15:33.463Z.
+// Généré le 2026-09-29T23:06:58.881Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -5255,24 +5255,24 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "city": "Buan",
     "category": "MV Location",
-    "year": "2016",
+    "year": "2016, 2018",
     "episode": "Save Me",
-    "ytId": "MBvunpC8Yw4",
-    "address": "Saemangeum Embankment, Buan-gun",
-    "lat": 35.7995,
-    "lng": 126.5885,
-    "img": "https://img.youtube.com/vi/MBvunpC8Yw4/hqdefault.jpg",
+    "ytId": "GZjt_sA2eso",
+    "address": "Saemangeum-ro, Buan-gun / Gunsan-si, Jeonbuk State, South Korea",
+    "lat": 35.82187,
+    "lng": 126.48218,
+    "img": "images/admin-upload-100-photo.jpg",
     "fullDescription": {
-      "en": "<p>The \"Save Me\" music video is famous for being filmed in one continuous take on a dreary, windy day — that endless, muddy horizon that matched the song's desperate energy is part of the Saemangeum reclaimed-land project.</p><p>The moody, overcast sky and the sheer emptiness of the location force visitors to slow down and reflect; many fans come here to film their own one-take dance covers on the same ground BTS danced across.</p>",
-      "fr": "<p>Le clip de « Save Me » est célèbre pour avoir été tourné en un seul plan-séquence, par une journée grise et venteuse — cet horizon boueux et infini qui épouse l'énergie désespérée de la chanson fait partie du projet de terres gagnées sur la mer de Saemangeum.</p><p>Le ciel maussade et couvert, ainsi que le vide total du lieu, invitent le visiteur à ralentir et à réfléchir ; de nombreux fans viennent y filmer leur propre reprise de danse en un plan, sur le sol même où BTS a dansé.</p>"
+      "fr": "<p>Le clip de « Save Me » est célèbre pour avoir été tourné en un seul plan-séquence, par une journée grise et venteuse — cet horizon boueux et infini qui épouse l'énergie désespérée de la chanson fait partie du projet de terres gagnées sur la mer de Saemangeum.</p><p>Le ciel maussade et couvert, ainsi que le vide total du lieu, invitent le visiteur à ralentir et à réfléchir ; de nombreux fans viennent y filmer leur propre reprise de danse en un plan, sur le sol même où BTS a dansé.</p>",
+      "en": "<p>Stretching along the dramatic coastline of North Jeolla Province across Buan, Gunsan, and Gimje, the Saemangeum Seawall and Reclaimed Land project is one of the most monumental engineering feats in the world. Officially recognized by the Guinness World Records as the longest artificial dyke on Earth at 33.9 kilometers, it spans vast swaths of tidal flats and shallow seas, converting them into massive open plains and dry earth. Known for its endless horizons, sweeping winds, and vast, minimalist landscapes that dissolve into hazy skies, this sprawling tract of reclaimed land creates a haunting, otherworldly atmosphere that feels completely detached from urban South Korea.</p><!--stss:footsteps--><p>This desolate and windswept landscape holds a monumental place in BTS history, having served as the raw, unfiltered canvas for two of the group's most iconic visual projects:</p><p>2016: The legendary single \"Save Me\" is universally famous for being filmed in one continuous, uninterrupted take on a dreary, windy day. The endless, muddy horizon and overcast skies of the Saemangeum reclaimed flats perfectly mirrored the song's desperate, powerful energy. Stripped of extravagant sets, the minimalist plain allowed the members' choreography and raw emotion to take center stage under the bleak, moody sky.</p><p>2018: Recognizing the deeply melancholic and haunting aesthetic of the location, the members returned to the vast expanses of the seawall years later to capture the conceptual concept photos for their critically acclaimed 2018 album Love Yourself: Tear.</p><p>Returning to the exact same site where they filmed \"Save Me\" two years prior made this a deeply symbolic pilgrimage. In the behind-the-scenes Jacket shooting sketch video, leader RM explained the profound meaning behind the immense, empty backdrop, noting: \"This shooting capture the moment exact where we realize that love we initially thought was dictated by destiny—even in our DNA—is actually a fake love. That's why we are here in this solitary space, to express despair and show the tears that echo our album's title.\" Jimin also remarked with nostalgia that it was their only outdoor photoshoot for the entire opus, bringing them right back to where they danced under the clouds years earlier. The sandy hues, arid soil, and infinite horizon perfectly illustrated the aesthetic transition into melancholy and heartbreak.</p><p>Recognizing the immense impact on the global fandom, the Saemangeum Development Agency officially installed a dedicated \"BTS Photo Zone\" near the Saemangeum Promotion Center in Buan, allowing visitors to pose against the minimalist landscapes that shaped the group's visual history.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Bring a sturdy tripod"
+          "en": "Embrace the Open Horizon"
         },
         "text": {
-          "en": "Bring a sturdy tripod if filming a dance cover — the ocean winds here are notoriously strong."
+          "en": "Visit the expansive lookout points along the Saemangeum Seawall to take in the breathtaking, unobstructed views of the sea and reclaimed land that match the sweeping backdrops of the music video."
         }
       },
       {
@@ -5281,6 +5281,14 @@ window.STATIC_LOCATIONS = [
         },
         "text": {
           "en": "The video's mood depended on a genuinely dreary, windy day — the location suits an overcast visit far better than bright sunshine if you're trying to match the original atmosphere."
+        }
+      },
+      {
+        "title": {
+          "en": "Capture the Moody Aesthetic"
+        },
+        "text": {
+          "en": "Because the location is famous for its dramatic, open skies and windswept atmosphere, it is an incredible spot for landscape and conceptual photography that echoes the Save Me vibe."
         }
       }
     ],
@@ -5291,7 +5299,53 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Bring a sturdy tripod if filming a dance cover — the ocean winds here are notoriously strong.",
       "fr": "Apportez un trépied solide si vous filmez une reprise de danse — les vents marins y sont réputés très forts."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible primarily by car or local regional bus from Buan or Jeonju; renting a car or driving along the Saemangeum Seawall road is strongly recommended for the best experience."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open public coastal roads and viewing areas accessible 24/7. Free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved seawall driving routes and open viewing platforms, though the surrounding reclaimed mudflats and dirt paths require stable footwear."
+        }
+      }
+    ],
+    "episodeLink": "https://www.koreaherald.com/article/10698258",
+    "officialLink": "https://en.wikipedia.org/wiki/Saemangeum_Seawall",
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=YWM1fCHbp-Q"
+    ],
+    "recreatedPhotos": [
+      "images/admin-upload-100-recreated-0.jpg",
+      "images/admin-upload-100-recreated-1.jpg"
+    ]
   },
   {
     "id": 101,
