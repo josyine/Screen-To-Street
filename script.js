@@ -3530,6 +3530,9 @@ const iconsSVG = {
     "Pop-up Store": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
     "Landmark": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="4" y="8" rx="2" ry="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
     "In The Soop": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    "Winter Package": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>`,
+    "Summer Package": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
+    "Festa": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></svg>`,
     "Default": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`
 };
 
@@ -3537,10 +3540,11 @@ const iconsSVG = {
 const groupColors = { "BTS": "#8b5cf6", "Blackpink": "#ec4899", "Twice": "#f43f5e", "Seventeen": "#3b82f6", "Katseye": "#10b981", "TXT": "#f59e0b" };
 
 const filterData = {
-    // "In The Soop" (demande du 27/09/2026) : ajouté aux côtés de "Run BTS"/"Bon Voyage" —
-    // même famille (contenu de show BTS, pas un vrai commerce avec horaires), donc réservé
-    // au groupe BTS uniquement, comme ses deux voisines.
-    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "In The Soop", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store"] },
+    // "In The Soop" (demande du 27/09/2026), "Winter Package"/"Summer Package"/"Festa"
+    // (demande du 30/09/2026) : ajoutées aux côtés de "Run BTS"/"Bon Voyage" — même famille
+    // (contenu/évènements BTS, pas un vrai commerce avec horaires), donc réservées au groupe
+    // BTS uniquement, comme leurs voisines.
+    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "In The Soop", "Winter Package", "Summer Package", "Festa", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store"] },
     "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
     "General": { categories: ["Cafe", "Concert", "Fashion", "Landmark", "Museum", "Restaurant", "Pop-up Store"] }
 };
@@ -4166,6 +4170,7 @@ const translations = {
 
 const catTranslations = {
     "Run BTS": "Run BTS", "Bon Voyage": "Bon Voyage", "In The Soop": "In The Soop",
+    "Winter Package": "Winter Package", "Summer Package": "Summer Package", "Festa": "Festa",
     "Restaurant": {en: "Restaurant", fr: "Restaurant"},
     "Cafe": {en: "Cafe", fr: "Café"},
     "Museum": {en: "Museum", fr: "Musée"},
@@ -8876,6 +8881,9 @@ const ITI_CATEGORY_PROFILE = {
     'Run BTS':      { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'Bon Voyage':   { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'In The Soop':  { openHour: 9,  closeHour: 19, visitMinutes: 30 },
+    'Winter Package': { openHour: 9, closeHour: 19, visitMinutes: 30 },
+    'Summer Package': { openHour: 9, closeHour: 19, visitMinutes: 30 },
+    'Festa':        { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'MV Location':  { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'Landmark':     { openHour: 9,  closeHour: 19, visitMinutes: 40 }
 };

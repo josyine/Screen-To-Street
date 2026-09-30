@@ -161,7 +161,7 @@ Renvoie UNIQUEMENT un tableau JSON (array) valide contenant 20 objets avec cette
   "member": "All (ou le nom du membre concerné)",
   "country": "Pays",
   "city": "Ville",
-  "category": "Cafe, MV Location, Concert, Landmark, Restaurant, Museum, Fashion, Bon Voyage, Pop-up Store, Run BTS, In The Soop... — TOUJOURS au singulier, jamais de 's' final (Concert pas Concerts, Landmark pas Landmarks, Restaurant pas Restaurants, Museum pas Museums)",
+  "category": "Cafe, MV Location, Concert, Landmark, Restaurant, Museum, Fashion, Bon Voyage, Pop-up Store, Run BTS, In The Soop, Winter Package, Summer Package, Festa... — TOUJOURS au singulier, jamais de 's' final (Concert pas Concerts, Landmark pas Landmarks, Restaurant pas Restaurants, Museum pas Museums)",
   "year": "Année",
   "address": "Adresse complète et réelle (jamais inventée)",
   "lat": 0.0, "lng": 0.0,
