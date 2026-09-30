@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-30T07:11:50.449Z.
+// Généré le 2026-09-30T14:07:19.709Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -748,51 +748,6 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The building is a private office space today — admire the exterior from the street rather than trying to enter.",
       "fr": "Le bâtiment est aujourd'hui un espace de bureaux privé — admirez l'extérieur depuis la rue plutôt que de tenter d'y entrer."
-    }
-  },
-  {
-    "id": 13,
-    "name": "Hyangho Beach Bus Stop",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Gangneung",
-    "category": "Landmark",
-    "year": "2017",
-    "ytId": "46qWWmnK4F0",
-    "address": "8-55 Hyangho-ri",
-    "lat": 37.9048,
-    "lng": 128.8266,
-    "img": "https://img.youtube.com/vi/46qWWmnK4F0/hqdefault.jpg",
-    "fullDescription": {
-      "en": "<p>A modest little bus shelter facing the sea along the East Coast, this stop near Hyangho Beach became instantly iconic after appearing as a key emotional backdrop in one of BTS's most beloved music videos.</p><p>With the wide, quiet beach stretching out just beyond the road and the pale blue shelter almost unchanged since filming, fans regularly make the trip out from Gangneung just to sit on the same bench and watch the same waves.</p>",
-      "fr": "<p>Modeste petit abribus face à la mer, sur la côte est du pays, cet arrêt près de la plage de Hyangho est devenu instantanément culte après avoir servi de décor émotionnel clé dans l'un des clips les plus aimés de BTS.</p><p>Avec la plage large et paisible qui s'étend juste après la route et l'abri bleu pâle resté quasiment identique depuis le tournage, les fans font régulièrement le déplacement depuis Gangneung pour s'asseoir sur le même banc et regarder les mêmes vagues.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Catch the sunrise"
-        },
-        "text": {
-          "en": "Sunrise here is spectacular and the beach is almost empty that early — worth setting an alarm for."
-        }
-      },
-      {
-        "title": {
-          "en": "Match the shot"
-        },
-        "text": {
-          "en": "The pale blue shelter has stayed almost unchanged since filming, making it easy to sit on the same bench and recreate the original shot."
-        }
-      }
-    ],
-    "directions": {
-      "en": "From Gangneung Station, a taxi takes about 20 minutes; there is also a local bus that stops within walking distance.",
-      "fr": "Depuis la gare de Gangneung, comptez environ 20 minutes en taxi ; un bus local dessert également un arrêt à quelques minutes à pied."
-    },
-    "tip": {
-      "en": "Sunrise here is spectacular and the beach is almost empty that early — worth setting an alarm for.",
-      "fr": "Le lever de soleil y est spectaculaire et la plage est quasiment vide à cette heure — cela vaut le coup de régler un réveil."
     }
   },
   {
@@ -2396,54 +2351,83 @@ window.STATIC_LOCATIONS = [
     "address": "Gwanghwamun Square, Jongno-gu",
     "lat": 37.5759,
     "lng": 126.9769,
-    "img": "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=600",
+    "img": "images/admin-upload-45-photo.jpg",
     "fullDescription": {
-      "en": "<p>During their early promotions, BTS and their staff handed out flyers and did guerilla interviews in major public spaces like Gwanghwamun to gain public recognition.</p><p>Standing in the massive square, it's incredible to think of a young BTS trying to catch the attention of passing citizens, years before they became global ambassadors for Seoul.</p>",
-      "fr": "<p>Encadrée par l'imposante porte Gwanghwamun et les montagnes qui s'élèvent derrière le palais Gyeongbokgung, cette vaste place publique se trouve au cœur historique et symbolique de Séoul — c'est précisément pour cela que BTS l'a choisie pour un concert gratuit en plein air en 2026, transformant l'un des espaces les plus traditionnels de Corée en scène pour l'une de ses réussites les plus modernes.</p><p>En se tenant ici, le choix se comprend aisément : des siècles d'histoire royale qui s'étendent derrière une foule de dizaines de milliers de personnes, toutes réunies pour un groupe devenu, à sa manière, un monument national à part entière.</p>"
+      "fr": "<p>Encadrée par l'imposante porte Gwanghwamun et les montagnes qui s'élèvent derrière le palais Gyeongbokgung, cette vaste place publique se trouve au cœur historique et symbolique de Séoul — c'est précisément pour cela que BTS l'a choisie pour un concert gratuit en plein air en 2026, transformant l'un des espaces les plus traditionnels de Corée en scène pour l'une de ses réussites les plus modernes.</p><p>En se tenant ici, le choix se comprend aisément : des siècles d'histoire royale qui s'étendent derrière une foule de dizaines de milliers de personnes, toutes réunies pour un groupe devenu, à sa manière, un monument national à part entière.</p>",
+      "en": "<p>Situated in the heart of Seoul directly facing the majestic Gyeongbokgung Palace, Gwanghwamun Square is South Korea's most iconic public plaza. Flanked by grand statues of King Sejong the Great and Admiral Yi Sun-sin with the backdrop of Bugaksan Mountain, the square has historically served as the symbolic heart of the nation, hosting major cultural gatherings, national events, and historic public movements.</p><!--stss:footsteps--><p>This historic plaza and royal palace complex became the epicenter of a monumental global music event when BTS held their historic return concert, titled BTS Comeback Live: ARIRANG, on March 21, 2026. Marking their grand group reunion and return following their military service, the performance transformed the heart of Seoul into a sea of glowing purple lights, drawing an estimated 200,000 to 260,000 fans who gathered in the city center.</p><p>The concert delivered an unforgettable royal and modern synthesis: the performance began dramatically inside the historic gates of Gyeongbokgung Palace, with the members crossing through the Woldae and Gwanghwamun area before striding onto a massive T-shaped stage erected right on the public square. Performing tracks from their new album ARIRANG alongside legendary anthems like \"MIC Drop\", the group delivered a homecoming spectacle that was simultaneously streamed live worldwide, cementing another legendary chapter in both South Korean history and BTS's career.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "King Sejong Statue"
+          "en": "Stand Where BTS Performed"
         },
         "text": {
-          "en": "A must-visit landmark in the center of the square."
+          "en": "Walk down the plaza toward the main square where the T-stage was installed, picturing the massive sea of purple lights that illuminated the heart of Seoul during the live broadcast."
         }
       },
       {
         "title": {
-          "en": "Visit Gyeongbokgung"
+          "en": "Explore Gyeongbokgung Palace"
         },
         "text": {
-          "en": "The palace is right behind the square, where they later performed 'Idol'."
+          "en": "Walk through the palace gates and across the Woldae to retrace the group's dramatic entrance route from the start of the historic comeback show."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit the King Sejong and Admiral Yi Statues"
+        },
+        "text": {
+          "en": "Take time to explore the public cultural features of the plaza, which served as the grand urban backdrop for millions of global viewers watching online."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Massive public square in the historic center of Seoul."
-        }
-      },
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "Statues of King Sejong and Admiral Yi Sun-sin."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Gwanghwamun Station (Line 5)."
+          "en": "Take Seoul Subway Line 3 to Gyeongbokgung Station (Exits 6/7) or Line 5 to Gwanghwamun Station (Exits 1/2/9), which open directly into or beside the plaza grounds."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Gwanghwamun Square is open 24/7 and completely free to the public. (Gyeongbokgung Palace requires standard admission fees and operates during daytime hours with specific closing days)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved, flat urban plaza spaces with wide walking paths and excellent accessibility throughout the public square."
         }
       }
+    ],
+    "episodeLabel": "Era",
+    "episode": "Arirang",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tiktokUrl": "",
+    "ytId": "2K7R68DmAfE",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "Hschrijver / CC BY-SA 4.0",
+    "officialLink": "https://gwanghwamun.seoul.go.kr/ghm-eng/main.do",
+    "recreatedPhotos": [
+      "images/admin-upload-45-recreated-0.jpg"
+    ],
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=X6EHtzcmiPw"
     ]
   },
   {
@@ -3022,13 +3006,13 @@ window.STATIC_LOCATIONS = [
     "category": "MV Location",
     "year": "2017",
     "episode": "Spring Day / You Never Walk Alone",
-    "address": "Jumunjin-eup, Gangneung",
-    "lat": 37.8967,
-    "lng": 128.8283,
-    "img": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600",
+    "address": "210 Hyangho-ri, Jumunjin-eup, Gangneung-si, Gangwon-do, South Korea",
+    "lat": 37.91236,
+    "lng": 128.81708,
+    "img": "images/admin-upload-56-photo.jpg",
     "fullDescription": {
-      "en": "<p>The pale blue bus shelter facing the water at Jumunjin Beach isn't the original one seen in the \"Spring Day\" music video and on the \"You Never Walk Alone\" album cover — that exact spot proved so difficult for fans to track down that the city of Gangneung eventually built this faithful recreation specifically so ARMY would have somewhere real to visit.</p><p>It's a rare, almost tender example of a destination shaped directly by fan devotion rather than the other way around: the wide sandy beach and pale winter light are the real draw, and the shelter itself, purple bench and all, exists purely so people have a place to sit and feel, briefly, like they've stepped inside the song.</p>",
-      "fr": "<p>L'abribus bleu pâle qui fait face à la mer sur la plage de Jumunjin n'est pas l'original vu dans le clip de « Spring Day » et sur la pochette de l'album « You Never Walk Alone » — ce lieu précis s'est avéré si difficile à localiser pour les fans que la ville de Gangneung a fini par construire cette reconstitution fidèle, spécifiquement pour que les ARMY aient un endroit réel où se rendre.</p><p>C'est un exemple rare, presque touchant, d'une destination façonnée directement par la dévotion des fans plutôt que l'inverse : la large plage de sable et la lumière pâle d'hiver sont le véritable attrait, et l'abri lui-même, banc violet compris, existe uniquement pour que chacun puisse s'y asseoir et se sentir, l'espace d'un instant, transporté à l'intérieur de la chanson.</p>"
+      "fr": "<p>L'abribus bleu pâle qui fait face à la mer sur la plage de Jumunjin n'est pas l'original vu dans le clip de « Spring Day » et sur la pochette de l'album « You Never Walk Alone » — ce lieu précis s'est avéré si difficile à localiser pour les fans que la ville de Gangneung a fini par construire cette reconstitution fidèle, spécifiquement pour que les ARMY aient un endroit réel où se rendre.</p><p>C'est un exemple rare, presque touchant, d'une destination façonnée directement par la dévotion des fans plutôt que l'inverse : la large plage de sable et la lumière pâle d'hiver sont le véritable attrait, et l'abri lui-même, banc violet compris, existe uniquement pour que chacun puisse s'y asseoir et se sentir, l'espace d'un instant, transporté à l'intérieur de la chanson.</p>",
+      "en": "<p>Stretching along the crystalline eastern coastline of Gangneung in Gangwon Province, Jumunjin Beach is renowned for its fine white sand, shallow turquoise waters, and peaceful, breezy shores. While the beach has long been a favorite seaside escape for locals and K-Drama fans alike (famous also for its appearances in shows like Goblin), it gained legendary, global status among BTS fans as the backdrop for the You Never Walk Alone album cover and the bittersweet visual narrative of \"Spring Day\" in 2017.</p><!--stss:footsteps--><p>The pale blue bus shelter facing the open sea at Jumunjin Beach holds a special, interactive place in fandom history. The original bus stop used during the actual 2017 winter photoshoot was a temporary prop placed in a remote coastal spot, making it extremely difficult for fans to locate. To welcome international ARMYs making the pilgrimage to the East Sea, the Gangneung city government and local authorities eventually built a faithful, permanent recreation of the vintage pale blue bus stop right on the shore of Jumunjin Beach.</p><p>Today, the bus shelter features the exact same retro signage and aesthetic as the album jacket. While the bus never actually stops here, the shelter is adorned with album props, allowing fans from all over the world to sit on the bench, gaze out at the same crashing waves where the members posed, and recreate the iconic You Never Walk Alone album cover shot.</p>"
     },
     "tipsList": [
       {
@@ -3046,16 +3030,69 @@ window.STATIC_LOCATIONS = [
         "text": {
           "en": "This isn't the exact bus shelter from the 'Spring Day' video — the original location proved impossible to pin down, so the city of Gangneung built this faithful recreation specifically so fans would have somewhere real to visit."
         }
+      },
+      {
+        "title": {
+          "en": "Recreate the Album Cover"
+        },
+        "text": {
+          "en": "Line up at the pale blue bus shelter bench with your friends or fellow ARMYs to mirror the melancholic, nostalgic composition of the You Never Walk Alone jacket photos."
+        }
       }
     ],
     "directions": {
       "en": "Take a bus from Seoul's Nambu Bus Terminal to Jumunjin Intercity Bus Terminal, then a short taxi or 15-minute walk to the beach.",
       "fr": "Prenez un bus depuis le terminal routier Nambu de Séoul jusqu'au terminal de Jumunjin, puis un court trajet en taxi ou 15 minutes à pied jusqu'à la plage."
     },
+    "episodeLabel": "Era",
     "tip": {
       "en": "Winter and early spring light match the music video's mood most closely — a grey, overcast afternoon here feels more \"right\" than a sunny summer day.",
       "fr": "La lumière d'hiver et de début de printemps correspond le mieux à l'ambiance du clip — un après-midi gris et couvert semble plus « juste » ici qu'une journée d'été ensoleillée."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "46qWWmnK4F0",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take an express bus or KTX train from Seoul to Gangneung Station, followed by local bus No. 300 or 302 directly to the Jumunjin Beach / Hyangho Beach bus stop (taking a taxi from Gangneung Station is also fast and convenient)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Accessible 24/7 as a public beach photo zone. Completely free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved coastal boardwalk and flat sandy beach approaches; very easy to access from the main road and parking areas."
+        }
+      }
+    ],
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-56-recreated-0.jpg"
+    ],
+    "episodeLink": "https://creatrip.com/en/userblog/46?srsltid=AU7gw4VtA9Q6loMtMydy8T7d2vM3bJeX3fyQmSAeOsZa3q_8Qk39JorH",
+    "tweetUrl": "https://x.com/bighit_music/status/827169728292466688?s=46"
   },
   {
     "id": 57,
@@ -4625,15 +4662,15 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
-    "year": "2013",
-    "ytId": "kPhzLuV47Yk",
+    "year": "2019",
+    "ytId": "yVZBixWrYy4",
     "address": "41 Naksan-gil, Jongno-gu",
     "lat": 37.5805,
     "lng": 127.0075,
-    "img": "https://img.youtube.com/vi/kPhzLuV47Yk/hqdefault.jpg",
+    "img": "images/admin-upload-87-photo.jpg",
     "fullDescription": {
-      "en": "<p>Naksan Park was a favourite escape for the members when they needed a break from the claustrophobia of their basement practice rooms, and RM specifically filmed early vlogs discussing his walks along the old city walls here.</p><p>The contrast between the ancient stone fortress walls and the glowing modern city below mirrors the contemplative tone of RM's early lyrics, making it a fittingly reflective stop for any fan retracing his roots.</p>",
-      "fr": "<p>Naksan Park était une échappée belle pour les membres lorsqu'ils avaient besoin de sortir de leurs salles de répétition en sous-sol, et RM a notamment filmé de premiers vlogs évoquant ses balades le long des anciens remparts de la ville.</p><p>Le contraste entre les vieux remparts de pierre et la ville moderne scintillante en contrebas fait écho au ton contemplatif des premiers textes de RM, faisant de ce lieu une étape particulièrement introspective pour tout fan sur ses traces.</p>"
+      "fr": "<p>Naksan Park était une échappée belle pour les membres lorsqu'ils avaient besoin de sortir de leurs salles de répétition en sous-sol, et RM a notamment filmé de premiers vlogs évoquant ses balades le long des anciens remparts de la ville.</p><p>Le contraste entre les vieux remparts de pierre et la ville moderne scintillante en contrebas fait écho au ton contemplatif des premiers textes de RM, faisant de ce lieu une étape particulièrement introspective pour tout fan sur ses traces.</p>",
+      "en": "<p>Perched high above the bustling neighborhoods of Daehangno and Dongdaemun, Naksan Park is named after its humpbacked mountain shape, which resembles a camel's back (nakseong). During the Joseon Dynasty, it served as one of the four guardian mountains protecting Seoul, and today it is home to beautifully preserved sections of the ancient Seoul City Wall (Hanyangdoseong). Winding stone pathways, elevated viewing pavilions, and lush forested trails offer panoramic, bird's-eye views of the sprawling South Korean capital, making it a beloved green oasis in the middle of the metropolis.</p><!--stss:footsteps--><p>Naksan Park holds a special place in the hearts of ARMYs as one of Jungkook's favorite scenic and natural attractions in the South Korean capital. Officially integrated into official travel recommendations like the Visit Seoul guide, Jungkook highlighted this historic park for its breathtaking nature and cultural ambiance. By visiting the park, fans can experience the capital through Jungkook's eyes, walking along the same picturesque fortress walls and taking in the inspiring hilltop views that he loves.</p>"
     },
     "tipsList": [
       {
@@ -4646,10 +4683,18 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "Walk the old city walls"
+          "en": "Explore Ihwa Mural Village"
         },
         "text": {
-          "en": "RM specifically filmed early vlogs about walking these old fortress walls — following the same stretch ties the visit directly to his own early reflections."
+          "en": "Take the scenic walking route up through the artistic alleyways of the nearby mural village just as Jungkook's recommended path suggests."
+        }
+      },
+      {
+        "title": {
+          "en": "Follow Jungkook's Recommendation"
+        },
+        "text": {
+          "en": "Explore the park's scenic pathways and fortress walls as highlighted by Jungkook in official Seoul capital guides."
         }
       }
     ],
@@ -4660,7 +4705,50 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Go after sunset for one of the most romantic night views in all of Seoul.",
       "fr": "Venez après le coucher du soleil pour l'une des plus belles vues nocturnes de tout Séoul."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Option 1 (Scenic Walk - Recommended): Take Seoul Subway Line 4 to Hyehwa Station (Exit 2), then walk about 15 minutes uphill through the charming artistic alleyways of Ihwa Mural Village to reach the summit.\n\nOption 2 (Easy Bus Route): To avoid the uphill walk, take the Jongno 03 local village bus (Ma-eul bus) from Dongmyo Station or Changsin Station, which drops you off directly at the upper entrance of the park."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open 24/7. Completely free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Involves steep inclines, stone stairs, and uphill walking paths across a hillside park; comfortable walking shoes are essential."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-87-recreated-0.jpg"
+    ],
+    "imgCredit": "Motoko C. K. / CC BY 4.0"
   },
   {
     "id": 89,
@@ -5198,6 +5286,8 @@ window.STATIC_LOCATIONS = [
       "en": "Take the KTX to Donghae Station, then a local bus or a 20-minute taxi ride down the coast.",
       "fr": "Prenez le KTX jusqu'à la gare de Donghae, puis un bus local ou un taxi d'environ 20 minutes le long de la côte."
     },
+    "episodeLabel": "Era",
+    "episode": "Butter",
     "tip": {
       "en": "Bring small props like the Butter album or yellow balloons — fans often do to make their photos pop.",
       "fr": "Apportez de petits accessoires comme l'album Butter ou des ballons jaunes — c'est ce que font souvent les fans pour dynamiser leurs photos."
@@ -13483,7 +13573,7 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "member": "All",
     "address": "Seseong-ri, Soyang-myeon, Wanju-gun, Jeollabuk-do, South Korea",
-    "category": "MV Location",
+    "category": "Landmark",
     "lat": 35.892,
     "city": "Wanju",
     "group": "BTS",
@@ -13527,9 +13617,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Located in the serene, untouched countryside of Wanju-gun in North Jeolla Province, this charming stone stepping crossing (doldari) spans across a quiet local stream, nestled against a breathtaking backdrop of lush green mountains. Wanju is deeply celebrated for its well-preserved traditional Korean culture, historic hanok villages, and tranquil natural landscapes, offering a perfect, slow-paced contrast to the high-tech bustle of South Korea's major cities.</p><p>This quiet rural stream gained massive international fame when BTS selected Wanju as the exclusive filming location for their 2019 Summer Package in Korea—notably their first-ever domestic Summer Package. The beautiful pictorial featuring all seven members casually sitting and walking across the picturesque stepping stones became one of the photoshoot's most iconic and beloved images. The visual impact was so profound that local authorities officially designated the area as part of the \"Wanju BTS Tour\" trail, placing informational photo zone markers to help fans perfectly recreate the group's relaxing summer aesthetic.</p>"
-    },
     "episodeLink": "https://www.youtube.com/watch?v=codiyeFL8wA",
     "officialLink": "https://english.visitkorea.or.kr/svc/whereToGo/hdrdslt/hdrdsltView.do?crsSn=371745",
     "recreatedPhotos": [],
@@ -13559,7 +13646,10 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhoto": ""
+    "recreatedPhoto": "",
+    "fullDescription": {
+      "en": "<p>Located in the serene, untouched countryside of Wanju-gun in North Jeolla Province, this charming stone stepping crossing (doldari) spans across a quiet local stream, nestled against a breathtaking backdrop of lush green mountains. Wanju is deeply celebrated for its well-preserved traditional Korean culture, historic hanok villages, and tranquil natural landscapes, offering a perfect, slow-paced contrast to the high-tech bustle of South Korea's major cities.</p><!--stss:footsteps--><p>This quiet rural stream gained massive international fame when BTS selected Wanju as the exclusive filming location for their 2019 Summer Package in Korea—notably their first-ever domestic Summer Package. The beautiful pictorial featuring all seven members casually sitting and walking across the picturesque stepping stones became one of the photoshoot's most iconic and beloved images. The visual impact was so profound that local authorities officially designated the area as part of the \"Wanju BTS Tour\" trail, placing informational photo zone markers to help fans perfectly recreate the group's relaxing summer aesthetic.</p>"
+    }
   },
   {
     "address": "38 Songjeong-ro 8beon-gil, Gwangsan-gu, Gwangju, South Korea",
