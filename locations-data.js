@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-09-30T14:07:19.709Z.
+// Généré le 2026-09-30T23:09:25.534Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -932,22 +932,22 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 18,
-    "name": "In the SOOP Estate",
+    "name": "Lake 192",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
     "city": "Chuncheon",
-    "category": "Bon Voyage",
+    "category": "In The Soop",
     "year": "2021",
-    "episode": "In the SOOP BTS ver. Season 2",
+    "episode": "Season 1",
     "ytId": "6qB8Nb_WO_Y",
-    "address": "Domaine privé en montagne, Chuncheon (Accès restreint via le Phoenix Pyeongchang Resort)",
-    "lat": 37.8813,
-    "lng": 127.7298,
-    "img": "https://img.youtube.com/vi/6qB8Nb_WO_Y/hqdefault.jpg",
+    "address": "Nam-san-myeon, Chuncheon-si, Gangwon-do, South Korea (Lake 192 Estate)",
+    "lat": 38.0264,
+    "lng": 127.66568,
+    "img": "images/admin-upload-18-photo.jpg",
     "fullDescription": {
-      "en": "<p>Nestled deep in the lush mountains and dense forests of Chuncheon, this sprawling estate is far more than a simple vacation rental. HYBE acquired, redesigned and fully renovated the vast property specifically to create the perfect setting for the show.</p><p>The location seamlessly blends untouched wilderness with ultra-modern architecture: a sumptuous main house, private guest villas, an outdoor pool, a tennis court, and even a dedicated RV area. It's a true sanctuary of tranquility, custom-built to offer quiet luxury and a total disconnect from the outside world.</p><p><b>Following in BTS's Footsteps (In the SOOP Season 2)</b><br>It was in this idyllic setting that the members of BTS settled in 2021 for a well-deserved break. Walking the grounds today, the immersion is total: the sets remain faithful to the show. You can walk exactly where RM once read peacefully, see the RV where SUGA retreated to play guitar, and visit the kitchen that was the backdrop for Jin and Jung Kook's late-night meals. The outdoor sports field still seems to echo with their laughter from legendary games of foot-volley in the rain. Visiting this place means feeling the magic and serenity of the simple moments the group shared together.</p>",
-      "fr": "<p>Niché au cœur des montagnes luxuriantes et des forêts denses de Chuncheon, ce vaste domaine n'est pas une simple location de vacances. L'agence HYBE a acquis, repensé et entièrement rénové cette immense propriété spécifiquement pour créer le cadre parfait de l'émission.</p><p>Le lieu allie harmonieusement nature sauvage et architecture ultra-moderne : il comprend une somptueuse maison principale, des villas d'invités privées, une piscine extérieure, un court de tennis, et même une zone dédiée aux camping-cars. C'est un véritable sanctuaire de tranquillité, conçu sur mesure pour offrir un luxe discret et une déconnexion totale du monde extérieur.</p><p><b>Following in BTS's Footsteps (In the SOOP Season 2)</b><br>C'est dans cet environnement idyllique que les membres de BTS ont posé leurs valises en 2021 pour s'accorder une pause bien méritée. En visitant le domaine, l'immersion est totale : les décors sont restés fidèles à l'émission. Vous pourrez marcher exactement là où RM lisait paisiblement, voir le camping-car où SUGA s'isolait pour jouer de la guitare, et visiter la cuisine qui a été le théâtre des repas nocturnes de Jin et Jung Kook. Le terrain de sport extérieur résonne encore de leurs rires lors de leurs mythiques parties de foot-volley sous la pluie. Visiter ce lieu, c'est ressentir la magie et la sérénité des moments simples partagés par le groupe.</p>"
+      "fr": "<p>Niché au cœur des montagnes luxuriantes et des forêts denses de Chuncheon, ce vaste domaine n'est pas une simple location de vacances. L'agence HYBE a acquis, repensé et entièrement rénové cette immense propriété spécifiquement pour créer le cadre parfait de l'émission.</p><p>Le lieu allie harmonieusement nature sauvage et architecture ultra-moderne : il comprend une somptueuse maison principale, des villas d'invités privées, une piscine extérieure, un court de tennis, et même une zone dédiée aux camping-cars. C'est un véritable sanctuaire de tranquillité, conçu sur mesure pour offrir un luxe discret et une déconnexion totale du monde extérieur.</p><p><b>Following in BTS's Footsteps (In the SOOP Season 2)</b><br>C'est dans cet environnement idyllique que les membres de BTS ont posé leurs valises en 2021 pour s'accorder une pause bien méritée. En visitant le domaine, l'immersion est totale : les décors sont restés fidèles à l'émission. Vous pourrez marcher exactement là où RM lisait paisiblement, voir le camping-car où SUGA s'isolait pour jouer de la guitare, et visiter la cuisine qui a été le théâtre des repas nocturnes de Jin et Jung Kook. Le terrain de sport extérieur résonne encore de leurs rires lors de leurs mythiques parties de foot-volley sous la pluie. Visiter ce lieu, c'est ressentir la magie et la sérénité des moments simples partagés par le groupe.</p>",
+      "en": "<p>Nestled on the shores of a tranquil, private lake in Chuncheon, Gangwon Province, Lake 192 is an exclusive, award-winning architectural masterpiece and luxury pension estate. Designed by renowned Korean architects, the sprawling property features a stunning main modern house, manicured lawns, a private dock, an outdoor swimming pool, and surrounding dense forests. Built to harmonize seamlessly with its natural lakeside environment, it offers complete seclusion and breathtaking water views, making it one of the most serene private retreats in the country.</p><!--stss:footsteps--><p>This stunning lakeside estate holds a legendary place in ARMY history as the official, exclusive filming location for the first season of In the SOOP BTS ver. in the summer of 2020. Across the property, the members spent idyllic days finding healing through quiet hobbies, cooking elaborate meals, painting, fishing off the dock, and sleeping under the stars.</p><p>Walking around the exterior or viewing the property allows fans to vividly picture the iconic scenes from the show: RM reading and building Lego sets on the porch, Jin fishing by the water, Suga producing music in the RV parked outside, J-Hope and Jimin chatting late into the night by the fire pit, V and Jungkook strumming guitars, and Jungkook practicing boxing or flying a drone over the lake.</p>"
     },
     "tipsList": [
       {
@@ -960,18 +960,26 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "Walk the actual sets"
+          "en": "Recreate the In the SOOP Vibe"
         },
         "text": {
-          "en": "The property's sets remain faithful to the show — you can walk where RM once read, see the RV SUGA retreated to, and visit the kitchen from Jin and Jung Kook's late-night meals."
+          "en": "Channel the peaceful energy of the first season by enjoying a quiet moment by the water, reflecting on the importance of rest and personal hobbies."
         }
       },
       {
         "title": {
-          "en": "Try the sports field"
+          "en": "Rewatch Season 1 Highlights"
         },
         "text": {
-          "en": "The outdoor sports field where the members played foot-volley in the rain is still there, quiet on-site evidence of one of the show's most memorable episodes."
+          "en": "Stream an episode of In the SOOP Season 1 before your trip to easily recognize the layout of the main house, the lawn where they exercised, and the dock where they fished."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect Private Property"
+        },
+        "text": {
+          "en": "Because Lake 192 is an exclusive, private luxury estate and accommodation rental, direct interior access, filming tours, or trespassing on the grounds are not permitted. Admire the serene exterior setting from afar while exploring the scenic Chuncheon countryside."
         }
       }
     ],
@@ -979,10 +987,57 @@ window.STATIC_LOCATIONS = [
       "en": "Access to this estate is strictly regulated to preserve the grounds. You cannot arrive by personal vehicle or taxi. Entry requires booking the official 'In the SOOP Stay' package in partnership with the Phoenix Pyeongchang Resort. The recommended route is to take the KTX high-speed train from Seoul Station to Pyeongchang Station, then board the resort's private shuttle, which takes you directly to the estate.",
       "fr": "L'accès à ce domaine est strictement réglementé pour préserver les lieux. Vous ne pouvez pas vous y rendre avec un véhicule personnel ou un taxi. Pour y accéder, vous devez obligatoirement réserver le package officiel « In the SOOP Stay » en partenariat avec le Phoenix Pyeongchang Resort. Le trajet recommandé est de prendre le train à grande vitesse (KTX) depuis la gare de Séoul jusqu'à la gare de Pyeongchang, puis de monter à bord de la navette privée du complexe hôtelier qui vous conduira directement au domaine."
     },
+    "episodeLabel": "In the SOOP",
     "tip": {
       "en": "Wear comfortable shoes to explore the whole property. Don't miss the hidden gift shop on-site, which sells exclusive merchandise you won't find anywhere else!",
       "fr": "Prévoyez des chaussures confortables pour explorer l'ensemble de la propriété. Ne manquez surtout pas la boutique de souvenirs cachée sur le site, qui vend des produits dérivés exclusifs que vous ne trouverez nulle part ailleurs !"
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-18-recreated-0.jpg",
+      "images/admin-upload-18-recreated-1.jpg"
+    ],
+    "episodeLink": "https://www.primevideo.com/-/fr/detail/0MYMCYMGYO1P9H6J2SP4KPLK5V",
+    "officialLink": "http://www.lake192.com/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible primarily by car from Chuncheon city center or via regional transit routes toward the Nam-san-myeon lakeside area."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Private luxury estate and commercial rental property. Closed to casual public walk-ins and general visitors; exterior/lake viewing only from public areas."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Rural lakeside terrain with private gated access roads."
+        }
+      }
+    ],
+    "tweetUrl": "https://x.com/inthesoop_tv/status/1290467569833586689?s=46",
+    "tweetUrls": [
+      "https://x.com/bts_love_myself/status/1299270517438865409?s=46"
+    ]
   },
   {
     "id": 19,
@@ -1259,36 +1314,44 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 24,
-    "name": "Aha'oulu (Bon Voyage 2)",
+    "name": "Queen's Marketplace",
     "group": "BTS",
     "member": "All",
-    "country": "USA",
-    "city": "Oahu, Hawaii",
+    "country": "United States",
+    "city": "Waikoloa",
     "category": "Bon Voyage",
     "year": "2017",
-    "address": "Haleiwa, North Shore",
-    "lat": 21.5928,
-    "lng": -158.1044,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "address": "250 Waikoloa Beach Dr, Waikoloa Village, HI 96738, United States",
+    "lat": 19.91395,
+    "lng": -155.88048,
+    "img": "images/admin-upload-24-photo.jpg",
     "fullDescription": {
-      "en": "<p>Haleiwa sits on Oahu's North Shore, a stretch of coastline better known to surfers than tourists, all low wooden storefronts and the kind of waves that draw professionals from around the world. Season 2 of Bon Voyage planted the group here for a stretch of surfing lessons, beach days and considerably more wipeouts than any of them expected.</p><p>It's a rare Bon Voyage location built almost entirely around failure in the funniest sense — nobody involved was a natural on a board, and the show leaned hard into that, turning Haleiwa's gentle beginner breaks into some of the most rewatched, most gif-able footage the group has ever produced.</p>",
-      "fr": "<p>Haleiwa se trouve sur la côte nord d'Oahu, un littoral plus connu des surfeurs que des touristes, fait de façades en bois basses et de vagues qui attirent des professionnels venus du monde entier. La saison 2 de Bon Voyage y a installé le groupe pour une série de cours de surf, de journées à la plage et de bien plus de chutes que prévu.</p><p>C'est un lieu Bon Voyage assez rare, construit presque entièrement autour de l'échec dans son sens le plus drôle — personne dans le groupe n'était naturellement doué en surf, et l'émission a pleinement joué cette carte, transformant les vagues débutantes de Haleiwa en certaines des images les plus revisionnées et les plus détournées jamais produites par le groupe.</p>"
+      "fr": "<p>Haleiwa se trouve sur la côte nord d'Oahu, un littoral plus connu des surfeurs que des touristes, fait de façades en bois basses et de vagues qui attirent des professionnels venus du monde entier. La saison 2 de Bon Voyage y a installé le groupe pour une série de cours de surf, de journées à la plage et de bien plus de chutes que prévu.</p><p>C'est un lieu Bon Voyage assez rare, construit presque entièrement autour de l'échec dans son sens le plus drôle — personne dans le groupe n'était naturellement doué en surf, et l'émission a pleinement joué cette carte, transformant les vagues débutantes de Haleiwa en certaines des images les plus revisionnées et les plus détournées jamais produites par le groupe.</p>",
+      "en": "<p>Located within the sun-drenched Waikoloa Beach Resort on the Kohala Coast of Hawaii's Big Island, Queen's Marketplace is a vibrant open-air shopping, dining, and gathering center. Surrounded by lush tropical landscaping, palm trees, and modern island architecture, it serves as a central hub for visitors exploring the western coast of the island, offering a mix of retail boutiques, local eateries, and community spaces under the warm Hawaiian sun.</p><!--stss:footsteps--><p>This popular resort marketplace holds a fun and nostalgic place in ARMY history, having been visited by the members during their unforgettable Hawaiian getaway in BTS Bon Voyage Season 2 (2017). During their first few days on the Big Island, the members stopped by Queen's Marketplace to unwind, shop, and grab bites to eat. Though kept under wraps initially due to leaked fan photos during their filming schedule, the locations within the shopping center became instant must-visit spots for fans following the season's broadcast and behind-the-scenes clips. Walking through the open-air courtyards allows ARMYs to retrace the members' relaxed island strolls.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Rent a board"
+          "en": "Stroll the Open-Air Courtyards"
         },
         "text": {
-          "en": "Haleiwa's surf shops still rent boards by the hour if you want to try the same beginner breaks the members struggled with."
+          "en": "Walk through the central gathering spaces of Queen's Marketplace just as the members did when they explored the resort shops during Bon Voyage Season 2."
         }
       },
       {
         "title": {
-          "en": "Stick to the beginner breaks"
+          "en": "Grab a Tropical Treat"
         },
         "text": {
-          "en": "Haleiwa's waves range from gentle beginner breaks to serious professional-level surf — stay on the same gentle stretch the members used for their lessons rather than the spots favoured by pros."
+          "en": "Take a break from the Hawaiian heat by picking up an iced coffee, local snack, or meal at one of the center's open-air eateries."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Waikoloa Resort Area"
+        },
+        "text": {
+          "en": "Combine your stop at the marketplace with a broader walk around the surrounding resort grounds and nearby coastal paths."
         }
       }
     ],
@@ -1296,10 +1359,56 @@ window.STATIC_LOCATIONS = [
       "en": "Best reached by rental car from Honolulu (around 45 minutes); there is no direct rail or metro link to the North Shore.",
       "fr": "Se rejoint le plus facilement en voiture de location depuis Honolulu (environ 45 minutes) ; il n'existe pas de liaison directe en train ou en métro vers la côte nord."
     },
+    "episodeLabel": "Bon Voyage",
+    "episode": "Season 2 Ep 1",
     "tip": {
       "en": "Haleiwa's surf shops still rent boards by the hour if you want to try the same beginner breaks the members struggled with.",
       "fr": "Les boutiques de surf de Haleiwa louent encore des planches à l'heure si vous voulez tenter les mêmes vagues débutantes sur lesquelles les membres ont galéré."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible primarily by rental car or resort shuttle from Kona International Airport (KOA) or surrounding Kohala Coast hotels."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily during standard retail hours (typically 10:00 AM to 8:00 PM or 9:00 PM; hours vary by individual shops and restaurants). Free admission and parking."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved, flat outdoor walkways, ramps, and accessible open-air areas throughout the shopping center."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-24-recreated-0.jpg"
+    ],
+    "officialLink": "https://www.queensmarketplace.com/",
+    "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://weverse.io/bts/media/2-6743733",
+    "tweetUrl": "https://x.com/taexprr/status/2105380264084164895?s=46"
   },
   {
     "id": 25,
@@ -2429,50 +2538,6 @@ window.STATIC_LOCATIONS = [
     "youtubeUrls": [
       "https://www.youtube.com/watch?v=X6EHtzcmiPw"
     ]
-  },
-  {
-    "id": 46,
-    "name": "HiKR Ground",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "MV Location",
-    "year": "2025",
-    "address": "Gwanghwamun area, Jongno-gu",
-    "lat": 37.57,
-    "lng": 126.985,
-    "img": "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?w=600",
-    "fullDescription": {
-      "en": "<p>HiKR Ground is an interactive K-culture center built around a wildly specific idea: letting ordinary visitors step onto real studio sets — a subway car, a mock space station, a coin laundromat — and shoot their own music-video-style footage, complete with adjustable lighting and camera angles.</p><p>For fans who've spent years watching BTS work behind the scenes on MV shoots, the appeal is obvious: it's a rare chance to stand in front of the same kind of set, camera in hand, and get a small taste of what a day on a K-pop shoot actually feels like.</p>",
-      "fr": "<p>HiKR Ground est un centre interactif dédié à la culture coréenne, construit autour d'une idée aussi précise qu'originale : permettre à n'importe quel visiteur de s'installer sur de vrais décors de studio — une rame de métro, une fausse station spatiale, une laverie automatique — pour tourner ses propres images façon clip musical, avec éclairage et angles de caméra réglables.</p><p>Pour les fans qui ont passé des années à regarder BTS travailler en coulisses sur des tournages de clips, l'attrait est évident : c'est l'occasion rare de se tenir devant le même genre de décor, caméra en main, et de goûter un peu à ce que représente une journée de tournage K-pop.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Book your slot"
-        },
-        "text": {
-          "en": "Book your studio session slot online in advance — the most popular sets fill up quickly, especially on weekends."
-        }
-      },
-      {
-        "title": {
-          "en": "Pick your set"
-        },
-        "text": {
-          "en": "The sets range from a subway car to a mock space station to a coin laundromat — decide which style of MV shoot you want to recreate before booking your slot."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Located near Gwanghwamun Square; take Line 5 or Line 3 to Gwanghwamun Station and follow signs.",
-      "fr": "Situé près de la place Gwanghwamun ; prenez la ligne 5 ou la ligne 3 jusqu'à la station Gwanghwamun et suivez les panneaux."
-    },
-    "tip": {
-      "en": "Book your studio session slot online in advance — the most popular sets fill up quickly, especially on weekends.",
-      "fr": "Réservez votre créneau de studio en ligne à l'avance — les décors les plus populaires se remplissent vite, surtout le week-end."
-    }
   },
   {
     "id": 47,
@@ -15588,6 +15653,266 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": "new-manual-1790796974374-ozawjr",
+    "name": "Island Gourmet Markets",
+    "group": "BTS",
+    "country": "United States",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "lat": 19.91381,
+    "lng": -155.88087,
+    "member": "All",
+    "address": "Queen's Marketplace, 250 Waikoloa Beach Dr, Waikoloa Village, HI 96738, United States.",
+    "city": "Waikoloa",
+    "episodeLabel": "Bon Voyage",
+    "episode": "Season 2 Ep 1",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Pick Up an Island Souvenir"
+        },
+        "text": {
+          "en": "Browse the clothing racks to find vibrant aloha shirts and hats reminiscent of the ones the members bought during their shopping spree."
+        }
+      },
+      {
+        "title": {
+          "en": "Grab Island Snacks"
+        },
+        "text": {
+          "en": "Stock up on local Hawaiian treats, fresh fruit, or drinks before heading out to explore the nearby Kohala Coast beaches."
+        }
+      },
+      {
+        "title": {
+          "en": "Pair with Queen's Marketplace"
+        },
+        "text": {
+          "en": "Since the market is located right inside the shopping center, easily combine your shopping stop with a stroll through the rest of the resort's open-air courtyards."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated inside the Queen's Marketplace at the Waikoloa Beach Resort on Hawaii's Big Island, Island Gourmet Markets is a premier island-style gourmet grocery store, gift shop, and convenience hub. Affiliated with the famous ABC Stores family found throughout Hawaii, it functions as a one-stop destination where visitors and locals can find everything from fresh tropical produce, snacks, and deli items to authentic Hawaiian souvenirs, beach gear, and apparel.</p><!--stss:footsteps--><p>This vibrant market is a memorable stop for ARMYs tracing the members' footsteps in BTS Bon Voyage Season 2 (2017). During their time exploring the Big Island, the boys dropped by Island Gourmet Markets to pick up vacation essentials. It was right here that the members famously shopped for and purchased their iconic, colorful aloha shirts and hats before setting out on their island adventures. Walking down the aisles of the market allows fans to recreate that fun, vacation-mode shopping experience and browse the exact kind of local goodies and island wear the members picked out.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible by rental car or resort shuttle within the Waikoloa Beach Resort area on the Big Island."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily during standard market hours (typically early morning until late evening, around 7:00 AM to 10:00 PM). Free admission."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully accessible, flat indoor supermarket and gift shop aisles with wide entryways."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790796974374-ozawjr-recreated-0.jpg"
+    ],
+    "officialLink": "https://www.queensmarketplace.com/",
+    "episodeLink": "https://weverse.io/bts/media/2-6743733",
+    "img": "images/admin-upload-new-manual-1790796974374-ozawjr-photo.jpg",
+    "tweetUrl": "https://x.com/taexprr/status/2105380264084164895?s=46"
+  },
+  {
+    "id": "new-manual-1790798402685-fshrci",
+    "name": "Romano's Macaroni Grill",
+    "group": "BTS",
+    "country": "United States",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "address": "Queens' MarketPlace 69-201 Waikoloa Beach Dr Waikoloa, HI  96738 United States",
+    "lat": 19.9141,
+    "lng": -155.88053,
+    "member": "All",
+    "episodeLabel": "Bon Voyage",
+    "episode": "Season 2 ep 1",
+    "city": "Waikoloa",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Doodle on the Table"
+        },
+        "text": {
+          "en": "Take advantage of the paper-covered tables and crayons to sketch or leave a fun note, just like Jungkook was spotted doing on camera."
+        }
+      },
+      {
+        "title": {
+          "en": "Enjoy a Casual Italian Meal"
+        },
+        "text": {
+          "en": "Take a break from local island cuisine and unwind with a plate of pasta or pizza in a family-friendly, welcoming setting."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Waikoloa Exploration"
+        },
+        "text": {
+          "en": "Conveniently located near the resort and shopping hubs of the Kohala Coast, making it an easy stop during a day of touring."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated near the resort areas of the Kohala Coast on Hawaii's Big Island, Romano's Macaroni Grill is a popular Italian restaurant chain known for its classic pasta dishes, cozy atmosphere, and signature dining style. While the restaurant chain has locations all over the world, this specific Hawaiian outpost became a memorable landmark for the fandom when the members stopped here to enjoy a relaxed lunch during their island travels.</p><!--stss:footsteps--><p>This casual Italian eatery is fondly remembered by ARMYs from BTS Bon Voyage Season 2 (2017) as the spot where the group gathered for a fun, hearty meal. Fans watching the episode caught charming behind-the-scenes moments—such as a close-up of Jungkook playing with crayons at the table. True to the restaurant's unique dining tradition, all tables at Macaroni Grill are covered in white paper tablecloths and supplied with crayons, allowing servers to write daily specials and greetings directly on the table while inviting guests to doodle and draw throughout their meal. Sitting down here lets fans experience the exact playful, relaxed dining atmosphere the members enjoyed during their Hawaiian break.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Easily accessible by rental car or resort taxi within the Waikoloa Beach Resort district on the Big Island."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily for lunch and dinner service (typically from late morning through 9:00 PM or 10:00 PM). Standard restaurant menu pricing applies."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully accessible, single-level indoor dining room with smooth flooring and spacious table seating."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790798402685-fshrci-recreated-0.jpg"
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.queensmarketplace.com/",
+    "episodeLink": "https://weverse.io/bts/media/2-6743733",
+    "img": "images/admin-upload-new-manual-1790798402685-fshrci-photo.jpg",
+    "tweetUrl": "https://x.com/taexprr/status/2105402435867177364?s=46"
+  },
+  {
+    "id": "new-Mkhd3jsXQAZKaynitOOB",
+    "name": "Kualoa Ranch",
+    "group": "BTS",
+    "member": "All",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "address": "49-560 Kamehameha Hwy, Kaneohe, HI 96744, USA",
+    "lat": 21.5207,
+    "lng": -157.8373,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Kualoa_Ranch_Oahu_Hawaii.jpg/1280px-Kualoa_Ranch_Oahu_Hawaii.jpg",
+    "addedAt": 1790796833780,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Kualoa Ranch is a 4,000-acre private nature reserve and working cattle ranch located on the windward coast of Oahu, Hawaii. Stretching from dense rainforest valleys to steep mountain cliffs and ocean shores, the ranch is internationally famous as a filming location for Hollywood blockbusters such as Jurassic Park, Lost, and Jumanji. Visitors can explore the spectacular landscape through guided movie tours, horseback riding, ziplining, and all-terrain vehicle (ATV) adventures.</p><!--stss:footsteps--><p>In 2017, BTS visited Kualoa Ranch during the production of Bon Voyage Season 2 in Hawaii. The members suited up in safety gear and embarked on a thrill-packed ATV ride across the valley, racing along dirt paths framed by dramatic green mountains. Their enthusiastic reactions, cheerful banter, and memorable group photos in front of iconic movie sets made this episode an instant favorite among fans worldwide.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book ahead"
+        },
+        "text": {
+          "en": "ATV tours and Movie Site tours sell out weeks in advance; reserve your activity on the official website before traveling."
+        }
+      },
+      {
+        "title": {
+          "en": "What to wear"
+        },
+        "text": {
+          "en": "If booking an ATV or UTV tour like BTS did, wear closed-toe shoes and clothes you do not mind getting dusty or muddy."
+        }
+      },
+      {
+        "title": {
+          "en": "Photo opportunity"
+        },
+        "text": {
+          "en": "The Jurassic Valley lookout provides spectacular panoramic views of Ka'a'awa Valley where BTS took their memorable group photo."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.kualoa.com",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Drive approximately 45 minutes north from Waikiki via Kahekili Highway (HI-83) or take the local TheBus route 60."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "group": "BTS",
     "img": "images/admin-upload-new-NUTF1HJaRyROCB3Cwd46-photo.jpg",
     "lat": 35.0468,
@@ -15938,6 +16263,172 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "id": "new-Sx0T27Qui1mvuWLDLHSh",
+    "name": "Whanki Museum",
+    "group": "BTS",
+    "member": "RM",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Museum",
+    "year": "2019",
+    "address": "63 Jahamun-ro 13-gil, Jongno-gu, Seoul, South Korea",
+    "lat": 37.5925,
+    "lng": 126.9631,
+    "img": "",
+    "addedAt": 1790796879419,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Whanki Museum is a private art museum located in Buam-dong, a picturesque neighborhood in northern Seoul nestled at the foot of Bugaksan Mountain. Founded in 1992 by Kim Hyang-an, the artist's widow, the museum celebrates the pioneering Korean abstract painter Kim Whanki. The museum building, designed by architect Kyu Sung Woo, blends stone pathways, skylights, and terraced gardens to house Kim Whanki's signature large-scale dot paintings and oil canvases.</p><!--stss:footsteps--><p>RM is a well-known admirer of Kim Whanki and has visited the Whanki Museum multiple times during his art tours across Seoul. RM featured Kim Whanki's artwork in his personal social media posts and art collection discussions, introducing a brand new generation of international fans to Korean modern abstract art and the beauty of Buam-dong's art scene.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book tickets online"
+        },
+        "text": {
+          "en": "Check exhibition schedules and reserve entry tickets online via the museum's official page prior to visiting."
+        }
+      },
+      {
+        "title": {
+          "en": "Photography policy"
+        },
+        "text": {
+          "en": "Interior photography inside exhibition halls is restricted to protect delicate artwork, so enjoy the visual atmosphere in person."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Buam-dong"
+        },
+        "text": {
+          "en": "After visiting, walk through Buam-dong's charming cafe alleys and hilltop scenic viewing spots."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.whankimuseum.org",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 3 to Gyeongbokgung Station (Exit 3), take Bus 1020, 7022, or 7212 to Buam-dong Community Center, then walk 5 minutes uphill."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
+    "id": "new-TNFJZU7cQdw9MtBHgFKM",
+    "name": "Waimea Valley",
+    "group": "BTS",
+    "member": "All",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "address": "59-864 Kamehameha Hwy, Haleiwa, HI 96712, USA",
+    "lat": 21.6366,
+    "lng": -158.0531,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Waimea_Falls_Oahu.jpg/1280px-Waimea_Falls_Oahu.jpg",
+    "addedAt": 1790796842650,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Waimea Valley is a deeply significant cultural reserve and botanical garden located on the North Shore of Oahu, Hawaii. Spanning 1,800 acres, the valley features over 5,000 botanical species, restored Hawaiian archaeological sites, and a paved 0.75-mile trail leading through tropical greenery. The trail culminates at Waimea Falls (Waihi Waterfall), a 45-foot waterfall where visitors can swim in a natural freshwater pool supervised by lifeguards.</p><!--stss:footsteps--><p>Waimea Valley was featured in Bon Voyage Season 2 (2017) during BTS's trip to Oahu. The members strolled along the botanical pathways, enjoying nature and taking goofy group photos along the lush trails. Upon reaching Waimea Falls, they put on life jackets and splashed into the cool waterfall pool together, creating joyful and memorable moments that remain fan favorites from the Hawaii series.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Waterfall swimming"
+        },
+        "text": {
+          "en": "Life jackets are mandatory for swimming at Waimea Falls and are provided free with admission at the waterfall deck."
+        }
+      },
+      {
+        "title": {
+          "en": "Check waterfall status"
+        },
+        "text": {
+          "en": "Swimming conditions depend on rain levels; check Waimea Valley's daily website alert before traveling if swimming is your goal."
+        }
+      },
+      {
+        "title": {
+          "en": "Paved accessible walk"
+        },
+        "text": {
+          "en": "The main trail is fully paved and easy to walk; shuttle rides are also available for guests needing mobility assistance."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.waimeavalley.net",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Drive approx. 1 hour north from Honolulu/Waikiki directly to Haleiwa on Oahu's North Shore."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "name": "Daeoh Bookstore",
