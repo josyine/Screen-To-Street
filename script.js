@@ -4817,9 +4817,25 @@ function renderLocations(skipFitBounds) {
 function positionMapHoverTip(marker) {
     const tip = document.getElementById('map-hover-tip');
     if (!tip || !map || !marker) return;
+    // BUG rapporté à répétition ("le bouton View ne fait rien") : #map-hover-tip vit
+    // maintenant hors de .map-container (voir le HTML, demande du 02/10/2026) et se
+    // positionne donc en fixed par rapport à la FENÊTRE, plus par rapport à la carte —
+    // latLngToContainerPoint() donne des coordonnées relatives au conteneur Leaflet
+    // lui-même, il faut donc y ajouter la position de ce conteneur dans la fenêtre.
     const point = map.latLngToContainerPoint(marker.getLatLng());
-    tip.style.left = point.x + 'px';
-    tip.style.top = (point.y - 16) + 'px';
+    const mapRect = map.getContainer().getBoundingClientRect();
+    const anchorTop = mapRect.top + point.y - 16;
+    // La bulle grandit vers le HAUT depuis ce point (transform: translateY(-100%-14px),
+    // voir CSS) : pour un marqueur proche du bord haut de l'écran, la laisser telle quelle
+    // pousserait son sommet au-dessus de y=0, invisible et donc intouchable (c'est
+    // exactement ce qu'un overflow:hidden parent masquait silencieusement avant que cette
+    // bulle ne soit sortie de .map-container). tip.offsetHeight est déjà fiable ici car
+    // .open (display:block) a été appliqué juste avant cet appel, voir showMapHoverTip().
+    const cardGap = 14;
+    const viewportTopMargin = 10;
+    const minAnchorTop = viewportTopMargin + tip.offsetHeight + cardGap;
+    tip.style.left = (mapRect.left + point.x) + 'px';
+    tip.style.top = Math.max(minAnchorTop, anchorTop) + 'px';
 }
 function showMapHoverTip(loc, marker) {
     const tip = document.getElementById('map-hover-tip');
@@ -4848,8 +4864,12 @@ function showMapHoverTip(loc, marker) {
         };
     }
 
-    positionMapHoverTip(marker);
+    // .open rendu AVANT positionMapHoverTip() (demande du 02/10/2026) : la fonction a
+    // maintenant besoin de la hauteur réelle de la bulle (tip.offsetHeight) pour la garder
+    // entièrement visible pour un marqueur proche du haut de l'écran — hauteur qui ne peut
+    // être mesurée qu'une fois la bulle affichée (display:block).
     tip.classList.add('open');
+    positionMapHoverTip(marker);
 }
 function hideMapHoverTip() {
     const tip = document.getElementById('map-hover-tip');

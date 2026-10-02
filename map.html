@@ -45,7 +45,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20260966" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260967" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -430,11 +430,12 @@
   }
 
   /* Bulle résumé au survol d'un pin (demande du 05/09/2026) : même style que la bulle du
-     Mode Tournée ci-dessus, mais positionnée en absolute par rapport à .map-container
-     (pas fixed) — pas besoin de gérer une fenêtre séparée ici, et pointer-events:none
-     pour qu'elle ne vole jamais le mouseout du marqueur qu'elle survole. Ouverte/fermée/
-     positionnée par addSingleLocationMarker() dans script.js. */
-  .map-hover-tip { position: absolute; z-index: 1500; pointer-events: none; display: none; transform: translate(-50%, calc(-100% - 14px)); }
+     Mode Tournée ci-dessus. Positionnée en fixed par rapport à la FENÊTRE (changé le
+     02/10/2026, voir la note dans le HTML là où cet élément est maintenant placé, hors de
+     .map-container) — pointer-events:none pour qu'elle ne vole jamais le mouseout du
+     marqueur qu'elle survole. Ouverte/fermée/positionnée par addSingleLocationMarker()/
+     positionMapHoverTip() dans script.js. */
+  .map-hover-tip { position: fixed; z-index: 1500; pointer-events: none; display: none; transform: translate(-50%, calc(-100% - 14px)); }
   .map-hover-tip.open { display: block; }
   .map-hover-tip-card { background: #fff; border-radius: 12px; padding: 10px 12px; box-shadow: 0 12px 28px rgba(0,0,0,.22); max-width: 230px; position: relative; }
   .map-hover-tip-arrow { position: absolute; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); bottom: -5px; left: 50%; margin-left: -6px; box-shadow: 3px 3px 6px rgba(0,0,0,.05); }
@@ -451,12 +452,14 @@
   @media (max-width: 760px) {
       /* pointer-events réactivé uniquement sur mobile : sur desktop la bulle doit rester
          non cliquable (voir la note de .map-hover-tip plus haut, mouseout du marqueur). */
-      /* touch-action: manipulation (26/09/2026) — sans ça, le navigateur mobile attend
-         ~300ms après le tap sur "View" pour voir si un 2e tap arrive (double-tap-to-zoom),
-         ce qui rentre en concurrence avec le 1er tap (sur le marqueur, juste au-dessus et
-         très proche dans le temps) : le geste est parfois classé comme un double-tap et le
-         clic sur le bouton est avalé -> bug "1 fois sur 5" remonté par l'utilisateur. */
-      .map-hover-tip { pointer-events: auto; touch-action: manipulation; }
+      /* touch-action: manipulation (26/09/2026) — évite l'ambiguïté de double-tap-zoom du
+         navigateur sur un tap rapide juste après celui qui a ouvert la bulle.
+         z-index relevé au-dessus de TOUT le chrome mobile fixe (02/10/2026) :
+         #mobile-top-icons/.mobile-map-search/#mobile-menu-btn/.mobile-bottom-nav vont
+         jusqu'à 3600 (voir style.css) — maintenant que cette bulle est un voisin direct de
+         ces éléments dans le HTML (plus un enfant piégé de .map-container, voir la note
+         HTML), ce z-index compte enfin pour de vrai face à eux. */
+      .map-hover-tip { pointer-events: auto; touch-action: manipulation; z-index: 3700; }
       .map-hover-tip-detail-btn {
           display: block; width: 100%; margin-top: 8px; border: none; border-radius: 8px;
           background: var(--brand-gradient, linear-gradient(135deg, #8b5cf6, #D42759));
@@ -1267,28 +1270,42 @@
         </button>
 
         <div id="map"></div>
-        <div class="map-hover-tip" id="map-hover-tip">
-            <div class="map-hover-tip-card">
-                <div class="map-hover-tip-arrow"></div>
-                <div class="map-hover-tip-body">
-                    <div class="map-hover-tip-icon" id="map-hover-tip-icon"></div>
-                    <div>
-                        <div class="map-hover-tip-artist" id="map-hover-tip-artist"></div>
-                        <div class="map-hover-tip-title" id="map-hover-tip-title"></div>
-                        <div class="map-hover-tip-meta" id="map-hover-tip-meta"></div>
-                    </div>
-                </div>
-                <!-- Bouton "Voir le détail" (demande du 23/09/2026) : mobile uniquement (voir
-                     .map-hover-tip-detail-btn en CSS) — sur desktop la bulle reste un simple
-                     résumé au survol, cliquer le marqueur ouvre directement le détail. -->
-                <button type="button" class="map-hover-tip-detail-btn" id="map-hover-tip-detail-btn" data-i18n="viewDetails">View</button>
-            </div>
-        </div>
         <div id="map-loading-overlay" class="map-loading-overlay hidden">
             <div class="map-loading-spinner"></div>
             <span data-i18n="mapLoading">Loading map…</span>
         </div>
     </main>
+    <!-- BUG rapporté à répétition ("sur mobile, le bouton View de la bulle ne fait rien,
+         juste disparaître la bulle") : cette bulle vivait jusqu'ici DANS .map-container, qui
+         déclare son propre contexte d'empilement (position:relative + z-index:1, voir
+         style.css) — exactement le même piège déjà rencontré et documenté pour .top-nav
+         (voir le commentaire dans style.css à côté de sa règle mobile) : un enfant positionné
+         de .map-container ne peut JAMAIS s'afficher ni recevoir de clic au-dessus d'un voisin
+         de .map-container (ici #mobile-top-icons/.mobile-map-search/.mobile-bottom-nav,
+         z-index 3400 à 3600, injectés par script.js directement dans <body>), quel que soit
+         son propre z-index local (1500 ici) — ET .map-container a overflow:hidden, qui peut
+         en plus carrément rogner la bulle si le marqueur touché est proche du bord haut de la
+         carte visible. Sortie ici du HTML de .map-container pour redevenir un voisin direct
+         de .top-nav/.sidebar (comme .top-nav l'a déjà été), avec une position désormais
+         fixed/relative à la fenêtre (voir positionMapHoverTip() dans script.js, qui ajoute
+         maintenant le décalage de .map-container) plutôt que relative à la carte elle-même. -->
+    <div class="map-hover-tip" id="map-hover-tip">
+        <div class="map-hover-tip-card">
+            <div class="map-hover-tip-arrow"></div>
+            <div class="map-hover-tip-body">
+                <div class="map-hover-tip-icon" id="map-hover-tip-icon"></div>
+                <div>
+                    <div class="map-hover-tip-artist" id="map-hover-tip-artist"></div>
+                    <div class="map-hover-tip-title" id="map-hover-tip-title"></div>
+                    <div class="map-hover-tip-meta" id="map-hover-tip-meta"></div>
+                </div>
+            </div>
+            <!-- Bouton "Voir le détail" (demande du 23/09/2026) : mobile uniquement (voir
+                 .map-hover-tip-detail-btn en CSS) — sur desktop la bulle reste un simple
+                 résumé au survol, cliquer le marqueur ouvre directement le détail. -->
+            <button type="button" class="map-hover-tip-detail-btn" id="map-hover-tip-detail-btn" data-i18n="viewDetails">View</button>
+        </div>
+    </div>
 </div>
 
 <!-- Mode Tournée : panneau plein écran (carte décorative + rail des étapes à droite) -->
@@ -1553,12 +1570,12 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260966"></script>
-<script type="module" src="firebase-init.js?v=20260966"></script>
-<script src="locations-data.js?v=20260966"></script>
-<script src="script.js?v=20260966"></script>
+<script src="countries.js?v=20260967"></script>
+<script type="module" src="firebase-init.js?v=20260967"></script>
+<script src="locations-data.js?v=20260967"></script>
+<script src="script.js?v=20260967"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260966"></script>
+<script src="map-tour.js?v=20260967"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
