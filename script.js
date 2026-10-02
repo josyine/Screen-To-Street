@@ -1949,6 +1949,26 @@ window.openGuidePaywallModal = function () {
     if (limitBlock) limitBlock.classList.toggle('hidden', active);
     if (activeBlock) activeBlock.classList.toggle('hidden', !active);
     if (cards) cards.classList.toggle('hidden', active);
+    // BUG rapporté le 02/10/2026 ("je n'ai visité aucun lieu et ça affiche déjà 'limite
+    // atteinte (3/3)'") : ce titre était toujours le texte statique "limite atteinte" dès
+    // qu'il n'y avait pas de pass actif, même ouvert manuellement (bouton "Unlock Passes")
+    // bien avant d'avoir consulté la moindre fiche — sans jamais regarder le compteur réel
+    // (getViewedLocationIds(), le même que openDetailsPanel() utilise pour décider si le
+    // mur doit s'afficher). Affiche maintenant le texte "limite atteinte" seulement si elle
+    // l'est vraiment, sinon un texte reflétant le nombre réel de fiches déjà vues.
+    const limitTitleEl = document.getElementById('paywall-limit-title');
+    if (!active && limitTitleEl) {
+        const viewedCount = getViewedLocationIds().length;
+        if (viewedCount >= FREE_LOCATION_VIEW_LIMIT) {
+            limitTitleEl.setAttribute('data-i18n', 'paywallTitle');
+            limitTitleEl.textContent = t('paywallTitle');
+        } else {
+            limitTitleEl.removeAttribute('data-i18n');
+            limitTitleEl.textContent = t('paywallRemainingTitle')
+                .replace('{used}', viewedCount)
+                .replace('{limit}', FREE_LOCATION_VIEW_LIMIT);
+        }
+    }
     if (active && activeBlock) {
         const type = localStorage.getItem('guidePassType');
         const descEl = document.getElementById('paywall-active-desc');
@@ -3708,7 +3728,7 @@ const translations = {
         mapLoading: "Loading map…", viewDetails: "View", multiSelectCount: "selected",
         demoTourBtn: "Tour",
         newLocationToastLabel: "New location added", newLocationsSummaryToast: "{n} new locations for {group}",
-        paywallTitle: "You've reached your free limit (3/3)", paywallBody: "Loving the secret map? There are still 500+ addresses left to discover! Unlock every filming location, iconic restaurant, and address your idols frequent to plan the trip of your dreams.",
+        paywallRemainingTitle: "You've viewed {used} of your {limit} free locations", paywallTitle: "You've reached your free limit (3/3)", paywallBody: "Loving the secret map? There are still 500+ addresses left to discover! Unlock every filming location, iconic restaurant, and address your idols frequent to plan the trip of your dreams.",
         paywallMonthlyName: "TRAVEL PASS (1 Month)", paywallMonthlyDesc: "Perfect for planning a short trip.", paywallFeatureFullAccess: "Full access to 500+ addresses", paywallFeatureGPS: "Exact GPS coordinates", paywallMonthlyPrice: "€9.99 / month", paywallMonthlyTerms: "No commitment", paywallBuyMonthly: "Get the Travel Pass",
         paywallVipName: "VIP PASS (Lifetime Access)", paywallVipBadge: "BEST VALUE", paywallVipDesc: "For true fans. Pay once, enjoy forever.", paywallFeatureUpdates: "Updates included (new locations added monthly)", paywallFeatureOffline: "Offline mode (coming soon)", paywallVipPrice: "€19.99 (one-time payment)", paywallBuyVip: "Get the VIP Pass",
         paywallActiveTitle: "You already have an active pass",
@@ -3775,7 +3795,7 @@ const translations = {
         mapLoading: "Chargement de la carte…", viewDetails: "Voir", multiSelectCount: "sélectionnés",
         demoTourBtn: "Visite",
         newLocationToastLabel: "Nouveau lieu ajouté", newLocationsSummaryToast: "{n} nouveaux lieux pour {group}",
-        paywallTitle: "Vous avez atteint votre limite gratuite (3/3)", paywallBody: "La carte secrète vous plaît ? Il reste encore plus de 500 adresses à découvrir ! Débloquez l'intégralité des lieux de tournages, restaurants iconiques et adresses fréquentées par vos idoles pour préparer le voyage de vos rêves.",
+        paywallRemainingTitle: "Vous avez consulté {used} des {limit} lieux gratuits", paywallTitle: "Vous avez atteint votre limite gratuite (3/3)", paywallBody: "La carte secrète vous plaît ? Il reste encore plus de 500 adresses à découvrir ! Débloquez l'intégralité des lieux de tournages, restaurants iconiques et adresses fréquentées par vos idoles pour préparer le voyage de vos rêves.",
         paywallMonthlyName: "PASS VOYAGE (1 Mois)", paywallMonthlyDesc: "Parfait pour planifier un séjour court.", paywallFeatureFullAccess: "Accès total aux 500+ adresses", paywallFeatureGPS: "Coordonnées GPS exactes", paywallMonthlyPrice: "9,99 € / mois", paywallMonthlyTerms: "Sans engagement", paywallBuyMonthly: "Obtenir le Pass Voyage",
         paywallVipName: "PASS VIP (Accès à vie)", paywallVipBadge: "MEILLEUR CHOIX", paywallVipDesc: "Pour les vrais passionnés. Payez une fois, profitez-en pour toujours.", paywallFeatureUpdates: "Mises à jour incluses (nouveaux lieux ajoutés chaque mois)", paywallFeatureOffline: "Mode Hors-Ligne (bientôt disponible)", paywallVipPrice: "19,99 € (paiement unique)", paywallBuyVip: "Obtenir le Pass VIP",
         paywallActiveTitle: "Vous avez déjà un pass actif",
@@ -3842,7 +3862,7 @@ const translations = {
         mapLoading: "Cargando el mapa…", viewDetails: "Ver", multiSelectCount: "seleccionados",
         demoTourBtn: "Recorrido",
         newLocationToastLabel: "Nuevo lugar añadido", newLocationsSummaryToast: "{n} nuevos lugares para {group}",
-        paywallTitle: "Has alcanzado tu límite gratuito (3/3)", paywallBody: "¿Te gusta el mapa secreto? ¡Todavía quedan más de 500 direcciones por descubrir! Desbloquea todos los lugares de rodaje, restaurantes icónicos y direcciones que frecuentan tus ídolos para preparar el viaje de tus sueños.",
+        paywallRemainingTitle: "Has visto {used} de tus {limit} lugares gratuitos", paywallTitle: "Has alcanzado tu límite gratuito (3/3)", paywallBody: "¿Te gusta el mapa secreto? ¡Todavía quedan más de 500 direcciones por descubrir! Desbloquea todos los lugares de rodaje, restaurantes icónicos y direcciones que frecuentan tus ídolos para preparar el viaje de tus sueños.",
         paywallMonthlyName: "PASE VIAJE (1 Mes)", paywallMonthlyDesc: "Perfecto para planificar una estancia corta.", paywallFeatureFullAccess: "Acceso total a más de 500 direcciones", paywallFeatureGPS: "Coordenadas GPS exactas", paywallMonthlyPrice: "9,99 € / mes", paywallMonthlyTerms: "Sin compromiso", paywallBuyMonthly: "Obtener el Pase Viaje",
         paywallVipName: "PASE VIP (Acceso de por vida)", paywallVipBadge: "MEJOR OPCIÓN", paywallVipDesc: "Para los verdaderos fans. Paga una vez, disfruta para siempre.", paywallFeatureUpdates: "Actualizaciones incluidas (nuevos lugares cada mes)", paywallFeatureOffline: "Modo sin conexión (próximamente)", paywallVipPrice: "19,99 € (pago único)", paywallBuyVip: "Obtener el Pase VIP",
         paywallActiveTitle: "Ya tienes un pase activo",
@@ -3905,7 +3925,7 @@ const translations = {
         mapLoading: "Caricamento della mappa…", viewDetails: "Vedi", multiSelectCount: "selezionati",
         demoTourBtn: "Tour",
         newLocationToastLabel: "Nuovo luogo aggiunto", newLocationsSummaryToast: "{n} nuovi luoghi per {group}",
-        paywallTitle: "Hai raggiunto il tuo limite gratuito (3/3)", paywallBody: "Ti piace la mappa segreta? Ci sono ancora più di 500 indirizzi da scoprire! Sblocca tutti i luoghi delle riprese, i ristoranti iconici e gli indirizzi frequentati dai tuoi idoli per preparare il viaggio dei tuoi sogni.",
+        paywallRemainingTitle: "Hai visualizzato {used} dei tuoi {limit} luoghi gratuiti", paywallTitle: "Hai raggiunto il tuo limite gratuito (3/3)", paywallBody: "Ti piace la mappa segreta? Ci sono ancora più di 500 indirizzi da scoprire! Sblocca tutti i luoghi delle riprese, i ristoranti iconici e gli indirizzi frequentati dai tuoi idoli per preparare il viaggio dei tuoi sogni.",
         paywallMonthlyName: "PASS VIAGGIO (1 Mese)", paywallMonthlyDesc: "Perfetto per pianificare un soggiorno breve.", paywallFeatureFullAccess: "Accesso completo a oltre 500 indirizzi", paywallFeatureGPS: "Coordinate GPS esatte", paywallMonthlyPrice: "9,99 € / mese", paywallMonthlyTerms: "Senza vincoli", paywallBuyMonthly: "Ottieni il Pass Viaggio",
         paywallVipName: "PASS VIP (Accesso a vita)", paywallVipBadge: "SCELTA MIGLIORE", paywallVipDesc: "Per i veri appassionati. Paga una volta, goditelo per sempre.", paywallFeatureUpdates: "Aggiornamenti inclusi (nuovi luoghi ogni mese)", paywallFeatureOffline: "Modalità offline (presto disponibile)", paywallVipPrice: "19,99 € (pagamento unico)", paywallBuyVip: "Ottieni il Pass VIP",
         paywallActiveTitle: "Hai già un pass attivo",
@@ -3968,7 +3988,7 @@ const translations = {
         mapLoading: "Carregando o mapa…", viewDetails: "Ver", multiSelectCount: "selecionados",
         demoTourBtn: "Tour guiado",
         newLocationToastLabel: "Novo local adicionado", newLocationsSummaryToast: "{n} novos locais para {group}",
-        paywallTitle: "Você atingiu seu limite gratuito (3/3)", paywallBody: "Está gostando do mapa secreto? Ainda há mais de 500 endereços para descobrir! Desbloqueie todos os locais de filmagem, restaurantes icônicos e endereços frequentados pelos seus ídolos para planejar a viagem dos seus sonhos.",
+        paywallRemainingTitle: "Você visualizou {used} dos seus {limit} locais gratuitos", paywallTitle: "Você atingiu seu limite gratuito (3/3)", paywallBody: "Está gostando do mapa secreto? Ainda há mais de 500 endereços para descobrir! Desbloqueie todos os locais de filmagem, restaurantes icônicos e endereços frequentados pelos seus ídolos para planejar a viagem dos seus sonhos.",
         paywallMonthlyName: "PASSE VIAGEM (1 Mês)", paywallMonthlyDesc: "Perfeito para planejar uma estadia curta.", paywallFeatureFullAccess: "Acesso total a mais de 500 endereços", paywallFeatureGPS: "Coordenadas GPS exatas", paywallMonthlyPrice: "€9,99 / mês", paywallMonthlyTerms: "Sem compromisso", paywallBuyMonthly: "Obter o Passe Viagem",
         paywallVipName: "PASSE VIP (Acesso vitalício)", paywallVipBadge: "MELHOR ESCOLHA", paywallVipDesc: "Para os verdadeiros fãs. Pague uma vez, aproveite para sempre.", paywallFeatureUpdates: "Atualizações incluídas (novos locais todo mês)", paywallFeatureOffline: "Modo offline (em breve)", paywallVipPrice: "€19,99 (pagamento único)", paywallBuyVip: "Obter o Passe VIP",
         paywallActiveTitle: "Você já tem um passe ativo",
@@ -4031,7 +4051,7 @@ const translations = {
         mapLoading: "지도를 불러오는 중…", viewDetails: "보기", multiSelectCount: "개 선택됨",
         demoTourBtn: "투어",
         newLocationToastLabel: "새로운 장소 추가됨", newLocationsSummaryToast: "{group}의 새로운 장소 {n}개",
-        paywallTitle: "무료 열람 한도에 도달했습니다 (3/3)", paywallBody: "비밀 지도가 마음에 드시나요? 아직 500개 이상의 주소가 더 남아있어요! 촬영지, 인기 맛집, 그리고 아이돌이 자주 찾는 장소까지 모두 잠금 해제하고 꿈꾸던 여행을 준비해 보세요.",
+        paywallRemainingTitle: "무료 열람 가능한 {limit}곳 중 {used}곳을 확인했습니다", paywallTitle: "무료 열람 한도에 도달했습니다 (3/3)", paywallBody: "비밀 지도가 마음에 드시나요? 아직 500개 이상의 주소가 더 남아있어요! 촬영지, 인기 맛집, 그리고 아이돌이 자주 찾는 장소까지 모두 잠금 해제하고 꿈꾸던 여행을 준비해 보세요.",
         paywallMonthlyName: "트래블 패스 (1개월)", paywallMonthlyDesc: "짧은 여행 계획에 딱이에요.", paywallFeatureFullAccess: "500개 이상 주소 전체 이용 가능", paywallFeatureGPS: "정확한 GPS 좌표", paywallMonthlyPrice: "월 9.99€", paywallMonthlyTerms: "약정 없음", paywallBuyMonthly: "트래블 패스 구매",
         paywallVipName: "VIP 패스 (평생 이용)", paywallVipBadge: "최고의 선택", paywallVipDesc: "진짜 팬을 위한 패스. 한 번 결제로 평생 이용하세요.", paywallFeatureUpdates: "업데이트 포함 (매달 새로운 장소 추가)", paywallFeatureOffline: "오프라인 모드 (출시 예정)", paywallVipPrice: "19.99€ (일회성 결제)", paywallBuyVip: "VIP 패스 구매",
         paywallActiveTitle: "이미 이용 중인 패스가 있습니다",
@@ -4094,7 +4114,7 @@ const translations = {
         mapLoading: "地図を読み込み中…", viewDetails: "見る", multiSelectCount: "件選択中",
         demoTourBtn: "ツアー",
         newLocationToastLabel: "新しい場所が追加されました", newLocationsSummaryToast: "{group}の新しいスポット{n}件",
-        paywallTitle: "無料閲覧の上限に達しました (3/3)", paywallBody: "シークレットマップは気に入りましたか？まだ500件以上の住所が残っています！ロケ地、人気レストラン、推しがよく訪れる場所をすべて解放して、夢の旅行を計画しましょう。",
+        paywallRemainingTitle: "無料で閲覧できる{limit}件中{used}件を確認しました", paywallTitle: "無料閲覧の上限に達しました (3/3)", paywallBody: "シークレットマップは気に入りましたか？まだ500件以上の住所が残っています！ロケ地、人気レストラン、推しがよく訪れる場所をすべて解放して、夢の旅行を計画しましょう。",
         paywallMonthlyName: "トラベルパス（1ヶ月）", paywallMonthlyDesc: "短期旅行の計画にぴったり。", paywallFeatureFullAccess: "500件以上の住所に完全アクセス", paywallFeatureGPS: "正確なGPS座標", paywallMonthlyPrice: "月額 9.99€", paywallMonthlyTerms: "契約縛りなし", paywallBuyMonthly: "トラベルパスを購入",
         paywallVipName: "VIPパス（生涯アクセス）", paywallVipBadge: "ベストチョイス", paywallVipDesc: "本気のファンのために。一度の支払いでずっと利用できます。", paywallFeatureUpdates: "アップデート込み（毎月新しい場所を追加）", paywallFeatureOffline: "オフラインモード（近日公開）", paywallVipPrice: "19.99€（一括払い）", paywallBuyVip: "VIPパスを購入",
         paywallActiveTitle: "すでに有効なパスをお持ちです",
@@ -4157,7 +4177,7 @@ const translations = {
         mapLoading: "地图加载中…", viewDetails: "查看", multiSelectCount: "已选择",
         demoTourBtn: "导览",
         newLocationToastLabel: "新增地点", newLocationsSummaryToast: "{group}的{n}个新地点",
-        paywallTitle: "已达到免费浏览上限 (3/3)", paywallBody: "喜欢这份秘密地图吗？还有500多个地址等你发现！解锁全部取景地、人气餐厅和爱豆常去的地方，规划你的梦想之旅。",
+        paywallRemainingTitle: "您已查看 {limit} 个免费地点中的 {used} 个", paywallTitle: "已达到免费浏览上限 (3/3)", paywallBody: "喜欢这份秘密地图吗？还有500多个地址等你发现！解锁全部取景地、人气餐厅和爱豆常去的地方，规划你的梦想之旅。",
         paywallMonthlyName: "旅行通行证（1个月）", paywallMonthlyDesc: "适合规划短途旅行。", paywallFeatureFullAccess: "解锁全部500+地址", paywallFeatureGPS: "精确GPS坐标", paywallMonthlyPrice: "€9.99 / 月", paywallMonthlyTerms: "随时可取消", paywallBuyMonthly: "获取旅行通行证",
         paywallVipName: "VIP通行证（终身访问）", paywallVipBadge: "最超值", paywallVipDesc: "为真正的粉丝打造。一次付款，永久使用。", paywallFeatureUpdates: "包含更新（每月新增地点）", paywallFeatureOffline: "离线模式（即将推出）", paywallVipPrice: "€19.99（一次性付款）", paywallBuyVip: "获取VIP通行证",
         paywallActiveTitle: "您已拥有有效的通行证",

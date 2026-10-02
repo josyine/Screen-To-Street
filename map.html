@@ -45,7 +45,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20260967" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260968" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -1493,7 +1493,16 @@
     <div class="modal-content paywall-modal-content">
         <span class="close-btn" onclick="closeModal('cart-modal')">&times;</span>
         <div id="paywall-limit-block">
-            <h2 class="paywall-title" data-i18n="paywallTitle">You've reached your free limit (3/3)</h2>
+            <!-- BUG rapporté le 02/10/2026 ("je n'ai visité aucun lieu et ça affiche déjà
+                 'limite atteinte (3/3)'") : ce titre ne reflétait jamais le nombre RÉEL de
+                 lieux vus — il était toujours le texte statique "limite atteinte", y compris
+                 ouvert manuellement (bouton "Unlock Passes" du header) bien avant d'avoir
+                 consulté la moindre fiche. id ajouté pour permettre à
+                 openGuidePaywallModal() (script.js) de le réécrire dynamiquement selon le
+                 compteur réel — data-i18n retiré/remis selon le cas pour ne pas être écrasé
+                 par un changement de langue pendant que ce texte dynamique est affiché (même
+                 principe déjà utilisé juste en dessous par #paywall-active-desc). -->
+            <h2 class="paywall-title" id="paywall-limit-title" data-i18n="paywallTitle">You've reached your free limit (3/3)</h2>
             <p class="paywall-body" data-i18n="paywallBody">Loving the secret map? There are still 500+ addresses left to discover! Unlock every filming location, iconic restaurant, and address your idols frequent to plan the trip of your dreams.</p>
         </div>
         <div id="paywall-active-block" class="hidden">
@@ -1570,12 +1579,12 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260967"></script>
-<script type="module" src="firebase-init.js?v=20260967"></script>
-<script src="locations-data.js?v=20260967"></script>
-<script src="script.js?v=20260967"></script>
+<script src="countries.js?v=20260968"></script>
+<script type="module" src="firebase-init.js?v=20260968"></script>
+<script src="locations-data.js?v=20260968"></script>
+<script src="script.js?v=20260968"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260967"></script>
+<script src="map-tour.js?v=20260968"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
