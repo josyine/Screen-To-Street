@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-02T14:02:58.302Z.
+// Généré le 2026-10-02T23:11:14.725Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -15829,6 +15829,267 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "https://weverse.io/bts/media/2-6743733",
     "img": "images/admin-upload-new-manual-1790798402685-fshrci-photo.jpg",
     "tweetUrl": "https://x.com/taexprr/status/2105402435867177364?s=46"
+  },
+  {
+    "id": "new-manual-1790971006384-y6pcjz",
+    "name": "Tomigaya Streets (Shibuya, Tokyo)",
+    "lat": 35.66672,
+    "lng": 139.6916,
+    "country": "Japan",
+    "city": "Tokyo",
+    "category": "Landmark",
+    "group": "BTS",
+    "address": "Japon, 〒151-0063 Tokyo, Shibuya, Tomigaya, 1 Chome−14−12 倉望ビル 2階",
+    "year": "2026",
+    "member": "Jungkook",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "episodeLink": "https://www.kstartrend.com/2026/10/02/btss-jungkook-shows-off-new-camera-as-v-reacts-to-his-latest-photos",
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capture Tokyo at Night"
+        },
+        "text": {
+          "en": "Take a late-night stroll through Tokyo's illuminated commercial or side streets with a camera or phone to experiment with the same moody, black-and-white aesthetic seen in Jungkook's photography."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Hublot Event Locations"
+        },
+        "text": {
+          "en": "Check out the luxury retail districts in Tokyo (such as Ginza or Omotesando) where major flagships like Hublot are located."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore with a Creative Eye"
+        },
+        "text": {
+          "en": "Slow down and look for interesting shadows, neon reflections, and candid city details, channeling Jungkook's signature approach to photography."
+        }
+      }
+    ],
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "AI-generated illustrative image",
+    "instagramUrl": "https://www.instagram.com/p/Dd9q81-lPVp/?img_index=2&stkn=MXhrbTUyZzQzczMzdA==",
+    "img": "images/admin-upload-new-manual-1790971006384-y6pcjz-photo.jpg",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790971006384-y6pcjz-recreated-0.jpg"
+    ],
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible via the Tokyo Metro Chiyoda Line to Yoyogi-koen Station or the Odakyu Electric Railway to Yoyogi-hachiman Station, both just a short walk away from Tomigaya 1-chome."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Public city streets are accessible 24/7. (Individual luxury boutiques and commercial establishments operate on standard retail hours, typically from 11:00 AM to 8:00 PM)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved sidewalks and quiet neighborhood streets with standard urban accessibility throughout Shibuya ward."
+        }
+      }
+    ],
+    "tweetUrl": "",
+    "fullDescription": {
+      "en": "<p>Located in the trendy and residential district of Shibuya, Tomigaya (specifically around 1 Chome) offers a quieter, more intimate side of Tokyo compared to the flashing neon lights of central Shibuya or Shinjuku. Characterized by charming backstreets, independent boutiques, stylish local eateries, and relaxed neighborhood vibes, Tomigaya has become a favorite enclave for trendsetters, artists, and travelers looking to experience the authentic, everyday rhythm of the Japanese capital.</p><!--stss:footsteps--><p>This specific area in Shibuya gained massive global attention from ARMYs following Jungkook's Instagram update on October 2, 2026. Following his high-profile trip to Tokyo in late September for the luxury brand Hublot's boutique opening, Jungkook shared a surprise series of private, artistic photographs captured around the quiet streets of Tomigaya.</p><p>Using his favorite Leica camera, Jungkook snapped moody nighttime urban landscapes, candid street corners, and atmospheric black-and-white photos that captured the peaceful, nocturnal charm of the neighborhood. For ARMYs visiting Tokyo, walking through the streets around Tomigaya offers a chance to retrace Jungkook's footsteps and view the city directly through his creative, artistic lens.</p>"
+    }
+  },
+  {
+    "id": "new-manual-1790972817941-84ylz1",
+    "name": "Sushi Rizaki Honten (鮨利﨑 本店)",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "Japan",
+    "city": "Tokyo",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "1 Chome-14-12 Tomigaya, Shibuya City, Tokyo 151-0063, Japan (Kuramochi Building 2F).",
+    "lat": 35.66685,
+    "lng": 139.69154,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Experience High-End Omakase"
+        },
+        "text": {
+          "en": "Indulge in the chef's choice omakase course, appreciating the artistry and precision of premier Tokyo sushi-making."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Oku-Shibuya"
+        },
+        "text": {
+          "en": "Pair your dining reservation with a quiet walk through the surrounding boutique-lined streets of Tomigaya, which also served as the backdrop for Jungkook's street photography."
+        }
+      },
+      {
+        "title": {
+          "en": "Book Well in Advance"
+        },
+        "text": {
+          "en": "Because this is an exclusive, high-end luxury omakase counter with limited seating, advance reservations are strictly required."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Nestled in the quiet, trendy neighborhood of Tomigaya in Tokyo's Shibuya ward (often referred to as Oku-Shibuya), Sushi Rizaki Honten is the flagship location of a highly prestigious, upscale luxury sushi establishment. Renowned for its exquisite omakase courses crafted with meticulous attention to detail, the restaurant offers an intimate, minimalist counter-dining experience where master chefs transform seasonal, top-tier seafood into culinary art.</p><!--stss:footsteps--><p>This acclaimed sushi restaurant gained massive attention across the global fandom when Jungkook visited and immortalized it during his late September to early October 2026 trip to Tokyo. Having traveled to the Japanese capital for his high-profile appearance at the Hublot luxury boutique opening on September 24, 2026, Jungkook's journey extended into a personal travel diary.</p><p>On October 2, 2026, he shared a stunning series of artistic photographs on Instagram taken with his personal Leica camera. Among his moody night shots of Tokyo streets and dreamlike photos of his backup dancers, eagle-eyed ARMYs quickly identified his close-up culinary shots of high-end sushi and the distinct wooden counter as belonging to Sushi Rizaki Honten in Tomigaya. For fans visiting the neighborhood, dining here offers a direct taste of the exact gastronomic experience that caught Jungkook's artistic eye.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible via the Tokyo Metro Chiyoda Line to Yoyogi-koen Station or the Odakyu Electric Railway to Yoyogi-hachiman Station, followed by a short walk into the Tomigaya neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Operates on strict reservation-only lunch and dinner seating schedules."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Indoor restaurant dining space located on the second floor; check specific venue accessibility when booking reservations."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "officialLink": "https://l.instagram.com/?u=https%3A%2F%2Fomakase.in%2Fr%2Fzp852890&e=AUBSds7F96S0m7jIm-mLnuBQt0V1TieknVpDSSwtHE_NyQhc56vp8jZ3RXxtkb-7zNxDlvvOHOeKbp9mY7hR0BvIJX9DZQLvhjyI1Im0mT17OGJqMr7FJzSqzyEQXeblg8hDCQEJ6nT-5M-nOkOvQnXWNRu8dkBMEB7_Tz8_JbY",
+    "tiktokUrl": "",
+    "ytId": "",
+    "img": "images/admin-upload-new-manual-1790972817941-84ylz1-photo.jpg",
+    "instagramUrl": "https://www.instagram.com/p/Dd9q81-lPVp/?img_index=2&stkn=MXhrbTUyZzQzczMzdA==",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790972817941-84ylz1-recreated-0.jpg"
+    ]
+  },
+  {
+    "id": "new-manual-1790974607711-5z7t2t",
+    "name": "Tomigaya 1-Chome Streetscape (Shibuya, Tokyo)",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "Japan",
+    "city": "Tokyo",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "14-11, 도미가야 1-Chōme 시부야구, Tokyo Japon 151-0063",
+    "lat": 35.66663,
+    "lng": 139.69159,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate the Leica Shot"
+        },
+        "text": {
+          "en": "Take an evening or nighttime stroll down the quiet sidewalks of Tomigaya 1-chome to capture the same minimalist street atmosphere that inspired Jungkook's photography."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Oku-Shibuya's Hidden Gems"
+        },
+        "text": {
+          "en": "Combine your walk with visits to the local cafes, bakeries, and independent design shops tucked away in this peaceful neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect Local Residents"
+        },
+        "text": {
+          "en": "Because Tomigaya is a quiet residential and boutique district, keep noise levels low and be mindful of local properties while taking commemorative photos."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Situated in the serene and fashionable neighborhood of Tomigaya within Tokyo's Shibuya ward (often called Oku-Shibuya), this quiet residential and boutique-lined street captures the intimate, everyday charm of the Japanese capital. Far from the roaring neon lights and heavy crowds of central Shibuya, Tomigaya is characterized by low-rise buildings, stylish independent storefronts, peaceful alleyways, and a slow-paced neighborhood atmosphere that appeals to local artists and travelers seeking a quiet retreat.</p><!--stss:footsteps--><p>This specific street corner in Tomigaya gained immediate attention from global ARMYs following Jungkook's surprise Instagram update on October 2, 2026. Following his high-profile trip to Tokyo in late September for the luxury brand Hublot's boutique opening, Jungkook shared a visual photo diary capturing his personal time in the city.</p><p>Using his personal Leica camera, Jungkook took a series of artistic, moody photographs right along this street, immortalizing the nocturnal ambiance and quiet urban geometry of Tomigaya. For fans visiting Tokyo, walking down this exact stretch allows you to retrace Jungkook's nighttime strolls and experience the city through his creative photographic lens.</p>"
+    },
+    "officialLink": "",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible via the Tokyo Metro Chiyoda Line to Yoyogi-koen Station or the Odakyu Electric Railway to Yoyogi-hachiman Station, followed by a short, pleasant walk into the neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Public neighborhood street accessible 24/7. Free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Paved neighborhood sidewalks and flat urban streets with standard accessibility across Shibuya ward."
+        }
+      }
+    ],
+    "ytId": "",
+    "img": "images/admin-upload-new-manual-1790974607711-5z7t2t-photo.jpg",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1790974607711-5z7t2t-recreated-0.jpg"
+    ],
+    "instagramUrl": "https://www.instagram.com/p/Dd9q81-lPVp/?img_index=2&stkn=MXhrbTUyZzQzczMzdA=="
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
