@@ -670,15 +670,10 @@ async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     });
 }
 
-// Post Facebook embarqué (demande du 18/09/2026, "les liens embeded qui ne fonctionnent
-// plus, comme tu peux le voir avec Facebook") — jusqu'ici Facebook restait volontairement
-// un simple lien "Follow" (voir l'ancien commentaire au-dessus de la section "Liens
-// sociaux" plus bas) : Facebook a bien une méthode d'embed officielle sans clé API/App ID
-// obligatoire pour un post PUBLIC (le plugin "Embedded Posts", même mécanisme que le
-// bouton "Embed" sur facebook.com) — même principe que Twitter/Instagram ci-dessus : un
-// <div class="fb-post"> retraité par le SDK JS officiel une fois chargé. Un simple lien de
-// profil/page (pas un post précis) n'a pas d'équivalent embarquable et reste donc un lien
-// "Follow" classique, voir isFacebookPostUrl ci-dessous.
+// Post Facebook embarqué (demande du 18/09/2026 puis du 03/10/2026, "le facebook embeded
+// ne fonctionne plus") — un simple lien de profil/page (pas un post précis) n'a pas
+// d'équivalent embarquable et reste donc un lien "Follow" classique, voir isFacebookPostUrl
+// ci-dessous.
 function isFacebookPostUrl(url) {
     const s = (url || '').trim();
     // Élargi (demande du 19/09/2026, lieu "Daegu Daeseong Elementary School V Mural" — "ce
@@ -693,43 +688,24 @@ function isFacebookPostUrl(url) {
     if (/^https?:\/\/(www\.|m\.|mobile\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|photo(\.php)?\/?\?|share\/(p|v|r)\/|reel\/|groups\/[^/]+\/(posts|permalink)\/|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s)) return true;
     return /[?&](story_fbid|fbid)=/i.test(s);
 }
-let _facebookSdkLoadPromise = null;
-function loadFacebookSdkOnce() {
-    if (window.FB && window.FB.XFBML) return Promise.resolve();
-    if (_facebookSdkLoadPromise) return _facebookSdkLoadPromise;
-    _facebookSdkLoadPromise = new Promise((resolve) => {
-        // Le SDK Facebook cherche un <div id="fb-root"> au chargement — absent sur ce site
-        // (jamais utilisé jusqu'ici), donc créé ici s'il manque plutôt que codé en dur dans
-        // chaque page HTML.
-        if (!document.getElementById('fb-root')) {
-            const root = document.createElement('div');
-            root.id = 'fb-root';
-            document.body.insertBefore(root, document.body.firstChild);
-        }
-        const s = document.createElement('script');
-        s.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0';
-        s.crossOrigin = 'anonymous';
-        s.onload = resolve;
-        s.onerror = resolve;
-        document.body.appendChild(s);
-    });
-    return _facebookSdkLoadPromise;
-}
-async function renderFacebookEmbedOnDetails(container, facebookUrl) {
-    // Voir la note dans renderInstagramEmbedOnDetails() ci-dessus sur ce drapeau.
-    container.dataset.embedPending = '1';
-    // data-width="auto" (plutôt qu'une largeur fixe en pixels) : rend l'embed responsive,
-    // contrairement au simple iframe plugins/post.php?href=... (largeur figée) — se
-    // redimensionne correctement sur mobile, comme le widget Twitter au-dessus.
-    container.innerHTML = `<div class="fb-post" data-href="${escapeHtml(facebookUrl)}" data-width="auto"></div>`;
-    await loadFacebookSdkOnce();
-    // Contrairement à twttr.widgets.load(container) (accepte un conteneur précis),
-    // FB.XFBML.parse(container) accepte lui aussi un conteneur ciblé — API officielle, pas
-    // besoin du retraitement global de toute la page comme instgrm.Embeds.process().
-    if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
-    pollForEmbedSuccess(container, facebookUrl, 'iframe', 'View this post on Facebook', () => {
-        if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
-    });
+// BUG corrigé (demande du 03/10/2026, "le facebook embeded ne fonctionne plus") : la
+// version précédente dépendait du SDK JS officiel de Facebook (connect.facebook.net/.../
+// sdk.js) + FB.XFBML.parse() pour transformer un <div class="fb-post"> en <iframe> — même
+// défaut déjà rencontré et corrigé pour Instagram/Pinterest (voir leurs notes
+// respectives) : ce SDK dépend d'un comportement interne non documenté de façon fiable, et
+// Meta a muscler ses exigences côté "Embedded Posts" au fil du temps (App ID de plus en
+// plus souvent attendu, requêtes non authentifiées de plus en plus souvent bloquées) — une
+// cause plausible d'échec PERMANENT, qu'aucune nouvelle tentative ne peut corriger. Comme
+// pour Instagram/Pinterest, Facebook propose aussi un iframe direct, sans script tiers ni
+// traitement asynchrone : facebook.com/plugins/post.php?href=... — c'est l'iframe que ce
+// même SDK JS finissait par injecter lui-même, en interne, une fois chargé ; l'utiliser
+// directement retire cette dépendance plutôt que de lui faire confiance. width=500/
+// height=658 : taille par défaut documentée par Facebook lui-même pour ce plugin (visible
+// dans le <noscript> de repli qu'il génère) — gère aussi bien les posts texte que
+// photo/vidéo/reel, max-width:100% pour rester responsive sur mobile comme les autres
+// embeds de cette section.
+function renderFacebookEmbedOnDetails(container, facebookUrl) {
+    container.innerHTML = `<iframe src="https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(facebookUrl)}&show_text=true&width=500" width="500" height="658" style="border:none;overflow:hidden;max-width:100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
 }
 
 // Post TikTok embarqué (demande du 19/09/2026, "je veux que tous les liens des réseaux
