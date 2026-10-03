@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-03T12:41:22.932Z.
+// Généré le 2026-10-03T17:32:08.909Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9981,7 +9981,7 @@ window.STATIC_LOCATIONS = [
     "lng": -3.6763,
     "img": "images/admin-upload-197-photo.jpg",
     "fullDescription": {
-      "en": "<p>Torres Blancas is one of Madrid's most distinctive and celebrated modernist buildings. Designed by visionary architect Francisco Javier Sáenz de Oíza in the 1960s, it is a masterpiece of organic and brutalist architecture. Rather than a traditional rectangular skyscraper, the concrete building features a striking, cylindrical silhouette with curved balconies that fan out like the leaves and branches of a massive tree. Rising 71 meters above the city, this unmistakable landmark on Madrid's skyline was designed to be a vertical garden city, blending avant-garde concrete forms with the flow of natural light.</p><p>In 2023, V released his highly anticipated, jazz-infused solo album, Layover. The music video for the melancholic, lo-fi track \"Rainy Days\" was filmed inside a stunning penthouse apartment on the top floor of the Torres Blancas. The apartment's warm, retro interior, paired with the sweeping views of Madrid visible through the building's distinctive curved windows, perfectly matched the nostalgic and intimate vibe of V's solo project. The video beautifully captures him wandering the mid-century modern space, making a meal, and gazing out over the city skyline alongside a lookalike of his beloved Pomeranian, Yeontan, creating an incredibly cozy, cinematic atmosphere.</p>"
+      "en": "<p>Torres Blancas is one of Madrid's most distinctive and celebrated modernist buildings. Designed by visionary architect Francisco Javier Sáenz de Oíza in the 1960s, it is a masterpiece of organic and brutalist architecture. Rather than a traditional rectangular skyscraper, the concrete building features a striking, cylindrical silhouette with curved balconies that fan out like the leaves and branches of a massive tree. Rising 71 meters above the city, this unmistakable landmark on Madrid's skyline was designed to be a vertical garden city, blending avant-garde concrete forms with the flow of natural light.</p><!--stss:footsteps--><p>In 2023, V released his highly anticipated, jazz-infused solo album, Layover. The music video for the melancholic, lo-fi track \"Rainy Days\" was filmed inside a stunning penthouse apartment on the top floor of the Torres Blancas. The apartment's warm, retro interior, paired with the sweeping views of Madrid visible through the building's distinctive curved windows, perfectly matched the nostalgic and intimate vibe of V's solo project. The video beautifully captures him wandering the mid-century modern space, making a meal, and gazing out over the city skyline alongside a lookalike of his beloved Pomeranian, Yeontan, creating an incredibly cozy, cinematic atmosphere.</p>"
     },
     "practicalInfo": [
       {
@@ -10051,8 +10051,14 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "https://letstalkbts.quora.com/Taehyungs-MV-took-place-in-Torres-Blancas-The-Torres-Blancas-The-White-Towers-was-designed-by-Spanish-architect-Fran",
     "officialLink": "https://fr.wikipedia.org/wiki/Torres_Blancas",
     "recreatedPhotos": [
-      "images/admin-upload-197-recreated-0.jpg",
-      "images/admin-upload-197-recreated-1.jpg"
+      {
+        "url": "images/admin-upload-197-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-197-recreated-1.jpg",
+        "official": true
+      }
     ]
   },
   {
