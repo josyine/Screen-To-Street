@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-03T17:32:08.909Z.
+// Généré le 2026-10-03T22:21:40.048Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -3840,64 +3840,88 @@ window.STATIC_LOCATIONS = [
     "id": 68,
     "name": "Ilsan Lake Park",
     "group": "BTS",
-    "member": "Namjoon",
+    "member": "RM, Jimin",
     "country": "South Korea",
     "city": "Goyang",
     "category": "Landmark",
-    "year": "2013 - 2014",
+    "year": "2013, 2014",
     "episodeLink": "https://weverse.io/bts/media/1-6401255",
     "address": "595 Hosu-ro, Ilsandong-gu, Goyang-si",
     "lat": 37.6605,
     "lng": 126.7715,
     "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
     "fullDescription": {
-      "en": "<p>As RM's hometown, Ilsan shaped his childhood and early songwriting. He frequently visited this lake park to write lyrics and reflect before moving to the Gangnam dorms.</p><p>Walking around Ilsan Lake Park gives fans a deep understanding of Namjoon's roots and the quiet nature he constantly seeks out.</p>",
-      "fr": "<p>Ville natale de RM, Ilsan a marqué son enfance et ses débuts d'écriture, et il a souvent fréquenté ce parc au lac — l'un des plus grands lacs artificiels d'Asie — pour écrire ses textes et réfléchir avant de s'installer dans les dortoirs de Gangnam.</p><p>RM cite d'ailleurs directement ce parc dans les paroles de « Ma City » (2015), le préférant au fleuve Han pourtant plus célèbre — en parcourir les allées aujourd'hui offre un aperçu paisible de ses racines.</p>"
+      "fr": "<p>Ville natale de RM, Ilsan a marqué son enfance et ses débuts d'écriture, et il a souvent fréquenté ce parc au lac — l'un des plus grands lacs artificiels d'Asie — pour écrire ses textes et réfléchir avant de s'installer dans les dortoirs de Gangnam.</p><p>RM cite d'ailleurs directement ce parc dans les paroles de « Ma City » (2015), le préférant au fleuve Han pourtant plus célèbre — en parcourir les allées aujourd'hui offre un aperçu paisible de ses racines.</p>",
+      "en": "<p>Located in the city of Goyang just northwest of Seoul, Ilsan Lake Park is one of the largest artificial parks in Asia. Spanning a massive area with a pristine freshwater lake at its center, the park is famous for its scenic walking and cycling paths, peaceful waterfronts, and vibrant botanical gardens. It serves as the green lungs of the city and is particularly renowned for hosting the spectacular International Horticulture Goyang Korea (annual flower festival) every spring.</p><!--stss:footsteps--><p>For ARMYs, Ilsan Lake Park is an iconic pilgrimage site because it is intimately tied to the childhood, identity, and music of BTS's leader, RM (Kim Namjoon). Having spent much of his youth growing up in Ilsan, RM frequently references the city and this exact park in his global projects:</p><p>\"Ma City\" (2015): In the track from The Most Beautiful Moment in Life pt.2, RM passionately raps about his visceral attachment to his hometown, famously declaring that Ilsan is where he wants to be buried when he dies, calling it \"the city of flowers, the city of Mon.\"</p><p>UNICEF Speech (2018): During his historic address at the United Nations, Namjoon proudly introduced his hometown to the world, describing Ilsan as \"a beautiful place with a lake, hills, and even an annual flower festival,\" directly echoing the landscapes of the Lake Park.</p><p>The park is the ultimate destination for \"Namjooning\"—the fandom term for spending time in nature, riding bikes, and appreciating the quiet moments of life just as RM does. Fans love to track down the famous \"Squirrel Bench,\" the exact spot where Namjoon once took a photo while observing a little squirrel. Additionally, the park has been visited by Jimin, who took a memorable waterside photo here with his friend Ha Sung-woon.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Find the musical fountains"
+          "en": "Find the Squirrel Bench & Jimin's Spot"
         },
         "text": {
-          "en": "A popular spot mentioned in his early memories."
+          "en": "Take a leisurely walk around the lake to recreate Namjoon's quiet nature-watching moment on the park bench, or find the waterfront angle where Jimin snapped his photos."
         }
       },
       {
         "title": {
-          "en": "Listen to 'Ma City'"
+          "en": "Marvel at the Giant RM Mural"
         },
         "text": {
-          "en": "The perfect soundtrack for walking around Goyang."
+          "en": "Just outside the park at the Goyang Tourist Information Center, you will find a massive 18-by-12-meter mural dedicated to RM. Unveiled in 2021 to celebrate his birthday, it is a spectacular tribute to the city's most famous son."
+        }
+      },
+      {
+        "title": {
+          "en": "Shop at Lafesta and Western Dome"
+        },
+        "text": {
+          "en": "After your park stroll, take a short walk to these two massive open-air shopping and entertainment complexes. Both are explicitly name-dropped by RM in his \"Ma City\" lyrics."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Free, massive park known as one of the largest artificial lakes in Asia."
-        }
-      },
-      {
-        "title": {
-          "en": "Connection"
-        },
-        "text": {
-          "en": "Mentioned in the song \"Ma City\"."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Jeongbalsan Station (Line 3), exit 2."
+          "en": "Take Seoul Subway Line 3 to Jeongbalsan Station (Exit 1 or 2). The park entrance, as well as the nearby Goyang Tourist Information Center (for the mural) and the Lafesta/Western Dome malls, are all within a 5-to-10-minute walk from the station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The park is open to the public 24/7. Completely free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Highly accessible with flat, beautifully paved, and separate lanes for pedestrians and cyclists, making it perfect for an easy afternoon stroll or bike ride."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": 70,
@@ -6276,37 +6300,45 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 111,
-    "name": "National Museum of Korea",
+    "name": "National Museum of Korea (국립중앙박물관)",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
     "city": "Seoul",
     "category": "Museum",
     "year": "2020",
-    "ytId": "MBvunpC8Yw4",
-    "address": "137 Seobinggo-ro, Yongsan-gu",
+    "ytId": "ErTgtL1Tjns",
+    "address": "137 Seobinggo-ro, Yongsan-gu, Seoul, South Korea",
     "lat": 37.524,
     "lng": 126.9803,
-    "img": "https://img.youtube.com/vi/MBvunpC8Yw4/hqdefault.jpg",
+    "img": "images/admin-upload-111-photo.jpg",
     "fullDescription": {
-      "en": "<p>During the pandemic, BTS delivered a commencement speech and a moving performance of \"Boy With Luv,\" \"Spring Day\" and \"Mikrokosmos\" for YouTube's Dear Class of 2020, filmed in the museum's stunning main lobby and outdoor plaza.</p><p>The open-air corridor where they sang \"Mikrokosmos\" perfectly frames Namsan Seoul Tower in the distance, making it one of the most peaceful and quietly majestic spots on this list.</p>",
-      "fr": "<p>Pendant la pandémie, BTS a prononcé un discours de fin d'études et livré une performance émouvante de « Boy With Luv », « Spring Day » et « Mikrokosmos » pour Dear Class of 2020 sur YouTube, tournée dans le somptueux hall principal et l'esplanade extérieure du musée.</p><p>Le couloir en plein air où ils ont chanté « Mikrokosmos » cadre parfaitement la Namsan Seoul Tower au loin, faisant de ce lieu l'un des plus paisibles et discrètement majestueux de cette liste.</p>"
+      "fr": "<p>Pendant la pandémie, BTS a prononcé un discours de fin d'études et livré une performance émouvante de « Boy With Luv », « Spring Day » et « Mikrokosmos » pour Dear Class of 2020 sur YouTube, tournée dans le somptueux hall principal et l'esplanade extérieure du musée.</p><p>Le couloir en plein air où ils ont chanté « Mikrokosmos » cadre parfaitement la Namsan Seoul Tower au loin, faisant de ce lieu l'un des plus paisibles et discrètement majestueux de cette liste.</p>",
+      "en": "<p>Located in the heart of Yongsan, the National Museum of Korea is the flagship museum of South Korean history and art, and the largest museum in the country. Housing over 220,000 cultural assets, its massive, ultra-modern architectural design is built around the concept of a traditional Korean fortress. One of its most striking features is the \"Open Plaza\" (Yeollin Madang)—a vast, open-air architectural frame that beautifully captures the N Seoul Tower and the surrounding mountains, designed to symbolically bridge the past and the future. Inside, the grand central hallway, known as the \"Path of History,\" is anchored by towering national treasures, including the breathtaking Ten-Story Pagoda from Gyeongcheonsa Temple.</p><!--stss:footsteps--><p>During the height of the global COVID-19 pandemic in 2020, traditional graduations were canceled worldwide. To celebrate graduates, YouTube Originals hosted the virtual commencement event Dear Class of 2020. BTS was chosen as headline speakers and performers, selecting the prestigious National Museum of Korea as their stage to send a message of hope and comfort to the world.</p><p>The members filmed their appearances in two distinct areas of the museum:</p><p>The Commencement Speech (The Main Lobby): BTS delivered an inspiring 12-minute speech standing inside the museum’s sweeping main lobby (the Path of History) on the first floor. Dressed in sharp suits, each member shared personal anecdotes from their own youth and graduation days, standing with the museum’s grand architecture and historical artifacts stretching out behind them.</p><p>The Performance (The Open Plaza): Following the speech, the group moved to the museum's massive outdoor Open Plaza. They delivered a moving three-song set that transitioned gracefully from day to night. They performed \"Boy With Luv\" and the emotional anthem \"Spring Day\" in the bright daylight. As evening fell, the plaza was beautifully illuminated for a magical performance of \"Mikrokosmos\", with the glowing N Seoul Tower visible in the distant night sky—perfectly mirroring the song's theme of starlight and human connection.</p><p>For ARMYs, visiting the museum offers a chance to stand on the exact same steps where BTS sent out their global message of resilience, while also taking in Korea's richest cultural treasures.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Photograph the staircase"
+          "en": "Stand in the Open Plaza"
         },
         "text": {
-          "en": "Take a photo on the museum's grand indoor staircase, where they performed \"Boy With Luv.\""
+          "en": "Walk out into the grand outdoor Yeollin Madang (Open Plaza) and look toward the N Seoul Tower to find the exact framing used during the \"Boy With Luv\" and \"Spring Day\" performances."
         }
       },
       {
         "title": {
-          "en": "Find the Namsan Tower frame"
+          "en": "Find the Speech Spot Inside"
         },
         "text": {
-          "en": "The open-air corridor where they performed 'Mikrokosmos' lines up perfectly with Namsan Seoul Tower in the distance — one of the more quietly composed shots on this whole list."
+          "en": "Enter the main 1st-floor lobby (Path of History) to stand where the members lined up for their commencement speech. The towering Ten-Story Pagoda will help you orient exactly where the cameras were placed."
+        }
+      },
+      {
+        "title": {
+          "en": "Experience the"
+        },
+        "text": {
+          "en": "If you visit during the late afternoon, stay until dusk. Once the museum's exterior lights turn on and the N Seoul Tower glows in the distance, you can perfectly recreate the starry, emotional atmosphere of their \"Mikrokosmos\" stage."
         }
       }
     ],
@@ -6317,7 +6349,55 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Take a photo on the museum's grand indoor staircase, where they performed \"Boy With Luv.\"",
       "fr": "Prenez une photo sur le grand escalier intérieur du musée, là où ils ont interprété « Boy With Luv »."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 4 or the Gyeongui-Jungang Line to Ichon Station (Exit 2). The station is directly connected to the museum via an underground moving walkway."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open from 10:00 AM to 6:00 PM (open until 9:00 PM on Wednesdays and Saturdays). Admission to the main permanent exhibition and the outdoor Open Plaza is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully accessible. The museum is equipped with elevators, flat paved plazas, ramps, and accessible facilities throughout both the indoor galleries and outdoor grounds."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "youtubeUrls": [
+      "https://www.youtube.com/watch?v=AU6uF5sFtwA"
+    ],
+    "episodeLink": "https://www.kkday.com/en-sg/blog/29918/asia-south-korea-seoul-bts-muesum-filming-site-dear-class-of-2020?srsltid=AU7gw4VW7YuX3SVcTV3_NNTHzvYvElVNHwXxq74AmQVmaaotM0ZOIRpl",
+    "officialLink": "https://www.museum.go.kr/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-111-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 112,
