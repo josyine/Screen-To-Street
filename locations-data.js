@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-03T06:56:26.862Z.
+// Généré le 2026-10-03T12:41:22.932Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9475,12 +9475,12 @@ window.STATIC_LOCATIONS = [
     "year": "2019",
     "episodeLink": "https://www.koreatimes.co.kr/lifestyle/travel-food/20260317/rms-seoul-art-trail-museum-and-gallery-guide-for-army-visiting-during-bts-comeback",
     "address": "60-16 Itaewon-ro 55-gil, Yongsan-gu, Seoul",
-    "lat": 37.5384,
-    "lng": 126.9995,
+    "lat": 37.53848,
+    "lng": 126.99886,
     "img": "images/admin-upload-191-photo.jpg",
     "fullDescription": {
       "fr": "<p>Les visites fréquentes de RM au Leeum — dont l'exposition personnelle de David Hockney en 2019 — sont créditées par les médias coréens d'avoir lancé le « Namjoon Tour », où les fans refont le parcours des galeries et musées qu'il partage sur les réseaux sociaux.</p><p>Reconnu officiellement par l'office du tourisme sud-coréen : l'itinéraire « RM's Pick: Seoul Art Tour » de VisitKorea cite le Leeum parmi les cinq étapes clés de son parcours artistique, aux côtés du SeMA, du Gana Art Center et du Musée national de Corée.</p>",
-      "en": "<p>Operated by the Samsung Foundation of Culture, the Leeum Museum of Art is one of South Korea's most prestigious and architecturally stunning art institutions. Tucked away in the upscale, quiet residential hills of the Hannam-dong neighborhood, the museum complex was designed by a trio of world-renowned architects (Mario Botta, Jean Nouvel, and Rem Koolhaas). It houses an extraordinary, world-class collection that seamlessly bridges ancient traditional Korean antiquities and cutting-edge international contemporary art, making it a cornerstone of Seoul's cultural landscape.</p><p>RM's deep, well-documented love for fine art has had a massive cultural impact, and the Leeum Museum of Art is widely considered the ultimate epicenter of this phenomenon. His frequent, thoughtful visits here are credited by Korean media with officially sparking the \"Namjoon Tour\"—a beautiful trend where thousands of fans passionately retrace his steps to experience the exact galleries and installations he posts about on social media.</p><p>2019: The concept of the \"Namjoon Tour\" truly exploded in the public eye during his visit to the museum's massive David Hockney solo show in 2019. By sharing his quiet moments of contemplation in front of Hockney's vibrant works, RM proved that a museum trip could be just as engaging for his global fanbase as a music show. This visit established Leeum as the very first mandatory pilgrimage site for art-loving ARMYs.</p><p>2021-2023: Over the years, Leeum has become RM's regular cultural sanctuary. His visits reflect a deep, evolving curriculum of both traditional Korean heritage and avant-garde installations. He has quietly attended a staggering number of the museum's shows, including Dust, Beyond_, and Lee Bul: From 1998 to Now. In 2023 alone, he highlighted the spectacular Joseon White Porcelain exhibition—showcasing his profound love for ancient Korean ceramics—as well as Suki Seokyeong Kang's acclaimed contemporary solo exhibition. By continually documenting these visits, RM has single-handedly introduced millions of fans to the vast timeline of Korean art history.</p><p>2024: RM's dedication to \"Namjooning\" never faded, even when his schedule drastically changed. In early 2024, while actively serving in the South Korean military, fans spotted RM utilizing his leave to visit the Leeum Museum of Art once again. This time, he was there to experience \"VOICES,\" a sprawling, sensory exhibition by French contemporary artist Philippe Parreno. Seeing him prioritize an art exhibition during his precious military downtime beautifully reinforced how essential museums are to his personal well-being.</p>"
+      "en": "<p>Operated by the Samsung Foundation of Culture, the Leeum Museum of Art is one of South Korea's most prestigious and architecturally stunning art institutions. Tucked away in the upscale, quiet residential hills of the Hannam-dong neighborhood, the museum complex was designed by a trio of world-renowned architects (Mario Botta, Jean Nouvel, and Rem Koolhaas). It houses an extraordinary, world-class collection that seamlessly bridges ancient traditional Korean antiquities and cutting-edge international contemporary art, making it a cornerstone of Seoul's cultural landscape.</p><!--stss:footsteps--><p>RM's deep, well-documented love for fine art has had a massive cultural impact, and the Leeum Museum of Art is widely considered the ultimate epicenter of this phenomenon. His frequent, thoughtful visits here are credited by Korean media with officially sparking the \"Namjoon Tour\"—a beautiful trend where thousands of fans passionately retrace his steps to experience the exact galleries and installations he posts about on social media.</p><p>2019: The concept of the \"Namjoon Tour\" truly exploded in the public eye during his visit to the museum's massive David Hockney solo show in 2019. By sharing his quiet moments of contemplation in front of Hockney's vibrant works, RM proved that a museum trip could be just as engaging for his global fanbase as a music show. This visit established Leeum as the very first mandatory pilgrimage site for art-loving ARMYs.</p><p>2021-2023: Over the years, Leeum has become RM's regular cultural sanctuary. His visits reflect a deep, evolving curriculum of both traditional Korean heritage and avant-garde installations. He has quietly attended a staggering number of the museum's shows, including Dust, Beyond_, and Lee Bul: From 1998 to Now. In 2023 alone, he highlighted the spectacular Joseon White Porcelain exhibition—showcasing his profound love for ancient Korean ceramics—as well as Suki Seokyeong Kang's acclaimed contemporary solo exhibition. By continually documenting these visits, RM has single-handedly introduced millions of fans to the vast timeline of Korean art history.</p><p>2024: RM's dedication to \"Namjooning\" never faded, even when his schedule drastically changed. In early 2024, while actively serving in the South Korean military, fans spotted RM utilizing his leave to visit the Leeum Museum of Art once again. This time, he was there to experience \"VOICES,\" a sprawling, sensory exhibition by French contemporary artist Philippe Parreno. Seeing him prioritize an art exhibition during his precious military downtime beautifully reinforced how essential museums are to his personal well-being.</p>"
     },
     "tipsList": [
       {
@@ -9544,9 +9544,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "recreatedPhotos": [
-      "images/admin-upload-191-recreated-0.jpg"
-    ],
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.leeumhoam.org/",
     "tweetUrl": "https://x.com/setiogi/status/1847188474115326244?s=46",
@@ -9555,6 +9552,12 @@ window.STATIC_LOCATIONS = [
       "https://x.com/knjssource/status/1731975783306952811?s=46",
       "https://x.com/setiogi/status/1637404061652725762?s=46",
       "https://x.com/setiogi/status/1773575771908436248?s=46"
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-191-recreated-0.jpg",
+        "official": true
+      }
     ]
   },
   {
@@ -9573,7 +9576,7 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-192-photo.jpg",
     "fullDescription": {
       "fr": "<p>« RM x SFMOMA » est la première exposition muséale personnellement organisée par RM, qui présente pour la première fois aux États-Unis des œuvres issues de sa collection privée.</p><p>Cette exposition confirme une réputation que les médias coréens lui attribuaient déjà : le rapport 2025 du Korea Art Market a désigné RM comme l'une des 20 personnalités les plus influentes du marché de l'art coréen, le qualifiant de « collectionneur d'art passionné et d'influenceur culturel ».</p>",
-      "en": "<p>Located in the bustling South of Market (SoMa) neighborhood, the San Francisco Museum of Modern Art (SFMOMA) is one of the largest and most prominent museums of modern and contemporary art in the United States. Known for its striking architecture and world-class collections featuring masters like Henri Matisse, Agnes Martin, and Mark Rothko, it is a leading institution in the global art world. In the fall of 2026, the museum expanded its cultural dialogue by opening its doors to a groundbreaking, cross-cultural collaboration with one of the most influential pop-culture figures of the 21st century.</p><p>From October 3, 2026, to February 7, 2027: From October 3, 2026, to February 7, 2027, the museum's 7th floor was transformed to host RM x SFMOMA: Between You and Me. This landmark event marked the very first museum exhibition featuring artworks exclusively drawn from RM’s personal collection, co-curated by Namjoon himself. Here, his passion culminated in a stunning presentation of nearly 200 works, placing his beloved Korean masters—such as Yun Hyong-keun and Park Rehyun—in direct dialogue with international contemporary pieces from SFMOMA's holdings. RM described the exhibition as a \"sturdy bridge\" between East and West, firmly establishing him as a visionary art patron.</p><p>2026: Before acting as a curator for the museum, RM also explored SFMOMA as an avid, everyday art lover. Documenting his visit for fans, he shared photos of specific pieces from the museum's permanent collection that caught his eye. He specifically highlighted Henri Matisse's \"Woman with a Hat\" (1905)—one of the most representative works of Fauvism, famous for its vivid, unnatural colors and expressive brushstrokes. He also captured Alexander Calder's \"Fish\" (1947), a delicate, suspended mobile sculpture made of wire, metal, and fragments of color that perfectly reflects Calder's characteristic sense of movement and balance.</p>"
+      "en": "<p>Located in the bustling South of Market (SoMa) neighborhood, the San Francisco Museum of Modern Art (SFMOMA) is one of the largest and most prominent museums of modern and contemporary art in the United States. Known for its striking architecture and world-class collections featuring masters like Henri Matisse, Agnes Martin, and Mark Rothko, it is a leading institution in the global art world. In the fall of 2026, the museum expanded its cultural dialogue by opening its doors to a groundbreaking, cross-cultural collaboration with one of the most influential pop-culture figures of the 21st century.</p><!--stss:footsteps--><p>From October 3, 2026, to February 7, 2027: From October 3, 2026, to February 7, 2027, the museum's 7th floor was transformed to host RM x SFMOMA: Between You and Me. This landmark event marked the very first museum exhibition featuring artworks exclusively drawn from RM’s personal collection, co-curated by Namjoon himself. Here, his passion culminated in a stunning presentation of nearly 200 works, placing his beloved Korean masters—such as Yun Hyong-keun and Park Rehyun—in direct dialogue with international contemporary pieces from SFMOMA's holdings. RM described the exhibition as a \"sturdy bridge\" between East and West, firmly establishing him as a visionary art patron.</p><p>2026: Before acting as a curator for the museum, RM also explored SFMOMA as an avid, everyday art lover. Documenting his visit for fans, he shared photos of specific pieces from the museum's permanent collection that caught his eye. He specifically highlighted Henri Matisse's \"Woman with a Hat\" (1905)—one of the most representative works of Fauvism, famous for its vivid, unnatural colors and expressive brushstrokes. He also captured Alexander Calder's \"Fish\" (1947), a delicate, suspended mobile sculpture made of wire, metal, and fragments of color that perfectly reflects Calder's characteristic sense of movement and balance.</p>"
     },
     "tipsList": [
       {
@@ -9640,10 +9643,13 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://www.sfmoma.org/exhibition/rm-x-sfmoma/",
     "tweetUrls": [],
     "instagramUrl": "https://www.instagram.com/p/DU6yia7Abyz/",
+    "imgCredit": "AI-generated illustrative image",
     "recreatedPhotos": [
-      "images/admin-upload-192-recreated-0.jpg"
-    ],
-    "imgCredit": "AI-generated illustrative image"
+      {
+        "url": "images/admin-upload-192-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 193,
@@ -10461,12 +10467,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2019",
     "address": "Great Alpine Highway (State Highway 73), Castle Hill, New Zealand. (Porter's Lodge is located just a few kilometers away on the same highway)",
-    "lat": -43.2167,
-    "lng": 171.7163,
+    "lat": -43.27577,
+    "lng": 171.66311,
     "img": "images/admin-upload-203-photo.jpg",
     "fullDescription": {
       "fr": "<p>Castle Hill est un vaste champ de blocs de calcaire dans l'arrière-pays de Canterbury, ses formations rocheuses façonnées par l'érosion parsemant une prairie de tussack à ciel ouvert sous la chaîne des Craigieburn — l'un des sites d'escalade et de bloc les plus photographiés de Nouvelle-Zélande. Porter's Lodge se trouve à proximité, un lodge de montagne construit pour desservir le domaine skiable voisin de Porters, le genre de base alpine sans chichi qu'utilisent les voyageurs pour couper la traversée de l'île du Sud.</p><p>Le groupe s'y est arrêté au début de son road trip à travers l'île du Sud pour Bon Voyage Saison 4, utilisant le lodge comme point de pause entre les paysages vastes et vides qui caractérisent ce tronçon de la route nationale 73. C'est un moment plus discret, moins mis en scène que la plupart des activités phares de la saison — juste sept personnes dans une partie authentiquement isolée du pays.</p>",
-      "en": "<p>Castle Hill (officially known as Kura Tawhiti Conservation Area) is a vast, otherworldly limestone boulder field located in the high country of Canterbury. Its weathered, giant rock formations are scattered across open tussock grassland beneath the towering Craigieburn Range, making it one of the most photographed rock-climbing and bouldering spots in New Zealand. Just a short drive away sits Porter's Lodge, a rustic mountain lodge originally built to serve the neighboring Porters ski field. Today, it functions as the quintessential, no-frills alpine base that road-trippers rely on to rest, warm up, and break up the long drive across the South Island's mountainous interior.</p><p>During episodes 1 and 2 of Bon Voyage Season 4, BTS parked their campervans to explore the majestic expanse of Castle Hill. The members were visibly in awe of the sheer scale of the landscape, running through the maze of giant limestone boulders and scrambling up the rocks to take sweeping, cinematic group photos against the panoramic mountain backdrop. It was a moment of pure, childlike exploration. Afterward, embracing the true South Island road-trip lifestyle, the rugged, cozy atmosphere of the nearby Porter's Lodge provided the perfect alpine rest stop to escape the biting mountain winds and refuel before continuing their journey toward Lake Tekapo.</p>"
+      "en": "<p>Castle Hill (officially known as Kura Tawhiti Conservation Area) is a vast, otherworldly limestone boulder field located in the high country of Canterbury. Its weathered, giant rock formations are scattered across open tussock grassland beneath the towering Craigieburn Range, making it one of the most photographed rock-climbing and bouldering spots in New Zealand. Just a short drive away sits Porter's Lodge, a rustic mountain lodge originally built to serve the neighboring Porters ski field. Today, it functions as the quintessential, no-frills alpine base that road-trippers rely on to rest, warm up, and break up the long drive across the South Island's mountainous interior.</p><!--stss:footsteps--><p>During episodes 1 and 2 of Bon Voyage Season 4, BTS parked their campervans to explore the majestic expanse of Castle Hill. The members were visibly in awe of the sheer scale of the landscape, running through the maze of giant limestone boulders and scrambling up the rocks to take sweeping, cinematic group photos against the panoramic mountain backdrop. It was a moment of pure, childlike exploration. Afterward, embracing the true South Island road-trip lifestyle, the rugged, cozy atmosphere of the nearby Porter's Lodge provided the perfect alpine rest stop to escape the biting mountain winds and refuel before continuing their journey toward Lake Tekapo.</p>"
     },
     "tipsList": [
       {
@@ -10537,11 +10543,14 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhotos": [
-      "images/admin-upload-203-recreated-0.jpg"
-    ],
     "episodeLink": "https://weverse.io/bts/media/1-6451072",
-    "officialLink": "https://www.booking.com/hotel/nz/porters-alpine-lodge.en.html?group_adults=1;no_rooms=1&aid=818288&label=affnetcj-11916287_pub-5108952_site-101543398_pname-Go+Travel+Un+Limited_clkid-df64dd0df2ee4feabe67cc7f3-673243_cjevent-6f169b40b47611f1835b011c0a82b832&utm_source=affnetcj&utm_medium=bannerindex&utm_campaign=xx&utm_term=index-11916287&chal_t=1789855619558&force_referer=https%3A%2F%2Fwww.flyhoneystars.com%2F"
+    "officialLink": "https://www.booking.com/hotel/nz/porters-alpine-lodge.en.html?group_adults=1;no_rooms=1&aid=818288&label=affnetcj-11916287_pub-5108952_site-101543398_pname-Go+Travel+Un+Limited_clkid-df64dd0df2ee4feabe67cc7f3-673243_cjevent-6f169b40b47611f1835b011c0a82b832&utm_source=affnetcj&utm_medium=bannerindex&utm_campaign=xx&utm_term=index-11916287&chal_t=1789855619558&force_referer=https%3A%2F%2Fwww.flyhoneystars.com%2F",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-203-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 204,
@@ -10553,12 +10562,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2019",
     "address": "Speight's Ale House (Tower Junction branch), 2 Troup Drive, Riccarton, Christchurch 8011",
-    "lat": -43.5321,
-    "lng": 172.6362,
+    "lat": -43.53987,
+    "lng": 172.60458,
     "img": "images/admin-upload-204-photo.jpg",
     "fullDescription": {
       "fr": "<p>Speight's est l'une des brasseries les plus connues de Nouvelle-Zélande, fondée à Dunedin en 1876 et construite autour d'une identité de \"Southern Man\" simple et sans prétention. Sa chaîne d'Ale House sert une cuisine de pub kiwi classique — tourtes à la viande, fish and chips, steak — accompagnée des bières maison de la brasserie, et fait office d'étape fiable et décontractée dans la plupart des grandes villes de l'île du Sud.</p><p>Le groupe a déjeuné dans l'un des Speight's Ale House de Christchurch le premier jour de son road trip en Nouvelle-Zélande, un repas de pub simple avant de continuer plus loin dans l'arrière-pays de l'île du Sud.</p>",
-      "en": "<p>Speight's is one of New Zealand's best-known and most beloved breweries. Founded further south in Dunedin in 1876, the brand was built around a hearty, unpretentious \"Southern Man\" identity that celebrates the rugged outdoor lifestyle of the South Island. Today, its Ale House chain serves as a reliable, welcoming, and casual stop in most major New Zealand towns. The menu is heavily focused on classic, filling Kiwi pub food—think savory meat pies, crispy fish and chips, and thick steaks—served alongside the brewery's own signature tap beers.</p><p>When BTS traveled to New Zealand for Bon Voyage Season 4, they landed in Christchurch to kick off their massive campervan road trip. Navigating a foreign country, driving massive RVs, and adjusting to the chilly alpine air required serious energy. A stop at a classic Kiwi pub like Speight's Ale House provided the perfect, hearty welcome to the South Island. The members have always loved diving into large, shared meals full of meat and fries, and this environment perfectly matched the relaxed, brotherhood-focused vibe of the entire Bon Voyage series. For fans, visiting a Speight's Ale House is the best way to taste the everyday, authentic New Zealand pub culture that fueled the group's adventures.</p>"
+      "en": "<p>Speight's is one of New Zealand's best-known and most beloved breweries. Founded further south in Dunedin in 1876, the brand was built around a hearty, unpretentious \"Southern Man\" identity that celebrates the rugged outdoor lifestyle of the South Island. Today, its Ale House chain serves as a reliable, welcoming, and casual stop in most major New Zealand towns. The menu is heavily focused on classic, filling Kiwi pub food—think savory meat pies, crispy fish and chips, and thick steaks—served alongside the brewery's own signature tap beers.</p><!--stss:footsteps--><p>When BTS traveled to New Zealand for Bon Voyage Season 4, they landed in Christchurch to kick off their massive campervan road trip. Navigating a foreign country, driving massive RVs, and adjusting to the chilly alpine air required serious energy. A stop at a classic Kiwi pub like Speight's Ale House provided the perfect, hearty welcome to the South Island. The members have always loved diving into large, shared meals full of meat and fries, and this environment perfectly matched the relaxed, brotherhood-focused vibe of the entire Bon Voyage series. For fans, visiting a Speight's Ale House is the best way to taste the everyday, authentic New Zealand pub culture that fueled the group's adventures.</p>"
     },
     "tipsList": [
       {
@@ -10646,12 +10655,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2019",
     "address": "29 Omarama Avenue, State Highway 8, Omarama, New Zealand",
-    "lat": -44.4833,
-    "lng": 169.9667,
+    "lat": -44.48481,
+    "lng": 169.97031,
     "img": "images/admin-upload-205-photo.jpg",
     "fullDescription": {
-      "en": "<p>Set on State Highway 8 between Omarama and Twizel, \"Hot Tubs Omarama\" features a cluster of private, wood-fired hot tubs filled with pure, naturally sourced mountain water. Built as individual outdoor pods rather than one large shared pool, the facility is perfectly integrated into the rugged, natural landscape. The wide-open Mackenzie Country sky above makes it as much a breathtaking stargazing spot after dark as a place to soak and heal aching muscles.</p><p>In 2019, BTS traveled across New Zealand's spectacular South Island for Bon Voyage Season 4. After days of exhausting outdoor activities, hiking, and driving their massive campervans through the freezing alpine winds, the members stopped at these exact hot tubs for some much-needed recovery. Cramming together into the wooden tubs, the group spent a hilarious and heartwarming afternoon splashing around, drinking beverages, and admiring the serene, wide-open mountain views. It was a perfect, intimate moment of bonding that showcased the incredible healing power of New Zealand's natural thermal culture.</p>",
-      "fr": "<p>Installé sur la route nationale 8 entre Omarama et Twizel, ce site regroupe des bains chauds privés, chauffés au bois et remplis d'eau minérale naturelle, construits sous forme de cabines individuelles en extérieur plutôt qu'une seule piscine commune. Le ciel immense du Mackenzie Country au-dessus en fait aussi un lieu d'observation des étoiles à la nuit tombée qu'un simple endroit pour se détendre.</p><p>Le groupe s'y est arrêté durant l'étape sur l'île du Sud de Bon Voyage Saison 4, un moyen simple et tranquille de récupérer après de longues journées de route et de randonnée dans le paysage vide et cerné de montagnes du Mackenzie Country.</p>"
+      "fr": "<p>Installé sur la route nationale 8 entre Omarama et Twizel, ce site regroupe des bains chauds privés, chauffés au bois et remplis d'eau minérale naturelle, construits sous forme de cabines individuelles en extérieur plutôt qu'une seule piscine commune. Le ciel immense du Mackenzie Country au-dessus en fait aussi un lieu d'observation des étoiles à la nuit tombée qu'un simple endroit pour se détendre.</p><p>Le groupe s'y est arrêté durant l'étape sur l'île du Sud de Bon Voyage Saison 4, un moyen simple et tranquille de récupérer après de longues journées de route et de randonnée dans le paysage vide et cerné de montagnes du Mackenzie Country.</p>",
+      "en": "<p>Set on State Highway 8 between Omarama and Twizel, \"Hot Tubs Omarama\" features a cluster of private, wood-fired hot tubs filled with pure, naturally sourced mountain water. Built as individual outdoor pods rather than one large shared pool, the facility is perfectly integrated into the rugged, natural landscape. The wide-open Mackenzie Country sky above makes it as much a breathtaking stargazing spot after dark as a place to soak and heal aching muscles.</p><!--stss:footsteps--><p>In 2019, BTS traveled across New Zealand's spectacular South Island for Bon Voyage Season 4. After days of exhausting outdoor activities, hiking, and driving their massive campervans through the freezing alpine winds, the members stopped at these exact hot tubs for some much-needed recovery. Cramming together into the wooden tubs, the group spent a hilarious and heartwarming afternoon splashing around, drinking beverages, and admiring the serene, wide-open mountain views. It was a perfect, intimate moment of bonding that showcased the incredible healing power of New Zealand's natural thermal culture.</p>"
     },
     "tipsList": [
       {
@@ -10690,10 +10699,8 @@ window.STATIC_LOCATIONS = [
     "youtubeUrls": [],
     "tiktokUrl": "",
     "facebookUrl": "",
-    "recreatedPhotos": [],
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
     "practicalInfo": [
       {
         "title": {
@@ -10721,11 +10728,17 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrls": [],
-    "recreatedPhoto": "",
     "imgCredit": "AI-generated illustrative image",
     "episodeLink": "https://weverse.io/bts/media/0-6453577",
     "ytId": "QYQd69V1dE4",
-    "tweetUrl": "https://x.com/stussyjimin/status/1178570942299004928"
+    "tweetUrl": "https://x.com/stussyjimin/status/1178570942299004928",
+    "officialLink": "https://www.hottubsomarama.co.nz/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-205-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 206,
@@ -10737,12 +10750,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2019",
     "address": "39 Camp Street, Queenstown 9300, New Zealand",
-    "lat": -45.0312,
-    "lng": 168.6626,
+    "lat": -45.03108,
+    "lng": 168.66103,
     "img": "images/admin-upload-206-photo.jpg",
     "fullDescription": {
       "fr": "<p>Cette galerie présente le travail du peintre paysagiste néo-zélandais Ivan Clarke, connu pour ses grandes toiles à l'huile représentant les montagnes et les lacs de l'île du Sud, ainsi que sa série récurrente \"Lonely Dog\". C'est une expérience de galerie intimiste plutôt qu'une grande institution — l'artiste ou sa famille y sont souvent présents pour présenter les œuvres.</p><p>Le groupe s'y est rendu vers la fin de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'accordant un moment d'art local, plus calme, en contrepoint des étapes plus physiques et riches en adrénaline de la saison autour de Queenstown.</p>",
-      "en": "<p>Located in the heart of Queenstown, this intimate gallery showcases the extraordinary work of native New Zealand landscape painter Ivan Clarke. The gallery is celebrated for its breathtaking, large-scale oil paintings that masterfully capture the majestic lighting, mountains, and glacial lakes of the South Island. It is also the exclusive home to Clarke's whimsical and internationally loved \"Lonely Dog\" collection. Unlike large, sterile institutions, this offers a warm, highly personal gallery experience, often with the artist himself or his family members present to personally walk visitors through the stories behind the canvases.</p><p>During Day 6 of their New Zealand road trip (featured across Episodes 7 and 8 of Bon Voyage Season 4), the group visited this gallery while exploring downtown Queenstown. Known as the \"Adventure Capital of the World,\" Queenstown is famous for high-adrenaline activities (which the members certainly partook in!). However, their visit to the Ivan Clarke Gallery served as a much-needed, quieter counterpoint to the season's more physical, adrenaline-driven stops. The members spent time quietly admiring the local art, proving that even in the middle of an action-packed travel schedule, they always make time to appreciate regional culture and fine arts.</p>"
+      "en": "<p>Located in the heart of Queenstown, this intimate gallery showcases the extraordinary work of native New Zealand landscape painter Ivan Clarke. The gallery is celebrated for its breathtaking, large-scale oil paintings that masterfully capture the majestic lighting, mountains, and glacial lakes of the South Island. It is also the exclusive home to Clarke's whimsical and internationally loved \"Lonely Dog\" collection. Unlike large, sterile institutions, this offers a warm, highly personal gallery experience, often with the artist himself or his family members present to personally walk visitors through the stories behind the canvases.</p><!--stss:footsteps--><p>During Day 6 of their New Zealand road trip (featured across Episodes 7 and 8 of Bon Voyage Season 4), the group visited this gallery while exploring downtown Queenstown. Known as the \"Adventure Capital of the World,\" Queenstown is famous for high-adrenaline activities (which the members certainly partook in!). However, their visit to the Ivan Clarke Gallery served as a much-needed, quieter counterpoint to the season's more physical, adrenaline-driven stops. The members spent time quietly admiring the local art, proving that even in the middle of an action-packed travel schedule, they always make time to appreciate regional culture and fine arts.</p>"
     },
     "tipsList": [
       {
@@ -10789,9 +10802,6 @@ window.STATIC_LOCATIONS = [
     "tweetUrls": [],
     "ytId": "8GRNpV2U5YU",
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhotos": [
-      "images/admin-upload-206-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -10817,6 +10827,12 @@ window.STATIC_LOCATIONS = [
           "en": "The gallery is located on the ground floor and is fully accessible for wheelchairs and strollers, offering a smooth and easy viewing experience."
         }
       }
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-206-recreated-0.jpg",
+        "official": true
+      }
     ]
   },
   {
@@ -10829,12 +10845,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2019",
     "address": "Godley Peaks Road, Lake Tekapo 7945 (Mt. John summit)",
-    "lat": -43.9866,
-    "lng": 170.4653,
+    "lat": -43.98564,
+    "lng": 170.46497,
     "img": "images/admin-upload-207-photo.jpg",
     "fullDescription": {
-      "en": "<p>Perched on the summit of Mt. John directly above Lake Tekapo, this University of Canterbury research observatory sits squarely inside the Aoraki Mackenzie International Dark Sky Reserve—one of the largest, highest-rated, and darkest stargazing reserves on Earth. While it is primarily a world-class scientific facility for nighttime astronomy, it is equally famous during the day. The glass-walled Astro Café at the summit serves up coffee and treats alongside an absolutely breathtaking, panoramic view of Lake Tekapo's surreal turquoise glacial waters and the vast surrounding Mackenzie Basin.</p><p>During Episode 3 of their Bon Voyage Season 4 New Zealand road trip (Day 2: Castle Hill &gt; Geraldine &gt; Lake Tekapo), the members drove their campervans up the winding road to the summit of Mt. John. Arriving just in time to catch the spectacular afternoon light transitioning into sunset, the group was completely mesmerized by the panoramic alpine views.</p><p>Taking full advantage of the stunning backdrop before the sun went down, members like j-hope, V, and Jimin famously used the summit to film several fun TikTok videos, including the iconic \"Chicken Noodle Soup\" dance challenge! While the group enjoyed the daytime vistas from the Astro Café, they were standing in a spot that most visitors associate with astonishing, light-pollution-free skies after dark, making it a perfect crossover of beautiful sunsets and world-class stargazing.</p>",
-      "fr": "<p>Perché au sommet du mont John au-dessus du lac Tekapo, cet observatoire de recherche de l'Université de Canterbury se trouve au cœur de la réserve internationale de ciel étoilé Aoraki Mackenzie — l'une des plus grandes et des plus sombres réserves d'observation des étoiles au monde. L'Astro Cafe, au sommet, sert repas et cafés avec une vue panoramique sur les eaux turquoise du lac Tekapo et le bassin du Mackenzie qui l'entoure.</p><p>Le groupe a fait la route jusqu'au sommet durant son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, profitant de la vue en plein jour depuis un lieu que la plupart des visiteurs associent à des ciels nocturnes stupéfiants, sans aucune pollution lumineuse.</p>"
+      "fr": "<p>Perché au sommet du mont John au-dessus du lac Tekapo, cet observatoire de recherche de l'Université de Canterbury se trouve au cœur de la réserve internationale de ciel étoilé Aoraki Mackenzie — l'une des plus grandes et des plus sombres réserves d'observation des étoiles au monde. L'Astro Cafe, au sommet, sert repas et cafés avec une vue panoramique sur les eaux turquoise du lac Tekapo et le bassin du Mackenzie qui l'entoure.</p><p>Le groupe a fait la route jusqu'au sommet durant son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, profitant de la vue en plein jour depuis un lieu que la plupart des visiteurs associent à des ciels nocturnes stupéfiants, sans aucune pollution lumineuse.</p>",
+      "en": "<p>Perched on the summit of Mt. John directly above Lake Tekapo, this University of Canterbury research observatory sits squarely inside the Aoraki Mackenzie International Dark Sky Reserve—one of the largest, highest-rated, and darkest stargazing reserves on Earth. While it is primarily a world-class scientific facility for nighttime astronomy, it is equally famous during the day. The glass-walled Astro Café at the summit serves up coffee and treats alongside an absolutely breathtaking, panoramic view of Lake Tekapo's surreal turquoise glacial waters and the vast surrounding Mackenzie Basin.</p><!--stss:footsteps--><p>During Episode 3 of their Bon Voyage Season 4 New Zealand road trip (Day 2: Castle Hill &gt; Geraldine &gt; Lake Tekapo), the members drove their campervans up the winding road to the summit of Mt. John. Arriving just in time to catch the spectacular afternoon light transitioning into sunset, the group was completely mesmerized by the panoramic alpine views.</p><p>Taking full advantage of the stunning backdrop before the sun went down, members like j-hope, V, and Jimin famously used the summit to film several fun TikTok videos, including the iconic \"Chicken Noodle Soup\" dance challenge! While the group enjoyed the daytime vistas from the Astro Café, they were standing in a spot that most visitors associate with astonishing, light-pollution-free skies after dark, making it a perfect crossover of beautiful sunsets and world-class stargazing.</p>"
     },
     "tipsList": [
       {
@@ -10879,9 +10895,6 @@ window.STATIC_LOCATIONS = [
     "tweetUrls": [],
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.darkskyproject.co.nz/dine/astro-cafe/",
-    "recreatedPhotos": [
-      "images/admin-upload-207-recreated-0.jpg"
-    ],
     "ytId": "uK_9Cp83Tho",
     "tiktokUrl": "https://www.tiktok.com/@bts_official_bighit/video/6741983766970993921?_r=1&_t=ZN-99qTtNMy9TC",
     "practicalInfo": [
@@ -10909,11 +10922,17 @@ window.STATIC_LOCATIONS = [
           "en": "The Astro Café is wheelchair accessible, but the surrounding summit area where the members walked consists of uneven dirt, tussock grass, and rocky terrain."
         }
       }
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-207-recreated-0.jpg",
+        "official": true
+      }
     ]
   },
   {
     "id": 208,
-    "name": "Kinloch Lodge",
+    "name": "Kinloch Wilderness Retreat",
     "group": "BTS",
     "member": "All",
     "country": "New Zealand",
@@ -10921,12 +10940,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2019",
     "address": "862 Kinloch Road, Glenorchy 9372, New Zealand",
-    "lat": -44.8333,
-    "lng": 168.3667,
+    "lat": -44.84364,
+    "lng": 168.34856,
     "img": "images/admin-upload-208-photo.jpg",
     "fullDescription": {
       "fr": "<p>Kinloch Lodge est un refuge sauvage au bord du lac, situé à l'extrémité nord du lac Wakatipu, près de Glenorchy — la petite localité largement utilisée comme porte d'entrée vers Paradise, le parc national du Mont Aspiring, ainsi que les pistes de Routeburn et de Greenstone. Le lodge occupe un bâtiment historique classé, directement au bord du lac, bien loin de la zone touristique plus urbanisée de Queenstown.</p><p>Le groupe y a séjourné durant l'étape la plus reculée et axée sur le plein air de son road trip en Nouvelle-Zélande pour Bon Voyage Saison 4, s'en servant de base pour explorer les environs sauvages de Glenorchy avant de poursuivre vers Queenstown.</p>",
-      "en": "<p>Kinloch Wilderness Retreat (traditionally known as Kinloch Lodge) is a peaceful lakeside haven located at the remote northern tip of Lake Wakatipu. Just a short drive from Glenorchy—a small settlement famously known as the gateway to \"Paradise,\" Mount Aspiring National Park, and the legendary Routeburn and Greenstone tracks—the lodge occupies a beautiful historic heritage building right on the water's edge. It offers a spectacular, untouched natural escape, completely surrounded by towering mountains and far removed from the bustling, built-up tourist strips of nearby Queenstown.</p><p>Seeking a true connection with nature, the group stayed at this exact lodge during Episode 5 of their unforgettable New Zealand road trip in Bon Voyage Season 4. Arriving in their campervans and SUVs after a long day of driving through breathtaking alpine landscapes, the members used this serene retreat as a base camp to rest, share communal meals, and marvel at the incredibly clear, star-filled night sky. Waking up to the misty, tranquil morning views over Lake Wakatipu provided fans with some of the most peaceful, healing, and cozy moments of the entire season before the group continued their journey toward Queenstown.</p>"
+      "en": "<p>Kinloch Wilderness Retreat (traditionally known as Kinloch Lodge) is a peaceful lakeside haven located at the remote northern tip of Lake Wakatipu. Just a short drive from Glenorchy—a small settlement famously known as the gateway to \"Paradise,\" Mount Aspiring National Park, and the legendary Routeburn and Greenstone tracks—the lodge occupies a beautiful historic heritage building right on the water's edge. It offers a spectacular, untouched natural escape, completely surrounded by towering mountains and far removed from the bustling, built-up tourist strips of nearby Queenstown.</p><!--stss:footsteps--><p>Seeking a true connection with nature, the group stayed at this exact lodge during Episode 5 of their unforgettable New Zealand road trip in Bon Voyage Season 4. Arriving in their campervans and SUVs after a long day of driving through breathtaking alpine landscapes, the members used this serene retreat as a base camp to rest, share communal meals, and marvel at the incredibly clear, star-filled night sky. Waking up to the misty, tranquil morning views over Lake Wakatipu provided fans with some of the most peaceful, healing, and cozy moments of the entire season before the group continued their journey toward Queenstown.</p>"
     },
     "tipsList": [
       {
@@ -10970,9 +10989,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "tweetUrls": [],
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhotos": [
-      "images/admin-upload-208-recreated-0.jpg"
-    ],
     "episodeLink": "https://www.flyhoneystars.com/2019/11/19/filming-location-bts-bon-voyage-in-new-zealand/bts-new-zealand-bon-voyage-day4-kinloch-lodge-glenorchy/",
     "ytId": "QYQd69V1dE4",
     "officialLink": "https://weverse.io/bts/media/0-6453577",
@@ -11000,6 +11016,12 @@ window.STATIC_LOCATIONS = [
         "text": {
           "en": "The surrounding wilderness terrain (lakefront and trails) is rugged and uneven. As the main lodge is a historic heritage building, it has some accessibility limitations. However, ground-floor facilities and specific rooms can accommodate guests with mobility needs if the staff is contacted in advance."
         }
+      }
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-208-recreated-0.jpg",
+        "official": true
       }
     ]
   },
@@ -11265,7 +11287,10 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.everland.com/everland/home/main",
     "recreatedPhotos": [
-      "images/admin-upload-211-recreated-0.jpg"
+      {
+        "url": "images/admin-upload-211-recreated-0.jpg",
+        "official": true
+      }
     ]
   },
   {
@@ -11285,7 +11310,7 @@ window.STATIC_LOCATIONS = [
     "lng": 126.9944,
     "img": "images/admin-upload-212-photo.jpg",
     "fullDescription": {
-      "en": "<p>For several years, this flagship LINE Friends store was an unmistakable, massive pink landmark standing proudly on the main Itaewon shopping strip. At the time of its operation, it held the title of the world's largest LINE Friends store. The sprawling multi-story complex was a pop-culture paradise, housing an expansive BT21-themed cafe on the third floor and a dedicated BT21 merchandise zone on the second floor. Sadly, the physical store officially closed its doors in 2020 due to the global pandemic, but it remains a legendary site in K-pop retail history.</p><p>The Itaewon flagship store was the undisputed epicenter of the \"BT21\" universe—the incredibly successful character brand created by BTS. The members themselves visited this specific store on multiple occasions during the early BT21 campaigns, leaving behind their autographs, personal drawings, and interacting with the giant statues of Tata, Chimmy, Cooky, and the rest of the crew. For years, sitting at the BT21 cafe where the members had once filmed promotional content was considered a mandatory rite of passage for ARMYs visiting Seoul. While the building is gone, the global legacy of the characters they launched here continues to thrive.</p>"
+      "en": "<p>For several years, this flagship LINE Friends store was an unmistakable, massive pink landmark standing proudly on the main Itaewon shopping strip. At the time of its operation, it held the title of the world's largest LINE Friends store. The sprawling multi-story complex was a pop-culture paradise, housing an expansive BT21-themed cafe on the third floor and a dedicated BT21 merchandise zone on the second floor. Sadly, the physical store officially closed its doors in 2020 due to the global pandemic, but it remains a legendary site in K-pop retail history.</p><!--stss:footsteps--><p>The Itaewon flagship store was the undisputed epicenter of the \"BT21\" universe—the incredibly successful character brand created by BTS. The members themselves visited this specific store on multiple occasions during the early BT21 campaigns, leaving behind their autographs, personal drawings, and interacting with the giant statues of Tata, Chimmy, Cooky, and the rest of the crew. For years, sitting at the BT21 cafe where the members had once filmed promotional content was considered a mandatory rite of passage for ARMYs visiting Seoul. While the building is gone, the global legacy of the characters they launched here continues to thrive.</p>"
     },
     "practicalInfo": [
       {
@@ -11349,12 +11374,15 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "officialLink": "",
     "tweetUrls": [],
-    "recreatedPhotos": [
-      "images/admin-upload-212-recreated-0.jpg"
-    ],
     "imgCredit": "AI-generated illustrative image",
     "pinterestUrl": "",
-    "tweetUrl": "https://x.com/bt21_/status/955407453000118278?s=46"
+    "tweetUrl": "https://x.com/bt21_/status/955407453000118278?s=46",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-212-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 213,
@@ -11461,7 +11489,7 @@ window.STATIC_LOCATIONS = [
     "lng": 139.7031,
     "img": "images/admin-upload-214-photo.jpg",
     "fullDescription": {
-      "en": "<p>Tucked away in the basement of a building in the bustling, trendy Ura-Harajuku district, Red Rock is a casual, hugely popular eatery. It has earned a devoted following for its signature dish: the Roast Beef Don. The restaurant is famous for serving incredibly generous, mountain-like portions of high-quality, thinly sliced roast beef over a bowl of rice, beautifully crowned with a raw egg yolk and a special yogurt sauce. Operating with a classic Japanese ticket-vending machine at the entrance, it is a fast, no-frills, and highly satisfying culinary staple for shoppers and locals exploring Tokyo's vibrant fashion streets.</p><p>In late 2017, Jimin and Jungkook took a private, highly publicized vacation to Japan, which Jungkook beautifully documented in his legendary travel film, G.C.F in Tokyo. After a long day of shopping in Omotesando and Harajuku, the duo stopped at this exact Red Rock branch for a hearty meal. If you watch the official vlog on YouTube, at exactly 2 minutes and 06 seconds (2:06), the film captures them sitting at a small table on the right side of the restaurant, happily digging into their massive bowls of meat. Thanks to this iconic vlog, Red Rock Harajuku went from being a trendy local lunch spot to an absolute must-visit pilgrimage destination for global ARMYs wanting to recreate the cozy, authentic Tokyo experience shared by the two members.</p>"
+      "en": "<p>Tucked away in the basement of a building in the bustling, trendy Ura-Harajuku district, Red Rock is a casual, hugely popular eatery. It has earned a devoted following for its signature dish: the Roast Beef Don. The restaurant is famous for serving incredibly generous, mountain-like portions of high-quality, thinly sliced roast beef over a bowl of rice, beautifully crowned with a raw egg yolk and a special yogurt sauce. Operating with a classic Japanese ticket-vending machine at the entrance, it is a fast, no-frills, and highly satisfying culinary staple for shoppers and locals exploring Tokyo's vibrant fashion streets.</p><!--stss:footsteps--><p>In late 2017, Jimin and Jungkook took a private, highly publicized vacation to Japan, which Jungkook beautifully documented in his legendary travel film, G.C.F in Tokyo. After a long day of shopping in Omotesando and Harajuku, the duo stopped at this exact Red Rock branch for a hearty meal. If you watch the official vlog on YouTube, at exactly 2 minutes and 06 seconds (2:06), the film captures them sitting at a small table on the right side of the restaurant, happily digging into their massive bowls of meat. Thanks to this iconic vlog, Red Rock Harajuku went from being a trendy local lunch spot to an absolute must-visit pilgrimage destination for global ARMYs wanting to recreate the cozy, authentic Tokyo experience shared by the two members.</p>"
     },
     "practicalInfo": [
       {
@@ -11527,10 +11555,13 @@ window.STATIC_LOCATIONS = [
     "tweetUrls": [],
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "http://www.redrock-kobebeef.com/shopinfo.html",
+    "instagramUrl": "",
     "recreatedPhotos": [
-      "images/admin-upload-214-recreated-0.jpg"
-    ],
-    "instagramUrl": ""
+      {
+        "url": "images/admin-upload-214-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 215,
@@ -11549,23 +11580,31 @@ window.STATIC_LOCATIONS = [
     "lng": 100.5724,
     "img": "images/admin-upload-215-photo.jpg",
     "fullDescription": {
-      "en": "<p>Originally located inside the SHOW DC entertainment mega-mall, the \"Idol Cafe\" (often associated with the interactive Brick Live franchise) was a vibrant, toy-themed eatery designed to tap into the massive K-pop wave in Thailand. It was famous for its playful aesthetic, featuring colorful LEGO-brick walls, quirky toy displays, and sweet waffles. However, the SHOW DC mall struggled significantly with low foot traffic over the years. Today, the entire K-pop zone, including the Idol Cafe, is permanently closed. The building has since been completely overhauled, rebranded, and reopened as \"Bravo BKK,\" meaning the original K-pop installations and cafes have been fully dismantled.</p><p>During their 2019 tour stop in Bangkok, the members of BTS visited this cafe, leaving their mark on what was then a bustling K-pop hub. They signed several display cups, and highly observant fans quickly analyzed photos from the visit to identify the exact section of the LEGO wall where the members posed, as well as the specific table where Jimin sat. For a few years, finding these exact spots became a fun scavenger hunt for ARMYs. Although the physical cafe no longer exists, the photos of the members playing with the LEGO bricks remain a fond, nostalgic memory of their time in Thailand.</p>"
+      "en": "<p>Originally located inside the SHOW DC entertainment mega-mall, the \"Idol Cafe\" (often associated with the interactive Brick Live franchise) was a vibrant, toy-themed eatery designed to tap into the massive K-pop wave in Thailand. It was famous for its playful aesthetic, featuring colorful LEGO-brick walls, quirky toy displays, and sweet waffles. However, the SHOW DC mall struggled significantly with low foot traffic over the years. Today, the entire K-pop zone, including the Idol Cafe, is permanently closed. The building has since been completely overhauled, rebranded, and reopened as \"Bravo BKK,\" meaning the original K-pop installations and cafes have been fully dismantled.</p><!--stss:footsteps--><p>During their 2019 tour stop in Bangkok, the members of BTS visited this cafe, leaving their mark on what was then a bustling K-pop hub. They signed several display cups, and highly observant fans quickly analyzed photos from the visit to identify the exact section of the LEGO wall where the members posed, as well as the specific table where Jimin sat. For a few years, finding these exact spots became a fun scavenger hunt for ARMYs. Although the physical cafe no longer exists, the photos of the members playing with the LEGO bricks remain a fond, nostalgic memory of their time in Thailand.</p>"
     },
     "practicalInfo": [
-      {
-        "title": {
-          "en": "Current Status"
-        },
-        "text": {
-          "en": "PERMANENTLY CLOSED (Building rebranded as Bravo BKK)"
-        }
-      },
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
           "en": "If you still wish to see the rebranded venue, take the MRT (Blue Line) to Phetchaburi Station or Phra Ram 9 Station, followed by a short taxi or Grab ride to the Bravo BKK entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
         }
       }
     ],
@@ -11606,13 +11645,21 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
-    "recreatedPhoto": "images/admin-upload-215-recreated.jpg",
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.facebook.com/p/IDOL-LIVE-CAFE-100063484842352/",
     "recreatedPhotos": [
-      "images/admin-upload-215-recreated-0.jpg",
-      "images/admin-upload-215-recreated-1.jpg",
-      "images/admin-upload-215-recreated-2.jpg"
+      {
+        "url": "images/admin-upload-215-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-215-recreated-1.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-215-recreated-2.jpg",
+        "official": true
+      }
     ]
   },
   {
@@ -11669,13 +11716,7 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Located in the pristine Palawan province, Coron Island is a world-renowned tropical paradise. It is famous for its dramatic, jagged limestone karst cliffs that rise sharply from crystal-clear, emerald waters, making it a spectacular haven for divers and nature lovers. Twin Lagoon, one of its most celebrated natural wonders, offers a surreal swimming experience where warm, salty ocean currents blend with cool underground freshwater springs, all completely enclosed by towering, majestic rock walls.</p><p>Seeking the ultimate tropical escape, BTS traveled to this breathtaking archipelago to film the BTS Summer Package 2017. Trading their hectic global schedules for relaxed \"island time,\" the seven members fully embraced the Palawan lifestyle. They navigated the mesmerizing Twin Lagoon, went snorkeling among vibrant coral reefs, and bravely rode inflatable banana boats. The pristine, powdery white-sand beaches of the Calamian Islands served as the perfect sun-drenched backdrop for their photobook, capturing the group’s pure, chaotic, and youthful joy in an untouched island setting.</p>"
-    },
     "imgCredit": "Franz C. Trinidad / CC BY-SA 4.0",
-    "recreatedPhotos": [
-      "images/admin-upload-new-0GBu2KZ95jpTtlexQAG1-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -11701,7 +11742,16 @@ window.STATIC_LOCATIONS = [
           "en": "Because this location requires transferring in and out of a traditional wooden boat on the open water, swimming, and potentially climbing steep, slippery wooden stairs over a limestone cliff, it is unfortunately not accessible for wheelchairs or those with significant mobility issues. Please note that wearing a life jacket in the water is strictly mandatory for all tourists."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-0GBu2KZ95jpTtlexQAG1-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located in the pristine Palawan province, Coron Island is a world-renowned tropical paradise. It is famous for its dramatic, jagged limestone karst cliffs that rise sharply from crystal-clear, emerald waters, making it a spectacular haven for divers and nature lovers. Twin Lagoon, one of its most celebrated natural wonders, offers a surreal swimming experience where warm, salty ocean currents blend with cool underground freshwater springs, all completely enclosed by towering, majestic rock walls.</p><!--stss:footsteps--><p>Seeking the ultimate tropical escape, BTS traveled to this breathtaking archipelago to film the BTS Summer Package 2017. Trading their hectic global schedules for relaxed \"island time,\" the seven members fully embraced the Palawan lifestyle. They navigated the mesmerizing Twin Lagoon, went snorkeling among vibrant coral reefs, and bravely rode inflatable banana boats. The pristine, powdery white-sand beaches of the Calamian Islands served as the perfect sun-drenched backdrop for their photobook, capturing the group’s pure, chaotic, and youthful joy in an untouched island setting.</p>"
+    }
   },
   {
     "id": "new-0GsQ7YXKUoWXQaA4PgII",
@@ -11845,13 +11895,7 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "ytId": "",
-    "recreatedPhotos": [
-      "images/admin-upload-new-0oN3K5qtqaLdvkoaEWER-recreated-0.jpg"
-    ],
     "imgCredit": "Screentostreet",
-    "fullDescription": {
-      "en": "<p>Hotel Le Bristol Paris is an iconic, ultra-luxury palace hotel located on the prestigious Rue du Faubourg Saint-Honoré in the city's 8th arrondissement. First opened in 1925 during the Roaring Twenties, this historic estate is globally renowned for its flawless classic French elegance, its three-star Michelin gastronomy, and its exquisite, incredibly rare private courtyard garden. For nearly a century, Le Bristol has served as a heavily guarded, favorite sanctuary for international royalty, global icons, and world-class artists seeking absolute discretion and Parisian perfection.</p><p>V's love affair with Paris and its romantic, vintage aesthetics is deeply tied to his well-documented love for the film Midnight in Paris. Back in 2019, Taehyung famously spent his free time in the city embarking on a dedicated pilgrimage, visiting and photographing various filming locations from the movie. His stay at Hotel Le Bristol during the Parisian leg of the 2026 Arirang tour was the ultimate continuation of this cinematic journey—the hotel famously served as the on-screen residence for the movie's main characters! While the tour itself brought intense energy, massive crowds, and spectacular stadium performances, Le Bristol provided the perfect contrasting sanctuary. Stepping away from the roar of the concerts, V was able to recharge by immersing himself directly into his favorite fictional universe, surrounded by the hotel's timeless, 1920s elegance.</p>"
-    },
     "tipsList": [
       {
         "title": {
@@ -11877,7 +11921,16 @@ window.STATIC_LOCATIONS = [
           "en": "Keep an eye out for Socrate, the beautiful Birman cat who permanently lives at the hotel! Much like V's deep love for animals (and his famous Pomeranian, Yeontan), Le Bristol's feline mascot roams the lobbies and gardens freely, adding a surprisingly cozy touch to the grand palace."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-0oN3K5qtqaLdvkoaEWER-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Hotel Le Bristol Paris is an iconic, ultra-luxury palace hotel located on the prestigious Rue du Faubourg Saint-Honoré in the city's 8th arrondissement. First opened in 1925 during the Roaring Twenties, this historic estate is globally renowned for its flawless classic French elegance, its three-star Michelin gastronomy, and its exquisite, incredibly rare private courtyard garden. For nearly a century, Le Bristol has served as a heavily guarded, favorite sanctuary for international royalty, global icons, and world-class artists seeking absolute discretion and Parisian perfection.</p><!--stss:footsteps--><p>V's love affair with Paris and its romantic, vintage aesthetics is deeply tied to his well-documented love for the film Midnight in Paris. Back in 2019, Taehyung famously spent his free time in the city embarking on a dedicated pilgrimage, visiting and photographing various filming locations from the movie. His stay at Hotel Le Bristol during the Parisian leg of the 2026 Arirang tour was the ultimate continuation of this cinematic journey—the hotel famously served as the on-screen residence for the movie's main characters! While the tour itself brought intense energy, massive crowds, and spectacular stadium performances, Le Bristol provided the perfect contrasting sanctuary. Stepping away from the roar of the concerts, V was able to recharge by immersing himself directly into his favorite fictional universe, surrounded by the hotel's timeless, 1920s elegance.</p>"
+    }
   },
   {
     "id": "new-0xNmn1cTlhh8zdRTkbj8",
@@ -12191,9 +12244,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>The Grand Palais is one of Paris’s most magnificent and historic architectural masterpieces, easily recognized by its iconic glass-and-iron nave. Located right next to the Champs-Élysées and adjacent to the Petit Palais, it serves as a premier cultural venue and a world-stage for elite global fashion shows, major art exhibitions, and high-profile luxury events during Paris Fashion Week.</p><p>This historic district became a major hotspot for the fandom when V (Kim Taehyung) arrived in Paris for Fashion Week activities. Most notably, in July 2025, Taehyung attended an exclusive, high-profile Celine pre-show private dinner party hosted at the neighboring historic palace landmark. Dressed impeccably as a global ambassador for the luxury fashion house, his presence drew massive crowds of enthusiastic international fans and media outlets lining the surrounding Parisian streets, generating viral moments across social media platforms. This location highlights BTS's monumental influence in the global luxury fashion sector and their special connection to the city of Paris.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -12226,8 +12276,14 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://www.grandpalais.fr/fr",
     "imgCredit": "AI-generated illustrative image",
     "recreatedPhotos": [
-      "images/admin-upload-new-1FSUUwl5amFCMieDwHDA-recreated-0.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-1FSUUwl5amFCMieDwHDA-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>The Grand Palais is one of Paris’s most magnificent and historic architectural masterpieces, easily recognized by its iconic glass-and-iron nave. Located right next to the Champs-Élysées and adjacent to the Petit Palais, it serves as a premier cultural venue and a world-stage for elite global fashion shows, major art exhibitions, and high-profile luxury events during Paris Fashion Week.</p><!--stss:footsteps--><p>This historic district became a major hotspot for the fandom when V (Kim Taehyung) arrived in Paris for Fashion Week activities. Most notably, in July 2025, Taehyung attended an exclusive, high-profile Celine pre-show private dinner party hosted at the neighboring historic palace landmark. Dressed impeccably as a global ambassador for the luxury fashion house, his presence drew massive crowds of enthusiastic international fans and media outlets lining the surrounding Parisian streets, generating viral moments across social media platforms. This location highlights BTS's monumental influence in the global luxury fashion sector and their special connection to the city of Paris.</p>"
+    }
   },
   {
     "id": "new-1hatgSs2LMoliC4fFyPm",
@@ -12382,16 +12438,19 @@ window.STATIC_LOCATIONS = [
     ],
     "tweetUrls": [],
     "pinterestUrl": "",
-    "fullDescription": {
-      "en": "<p>The Oryukdo Skywalk is a glass-bottomed horseshoe-shaped viewing bridge situated on the coastal cliffs of Seungdumal Point in Busan. Built on a 35-meter-high coastal rock cliff, the transparent walkway extends 15 meters over the ocean, giving visitors the sensation of walking above crashing coastal waves while looking out towards the famous Oryukdo Islets.</p><p>In 2015, Jimin visited the Oryukdo Skywalk while spending personal vacation time in his hometown of Busan. He recorded a vlog showcasing the sweeping coastal view and his trip around the city, sharing his deep affection for Busan with fans worldwide and putting the skywalk on every ARMY's Busan travel list. Walking where Jimin walked allows fans to retrace his personal roots and experience the same stunning sea breezes that inspired him in his hometown.</p>"
-    },
     "episodeLink": "https://www.gukjenews.com/news/articleView.html?idxno=2452723",
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhotos": [
-      "images/admin-upload-new-1u0UUNL2BCscYEhr07gw-recreated-0.jpg"
-    ],
     "ytId": "O2oDIzSaqvU",
-    "officialLink": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=6cb1642d-b578-462f-82c6-b1c1ef468af7&utm_source=googlemap"
+    "officialLink": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=6cb1642d-b578-462f-82c6-b1c1ef468af7&utm_source=googlemap",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-1u0UUNL2BCscYEhr07gw-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>The Oryukdo Skywalk is a glass-bottomed horseshoe-shaped viewing bridge situated on the coastal cliffs of Seungdumal Point in Busan. Built on a 35-meter-high coastal rock cliff, the transparent walkway extends 15 meters over the ocean, giving visitors the sensation of walking above crashing coastal waves while looking out towards the famous Oryukdo Islets.</p><!--stss:footsteps--><p>In 2015, Jimin visited the Oryukdo Skywalk while spending personal vacation time in his hometown of Busan. He recorded a vlog showcasing the sweeping coastal view and his trip around the city, sharing his deep affection for Busan with fans worldwide and putting the skywalk on every ARMY's Busan travel list. Walking where Jimin walked allows fans to retrace his personal roots and experience the same stunning sea breezes that inspired him in his hometown.</p>"
+    }
   },
   {
     "id": "new-1YHG2wTbociBwV3LULdQ",
@@ -12556,17 +12615,23 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Jardin des Tuileries is a historic public garden located between the Louvre Museum and Place de la Concorde in the 1st arrondissement of Paris. Created by Catherine de' Medici in 1564, it was redesigned in the classic French formal garden style by the renowned landscape architect André Le Nôtre in 1664. The park features manicured lawns, grand fountains, historic marble statues, and the iconic green metal chairs where Parisians love to rest. Today, it remains one of the most visited public spaces in Paris, offering magnificent, sweeping views down the Champs-Élysées toward the Arc de Triomphe.</p><p>2019, RM: The Jardin des Tuileries holds distinctly different memories for the members of BTS, showcasing the park's versatility. In the fall of 2019, during his official extended break, RM walked through these historic gardens as part of his classic \"Namjooning\" itinerary. Because the Tuileries seamlessly connect the Louvre Museum to the Place de la Concorde, it was the perfect scenic strolling path for him to enjoy the open-air sculptures, the crisp autumn air, and the relaxed, artistic Parisian atmosphere.</p><p>2023, Jimin: On January 20, 2023, the gardens became the center of a massive pop culture moment when Jimin attended the Dior Men's Fall-Winter 2023-2024 show. Freshly announced as the global ambassador for Dior, his highly anticipated arrival turned the tranquil park into an absolute frenzy. Dior constructed a massive temporary structure directly within the Tuileries grounds for the event, and thousands of ARMYs packed the edges of the gardens to support his solo fashion debut.</p><p>2025, Jimin: Jimin's deep association with the brand brought him back to the Tuileries Garden on October 1, 2025, to attend the Christian Dior Womenswear Spring/Summer 2026 show. Continuing his reigning status as a global ambassador, his presence at the venue once again proved his massive artistic sensibility and his powerful influence in the intertwining worlds of high fashion and music.</p>"
-    },
     "instagramUrl": "https://www.instagram.com/reel/DPbTGGaiNF2/?stkn=MWE4NWhreWwxdjRqag==",
     "instagramUrls": [
       "https://www.instagram.com/p/CnpQz0IIqxV/?stkn=MWljcGRlODU3bmlrdg=="
     ],
     "recreatedPhotos": [
-      "images/admin-upload-new-2LGcTZJG0izlFK23EBq2-recreated-0.jpg",
-      "images/admin-upload-new-2LGcTZJG0izlFK23EBq2-recreated-1.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-2LGcTZJG0izlFK23EBq2-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-2LGcTZJG0izlFK23EBq2-recreated-1.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Jardin des Tuileries is a historic public garden located between the Louvre Museum and Place de la Concorde in the 1st arrondissement of Paris. Created by Catherine de' Medici in 1564, it was redesigned in the classic French formal garden style by the renowned landscape architect André Le Nôtre in 1664. The park features manicured lawns, grand fountains, historic marble statues, and the iconic green metal chairs where Parisians love to rest. Today, it remains one of the most visited public spaces in Paris, offering magnificent, sweeping views down the Champs-Élysées toward the Arc de Triomphe.</p><!--stss:footsteps--><p>2019, RM: The Jardin des Tuileries holds distinctly different memories for the members of BTS, showcasing the park's versatility. In the fall of 2019, during his official extended break, RM walked through these historic gardens as part of his classic \"Namjooning\" itinerary. Because the Tuileries seamlessly connect the Louvre Museum to the Place de la Concorde, it was the perfect scenic strolling path for him to enjoy the open-air sculptures, the crisp autumn air, and the relaxed, artistic Parisian atmosphere.</p><p>2023, Jimin: On January 20, 2023, the gardens became the center of a massive pop culture moment when Jimin attended the Dior Men's Fall-Winter 2023-2024 show. Freshly announced as the global ambassador for Dior, his highly anticipated arrival turned the tranquil park into an absolute frenzy. Dior constructed a massive temporary structure directly within the Tuileries grounds for the event, and thousands of ARMYs packed the edges of the gardens to support his solo fashion debut.</p><p>2025, Jimin: Jimin's deep association with the brand brought him back to the Tuileries Garden on October 1, 2025, to attend the Christian Dior Womenswear Spring/Summer 2026 show. Continuing his reigning status as a global ambassador, his presence at the venue once again proved his massive artistic sensibility and his powerful influence in the intertwining worlds of high fashion and music.</p>"
+    }
   },
   {
     "category": "MV Location",
@@ -12620,15 +12685,9 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Yongma Land is a small amusement park in the Jungnang-gu district of Seoul that officially ceased operations in 2011 due to financial decline. However, instead of demolishing the site, the owner made the brilliant decision to preserve the decaying park, transforming it into a unique, open-air vintage film set. Today, its peeling paint, overgrown weeds, unlit carousel, and rusted bumper cars attract photographers, K-pop music video directors, and tourists looking for a perfectly nostalgic, slightly melancholic, and retrofuturistic aesthetic.</p><p>During their pivotal early years, BTS utilized Yongma Land’s beautifully faded backdrop to capture the raw, unfiltered essence of youth. Most notably featured in their 2015 Season's Greetings photoshoot, the members were captured posing around the weathered arcade machines, abandoned rides, and the iconic central carousel. This rugged, slightly eerie location perfectly foreshadowed the \"beautiful but fleeting youth\" visual identity that would soon come to define their legendary The Most Beautiful Moment in Life (HYYH) era. For many fans, the vintage carousel also evokes the emotional, wistful atmosphere seen later in the \"Spring Day\" music video, making it a highly popular spot for ARMYs to recreate those iconic, cinematic moods.</p>"
-    },
     "episodeLink": "https://koreasowls.fr/yongma-land-parc-dattractions-abandonne-toujours-en-activite/",
     "officialLink": "https://creatrip.com/fr/blog/6415?srsltid=AU7gw4XxvoozcGC2T-owr9dLp3SHxWCc8MmzZdoWJ3wWv2VqgUjecZRl",
     "tweetUrl": "https://x.com/i/status/2011086898165637125",
-    "recreatedPhotos": [
-      "images/admin-upload-new-2sZwoI4KpzIPUwlgvDVg-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -12654,7 +12713,16 @@ window.STATIC_LOCATIONS = [
           "en": "This is an abandoned, unmaintained site. The ground features cracked and uneven concrete, overgrown vegetation, rust, and scattered debris. It is unfortunately not accessible for wheelchairs or strollers, and all visitors should wear closed-toe shoes to safely navigate around the rusted metal."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-2sZwoI4KpzIPUwlgvDVg-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Yongma Land is a small amusement park in the Jungnang-gu district of Seoul that officially ceased operations in 2011 due to financial decline. However, instead of demolishing the site, the owner made the brilliant decision to preserve the decaying park, transforming it into a unique, open-air vintage film set. Today, its peeling paint, overgrown weeds, unlit carousel, and rusted bumper cars attract photographers, K-pop music video directors, and tourists looking for a perfectly nostalgic, slightly melancholic, and retrofuturistic aesthetic.</p><!--stss:footsteps--><p>During their pivotal early years, BTS utilized Yongma Land’s beautifully faded backdrop to capture the raw, unfiltered essence of youth. Most notably featured in their 2015 Season's Greetings photoshoot, the members were captured posing around the weathered arcade machines, abandoned rides, and the iconic central carousel. This rugged, slightly eerie location perfectly foreshadowed the \"beautiful but fleeting youth\" visual identity that would soon come to define their legendary The Most Beautiful Moment in Life (HYYH) era. For many fans, the vintage carousel also evokes the emotional, wistful atmosphere seen later in the \"Spring Day\" music video, making it a highly popular spot for ARMYs to recreate those iconic, cinematic moods.</p>"
+    }
   },
   {
     "id": "new-39ajySYbZ90ZfHYLzvEB",
@@ -12792,9 +12860,6 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://www.louvre.fr",
     "tweetUrls": [],
     "pinterestUrl": "",
-    "fullDescription": {
-      "en": "<p>The Palais du Louvre is one of the most majestic and iconic monuments in Paris, spanning centuries of art history and architecture. At the heart of this vast museum complex are two major courtyards. The Cour Napoléon is famous worldwide for its monumental glass Pyramid, inaugurated in 1989, which contrasts beautifully with the classical facades surrounding it. Just adjacent is the Cour Carrée, a masterpiece of French Renaissance architecture that offers a more enclosed, historic space, regularly serving as a spectacular backdrop for Paris Fashion Week runway shows.</p><p>2019, RM: In 2019, during his official extended break, RM enjoyed a classic visit to the museum. True to his love for art and \"Namjooning,\" he took his time exploring the iconic grounds. As seen in the file images.jpg, RM was photographed in the Cour Napoléon, standing and balancing on a rectangular stone block. Dressed in a long brown coat, a black beanie, a patterned scarf, and black-and-white sneakers, he showcased a relaxed, autumnal style with the famous glass Pyramid rising in the background.</p><p>2023, J-Hope: A few years later, in January 2023, the atmosphere was radically different when j-hope visited the adjacent Cour Carrée. Invited as a global ambassador to the Louis Vuitton Men's Fall-Winter fashion show, his appearance transformed the surrounding streets into a rock concert, with thousands of ARMYs gathering outside to cheer for him. Dressed in a striking Louis Vuitton camouflage ensemble, j-hope perfectly blended his cutting-edge street style with the centuries-old grandeur of the historic courtyard.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -12821,12 +12886,18 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhotos": [
-      "images/admin-upload-new-3aw4trkkmhUkSTSWanVG-recreated-0.jpg"
-    ],
     "imgCredit": "Screentostreet",
     "tweetUrl": "https://x.com/BTS_twt/status/1054015605760757762",
-    "ytId": "PCsmKhzNTT8"
+    "ytId": "PCsmKhzNTT8",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-3aw4trkkmhUkSTSWanVG-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>The Palais du Louvre is one of the most majestic and iconic monuments in Paris, spanning centuries of art history and architecture. At the heart of this vast museum complex are two major courtyards. The Cour Napoléon is famous worldwide for its monumental glass Pyramid, inaugurated in 1989, which contrasts beautifully with the classical facades surrounding it. Just adjacent is the Cour Carrée, a masterpiece of French Renaissance architecture that offers a more enclosed, historic space, regularly serving as a spectacular backdrop for Paris Fashion Week runway shows.</p><!--stss:footsteps--><p>2019, RM: In 2019, during his official extended break, RM enjoyed a classic visit to the museum. True to his love for art and \"Namjooning,\" he took his time exploring the iconic grounds. As seen in the file images.jpg, RM was photographed in the Cour Napoléon, standing and balancing on a rectangular stone block. Dressed in a long brown coat, a black beanie, a patterned scarf, and black-and-white sneakers, he showcased a relaxed, autumnal style with the famous glass Pyramid rising in the background.</p><p>2023, J-Hope: A few years later, in January 2023, the atmosphere was radically different when j-hope visited the adjacent Cour Carrée. Invited as a global ambassador to the Louis Vuitton Men's Fall-Winter fashion show, his appearance transformed the surrounding streets into a rock concert, with thousands of ARMYs gathering outside to cheer for him. Dressed in a striking Louis Vuitton camouflage ensemble, j-hope perfectly blended his cutting-edge street style with the centuries-old grandeur of the historic courtyard.</p>"
+    }
   },
   {
     "group": "BTS",
@@ -12845,9 +12916,6 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "instagramUrls": [],
     "facebookUrls": [],
-    "fullDescription": {
-      "en": "<p>Located just outside Seoul, Hyundai Motorstudio Goyang is South Korea's premier automotive theme park and mobility experience center. Far beyond a traditional showroom, this architectural landmark immerses visitors in the entire journey of car creation, featuring futuristic interactive exhibits, automated manufacturing displays, and cutting-edge concept car showcases.</p><p>This sprawling, multi-story venue became an exclusive, after-hours playground for the group during Run BTS! Episodes 110 and 111. The sleek and futuristic exhibition zones served as the perfect backdrop for a hilariously chaotic late-night treasure hunt. Members raced across the facility, frantically searching for hidden clues inside the showcased vehicles and tackling automotive trivia challenges, turning this modern corporate space into a memorable arena of pure comedic entertainment.</p>"
-    },
     "tweetUrls": [],
     "ytId": "zaXfSCdO69I",
     "pinterestUrls": [],
@@ -12886,9 +12954,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Damian B Oh / CC BY-SA 4.0",
     "episodeLink": "https://www.youtube.com/watch?v=zaXfSCdO69I",
     "officialLink": "https://motorstudio.hyundai.com/goyang/ln/main.do?lang=en",
-    "recreatedPhotos": [
-      "images/admin-upload-new-3UtuxgcNLM7VVKgsgZiG-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -12914,7 +12979,16 @@ window.STATIC_LOCATIONS = [
           "en": "As a state-of-the-art corporate flagship facility, the entire Motorstudio is exceptionally accessible. It features wide, step-free pathways, spacious elevators, and full wheelchair accommodations across all exhibit levels."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-3UtuxgcNLM7VVKgsgZiG-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located just outside Seoul, Hyundai Motorstudio Goyang is South Korea's premier automotive theme park and mobility experience center. Far beyond a traditional showroom, this architectural landmark immerses visitors in the entire journey of car creation, featuring futuristic interactive exhibits, automated manufacturing displays, and cutting-edge concept car showcases.</p><!--stss:footsteps--><p>This sprawling, multi-story venue became an exclusive, after-hours playground for the group during Run BTS! Episodes 110 and 111. The sleek and futuristic exhibition zones served as the perfect backdrop for a hilariously chaotic late-night treasure hunt. Members raced across the facility, frantically searching for hidden clues inside the showcased vehicles and tackling automotive trivia challenges, turning this modern corporate space into a memorable arena of pure comedic entertainment.</p>"
+    }
   },
   {
     "id": "new-3XGdjRGOFysEfy39UpDo",
@@ -13021,9 +13095,6 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "instagramUrls": [],
     "facebookUrls": [],
-    "fullDescription": {
-      "en": "<p>Korea House is a premier traditional cultural center situated at the foot of Namsan Mountain in Seoul. Built in traditional Joseon Dynasty architectural style, the complex promotes Korean heritage through traditional performing arts, royal cuisine court dining, and cultural workshops.</p><p>In 2018, BTS held their iconic photoshoot with Billboard Magazine at Korea House. Dressed in modern luxury high fashion blended with traditional aesthetic surroundings, the members posed in the elegant outdoor hanok courtyards, making it a celebrated landmark for ARMY interested in traditional Korean architecture.</p>"
-    },
     "tweetUrls": [],
     "ytId": "ThcZlAqKVmQ",
     "facebookUrl": "",
@@ -13061,9 +13132,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhotos": [
-      "images/admin-upload-new-4BJEcfrUGqy68YbNzjQM-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -13090,7 +13158,16 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "imgCredit": "AI-generated illustrative image"
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-4BJEcfrUGqy68YbNzjQM-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Korea House is a premier traditional cultural center situated at the foot of Namsan Mountain in Seoul. Built in traditional Joseon Dynasty architectural style, the complex promotes Korean heritage through traditional performing arts, royal cuisine court dining, and cultural workshops.</p><!--stss:footsteps--><p>In 2018, BTS held their iconic photoshoot with Billboard Magazine at Korea House. Dressed in modern luxury high fashion blended with traditional aesthetic surroundings, the members posed in the elegant outdoor hanok courtyards, making it a celebrated landmark for ARMY interested in traditional Korean architecture.</p>"
+    }
   },
   {
     "category": "Restaurant",
@@ -13098,9 +13175,9 @@ window.STATIC_LOCATIONS = [
     "address": "149 Dasan-ro, Jung-gu, Seoul, South Korea",
     "img": "images/admin-upload-new-65mMbwq8jIppC1goKZQy-photo.jpg",
     "country": "South Korea",
-    "lat": 37.5582,
+    "lat": 37.55708,
     "group": "BTS",
-    "lng": 127.0116,
+    "lng": 127.01167,
     "member": "Jimin, V, Jungkook",
     "id": "new-65mMbwq8jIppC1goKZQy",
     "year": "2018",
@@ -13146,9 +13223,6 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "ytId": "",
-    "fullDescription": {
-      "en": "<p>Geum Dwaeji Sikdang, famously known as the Gold Pig Restaurant, is undeniably one of Seoul's most prestigious Korean BBQ establishments. Recognized annually by the Michelin Guide's Bib Gourmand selection since 2019, this three-story culinary landmark is located in the Yaksu neighborhood (Jung-gu). With its distinctive white-tiled exterior and iconic gold pig logo, the restaurant is celebrated for serving premium, meticulously aged YBD (a crossbreed of Yorkshire, Berkshire, and Duroc) pork cuts, expertly grilled over golden charcoal on heavy cast-iron grates.</p><p>This restaurant earned its legendary status within the ARMY community after members of BTS—most notably Jimin, Jungkook, and V—became highly frequent patrons. The group's vocal line has visited numerous times over the years to enjoy the world-class pork belly and shoulder cuts, turning a quiet dinner spot into a global phenomenon. Today, it remains an essential pilgrimage site for fans, with Jimin and Jungkook’s signed autographs proudly preserved and displayed on the wall.</p>"
-    },
     "instagramUrl": "https://www.instagram.com/p/ChTLwbVvYn8/",
     "recreatedPhotos": [
       "images/admin-upload-new-65mMbwq8jIppC1goKZQy-recreated-0.jpg"
@@ -13178,7 +13252,10 @@ window.STATIC_LOCATIONS = [
           "en": "The first-floor dining area is accessible from the street level. However, the restaurant spans three floors connected only by narrow, steep staircases. Because the tables are packed tightly together and feature hot charcoal grills in the center, wheelchair users should request seating on the ground floor upon arrival."
         }
       }
-    ]
+    ],
+    "fullDescription": {
+      "en": "<p>Geum Dwaeji Sikdang, famously known as the Gold Pig Restaurant, is undeniably one of Seoul's most prestigious Korean BBQ establishments. Recognized annually by the Michelin Guide's Bib Gourmand selection since 2019, this three-story culinary landmark is located in the Yaksu neighborhood (Jung-gu). With its distinctive white-tiled exterior and iconic gold pig logo, the restaurant is celebrated for serving premium, meticulously aged YBD (a crossbreed of Yorkshire, Berkshire, and Duroc) pork cuts, expertly grilled over golden charcoal on heavy cast-iron grates.</p><!--stss:footsteps--><p>This restaurant earned its legendary status within the ARMY community after members of BTS—most notably Jimin, Jungkook, and V—became highly frequent patrons. The group's vocal line has visited numerous times over the years to enjoy the world-class pork belly and shoulder cuts, turning a quiet dinner spot into a global phenomenon. Today, it remains an essential pilgrimage site for fans, with Jimin and Jungkook’s signed autographs proudly preserved and displayed on the wall.</p>"
+    }
   },
   {
     "lat": 35.8274,
@@ -13385,9 +13462,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "instagramUrl": "https://www.instagram.com/p/CXzsUoCDW4R/",
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Spread across nearly 300 acres of rolling hills and pristine woodlands in Potomac, Maryland, the Glenstone Museum is a remarkable private art sanctuary. It offers a deeply contemplative experience by seamlessly harmonizing post-World War II art, minimalist architecture, and breathtaking landscape design.</p><p>RM visited this tranquil haven in December 2021 during an extensive East Coast art tour following BTS's schedule in the US. He explored the minimalist indoor galleries and wandered among colossal outdoor sculptures by master artists. By sharing photos of the museum's striking Water Court and its sweeping, peaceful landscapes on Instagram, he beautifully captured the essence of \"Namjooning\"—inspiring fans worldwide to discover this hidden gem just outside Washington, D.C.</p>"
-    },
     "tweetUrls": [],
     "facebookUrl": "",
     "officialLink": "https://www.glenstone.org/",
@@ -13457,8 +13531,14 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "recreatedPhotos": [
-      "images/admin-upload-new-6s64K2xAPRELCZCbVIbV-recreated-0.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-6s64K2xAPRELCZCbVIbV-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Spread across nearly 300 acres of rolling hills and pristine woodlands in Potomac, Maryland, the Glenstone Museum is a remarkable private art sanctuary. It offers a deeply contemplative experience by seamlessly harmonizing post-World War II art, minimalist architecture, and breathtaking landscape design.</p><!--stss:footsteps--><p>RM visited this tranquil haven in December 2021 during an extensive East Coast art tour following BTS's schedule in the US. He explored the minimalist indoor galleries and wandered among colossal outdoor sculptures by master artists. By sharing photos of the museum's striking Water Court and its sweeping, peaceful landscapes on Instagram, he beautifully captured the essence of \"Namjooning\"—inspiring fans worldwide to discover this hidden gem just outside Washington, D.C.</p>"
+    }
   },
   {
     "id": "new-6tksvhTz9CYsaibjPIaH",
@@ -13507,9 +13587,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Designed by the world-renowned Pritzker Prize-winning architect Tadao Ando, the Bonte Museum is a breathtaking cultural sanctuary nestled in the serene landscapes of Seogwipo on Jeju Island. The museum's design is a masterpiece in itself, featuring Ando's signature exposed geometric concrete walls beautifully harmonized with traditional Korean elements and expansive, reflective water gardens. The word \"Bonte\" translates to \"original form,\" which perfectly reflects the museum's mission: displaying exquisite, centuries-old traditional Korean craft arts alongside spectacular contemporary global masterpieces.</p><p>In early 2019, during a period of well-deserved time off, RM traveled to Jeju Island for some dedicated \"Namjooning\"—a term he coined himself to describe the act of unwinding, admiring nature, and taking quiet walks through parks and art galleries. The Bonte Museum was a natural must-visit for the group's resident art enthusiast. He explored the galleries showcasing traditional Korean artifacts and took a moment to experience the museum's permanent contemporary highlight: Yayoi Kusama’s dazzling Infinity Mirrored Room - Gleaming Lights of the Souls. His visit further cemented the museum's status as a premier cultural destination for ARMYs looking to experience the peaceful, artistic side of South Korea.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -13537,9 +13614,18 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "recreatedPhotos": [
-      "images/admin-upload-new-6tksvhTz9CYsaibjPIaH-recreated-0.jpg",
-      "images/admin-upload-new-6tksvhTz9CYsaibjPIaH-recreated-1.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-6tksvhTz9CYsaibjPIaH-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-6tksvhTz9CYsaibjPIaH-recreated-1.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Designed by the world-renowned Pritzker Prize-winning architect Tadao Ando, the Bonte Museum is a breathtaking cultural sanctuary nestled in the serene landscapes of Seogwipo on Jeju Island. The museum's design is a masterpiece in itself, featuring Ando's signature exposed geometric concrete walls beautifully harmonized with traditional Korean elements and expansive, reflective water gardens. The word \"Bonte\" translates to \"original form,\" which perfectly reflects the museum's mission: displaying exquisite, centuries-old traditional Korean craft arts alongside spectacular contemporary global masterpieces.</p><!--stss:footsteps--><p>In early 2019, during a period of well-deserved time off, RM traveled to Jeju Island for some dedicated \"Namjooning\"—a term he coined himself to describe the act of unwinding, admiring nature, and taking quiet walks through parks and art galleries. The Bonte Museum was a natural must-visit for the group's resident art enthusiast. He explored the galleries showcasing traditional Korean artifacts and took a moment to experience the museum's permanent contemporary highlight: Yayoi Kusama’s dazzling Infinity Mirrored Room - Gleaming Lights of the Souls. His visit further cemented the museum's status as a premier cultural destination for ARMYs looking to experience the peaceful, artistic side of South Korea.</p>"
+    }
   },
   {
     "lng": 126.9684,
@@ -13561,9 +13647,6 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "",
     "facebookUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Built on a deeply significant historic site in Seoul, the Seosomun Shrine History Museum is a striking architectural marvel that masterfully balances its role as a solemn memorial with its function as a modern art space. The museum is renowned for its breathtaking subterranean design, featuring imposing red-brick plazas, the deeply moving Consolation Hall, and a magnificent sky-lit courtyard that metaphorically connects the underground shadows with the light above.</p><p>Drawn by his well-known passion for spatial design and the visual arts, RM visited this reflective sanctuary to take in its unique atmosphere. He shared a series of stunning, atmospheric photographs on his Instagram (@rkive), capturing the dramatic interplay of light and shadow within the sunken brick courtyards and sculpture halls. Through his discerning eye, he introduced international fans to this hidden architectural gem, perfectly illustrating his love for spaces where history, art, and architecture converge.</p>"
-    },
     "tweetUrls": [],
     "imgCredit": "Ethan Doyle White / Wikimedia Commons / CC BY-SA 4.0",
     "facebookUrl": "",
@@ -13626,20 +13709,26 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "recreatedPhotos": [
-      "images/admin-upload-new-6xXjhHVEvJQYmC3pN0eT-recreated-0.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-6xXjhHVEvJQYmC3pN0eT-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Built on a deeply significant historic site in Seoul, the Seosomun Shrine History Museum is a striking architectural marvel that masterfully balances its role as a solemn memorial with its function as a modern art space. The museum is renowned for its breathtaking subterranean design, featuring imposing red-brick plazas, the deeply moving Consolation Hall, and a magnificent sky-lit courtyard that metaphorically connects the underground shadows with the light above.</p><!--stss:footsteps--><p>Drawn by his well-known passion for spatial design and the visual arts, RM visited this reflective sanctuary to take in its unique atmosphere. He shared a series of stunning, atmospheric photographs on his Instagram (@rkive), capturing the dramatic interplay of light and shadow within the sunken brick courtyards and sculpture halls. Through his discerning eye, he introduced international fans to this hidden architectural gem, perfectly illustrating his love for spaces where history, art, and architecture converge.</p>"
+    }
   },
   {
     "name": "Wanju BTS Stepping Stones",
     "img": "images/admin-upload-new-76DcjYIWfBN0RsRiuxnr-photo.jpg",
-    "lng": 127.2435,
+    "lng": 127.25265,
     "id": "new-76DcjYIWfBN0RsRiuxnr",
     "year": "2019",
     "country": "South Korea",
     "member": "All",
     "address": "Seseong-ri, Soyang-myeon, Wanju-gun, Jeollabuk-do, South Korea",
     "category": "Landmark",
-    "lat": 35.892,
+    "lat": 35.90499,
     "city": "Wanju",
     "group": "BTS",
     "addedAt": 1789074154119,
@@ -13821,9 +13910,6 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located along the iconic Fifth Avenue and bordering Central Park, The Metropolitan Museum of Art (The Met) stands as the largest art museum in the Americas. It is a breathtaking treasury of human creativity, housing over two million works of art that span 5,000 years of global history and culture under one massive roof.</p><p>In September 2021, BTS made history at The Met in their official capacity as South Korea's Special Presidential Envoys for Future Generations and Culture. Alongside First Lady Kim Jung-sook, the group visited the museum to present a special gift of contemporary Korean artwork (a beautiful lacquer vessel by artist Chung Haecho) on behalf of the South Korean government. This momentous occasion culminated with remarks delivered by RM in the museum's stunning rooftop garden, set against the breathtaking backdrop of the Central Park skyline.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
@@ -13889,8 +13975,14 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "recreatedPhotos": [
-      "images/admin-upload-new-8YXW578rGkc4YTIt107e-recreated-0.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-8YXW578rGkc4YTIt107e-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located along the iconic Fifth Avenue and bordering Central Park, The Metropolitan Museum of Art (The Met) stands as the largest art museum in the Americas. It is a breathtaking treasury of human creativity, housing over two million works of art that span 5,000 years of global history and culture under one massive roof.</p><!--stss:footsteps--><p>In September 2021, BTS made history at The Met in their official capacity as South Korea's Special Presidential Envoys for Future Generations and Culture. Alongside First Lady Kim Jung-sook, the group visited the museum to present a special gift of contemporary Korean artwork (a beautiful lacquer vessel by artist Chung Haecho) on behalf of the South Korean government. This momentous occasion culminated with remarks delivered by RM in the museum's stunning rooftop garden, set against the breathtaking backdrop of the Central Park skyline.</p>"
+    }
   },
   {
     "id": "new-9xocMhCT39Hzkg0QvSK6",
@@ -13972,12 +14064,15 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhotos": [
-      "images/admin-upload-new-9xocMhCT39Hzkg0QvSK6-recreated-0.jpg"
-    ],
     "episodeLink": "https://www.en-vols.com/evasion/voyage/paris-adresses-preferees-bts-sejour/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-9xocMhCT39Hzkg0QvSK6-recreated-0.jpg",
+        "official": true
+      }
+    ],
     "fullDescription": {
-      "en": "<p>The Bourse de Commerce is a historic 18th-century grain exchange building situated in the very heart of central Paris. It is instantly recognizable by its extraordinary 19th-century iron-and-glass dome and a beautifully restored historical fresco depicting global trade. In 2021, the landmark was given a second life when acclaimed Japanese architect Tadao Ando converted it into a cutting-edge contemporary art museum to house billionaire François Pinault's extensive private art collection. Ando’s brilliant architectural intervention seamlessly pairs a massive, minimalist concrete cylinder built directly inside the rotunda with the surrounding historic classical architecture, creating a mesmerizing dialogue between the past and the present.</p><p>During his European travels in the summer of 2022, RM, widely known for his profound love of fine art, museums, and \"Namjooning\", made the Bourse de Commerce an essential stop on his Parisian itinerary. As a well-documented admirer of Tadao Ando’s architectural work (having also visited Ando-designed spaces like Museum SAN in South Korea), RM was naturally drawn to this newly opened masterpiece. He shared photos on his Instagram exploring the museum's rotating contemporary exhibitions, but fans can get an even better look by watching his official 2022 European travel vlog. If you skip exactly to the 31:44 mark of the vlog, you can watch RM personally walking through the Bourse de Commerce, taking in the art, and admiring the breathtaking symmetry of the rotunda's interior. For RM, a visit here perfectly combined two of his greatest passions: boundary-pushing contemporary art and brilliant, minimalist architecture set against a deeply historical backdrop.</p>"
+      "en": "<p>The Bourse de Commerce is a historic 18th-century grain exchange building situated in the very heart of central Paris. It is instantly recognizable by its extraordinary 19th-century iron-and-glass dome and a beautifully restored historical fresco depicting global trade. In 2021, the landmark was given a second life when acclaimed Japanese architect Tadao Ando converted it into a cutting-edge contemporary art museum to house billionaire François Pinault's extensive private art collection. Ando’s brilliant architectural intervention seamlessly pairs a massive, minimalist concrete cylinder built directly inside the rotunda with the surrounding historic classical architecture, creating a mesmerizing dialogue between the past and the present.</p><!--stss:footsteps--><p>During his European travels in the summer of 2022, RM, widely known for his profound love of fine art, museums, and \"Namjooning\", made the Bourse de Commerce an essential stop on his Parisian itinerary. As a well-documented admirer of Tadao Ando’s architectural work (having also visited Ando-designed spaces like Museum SAN in South Korea), RM was naturally drawn to this newly opened masterpiece. He shared photos on his Instagram exploring the museum's rotating contemporary exhibitions, but fans can get an even better look by watching his official 2022 European travel vlog. If you skip exactly to the 31:44 mark of the vlog, you can watch RM personally walking through the Bourse de Commerce, taking in the art, and admiring the breathtaking symmetry of the rotunda's interior. For RM, a visit here perfectly combined two of his greatest passions: boundary-pushing contemporary art and brilliant, minimalist architecture set against a deeply historical backdrop.</p>"
     }
   },
   {
@@ -14034,13 +14129,7 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Located at 30 Rue Debelleyme in the trendy Marais district of the 3rd arrondissement, Big Love is a wildly popular, vibrant Italian vegetarian trattoria operated by the acclaimed Big Mamma restaurant group. Known for its warm, buzzing atmosphere, authentic Italian comfort food, and exceptional gluten-free or vegetarian handmade pastas and pizzas, it stands as one of the most sought-after culinary hotspots in Paris.</p><p>This charming Marais trattoria became a buzzing focal point for the fandom when Jungkook was spotted dining here on July 16, 2026. Enjoying the restaurant's signature relaxed vibe and Italian dishes during his time in the French capital, his visit added Big Love to the map of personal dining spots frequented by BTS members in Paris.</p>"
-    },
     "officialLink": "https://www.bigmammagroup.com/fr/restaurants-italiens/biglove",
-    "recreatedPhotos": [
-      "images/admin-upload-new-Bc0PADu3K3KA7okYPcwo-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -14066,7 +14155,16 @@ window.STATIC_LOCATIONS = [
           "en": "Street-level entry in a historic Parisian neighborhood; indoor seating features standard restaurant layouts."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-Bc0PADu3K3KA7okYPcwo-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located at 30 Rue Debelleyme in the trendy Marais district of the 3rd arrondissement, Big Love is a wildly popular, vibrant Italian vegetarian trattoria operated by the acclaimed Big Mamma restaurant group. Known for its warm, buzzing atmosphere, authentic Italian comfort food, and exceptional gluten-free or vegetarian handmade pastas and pizzas, it stands as one of the most sought-after culinary hotspots in Paris.</p><!--stss:footsteps--><p>This charming Marais trattoria became a buzzing focal point for the fandom when Jungkook was spotted dining here on July 16, 2026. Enjoying the restaurant's signature relaxed vibe and Italian dishes during his time in the French capital, his visit added Big Love to the map of personal dining spots frequented by BTS members in Paris.</p>"
+    }
   },
   {
     "id": "new-D2pf3IFWKTH64FaUCAdd",
@@ -14085,9 +14183,6 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located in the heart of Downtown Los Angeles, The Broad is a stunning contemporary art museum celebrated as much for its striking \"veil-and-vault\" architecture by Diller Scofidio + Renfro as for its world-class collection. It houses a vast array of postwar and contemporary masterpieces, notably including the mesmerizing Infinity Mirrored Rooms by Yayoi Kusama.</p><p>During their time in Los Angeles, V and J-Hope visited this modern art haven together, turning it into an unforgettable \"Screen to Street\" location for fans. J-Hope delighted ARMYs by sharing a series of artsy and playful photos of their museum date. Through their pictures, fans got to see the duo having fun and posing underneath a giant dining table, as well as admiring colossal, brightly colored balloon sculptures.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "https://x.com/aco24042511/status/1956920478951678445?s=46",
@@ -14100,9 +14195,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "Dllu / CC BY-SA 4.0",
     "pinterestUrls": [],
     "pinterestUrl": "",
-    "recreatedPhotos": [
-      "images/admin-upload-new-D2pf3IFWKTH64FaUCAdd-recreated-0.jpg"
-    ],
     "tipsList": [
       {
         "title": {
@@ -14154,7 +14246,16 @@ window.STATIC_LOCATIONS = [
           "en": "The museum is fully ADA compliant and wheelchair accessible. There is a large central elevator that takes you seamlessly from the lobby up through the \"vault\" to the third-floor galleries."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-D2pf3IFWKTH64FaUCAdd-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located in the heart of Downtown Los Angeles, The Broad is a stunning contemporary art museum celebrated as much for its striking \"veil-and-vault\" architecture by Diller Scofidio + Renfro as for its world-class collection. It houses a vast array of postwar and contemporary masterpieces, notably including the mesmerizing Infinity Mirrored Rooms by Yayoi Kusama.</p><!--stss:footsteps--><p>During their time in Los Angeles, V and J-Hope visited this modern art haven together, turning it into an unforgettable \"Screen to Street\" location for fans. J-Hope delighted ARMYs by sharing a series of artsy and playful photos of their museum date. Through their pictures, fans got to see the duo having fun and posing underneath a giant dining table, as well as admiring colossal, brightly colored balloon sculptures.</p>"
+    }
   },
   {
     "img": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-photo.jpg",
@@ -14207,16 +14308,10 @@ window.STATIC_LOCATIONS = [
     ],
     "facebookUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Sungnyemun Gate, officially designated as South Korea's National Treasure No. 1 and historically known as Namdaemun (South Great Gate), is the largest and most magnificent of the four main gates that once protected the ancient Fortress Wall of Seoul. Originally built in 1398 during the Joseon Dynasty, it stands proudly at a bustling intersection, creating a striking visual contrast between Seoul's deep architectural history and its gleaming modern skyline. Meticulously restored after a tragic fire in 2008, the gate remains a powerful, enduring symbol of the city's resilience and cultural pride.</p><p>In September 2021, BTS selected this majestic landmark as the stage for their spectacular performance during the Global Citizen Live 24-hour worldwide broadcast. Dressed in elegant, earth-toned outfits, the members performed their hit \"Permission to Dance\" right on the plaza in front of the gate. Illuminated by brilliant lights against the dark night sky, the ancient wooden pavilion provided a breathtaking backdrop. By bringing their modern pop anthems to a 600-year-old royal gateway, BTS beautifully showcased the harmonious blend of Korea's past and present to millions of viewers across the globe.</p>"
-    },
     "tweetUrls": [],
     "officialLink": "https://fr.wikipedia.org/wiki/Sungnyemun",
     "episodeLink": "https://www.travelandleisureasia.com/sea/destinations/asia/how-bts-will-turn-seouls-historic-landmarks-into-a-stage-for-their-arirang-comeback/",
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhotos": [
-      "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -14242,7 +14337,16 @@ window.STATIC_LOCATIONS = [
           "en": "The surrounding plaza was completely redesigned to be extremely pedestrian-friendly. It is wide, completely flat, smoothly paved, and highly accessible for wheelchairs and strollers, allowing everyone to easily get a great view of the structure."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Sungnyemun Gate, officially designated as South Korea's National Treasure No. 1 and historically known as Namdaemun (South Great Gate), is the largest and most magnificent of the four main gates that once protected the ancient Fortress Wall of Seoul. Originally built in 1398 during the Joseon Dynasty, it stands proudly at a bustling intersection, creating a striking visual contrast between Seoul's deep architectural history and its gleaming modern skyline. Meticulously restored after a tragic fire in 2008, the gate remains a powerful, enduring symbol of the city's resilience and cultural pride.</p><!--stss:footsteps--><p>In September 2021, BTS selected this majestic landmark as the stage for their spectacular performance during the Global Citizen Live 24-hour worldwide broadcast. Dressed in elegant, earth-toned outfits, the members performed their hit \"Permission to Dance\" right on the plaza in front of the gate. Illuminated by brilliant lights against the dark night sky, the ancient wooden pavilion provided a breathtaking backdrop. By bringing their modern pop anthems to a 600-year-old royal gateway, BTS beautifully showcased the harmonious blend of Korea's past and present to millions of viewers across the globe.</p>"
+    }
   },
   {
     "id": "new-HrHCN0x2OgHcNPcuMR0c",
@@ -14324,13 +14428,16 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "ytId": "nxUOxsimI8o",
-    "fullDescription": {
-      "en": "<p>Housed inside a magnificent grand Beaux-Arts railway station originally built for the 1900 Universal Exposition (Exposition Universelle), the Musée d'Orsay stands as one of Europe's most breathtaking architectural and cultural monuments. The museum boasts the world’s largest and most comprehensive collection of Impressionist and Post-Impressionist masterpieces. Visitors walk through halls filled with iconic canvases by legendary masters such as Claude Monet, Pierre-Auguste Renoir, Vincent van Gogh, Paul Cézanne, Edgar Degas, and Édouard Manet, tracing the profound evolution of modern Western art.</p><p>Globally renowned for his sophisticated eye for fine art and his dedication to gallery-hopping, RM (Kim Namjoon) visited the Musée d'Orsay during his personal travels in Paris. Fans can catch a direct visual confirmation of this trip in his recorded travel footage, where Namjoon can be clearly seen exploring the museum's galleries at 33 minutes and 09 seconds (33:09) in the video. As an avid art collector and patron whose public influence has significantly boosted museum attendance and modern art appreciation among younger generations, Namjoon spent hours quietly absorbing the museum's monumental collections. For ARMYs, walking through the Orsay is a deeply inspiring pilgrimage that mirrors RM’s own creative mindset, connecting the classical masterpieces that fuel his lyrics, introspection, and personal aesthetic to his real-life cultural expeditions.</p>"
-    },
+    "imgCredit": "Screentostreet",
     "recreatedPhotos": [
-      "images/admin-upload-new-HrHCN0x2OgHcNPcuMR0c-recreated-0.jpg"
+      {
+        "url": "images/admin-upload-new-HrHCN0x2OgHcNPcuMR0c-recreated-0.jpg",
+        "official": true
+      }
     ],
-    "imgCredit": "Screentostreet"
+    "fullDescription": {
+      "en": "<p>Housed inside a magnificent grand Beaux-Arts railway station originally built for the 1900 Universal Exposition (Exposition Universelle), the Musée d'Orsay stands as one of Europe's most breathtaking architectural and cultural monuments. The museum boasts the world’s largest and most comprehensive collection of Impressionist and Post-Impressionist masterpieces. Visitors walk through halls filled with iconic canvases by legendary masters such as Claude Monet, Pierre-Auguste Renoir, Vincent van Gogh, Paul Cézanne, Edgar Degas, and Édouard Manet, tracing the profound evolution of modern Western art.</p><!--stss:footsteps--><p>Globally renowned for his sophisticated eye for fine art and his dedication to gallery-hopping, RM (Kim Namjoon) visited the Musée d'Orsay during his personal travels in Paris. Fans can catch a direct visual confirmation of this trip in his recorded travel footage, where Namjoon can be clearly seen exploring the museum's galleries at 33 minutes and 09 seconds (33:09) in the video. As an avid art collector and patron whose public influence has significantly boosted museum attendance and modern art appreciation among younger generations, Namjoon spent hours quietly absorbing the museum's monumental collections. For ARMYs, walking through the Orsay is a deeply inspiring pilgrimage that mirrors RM’s own creative mindset, connecting the classical masterpieces that fuel his lyrics, introspection, and personal aesthetic to his real-life cultural expeditions.</p>"
+    }
   },
   {
     "id": "new-JkEgRxLK90D3OHJYU7gs",
@@ -14415,23 +14522,26 @@ window.STATIC_LOCATIONS = [
     "ytId": "uM10H8LfaWU",
     "episodeLink": "https://kpopping.com/kpics/230122-BTS-J-hope-at-the-Hermes-Paris-Men-s-Winter-2023-show",
     "officialLink": "https://house.unesco.org/fr/visit-us",
+    "imgCredit": "AI-generated illustrative image",
     "recreatedPhotos": [
-      "images/admin-upload-new-JkEgRxLK90D3OHJYU7gs-recreated-0.jpg"
-    ],
-    "imgCredit": "AI-generated illustrative image"
+      {
+        "url": "images/admin-upload-new-JkEgRxLK90D3OHJYU7gs-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "address": "54 Samcheong-ro, Jongno-gu, Seoul, South Korea",
     "member": "RM",
     "img": "images/admin-upload-new-KmKmuscZYKJsVo1KCUib-photo.jpg",
-    "lat": 37.5815,
+    "lat": 37.58068,
     "category": "Museum",
     "id": "new-KmKmuscZYKJsVo1KCUib",
     "year": "2018",
     "city": "Seoul",
     "name": "Kukje Gallery",
     "country": "South Korea",
-    "lng": 126.9808,
+    "lng": 126.98054,
     "group": "BTS",
     "addedAt": 1789074676082,
     "pinterestUrls": [],
@@ -14439,9 +14549,6 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located in the cultural heart of the Samcheong-dong district near Gyeongbokgung Palace, Kukje Gallery is undeniably one of South Korea's premier contemporary art institutions. Established in 1982, the gallery has been a driving force in the global art world. It showcases celebrated international creators alongside prominent Korean modern masters, particularly the pioneers of Dansaekhwa (Korean monochrome painting). The gallery complex itself is a masterpiece, divided into three distinct architectural buildings (K1, K2, and K3), with the award-winning K3 building famously draped in a striking, stainless-steel mesh canopy.</p><p>RM has been a dedicated, frequent patron of Kukje Gallery for years, making it an essential, recurring stop on his Seoul \"Namjooning\" map. He has attended numerous solo exhibitions here, quietly admiring the works of legendary Korean fine artists like Park Seo-Bo and Lee Ufan, as well as international visionaries. By consistently sharing photos of his visits on social media, RM has played a profound, well-documented role in introducing Korean fine art—especially the meditative Dansaekhwa movement—to millions of young global fans, cementing his legacy as a serious and highly influential art patron.</p>"
-    },
     "tiktokUrl": "",
     "ytId": "",
     "facebookUrl": "",
@@ -14505,7 +14612,10 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhoto": ""
+    "recreatedPhoto": "",
+    "fullDescription": {
+      "en": "<p>Located in the cultural heart of the Samcheong-dong district near Gyeongbokgung Palace, Kukje Gallery is undeniably one of South Korea's premier contemporary art institutions. Established in 1982, the gallery has been a driving force in the global art world. It showcases celebrated international creators alongside prominent Korean modern masters, particularly the pioneers of Dansaekhwa (Korean monochrome painting). The gallery complex itself is a masterpiece, divided into three distinct architectural buildings (K1, K2, and K3), with the award-winning K3 building famously draped in a striking, stainless-steel mesh canopy.</p><!--stss:footsteps--><p>RM has been a dedicated, frequent patron of Kukje Gallery for years, making it an essential, recurring stop on his Seoul \"Namjooning\" map. He has attended numerous solo exhibitions here, quietly admiring the works of legendary Korean fine artists like Park Seo-Bo and Lee Ufan, as well as international visionaries. By consistently sharing photos of his visits on social media, RM has played a profound, well-documented role in introducing Korean fine art—especially the meditative Dansaekhwa movement—to millions of young global fans, cementing his legacy as a serious and highly influential art patron.</p>"
+    }
   },
   {
     "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Museum_SAN.tif/lossy-page1-1280px-Museum_SAN.tif.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
@@ -14561,14 +14671,7 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Museum SAN (Space Art Nature) is a world-class architectural masterpiece designed by the legendary minimalist architect Tadao Ando. Tucked away in the pristine mountains of Wonju, the museum is designed as a sanctuary to foster a deep connection between art and the environment. It seamlessly merges stark, exposed concrete structures, expansive stone and water gardens, and immersive light installations with the breathtaking surrounding natural landscape.</p><p>As an avid art enthusiast and the group's resident museum connoisseur, RM traveled to Museum SAN in early 2019 for a peaceful winter \"Namjooning\" retreat. He shared serene photos of his visit on BTS's official Twitter account, most notably posing in front of Alexander Liberman's towering red Archway sculpture that seemingly floats on the tranquil Water Garden. He also spent quiet, introspective moments experiencing the museum's permanent James Turrell light and space exhibits. Through his thoughtful documentation, RM instantly transformed this remote mountain museum into a staple pilgrimage for art-loving ARMYs worldwide.</p>"
-    },
     "imgCredit": "Museum SAN / CC BY-SA 4.0",
-    "recreatedPhotos": [
-      "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-0.jpg",
-      "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-1.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -14594,7 +14697,20 @@ window.STATIC_LOCATIONS = [
           "en": "Despite being located in the mountains, Tadao Ando designed the museum to be highly accessible. The outdoor pathways through the flower, water, and stone gardens are wide, flat, and smoothly paved. Elevators seamlessly connect the indoor gallery floors, making it very comfortable for wheelchair users and strollers."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-LBfAyu8idU7zsoUnWoSo-recreated-1.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Museum SAN (Space Art Nature) is a world-class architectural masterpiece designed by the legendary minimalist architect Tadao Ando. Tucked away in the pristine mountains of Wonju, the museum is designed as a sanctuary to foster a deep connection between art and the environment. It seamlessly merges stark, exposed concrete structures, expansive stone and water gardens, and immersive light installations with the breathtaking surrounding natural landscape.</p><!--stss:footsteps--><p>As an avid art enthusiast and the group's resident museum connoisseur, RM traveled to Museum SAN in early 2019 for a peaceful winter \"Namjooning\" retreat. He shared serene photos of his visit on BTS's official Twitter account, most notably posing in front of Alexander Liberman's towering red Archway sculpture that seemingly floats on the tranquil Water Garden. He also spent quiet, introspective moments experiencing the museum's permanent James Turrell light and space exhibits. Through his thoughtful documentation, RM instantly transformed this remote mountain museum into a staple pilgrimage for art-loving ARMYs worldwide.</p>"
+    }
   },
   {
     "id": "new-manual-1790001265057-lc06qt",
@@ -16275,9 +16391,6 @@ window.STATIC_LOCATIONS = [
     "member": "All",
     "img": "images/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-photo.jpg",
     "addedAt": 1789133503720,
-    "fullDescription": {
-      "en": "<p>Samyang Roundhill (formerly Samyang Ranch) is Asia's largest highland green pasture, sprawling across the windy peaks of Daegwalnyeong in Gangwon Province. Known for its endless grassy fields in summer and dramatic snowscapes in winter, it is dotted with massive wind turbines overlooking rolling hilltops.</p><p>BTS selected these majestic snowy slopes as the primary outdoor filming and photoshoot location for the '2021 BTS Winter Package'. Clad in colorful winter coats, the members played in the snow, shot playful video sequences, and captured warmth against the freezing alpine backdrop, creating unforgettable imagery for fans.</p>"
-    },
     "ytId": "1LMz6hgQtBM",
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -16319,9 +16432,6 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "https://www.youtube.com/watch?v=RxKg68Az3tY&pp=ygUXMjAyMSBidHMgd2ludGVyIHBhY2thZ2U%3D",
     "officialLink": "https://www.samyangfarm.co.kr/eng/index",
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhotos": [
-      "images/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -16347,7 +16457,16 @@ window.STATIC_LOCATIONS = [
           "en": "The main entrance and rest facilities are accessible. However, exploring the actual viewpoints requires navigating unpaved dirt paths. In winter, mobility can be significantly restricted due to heavy snow and ice, making wheelchair or stroller access at the peaks very difficult."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Samyang Roundhill (formerly Samyang Ranch) is Asia's largest highland green pasture, sprawling across the windy peaks of Daegwalnyeong in Gangwon Province. Known for its endless grassy fields in summer and dramatic snowscapes in winter, it is dotted with massive wind turbines overlooking rolling hilltops.</p><!--stss:footsteps--><p>BTS selected these majestic snowy slopes as the primary outdoor filming and photoshoot location for the '2021 BTS Winter Package'. Clad in colorful winter coats, the members played in the snow, shot playful video sequences, and captured warmth against the freezing alpine backdrop, creating unforgettable imagery for fans.</p>"
+    }
   },
   {
     "address": "29 Kookchudobosang-ro 84-gil, Seo-gu, Daegu, South Korea",
@@ -16534,23 +16653,52 @@ window.STATIC_LOCATIONS = [
     "city": "Seoul",
     "category": "Museum",
     "year": "2019",
-    "address": "63 Jahamun-ro 13-gil, Jongno-gu, Seoul, South Korea",
-    "lat": 37.5925,
-    "lng": 126.9631,
-    "img": "",
+    "address": "63 Jahamun-ro 40-gil, Jongno-gu, Seoul, South Korea",
+    "lat": 37.59436,
+    "lng": 126.96601,
+    "img": "images/admin-upload-new-Sx0T27Qui1mvuWLDLHSh-photo.jpg",
     "addedAt": 1790796879419,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Whanki Museum is a private art museum located in Buam-dong, a picturesque neighborhood in northern Seoul nestled at the foot of Bugaksan Mountain. Founded in 1992 by Kim Hyang-an, the artist's widow, the museum celebrates the pioneering Korean abstract painter Kim Whanki. The museum building, designed by architect Kyu Sung Woo, blends stone pathways, skylights, and terraced gardens to house Kim Whanki's signature large-scale dot paintings and oil canvases.</p><!--stss:footsteps--><p>RM is a well-known admirer of Kim Whanki and has visited the Whanki Museum multiple times during his art tours across Seoul. RM featured Kim Whanki's artwork in his personal social media posts and art collection discussions, introducing a brand new generation of international fans to Korean modern abstract art and the beauty of Buam-dong's art scene.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
+    "facebookUrls": [],
+    "officialLink": "https://www.whankimuseum.org",
+    "tweetUrls": [],
+    "fullDescription": {
+      "en": "<p>Tucked away in the quiet, mountainous residential neighborhood of Buam-dong in central Seoul, the Whanki Museum is a privately operated, architectural gem dedicated to the life and works of Kim Whanki, one of the pioneers of Korean abstract art. Unlike the massive, bustling public museums downtown, the Whanki Museum offers a serene, almost meditative atmosphere. The space was designed to reflect the artist's poetic philosophy, with soft natural light illuminating his famous large-scale, deep blue \"dot\" paintings and early semi-abstract works featuring traditional Korean moon jars.</p><!--stss:footsteps--><p>For RM, the Whanki Museum is far more than just a tourist stop; it is a vital, recurring sanctuary. Escaping the frenzy of his idol life, Namjoon frequently retreats to this quiet museum to recharge—a practice fans fondly call \"Namjooning.\" His connection to Kim Whanki is deeply personal; RM has cited Whanki as the very first artist he fell in love with when discovering modern art, crediting him with awakening his deep appreciation for Korean cultural identity. Today, RM even owns major Whanki pieces in his private collection.</p><p>This personal passion has had a massive global impact. After RM recommended the museum's exhibition catalogue Works on Paper during a 2019 VLive (and was spotted carrying it at airports), the book immediately sold out, and ARMYs flocked to Buam-dong. In a historic cultural milestone, RM's role as an art ambassador culminated in the 2026-2027 exhibition \"RM x SFMOMA: Between You and Me\" in San Francisco, where masterpieces from his private Whanki collection were displayed alongside the museum's permanent works, directly associating the Whanki Foundation and Museum on an international stage.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 3 to Gyeongbokgung Station (Exit 3), then catch a local green bus (like No. 7022, 1020, or 7212) up the mountain road to the Buam-dong Community Center stop, followed by a short walk down a quiet residential alley."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open Tuesday through Sunday from 10:00 AM to 6:00 PM (Closed on Mondays). Paid admission applies; check their official website for current exhibition schedules."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Located on a steep hill in a historic residential neighborhood; involves some uphill walking and stairs."
+        }
+      }
+    ],
+    "ytId": "",
+    "imgCredit": "Cool Supace / CC BY 4.0",
+    "episodeLink": "https://www.koreajoongangdaily.com/lifestyle/where-btss-rm-goes-fans-will-flock-and-art-venues-arent-complaining/10736836",
     "tipsList": [
       {
         "title": {
@@ -16562,52 +16710,31 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "Photography policy"
+          "en": "Respect the Strict No-Photo Rule"
         },
         "text": {
-          "en": "Interior photography inside exhibition halls is restricted to protect delicate artwork, so enjoy the visual atmosphere in person."
+          "en": "To protect the delicate cotton canvases and maintain the museum's quiet atmosphere, photography is strictly prohibited inside the galleries. Follow RM’s respectful example: he never takes photos of the interior art. When he does share his visits—such as through his Instagram post on April 26, 2022 (220426), which he has since archived—he only posts photos of the unique exterior architecture, his entrance ticket, or official art books."
         }
       },
       {
         "title": {
-          "en": "Explore Buam-dong"
+          "en": "Look for Works on Paper"
         },
         "text": {
-          "en": "After visiting, walk through Buam-dong's charming cafe alleys and hilltop scenic viewing spots."
+          "en": "Stop by the museum shop to see if you can pick up Kim Whanki's Works on Paper—the very catalogue RM famously recommended to fans in 2019."
         }
       }
     ],
-    "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "https://www.whankimuseum.org",
-    "practicalInfo": [
+    "pinterestUrl": "",
+    "tweetUrl": "https://x.com/zer0xblack/status/1518952231143448576?s=46",
+    "recreatedPhotos": [
+      "images/admin-upload-new-Sx0T27Qui1mvuWLDLHSh-recreated-0.jpg",
       {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take Seoul Subway Line 3 to Gyeongbokgung Station (Exit 3), take Bus 1020, 7022, or 7212 to Buam-dong Community Center, then walk 5 minutes uphill."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": ""
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": ""
-        }
+        "url": "images/admin-upload-new-Sx0T27Qui1mvuWLDLHSh-recreated-1.jpg",
+        "official": true
       }
-    ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    ]
   },
   {
     "id": "new-TNFJZU7cQdw9MtBHgFKM",
@@ -16717,9 +16844,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrls": [],
     "youtubeUrls": [],
     "tweetUrls": [],
-    "fullDescription": {
-      "en": "<p>Nestled in the historic Seochon neighborhood near Gyeongbokgung Palace, Daeoh Bookstore is the oldest second-hand bookstore in Seoul, having opened its doors in 1951. Over the decades, this charming, traditional hanok building has lovingly maintained its nostalgic mid-20th-century aesthetic. Today, it has gracefully transitioned into a heritage café and cultural space, offering visitors a rare, preserved glimpse into Seoul's past where they can appreciate traditional Korean architecture and classic literature.</p><p>2016, RM: Long before \"Namjooning\" became a globally recognized term, RM sought out this quiet, historical gem. During his earlier visit in 2016, he explored the narrow, book-lined corridors and left a warm, handwritten autograph for the owners, expressing his deep appreciation for the preservation of such a meaningful cultural space in the rapidly modernizing city.</p><p>2019, RM: RM returned to Daeoh Bookstore in February 2019 for another quiet cultural excursion. He took a now-iconic photograph sitting on the traditional wooden porch (daecheong maru) in the rustic central courtyard, surrounded by stacks of vintage books. By sharing this peaceful moment, he officially cemented this retro bookstore as a world-famous pilgrimage destination for ARMYs seeking the same introspective, cozy vibe.</p>"
-    },
     "imgCredit": "AI-generated illustrative image",
     "tipsList": [
       {
@@ -16749,9 +16873,6 @@ window.STATIC_LOCATIONS = [
     ],
     "officialLink": "https://english.visitseoul.net/attractions/daeo-bookstore/ENP010928",
     "episodeLink": "https://thesmartlocal.kr/dae-oh-bookstore/",
-    "recreatedPhotos": [
-      "images/admin-upload-new-Uu7jJIYLTSjiSrwJtKnq-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -16777,7 +16898,16 @@ window.STATIC_LOCATIONS = [
           "en": "As an authentically preserved 1951 traditional house, accessibility is very limited. The entrance has a raised threshold, the doorways are incredibly narrow, and the inner courtyard requires stepping up onto raised wooden platforms, making it inaccessible for wheelchairs."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-Uu7jJIYLTSjiSrwJtKnq-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Nestled in the historic Seochon neighborhood near Gyeongbokgung Palace, Daeoh Bookstore is the oldest second-hand bookstore in Seoul, having opened its doors in 1951. Over the decades, this charming, traditional hanok building has lovingly maintained its nostalgic mid-20th-century aesthetic. Today, it has gracefully transitioned into a heritage café and cultural space, offering visitors a rare, preserved glimpse into Seoul's past where they can appreciate traditional Korean architecture and classic literature.</p><!--stss:footsteps--><p>2016, RM: Long before \"Namjooning\" became a globally recognized term, RM sought out this quiet, historical gem. During his earlier visit in 2016, he explored the narrow, book-lined corridors and left a warm, handwritten autograph for the owners, expressing his deep appreciation for the preservation of such a meaningful cultural space in the rapidly modernizing city.</p><p>2019, RM: RM returned to Daeoh Bookstore in February 2019 for another quiet cultural excursion. He took a now-iconic photograph sitting on the traditional wooden porch (daecheong maru) in the rustic central courtyard, surrounded by stacks of vintage books. By sharing this peaceful moment, he officially cemented this retro bookstore as a world-famous pilgrimage destination for ARMYs seeking the same introspective, cozy vibe.</p>"
+    }
   },
   {
     "address": "12 Metasequoia-ro, Damyang-eup, Damyang-gun, Jeollanam-do, South Korea",
@@ -16833,13 +16963,7 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Damyang Metasequoia Land is home to one of South Korea's most breathtaking tree-lined boulevards. Originally planted in the 1970s, these towering dawn redwood trees now form a spectacular, two-kilometer pedestrian pathway. The dense branches interlock to create a natural, soaring green tunnel during the spring and summer months, before dramatically transforming into a vibrant, fiery corridor of orange and crimson in the autumn.</p><p>During BTS's official extended period of rest in the late summer of 2019, RM took a quiet vacation to Damyang to recharge. He shared a series of peaceful photos of his stroll along the Metasequoia path on Twitter (@BTS_twt). Posing in relaxed attire under the soaring green canopy, RM perfectly showcased his love for nature, art, and quiet reflection. Thanks to these beautiful snapshots, this majestic tree-lined walkway quickly became cemented as one of the quintessential \"Namjooning\" destinations in South Korea.</p>"
-    },
     "imgCredit": "AI-generated illustrative image",
-    "recreatedPhotos": [
-      "images/admin-upload-new-VvHht3XrSc6Cz5ogLsQh-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -16865,7 +16989,16 @@ window.STATIC_LOCATIONS = [
           "en": "The 2-kilometer pathway is completely flat, wide, and features a smooth, packed-dirt surface. It is exceptionally accessible and provides a very comfortable experience for wheelchair users and visitors with strollers."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-VvHht3XrSc6Cz5ogLsQh-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Damyang Metasequoia Land is home to one of South Korea's most breathtaking tree-lined boulevards. Originally planted in the 1970s, these towering dawn redwood trees now form a spectacular, two-kilometer pedestrian pathway. The dense branches interlock to create a natural, soaring green tunnel during the spring and summer months, before dramatically transforming into a vibrant, fiery corridor of orange and crimson in the autumn.</p><!--stss:footsteps--><p>During BTS's official extended period of rest in the late summer of 2019, RM took a quiet vacation to Damyang to recharge. He shared a series of peaceful photos of his stroll along the Metasequoia path on Twitter (@BTS_twt). Posing in relaxed attire under the soaring green canopy, RM perfectly showcased his love for nature, art, and quiet reflection. Thanks to these beautiful snapshots, this majestic tree-lined walkway quickly became cemented as one of the quintessential \"Namjooning\" destinations in South Korea.</p>"
+    }
   },
   {
     "member": "All",
@@ -16984,12 +17117,6 @@ window.STATIC_LOCATIONS = [
     "ytId": "",
     "pinterestUrls": [],
     "pinterestUrl": "",
-    "fullDescription": {
-      "en": "<p>Designed by the renowned architect Frank Gehry, the Fondation Louis Vuitton is a striking contemporary art museum nestled in the Bois de Boulogne on the edge of Paris. Opened in 2014, its futuristic glass sails and avant-garde architecture have quickly established it as a major global hub for contemporary art exhibitions and cultural events. Beyond its permanent collections and striking geometry, the venue serves as a prestigious backdrop for high-fashion milestones, bridging the worlds of modern architecture, fine art, and luxury design.</p><p>2023, J-Hope, Jimin: Jimin &amp; J-Hope's Fashion Week Break\nDuring their highly publicized trip for Paris Fashion Week in January 2023, Jimin and J-Hope took a well-deserved break from the bustling runways to explore the Fondation. J-Hope famously shared photos of his visit to the immersive Monet - Mitchell exhibition, showcasing his appreciation for the delicate interplay between classical impressionism and abstract expressionism. For fans, it was a delight to see the duo soaking in Parisian culture beyond their ambassador duties.</p><p>2026, RM: RM's \"Namjooning\" Excursion\nLater in 2026, RM added the spectacular museum to his ever-growing \"Namjooning\" map. Wandering through the sunlit, cutting-edge galleries, he appreciated both the monumental architecture and the contemporary installations. His visit perfectly illustrated his well-known passion for international art spaces where structure and creativity seamlessly converge.</p>"
-    },
-    "recreatedPhotos": [
-      "images/admin-upload-new-wMPd7uwtaZtYdrcNZtrS-recreated-0.jpg"
-    ],
     "tipsList": [
       {
         "title": {
@@ -17041,7 +17168,16 @@ window.STATIC_LOCATIONS = [
           "en": "The museum is exceptionally accessible. It features step-free access from the street, wide elevators reaching all gallery levels and terraces, and complimentary wheelchair rentals available at the cloakroom."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-wMPd7uwtaZtYdrcNZtrS-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Designed by the renowned architect Frank Gehry, the Fondation Louis Vuitton is a striking contemporary art museum nestled in the Bois de Boulogne on the edge of Paris. Opened in 2014, its futuristic glass sails and avant-garde architecture have quickly established it as a major global hub for contemporary art exhibitions and cultural events. Beyond its permanent collections and striking geometry, the venue serves as a prestigious backdrop for high-fashion milestones, bridging the worlds of modern architecture, fine art, and luxury design.</p><!--stss:footsteps--><p>2023, J-Hope, Jimin: Jimin &amp; J-Hope's Fashion Week Break\nDuring their highly publicized trip for Paris Fashion Week in January 2023, Jimin and J-Hope took a well-deserved break from the bustling runways to explore the Fondation. J-Hope famously shared photos of his visit to the immersive Monet - Mitchell exhibition, showcasing his appreciation for the delicate interplay between classical impressionism and abstract expressionism. For fans, it was a delight to see the duo soaking in Parisian culture beyond their ambassador duties.</p><p>2026, RM: RM's \"Namjooning\" Excursion\nLater in 2026, RM added the spectacular museum to his ever-growing \"Namjooning\" map. Wandering through the sunlit, cutting-edge galleries, he appreciated both the monumental architecture and the contemporary installations. His visit perfectly illustrated his well-known passion for international art spaces where structure and creativity seamlessly converge.</p>"
+    }
   },
   {
     "lng": 55.65,
@@ -17068,9 +17204,6 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "tweetUrl": "",
     "tiktokUrl": "",
-    "fullDescription": {
-      "en": "<p>Spanning over 225 square kilometers of pristine, rolling dunes, the Dubai Desert Conservation Reserve is a breathtaking protected national park that showcases the majestic natural beauty of the Arabian Peninsula. Away from the glittering skyscrapers of the city, this vast expanse offers a serene, cinematic landscape of golden sands and native wildlife.</p><p>In early 2016, BTS traded the bustling city life for the breathtaking heat of the Emirates to film their very first overseas desert adventure: the BTS Summer Package 2016 in Dubai. The members embraced the desert lifestyle completely. Clad in memorable, vibrant outfits that popped beautifully against the golden sand, they drove dune buggies, tried sandboarding (with varying degrees of success!), and rode camels. They transformed this seemingly barren landscape into the ultimate summer playground, creating hilarious and unforgettable memories for ARMYs.</p>"
-    },
     "instagramUrl": "https://www.instagram.com/p/DO9go6_jYnk/",
     "imgCredit": "Tim de Groot / CC0 1.0",
     "pinterestUrls": [],
@@ -17128,9 +17261,18 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "recreatedPhotos": [
-      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-0.jpg",
-      "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-1.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-1.jpg",
+        "official": true
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Spanning over 225 square kilometers of pristine, rolling dunes, the Dubai Desert Conservation Reserve is a breathtaking protected national park that showcases the majestic natural beauty of the Arabian Peninsula. Away from the glittering skyscrapers of the city, this vast expanse offers a serene, cinematic landscape of golden sands and native wildlife.</p><!--stss:footsteps--><p>In early 2016, BTS traded the bustling city life for the breathtaking heat of the Emirates to film their very first overseas desert adventure: the BTS Summer Package 2016 in Dubai. The members embraced the desert lifestyle completely. Clad in memorable, vibrant outfits that popped beautifully against the golden sand, they drove dune buggies, tried sandboarding (with varying degrees of success!), and rode camels. They transformed this seemingly barren landscape into the ultimate summer playground, creating hilarious and unforgettable memories for ARMYs.</p>"
+    }
   },
   {
     "address": "203 Gamnae 2-ro, Saha-gu, Busan, South Korea",
