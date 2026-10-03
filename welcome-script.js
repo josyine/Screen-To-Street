@@ -279,10 +279,22 @@ function showStep(step) {
     }
 }
 
+// Sur mobile (demande du 03/10/2026), "Create an account" ouvre l'onboarding guidé par
+// Mei (window.MeiOnboarding, voir mei-onboarding.js) à la place du formulaire classique
+// ci-dessous — inchangé sur desktop. Vérifié au moment du clic (pas une fois pour toutes
+// au chargement) pour suivre une rotation d'écran/un redimensionnement de fenêtre entre
+// deux clics. window.MeiAuth (plus bas dans ce fichier) fournit à mei-onboarding.js les
+// 3 points d'intégration Firebase dont il a besoin (créer le compte, sauvegarder le
+// profil, activer un pass) — repli sur le formulaire classique si jamais ce script
+// n'a pas chargé pour une raison quelconque.
 document.querySelectorAll('.open-auth-btn').forEach(btn => {
-    btn.addEventListener('click', () => { 
-        if(modal) modal.classList.remove('hidden'); 
-        showStep(0); 
+    btn.addEventListener('click', () => {
+        if (window.matchMedia('(max-width: 760px)').matches && window.MeiOnboarding) {
+            window.MeiOnboarding.open();
+            return;
+        }
+        if(modal) modal.classList.remove('hidden');
+        showStep(0);
     });
 });
 
@@ -850,6 +862,99 @@ if (cookiePrefsSave) {
         cookiePrefsModal.classList.add('hidden');
     });
 }
+
+// ==========================================
+// PONT POUR L'ONBOARDING MOBILE DE MEI (demande du 03/10/2026)
+// ==========================================
+// mei-onboarding.js est un script classique (pas un module ES) — il ne peut pas importer
+// auth/db/createUserWithEmailAndPassword etc. directement depuis ce fichier. window.MeiAuth
+// expose donc 3 fonctions qui enveloppent EXACTEMENT la même logique Firebase que le
+// formulaire classique ci-dessus (btnToStep2/btnToStep3/checkoutForm), pour que les deux
+// parcours (desktop et mobile) créent des comptes strictement identiques côté Firestore.
+window.MeiAuth = {
+    // Mirroir de btnToStep2 : créer le compte, ou se reconnecter directement si l'e-mail/
+    // mot de passe tapés correspondent déjà à un compte existant (même UX que
+    // "si je mets une adresse mail et un mot de passe d'un compte déjà présent, il faut
+    // connecter le compte directement", demande du 23/09/2026).
+    async createAccount(email, password) {
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            if (typeof window.incrementSiteUserCount === 'function') window.incrementSiteUserCount();
+            resetFreshAccountData();
+            localStorage.setItem('userEmail', email);
+            return { success: true };
+        } catch (createErr) {
+            if (createErr.code === 'auth/email-already-in-use') {
+                try {
+                    const cred = await signInWithEmailAndPassword(auth, email, password);
+                    await loadExistingProfileAndRedirect(cred.user); // redirige vers map.html
+                    return { success: false, navigating: true };
+                } catch (loginErr) {
+                    return { success: false, message: curDict().errEmailInUse };
+                }
+            }
+            return { success: false, message: friendlyAuthError(createErr.code) };
+        }
+    },
+    // Mirroir de btnToStep3 : écrit users/{uid}, publicProfiles/{uid}, et réserve le
+    // pseudo public (usernames/{pseudo}, usernameLogin/{pseudo}) si disponible.
+    async saveProfile({ username, firstName, country, reason, isPrivate }) {
+        const user = auth.currentUser;
+        if (!user) return { success: false };
+        const usernameVal = (username || '').trim().toLowerCase();
+        localStorage.setItem('userName', usernameVal);
+        if (firstName) localStorage.setItem('userFirstName', firstName);
+        if (country) localStorage.setItem('userCountry', country);
+        try {
+            await updateProfile(user, { displayName: usernameVal });
+            const taken = await isUsernameTakenByOther(usernameVal, user.uid);
+            const batch = writeBatch(db);
+            batch.set(doc(db, 'users', user.uid), {
+                username: usernameVal,
+                firstName: firstName || '',
+                lastName: '',
+                email: user.email,
+                interestCountry: country || '',
+                reason: reason || '',
+                isPrivate: !!isPrivate,
+                unlockedGroups: [],
+                wishlistLocs: [],
+                visitedLocs: [],
+                myTrips: [],
+                createdAt: serverTimestamp()
+            }, { merge: true });
+            batch.set(doc(db, 'publicProfiles', user.uid), { isPrivate: !!isPrivate }, { merge: true });
+            if (!taken) {
+                batch.set(doc(db, 'usernames', usernameVal), { uid: user.uid, username: usernameVal }, { merge: true });
+                batch.set(doc(db, 'usernameLogin', usernameVal), { email: user.email }, { merge: true });
+            }
+            await batch.commit();
+            return { success: true };
+        } catch (e) {
+            // Même choix que la version desktop : on laisse la personne avancer même si
+            // l'écriture échoue pour l'instant (règles de sécurité en cours d'ajustement).
+            return { success: true, warning: true };
+        }
+    },
+    // Mirroir de checkoutForm (paiement toujours simulé, aucun vrai Stripe branché) : les
+    // identifiants de pass du prototype ("vip"/"travel") sont convertis vers ceux utilisés
+    // partout ailleurs sur le site ("lifetime"/"monthly", voir hasGuidePass() dans script.js).
+    async activatePass(plan) {
+        const mapped = plan === 'vip' ? 'lifetime' : 'monthly';
+        localStorage.setItem('guidePassType', mapped);
+        const fields = { guidePassType: mapped };
+        if (mapped === 'monthly') {
+            const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
+            localStorage.setItem('guidePassExpiresAt', String(expiresAt));
+            fields.guidePassExpiresAt = expiresAt;
+        }
+        const user = auth.currentUser;
+        if (user) {
+            try { await setDoc(doc(db, 'users', user.uid), fields, { merge: true }); } catch (e) {}
+        }
+        return true;
+    }
+};
 
 // ==========================================
 // OUVERTURE AUTOMATIQUE DU FORMULAIRE DE CONNEXION

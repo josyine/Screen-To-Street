@@ -14,7 +14,11 @@
 <meta name="theme-color" content="#F5F3FC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="welcome-style.css?v=20260969" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}"> 
+<link rel="stylesheet" href="welcome-style.css?v=20260971" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<!-- Onboarding de Mei (demande du 03/10/2026), mobile uniquement — voir mei-onboarding.css/
+     .js et la note dans welcome-script.js (.open-auth-btn). Chargé ici seulement, jamais sur
+     les autres pages du site. -->
+<link rel="stylesheet" href="mei-onboarding.css?v=20260971">
 <style>
     a { text-decoration: none !important; }
     
@@ -379,7 +383,52 @@
     </div>
 </div>
 
-<script src="countries.js?v=20260969"></script>
-<script type="module" src="welcome-script.js?v=20260969"></script>
+<script src="countries.js?v=20260971"></script>
+<script type="module" src="welcome-script.js?v=20260971"></script>
+
+<!-- Onboarding de Mei (demande du 03/10/2026) — markup repris du prototype fourni, voir
+     mei-onboarding.css/.js. Masqué par défaut (.hidden) : window.MeiOnboarding.open()
+     (appelé depuis welcome-script.js, uniquement sous 760px) l'affiche. La version
+     desktop du formulaire "Log in or sign up" (#auth-modal, plus haut dans ce fichier)
+     n'est jamais remplacée, seulement court-circuitée sur mobile avant qu'elle ne
+     s'ouvre. -->
+<div class="mo hidden" id="mo" role="dialog" aria-modal="true" aria-label="Création de compte avec Mei">
+ <div class="mo-fit" id="fit">
+  <div class="mo-phone" id="phone">
+    <div class="bg" id="bg">
+      <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+      <svg class="bg-route" viewBox="0 0 390 844" preserveAspectRatio="none" aria-hidden="true">
+        <path class="route-line" d="M-20,180 C60,150 90,110 150,130 C210,150 230,90 320,100 C370,106 400,70 430,60" fill="none" stroke="#C6B8E3" stroke-width="2.2" stroke-linecap="round"/>
+        <circle class="dot dot-a" cx="150" cy="130" r="5" fill="#B9A8DA"/><circle class="dot dot-b" cx="320" cy="100" r="5" fill="#B9A8DA"/>
+        <circle class="dot dot-c" cx="60" cy="230" r="7" fill="#D42759"/><circle class="dot dot-d" cx="260" cy="210" r="4.5" fill="#C6B8E3"/>
+        <circle class="dot dot-e" cx="340" cy="620" r="6" fill="#B9A8DA"/><circle class="dot dot-f" cx="40" cy="560" r="4.5" fill="#D9CDEE"/>
+        <circle class="dot dot-g" cx="120" cy="700" r="6.5" fill="#D42759"/>
+      </svg>
+    </div>
+    <div class="map" id="map">
+      <svg width="390" height="844" viewBox="0 0 390 844" aria-hidden="true">
+        <rect width="390" height="844" fill="#F1EEF8"/>
+        <path d="M230 200 C280 185 335 210 330 255 C325 290 270 292 248 268 C232 250 215 212 230 200z" fill="#E4EDE6"/>
+        <path d="M30 700 C70 680 120 700 115 740 C110 770 60 772 40 755 C25 740 18 712 30 700z" fill="#E4EDE6"/>
+        <path d="M-20 360 C60 330 120 380 200 360 C280 340 330 380 410 350" stroke="#D5CAEE" stroke-width="46" fill="none" stroke-linecap="round"/>
+        <path d="M-10 470 L400 430M-10 620 L400 655M-10 210 L400 170M60 -10 L120 860M250 -10 L300 860" stroke="#fff" stroke-width="8" fill="none"/>
+        <path d="M-10 540 L400 520M-10 760 L400 790M180 -10 L200 860M330 -10 L370 860M-10 290 L400 270M20 -10 L40 860" stroke="#fff" stroke-width="3.5" fill="none"/>
+        <text x="138" y="364" font-family="Poppins,sans-serif" font-size="11" font-style="italic" fill="#8C7FA6">Han River</text>
+        <text x="70" y="580" font-family="Poppins,sans-serif" font-size="11" font-weight="600" fill="#8C7FA6">Gangnam-gu</text>
+        <text x="262" y="575" font-family="Poppins,sans-serif" font-size="11" font-weight="600" fill="#8C7FA6">Songpa-gu</text>
+        <text x="66" y="250" font-family="Poppins,sans-serif" font-size="11" font-weight="600" fill="#8C7FA6">Jongno-gu</text>
+      </svg>
+    </div>
+    <div class="map-dim" id="mapDim"></div>
+    <div class="scene" id="scene"></div>
+    <div class="mei-clip" id="meiClip"><div class="mei" id="mei"><div class="mei-inner" id="meiInner"><canvas id="meiCanvas" aria-hidden="true"></canvas></div></div></div>
+    <div class="fx" id="fx"></div>
+    <div class="sheet" id="sheet"></div>
+    <div class="nav" id="nav"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+ </div>
+</div>
+<script defer src="mei-onboarding.js?v=20260971"></script>
 </body>
 </html>
