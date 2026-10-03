@@ -1,0 +1,204 @@
+/* =========================================================
+   Screen To Street — Onboarding de Mei (demande du 03/10/2026)
+   Chargé uniquement par index.html, affiché uniquement sur mobile (voir
+   window.MeiOnboarding.open() dans mei-onboarding.js, déclenché depuis
+   welcome-script.js quand .open-auth-btn est cliqué sous 760px — la
+   version desktop du formulaire "Log in or sign up" (#auth-modal,
+   welcome-style.css) reste totalement inchangée).
+   Toutes les règles ci-dessous sont volontairement préfixées par ".mo "
+   (le conteneur racine de cette fonctionnalité) : plusieurs noms de
+   classe du prototype d'origine (.btn, .bg, .chip, .nav, .pin, .dot,
+   .icon-btn...) existent DÉJÀ dans welcome-style.css avec une définition
+   différente (le hero de la page d'accueil réutilise le même langage
+   visuel "blobs + route animée") — sans ce préfixe, ces règles se
+   seraient mutuellement écrasées. Même chose pour les noms de
+   @keyframes (gradientShift, blobMove1/2/3, floatA/B/C, flow...),
+   renommés ici avec un préfixe "mo" pour la même raison. */
+:root{
+  --mag:#D42759; --mag-d:#A81C45; --pink:#FCE7F0; --ink:#212832; --muted:#5E576E; --soft:#6B6478;
+  --line:#E2DDEA; --lav:#EFE9FA; --map:#F1EEF8;
+}/* ---------- overlay + phone ---------- */
+
+
+
+.mo{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(33,40,50,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .35s}
+.mo.open{opacity:1}
+.mo-fit{position:relative;width:390px;height:844px;transform-origin:center center}
+.mo-phone{position:absolute;inset:0;overflow:hidden;border-radius:40px;box-shadow:0 30px 80px rgba(20,14,40,.45);background:#F5F3FC;user-select:none;-webkit-user-select:none}
+.mo.full .mo-phone{border-radius:0;box-shadow:none}/* ---------- animated background (same as site hero) ---------- */
+
+
+.mo .bg{position:absolute;inset:0;transition:opacity .6s,filter .7s;background:linear-gradient(135deg,#F5F3FC,#E3DEF5,#D8CFF0,#E3DEF5);background-size:200% 200%;animation:moGradientShift 10s ease infinite;transition:opacity .6s}
+@keyframes moGradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.mo .blob{position:absolute;border-radius:50%;filter:blur(36px);pointer-events:none}
+.mo .blob-1{top:-8%;left:-18%;width:300px;height:300px;background:radial-gradient(circle,rgba(212,39,89,.16),transparent 70%);animation:moBlobMove1 15s ease-in-out infinite}
+.mo .blob-2{bottom:-10%;right:-18%;width:340px;height:340px;background:radial-gradient(circle,rgba(139,92,246,.16),transparent 70%);animation:moBlobMove2 16s ease-in-out infinite}
+.mo .blob-3{top:30%;left:30%;width:240px;height:240px;background:radial-gradient(circle,rgba(91,141,255,.13),transparent 70%);animation:moBlobMove3 13s ease-in-out infinite}
+@keyframes moBlobMove1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,18px)}}
+@keyframes moBlobMove2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-24px)}}
+@keyframes moBlobMove3{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,-30px)}}
+.mo .bg-route{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+.mo .route-line{stroke-dasharray:1 12;animation:moFlow 14s linear infinite}
+@keyframes moFlow{to{stroke-dashoffset:-260}}
+.mo .dot{transform-box:fill-box;transform-origin:center}
+.mo .dot-a{animation:moFloatA 3.2s ease-in-out infinite}.mo .dot-b{animation:moFloatB 3.6s ease-in-out infinite .4s}.mo .dot-c{animation:moFloatC 2.8s ease-in-out infinite .7s}
+.mo .dot-d{animation:moFloatA 4s ease-in-out infinite .2s}.mo .dot-e{animation:moFloatB 3.4s ease-in-out infinite 1s}.mo .dot-f{animation:moFloatC 3s ease-in-out infinite .5s}.mo .dot-g{animation:moFloatA 3.8s ease-in-out infinite 1.3s}
+@keyframes moFloatA{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-13px)}}
+@keyframes moFloatB{0%,100%{transform:translate(0,0)}50%{transform:translate(-11px,11px)}}
+@keyframes moFloatC{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9px,10px) scale(1.35)}}/* ---------- demo map layer ---------- */
+
+
+.mo .map{position:absolute;inset:0;background:var(--map);opacity:0;transition:opacity .6s,transform 1s cubic-bezier(.2,.8,.2,1);transform-origin:50% 50%}
+.mo .map.on{opacity:1}
+.mo .map-dim{position:absolute;inset:0;background:rgba(33,40,50,.35);opacity:0;transition:opacity .4s;pointer-events:none}
+.mo .map-dim.on{opacity:1}/* ---------- layers ---------- */
+
+
+.mo .scene{position:absolute;inset:0;z-index:2}
+.mo .mei-clip{position:absolute;z-index:3;left:0;top:0;width:390px;height:844px;pointer-events:none;transition:left .6s cubic-bezier(.3,.9,.3,1),top .6s cubic-bezier(.3,.9,.3,1),width .6s,height .6s,border-radius .6s,background-color .4s}
+.mo .mei-clip.clip{overflow:hidden}
+.mo .mei{position:absolute;transition:left .7s cubic-bezier(.3,.9,.25,1),top .7s cubic-bezier(.3,.9,.25,1),width .7s cubic-bezier(.3,.9,.25,1),height .7s cubic-bezier(.3,.9,.25,1)}
+.mo .mei-inner{position:absolute;inset:0;transform-origin:50% 100%}
+.mo .mei canvas,.mo .mei img.fallback{position:absolute;left:-8%;top:-8%;width:116%;height:116%}
+.mo .mei img.fallback{left:0;top:0;width:100%;height:100%}
+.mo .fx{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.mo .sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:#fff;border-radius:28px 28px 0 0;padding:18px 22px 24px;box-shadow:0 -10px 30px rgba(46,30,60,.1);display:flex;flex-direction:column;gap:13px;transform:translateY(105%);transition:transform .5s cubic-bezier(.2,.9,.25,1.08)}
+.mo .sheet.in{transform:translateY(0)}
+.mo .nav{position:absolute;top:0;left:0;right:0;z-index:7;height:72px;padding:14px 16px 0 20px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mo .brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap}
+.mo .brand b{color:var(--mag)}
+.mo .tag-demo{padding:3px 9px;border-radius:999px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em}
+.mo .nav-right{display:flex;align-items:center;gap:8px}
+.mo .icon-btn{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(46,30,60,.06);transition:transform .15s}
+.mo .icon-btn:active{transform:scale(.92)}
+.mo .text-btn{height:36px;padding:0 12px;border:0;border-radius:999px;background:rgba(255,255,255,.75);color:#4A4358;font-size:12px;font-weight:600}
+.mo .next-pill{height:38px;padding:0 14px;border:0;border-radius:999px;background:var(--mag);color:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;box-shadow:0 6px 14px rgba(212,39,89,.3)}
+.mo .demo-count{font-size:11px;font-weight:700;color:var(--soft);background:rgba(255,255,255,.8);padding:4px 9px;border-radius:999px}/* ---------- sheet pieces ---------- */
+
+
+.mo .dots{display:flex;justify-content:center;gap:6px}
+.mo .dots i{width:6px;height:6px;border-radius:999px;background:var(--line);transition:all .35s}
+.mo .dots i.d{background:rgba(212,39,89,.35)}
+.mo .dots i.n{width:22px;background:var(--mag)}
+.mo .bars{display:flex;justify-content:center;gap:7px}
+.mo .bars i{width:24px;height:5px;border-radius:4px;background:#ECE7F4;transition:background .4s}
+.mo .bars i.d{background:var(--mag)}.mo .bars i.n{background:#F488C4}
+.mo .bubble{position:relative;background:var(--pink);border-radius:18px;padding:14px 16px;font-size:14.5px;font-weight:600;line-height:1.45;min-height:52px}
+.mo .bubble::before{content:"";position:absolute;top:-7px;left:var(--tail,50%);width:14px;height:14px;background:var(--pink);transform:rotate(45deg);border-radius:3px}
+.mo .bubble.white{background:#fff;box-shadow:0 8px 20px rgba(46,30,60,.12);font-size:12.8px;padding:11px 14px}
+.mo .bubble.white::before{display:none}
+.mo .bubble .caret{display:inline-block;width:2px;height:1em;background:var(--mag);vertical-align:-2px;margin-left:1px;animation:moBlink .8s steps(2) infinite}
+@keyframes moBlink{50%{opacity:0}}
+.mo .sub{font-size:12px;color:var(--soft);margin-top:-5px}
+.mo .btn{height:52px;border:0;border-radius:999px;background:var(--mag);color:#fff;font-weight:600;font-size:15px;box-shadow:0 10px 24px rgba(212,39,89,.28);transition:transform .15s,box-shadow .2s,background .2s;width:100%}
+.mo .btn:hover{background:var(--mag-d)}
+.mo .btn:active{transform:scale(.97)}
+.mo .btn.outline{background:#fff;color:var(--mag);border:1.5px solid var(--mag);box-shadow:none}
+.mo .btn.soft{background:var(--lav);color:var(--ink);box-shadow:none}
+.mo .btn.sm{height:46px;font-size:14px}
+.mo .btn.pulse{animation:moPulse 1.8s ease-in-out infinite}
+@keyframes moPulse{0%,100%{box-shadow:0 10px 24px rgba(212,39,89,.28)}50%{box-shadow:0 10px 36px rgba(212,39,89,.6)}}
+.mo .link{height:44px;border:0;background:transparent;color:var(--soft);font-size:13px;font-weight:500}
+.mo .row{display:flex;gap:10px}.mo .row>*{flex:1}
+.mo .field{display:flex;flex-direction:column;gap:6px}
+.mo .field label{font-size:12.5px;font-weight:700}
+.mo .field input,.mo .field select{height:46px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.mo .field input:focus,.mo .field select:focus{border-color:var(--mag);box-shadow:0 0 0 3px rgba(212,39,89,.12)}
+.mo .field .err{font-size:11.5px;color:#B3123F;min-height:14px}
+.mo .field.bad input{border-color:#B3123F;animation:moShake .4s}
+@keyframes moShake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.mo .chips{display:flex;flex-wrap:wrap;gap:8px}
+.mo .chip{height:40px;padding:0 15px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-size:12.5px;font-weight:600;transition:all .2s}
+.mo .chip[aria-pressed="true"]{border-color:var(--mag);background:var(--pink);color:var(--mag)}
+.mo .chip.sm{height:34px;font-size:11.5px;padding:0 12px}
+.mo .radio{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:#fff;cursor:pointer;transition:all .2s}
+.mo .radio input{margin-top:3px;accent-color:var(--mag);width:16px;height:16px}
+.mo .radio.on{border-color:var(--mag);background:var(--pink)}
+.mo .radio b{font-size:13px;display:block}.mo .radio small{font-size:11.5px;color:var(--muted)}/* ---------- scene pieces ---------- */
+
+
+.mo .rise{opacity:0;animation:moRise .6s cubic-bezier(.2,.9,.3,1.2) forwards;animation-delay:var(--d,0s)}
+@keyframes moRise{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.mo .pop{opacity:0;animation:moPopIn .5s cubic-bezier(.3,1.6,.4,1) forwards;animation-delay:var(--d,0s)}
+@keyframes moPopIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+.mo .slide-r{opacity:0;animation:moSlideR .55s cubic-bezier(.2,.9,.3,1.15) forwards;animation-delay:var(--d,0s)}
+@keyframes moSlideR{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+.mo .hint{position:absolute;left:0;right:0;bottom:44px;display:flex;justify-content:center;opacity:0;animation:moRise .6s forwards;animation-delay:var(--d,1.2s)}
+.mo .hint span{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.85);font-size:12.5px;font-weight:600;color:#4A4358}
+.mo .hint i{width:10px;height:10px;border-radius:50%;background:var(--mag);box-shadow:0 0 0 0 rgba(212,39,89,.5);animation:moPing 1.6s infinite}
+@keyframes moPing{0%{box-shadow:0 0 0 0 rgba(212,39,89,.5)}100%{box-shadow:0 0 0 12px rgba(212,39,89,0)}}
+.mo .halo{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.98) 0%,rgba(252,231,240,.8) 38%,rgba(252,231,240,0) 70%);animation:moHalo 3s ease-in-out infinite,moFadeIn 1.2s both}
+@keyframes moHalo{0%,100%{transform:scale(.94);opacity:.8}50%{transform:scale(1.05);opacity:1}}
+@keyframes moFadeIn{from{opacity:0}}
+.mo .shadow{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(46,30,60,.2),rgba(46,30,60,0) 70%)}
+.mo .card{background:#fff;border-radius:20px;box-shadow:0 12px 30px rgba(46,30,60,.08)}
+.mo .mini{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.95);box-shadow:0 8px 22px rgba(46,30,60,.08)}
+.mo .mini .ic{flex:0 0 34px;height:34px;border-radius:10px;background:var(--pink);display:flex;align-items:center;justify-content:center}
+.mo .mini b{display:block;font-size:12.5px}.mo .mini span{display:block;font-size:11px;color:var(--soft)}
+.mo .thought{position:absolute;display:flex;align-items:center;gap:6px;padding:12px 16px;border-radius:999px;background:#fff;box-shadow:0 8px 20px rgba(46,30,60,.1)}
+.mo .thought i{width:7px;height:7px;border-radius:50%;background:var(--mag);animation:moTyping 1.2s infinite}
+.mo .thought i:nth-child(2){animation-delay:.2s}.mo .thought i:nth-child(3){animation-delay:.4s}
+@keyframes moTyping{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+.mo .note-chaos{position:absolute;padding:6px 9px;border-radius:8px;background:#fff;font-size:10.5px;font-weight:600;color:var(--muted);box-shadow:0 4px 10px rgba(46,30,60,.08);opacity:0;animation:moDropNote .5s cubic-bezier(.3,1.5,.5,1) forwards;animation-delay:var(--d)}
+@keyframes moDropNote{from{opacity:0;transform:translateY(-30px) rotate(0)}to{opacity:1;transform:rotate(var(--r))}}
+.mo .note-chaos.away{animation:moFlyAway .6s ease-in forwards}
+@keyframes moFlyAway{to{opacity:0;transform:translate(-40px,-60px) rotate(-30deg) scale(.6)}}
+.mo .num{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--mag);color:#fff;border:2.5px solid #fff;font-size:11px;font-weight:700;box-shadow:0 4px 10px rgba(212,39,89,.35)}
+.mo .pin{position:absolute;width:34px;height:42px;border:0;background:none;padding:0;transform-origin:50% 100%;filter:drop-shadow(0 4px 6px rgba(212,39,89,.35))}
+.mo .pin.drop{animation:moPinDrop .7s cubic-bezier(.3,1.6,.5,1) both;animation-delay:var(--d,0s)}
+@keyframes moPinDrop{0%{opacity:0;transform:translateY(-80px)}60%{opacity:1}100%{transform:none}}
+.mo .pin.lock{filter:none}
+.mo .ring{position:absolute;width:30px;height:30px;border-radius:50%;border:2px solid var(--mag);animation:moRingA 1.6s ease-out infinite;pointer-events:none}
+@keyframes moRingA{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+.mo .route-draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:moDraw 1.6s ease forwards;animation-delay:var(--d,0s)}
+@keyframes moDraw{to{stroke-dashoffset:0}}
+.mo .search{display:flex;align-items:center;gap:10px;height:46px;padding:0 16px;border-radius:999px;background:#fff;box-shadow:0 8px 20px rgba(46,30,60,.08)}
+.mo .search input{flex:1;border:0;outline:0;background:transparent;font-family:inherit;font-size:13px}
+.mo .livebtn{display:flex;align-items:center;gap:7px;height:36px;padding:0 14px;border:0;border-radius:999px;background:var(--mag);color:#fff;font-size:11.5px;font-weight:700;letter-spacing:.04em;box-shadow:0 6px 14px rgba(212,39,89,.3)}
+.mo .livebtn i{width:7px;height:7px;border-radius:50%;background:#fff;animation:moBlink 1s steps(2) infinite}
+.mo .tabs{display:flex;border-bottom:2px solid #DCD3EE}
+.mo .tabs button{flex:1;padding:9px 0;margin-bottom:-2px;border:0;border-bottom:2.5px solid transparent;background:none;color:var(--soft);font-size:11px;font-weight:700;letter-spacing:.05em;transition:all .2s}
+.mo .tabs button[aria-selected="true"]{color:var(--mag);border-color:var(--mag)}
+.mo .toast{position:absolute;left:50%;top:84px;z-index:20;transform:translate(-50%,-20px);opacity:0;padding:10px 16px;border-radius:999px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:600;white-space:nowrap;transition:all .35s cubic-bezier(.2,.9,.3,1.3);pointer-events:none}
+.mo .toast.on{transform:translate(-50%,0);opacity:1}
+.mo .confirm{position:absolute;inset:0;z-index:30;background:rgba(33,40,50,.45);display:flex;align-items:center;justify-content:center;padding:24px}
+.mo .confirm .box{background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;width:100%;animation:moPopIn .35s cubic-bezier(.3,1.5,.4,1)}
+.mo .confirm h3{font-size:17px}.mo .confirm p{font-size:13px;color:var(--muted);line-height:1.5}/* ---------- FX ---------- */
+
+
+.mo .spark{position:absolute;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);animation:moSpark .9s ease-out forwards}
+@keyframes moSpark{0%{transform:scale(0) rotate(0);opacity:1}50%{transform:scale(1.15) rotate(45deg);opacity:1}100%{transform:scale(.2) translateY(-24px) rotate(90deg);opacity:0}}
+.mo .twinkle{position:absolute;animation:moTwinkleA 2.4s ease-in-out infinite;animation-delay:var(--d,0s)}
+@keyframes moTwinkleA{0%,100%{opacity:.25;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
+.mo .conf{position:absolute;top:-20px;width:9px;height:5px;border-radius:2px;animation:moFall var(--t) linear forwards;animation-delay:var(--d)}
+@keyframes moFall{to{transform:translate(var(--x),900px) rotate(var(--r))}}
+.mo .flash{position:absolute;inset:0;background:radial-gradient(circle at var(--fx,50%) var(--fy,40%),#fff 0%,rgba(255,240,246,.85) 40%,rgba(255,255,255,.4) 100%);animation:moFlashA .7s ease-out forwards}
+@keyframes moFlashA{0%{opacity:0}8%{opacity:1}100%{opacity:0}}
+.mo .puff{position:absolute;border-radius:50%;background:rgba(255,255,255,.92);animation:moPuffA .9s ease-out forwards}
+@keyframes moPuffA{0%{transform:scale(.2);opacity:1}100%{transform:scale(1.5) translateX(var(--x));opacity:0}}
+.mo .bracket{position:absolute;inset:0;opacity:0;transition:opacity .3s}
+.mo .bracket.on{opacity:1}
+.mo .bracket svg{position:absolute;inset:0;transition:transform .5s cubic-bezier(.3,1.5,.4,1)}/* ---------- Mei body actions ---------- */
+
+
+.mo .mei-inner.hop{animation:moHop .7s cubic-bezier(.3,.7,.4,1)}
+@keyframes moHop{0%{transform:none}15%{transform:scale(1.05,.93)}45%{transform:translateY(-26px) scale(.97,1.04)}75%{transform:scale(1.04,.95)}100%{transform:none}}
+.mo .mei-inner.drop{animation:moDropIn .95s cubic-bezier(.4,0,.6,1) both}
+@keyframes moDropIn{0%{transform:translateY(-760px) scale(.95,1.08)}55%{transform:translateY(0) scale(1.1,.86)}70%{transform:translateY(-14px) scale(.98,1.03)}85%{transform:scale(1.02,.98)}100%{transform:none}}
+.mo .mei-inner.appear{animation:moAppear 1.6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes moAppear{0%{opacity:0;filter:blur(14px) brightness(1.6);transform:scale(.9)}60%{opacity:1;filter:blur(2px) brightness(1.2)}80%{transform:scale(1.03)}100%{opacity:1;filter:none;transform:none}}
+.mo .mei-inner.pop-out{animation:moPopOut .22s ease-in forwards}
+@keyframes moPopOut{to{transform:scale(.7);opacity:0}}
+.mo .mei-inner.pop-in{animation:moPopIn2 .5s cubic-bezier(.3,1.6,.4,1) both}
+@keyframes moPopIn2{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.mo .plan-card{border:1.5px solid var(--line);background:#fff;cursor:pointer}
+.mo .plan-card[aria-pressed="true"]{border:2px solid var(--mag);background:var(--pink);box-shadow:0 8px 18px rgba(212,39,89,.15)}
+.mo .pdot{width:10px;height:10px;border-radius:50%;background:var(--mag);animation:moPing 1.6s infinite}
+.mo .mei-inner.liftoff{animation:moLiftoff .38s ease-in forwards}
+@keyframes moLiftoff{0%{transform:none;opacity:1}30%{transform:scale(1.04,.94)}100%{transform:translateY(-160px) scale(.9,1.08);opacity:0}}
+.mo .mei-inner.standup{animation:moStandup .7s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes moStandup{0%{transform:scale(1.12,.7);opacity:.2}60%{transform:scale(.97,1.04);opacity:1}100%{transform:none}}
+.mo .mei-inner.exit{animation:moExitR .8s ease-in forwards}
+@keyframes moExitR{30%{transform:translateY(-12px)}100%{transform:translateX(380px) rotate(8deg);opacity:0}}
+
+@media (prefers-reduced-motion:reduce){.mo *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
