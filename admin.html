@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260971" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260972" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -400,10 +400,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260971"></script>
-<script src="countries.js?v=20260971"></script>
-<script src="locations-data.js?v=20260971"></script>
-<script src="script.js?v=20260971"></script>
+<script type="module" src="firebase-init.js?v=20260972"></script>
+<script src="countries.js?v=20260972"></script>
+<script src="locations-data.js?v=20260972"></script>
+<script src="script.js?v=20260972"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -733,29 +733,16 @@ recomposée, sans texte ni légende.`;
         if (/^https?:\/\/(www\.|m\.|mobile\.)?facebook\.com\/(watch\/?\?v=|permalink\.php\?|photo(\.php)?\/?\?|share\/(p|v|r)\/|reel\/|groups\/[^/]+\/(posts|permalink)\/|[^/]+\/(posts|videos|photos|reel)\/)/i.test(s)) return true;
         return /[?&](story_fbid|fbid)=/i.test(s);
     }
-    let facebookSdkLoading = null;
-    function loadFacebookSdkScript() {
-        if (window.FB && window.FB.XFBML) return Promise.resolve();
-        if (facebookSdkLoading) return facebookSdkLoading;
-        facebookSdkLoading = new Promise((resolve) => {
-            if (!document.getElementById('fb-root')) {
-                const root = document.createElement('div');
-                root.id = 'fb-root';
-                document.body.insertBefore(root, document.body.firstChild);
-            }
-            const s = document.createElement('script');
-            s.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0';
-            s.crossOrigin = 'anonymous';
-            s.onload = resolve;
-            s.onerror = resolve;
-            document.body.appendChild(s);
-        });
-        return facebookSdkLoading;
-    }
-    async function renderFacebookEmbed(container, facebookUrl) {
-        container.innerHTML = `<div class="fb-post" data-href="${escapeHtml(facebookUrl)}" data-width="auto"></div>`;
-        await loadFacebookSdkScript();
-        if (window.FB && window.FB.XFBML) window.FB.XFBML.parse(container);
+    // BUG corrigé (demande du 03/10/2026, "le facebook embeded ne fonctionne plus") — même
+    // correctif que renderFacebookEmbedOnDetails() dans script.js (fiche publique) : le SDK
+    // JS officiel de Facebook (connect.facebook.net/.../sdk.js) + FB.XFBML.parse() dépendait
+    // d'un comportement interne non documenté de façon fiable, et Meta a durci ses exigences
+    // côté "Embedded Posts" au fil du temps — cause la plus probable d'un échec permanent.
+    // facebook.com/plugins/post.php?href=... est l'iframe direct que ce SDK finissait par
+    // injecter lui-même en interne ; l'utiliser directement retire cette dépendance. width=
+    // 500/height=658 : taille par défaut documentée par Facebook lui-même pour ce plugin.
+    function renderFacebookEmbed(container, facebookUrl) {
+        container.innerHTML = `<iframe src="https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(facebookUrl)}&show_text=true&width=500" width="500" height="658" style="border:none;overflow:hidden;max-width:100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`;
     }
 
     // Embed TikTok (demande du 19/09/2026, "je veux que tous les liens des réseaux sociaux
