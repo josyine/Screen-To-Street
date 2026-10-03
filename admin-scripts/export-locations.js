@@ -169,17 +169,25 @@ async function main() {
         // (rien à faire dans ce cas). Même traitement que 'img'/'recreatedPhoto'
         // ci-dessus, appliqué entrée par entrée, sinon un lieu à plusieurs photos
         // uploadées réintroduirait exactement le bug de gonflement corrigé au-dessus.
+        // Depuis le 03/10/2026, une entrée marquée "pose officielle" (voir
+        // window.createPhotoGalleryField() dans script.js) n'est plus une simple chaîne mais
+        // {url, official:true} — repéré ici pour ne pas la laisser passer intacte (val ===
+        // objet, jamais une data URL base64 elle-même) et perdre le bénéfice de cette
+        // extraction pour les photos officielles.
         if (Array.isArray(loc.recreatedPhotos)) {
             loc.recreatedPhotos = loc.recreatedPhotos.map((val, i) => {
-                if (typeof val !== 'string' || !val.startsWith('data:image/')) return val;
-                const m = val.match(/^data:(image\/[a-z]+);base64,(.*)$/s);
+                const isObj = val && typeof val === 'object';
+                const url = isObj ? val.url : val;
+                if (typeof url !== 'string' || !url.startsWith('data:image/')) return val;
+                const m = url.match(/^data:(image\/[a-z]+);base64,(.*)$/s);
                 if (!m) return val;
                 const ext = MIME_EXT[m[1]] || 'jpg';
                 const safeId = String(loc.id).replace(/[^a-zA-Z0-9_-]/g, '');
                 const filename = `admin-upload-${safeId}-recreated-${i}.${ext}`;
                 fs.writeFileSync(path.join(imagesDir, filename), Buffer.from(m[2], 'base64'));
                 extractedCount++;
-                return `images/${filename}`;
+                const newUrl = `images/${filename}`;
+                return isObj ? Object.assign({}, val, { url: newUrl }) : newUrl;
             });
         }
     });

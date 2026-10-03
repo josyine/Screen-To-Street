@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260968" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260969" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -178,7 +178,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
 .modal-hero-gallery { position: absolute; inset: 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; z-index: 1; }
 .modal-hero-gallery::-webkit-scrollbar { display: none; }
 .modal-hero-gallery.hidden { display: none; }
-.modal-hero-slide { flex: 0 0 100%; height: 100%; background-size: cover; background-position: center; scroll-snap-align: start; }
+.modal-hero-slide { position: relative; flex: 0 0 100%; height: 100%; background-size: cover; background-position: center; scroll-snap-align: start; }
+/* Badge "pose officielle" (demande du 03/10/2026) — voir officialPoseBadgeHtml()/
+   .recreate-official-badge (style.css) et openLocModal() dans script.js. position:relative
+   ci-dessus sur .modal-hero-slide ancre le badge à CHAQUE slide individuellement (sinon il
+   dériverait vers #modal-hero, fixe à l'écran plutôt que suivant la photo qu'il concerne
+   pendant le défilement) ; .modal-hero-single-badge n'a pas besoin de la même règle, le cas
+   à une seule photo n'ayant pas de défilement. */
+.modal-hero-single-badge.hidden { display: none; }
 #modal-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); pointer-events: none; z-index: 1; display: none; }
 #modal-hero.modal-hero-gallery-active::after { display: block; }
 .modal-hero-dots { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 2; }
@@ -442,9 +449,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260968"></script>
-<script src="locations-data.js?v=20260968"></script>
-<script src="script.js?v=20260968"></script>
+<script type="module" src="firebase-init.js?v=20260969"></script>
+<script src="locations-data.js?v=20260969"></script>
+<script src="script.js?v=20260969"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -641,8 +648,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     const cameraBadgeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
     // Première photo de loc.recreatedPhotos (tableau, format courant depuis le 18/09/2026),
     // ou repli sur l'ancien loc.recreatedPhoto (chaîne unique) pour les lieux jamais migrés.
+    // recreatedPhotoUrl() (script.js) : une entrée peut être une simple chaîne ou, depuis le
+    // 03/10/2026, un objet {url, official:true} pour une photo marquée pose officielle (voir
+    // window.createPhotoGalleryField()) — toujours renvoyer une chaîne ici, cette fonction
+    // alimente aussi bien un style background-image (vignette) qu'un attribut CSS url().
     function firstRecreatedPhoto(loc) {
-        return (Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length) ? loc.recreatedPhotos[0] : (loc.recreatedPhoto || '');
+        const entry = (Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length) ? loc.recreatedPhotos[0] : loc.recreatedPhoto;
+        return (typeof recreatedPhotoUrl === 'function' ? recreatedPhotoUrl(entry) : entry) || '';
     }
     let sacredGridRendered = false;
     // Liste ordonnée des lieux affichés dans cet onglet + index de celui actuellement
@@ -783,12 +795,16 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         const loc = sacredLocs.find(l => l.id == locId);
         if (!loc || typeof window.openLocModal !== 'function') return;
         sacredSwipeIndex = sacredLocs.indexOf(loc);
-        const photo = firstRecreatedPhoto(loc);
+        const photo = firstRecreatedPhoto(loc); // simple chaîne — juste pour savoir si CE lieu a une photo
         // Toutes les photos du lieu (demande du 19/09/2026) — pas seulement la 1ère : voir
         // le carrousel horizontal ajouté dans openLocModal() (script.js), qui s'active dès
-        // que postContext.photos contient plus d'une photo.
-        const photos = Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length ? loc.recreatedPhotos : (photo ? [photo] : []);
-        window.openLocModal(locId, photo ? { photo, photos } : undefined);
+        // que postContext.photos contient plus d'une photo. Entrées BRUTES (pas passées par
+        // firstRecreatedPhoto()) pour que le statut "pose officielle" (demande du 03/10/2026,
+        // une entrée peut être {url, official:true}) atteigne bien openLocModal() —
+        // recreatedPhotoUrl()/recreatedPhotoIsOfficial() (script.js) savent lire les deux
+        // formats, string ou objet, à l'arrivée.
+        const photos = Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length ? loc.recreatedPhotos : (loc.recreatedPhoto ? [loc.recreatedPhoto] : []);
+        window.openLocModal(locId, photo ? { photo: photos[0], photos } : undefined);
     }
 
     // Swipe gauche/droite pour passer à la photo recréée suivante/précédente pendant que la
