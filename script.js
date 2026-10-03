@@ -272,7 +272,7 @@ window.createPhotoGalleryField = function (container, opts) {
         const starSvg = (filled) => `<svg width="13" height="13" viewBox="0 0 24 24" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
         grid.innerHTML = photos.map((p, i) => `
             <div class="pg-thumb" style="position:relative; width:84px; height:84px;">
-                <img src="${escapeHtml(p.url)}" alt="" style="width:100%; height:100%; object-fit:cover; border-radius:10px; display:block;">
+                <img class="pg-thumb-img" data-index="${i}" src="${escapeHtml(p.url)}" alt="" title="Click to crop this photo" style="width:100%; height:100%; object-fit:cover; border-radius:10px; display:block; cursor:pointer;">
                 <button type="button" class="pg-remove" data-index="${i}" title="Remove this photo" style="position:absolute; top:-6px; right:-6px; width:22px; height:22px; border-radius:50%; border:1.5px solid #e2e8f0; background:#fff; color:#64748b; font-size:14px; line-height:1; cursor:pointer;">&times;</button>
                 <button type="button" class="pg-official-toggle" data-index="${i}" title="${p.official ? 'Marked as the official celebrity pose — click to unmark' : 'Mark as the official celebrity pose'}" style="position:absolute; bottom:-6px; right:-6px; width:24px; height:24px; border-radius:50%; border:1.5px solid ${p.official ? '#f59e0b' : '#e2e8f0'}; background:${p.official ? '#fffbeb' : '#fff'}; color:${p.official ? '#f59e0b' : '#cbd5e1'}; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;">${starSvg(p.official)}</button>
             </div>
@@ -288,6 +288,22 @@ window.createPhotoGalleryField = function (container, opts) {
                 const p = photos[Number(btn.dataset.index)];
                 p.official = !p.official;
                 render();
+            });
+        });
+        // Recadrer une photo DÉJÀ ajoutée (demande du 03/10/2026, "je peux recadrer une
+        // photo que lorsque je l'importe") : jusqu'ici window.openImageCropModal() n'était
+        // appelé qu'au moment de l'import (upload, voir plus bas) — cliquer une vignette déjà
+        // dans la galerie rouvre le même modal sur SA photo actuelle, pour la recadrer à
+        // nouveau sans avoir à la retirer et la réimporter.
+        grid.querySelectorAll('.pg-thumb-img').forEach((img) => {
+            img.addEventListener('click', () => {
+                if (typeof window.openImageCropModal !== 'function') return;
+                const idx = Number(img.dataset.index);
+                window.openImageCropModal(photos[idx].url, (cropped) => {
+                    if (cropped === null) return; // Cancel — ne touche pas à la photo existante
+                    photos[idx].url = cropped;
+                    render();
+                });
             });
         });
 
@@ -6915,8 +6931,22 @@ window.openImageCropModal = async function (dataUrl, onDone) {
     overlay.querySelector('#crop-modal-skip').addEventListener('click', () => { cleanup(); onDone(dataUrl); });
     overlay.querySelector('#crop-modal-apply').addEventListener('click', () => {
         if (!cropper) { cleanup(); onDone(dataUrl); return; }
-        const canvas = cropper.getCroppedCanvas({ maxWidth: 2000, maxHeight: 2000, imageSmoothingQuality: 'high' });
-        const result = canvas ? canvas.toDataURL('image/jpeg', 0.9) : dataUrl;
+        // Recadrer une photo DÉJÀ publiée (demande du 03/10/2026) — contrairement à l'import,
+        // qui ne travaille toujours que sur une dataURL fraîchement lue en local, cliquer une
+        // vignette existante (voir window.createPhotoGalleryField()) peut pointer vers une URL
+        // externe (photo collée par URL plutôt qu'uploadée). crossorigin="anonymous" ci-dessus
+        // permet à Cropper.js de lire ses pixels si le serveur distant autorise le CORS, mais
+        // sinon getCroppedCanvas()/toDataURL() lève une SecurityError (canvas "tainted") —
+        // repli sur la photo d'origine inchangée plutôt qu'une exception non rattrapée, même
+        // esprit que le repli déjà en place plus bas si Cropper.js lui-même ne charge pas.
+        let result = dataUrl;
+        try {
+            const canvas = cropper.getCroppedCanvas({ maxWidth: 2000, maxHeight: 2000, imageSmoothingQuality: 'high' });
+            if (canvas) result = canvas.toDataURL('image/jpeg', 0.9);
+        } catch (err) {
+            console.warn('Recadrage impossible (image distante sans CORS ?), photo laissée inchangée :', err);
+            window.alert("This photo couldn't be cropped (the source doesn't allow it) — it was left unchanged.");
+        }
         cleanup();
         onDone(result);
     });
