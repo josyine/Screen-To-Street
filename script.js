@@ -4784,6 +4784,23 @@ function initializeFilters() {
         // sans argument.
         const sInput = document.getElementById('search-input');
         if(sInput) sInput.addEventListener('input', () => renderLocations());
+        // Entrée (demande du 04/10/2026, suite du correctif ci-dessus, "lorsque j'écris
+        // Hawaii... et que je clique sur entrée, que ça me redirige vers Hawaii sur la
+        // map") : le correctif juste au-dessus recadre déjà la carte à CHAQUE frappe, mais
+        // demande explicitement un geste de validation dédié — en plus d'être plus robuste
+        // (un fitBounds explicite au moment voulu, pas tributaire du dernier événement
+        // 'input' en date). currentFilteredLocations est déjà à jour à ce stade (posé par
+        // renderLocations() ci-dessus à chaque frappe) : pas besoin de refiltrer, juste
+        // recadrer dessus explicitement. Perd le focus ensuite (même geste que la barre de
+        // recherche mobile plus bas) pour fermer le clavier virtuel le cas échéant.
+        if(sInput) sInput.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            sInput.blur();
+            if (map && Array.isArray(currentFilteredLocations) && currentFilteredLocations.length > 0) {
+                map.fitBounds(L.latLngBounds(currentFilteredLocations.map(l => [l.lat, l.lng])), { padding: [50, 50], maxZoom: 16 });
+            }
+        });
     }
 }
 
