@@ -618,12 +618,55 @@ function partitionEmbeddableUrls(primaryUrl, extraUrls, isPostUrl) {
     return { embeddable, nonEmbeddable };
 }
 
+// BUG corrigé (demande du 04/10/2026, "il y a un problème quand il y a plusieurs posts
+// embeded... qu'il n'y ait pas de zone blanche qui dépasse") : les iframes directes posées par
+// renderTweetEmbedOnDetails()/renderFacebookEmbedOnDetails()/renderTikTokEmbedOnDetails()
+// ci-dessus (depuis le passage loin du SDK JS, voir leurs notes respectives) ont une hauteur
+// FIXE codée en dur (assez généreuse pour ne jamais rogner un post long) — un post plus court
+// que cette hauteur laisse donc un vide blanc en dessous, d'autant plus visible/gênant une
+// fois plusieurs embeds empilés dans la même fiche. Les widgets JS officiels (widgets.js...)
+// corrigeaient ça eux-mêmes en interne via un message postMessage de l'iframe vers la page
+// parente l'informant de sa vraie hauteur de contenu, pour ajuster l'iframe en conséquence —
+// un mécanisme qu'on peut réécouter nous-mêmes directement, SANS avoir besoin de charger le
+// SDK complet. Format confirmé pour Twitter/X (platform.twitter.com) : JSON
+// {"method":"twttr.private.resize","params":[{"height":N}]}. Repli générique (format non
+// confirmé pour Facebook/TikTok, mais inoffensif si jamais reçu/mal interprété : au pire,
+// aucun redimensionnement n'a lieu, l'iframe garde sa hauteur fixe de départ comme avant ce
+// correctif) pour tout autre message contenant directement un champ `height` numérique.
+let _embedIframeAutoResizeWired = false;
+function wireEmbedIframeAutoResizeOnce() {
+    if (_embedIframeAutoResizeWired) return;
+    _embedIframeAutoResizeWired = true;
+    window.addEventListener('message', (event) => {
+        let height = null;
+        try {
+            const raw = event.data;
+            const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+            if (parsed && parsed.method === 'twttr.private.resize' && Array.isArray(parsed.params) && parsed.params[0] && typeof parsed.params[0].height === 'number') {
+                height = parsed.params[0].height;
+            } else if (parsed && typeof parsed.height === 'number') {
+                height = parsed.height;
+            }
+        } catch (e) { /* format non reconnu (ou pas destiné à nos embeds) — ignoré */ }
+        if (!height || height <= 0) return;
+        // Ne redimensionne que les iframes qu'on a nous-même injectées pour un embed social
+        // (voir renderMultiEmbedsInto() ci-dessous), identifiées par contentWindow ===
+        // event.source — jamais une iframe tierce quelconque présente ailleurs sur la page.
+        document.querySelectorAll('.embed-item iframe').forEach(ifr => {
+            if (ifr.contentWindow === event.source) {
+                ifr.style.height = Math.ceil(height) + 'px';
+            }
+        });
+    });
+}
+
 // Rend PLUSIEURS embeds empilés dans un même conteneur Story (ex: 2 posts Instagram pour un
 // même lieu) : un <div class="embed-item"> par URL, chacun retraité indépendamment par
 // renderFn (qui pose son propre drapeau embedPending/gère son propre repli si besoin) — voir
 // .tweet-embed-wrapper .embed-item dans style.css, repensé en colonne pour empiler plutôt
 // qu'aligner côte à côte comme le prévoyait sa mise en page d'origine (un seul enfant).
 function renderMultiEmbedsInto(container, urls, renderFn) {
+    wireEmbedIframeAutoResizeOnce();
     container.innerHTML = '';
     urls.forEach(url => {
         const item = document.createElement('div');
@@ -1945,12 +1988,23 @@ let currentLocationIdForMemory = null;
 // version fusionnée à la volée (Object.assign({}, loc, remote), voir fetchLocationContent()
 // plus bas) une fois la lecture Firestore résolue, plus à jour que le catalogue statique.
 let lastRenderedLocationForEmbeds = null;
-// Lieux marqués "vérifiés" par un admin (demande du 13/09/2026) — chargé une seule fois,
-// admins uniquement, voir le handler 'firebase-ready' plus bas et renderLocations().
+// Lieux marqués "vérifiés" par un admin (demande du 13/09/2026, initialement un simple
+// pense-bête admin sans effet visiteur ; demande du 04/10/2026, "en mode non admin, n'affiche
+// que les lieux vérifiés" — sert désormais aussi à FILTRER ce qu'un visiteur normal voit,
+// voir renderLocations() plus bas) — chargé une seule fois pour TOUT visiteur (admin ou non),
+// voir le handler 'firebase-ready' plus bas.
 let verifiedLocationIdsCache = [];
-// Filtre "Verified" (demande du 15/09/2026, admin uniquement ; étendu le 21/09/2026 pour
-// pouvoir aussi n'afficher QUE les lieux non vérifiés) — 'all' | 'verified' | 'unverified',
-// voir window.setVerifiedFilterMode() et renderLocations() plus bas.
+// Devient true une fois verifiedLocationIdsCache effectivement chargé depuis Firestore (voir
+// 'firebase-ready' plus bas) — tant que c'est encore false (lecture Firestore en cours),
+// renderLocations() n'applique PAS encore le filtre "vérifié uniquement" ci-dessous pour un
+// visiteur normal : afficher tous les lieux un court instant puis les faire disparaître
+// serait plus déroutant que l'inverse (un lieu qui apparaît une fois le filtre prêt).
+let verifiedIdsLoaded = false;
+// Filtre "Verified"/"Unverified" (demande du 15/09/2026, admin uniquement ; étendu le
+// 21/09/2026 pour pouvoir aussi n'afficher QUE les lieux non vérifiés) — 'all' | 'verified' |
+// 'unverified', voir window.setVerifiedFilterMode() et renderLocations() plus bas. Distinct du
+// filtre "vérifié uniquement" ci-dessus qui s'applique lui à TOUT visiteur non-admin, sans
+// bouton ni état à choisir.
 let verifiedFilterMode = 'all';
 let currentGeneratedItinerary = [];
 let currentLang = localStorage.getItem('lang') || 'en';
@@ -2606,6 +2660,22 @@ window.addEventListener('firebase-ready', async (e) => {
                     }
                 } catch (err) { /* tant pis, le lieu reste visible jusqu'au prochain export statique */ }
             })(),
+            // Lieux "vérifiés" (demande du 04/10/2026, "en mode non admin, n'affiche que les
+            // lieux vérifiés") — lu pour TOUT visiteur désormais (admin ou non, connecté ou
+            // non), contrairement à avant où seul un admin connecté le lisait (c'était alors
+            // un simple pense-bête sans effet visiteur, voir verifiedLocationIdsCache
+            // ci-dessus). Placé AVANT le "if (!user) return" : le filtre doit s'appliquer même
+            // en navigation invitée. Scopé à #map uniquement (pas #feed-grid, contrairement
+            // aux 3 lectures ci-dessus) : renderLocations(), seul endroit qui s'en sert, n'a
+            // d'effet que sur une page avec #map — inutile d'en payer le coût sur feed.html.
+            (async () => {
+                if (!document.getElementById('map') || typeof window.fetchVerifiedLocationIds !== 'function') return;
+                try {
+                    verifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
+                    verifiedIdsLoaded = true;
+                    if (typeof renderLocations === 'function') renderLocations(true);
+                } catch (err) { /* tant pis, le filtre "vérifié uniquement" reste inactif */ }
+            })(),
         ]);
     }
 
@@ -2651,15 +2721,16 @@ window.addEventListener('firebase-ready', async (e) => {
         if (verifiedFilterBtn) verifiedFilterBtn.classList.remove('hidden');
         const unverifiedFilterBtn = document.getElementById('unverified-filter-btn');
         if (unverifiedFilterBtn) unverifiedFilterBtn.classList.remove('hidden');
-        // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) : lue
-        // UNE SEULE FOIS ici, réservée aux admins (jamais chargée pour un visiteur
-        // normal) — voir renderLocations() plus bas, qui s'appuie sur ce cache. N'a
-        // d'effet visible QUE sur la carte (perf, demande du 19/09/2026, voir la note
-        // au-dessus sur newLocations/locationSkeletonOverrides/hiddenLocations) — inutile
-        // sur les pages sans #map, y compris pour un compte admin.
-        if (document.getElementById('map') && typeof window.fetchVerifiedLocationIds === 'function') {
-            verifiedLocationIdsCache = (await window.fetchVerifiedLocationIds()).map(String);
-            if (typeof renderLocations === 'function') renderLocations(true);
+        // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) :
+        // verifiedLocationIdsCache est désormais chargé plus haut, AVANT le "if (!user)
+        // return" (demande du 04/10/2026, voir sa note) pour tout visiteur, pas seulement un
+        // admin — ne reste donc plus qu'à redessiner ICI pour restaurer la vue complète
+        // (tous les lieux, pas seulement les vérifiés) maintenant que window.__isAdminUser
+        // vient de passer à true : le re-rendu déclenché par le chargement plus haut a pu
+        // avoir lieu AVANT que ce drapeau ne soit posé (ordre des blocs dans ce handler), et
+        // aurait donc filtré à tort la vue d'un admin comme celle d'un visiteur normal.
+        if (document.getElementById('map') && typeof renderLocations === 'function') {
+            renderLocations(true);
         }
     }
 
@@ -4822,7 +4893,15 @@ function renderLocations(skipFitBounds) {
                // (verifiedFilterMode ne peut jamais quitter 'all' en dehors des boutons
                // admin, eux-mêmes masqués hors admin).
                (verifiedFilterMode === 'all' ||
-                (verifiedFilterMode === 'verified') === verifiedLocationIdsCache.includes(String(loc.id)));
+                (verifiedFilterMode === 'verified') === verifiedLocationIdsCache.includes(String(loc.id))) &&
+               // BUG corrigé (demande du 04/10/2026, "en mode non admin, n'affiche que les
+               // lieux vérifiés") : un visiteur normal (pas admin) ne voit désormais QUE les
+               // lieux marqués vérifiés par un admin — un admin continue de voir tous les
+               // lieux (verifiedFilterMode ci-dessus reste son seul moyen de restreindre la
+               // vue, s'il le choisit). Tant que verifiedIdsLoaded est encore false (lecture
+               // Firestore en cours, voir sa note plus haut), ce filtre reste inactif pour
+               // éviter de faire disparaître des lieux déjà affichés.
+               (window.__isAdminUser || !verifiedIdsLoaded || verifiedLocationIdsCache.includes(String(loc.id)));
     });
 
     // Tri par ordre de nouveauté (les lieux les plus récemment ajoutés au site en
