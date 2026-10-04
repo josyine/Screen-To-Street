@@ -4771,8 +4771,19 @@ function initializeFilters() {
         [groupSelect, memberSelect, document.getElementById('year-select'), countrySelect].forEach(el => {
             if(el) el.addEventListener('change', () => { if(el===groupSelect) initializeFilters(); renderLocations(); });
         });
+        // BUG corrigé (demande du 04/10/2026, "quand j'écris hawai sur la barre de
+        // recherche, je veux que ça me redirige directement sur Hawai dans la carte") :
+        // passé directement comme écouteur, `renderLocations` recevait l'objet Event natif
+        // du navigateur comme 1er argument (skipFitBounds) — toujours "truthy", donc
+        // `!skipFitBounds` valait systématiquement false dans renderMapMarkers() plus bas,
+        // désactivant silencieusement le fitBounds() Leaflet à CHAQUE frappe dans la barre
+        // de recherche. La liste se filtrait bien (ex: "hawai" ne gardait que les lieux
+        // dont la ville contient "Hawaii"), mais la carte elle-même ne recadrait jamais
+        // dessus. Même correctif que les écouteurs group/member/year/country juste
+        // au-dessus : wrapper dans une fonction fléchée pour n'appeler renderLocations()
+        // sans argument.
         const sInput = document.getElementById('search-input');
-        if(sInput) sInput.addEventListener('input', renderLocations);
+        if(sInput) sInput.addEventListener('input', () => renderLocations());
     }
 }
 
