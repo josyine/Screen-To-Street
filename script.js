@@ -4784,6 +4784,23 @@ function initializeFilters() {
         // sans argument.
         const sInput = document.getElementById('search-input');
         if(sInput) sInput.addEventListener('input', () => renderLocations());
+        // Entrée (demande du 04/10/2026, suite du correctif ci-dessus, "lorsque j'écris
+        // Hawaii... et que je clique sur entrée, que ça me redirige vers Hawaii sur la
+        // map") : le correctif juste au-dessus recadre déjà la carte à CHAQUE frappe, mais
+        // demande explicitement un geste de validation dédié — en plus d'être plus robuste
+        // (un fitBounds explicite au moment voulu, pas tributaire du dernier événement
+        // 'input' en date). currentFilteredLocations est déjà à jour à ce stade (posé par
+        // renderLocations() ci-dessus à chaque frappe) : pas besoin de refiltrer, juste
+        // recadrer dessus explicitement. Perd le focus ensuite (même geste que la barre de
+        // recherche mobile plus bas) pour fermer le clavier virtuel le cas échéant.
+        if(sInput) sInput.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            sInput.blur();
+            if (map && Array.isArray(currentFilteredLocations) && currentFilteredLocations.length > 0) {
+                map.fitBounds(L.latLngBounds(currentFilteredLocations.map(l => [l.lat, l.lng])), { padding: [50, 50], maxZoom: 16 });
+            }
+        });
     }
 }
 
@@ -5140,8 +5157,24 @@ function addSingleLocationMarker(loc) {
         }
         window.openDetailsPanel(loc.id);
     });
-    marker.on('mouseover', () => showMapHoverTip(loc, marker));
-    marker.on('mouseout', () => hideMapHoverTip());
+    // BUG corrigé (demande du 04/10/2026, toujours signalé après le correctif
+    // stopPropagation ci-dessus — "le bouton view ne fonctionne toujours pas") : ces deux
+    // écouteurs mouseover/mouseout étaient posés INCONDITIONNELLEMENT, y compris sur
+    // mobile, où ils n'ont pourtant aucune raison d'exister (pas de survol tactile — le
+    // tap-tap ci-dessus gère déjà l'ouverture). Sur iOS Safari en particulier, un tap sur
+    // UN élément puis sur un AUTRE (ex: le marqueur puis le bouton "Voir" de sa bulle, qui
+    // vit ailleurs dans le DOM) déclenche des événements souris synthétiques dans cet
+    // ordre précis : mouseout sur l'ancien élément ciblé, PUIS mouseover/click sur le
+    // nouveau — donc mouseout sur CE marqueur se déclenchait AVANT le click sur le bouton
+    // "Voir" de sa propre bulle, appelant hideMapHoverTip() (display:none immédiat) une
+    // fraction de seconde avant que le tap sur le bouton n'ait eu la moindre chance
+    // d'aboutir : la bulle (et le bouton avec) disparaissait sous le doigt au moment même
+    // du tap, qui retombait alors sur la carte en dessous au lieu du bouton. Inoffensif à
+    // corriger : showMapHoverTip() reste déclenché par le clic du 1er tap (voir
+    // marker.on('click') ci-dessus) sur mobile, le survol souris réel n'existe que sur
+    // desktop.
+    marker.on('mouseover', () => { if (!isMobileMapViewport()) showMapHoverTip(loc, marker); });
+    marker.on('mouseout', () => { if (!isMobileMapViewport()) hideMapHoverTip(); });
 }
 
 // BUG rapporté le 13/09/2026 ("enlève les symboles 'x7' sous forme de puissance, laisse
