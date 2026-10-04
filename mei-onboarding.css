@@ -64,14 +64,23 @@
 .mo .fx{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
 .mo .sheet{position:absolute;left:0;right:0;bottom:0;z-index:5;background:#fff;border-radius:28px 28px 0 0;padding:18px 22px 24px;box-shadow:0 -10px 30px rgba(46,30,60,.1);display:flex;flex-direction:column;gap:13px;transform:translateY(105%);transition:transform .5s cubic-bezier(.2,.9,.25,1.08)}
 .mo .sheet.in{transform:translateY(0)}
+/* Repli manquant depuis l'intégration (demande du 04/10/2026, maquette mise à jour) : sans
+   max-height/overflow-y, une feuille au contenu plus haut que le téléphone débordait du
+   cadre au lieu de défiler à l'intérieur — scrollbar-width/::-webkit-scrollbar cachent la
+   barre de défilement elle-même, purement cosmétique. */
+.mo .sheet{max-height:calc(100% - 84px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.mo .sheet::-webkit-scrollbar{display:none}
 .mo .nav{position:absolute;top:0;left:0;right:0;z-index:7;height:72px;padding:14px 16px 0 20px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.mo .brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap}
+.mo .brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;white-space:nowrap;min-width:0;overflow:hidden}
+/* Repli manquant depuis l'intégration : sans min-width:0/overflow, le nom de marque (texte
+   long) poussait les icônes de droite hors du cadre du téléphone au lieu de se tronquer. */
+.mo .nav>div:first-child{min-width:0;flex:1 1 auto;overflow:hidden}
 .mo .brand b{color:var(--mag)}
 .mo .tag-demo{padding:3px 9px;border-radius:999px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em}
-.mo .nav-right{display:flex;align-items:center;gap:8px}
+.mo .nav-right{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 .mo .icon-btn{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(46,30,60,.06);transition:transform .15s}
 .mo .icon-btn:active{transform:scale(.92)}
-.mo .text-btn{height:36px;padding:0 12px;border:0;border-radius:999px;background:rgba(255,255,255,.75);color:#4A4358;font-size:12px;font-weight:600}
+.mo .text-btn{height:36px;padding:0 12px;white-space:nowrap;border:0;border-radius:999px;background:rgba(255,255,255,.75);color:#4A4358;font-size:12px;font-weight:600}
 .mo .next-pill{height:38px;padding:0 14px;border:0;border-radius:999px;background:var(--mag);color:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:6px;box-shadow:0 6px 14px rgba(212,39,89,.3)}
 .mo .demo-count{font-size:11px;font-weight:700;color:var(--soft);background:rgba(255,255,255,.8);padding:4px 9px;border-radius:999px}/* ---------- sheet pieces ---------- */
 
@@ -130,6 +139,12 @@
 .mo .halo{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.98) 0%,rgba(252,231,240,.8) 38%,rgba(252,231,240,0) 70%);animation:moHalo 3s ease-in-out infinite,moFadeIn 1.2s both}
 @keyframes moHalo{0%,100%{transform:scale(.94);opacity:.8}50%{transform:scale(1.05);opacity:1}}
 @keyframes moFadeIn{from{opacity:0}}
+/* Nouvel effet d'arrivée de l'étape "arrival" (demande du 04/10/2026, maquette mise à
+   jour) : halo renforcé + rayons tournants, remplace l'ancienne séquence d'atterrissage
+   en plusieurs temps — voir STEPS[0] (id:"arrival") dans mei-onboarding.js. */
+.mo .rays{position:absolute;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.55) 0deg 6deg,rgba(255,255,255,0) 6deg 22deg);-webkit-mask:radial-gradient(circle,#000 18%,transparent 68%);mask:radial-gradient(circle,#000 18%,transparent 68%);animation:moSpinRays 14s linear infinite,moFadeIn 1s both}
+@keyframes moSpinRays{to{transform:rotate(360deg)}}
+.mo .halo.strong{background:radial-gradient(ellipse,#fff 0%,rgba(255,240,247,.95) 26%,rgba(248,190,218,.7) 50%,rgba(248,190,218,0) 72%)}
 .mo .shadow{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(46,30,60,.2),rgba(46,30,60,0) 70%)}
 .mo .card{background:#fff;border-radius:20px;box-shadow:0 12px 30px rgba(46,30,60,.08)}
 .mo .mini{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.95);box-shadow:0 8px 22px rgba(46,30,60,.08)}
@@ -187,6 +202,10 @@
 @keyframes moDropIn{0%{transform:translateY(-760px) scale(.95,1.08)}55%{transform:translateY(0) scale(1.1,.86)}70%{transform:translateY(-14px) scale(.98,1.03)}85%{transform:scale(1.02,.98)}100%{transform:none}}
 .mo .mei-inner.appear{animation:moAppear 1.6s cubic-bezier(.2,.8,.2,1) both}
 @keyframes moAppear{0%{opacity:0;filter:blur(14px) brightness(1.6);transform:scale(.9)}60%{opacity:1;filter:blur(2px) brightness(1.2)}80%{transform:scale(1.03)}100%{opacity:1;filter:none;transform:none}}
+/* Nouvelle entrée de l'étape "arrival" (demande du 04/10/2026) — voir .rays/.halo.strong
+   ci-dessus et STEPS[0] (id:"arrival") dans mei-onboarding.js. */
+.mo .mei-inner.halo-in{animation:moHaloIn 1.6s ease-out both}
+@keyframes moHaloIn{0%{opacity:0;filter:blur(16px) brightness(1.9);transform:scale(.9)}45%{opacity:1;filter:blur(3px) brightness(1.4)}75%{filter:brightness(1.12);transform:scale(1.02)}100%{opacity:1;filter:none;transform:none}}
 .mo .mei-inner.pop-out{animation:moPopOut .22s ease-in forwards}
 @keyframes moPopOut{to{transform:scale(.7);opacity:0}}
 .mo .mei-inner.pop-in{animation:moPopIn2 .5s cubic-bezier(.3,1.6,.4,1) both}
