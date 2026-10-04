@@ -5103,7 +5103,20 @@ function addSingleLocationMarker(loc) {
     // voir showMapHoverTip) + bouton "Voir", 2e tap sur le MÊME marqueur = détail
     // directement — reprend le comportement desktop (survol = bulle, clic = détail)
     // inchangé, voir isMobileMapViewport().
-    marker.on('click', () => {
+    // BUG corrigé (demande du 04/10/2026, répétée — "le bouton view ne fonctionne
+    // toujours pas") : un clic sur un marqueur Leaflet se propage par défaut jusqu'au
+    // clic de la CARTE elle-même (bubblingMouseEvents, actif par défaut sur L.Marker),
+    // qui ferme la bulle via map.on('click', hideMapHoverTip) plus haut — dans le MÊME
+    // tick que l'appel à showMapHoverTip() ci-dessous. Résultat : la bulle (et son
+    // bouton "Voir") n'avait jamais la moindre chance de rester affichée ni d'être
+    // vraiment tapée, et mobileTapArmedLocId repassait aussitôt à null, empêchant même
+    // le 2e tap (qui ouvre directement le détail) de jamais s'armer. Les 3 correctifs
+    // précédents (disableClickPropagation sur la bulle elle-même, son z-index, le
+    // masquage du chrome mobile dans openDetailsPanel) corrigeaient chacun un symptôme
+    // réel mais aucun ne touchait à cette propagation marqueur -> carte, cause racine
+    // commune aux deux tap. L.DomEvent.stopPropagation(e) ci-dessous l'empêche.
+    marker.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
         if (isMobileMapViewport()) {
             if (mobileTapArmedLocId === loc.id) {
                 hideMapHoverTip();
