@@ -8,12 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-04T07:17:41.916Z.
-// Ajout manuel du 04/10/2026 (demande utilisateur) : 10 lieux de BTS Bon Voyage
-// Season 2, Episode 2 (Kailua-Kona, Hawaii — https://ramirei.tumblr.com/post/162611490808)
-// ajoutés ICI et dans historical-locations.json (ids 216-225), pour survivre au prochain
-// export-locations.js (qui régénère ce fichier depuis historical-locations.json +
-// Firestore, sans jamais fusionner avec la version précédente de ce fichier).
+// Généré le 2026-10-04T13:23:49.899Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -5636,8 +5631,14 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "episodeLink": "https://theklocal.com/bts-cafe-young-forever-jeju/",
     "recreatedPhotos": [
-      "images/admin-upload-101-recreated-0.jpg",
-      "images/admin-upload-101-recreated-1.jpg"
+      {
+        "url": "images/admin-upload-101-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-101-recreated-1.jpg",
+        "official": true
+      }
     ]
   },
   {
@@ -11765,6 +11766,386 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": 216,
+    "name": "Ali'i Drive",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
+    "lat": 19.6391,
+    "lng": -155.9974,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Ali'i Drive is the oceanfront main street of Kailua-Kona, a short stretch on the Big Island's west coast lined with the shops, restaurants and lava-rock seawalls that make up the town's entire social life. In Bon Voyage Season 2, Episode 2, it's the street the group kept wandering back to between activities — the Maknae Line hunting for souvenirs, SOPE grabbing henna tattoos and pub food, Namjin ducking into a bar for a long talk, all within a few minutes' walk of each other.</p><p>Every other location on this list sits directly on or just off this one road, so walking its length end to end is the easiest way to retrace the whole episode in a single afternoon.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "A low-key beach town main street: surf shops, open-air restaurants, and ocean views the whole way down."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk the whole street"
+        },
+        "text": {
+          "en": "Ali'i Drive is short and entirely walkable — park once near the pier and you can reach every other Episode 2 spot on foot."
+        }
+      }
+    ]
+  },
+  {
+    "id": 217,
+    "name": "ABC Store",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
+    "lat": 19.6398,
+    "lng": -155.9972,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>ABC Store is the ubiquitous Hawaiian convenience chain — sunscreen, snacks, beach toys and a wall of souvenirs, found on pretty much every block of every tourist town in the islands. The Kailua-Kona branch on Ali'i Drive is where the Maknae Line (Jimin, V and Jungkook) picked up matching friendship pens during their souvenir run in Episode 2, a small, slightly overpriced purchase that became one of the episode's more quietly charming moments.</p><p>It's not a glamorous stop, but it's an easy, guaranteed-authentic one: the same shelves of keychains, macadamia nuts and cheap stationery are still there for anyone retracing the Maknae Line's shopping trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "Access"
+        },
+        "text": {
+          "en": "Open to the public daily, standard convenience-store hours — no reservation or ticket needed."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Look for the small stuff"
+        },
+        "text": {
+          "en": "Skip the t-shirts and check the stationery/pen rack near the register — that's the kind of find that caught the Maknae Line's eye."
+        }
+      }
+    ]
+  },
+  {
+    "id": 218,
+    "name": "Kona Inn Shopping Village",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6388,
+    "lng": -155.9975,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kona Inn Shopping Village is a low-rise, open-air shopping center on Ali'i Drive, a cluster of small boutiques, gift shops and restaurants built around a garden courtyard facing the ocean. It's the hub for several of Bon Voyage Season 2 Episode 2's Kailua-Kona stops: Mahina Pizza, Kona Canoe Club and Kona Henna Studio are all located here, and it's also where the Maknae Line's souvenir hunt largely played out — most of the small gift shops they ducked into don't have much of an online footprint, but the sign for Alley Geckos is clearly visible on screen.</p><p>Because it hosts so many of the episode's stops in one place, it's the most efficient single location to visit if time is limited.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "A small, walkable outdoor shopping center — gift shops, a henna studio, a pizza counter and a restaurant, all a minute apart."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Start here first"
+        },
+        "text": {
+          "en": "With three other episode locations inside the same shopping village, this is the most efficient starting point for a self-guided visit."
+        }
+      }
+    ]
+  },
+  {
+    "id": 219,
+    "name": "Mahina Pizza",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
+    "lat": 19.6387,
+    "lng": -155.9975,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Mahina Pizza is a casual counter-service pizza spot tucked inside the Kona Inn Shopping Village, serving the kind of straightforward, no-frills slice that hits the spot after a day on the beach. It's where the Maknae Line stopped for a pizza break in Episode 2 — a simple, low-stakes scene that's mostly remembered for a staff member visible lounging on a sofa in the background, which became an unexpected highlight for fans rewatching the episode.</p><p>There's no deep lore here, just three members, a pizza, and the kind of mundane, funny moment that Bon Voyage built its whole appeal around.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "Casual, affordable pizza by the slice or whole pie, with indoor and courtyard seating in the shopping village."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Order the same way"
+        },
+        "text": {
+          "en": "It's a counter-service pizza spot — order at the register and grab a seat, same as the Maknae Line did."
+        }
+      }
+    ]
+  },
+  {
+    "id": 220,
+    "name": "Kona Canoe Club",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5739 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6386,
+    "lng": -155.9978,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kona Canoe Club sits right on Ali'i Drive, directly across from the Kona Inn Shopping Village, and functions as a classic sports-bar-meets-restaurant with an open-air, ocean-facing dining room. It's where SOPE (Suga and J-Hope) sat down to eat during their stretch of the episode, with the show highlighting the fish and burgers the restaurant is known for among locals and visitors alike.</p><p>It's one of the more relaxed stops on the Episode 2 trail — no dramatic backstory, just two members grabbing a solid meal with a view of Ali'i Drive and the coast.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "A casual sports-bar-style restaurant with indoor and outdoor seating, burgers, and fresh Hawaiian fish dishes."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Try the fish"
+        },
+        "text": {
+          "en": "Fresh local fish is the restaurant's strong suit — a reasonable way to order the way SOPE did."
+        }
+      }
+    ]
+  },
+  {
+    "id": 221,
+    "name": "Kona Henna Studio",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
+    "lat": 19.6388,
+    "lng": -155.9976,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kona Henna Studio is a small henna tattoo shop inside the Kona Inn Shopping Village, offering custom temporary designs painted on the spot. It's where SOPE got matching henna tattoos during Episode 2 — a small, playful detour from the rest of the day's activities that turned into one of the episode's more visually memorable moments, with Suga and J-Hope comparing their fresh designs afterward.</p><p>It's an easy stop to recreate for anyone visiting: pick a design, sit for a few minutes, and leave with a temporary souvenir that lasts a week or two.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "Access"
+        },
+        "text": {
+          "en": "Walk-in appointments are typically available; hours follow the rest of the Kona Inn Shopping Village."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Get your own henna"
+        },
+        "text": {
+          "en": "The studio does walk-in custom henna designs — an easy way to leave Kailua-Kona with the same kind of souvenir SOPE got."
+        }
+      }
+    ]
+  },
+  {
+    "id": 222,
+    "name": "Humpy's Big Island Alehouse",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5815 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6379,
+    "lng": -155.9981,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Humpy's Big Island Alehouse is a pub and restaurant on Ali'i Drive with an open-air deck looking straight out over the Kona coastline — the kind of spot built for long conversations over a drink as the sun goes down. It's where Namjoon and Jin sat for an unusually deep, reflective conversation in Episode 2, and it's also the setting for a since-famous photo RM posted on Twitter during the trip, taken from this exact alehouse.</p><p>For fans tracing the episode, it's less about the food and more about the view and the mood — the same coastal backdrop that framed one of the episode's quieter, more candid moments.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "A casual pub-style alehouse with an open-air ocean-view deck, pub food, and a full bar."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Go at golden hour"
+        },
+        "text": {
+          "en": "Time your visit for late afternoon to catch the same warm coastal light visible behind Namjin in the episode."
+        }
+      }
+    ]
+  },
+  {
+    "id": 223,
+    "name": "Kailua Bay and Oneo Bay",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
+    "lat": 19.6402,
+    "lng": -155.9973,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kailua Bay and Oneo Bay are the two small, connected bays that make up Kailua-Kona's waterfront, both running right alongside Ali'i Drive. Kailua Bay curves around the historic pier near the center of town, while Oneo Bay sits just behind the Kona Inn Shopping Village — it's this second bay that SOPE paused to take in during Episode 2, drawn by the calm turquoise water and the view out toward the open coast.</p><p>Since the whole Ali'i Drive coastline is really one continuous stretch of shoreline, it's easy to walk both bays in the same short visit, exactly as the group did between their other stops.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "Calm, shallow bays popular for swimming and snorkeling, with a paved seawall path running along most of the shoreline."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Look for the water behind Kona Inn"
+        },
+        "text": {
+          "en": "The bay SOPE stopped at is the small cove directly behind the Kona Inn Shopping Village — easy to miss from the street side."
+        }
+      }
+    ]
+  },
+  {
+    "id": 224,
+    "name": "Waterfront Row",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5770 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6383,
+    "lng": -155.9977,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Waterfront Row is a small, low-key shopping center on Ali'i Drive, home to a handful of local jewelry stores, galleries and gift shops. It's where Namjoon and Jin stopped to buy matching friendship jewelry during Episode 2 — a necklace with a small turtle charm, a nod to the honu (Hawaiian green sea turtles) that are everywhere on the Big Island's coastline.</p><p>It's a brief, easy stop compared to some of the episode's bigger set pieces, but it's a favorite among fans looking to pick up their own matching souvenir from the trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "A small cluster of independent jewelry and gift shops, easy to browse in 15–20 minutes."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Look for turtle jewelry"
+        },
+        "text": {
+          "en": "Several of the small shops here carry honu (sea turtle) themed jewelry, similar to what Namjin picked up."
+        }
+      }
+    ]
+  },
+  {
+    "id": 225,
+    "name": "Huggo's On The Rocks",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5824 Kahakai Rd, Kailua-Kona, HI 96740",
+    "lat": 19.6372,
+    "lng": -155.9988,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Huggo's On The Rocks is the casual, toes-in-the-sand sister restaurant and bar to Huggo's proper next door, built right on the sand with live local music most evenings. It's the spot where the full group met up at the end of Episode 2, closing out the day's Kailua-Kona adventures with drinks, food and music as the sun went down over the water.</p><p>As the episode's final location, it works well as a last stop on a self-guided visit too — arrive in the evening, grab a seat near the sand, and catch the same kind of live music and sunset that wrapped up the episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "What to expect"
+        },
+        "text": {
+          "en": "An open-air, sand-floor bar and restaurant right on the water, with live local music most nights."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Come for sunset"
+        },
+        "text": {
+          "en": "Live music typically starts in the early evening — time your visit to catch both the music and the sunset over the water, as the group did."
+        }
+      }
+    ]
+  },
+  {
     "address": "Coron Island, Calamian Islands, Palawan, Philippines",
     "country": "Philippines",
     "city": "Coron (Palawan)",
@@ -16310,6 +16691,187 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "https://www.instagram.com/p/Dd9q81-lPVp/?img_index=2&stkn=MXhrbTUyZzQzczMzdA=="
   },
   {
+    "id": "new-manual-1791113652146-43t77j",
+    "name": "Kona Honu Divers",
+    "group": "BTS",
+    "country": "United States",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "address": "Typically operates out of Honokohau Marina (74-380 Kealakehe Pkwy, Kailua-Kona, HI 96740, United States). Check exact departure details upon booking.",
+    "lat": 19.64791,
+    "lng": -155.99832,
+    "city": "Kailua-Kona, Hawaii (Big Island)",
+    "member": "All",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Operating out of the beautiful sun-drenched Kona coast on Hawaii’s Big Island, Kona Honu Divers, Inc. is a premier, top-rated scuba diving and snorkeling charter company. The pristine, crystal-clear waters of the western Hawaiian coast are world-renowned for their spectacular coral reefs, manta rays, and abundant marine life. The company's name itself is a tribute to this aquatic wonderland, as \"Honu\" is the traditional Hawaiian word for the beloved green sea turtle, a symbol of good luck and longevity in local culture.</p><!--stss:footsteps--><p>This specific charter company holds a special place in ARMY history as the operator that hosted BTS’s unforgettable ocean adventure during Episode 2 of BTS Bon Voyage Season 2 (2017). Taking a break from their busy global schedules, the members boarded a Kona Honu Divers boat and headed out into the deep blue Pacific for a thrilling snorkeling tour.</p><p>Fans watching the episode loved seeing the members conquer their fears, float in the ocean, and marvel at the vibrant underwater ecosystems of the Big Island. Booking a snorkeling charter with this exact company allows fans to recreate that magical Hawaiian aquatic experience, jumping into the same warm waters to swim alongside tropical fish and, hopefully, spot a few honu just like the boys did.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The marina is located just a short drive north of central Kailua-Kona or south of the Waikoloa resort area. Accessible by rental car or taxi."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Tour times vary based on the season and ocean conditions. Advance reservations and ticket purchases via their official website are strictly required."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As this is a boat-based ocean tour, accessibility depends on individual mobility and water comfort levels. It is recommended to contact the charter directly regarding specific accommodations for boarding the vessel."
+        }
+      }
+    ],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book a Morning Snorkel Tour"
+        },
+        "text": {
+          "en": "To truly recreate the Bon Voyage experience, book a daytime reef snorkeling tour through their official website to explore the vibrant coral habitats of the Kona coast."
+        }
+      },
+      {
+        "title": {
+          "en": "Keep an Eye Out for"
+        },
+        "text": {
+          "en": "While in the water, look out for the majestic Hawaiian green sea turtles (honu) that frequent the area. (Remember to respect local wildlife laws and keep a safe distance!)"
+        }
+      },
+      {
+        "title": {
+          "en": "Pack Like the Members"
+        },
+        "text": {
+          "en": "Bring along reef-safe sunscreen, a waterproof camera or action cam, and a rash guard to stay comfortable during your ocean excursion."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "episodeLink": "https://www.bilibili.tv/en/video/2048692894",
+    "ytId": "oXwhKc7pnX4",
+    "officialLink": "https://konahonudivers.com/?ref=googlebusinessprofile",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791113652146-43t77j-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "tweetUrl": "https://x.com/bts_twt/status/894215052349259776?s=46",
+    "tweetUrls": [
+      "https://x.com/bts_twt/status/894213355954515969?s=46"
+    ],
+    "img": "images/admin-upload-new-manual-1791113652146-43t77j-photo.jpg"
+  },
+  {
+    "id": "new-manual-1791118674393-ct2jag",
+    "name": "Iho tewoo beach jeju",
+    "group": "BTS",
+    "member": "Jin",
+    "country": "South Korea",
+    "city": "Jeju",
+    "year": "2022",
+    "address": "Ihoil-dong, Jeju-si, Jeju-do, South Korea (Iho Tewoo Beach)",
+    "lat": 33.49835,
+    "lng": 126.4536,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located just a short distance from Jeju International Airport, Iho Tewoo Beach is one of the most accessible and beloved coastal stretches on Jeju Island. The beach is famous for its gentle waves, dark sandy shores, and most notably, its two giant horse-shaped lighthouses (one red, one white) that stand guard at the end of the seawall. These iconic lighthouses are a nod to Jeju's deep historical connection to horse breeding, making the beach a popular spot for photography, sunset viewing, and relaxing evening walks along the stone breakwaters.</p><!--stss:footsteps--><p>This beautiful stretch of coastline entered ARMY legend in June 2022 when Jin shared two memorable photographs on his personal Instagram account. Taking a well-deserved break on Jeju Island, Jin posted pictures of himself sitting on the stone seawall facing the ocean, completely shirtless.</p><p>The photos immediately broke the internet for two reasons: they perfectly showcased his famous \"wide shoulders\" (a beloved focal point for fans), and more importantly, they served as the official reveal of his BTS friendship tattoo. The delicate number \"7\" was seen inked on the left side of his waist. The post also sparked hilarious banter between the members—Suga commented with shock, asking if he had forgotten to put a shirt on, to which Jin jokingly replied by inviting him to buy a ticket to Jeju. Today, the stone seawall where he sat has become a massive pilgrimage spot for fans wanting to honor this iconic social media moment.</p>"
+    },
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate the"
+        },
+        "text": {
+          "en": "Find a spot along the stone seawall facing the water and take a photo from behind, perfectly recreating Jin’s relaxed, ocean-gazing pose."
+        }
+      },
+      {
+        "title": {
+          "en": "Photograph the Horse Lighthouses"
+        },
+        "text": {
+          "en": "While you are at the seawall, don't miss the chance to take photos of the iconic red and white horse-shaped lighthouses that define this beach's landscape."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit During Sunset"
+        },
+        "text": {
+          "en": "Iho Tewoo is famous for its stunning evening skies. Time your visit for late afternoon to catch a gorgeous Jeju sunset over the water just like the ambiance in Jin's photos."
+        }
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/CfQgiUhhnPb/?stkn=MWQzYjl1eDZjNGtpeA==",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Extremely accessible from Jeju City. It is only a 15-minute taxi or local bus ride from Jeju International Airport, making it an easy first or last stop on a Jeju itinerary."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The beach and seawall are open to the public 24/7. Completely free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The beach features paved waterfront paths and flat seawalls that are easy to navigate, though climbing directly onto the large coastal rocks or breakwater walls requires caution."
+        }
+      }
+    ],
+    "ytId": "",
+    "img": "images/admin-upload-new-manual-1791118674393-ct2jag-photo.jpg",
+    "imgCredit": "song songroov / CC BY 3.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791118674393-ct2jag-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "officialLink": "https://www.visitjeju.net/en/detail/view?contentsid=CNTS_200000000007344#"
+  },
+  {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
     "name": "Kualoa Ranch",
     "group": "BTS",
@@ -16837,88 +17399,6 @@ window.STATIC_LOCATIONS = [
         "official": true
       }
     ]
-  },
-  {
-    "id": "new-TNFJZU7cQdw9MtBHgFKM",
-    "name": "Waimea Valley",
-    "group": "BTS",
-    "member": "All",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "address": "59-864 Kamehameha Hwy, Haleiwa, HI 96712, USA",
-    "lat": 21.6366,
-    "lng": -158.0531,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Waimea_Falls_Oahu.jpg/1280px-Waimea_Falls_Oahu.jpg",
-    "addedAt": 1790796842650,
-    "pinterestUrls": [],
-    "tiktokUrls": [],
-    "instagramUrls": [],
-    "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Waimea Valley is a deeply significant cultural reserve and botanical garden located on the North Shore of Oahu, Hawaii. Spanning 1,800 acres, the valley features over 5,000 botanical species, restored Hawaiian archaeological sites, and a paved 0.75-mile trail leading through tropical greenery. The trail culminates at Waimea Falls (Waihi Waterfall), a 45-foot waterfall where visitors can swim in a natural freshwater pool supervised by lifeguards.</p><!--stss:footsteps--><p>Waimea Valley was featured in Bon Voyage Season 2 (2017) during BTS's trip to Oahu. The members strolled along the botanical pathways, enjoying nature and taking goofy group photos along the lush trails. Upon reaching Waimea Falls, they put on life jackets and splashed into the cool waterfall pool together, creating joyful and memorable moments that remain fan favorites from the Hawaii series.</p>"
-    },
-    "tiktokUrl": "",
-    "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Waterfall swimming"
-        },
-        "text": {
-          "en": "Life jackets are mandatory for swimming at Waimea Falls and are provided free with admission at the waterfall deck."
-        }
-      },
-      {
-        "title": {
-          "en": "Check waterfall status"
-        },
-        "text": {
-          "en": "Swimming conditions depend on rain levels; check Waimea Valley's daily website alert before traveling if swimming is your goal."
-        }
-      },
-      {
-        "title": {
-          "en": "Paved accessible walk"
-        },
-        "text": {
-          "en": "The main trail is fully paved and easy to walk; shuttle rides are also available for guests needing mobility assistance."
-        }
-      }
-    ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.waimeavalley.net",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Drive approx. 1 hour north from Honolulu/Waikiki directly to Haleiwa on Oahu's North Shore."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": ""
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": ""
-        }
-      }
-    ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
   },
   {
     "name": "Daeoh Bookstore",
@@ -17462,385 +17942,5 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "recreatedPhoto": ""
-  },
-  {
-    "id": 216,
-    "name": "Ali'i Drive",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
-    "lat": 19.6391,
-    "lng": -155.9974,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Ali'i Drive is the oceanfront main street of Kailua-Kona, a short stretch on the Big Island's west coast lined with the shops, restaurants and lava-rock seawalls that make up the town's entire social life. In Bon Voyage Season 2, Episode 2, it's the street the group kept wandering back to between activities — the Maknae Line hunting for souvenirs, SOPE grabbing henna tattoos and pub food, Namjin ducking into a bar for a long talk, all within a few minutes' walk of each other.</p><p>Every other location on this list sits directly on or just off this one road, so walking its length end to end is the easiest way to retrace the whole episode in a single afternoon.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "A low-key beach town main street: surf shops, open-air restaurants, and ocean views the whole way down."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Walk the whole street"
-        },
-        "text": {
-          "en": "Ali'i Drive is short and entirely walkable — park once near the pier and you can reach every other Episode 2 spot on foot."
-        }
-      }
-    ]
-  },
-  {
-    "id": 217,
-    "name": "ABC Store",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
-    "lat": 19.6398,
-    "lng": -155.9972,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>ABC Store is the ubiquitous Hawaiian convenience chain — sunscreen, snacks, beach toys and a wall of souvenirs, found on pretty much every block of every tourist town in the islands. The Kailua-Kona branch on Ali'i Drive is where the Maknae Line (Jimin, V and Jungkook) picked up matching friendship pens during their souvenir run in Episode 2, a small, slightly overpriced purchase that became one of the episode's more quietly charming moments.</p><p>It's not a glamorous stop, but it's an easy, guaranteed-authentic one: the same shelves of keychains, macadamia nuts and cheap stationery are still there for anyone retracing the Maknae Line's shopping trip.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Open to the public daily, standard convenience-store hours — no reservation or ticket needed."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Look for the small stuff"
-        },
-        "text": {
-          "en": "Skip the t-shirts and check the stationery/pen rack near the register — that's the kind of find that caught the Maknae Line's eye."
-        }
-      }
-    ]
-  },
-  {
-    "id": 218,
-    "name": "Kona Inn Shopping Village",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6388,
-    "lng": -155.9975,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kona Inn Shopping Village is a low-rise, open-air shopping center on Ali'i Drive, a cluster of small boutiques, gift shops and restaurants built around a garden courtyard facing the ocean. It's the hub for several of Bon Voyage Season 2 Episode 2's Kailua-Kona stops: Mahina Pizza, Kona Canoe Club and Kona Henna Studio are all located here, and it's also where the Maknae Line's souvenir hunt largely played out — most of the small gift shops they ducked into don't have much of an online footprint, but the sign for Alley Geckos is clearly visible on screen.</p><p>Because it hosts so many of the episode's stops in one place, it's the most efficient single location to visit if time is limited.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "A small, walkable outdoor shopping center — gift shops, a henna studio, a pizza counter and a restaurant, all a minute apart."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Start here first"
-        },
-        "text": {
-          "en": "With three other episode locations inside the same shopping village, this is the most efficient starting point for a self-guided visit."
-        }
-      }
-    ]
-  },
-  {
-    "id": 219,
-    "name": "Mahina Pizza",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
-    "lat": 19.6387,
-    "lng": -155.9975,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Mahina Pizza is a casual counter-service pizza spot tucked inside the Kona Inn Shopping Village, serving the kind of straightforward, no-frills slice that hits the spot after a day on the beach. It's where the Maknae Line stopped for a pizza break in Episode 2 — a simple, low-stakes scene that's mostly remembered for a staff member visible lounging on a sofa in the background, which became an unexpected highlight for fans rewatching the episode.</p><p>There's no deep lore here, just three members, a pizza, and the kind of mundane, funny moment that Bon Voyage built its whole appeal around.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "Casual, affordable pizza by the slice or whole pie, with indoor and courtyard seating in the shopping village."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Order the same way"
-        },
-        "text": {
-          "en": "It's a counter-service pizza spot — order at the register and grab a seat, same as the Maknae Line did."
-        }
-      }
-    ]
-  },
-  {
-    "id": 220,
-    "name": "Kona Canoe Club",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5739 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6386,
-    "lng": -155.9978,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kona Canoe Club sits right on Ali'i Drive, directly across from the Kona Inn Shopping Village, and functions as a classic sports-bar-meets-restaurant with an open-air, ocean-facing dining room. It's where SOPE (Suga and J-Hope) sat down to eat during their stretch of the episode, with the show highlighting the fish and burgers the restaurant is known for among locals and visitors alike.</p><p>It's one of the more relaxed stops on the Episode 2 trail — no dramatic backstory, just two members grabbing a solid meal with a view of Ali'i Drive and the coast.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "A casual sports-bar-style restaurant with indoor and outdoor seating, burgers, and fresh Hawaiian fish dishes."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Try the fish"
-        },
-        "text": {
-          "en": "Fresh local fish is the restaurant's strong suit — a reasonable way to order the way SOPE did."
-        }
-      }
-    ]
-  },
-  {
-    "id": 221,
-    "name": "Kona Henna Studio",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
-    "lat": 19.6388,
-    "lng": -155.9976,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kona Henna Studio is a small henna tattoo shop inside the Kona Inn Shopping Village, offering custom temporary designs painted on the spot. It's where SOPE got matching henna tattoos during Episode 2 — a small, playful detour from the rest of the day's activities that turned into one of the episode's more visually memorable moments, with Suga and J-Hope comparing their fresh designs afterward.</p><p>It's an easy stop to recreate for anyone visiting: pick a design, sit for a few minutes, and leave with a temporary souvenir that lasts a week or two.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Walk-in appointments are typically available; hours follow the rest of the Kona Inn Shopping Village."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Get your own henna"
-        },
-        "text": {
-          "en": "The studio does walk-in custom henna designs — an easy way to leave Kailua-Kona with the same kind of souvenir SOPE got."
-        }
-      }
-    ]
-  },
-  {
-    "id": 222,
-    "name": "Humpy's Big Island Alehouse",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5815 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6379,
-    "lng": -155.9981,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Humpy's Big Island Alehouse is a pub and restaurant on Ali'i Drive with an open-air deck looking straight out over the Kona coastline — the kind of spot built for long conversations over a drink as the sun goes down. It's where Namjoon and Jin sat for an unusually deep, reflective conversation in Episode 2, and it's also the setting for a since-famous photo RM posted on Twitter during the trip, taken from this exact alehouse.</p><p>For fans tracing the episode, it's less about the food and more about the view and the mood — the same coastal backdrop that framed one of the episode's quieter, more candid moments.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "A casual pub-style alehouse with an open-air ocean-view deck, pub food, and a full bar."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Go at golden hour"
-        },
-        "text": {
-          "en": "Time your visit for late afternoon to catch the same warm coastal light visible behind Namjin in the episode."
-        }
-      }
-    ]
-  },
-  {
-    "id": 223,
-    "name": "Kailua Bay and Oneo Bay",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
-    "lat": 19.6402,
-    "lng": -155.9973,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kailua Bay and Oneo Bay are the two small, connected bays that make up Kailua-Kona's waterfront, both running right alongside Ali'i Drive. Kailua Bay curves around the historic pier near the center of town, while Oneo Bay sits just behind the Kona Inn Shopping Village — it's this second bay that SOPE paused to take in during Episode 2, drawn by the calm turquoise water and the view out toward the open coast.</p><p>Since the whole Ali'i Drive coastline is really one continuous stretch of shoreline, it's easy to walk both bays in the same short visit, exactly as the group did between their other stops.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "Calm, shallow bays popular for swimming and snorkeling, with a paved seawall path running along most of the shoreline."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Look for the water behind Kona Inn"
-        },
-        "text": {
-          "en": "The bay SOPE stopped at is the small cove directly behind the Kona Inn Shopping Village — easy to miss from the street side."
-        }
-      }
-    ]
-  },
-  {
-    "id": 224,
-    "name": "Waterfront Row",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5770 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6383,
-    "lng": -155.9977,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Waterfront Row is a small, low-key shopping center on Ali'i Drive, home to a handful of local jewelry stores, galleries and gift shops. It's where Namjoon and Jin stopped to buy matching friendship jewelry during Episode 2 — a necklace with a small turtle charm, a nod to the honu (Hawaiian green sea turtles) that are everywhere on the Big Island's coastline.</p><p>It's a brief, easy stop compared to some of the episode's bigger set pieces, but it's a favorite among fans looking to pick up their own matching souvenir from the trip.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "A small cluster of independent jewelry and gift shops, easy to browse in 15–20 minutes."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Look for turtle jewelry"
-        },
-        "text": {
-          "en": "Several of the small shops here carry honu (sea turtle) themed jewelry, similar to what Namjin picked up."
-        }
-      }
-    ]
-  },
-  {
-    "id": 225,
-    "name": "Huggo's On The Rocks",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5824 Kahakai Rd, Kailua-Kona, HI 96740",
-    "lat": 19.6372,
-    "lng": -155.9988,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Huggo's On The Rocks is the casual, toes-in-the-sand sister restaurant and bar to Huggo's proper next door, built right on the sand with live local music most evenings. It's the spot where the full group met up at the end of Episode 2, closing out the day's Kailua-Kona adventures with drinks, food and music as the sun went down over the water.</p><p>As the episode's final location, it works well as a last stop on a self-guided visit too — arrive in the evening, grab a seat near the sand, and catch the same kind of live music and sunset that wrapped up the episode.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "An open-air, sand-floor bar and restaurant right on the water, with live local music most nights."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Come for sunset"
-        },
-        "text": {
-          "en": "Live music typically starts in the early evening — time your visit to catch both the music and the sunset over the water, as the group did."
-        }
-      }
-    ]
   }
 ];
