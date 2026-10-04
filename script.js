@@ -5157,8 +5157,24 @@ function addSingleLocationMarker(loc) {
         }
         window.openDetailsPanel(loc.id);
     });
-    marker.on('mouseover', () => showMapHoverTip(loc, marker));
-    marker.on('mouseout', () => hideMapHoverTip());
+    // BUG corrigé (demande du 04/10/2026, toujours signalé après le correctif
+    // stopPropagation ci-dessus — "le bouton view ne fonctionne toujours pas") : ces deux
+    // écouteurs mouseover/mouseout étaient posés INCONDITIONNELLEMENT, y compris sur
+    // mobile, où ils n'ont pourtant aucune raison d'exister (pas de survol tactile — le
+    // tap-tap ci-dessus gère déjà l'ouverture). Sur iOS Safari en particulier, un tap sur
+    // UN élément puis sur un AUTRE (ex: le marqueur puis le bouton "Voir" de sa bulle, qui
+    // vit ailleurs dans le DOM) déclenche des événements souris synthétiques dans cet
+    // ordre précis : mouseout sur l'ancien élément ciblé, PUIS mouseover/click sur le
+    // nouveau — donc mouseout sur CE marqueur se déclenchait AVANT le click sur le bouton
+    // "Voir" de sa propre bulle, appelant hideMapHoverTip() (display:none immédiat) une
+    // fraction de seconde avant que le tap sur le bouton n'ait eu la moindre chance
+    // d'aboutir : la bulle (et le bouton avec) disparaissait sous le doigt au moment même
+    // du tap, qui retombait alors sur la carte en dessous au lieu du bouton. Inoffensif à
+    // corriger : showMapHoverTip() reste déclenché par le clic du 1er tap (voir
+    // marker.on('click') ci-dessus) sur mobile, le survol souris réel n'existe que sur
+    // desktop.
+    marker.on('mouseover', () => { if (!isMobileMapViewport()) showMapHoverTip(loc, marker); });
+    marker.on('mouseout', () => { if (!isMobileMapViewport()) hideMapHoverTip(); });
 }
 
 // BUG rapporté le 13/09/2026 ("enlève les symboles 'x7' sous forme de puissance, laisse
