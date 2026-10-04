@@ -8,10 +8,10 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-04T07:17:41.916Z.
-// Ajout manuel du 04/10/2026 (demande utilisateur) : 10 lieux de BTS Bon Voyage
-// Season 2, Episode 2 (Kailua-Kona, Hawaii — https://ramirei.tumblr.com/post/162611490808)
-// ajoutés ICI et dans historical-locations.json (ids 216-225), pour survivre au prochain
+// Généré le 2026-10-04T13:23:49.899Z.
+// Ajout manuel (demande utilisateur) : 10 lieux de BTS Bon Voyage Season 2,
+// Episode 2 (Kailua-Kona, Hawaii — https://ramirei.tumblr.com/post/162611490808) ajoutés
+// ICI et dans historical-locations.json (ids 216-225), pour survivre au prochain
 // export-locations.js (qui régénère ce fichier depuis historical-locations.json +
 // Firestore, sans jamais fusionner avec la version précédente de ce fichier).
 window.STATIC_LOCATIONS = [
@@ -5636,8 +5636,14 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "episodeLink": "https://theklocal.com/bts-cafe-young-forever-jeju/",
     "recreatedPhotos": [
-      "images/admin-upload-101-recreated-0.jpg",
-      "images/admin-upload-101-recreated-1.jpg"
+      {
+        "url": "images/admin-upload-101-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-101-recreated-1.jpg",
+        "official": true
+      }
     ]
   },
   {
@@ -16310,6 +16316,187 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "https://www.instagram.com/p/Dd9q81-lPVp/?img_index=2&stkn=MXhrbTUyZzQzczMzdA=="
   },
   {
+    "id": "new-manual-1791113652146-43t77j",
+    "name": "Kona Honu Divers",
+    "group": "BTS",
+    "country": "United States",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "address": "Typically operates out of Honokohau Marina (74-380 Kealakehe Pkwy, Kailua-Kona, HI 96740, United States). Check exact departure details upon booking.",
+    "lat": 19.64791,
+    "lng": -155.99832,
+    "city": "Kailua-Kona, Hawaii (Big Island)",
+    "member": "All",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Operating out of the beautiful sun-drenched Kona coast on Hawaii’s Big Island, Kona Honu Divers, Inc. is a premier, top-rated scuba diving and snorkeling charter company. The pristine, crystal-clear waters of the western Hawaiian coast are world-renowned for their spectacular coral reefs, manta rays, and abundant marine life. The company's name itself is a tribute to this aquatic wonderland, as \"Honu\" is the traditional Hawaiian word for the beloved green sea turtle, a symbol of good luck and longevity in local culture.</p><!--stss:footsteps--><p>This specific charter company holds a special place in ARMY history as the operator that hosted BTS’s unforgettable ocean adventure during Episode 2 of BTS Bon Voyage Season 2 (2017). Taking a break from their busy global schedules, the members boarded a Kona Honu Divers boat and headed out into the deep blue Pacific for a thrilling snorkeling tour.</p><p>Fans watching the episode loved seeing the members conquer their fears, float in the ocean, and marvel at the vibrant underwater ecosystems of the Big Island. Booking a snorkeling charter with this exact company allows fans to recreate that magical Hawaiian aquatic experience, jumping into the same warm waters to swim alongside tropical fish and, hopefully, spot a few honu just like the boys did.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The marina is located just a short drive north of central Kailua-Kona or south of the Waikoloa resort area. Accessible by rental car or taxi."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Tour times vary based on the season and ocean conditions. Advance reservations and ticket purchases via their official website are strictly required."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As this is a boat-based ocean tour, accessibility depends on individual mobility and water comfort levels. It is recommended to contact the charter directly regarding specific accommodations for boarding the vessel."
+        }
+      }
+    ],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book a Morning Snorkel Tour"
+        },
+        "text": {
+          "en": "To truly recreate the Bon Voyage experience, book a daytime reef snorkeling tour through their official website to explore the vibrant coral habitats of the Kona coast."
+        }
+      },
+      {
+        "title": {
+          "en": "Keep an Eye Out for"
+        },
+        "text": {
+          "en": "While in the water, look out for the majestic Hawaiian green sea turtles (honu) that frequent the area. (Remember to respect local wildlife laws and keep a safe distance!)"
+        }
+      },
+      {
+        "title": {
+          "en": "Pack Like the Members"
+        },
+        "text": {
+          "en": "Bring along reef-safe sunscreen, a waterproof camera or action cam, and a rash guard to stay comfortable during your ocean excursion."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "episodeLink": "https://www.bilibili.tv/en/video/2048692894",
+    "ytId": "oXwhKc7pnX4",
+    "officialLink": "https://konahonudivers.com/?ref=googlebusinessprofile",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791113652146-43t77j-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "tweetUrl": "https://x.com/bts_twt/status/894215052349259776?s=46",
+    "tweetUrls": [
+      "https://x.com/bts_twt/status/894213355954515969?s=46"
+    ],
+    "img": "images/admin-upload-new-manual-1791113652146-43t77j-photo.jpg"
+  },
+  {
+    "id": "new-manual-1791118674393-ct2jag",
+    "name": "Iho tewoo beach jeju",
+    "group": "BTS",
+    "member": "Jin",
+    "country": "South Korea",
+    "city": "Jeju",
+    "year": "2022",
+    "address": "Ihoil-dong, Jeju-si, Jeju-do, South Korea (Iho Tewoo Beach)",
+    "lat": 33.49835,
+    "lng": 126.4536,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located just a short distance from Jeju International Airport, Iho Tewoo Beach is one of the most accessible and beloved coastal stretches on Jeju Island. The beach is famous for its gentle waves, dark sandy shores, and most notably, its two giant horse-shaped lighthouses (one red, one white) that stand guard at the end of the seawall. These iconic lighthouses are a nod to Jeju's deep historical connection to horse breeding, making the beach a popular spot for photography, sunset viewing, and relaxing evening walks along the stone breakwaters.</p><!--stss:footsteps--><p>This beautiful stretch of coastline entered ARMY legend in June 2022 when Jin shared two memorable photographs on his personal Instagram account. Taking a well-deserved break on Jeju Island, Jin posted pictures of himself sitting on the stone seawall facing the ocean, completely shirtless.</p><p>The photos immediately broke the internet for two reasons: they perfectly showcased his famous \"wide shoulders\" (a beloved focal point for fans), and more importantly, they served as the official reveal of his BTS friendship tattoo. The delicate number \"7\" was seen inked on the left side of his waist. The post also sparked hilarious banter between the members—Suga commented with shock, asking if he had forgotten to put a shirt on, to which Jin jokingly replied by inviting him to buy a ticket to Jeju. Today, the stone seawall where he sat has become a massive pilgrimage spot for fans wanting to honor this iconic social media moment.</p>"
+    },
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate the"
+        },
+        "text": {
+          "en": "Find a spot along the stone seawall facing the water and take a photo from behind, perfectly recreating Jin’s relaxed, ocean-gazing pose."
+        }
+      },
+      {
+        "title": {
+          "en": "Photograph the Horse Lighthouses"
+        },
+        "text": {
+          "en": "While you are at the seawall, don't miss the chance to take photos of the iconic red and white horse-shaped lighthouses that define this beach's landscape."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit During Sunset"
+        },
+        "text": {
+          "en": "Iho Tewoo is famous for its stunning evening skies. Time your visit for late afternoon to catch a gorgeous Jeju sunset over the water just like the ambiance in Jin's photos."
+        }
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/CfQgiUhhnPb/?stkn=MWQzYjl1eDZjNGtpeA==",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Extremely accessible from Jeju City. It is only a 15-minute taxi or local bus ride from Jeju International Airport, making it an easy first or last stop on a Jeju itinerary."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The beach and seawall are open to the public 24/7. Completely free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The beach features paved waterfront paths and flat seawalls that are easy to navigate, though climbing directly onto the large coastal rocks or breakwater walls requires caution."
+        }
+      }
+    ],
+    "ytId": "",
+    "img": "images/admin-upload-new-manual-1791118674393-ct2jag-photo.jpg",
+    "imgCredit": "song songroov / CC BY 3.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791118674393-ct2jag-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "officialLink": "https://www.visitjeju.net/en/detail/view?contentsid=CNTS_200000000007344#"
+  },
+  {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
     "name": "Kualoa Ranch",
     "group": "BTS",
@@ -16837,88 +17024,6 @@ window.STATIC_LOCATIONS = [
         "official": true
       }
     ]
-  },
-  {
-    "id": "new-TNFJZU7cQdw9MtBHgFKM",
-    "name": "Waimea Valley",
-    "group": "BTS",
-    "member": "All",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "address": "59-864 Kamehameha Hwy, Haleiwa, HI 96712, USA",
-    "lat": 21.6366,
-    "lng": -158.0531,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Waimea_Falls_Oahu.jpg/1280px-Waimea_Falls_Oahu.jpg",
-    "addedAt": 1790796842650,
-    "pinterestUrls": [],
-    "tiktokUrls": [],
-    "instagramUrls": [],
-    "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Waimea Valley is a deeply significant cultural reserve and botanical garden located on the North Shore of Oahu, Hawaii. Spanning 1,800 acres, the valley features over 5,000 botanical species, restored Hawaiian archaeological sites, and a paved 0.75-mile trail leading through tropical greenery. The trail culminates at Waimea Falls (Waihi Waterfall), a 45-foot waterfall where visitors can swim in a natural freshwater pool supervised by lifeguards.</p><!--stss:footsteps--><p>Waimea Valley was featured in Bon Voyage Season 2 (2017) during BTS's trip to Oahu. The members strolled along the botanical pathways, enjoying nature and taking goofy group photos along the lush trails. Upon reaching Waimea Falls, they put on life jackets and splashed into the cool waterfall pool together, creating joyful and memorable moments that remain fan favorites from the Hawaii series.</p>"
-    },
-    "tiktokUrl": "",
-    "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Waterfall swimming"
-        },
-        "text": {
-          "en": "Life jackets are mandatory for swimming at Waimea Falls and are provided free with admission at the waterfall deck."
-        }
-      },
-      {
-        "title": {
-          "en": "Check waterfall status"
-        },
-        "text": {
-          "en": "Swimming conditions depend on rain levels; check Waimea Valley's daily website alert before traveling if swimming is your goal."
-        }
-      },
-      {
-        "title": {
-          "en": "Paved accessible walk"
-        },
-        "text": {
-          "en": "The main trail is fully paved and easy to walk; shuttle rides are also available for guests needing mobility assistance."
-        }
-      }
-    ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.waimeavalley.net",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Drive approx. 1 hour north from Honolulu/Waikiki directly to Haleiwa on Oahu's North Shore."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": ""
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": ""
-        }
-      }
-    ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
   },
   {
     "name": "Daeoh Bookstore",
