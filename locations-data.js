@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-03T22:21:40.048Z.
+// Généré le 2026-10-04T07:17:41.916Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -3844,15 +3844,15 @@ window.STATIC_LOCATIONS = [
     "country": "South Korea",
     "city": "Goyang",
     "category": "Landmark",
-    "year": "2013, 2014",
+    "year": "2015, 2018, 2021",
     "episodeLink": "https://weverse.io/bts/media/1-6401255",
     "address": "595 Hosu-ro, Ilsandong-gu, Goyang-si",
-    "lat": 37.6605,
-    "lng": 126.7715,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
+    "lat": 37.6579,
+    "lng": 126.76451,
+    "img": "images/admin-upload-68-photo.jpg",
     "fullDescription": {
       "fr": "<p>Ville natale de RM, Ilsan a marqué son enfance et ses débuts d'écriture, et il a souvent fréquenté ce parc au lac — l'un des plus grands lacs artificiels d'Asie — pour écrire ses textes et réfléchir avant de s'installer dans les dortoirs de Gangnam.</p><p>RM cite d'ailleurs directement ce parc dans les paroles de « Ma City » (2015), le préférant au fleuve Han pourtant plus célèbre — en parcourir les allées aujourd'hui offre un aperçu paisible de ses racines.</p>",
-      "en": "<p>Located in the city of Goyang just northwest of Seoul, Ilsan Lake Park is one of the largest artificial parks in Asia. Spanning a massive area with a pristine freshwater lake at its center, the park is famous for its scenic walking and cycling paths, peaceful waterfronts, and vibrant botanical gardens. It serves as the green lungs of the city and is particularly renowned for hosting the spectacular International Horticulture Goyang Korea (annual flower festival) every spring.</p><!--stss:footsteps--><p>For ARMYs, Ilsan Lake Park is an iconic pilgrimage site because it is intimately tied to the childhood, identity, and music of BTS's leader, RM (Kim Namjoon). Having spent much of his youth growing up in Ilsan, RM frequently references the city and this exact park in his global projects:</p><p>\"Ma City\" (2015): In the track from The Most Beautiful Moment in Life pt.2, RM passionately raps about his visceral attachment to his hometown, famously declaring that Ilsan is where he wants to be buried when he dies, calling it \"the city of flowers, the city of Mon.\"</p><p>UNICEF Speech (2018): During his historic address at the United Nations, Namjoon proudly introduced his hometown to the world, describing Ilsan as \"a beautiful place with a lake, hills, and even an annual flower festival,\" directly echoing the landscapes of the Lake Park.</p><p>The park is the ultimate destination for \"Namjooning\"—the fandom term for spending time in nature, riding bikes, and appreciating the quiet moments of life just as RM does. Fans love to track down the famous \"Squirrel Bench,\" the exact spot where Namjoon once took a photo while observing a little squirrel. Additionally, the park has been visited by Jimin, who took a memorable waterside photo here with his friend Ha Sung-woon.</p>"
+      "en": "<p>Located in the city of Goyang just northwest of Seoul, Ilsan Lake Park is one of the largest artificial parks in Asia. Spanning a massive area with a pristine freshwater lake at its center, the park is famous for its scenic walking and cycling paths, peaceful waterfronts, and vibrant botanical gardens. It serves as the green lungs of the city and is particularly renowned for hosting the spectacular International Horticulture Goyang Korea (annual flower festival) every spring.</p><!--stss:footsteps--><p>For ARMYs, Ilsan Lake Park is an iconic pilgrimage site because it is intimately tied to the childhood, identity, and music of BTS's leader, RM (Kim Namjoon). Having spent much of his youth growing up in Ilsan, RM frequently references the city and this exact park in his global projects:</p><p>\"Ma City\" (2015): In the track from The Most Beautiful Moment in Life pt.2, RM passionately raps about his visceral attachment to his hometown, famously declaring that Ilsan is where he wants to be buried when he dies, calling it \"the city of flowers, the city of Mon.\"</p><p>UNICEF Speech (2018): During his historic address at the United Nations, Namjoon proudly introduced his hometown to the world, describing Ilsan as \"a beautiful place with a lake, hills, and even an annual flower festival,\" directly echoing the landscapes of the Lake Park.</p><p>The park is the ultimate destination for \"Namjooning\"—the fandom term for spending time in nature, riding bikes, and appreciating the quiet moments of life just as RM does. Fans love to track down the famous \"Squirrel Bench,\" the exact spot where Namjoon once took a photo while observing a little squirrel.</p><p>The park is also a special spot for Jimin, who visited this scenic location for a relaxing outing with his close friend, singer Ha Sung-woon. Jimin shared memorable waterside photos of their trip on the official BTS members' Twitter account, while Sung-woon posted similar snapshots on his Instagram, making the lake's edge another beloved landmark for fans to visit.</p>"
     },
     "tipsList": [
       {
@@ -3908,20 +3908,31 @@ window.STATIC_LOCATIONS = [
     ],
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "",
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
     "tiktokUrl": "",
     "ytId": "",
-    "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [],
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "imgCredit": "travel oriented / CC BY-SA 2.0",
+    "tweetUrl": "https://x.com/BTS_twt/status/1092729048726351872?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1092729048726351872%7Ctwgr%5E2ba3a58bedb767c1651db3aa3378ba61b97fd02b%7Ctwcon%5Es1_&ref_url=https%3A%2F%2Fwww.joongang.co.kr%2Farticle%2F23354731",
+    "officialLink": "https://www.goyang.go.kr/visitgoyang/en/contents.do?key=298",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-68-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-68-recreated-1.jpg",
+        "official": true
+      }
+    ],
+    "tweetUrls": [
+      "https://x.com/bts_twt/status/948109713714974723?s=46",
+      "https://x.com/bts_twt/status/345552660981768192?s=46"
+    ],
+    "facebookUrl": "https://www.facebook.com/itinerariestravelph/posts/namjooning-at-the-ilsan-lake-park-is-a-must-heres-us-capping-the-night-off-with-/941592241333528/"
   },
   {
     "id": 70,
