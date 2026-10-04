@@ -475,7 +475,8 @@ window.searchCelebLocationsByName = function (query, maxResults) {
 // visitées dans la session), puis fait rendre le <blockquote> injecté à chaque appel —
 // widgets.js ne transforme QUE les blockquotes présents au moment de son propre
 // chargement, un blockquote ajouté dynamiquement plus tard a besoin d'un appel explicite
-// à widgets.load() pour être rendu (voir renderTweetEmbedOnDetails ci-dessous).
+// à widgets.load() pour être rendu. Gardé uniquement comme repli ci-dessous (voir
+// renderTweetEmbedOnDetails) depuis le passage à l'iframe directe.
 let _twitterWidgetLoadPromise = null;
 function loadTwitterWidgetScriptOnce() {
     if (window.twttr && window.twttr.widgets) return Promise.resolve();
@@ -496,11 +497,36 @@ function loadTwitterWidgetScriptOnce() {
 // mais widgets.js ne reconnaît fiablement QUE les href twitter.com : donné un href x.com,
 // il abandonne l'embed et laisse le <a> brut affiché tel quel, un simple lien plutôt que le
 // post. tweetUrl (stocké, affiché ailleurs) garde le domaine d'origine intact ; seul le
-// href passé au blockquote (ce que widgets.js lit) est réécrit vers twitter.com ici.
+// href passé au blockquote (ce que widgets.js lit) est réécrit vers twitter.com ici. Gardé
+// uniquement pour le repli ci-dessous.
 function toTwitterComUrl(tweetUrl) {
     return (tweetUrl || '').replace(/^(https?:\/\/)(www\.)?x\.com\//i, '$1twitter.com/');
 }
+// BUG corrigé (demande du 03-04/10/2026, "maintenant plus aucun réseau social embeded ne
+// fonctionne") : même défaut que Facebook/Instagram/Pinterest (voir leurs notes
+// respectives) — widgets.js dépend d'un comportement interne non documenté de façon
+// fiable, et X a lui aussi muscler ses exigences "Embedded Tweets" au fil du temps
+// (requêtes non authentifiées de plus en plus souvent bloquées) : cause la plus probable
+// d'un échec PERMANENT. X propose aussi un iframe direct, sans script tiers :
+// platform.twitter.com/embed/Tweet.html?id={id numérique du tweet} — c'est l'iframe que
+// widgets.js finissait par injecter lui-même, en interne, une fois chargé. N'a besoin que
+// de l'id numérique, pas du domaine complet : élimine aussi le besoin du contournement
+// toTwitterComUrl() ci-dessus sur ce chemin.
+function extractTweetId(url) {
+    const m = (url || '').trim().match(/status\/(\d+)/i);
+    return m ? m[1] : '';
+}
 async function renderTweetEmbedOnDetails(container, tweetUrl) {
+    const tweetId = extractTweetId(tweetUrl);
+    if (tweetId) {
+        container.innerHTML = `<iframe src="https://platform.twitter.com/embed/Tweet.html?id=${encodeURIComponent(tweetId)}&theme=light" width="550" height="650" frameborder="0" scrolling="yes" style="max-width:100%;border:none;"></iframe>`;
+        return;
+    }
+    // Repli si jamais aucun id n'a pu être extrait (ne devrait normalement jamais arriver vu
+    // isTweetStatusUrl ci-dessous) — ancienne méthode widget JS, meilleur effort. Posé ICI,
+    // de façon SYNCHRONE, avant le moindre `await` — voir la note dans pollForEmbedSuccess()
+    // plus bas sur pourquoi ce drapeau ne peut pas être posé là-bas.
+    container.dataset.embedPending = '1';
     container.innerHTML = `<blockquote class="twitter-tweet"><a href="${toTwitterComUrl(tweetUrl)}"></a></blockquote>`;
     await loadTwitterWidgetScriptOnce();
     if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
@@ -711,11 +737,9 @@ function renderFacebookEmbedOnDetails(container, facebookUrl) {
 // Post TikTok embarqué (demande du 19/09/2026, "je veux que tous les liens des réseaux
 // sociaux soient embeded dans Story") — contrairement à ce qu'affirmait un ancien
 // commentaire ici ("aucune méthode fiable sans clé API"), TikTok a bien un embed officiel
-// PUBLIC sans clé API pour une vidéo précise : un <blockquote class="tiktok-embed"> retraité
-// par https://www.tiktok.com/embed.js, exactement le même mécanisme que le bouton "Embed"
-// sur tiktok.com — même principe que Twitter/Instagram/Facebook ci-dessus. Un simple lien de
-// profil (pas une vidéo précise) n'a pas d'équivalent embarquable et reste donc un lien
-// "Follow" classique, voir isTikTokVideoUrl ci-dessous.
+// PUBLIC sans clé API pour une vidéo précise. Un simple lien de profil (pas une vidéo
+// précise) n'a pas d'équivalent embarquable et reste donc un lien "Follow" classique, voir
+// isTikTokVideoUrl ci-dessous.
 function isTikTokVideoUrl(url) {
     return /^https?:\/\/(www\.|vm\.|vt\.)?tiktok\.com\/(@[\w.-]+\/video\/\d+|v\/\d+)/i.test((url || '').trim());
 }
@@ -723,8 +747,23 @@ function extractTikTokVideoId(url) {
     const m = (url || '').trim().match(/tiktok\.com\/(?:@[\w.-]+\/video\/|v\/)(\d+)/i);
     return m ? m[1] : '';
 }
+// BUG corrigé (demande du 03-04/10/2026, "maintenant plus aucun réseau social embeded ne
+// fonctionne") : même défaut que Facebook/Instagram/Pinterest/Twitter (voir leurs notes
+// respectives) — embed.js (SDK JS officiel ci-dessous, gardé en repli) dépend d'un
+// comportement interne non documenté de façon fiable, cause la plus probable d'un échec
+// PERMANENT. TikTok propose aussi un iframe direct, sans script tiers ni blockquote à
+// retraiter : tiktok.com/embed/v2/{id numérique de la vidéo} — c'est l'iframe que embed.js
+// finissait par injecter lui-même, en interne, une fois chargé. width/height : proportions
+// portrait habituelles de la carte d'embed TikTok (vidéo + légende + bouton follow).
 async function renderTikTokEmbedOnDetails(container, tiktokUrl) {
     const videoId = extractTikTokVideoId(tiktokUrl);
+    if (videoId) {
+        container.innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="738" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
+        return;
+    }
+    // Repli si jamais aucun id n'a pu être extrait (ne devrait normalement jamais arriver vu
+    // isTikTokVideoUrl ci-dessus) — ancienne méthode widget JS, meilleur effort.
+    container.dataset.embedPending = '1';
     container.innerHTML = `<blockquote class="tiktok-embed" cite="${escapeHtml(tiktokUrl)}" data-video-id="${escapeHtml(videoId)}" style="max-width:605px;min-width:325px;"><section></section></blockquote>`;
     // Contrairement au SDK Facebook/Instagram, embed.js de TikTok n'expose aucune fonction
     // publique du type FB.XFBML.parse(container)/instgrm.Embeds.process() pour retraiter
@@ -821,6 +860,7 @@ async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
 // ici, mais on retraite individuellement chaque .embed-item pas encore réussi.
 function reprocessStoryEmbedsIfNeeded(loc) {
     [
+        ['details-tweet-container', renderTweetEmbedOnDetails],
         ['details-instagram-container', renderInstagramEmbedOnDetails],
         ['details-facebook-container', renderFacebookEmbedOnDetails],
         ['details-tiktok-container', renderTikTokEmbedOnDetails],
