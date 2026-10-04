@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-04T17:47:50.070Z.
+// Généré le 2026-10-04T22:27:21.409Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -11778,7 +11778,7 @@ window.STATIC_LOCATIONS = [
     "address": "Ali'i Drive, Kailua-Kona, HI 96740",
     "lat": 19.6391,
     "lng": -155.9974,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "img": "images/admin-upload-216-photo.jpg",
     "fullDescription": {
       "en": "<p>Ali'i Drive is the oceanfront main street of Kailua-Kona, running for roughly four miles along the lava-rock coastline of Hawaii's Big Island. The name translates to \"Chiefly Road,\" a nod to the royal Hawaiian history concentrated along this stretch — the nearby Hulihe'e Palace and Moku'aikaua Church, the islands' oldest Christian church, both sit just off the drive.</p><p>Today it's the social backbone of Kailua-Kona: a low-rise strip of open-air shopping centers, casual restaurants, surf shops and ocean-view bars, all within walking distance of the historic Kailua Pier. Locals and visitors alike treat it as the town's default evening stroll, with sunset views over the water for most of its length.</p><!--stss:footsteps--><p>Ali'i Drive is the connective thread running through BTS's Bon Voyage Season 2, Episode 2, filmed here in 2017 during the group's trip to Hawaii. Nearly every stop the members made during their free day in Kailua-Kona — souvenir shopping, henna tattoos, meals, a heart-to-heart conversation, and the night's final group hangout — happened along this single short stretch of road, making it the easiest way to retrace the whole episode on foot.</p><p>The Maknae Line (Jimin, V and Jungkook) wandered Ali'i Drive's shops hunting for souvenirs, ducking into the ABC Store and several small boutiques inside the Kona Inn Shopping Village. SOPE (Suga and J-Hope) ate at Kona Canoe Club and got matching henna tattoos at Kona Henna Studio, both just off the drive. Namjoon and Jin had one of the episode's more reflective moments at Humpy's Big Island Alehouse overlooking the coast, then browsed the small shops of Waterfront Row for matching jewelry. The whole group reconvened at Huggo's On The Rocks at the end of the day, right on the sand just a short walk down Ali'i Drive from where it all began.</p>"
     },
@@ -11833,7 +11833,28 @@ window.STATIC_LOCATIONS = [
           "en": "The Kona Farmers Market sets up along Ali'i Drive on Wednesday and Saturday mornings, a good add-on stop before or after retracing the episode."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://bigisland.org/alii-drive-shopping-dining-swimming-and-sightseeing-along-konas-seaside-mainstreet/",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-216-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "imgCredit": "Ken Lund / CC BY-SA 2.0",
+    "episodeLink": "https://www.bilibili.tv/video/2041090259",
+    "ytId": "w4qN4b-id5o"
   },
   {
     "id": 217,
@@ -12268,7 +12289,7 @@ window.STATIC_LOCATIONS = [
     "address": "Ali'i Drive, Kailua-Kona, HI 96740",
     "lat": 19.6402,
     "lng": -155.9973,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "img": "images/admin-upload-223-photo.jpg",
     "fullDescription": {
       "en": "<p>Kailua Bay and Oneo Bay are the two small, connected bays that make up the heart of Kailua-Kona's waterfront, both running directly alongside Ali'i Drive. Kailua Bay curves around the historic Kailua Pier and Kamakahonu Beach near the center of town — the site where King Kamehameha I once lived and where Captain Cook's ships first anchored in 1778 — while Oneo Bay sits just a short walk south, tucked behind the Kona Inn Shopping Village.</p><p>Both bays offer calm, relatively shallow water protected from the open ocean swell, making them popular for swimming, snorkeling, and paddleboarding, with a paved seawall path connecting most of the shoreline between them.</p><!--stss:footsteps--><p>The general Ali'i Drive coastline, including both bays, forms the scenic backdrop to much of BTS's time in Kailua-Kona during Bon Voyage Season 2, Episode 2. Oneo Bay specifically — the cove directly behind the Kona Inn Shopping Village — is where SOPE (Suga and J-Hope) paused during their shopping stretch to take in the view, drawn by the calm turquoise water and the open coastline beyond it, one of several quiet, unscripted breaks captured during the group's free day.</p><p>Because the two bays sit at either end of the same short stretch of coastline the group spent the day exploring, both appear in wider shots throughout the episode as the backdrop to the Maknae Line's shopping trip, SOPE's meals and henna tattoos, and Namjin's conversation at Humpy's — making the water itself almost a recurring presence in the episode, even without a single dedicated scene of its own.</p>"
     },
@@ -12323,7 +12344,24 @@ window.STATIC_LOCATIONS = [
           "en": "The small beach by the pier at the north end of Kailua Bay has real historical significance (it was King Kamehameha I's residence) and pairs well with a walk down to Oneo Bay."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/bts_twt/status/894213355954515969?s=46",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "episodeLink": "https://www.bilibili.tv/video/2041090259",
+    "ytId": "w4qN4b-id5o",
+    "imgCredit": "Robert Linsdell / CC BY 2.0"
   },
   {
     "id": 224,
