@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260972" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260973" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -400,10 +400,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260972"></script>
-<script src="countries.js?v=20260972"></script>
-<script src="locations-data.js?v=20260972"></script>
-<script src="script.js?v=20260972"></script>
+<script type="module" src="firebase-init.js?v=20260973"></script>
+<script src="countries.js?v=20260973"></script>
+<script src="locations-data.js?v=20260973"></script>
+<script src="script.js?v=20260973"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -662,11 +662,27 @@ recomposée, sans texte ni légende.`;
     // script.js (aperçu de la fiche publique) : widgets.js ne résout fiablement l'embed que
     // pour un href twitter.com, pas x.com (nouveau nom de domaine que copie l'app/le site X
     // aujourd'hui) — le href du blockquote est réécrit vers twitter.com, tweetUrl lui-même
-    // garde le domaine d'origine.
+    // garde le domaine d'origine. Gardé uniquement pour le repli ci-dessous depuis le passage
+    // à l'iframe directe.
     function toTwitterComUrl(tweetUrl) {
         return (tweetUrl || '').replace(/^(https?:\/\/)(www\.)?x\.com\//i, '$1twitter.com/');
     }
+    // BUG corrigé (demande du 03-04/10/2026, "maintenant plus aucun réseau social embeded ne
+    // fonctionne") — même correctif que renderTweetEmbedOnDetails() dans script.js (fiche
+    // publique) : widgets.js dépend d'un comportement interne non documenté de façon fiable,
+    // et X a durci ses exigences "Embedded Tweets" au fil du temps — cause la plus probable
+    // d'un échec permanent. platform.twitter.com/embed/Tweet.html?id=... est l'iframe direct
+    // que widgets.js finissait par injecter lui-même en interne.
+    function extractTweetId(url) {
+        const m = (url || '').trim().match(/status\/(\d+)/i);
+        return m ? m[1] : '';
+    }
     async function renderTweetEmbed(container, tweetUrl) {
+        const tweetId = extractTweetId(tweetUrl);
+        if (tweetId) {
+            container.innerHTML = `<iframe src="https://platform.twitter.com/embed/Tweet.html?id=${encodeURIComponent(tweetId)}&theme=light" width="550" height="650" frameborder="0" scrolling="yes" style="max-width:100%;border:none;"></iframe>`;
+            return;
+        }
         container.innerHTML = `<blockquote class="twitter-tweet"><a href="${escapeHtml(toTwitterComUrl(tweetUrl))}"></a></blockquote>`;
         await loadTwitterWidgetScript();
         if (window.twttr && window.twttr.widgets) window.twttr.widgets.load(container);
@@ -757,8 +773,17 @@ recomposée, sans texte ni légende.`;
         const m = (url || '').trim().match(/tiktok\.com\/(?:@[\w.-]+\/video\/|v\/)(\d+)/i);
         return m ? m[1] : '';
     }
+    // BUG corrigé (demande du 03-04/10/2026, "maintenant plus aucun réseau social embeded ne
+    // fonctionne") — même correctif que renderTikTokEmbedOnDetails() dans script.js : embed.js
+    // (gardé en repli ci-dessous) dépend d'un comportement interne non documenté de façon
+    // fiable — cause la plus probable d'un échec permanent. tiktok.com/embed/v2/{id} est
+    // l'iframe direct que embed.js finissait par injecter lui-même en interne.
     async function renderTikTokEmbed(container, tiktokUrl) {
         const videoId = extractTikTokVideoId(tiktokUrl);
+        if (videoId) {
+            container.innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="738" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
+            return;
+        }
         container.innerHTML = `<blockquote class="tiktok-embed" cite="${escapeHtml(tiktokUrl)}" data-video-id="${escapeHtml(videoId)}" style="max-width:605px;min-width:325px;"><section></section></blockquote>`;
         // embed.js de TikTok n'expose aucune fonction publique pour retraiter un conteneur
         // précis après coup (contrairement à FB.XFBML.parse()/instgrm.Embeds.process()) — une
