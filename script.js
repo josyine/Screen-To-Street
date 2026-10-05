@@ -516,10 +516,37 @@ function extractTweetId(url) {
     const m = (url || '').trim().match(/status\/(\d+)/i);
     return m ? m[1] : '';
 }
+// BUG corrigé (demande du 05/10/2026, "il y a une zone blanche qui dépasse... le bloc
+// est trop long par rapport au post") : height="650" ci-dessous était une valeur FIXE,
+// quelle que soit la longueur réelle du tweet (texte court, sans média...) — d'où la
+// zone blanche sous le contenu pour tout tweet plus court que 650px. platform.twitter.com
+// connaît sa propre hauteur réelle et la communique au parent via `postMessage` dès que
+// l'iframe a fini de se dessiner (c'est le même mécanisme que widgets.js utilise en
+// interne pour redimensionner ses propres iframes — voir ensureTweetResizeListenerOnce()
+// plus bas) : on démarre avec une hauteur de départ raisonnable, puis on l'ajuste à la
+// vraie hauteur dès que le message arrive, sans jamais avoir besoin du SDK widgets.js.
+function ensureTweetResizeListenerOnce() {
+    if (window._stsTweetResizeListenerAdded) return;
+    window._stsTweetResizeListenerAdded = true;
+    window.addEventListener('message', (e) => {
+        if (!/^https:\/\/platform\.twitter\.com$/.test(e.origin)) return;
+        let data = e.data;
+        try { if (typeof data === 'string') data = JSON.parse(data); } catch (err) { return; }
+        const embed = data && data['twttr.embed'];
+        if (!embed || embed.method !== 'twttr.private.resize') return;
+        const params = embed.params && embed.params[0];
+        const height = params && params.height;
+        if (!height) return;
+        document.querySelectorAll('iframe[data-sts-tweet-embed]').forEach((ifr) => {
+            if (ifr.contentWindow === e.source) ifr.style.height = height + 'px';
+        });
+    });
+}
 async function renderTweetEmbedOnDetails(container, tweetUrl) {
     const tweetId = extractTweetId(tweetUrl);
     if (tweetId) {
-        container.innerHTML = `<iframe src="https://platform.twitter.com/embed/Tweet.html?id=${encodeURIComponent(tweetId)}&theme=light" width="550" height="650" frameborder="0" scrolling="yes" style="max-width:100%;border:none;"></iframe>`;
+        ensureTweetResizeListenerOnce();
+        container.innerHTML = `<iframe data-sts-tweet-embed src="https://platform.twitter.com/embed/Tweet.html?id=${encodeURIComponent(tweetId)}&theme=light" width="550" height="300" frameborder="0" scrolling="no" style="max-width:100%;border:none;display:block;"></iframe>`;
         return;
     }
     // Repli si jamais aucun id n'a pu être extrait (ne devrait normalement jamais arriver vu
@@ -3926,7 +3953,7 @@ const translations = {
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} is live now — {event} in {city}", tourModeLiveNowOne: "Live now", tourModeLiveNowCount: "{n} live now", tourModeMoreCount: "+{n} more",
         tourModeEyebrow: "Tour Mode", tourModeChooseTour: "Choose a tour", tourModeStep: "Step {n} of {total}",
         tourModeHighlights: "Highlights", tourModeSurpriseSong: "Surprise song:", tourModeNoHighlightsYet: "No highlights added yet for this show.", tourModeNoSurpriseSongYet: "Not announced yet.",
-        mapLoading: "Loading map…", viewDetails: "View", multiSelectCount: "selected",
+        mapLoading: "Loading map…", viewDetails: "View", itineraryBtn: "Directions", multiSelectCount: "selected",
         demoTourBtn: "Tour",
         newLocationToastLabel: "New location added", newLocationsSummaryToast: "{n} new locations for {group}",
         paywallRemainingTitle: "You've viewed {used} of your {limit} free locations", paywallTitle: "You've reached your free limit (3/3)", paywallBody: "Loving the secret map? There are still 500+ addresses left to discover! Unlock every filming location, iconic restaurant, and address your idols frequent to plan the trip of your dreams.",
@@ -3993,7 +4020,7 @@ const translations = {
         tourModeGenericLabel: "Tournée", tourModeMemberLiveIn: "{member} est en direct — {event} à {city}", tourModeLiveNowOne: "En direct maintenant", tourModeLiveNowCount: "{n} en direct maintenant", tourModeMoreCount: "+{n} autres",
         tourModeEyebrow: "Mode Tournée", tourModeChooseTour: "Choisir une tournée", tourModeStep: "Étape {n} sur {total}",
         tourModeHighlights: "Temps forts", tourModeSurpriseSong: "Chanson surprise :", tourModeNoHighlightsYet: "Aucun temps fort ajouté pour ce concert pour le moment.", tourModeNoSurpriseSongYet: "Pas encore annoncée.",
-        mapLoading: "Chargement de la carte…", viewDetails: "Voir", multiSelectCount: "sélectionnés",
+        mapLoading: "Chargement de la carte…", viewDetails: "Voir", itineraryBtn: "Itinéraire", multiSelectCount: "sélectionnés",
         demoTourBtn: "Visite",
         newLocationToastLabel: "Nouveau lieu ajouté", newLocationsSummaryToast: "{n} nouveaux lieux pour {group}",
         paywallRemainingTitle: "Vous avez consulté {used} des {limit} lieux gratuits", paywallTitle: "Vous avez atteint votre limite gratuite (3/3)", paywallBody: "La carte secrète vous plaît ? Il reste encore plus de 500 adresses à découvrir ! Débloquez l'intégralité des lieux de tournages, restaurants iconiques et adresses fréquentées par vos idoles pour préparer le voyage de vos rêves.",
@@ -4060,7 +4087,7 @@ const translations = {
         tourModeGenericLabel: "Gira", tourModeMemberLiveIn: "{member} está en directo — {event} en {city}", tourModeLiveNowOne: "En directo ahora", tourModeLiveNowCount: "{n} en directo ahora", tourModeMoreCount: "+{n} más",
         tourModeEyebrow: "Modo Gira", tourModeChooseTour: "Elegir una gira", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Momentos destacados", tourModeSurpriseSong: "Canción sorpresa:", tourModeNoHighlightsYet: "Aún no se han añadido momentos destacados para este concierto.", tourModeNoSurpriseSongYet: "Aún no anunciada.",
-        mapLoading: "Cargando el mapa…", viewDetails: "Ver", multiSelectCount: "seleccionados",
+        mapLoading: "Cargando el mapa…", viewDetails: "Ver", itineraryBtn: "Cómo llegar", multiSelectCount: "seleccionados",
         demoTourBtn: "Recorrido",
         newLocationToastLabel: "Nuevo lugar añadido", newLocationsSummaryToast: "{n} nuevos lugares para {group}",
         paywallRemainingTitle: "Has visto {used} de tus {limit} lugares gratuitos", paywallTitle: "Has alcanzado tu límite gratuito (3/3)", paywallBody: "¿Te gusta el mapa secreto? ¡Todavía quedan más de 500 direcciones por descubrir! Desbloquea todos los lugares de rodaje, restaurantes icónicos y direcciones que frecuentan tus ídolos para preparar el viaje de tus sueños.",
@@ -4123,7 +4150,7 @@ const translations = {
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} è in diretta — {event} a {city}", tourModeLiveNowOne: "In diretta ora", tourModeLiveNowCount: "{n} in diretta ora", tourModeMoreCount: "+{n} altri",
         tourModeEyebrow: "Modalità Tour", tourModeChooseTour: "Scegli un tour", tourModeStep: "Tappa {n} di {total}",
         tourModeHighlights: "Momenti salienti", tourModeSurpriseSong: "Canzone a sorpresa:", tourModeNoHighlightsYet: "Nessun momento saliente ancora aggiunto per questo concerto.", tourModeNoSurpriseSongYet: "Non ancora annunciata.",
-        mapLoading: "Caricamento della mappa…", viewDetails: "Vedi", multiSelectCount: "selezionati",
+        mapLoading: "Caricamento della mappa…", viewDetails: "Vedi", itineraryBtn: "Indicazioni", multiSelectCount: "selezionati",
         demoTourBtn: "Tour",
         newLocationToastLabel: "Nuovo luogo aggiunto", newLocationsSummaryToast: "{n} nuovi luoghi per {group}",
         paywallRemainingTitle: "Hai visualizzato {used} dei tuoi {limit} luoghi gratuiti", paywallTitle: "Hai raggiunto il tuo limite gratuito (3/3)", paywallBody: "Ti piace la mappa segreta? Ci sono ancora più di 500 indirizzi da scoprire! Sblocca tutti i luoghi delle riprese, i ristoranti iconici e gli indirizzi frequentati dai tuoi idoli per preparare il viaggio dei tuoi sogni.",
@@ -4186,7 +4213,7 @@ const translations = {
         tourModeGenericLabel: "Turnê", tourModeMemberLiveIn: "{member} está ao vivo agora — {event} em {city}", tourModeLiveNowOne: "Ao vivo agora", tourModeLiveNowCount: "{n} ao vivo agora", tourModeMoreCount: "+{n} mais",
         tourModeEyebrow: "Modo Turnê", tourModeChooseTour: "Escolher uma turnê", tourModeStep: "Etapa {n} de {total}",
         tourModeHighlights: "Melhores momentos", tourModeSurpriseSong: "Música surpresa:", tourModeNoHighlightsYet: "Nenhum destaque adicionado ainda para este show.", tourModeNoSurpriseSongYet: "Ainda não anunciada.",
-        mapLoading: "Carregando o mapa…", viewDetails: "Ver", multiSelectCount: "selecionados",
+        mapLoading: "Carregando o mapa…", viewDetails: "Ver", itineraryBtn: "Como chegar", multiSelectCount: "selecionados",
         demoTourBtn: "Tour guiado",
         newLocationToastLabel: "Novo local adicionado", newLocationsSummaryToast: "{n} novos locais para {group}",
         paywallRemainingTitle: "Você visualizou {used} dos seus {limit} locais gratuitos", paywallTitle: "Você atingiu seu limite gratuito (3/3)", paywallBody: "Está gostando do mapa secreto? Ainda há mais de 500 endereços para descobrir! Desbloqueie todos os locais de filmagem, restaurantes icônicos e endereços frequentados pelos seus ídolos para planejar a viagem dos seus sonhos.",
@@ -4249,7 +4276,7 @@ const translations = {
         tourModeGenericLabel: "투어", tourModeMemberLiveIn: "{member} 라이브 중 — {city}에서 {event}", tourModeLiveNowOne: "지금 라이브", tourModeLiveNowCount: "지금 {n}건 라이브", tourModeMoreCount: "+{n}개 더보기",
         tourModeEyebrow: "투어 모드", tourModeChooseTour: "투어 선택", tourModeStep: "{total}단계 중 {n}단계",
         tourModeHighlights: "하이라이트", tourModeSurpriseSong: "깜짝 곡:", tourModeNoHighlightsYet: "이 공연의 하이라이트가 아직 등록되지 않았습니다.", tourModeNoSurpriseSongYet: "아직 발표되지 않았습니다.",
-        mapLoading: "지도를 불러오는 중…", viewDetails: "보기", multiSelectCount: "개 선택됨",
+        mapLoading: "지도를 불러오는 중…", viewDetails: "보기", itineraryBtn: "길찾기", multiSelectCount: "개 선택됨",
         demoTourBtn: "투어",
         newLocationToastLabel: "새로운 장소 추가됨", newLocationsSummaryToast: "{group}의 새로운 장소 {n}개",
         paywallRemainingTitle: "무료 열람 가능한 {limit}곳 중 {used}곳을 확인했습니다", paywallTitle: "무료 열람 한도에 도달했습니다 (3/3)", paywallBody: "비밀 지도가 마음에 드시나요? 아직 500개 이상의 주소가 더 남아있어요! 촬영지, 인기 맛집, 그리고 아이돌이 자주 찾는 장소까지 모두 잠금 해제하고 꿈꾸던 여행을 준비해 보세요.",
@@ -4312,7 +4339,7 @@ const translations = {
         tourModeGenericLabel: "ツアー", tourModeMemberLiveIn: "{member}がライブ配信中 — {city}で{event}", tourModeLiveNowOne: "現在ライブ中", tourModeLiveNowCount: "現在{n}件ライブ中", tourModeMoreCount: "他+{n}件",
         tourModeEyebrow: "ツアーモード", tourModeChooseTour: "ツアーを選択", tourModeStep: "ステップ {n}/{total}",
         tourModeHighlights: "ハイライト", tourModeSurpriseSong: "サプライズソング：", tourModeNoHighlightsYet: "この公演のハイライトはまだ追加されていません。", tourModeNoSurpriseSongYet: "まだ発表されていません。",
-        mapLoading: "地図を読み込み中…", viewDetails: "見る", multiSelectCount: "件選択中",
+        mapLoading: "地図を読み込み中…", viewDetails: "見る", itineraryBtn: "経路", multiSelectCount: "件選択中",
         demoTourBtn: "ツアー",
         newLocationToastLabel: "新しい場所が追加されました", newLocationsSummaryToast: "{group}の新しいスポット{n}件",
         paywallRemainingTitle: "無料で閲覧できる{limit}件中{used}件を確認しました", paywallTitle: "無料閲覧の上限に達しました (3/3)", paywallBody: "シークレットマップは気に入りましたか？まだ500件以上の住所が残っています！ロケ地、人気レストラン、推しがよく訪れる場所をすべて解放して、夢の旅行を計画しましょう。",
@@ -4375,7 +4402,7 @@ const translations = {
         tourModeGenericLabel: "巡演", tourModeMemberLiveIn: "{member} 直播中 — 于{city}参加{event}", tourModeLiveNowOne: "现在直播中", tourModeLiveNowCount: "现在{n}个直播中", tourModeMoreCount: "+{n}个更多",
         tourModeEyebrow: "巡演模式", tourModeChooseTour: "选择巡演", tourModeStep: "第 {n} 步，共 {total} 步",
         tourModeHighlights: "精彩瞬间", tourModeSurpriseSong: "惊喜曲目：", tourModeNoHighlightsYet: "该场演出暂无精彩瞬间记录。", tourModeNoSurpriseSongYet: "尚未公布。",
-        mapLoading: "地图加载中…", viewDetails: "查看", multiSelectCount: "已选择",
+        mapLoading: "地图加载中…", viewDetails: "查看", itineraryBtn: "路线", multiSelectCount: "已选择",
         demoTourBtn: "导览",
         newLocationToastLabel: "新增地点", newLocationsSummaryToast: "{group}的{n}个新地点",
         paywallRemainingTitle: "您已查看 {limit} 个免费地点中的 {used} 个", paywallTitle: "已达到免费浏览上限 (3/3)", paywallBody: "喜欢这份秘密地图吗？还有500多个地址等你发现！解锁全部取景地、人气餐厅和爱豆常去的地方，规划你的梦想之旅。",
@@ -5101,6 +5128,7 @@ function showMapHoverTip(loc, marker) {
     const titleEl = document.getElementById('map-hover-tip-title');
     const metaEl = document.getElementById('map-hover-tip-meta');
     const detailBtn = document.getElementById('map-hover-tip-detail-btn');
+    const routeBtn = document.getElementById('map-hover-tip-route-btn');
     if (!tip || !iconEl || !artistEl || !titleEl || !metaEl) return;
 
     const baseColor = groupColors[loc.group] || '#334e68';
@@ -5118,6 +5146,15 @@ function showMapHoverTip(loc, marker) {
             e.stopPropagation();
             hideMapHoverTip();
             window.openDetailsPanel(loc.id);
+        };
+    }
+    // Bouton "Itinéraire" (demande du 05/10/2026) : ouvre le panneau d'itinéraire à pied/
+    // transports vers ce lieu — voir window.openLocationItinerary() plus bas.
+    if (routeBtn) {
+        routeBtn.onclick = (e) => {
+            e.stopPropagation();
+            hideMapHoverTip();
+            window.openLocationItinerary(loc);
         };
     }
 
@@ -9701,12 +9738,81 @@ window.flyMapToCountry = function(countryName) {
 let myLocationMarker = null;
 let myLocationAccuracyCircle = null;
 let myLocationWatchId = null;
+// Cap de déplacement (demande du 05/10/2026, "je veux pouvoir voir dans quelle direction
+// de marche via mon point de géolocalisation") : null tant qu'aucune lecture fiable du
+// capteur d'orientation n'est arrivée — le marqueur reste alors un simple point bleu sans
+// cône, jamais un cône dans une direction devinée/fausse.
+let myLocationHeadingDeg = null;
+let myLocationHeadingListenerAdded = false;
+
+function myLocationDivIcon(hasHeading) {
+    return L.divIcon({
+        className: '', // évite le fond blanc/bordure par défaut de Leaflet (même convention qu'ailleurs dans ce fichier)
+        html: `<div class="my-location-dot-wrap">${hasHeading ? '<div class="my-location-heading-cone"></div>' : ''}<div class="my-location-dot"></div></div>`,
+        iconSize: [34, 34],
+        iconAnchor: [17, 17]
+    });
+}
+
+function applyMyLocationHeadingRotation() {
+    if (!myLocationMarker || myLocationHeadingDeg == null) return;
+    const el = myLocationMarker.getElement();
+    const cone = el && el.querySelector('.my-location-heading-cone');
+    if (cone) cone.style.transform = `rotate(${myLocationHeadingDeg}deg)`;
+}
+
+// Gère à la fois `deviceorientationabsolute` (Android/Chrome : alpha en degrés, sens
+// ANTI-horaire depuis le nord) et le `webkitCompassHeading` propriétaire de Safari/iOS
+// (déjà en degrés sens HORAIRE depuis le nord, pas besoin d'inversion) — voir
+// https://developer.mozilla.org/docs/Web/API/Window/deviceorientationabsolute_event.
+// Un évènement sans cap fiable (ex: `absolute` faux sur certains Android, pas de boussole
+// matérielle) est ignoré plutôt que d'afficher une direction inventée.
+function handleMyLocationDeviceOrientation(e) {
+    let heading = null;
+    if (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading)) {
+        heading = e.webkitCompassHeading;
+    } else if (e.absolute && typeof e.alpha === 'number') {
+        heading = 360 - e.alpha;
+    } else {
+        return;
+    }
+    const hadHeadingBefore = myLocationHeadingDeg != null;
+    myLocationHeadingDeg = (heading + 360) % 360;
+    if (myLocationMarker && !hadHeadingBefore) {
+        // Le marqueur existait déjà sans cône (créé avant la première lecture de cap) :
+        // on le recrée une seule fois avec le cône désormais inclus dans son icône.
+        myLocationMarker.setIcon(myLocationDivIcon(true));
+    }
+    applyMyLocationHeadingRotation();
+}
+
+// Démarre l'écoute du capteur d'orientation — appelée depuis locateMyPosition() ci-dessous,
+// TOUJOURS dans le prolongement direct du clic sur le bouton "localiser" : iOS 13+ exige un
+// geste utilisateur explicite pour DeviceOrientationEvent.requestPermission(), un appel
+// différé (ex: au chargement de la page) échouerait silencieusement sur Safari/iPhone.
+function ensureMyLocationHeadingListener() {
+    if (myLocationHeadingListenerAdded || typeof DeviceOrientationEvent === 'undefined') return;
+    myLocationHeadingListenerAdded = true;
+    const attach = () => {
+        if ('ondeviceorientationabsolute' in window) {
+            window.addEventListener('deviceorientationabsolute', handleMyLocationDeviceOrientation);
+        } else {
+            window.addEventListener('deviceorientation', handleMyLocationDeviceOrientation);
+        }
+    };
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then((state) => { if (state === 'granted') attach(); }).catch(() => {});
+    } else {
+        attach();
+    }
+}
 
 window.locateMyPosition = function() {
     if (!map || !navigator.geolocation) {
         if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "La géolocalisation n'est pas disponible sur cet appareil." : 'Geolocation is not available on this device.');
         return;
     }
+    ensureMyLocationHeadingListener();
     // Le suivi (watchPosition) ne doit démarrer qu'une fois : un second clic sur le bouton
     // recentre simplement sur la dernière position connue au lieu de relancer une demande.
     if (myLocationWatchId !== null && myLocationMarker) {
@@ -9746,14 +9852,17 @@ function startWatchingMyLocation() {
 
 // Point bleu "vous êtes ici" + cercle de précision, convention établie (Google/Apple
 // Plans) — mis à jour à chaque évènement watchPosition plutôt que recréé, pour un
-// déplacement fluide sur la carte au lieu d'un marqueur qui clignote/disparaît.
+// déplacement fluide sur la carte au lieu d'un marqueur qui clignote/disparaît. Le marqueur
+// est un divIcon (et non plus un simple circleMarker) pour pouvoir y inclure le cône de cap
+// ci-dessus dès qu'une direction de marche fiable est connue.
 function updateMyLocationMarker(pos) {
     if (!map || typeof L === 'undefined') return;
     const latlng = [pos.coords.latitude, pos.coords.longitude];
     if (!myLocationMarker) {
-        myLocationMarker = L.circleMarker(latlng, {
-            radius: 8, color: '#fff', weight: 3, fillColor: '#4285F4', fillOpacity: 1, interactive: false
+        myLocationMarker = L.marker(latlng, {
+            icon: myLocationDivIcon(myLocationHeadingDeg != null), interactive: false, zIndexOffset: 1000
         }).addTo(map);
+        applyMyLocationHeadingRotation();
     } else {
         myLocationMarker.setLatLng(latlng);
     }
@@ -9773,13 +9882,16 @@ function updateMyLocationMarker(pos) {
 // position GPS réelle de la personne passe à proximité d'un lieu, elle débloque
 // automatiquement son badge — appelée à CHAQUE évènement watchPosition ci-dessus (donc
 // tant que la géolocalisation reste active après un clic sur le bouton "localiser"),
-// jamais en continu en arrière-plan sans action de la personne. Rayon volontairement
-// généreux (100m) : la précision GPS réelle en environnement urbain (immeubles, métro)
-// dépasse souvent 20-30m, un rayon trop strict laisserait des lieux jamais débloquables
-// malgré une vraie visite. Voir window.awardLocationBadge() dans firebase-init.js pour
-// l'écriture Firestore (publicProfiles/{uid}.badges + compteur locationStats.checkinCount).
+// jamais en continu en arrière-plan sans action de la personne. Rayon resserré à 10m
+// (demande explicite du 05/10/2026, "je veux pouvoir gagner un badge quand je suis dans
+// un rayon de 10m autour du lieu, corrige" — remplace l'ancien rayon de 100m, posé à
+// l'origine pour compenser la précision GPS en environnement urbain ; la précision GPS
+// réelle en environnement urbain, souvent 20-30m, peut rendre certains lieux rarement
+// débloquables à 10m, mais c'est le rayon explicitement demandé). Voir
+// window.awardLocationBadge() dans firebase-init.js pour l'écriture Firestore
+// (publicProfiles/{uid}.badges + compteur locationStats.checkinCount).
 // ==========================================
-const BADGE_UNLOCK_RADIUS_METERS = 100;
+const BADGE_UNLOCK_RADIUS_METERS = 10;
 let myUnlockedBadgeIds = null; // Set<string> — null tant que non chargé, voir loadMyUnlockedBadges()
 const badgeUnlockChecksInFlight = new Set(); // évite un double déblocage si deux évènements GPS arrivent avant que l'écriture Firestore du premier n'ait fini
 

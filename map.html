@@ -45,7 +45,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20260983" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260984" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -449,6 +449,10 @@
      résumé, bouton pour aller directement au détail ; 2e tap sur le même marqueur = détail
      directement) — masqué sur desktop où la bulle reste un pur survol sans interaction. */
   .map-hover-tip-detail-btn { display: none; }
+  /* Même principe que .map-hover-tip-detail-btn ci-dessus : masqué par défaut, affiché
+     uniquement sur mobile (voir le media query plus bas) — sans cette règle, un <button>
+     garde l'affichage par défaut du navigateur et resterait visible sur desktop. */
+  .map-hover-tip-route-btn { display: none; }
   @media (max-width: 760px) {
       /* pointer-events réactivé uniquement sur mobile : sur desktop la bulle doit rester
          non cliquable (voir la note de .map-hover-tip plus haut, mouseout du marqueur). */
@@ -466,6 +470,17 @@
           color: #fff; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 700;
           padding: 7px 0; cursor: pointer; touch-action: manipulation;
       }
+      /* Bouton "Itinéraire" (demande du 05/10/2026) : juste en dessous du bouton "View"
+         ci-dessus, en contour violet (pas de fond plein) pour rester visuellement secondaire
+         — voir window.openLocationItinerary() dans script.js et la section #sts-it plus bas
+         dans ce fichier pour le panneau qu'il ouvre. */
+      .map-hover-tip-route-btn {
+          display: flex; align-items: center; justify-content: center; gap: 6px;
+          width: 100%; margin-top: 6px; height: 30px; border-radius: 8px;
+          border: 1.5px solid #8b5cf6; background: #fff; color: #8b5cf6;
+          font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 700;
+          cursor: pointer; touch-action: manipulation;
+      }
       .map-hover-tip-card { max-width: 200px; }
   }
 
@@ -481,6 +496,79 @@
   .live-cal-day-bubble-row + .live-cal-day-bubble-row { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.15); }
   .live-cal-day-bubble-title { font-size: 12px; font-weight: 700; color: #fff; line-height: 1.3; }
   .live-cal-day-bubble-date { font-size: 10.5px; color: rgba(255,255,255,.7); margin-top: 2px; }
+
+  /* ==========================================
+     Panneau "Itinéraire" (demande du 05/10/2026, bouton "Itinéraire" de .map-hover-tip
+     ci-dessus) — adapté du prototype itineraire.html fourni : calcul à pied (OSRM,
+     gratuit, sans clé) et en transports (Transitous/MOTIS, gratuit, open data GTFS),
+     secours vers Google Maps si l'un des deux échoue. Voir itinerary.js pour la logique
+     (chargé après script.js), window.openLocationItinerary() pour le point d'entrée
+     depuis la bulle. Préfixe .sts- conservé du prototype pour ne rien risquer de casser
+     ailleurs sur le site. Plein écran sur mobile, panneau latéral sur ordinateur (media
+     query tout en bas de ce bloc).
+     ========================================== */
+  :root{
+    --sts-pur:#9B3CEB; --sts-mag:#E0156B; --sts-grad:linear-gradient(90deg,#9B3CEB,#E0156B);
+    --sts-ink:#1F2430; --sts-soft:#6B6478; --sts-line:#ECE8F2; --sts-field:#F5F3F9;
+    --sts-blue:#3B82F6;
+  }
+  .sts-it{position:fixed;inset:0;z-index:9800;background:#F2F2F0;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .38s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+  .sts-it.on{transform:none;visibility:visible}
+  .sts-it-map{position:absolute;inset:0}
+  .sts-it-top{position:relative;z-index:3;background:#fff;border-radius:0 0 24px 24px;box-shadow:0 10px 30px rgba(30,20,50,.12);padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 14px}
+  .sts-row{display:flex;gap:10px;align-items:center}
+  .sts-ib{flex:0 0 40px;width:40px;height:40px;border-radius:50%;border:0;background:transparent;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif}
+  .sts-ib:active{background:#F1EEF6}
+  .sts-fields{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+  .sts-field{height:40px;border-radius:12px;background:var(--sts-field);display:flex;align-items:center;gap:10px;padding:0 12px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Poppins',sans-serif;color:var(--sts-ink)}
+  .sts-field b{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+  .sts-dot{flex:0 0 10px;height:10px;border-radius:50%}
+  .sts-dot.me{background:var(--sts-blue);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+  .sts-dot.to{background:var(--sts-pur)}
+  .sts-seg{display:flex;background:#F1EEF6;border-radius:14px;padding:4px;gap:4px;margin-top:12px}
+  .sts-seg button{flex:1;height:40px;border:0;border-radius:11px;background:transparent;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13px;font-weight:600;color:var(--sts-soft);transition:background .2s,color .2s;font-family:'Poppins',sans-serif;cursor:pointer}
+  .sts-seg button[aria-pressed="true"]{background:#fff;color:var(--sts-ink);box-shadow:0 2px 8px rgba(30,20,50,.1)}
+  .sts-seg button[aria-pressed="true"] .sts-t{color:var(--sts-mag)}
+  .sts-seg .sts-t{font-weight:700}
+  .sts-sheet{position:absolute;left:0;right:0;bottom:0;z-index:3;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -10px 30px rgba(30,20,50,.12);padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);max-height:62%;overflow-y:auto;overscroll-behavior:contain;transition:max-height .3s;font-family:'Poppins',sans-serif;color:var(--sts-ink)}
+  .sts-sheet.compact .sts-alts,.sts-sheet.compact .sts-legs-detail{display:none}
+  .sts-handle{display:block;width:44px;height:5px;border-radius:9px;background:#DDD8E6;margin:0 auto 12px;border:0;padding:0;cursor:pointer}
+  .sts-sum{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+  .sts-big{font-size:24px;font-weight:700;line-height:1.15}
+  .sts-big small{font-size:15px;color:var(--sts-soft);font-weight:500}
+  .sts-sub{font-size:12px;color:var(--sts-soft);margin-top:2px}
+  .sts-share{flex:0 0 44px;height:44px;border-radius:50%;border:1.5px solid var(--sts-line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .sts-alts{display:flex;gap:8px;margin:14px 0;overflow-x:auto;scrollbar-width:none}
+  .sts-alts::-webkit-scrollbar{display:none}
+  .sts-alt{flex:1 0 46%;min-width:0;text-align:left;border:1.5px solid var(--sts-line);border-radius:14px;padding:10px 12px;background:#fff;color:var(--sts-ink);font-family:'Poppins',sans-serif;cursor:pointer}
+  .sts-alt[aria-pressed="true"]{border:2px solid var(--sts-pur);padding:9.5px 11.5px}
+  .sts-alt b{display:block;font-size:15px}
+  .sts-alt span{display:block;font-size:12px;color:var(--sts-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sts-chips{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:6px}
+  .sts-chip{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;background:#F3E8FF;color:var(--sts-pur)}
+  .sts-chip.tr{color:#fff;background:#F59E0B}
+  .sts-chips i{color:#B9B3C6;font-style:normal;font-size:12px}
+  .sts-legs-detail{margin:2px 0 14px;padding:0;list-style:none;font-size:13px}
+  .sts-legs-detail li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #F3F0F7;align-items:center}
+  .sts-legs-detail li:last-child{border:0}
+  .sts-legs-detail .t{margin-left:auto;font-size:12px;color:var(--sts-soft);font-weight:600;white-space:nowrap}
+  .sts-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:50px;border:0;border-radius:14px;background:var(--sts-grad);color:#fff;font-size:15px;font-weight:600;box-shadow:0 8px 18px rgba(224,21,107,.25);font-family:'Poppins',sans-serif;cursor:pointer}
+  .sts-cta:active{transform:scale(.98)}
+  .sts-cta.stop{background:var(--sts-ink);box-shadow:none}
+  .sts-gm{display:block;text-align:center;font-size:12.5px;color:var(--sts-soft);margin-top:10px;text-decoration:underline}
+  .sts-msg{padding:14px;border-radius:14px;background:#FFF7E8;color:#7A4A06;font-size:13px;line-height:1.45;margin:12px 0}
+  .sts-skel{height:16px;border-radius:8px;background:linear-gradient(90deg,#F1EEF6,#FAF8FD,#F1EEF6);background-size:200% 100%;animation:sts-sh 1.2s infinite;margin:8px 0}
+  @keyframes sts-sh{to{background-position:-200% 0}}
+  .sts-me-marker{width:18px;height:18px;border-radius:50%;background:var(--sts-blue);border:3px solid #fff;box-shadow:0 0 0 6px rgba(59,130,246,.2)}
+  .sts-to-marker{width:30px;height:30px;border-radius:50%;background:var(--sts-pur);border:3px solid #fff;box-shadow:0 4px 10px rgba(30,20,50,.25);display:flex;align-items:center;justify-content:center}
+  .sts-stop-marker{width:14px;height:14px;border-radius:50%;background:#fff;border:3.5px solid #F59E0B}
+  .sts-toast{position:fixed;left:50%;top:18px;z-index:9900;transform:translate(-50%,-30px);opacity:0;transition:all .3s;background:var(--sts-ink);color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;pointer-events:none;font-family:'Poppins',sans-serif}
+  .sts-toast.on{transform:translate(-50%,0);opacity:1}
+  @media (min-width:700px){ /* sur ordinateur : panneau latéral, pas plein écran */
+    .sts-it{left:auto;width:420px;box-shadow:-20px 0 50px rgba(30,20,50,.18);transform:translateX(100%)}
+    .sts-it.on{transform:none}
+  }
+  @media (prefers-reduced-motion:reduce){.sts-it{transition:none}}
 </style>
 </head>
 <body class="auth-gate-active">
@@ -1304,6 +1392,14 @@
                  .map-hover-tip-detail-btn en CSS) — sur desktop la bulle reste un simple
                  résumé au survol, cliquer le marqueur ouvre directement le détail. -->
             <button type="button" class="map-hover-tip-detail-btn" id="map-hover-tip-detail-btn" data-i18n="viewDetails">View</button>
+            <!-- Bouton "Itinéraire" (demande du 05/10/2026) : juste en dessous du bouton
+                 "View" ci-dessus, ouvre le panneau d'itinéraire (marche/transports) — voir
+                 window.openLocationItinerary() dans script.js. Mobile uniquement, même
+                 principe que le bouton "View" (voir .map-hover-tip-route-btn en CSS). -->
+            <button type="button" class="map-hover-tip-route-btn" id="map-hover-tip-route-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>
+                <span data-i18n="itineraryBtn">Directions</span>
+            </button>
         </div>
     </div>
 </div>
@@ -1362,6 +1458,30 @@
         <div class="tour-mode-footer" data-i18n="tourModeFooterNote">Dates as announced by the tour — always double-check official ticketing sites before booking travel.</div>
     </div>
 </div>
+
+<!-- Panneau "Itinéraire" (demande du 05/10/2026) : ouvert par window.openLocationItinerary()
+     depuis le bouton "Itinéraire" de la bulle .map-hover-tip — voir itinerary.js pour toute
+     la logique (calcul à pied/transports, guidage en direct). Adapté du prototype
+     itineraire.html fourni, markup quasi identique (préfixe .sts- conservé). -->
+<section class="sts-it" id="stsIt" role="dialog" aria-modal="true" aria-label="Itinéraire" aria-hidden="true">
+  <div class="sts-it-map" id="stsItMap"></div>
+  <div class="sts-it-top">
+    <div class="sts-row">
+      <button class="sts-ib" id="stsBack" aria-label="Retour à la carte" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="sts-fields">
+        <div class="sts-field" id="stsFrom"><span class="sts-dot me"></span><span>Ma position</span></div>
+        <div class="sts-field" id="stsTo"><span class="sts-dot to"></span><b>—</b></div>
+      </div>
+      <button class="sts-ib" id="stsSwap" aria-label="Inverser départ et arrivée" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6478" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg></button>
+    </div>
+    <div class="sts-seg" role="group" aria-label="Mode de déplacement">
+      <button data-mode="walk" aria-pressed="true" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2" fill="currentColor" stroke="none"/><path d="M10 21l2-6-3-3 1-5 4 3 3 1M9 12l-2 3"/></svg>À pied <span class="sts-t" id="stsTWalk">…</span></button>
+      <button data-mode="transit" aria-pressed="false" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 21v-3M16 21v-3"/></svg>Transports <span class="sts-t" id="stsTTransit">…</span></button>
+    </div>
+  </div>
+  <div class="sts-sheet" id="stsSheet" aria-live="polite"></div>
+</section>
+<div class="sts-toast" id="stsToast" role="status" aria-live="polite"></div>
 
 <!-- Panneau "Live" : timeline unifiée (tournée du groupe + activités solo des membres,
      ex. Jimin à la Fashion Week de Paris) filtrable par membre via la rangée d'avatars.
@@ -1579,12 +1699,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260983"></script>
-<script type="module" src="firebase-init.js?v=20260983"></script>
-<script src="locations-data.js?v=20260983"></script>
-<script src="script.js?v=20260983"></script>
+<script src="countries.js?v=20260984"></script>
+<script type="module" src="firebase-init.js?v=20260984"></script>
+<script src="locations-data.js?v=20260984"></script>
+<script src="script.js?v=20260984"></script>
 <script src="tour-mode.js"></script>
-<script src="map-tour.js?v=20260983"></script>
+<script src="itinerary.js?v=20260984"></script>
+<script src="map-tour.js?v=20260984"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
