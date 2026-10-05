@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-05T07:31:58.694Z.
+// Généré le 2026-10-05T21:13:22.408Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -11867,8 +11867,8 @@ window.STATIC_LOCATIONS = [
     "year": "2017",
     "episode": "Bon Voyage Season 2, Episode 2",
     "address": "Ali'i Drive, Kailua-Kona, HI 96740",
-    "lat": 19.6398,
-    "lng": -155.9972,
+    "lat": 19.63999,
+    "lng": -155.99428,
     "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
     "fullDescription": {
       "en": "<p>ABC Stores are a Hawaii institution — a chain of convenience shops found on nearly every block of the islands' main tourist strips, stocking everything from sunscreen and beach mats to snacks, alcohol, and a wall of souvenirs and aloha-print clothing. The chain started on Oahu in 1964 and has since grown to dozens of locations across the state, with the Kailua-Kona branch on Ali'i Drive serving the town's steady flow of cruise-ship passengers and resort visitors.</p><p>It's not a destination in the usual sense, but it's one of the most reliably open, easy stops on the strip — the kind of place locals and tourists duck into several times a day for ice, a cold drink, or a last-minute souvenir before a flight home.</p><!--stss:footsteps--><p>This particular ABC Store is where the Maknae Line — Jimin, V and Jungkook — picked up a small, memorable souvenir during their shopping stretch of Bon Voyage Season 2, Episode 2: matching friendship pens. It's a tiny, almost throwaway purchase in the show, but it became one of fans' favorite small moments from the Hawaii trip precisely because of how ordinary it is — three members of one of the world's biggest groups, browsing a convenience-store stationery rack like anyone else on vacation.</p><p>The scene plays out as part of a longer souvenir-hunting stretch along Ali'i Drive and through the Kona Inn Shopping Village, where the trio also stopped at several small gift shops (including one visibly marked Alley Geckos) that don't have much of an online footprint today.</p>"
@@ -11924,7 +11924,24 @@ window.STATIC_LOCATIONS = [
           "en": "If this specific branch doesn't have what you want, ABC Store is nearly ubiquitous across Hawaii — useful to know for the rest of your trip, not just this stop."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "w4qN4b-id5o",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": 218,
