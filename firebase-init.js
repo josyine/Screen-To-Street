@@ -43,7 +43,7 @@ const firebaseConfig = {
 // générée ci-dessous à la place de la chaîne vide. Tant que c'est vide, les notifications
 // restent silencieusement désactivées (voir window.initPushNotifications plus bas) —
 // aucune erreur bloquante, le reste du site continue de fonctionner normalement.
-const VAPID_PUBLIC_KEY = '';
+const VAPID_PUBLIC_KEY = 'BEFe8zj5pTYnJAaSmN7WzoYlr5H_iOCq2mTyTMEZO3KUM46QbCvLgJGBs3rIrszDKat10xBoBPECi69Qb-1YSuM';
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
