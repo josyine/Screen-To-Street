@@ -45,7 +45,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20260985" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260986" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -514,7 +514,17 @@
   }
   .sts-it{position:fixed;inset:0;z-index:9800;background:#F2F2F0;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .38s cubic-bezier(.2,.8,.2,1);visibility:hidden}
   .sts-it.on{transform:none;visibility:visible}
-  .sts-it-map{position:absolute;inset:0}
+  /* BUG corrigé (demande du 05/10/2026, "la carte prend tout l'écran" au lieu de laisser
+     voir la barre du haut et la fiche du bas) : les "panes" internes de Leaflet (tuiles,
+     marqueurs, contrôles...) ont des z-index très élevés (jusqu'à 1000+) — sans z-index
+     ici, .sts-it-map (position:absolute mais SANS z-index) ne crée pas son propre contexte
+     d'empilement CSS, donc ces panes Leaflet se comparaient DIRECTEMENT au z-index:3 de
+     .sts-it-top/.sts-sheet ci-dessous, dans le MÊME contexte que .sts-it — et l'emportaient
+     à chaque fois, recouvrant entièrement la barre du haut et la fiche du bas malgré leur
+     z-index. Poser un z-index ici (même petit) suffit à enfermer tous les panes Leaflet
+     DANS le contexte d'empilement de .sts-it-map, qui lui reste bien en dessous des deux
+     autres. */
+  .sts-it-map{position:absolute;inset:0;z-index:1}
   .sts-it-top{position:relative;z-index:3;background:#fff;border-radius:0 0 24px 24px;box-shadow:0 10px 30px rgba(30,20,50,.12);padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 14px}
   .sts-row{display:flex;gap:10px;align-items:center}
   .sts-ib{flex:0 0 40px;width:40px;height:40px;border-radius:50%;border:0;background:transparent;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif}
@@ -1699,13 +1709,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260985"></script>
-<script type="module" src="firebase-init.js?v=20260985"></script>
-<script src="locations-data.js?v=20260985"></script>
-<script src="script.js?v=20260985"></script>
+<script src="countries.js?v=20260986"></script>
+<script type="module" src="firebase-init.js?v=20260986"></script>
+<script src="locations-data.js?v=20260986"></script>
+<script src="script.js?v=20260986"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20260985"></script>
-<script src="map-tour.js?v=20260985"></script>
+<script src="itinerary.js?v=20260986"></script>
+<script src="map-tour.js?v=20260986"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
