@@ -227,6 +227,53 @@ version of this script read for its duplicate list) never stores a location's
 name at all, only its rich text — so a name-based filter built on it silently
 matches nothing, ever.
 
+## Tour nights — surprise songs & iconic moments (`tourNightSubmissions`/`tourNightOverrides`)
+
+Added 05/10/2026 ("chaque fin de concert, qu'un agent IA ajoute automatiquement les
+informations... chansons surprises et iconic moment"). Three pieces, same
+review-before-publish principle as everything else in this file:
+
+1. **`tour-night-agent.js`** — runs once a day (`.github/workflows/tour-night-agent.yml`).
+   Reads `tour-schedule.json` (a small, hand-maintained copy of just the BTS "Arirang"
+   tour's stop ids/cities/dates — rare to change, unlike the actual content, so it's kept
+   separate from `script.js`'s much bigger `ARIRANG_TOUR`, which this Node script never
+   parses). For every show date that's already passed and has no existing submission or
+   published override yet, it asks Gemini for that specific concert's surprise songs and
+   iconic moments (strict "never invent, leave empty if unsure" policy, same as
+   `example-ai-submission.js`), and writes a `tourNightSubmissions` doc (`status: pending`).
+   If it added anything, it also sends a push notification **to the admin only** (looked up
+   via the `admins` collection → `pushTokens`), so you know to go check `/admin.html`'s new
+   "Tour nights" tab.
+2. **Review on `/admin.html`** ("Tour nights" tab) — edit the proposed surprise songs/
+   highlights text if needed, then Approve (writes `tourNightOverrides/{tourId}_{stopId}_
+   {date}`, `pushSent: false`) or Reject. `tourNightOverrides` is public-read, merged by
+   `tour-mode.js` into the in-memory `ARIRANG_TOUR` at runtime (see
+   `ensureTourNightOverridesApplied()`) — no `script.js` republish needed, same principle as
+   `liveEvents`/`newLocations`.
+3. **`send-tour-push.js`** — runs every ~15 minutes (`.github/workflows/send-tour-push.yml`),
+   polling `tourNightOverrides` for anything with `pushSent: false` and broadcasting a push
+   notification to every subscribed device the moment it finds one. No Cloud Function here
+   (this site has no way to deploy one) — polling is the free alternative, at the cost of a
+   few minutes' delay between approval and the notification actually going out.
+
+### One-time setup: push notifications (VAPID key)
+
+Both scripts above send through Firebase Cloud Messaging, which needs a Web Push key pair
+that only exists once generated in the Firebase console — **this repo cannot generate or
+deploy it for you**:
+
+1. Firebase console → **Project settings** → **Cloud Messaging** tab → **Web configuration**
+   → **Generate key pair** (skip if one already exists).
+2. Copy the public key shown there.
+3. Paste it as the value of `VAPID_PUBLIC_KEY` near the top of `firebase-init.js` (currently
+   an empty string — see the comment right above it). Until this is filled in, the push
+   toggle in Settings silently does nothing (no error, just no subscription), and both
+   scripts above simply find zero subscribed devices to notify.
+
+Someone also needs to actually turn the "Push notifications" toggle on in Settings (while
+signed in as the admin account) at least once per device/browser for `tour-night-agent.js`'s
+admin-only ping to have anywhere to go.
+
 **A note on API keys**: if your AI agent script calls an external API (Gemini,
 etc.), never hardcode that key in a file you intend to commit. Put it in a local
 `.env` file (already covered by this folder's `.gitignore`) and read it with

@@ -21,6 +21,46 @@
     let tourModeTipIndex = null;
     let tourModeMapResizeObserver = null;
     let tourModeMapUserInteracted = false;
+    let tourNightOverridesApplied = false;
+
+    // ==========================================
+    // Fusion des nuits de concert approuvées en mode admin (demande du 05/10/2026,
+    // "chaque fin de concert, qu'un agent IA ajoute automatiquement les chansons
+    // surprises et les iconic moments") — voir tourNightOverrides dans firestore.rules/
+    // firebase-init.js. Une seule lecture Firestore par chargement de page (comme
+    // fetchLiveEvents côté script.js), puis fusionnée directement dans ALL_TOURS (défini
+    // dans script.js, visible ici car les deux fichiers partagent la même portée globale
+    // classique — pas de module) : jamais besoin de republier script.js pour qu'une
+    // nouvelle nuit approuvée apparaisse sur le site.
+    async function ensureTourNightOverridesApplied() {
+        if (tourNightOverridesApplied) return;
+        tourNightOverridesApplied = true; // posé avant l'attente : jamais relancé en double si appelé deux fois vite
+        if (typeof window.fetchTourNightOverrides !== 'function') return;
+        const overrides = await window.fetchTourNightOverrides();
+        overrides.forEach(ov => {
+            const tour = ALL_TOURS.find(t => t.id === ov.tourId);
+            const stop = tour && tour.stops.find(s => s.id === ov.stopId);
+            if (!stop) return;
+            if (!Array.isArray(stop.nights)) stop.nights = [];
+            let night = stop.nights.find(n => Array.isArray(n.dates) && n.dates.includes(ov.date));
+            if (!night) {
+                night = { dates: [ov.date] };
+                stop.nights.push(night);
+            }
+            // N'AJOUTE que ce qui manque — ne remplace jamais des chansons/highlights déjà
+            // écrits à la main (même principe que partout ailleurs sur ce site : le contenu
+            // déjà publié/vérifié par un humain passe toujours avant une proposition d'IA).
+            if ((!night.surpriseSongs || !night.surpriseSongs.length) && Array.isArray(ov.surpriseSongs) && ov.surpriseSongs.length) {
+                night.surpriseSongs = ov.surpriseSongs;
+            }
+            const ovEn = ov.highlights && Array.isArray(ov.highlights.en) ? ov.highlights.en : [];
+            if (ovEn.length) {
+                if (!night.highlights) night.highlights = { en: [] };
+                if (!Array.isArray(night.highlights.en)) night.highlights.en = [];
+                ovEn.forEach(line => { if (!night.highlights.en.includes(line)) night.highlights.en.push(line); });
+            }
+        });
+    }
 
     function fmtShowDates(showDates) {
         const locale = currentLang || 'en';
@@ -271,11 +311,12 @@
         if (menu) menu.classList.add('hidden');
     });
 
-    window.openTourModePanel = function () {
+    window.openTourModePanel = async function () {
         const panel = document.getElementById('tour-mode-panel');
         if (!panel) return;
         window.closeTourModeTip();
         selectedTourId = LIVE_TOUR_ID; // toujours repartir de la tournée en cours à l'ouverture
+        await ensureTourNightOverridesApplied(); // avant tout rendu, voir sa note ci-dessus
         const memberEvent = getCurrentMemberEvent();
         currentStopIndex = getDefaultStopIndex();
 

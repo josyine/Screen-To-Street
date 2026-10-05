@@ -1,0 +1,39 @@
+name: Agent IA — chansons surprises & iconic moments (Tour Arirang)
+
+# Fait tourner admin-scripts/tour-night-agent.js automatiquement, 1x/jour (demande du
+# 05/10/2026, "chaque fin de concert, qu'un agent IA ajoute automatiquement les
+# informations... chansons surprises et iconic moment"). "Fin de concert" est approximée
+# par "la date est déjà passée" (voir isPast() dans le script) — avec un passage 1x/jour,
+# un concert d'hier est forcément déjà fini le lendemain matin, quel que soit son fuseau
+# horaire. Rien n'est publié sur le site sans validation manuelle dans l'onglet
+# "Tour nights" de admin.html — ce workflow propose seulement, et envoie une notification
+# push à l'admin dès qu'il a quelque chose à faire relire.
+#
+# Mise en place : mêmes secrets que .github/workflows/ai-agent.yml (déjà configurés si
+# cet autre agent tourne déjà) — GEMINI_API_KEY + FIREBASE_SERVICE_ACCOUNT. Voir
+# admin-scripts/README.md pour le détail si ce n'est pas encore fait.
+on:
+  schedule:
+    - cron: '0 5 * * *'   # une fois par jour, 05:00 UTC
+  workflow_dispatch:       # + bouton "Run workflow" manuel dans l'onglet Actions de GitHub
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Installe les dépendances
+        working-directory: admin-scripts
+        run: npm install
+
+      - name: Lance l'agent (Tour nights)
+        working-directory: admin-scripts
+        run: node tour-night-agent.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
