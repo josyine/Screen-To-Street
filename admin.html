@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260982" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260983" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -235,6 +235,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <button type="button" id="admin-tab-submissions-btn" class="admin-tab-btn active" onclick="window.switchAdminTab('submissions')">Location submissions</button>
             <button type="button" id="admin-tab-locations-btn" class="admin-tab-btn" onclick="window.switchAdminTab('locations')">Existing locations</button>
             <button type="button" id="admin-tab-live-btn" class="admin-tab-btn" onclick="window.switchAdminTab('live')">Agenda</button>
+            <button type="button" id="admin-tab-tour-btn" class="admin-tab-btn" onclick="window.switchAdminTab('tour')">Tour nights</button>
             <button type="button" id="admin-tab-maintenance-btn" class="admin-tab-btn" onclick="window.switchAdminTab('maintenance')">Maintenance</button>
         </div>
 
@@ -370,6 +371,21 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
             <div id="live-submissions-list"></div>
         </div>
 
+        <!-- Onglet "Tour nights" (demande du 05/10/2026, "chaque fin de concert, qu'un
+             agent IA ajoute automatiquement les informations... chansons surprises et
+             iconic moment") : admin-scripts/tour-night-agent.js (cron quotidien, voir
+             .github/workflows/tour-night-agent.yml) propose une fiche par soir de concert
+             BTS "Arirang" déjà passé — rien n'apparaît sur la carte (tour-mode.js) avant
+             approbation ici. Une notification push t'est envoyée dès qu'une nouvelle
+             proposition arrive (voir admin-scripts/tour-night-agent.js), pour savoir quand
+             venir relire sans avoir à revenir vérifier par habitude. -->
+        <div id="admin-panel-tour" class="admin-tab-panel">
+            <h1>Tour nights <span id="tour-submissions-count" class="submissions-count hidden"></span></h1>
+            <p class="sub">Surprise songs &amp; iconic moments proposed by the AI agent for a concert date that has already passed — nothing here is visible on the map until approved. Edit the text directly below before approving if anything needs a correction.</p>
+            <div id="tour-empty-state" class="state-box hidden">No pending tour nights right now.</div>
+            <div id="tour-submissions-list"></div>
+        </div>
+
         <!-- Onglet "Maintenance" (demande du 13/09/2026, optimisation perf du fil global) :
              actions de fond ponctuelles, une seule pour l'instant — voir
              window.adminBackfillFeedPosts() dans firebase-init.js. -->
@@ -400,10 +416,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260982"></script>
-<script src="countries.js?v=20260982"></script>
-<script src="locations-data.js?v=20260982"></script>
-<script src="script.js?v=20260982"></script>
+<script type="module" src="firebase-init.js?v=20260983"></script>
+<script src="countries.js?v=20260983"></script>
+<script src="locations-data.js?v=20260983"></script>
+<script src="script.js?v=20260983"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1531,12 +1547,15 @@ recomposée, sans texte ni légende.`;
         document.getElementById('admin-tab-submissions-btn').classList.toggle('active', tab === 'submissions');
         document.getElementById('admin-tab-locations-btn').classList.toggle('active', tab === 'locations');
         document.getElementById('admin-tab-live-btn').classList.toggle('active', tab === 'live');
+        document.getElementById('admin-tab-tour-btn').classList.toggle('active', tab === 'tour');
         document.getElementById('admin-tab-maintenance-btn').classList.toggle('active', tab === 'maintenance');
         document.getElementById('admin-panel-submissions').classList.toggle('active', tab === 'submissions');
         document.getElementById('admin-panel-locations').classList.toggle('active', tab === 'locations');
         document.getElementById('admin-panel-live').classList.toggle('active', tab === 'live');
+        document.getElementById('admin-panel-tour').classList.toggle('active', tab === 'tour');
         document.getElementById('admin-panel-maintenance').classList.toggle('active', tab === 'maintenance');
         if (tab === 'live' && typeof window.loadLiveEventSubmissions === 'function') window.loadLiveEventSubmissions();
+        if (tab === 'tour' && typeof window.loadTourNightSubmissions === 'function') window.loadTourNightSubmissions();
     };
 
     // Reconstruction ponctuelle de l'index du fil global (voir
@@ -2446,6 +2465,99 @@ recomposée, sans texte ni légende.`;
             }
         });
     })();
+
+    // ==========================================
+    // Onglet "Tour nights" (demande du 05/10/2026) : voir listPendingTourNightSubmissions()/
+    // approveTourNightSubmission()/rejectTourNightSubmission() dans firebase-init.js.
+    // Chargé au premier passage sur cet onglet (voir window.switchAdminTab plus haut), même
+    // logique paresseuse que l'onglet "Agenda" ci-dessus. Les deux champs texte (chansons
+    // surprises / iconic moments) sont modifiables AVANT d'approuver — la proposition de
+    // l'agent IA est un brouillon, pas un texte figé (demande explicite : "je veux pouvoir
+    // vérifier avant de les publier").
+    // ==========================================
+    function renderTourNightCard(sub) {
+        const card = document.createElement('div');
+        card.className = 'submission-card';
+        const songsValue = Array.isArray(sub.surpriseSongs) ? sub.surpriseSongs.join(', ') : '';
+        const highlightsValue = (sub.highlights && Array.isArray(sub.highlights.en)) ? sub.highlights.en.join('\n') : '';
+        const sourcesHtml = Array.isArray(sub.sources) && sub.sources.length
+            ? `<div class="sub-meta">Sources: ${sub.sources.map(u => `<a href="${escapeHtml(u)}" target="_blank" rel="noopener">${escapeHtml(u)}</a>`).join(', ')}</div>`
+            : '<div class="sub-meta">No source link provided by the agent — double-check before approving.</div>';
+        card.innerHTML = `
+            <div class="sub-header">
+                <div>
+                    <div class="sub-name">${escapeHtml(sub.city || '')}${sub.country ? ', ' + escapeHtml(sub.country) : ''}</div>
+                    <span class="live-status-pill">${escapeHtml(sub.date || '')}</span>
+                </div>
+            </div>
+            ${sourcesHtml}
+            <div style="margin-top:10px;">
+                <label class="live-field-label">Surprise songs (comma-separated)</label>
+                <input type="text" class="live-field tour-sub-songs" value="${escapeHtml(songsValue)}" placeholder="e.g. Permission to Dance, Magic Shop">
+            </div>
+            <div style="margin-top:10px;">
+                <label class="live-field-label">Iconic moments (one per line)</label>
+                <textarea class="live-field tour-sub-highlights" rows="4" style="font-family:'Poppins',sans-serif;" placeholder="One highlight per line...">${escapeHtml(highlightsValue)}</textarea>
+            </div>
+            <div class="sub-actions">
+                <button class="btn-approve">✓ Approve &amp; publish</button>
+                <button class="btn-reject">✕ Reject</button>
+            </div>
+            <div class="sub-result hidden"></div>
+        `;
+        const resultEl = card.querySelector('.sub-result');
+        const approveBtn = card.querySelector('.btn-approve');
+        const rejectBtn = card.querySelector('.btn-reject');
+        approveBtn.onclick = async () => {
+            approveBtn.disabled = true; rejectBtn.disabled = true;
+            const songs = card.querySelector('.tour-sub-songs').value.split(',').map(s => s.trim()).filter(Boolean);
+            const highlightLines = card.querySelector('.tour-sub-highlights').value.split('\n').map(s => s.trim()).filter(Boolean);
+            const edited = Object.assign({}, sub, { surpriseSongs: songs, highlights: { en: highlightLines } });
+            const res = await window.approveTourNightSubmission(edited);
+            resultEl.classList.remove('hidden');
+            if (res.success) {
+                resultEl.textContent = '✓ Published. It will appear on the Tour map for visitors from their next page load.';
+                resultEl.className = 'sub-result ok';
+                setTimeout(() => { card.remove(); window.loadTourNightSubmissions(); }, 1200);
+            } else {
+                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.className = 'sub-result err';
+                approveBtn.disabled = false; rejectBtn.disabled = false;
+            }
+        };
+        rejectBtn.onclick = async () => {
+            approveBtn.disabled = true; rejectBtn.disabled = true;
+            const res = await window.rejectTourNightSubmission(sub.id);
+            resultEl.classList.remove('hidden');
+            if (res.success) {
+                resultEl.textContent = 'Rejected.';
+                resultEl.className = 'sub-result ok';
+                setTimeout(() => card.remove(), 600);
+            } else {
+                resultEl.textContent = 'Failed: ' + res.code;
+                resultEl.className = 'sub-result err';
+                approveBtn.disabled = false; rejectBtn.disabled = false;
+            }
+        };
+        return card;
+    }
+
+    window.loadTourNightSubmissions = async function () {
+        const listEl = document.getElementById('tour-submissions-list');
+        const emptyEl = document.getElementById('tour-empty-state');
+        const countEl = document.getElementById('tour-submissions-count');
+        if (!listEl || typeof window.listPendingTourNightSubmissions !== 'function') return;
+        const submissions = await window.listPendingTourNightSubmissions();
+        listEl.innerHTML = '';
+        emptyEl.classList.toggle('hidden', submissions.length > 0);
+        if (countEl) {
+            countEl.textContent = submissions.length ? String(submissions.length) : '';
+            countEl.classList.toggle('hidden', !submissions.length);
+        }
+        // Les plus récents (soirs de concert les plus proches dans le temps) en premier.
+        submissions.sort((a, b) => (a.date || '') < (b.date || '') ? 1 : -1);
+        submissions.forEach(sub => listEl.appendChild(renderTourNightCard(sub)));
+    };
 
     window.addEventListener('firebase-ready', async (e) => {
         const user = e.detail && e.detail.user;

@@ -1,0 +1,37 @@
+name: Notification push — nuit de concert publiée (Tour Arirang)
+
+# Fait tourner admin-scripts/send-tour-push.js toutes les ~15 minutes (demande du
+# 05/10/2026, "il faut que ces informations apparaissent en notification push dès
+# qu'elles sont publiées"). Pas de Cloud Function ici (site 100% statique, aucun
+# déploiement possible depuis cet environnement) : ce polling régulier est la solution
+# gratuite choisie à la place (délai de quelques minutes assumé, voir la note dans
+# send-tour-push.js). Diffuse à TOUS les appareils abonnés dès qu'une fiche
+# `tourNightOverrides` vient d'être approuvée dans l'onglet "Tour nights" de admin.html
+# — jamais avant l'approbation manuelle.
+#
+# Mise en place : même secret que .github/workflows/ai-agent.yml — FIREBASE_SERVICE_ACCOUNT
+# (pas besoin de GEMINI_API_KEY ici, ce script ne fait aucun appel IA).
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # toutes les 15 minutes
+  workflow_dispatch:         # + bouton "Run workflow" manuel dans l'onglet Actions de GitHub
+
+jobs:
+  send-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Installe les dépendances
+        working-directory: admin-scripts
+        run: npm install
+
+      - name: Envoie les notifications en attente
+        working-directory: admin-scripts
+        run: node send-tour-push.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

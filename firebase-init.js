@@ -22,6 +22,10 @@ import {
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 import { initializeFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, limitToLast, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+// Notifications push (demande du 05/10/2026) — isSupported() exclut proprement les
+// navigateurs/contextes sans FCM (Safari iOS en PWA non installée, navigation privée...)
+// au lieu de laisser getMessaging() lever une exception plus bas.
+import { getMessaging, isSupported as isMessagingSupported, getToken, deleteToken } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-messaging.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -31,6 +35,15 @@ const firebaseConfig = {
     messagingSenderId: "48854939735",
     appId: "1:48854939735:web:4f6264a5589ebbf5a70b12"
 };
+
+// Clé VAPID (Web Push) — distincte de firebaseConfig.apiKey ci-dessus, propre à la
+// MESSAGERIE (pas juste au projet Firebase). ACTION MANUELLE REQUISE (une seule fois) :
+// Console Firebase > Paramètres du projet > Cloud Messaging > onglet "Web configuration"
+// > "Générer une paire de clés" (si aucune n'existe encore) > coller la clé publique
+// générée ci-dessous à la place de la chaîne vide. Tant que c'est vide, les notifications
+// restent silencieusement désactivées (voir window.initPushNotifications plus bas) —
+// aucune erreur bloquante, le reste du site continue de fonctionner normalement.
+const VAPID_PUBLIC_KEY = '';
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
@@ -1410,6 +1423,151 @@ window.fetchLiveEvents = async function () {
         console.warn('Lecture des évènements Live approuvés échouée :', e);
         return [];
     }
+};
+
+// ==========================================
+// Onglet admin "Tour nights" (demande du 05/10/2026, "chaque fin de concert, qu'un
+// agent IA ajoute automatiquement les informations... chansons surprises et iconic
+// moment") — même principe de relecture que l'onglet "Agenda" ci-dessus :
+// admin-scripts/tour-night-agent.js (Admin SDK, contourne ces règles) propose une fiche
+// par soir de concert déjà passé dans `tourNightSubmissions`, l'admin relit/corrige sur
+// admin.html puis approuve → copiée dans `tourNightOverrides` (lu par tour-mode.js,
+// fusionné par-dessus les nuits codées en dur de ARIRANG_TOUR — jamais besoin de
+// republier script.js). admin-scripts/send-tour-push.js envoie ensuite la notification
+// push à tous les abonnés une fois `tourNightOverrides` écrit (voir pushSent plus bas).
+window.listPendingTourNightSubmissions = async function () {
+    try {
+        const q = query(collection(db, 'tourNightSubmissions'), where('status', '==', 'pending'));
+        const snap = await getDocs(q);
+        const result = [];
+        snap.forEach(d => result.push(Object.assign({ id: d.id }, d.data())));
+        return result;
+    } catch (e) {
+        console.warn('Lecture des soumissions Tour nights en attente échouée :', e);
+        return [];
+    }
+};
+
+window.approveTourNightSubmission = async function (submission) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        const overrideId = `${submission.tourId}_${submission.stopId}_${submission.date}`;
+        await setDoc(doc(db, 'tourNightOverrides', overrideId), {
+            tourId: submission.tourId,
+            stopId: submission.stopId,
+            date: submission.date,
+            surpriseSongs: submission.surpriseSongs || [],
+            highlights: submission.highlights || { en: [] },
+            publishedAt: serverTimestamp(),
+            pushSent: false // envoyée par admin-scripts/send-tour-push.js (voir sa note), pas ici
+        });
+        await setDoc(doc(db, 'tourNightSubmissions', submission.id), { status: 'approved', reviewedAt: serverTimestamp() }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Approbation de la soumission Tour nights échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+window.rejectTourNightSubmission = async function (submissionId) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        await setDoc(doc(db, 'tourNightSubmissions', submissionId), { status: 'rejected', reviewedAt: serverTimestamp() }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Rejet de la soumission Tour nights échoué :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+// Lu par TOUT visiteur (voir renderNightsHTML() dans tour-mode.js, bulk-fetch une fois par
+// chargement de la carte) — jamais nuit par nuit, même principe que fetchLiveEvents ci-dessus.
+window.fetchTourNightOverrides = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'tourNightOverrides'));
+        const result = [];
+        snap.forEach(d => result.push(Object.assign({ id: d.id }, d.data())));
+        return result;
+    } catch (e) {
+        console.warn('Lecture des nuits de tournée approuvées échouée :', e);
+        return [];
+    }
+};
+
+// ==========================================
+// NOTIFICATIONS PUSH (demande du 05/10/2026) — construites de zéro, rien n'existait avant
+// (le bouton #push-notif-toggle de settings.html n'avait encore aucune logique derrière).
+// Pas de Cloud Function ici (site 100% statique) : l'ENVOI se fait depuis
+// admin-scripts/send-tour-push.js (Admin SDK + firebase-admin.messaging(), tourné en
+// cron GitHub Actions) — ce bloc ne gère QUE l'abonnement de CET appareil (demande du
+// jeton FCM + son enregistrement dans Firestore), jamais l'envoi lui-même.
+let _messagingInstance = null;
+async function _getMessagingSafe() {
+    if (!(await isMessagingSupported())) return null;
+    if (!VAPID_PUBLIC_KEY) {
+        console.warn('Notifications push : VAPID_PUBLIC_KEY vide dans firebase-init.js — voir le commentaire au-dessus de sa déclaration pour l\'étape manuelle (Console Firebase > Cloud Messaging).');
+        return null;
+    }
+    if (!_messagingInstance) _messagingInstance = getMessaging(firebaseApp);
+    return _messagingInstance;
+}
+
+// Appelé quand la personne active le toggle dans settings.html. Demande la permission du
+// navigateur (jamais redemandée si déjà accordée/refusée — comportement natif du
+// navigateur, hors de notre contrôle), récupère le jeton FCM de CET appareil via le
+// Service Worker déjà enregistré (sw.js — voir son écouteur 'push' pour l'affichage),
+// l'enregistre dans pushTokens/{token} avec son propre uid (isAdminDevice utilisé par
+// admin-scripts/tour-night-agent.js pour cibler l'admin spécifiquement, en plus de la
+// diffusion générale faite par send-tour-push.js).
+window.initPushNotifications = async function () {
+    const user = auth.currentUser;
+    if (!user) return { success: false, code: 'not-signed-in' };
+    try {
+        const messaging = await _getMessagingSafe();
+        if (!messaging) return { success: false, code: 'unsupported-or-unconfigured' };
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return { success: false, code: 'permission-denied' };
+        const registration = await navigator.serviceWorker.ready;
+        const token = await getToken(messaging, { vapidKey: VAPID_PUBLIC_KEY, serviceWorkerRegistration: registration });
+        if (!token) return { success: false, code: 'no-token' };
+        const isAdmin = await window.isCurrentUserAdmin();
+        await setDoc(doc(db, 'pushTokens', token), {
+            uid: user.uid,
+            isAdminDevice: isAdmin,
+            createdAt: serverTimestamp()
+        });
+        localStorage.setItem('pushNotifToken', token);
+        return { success: true };
+    } catch (e) {
+        console.warn('Activation des notifications push échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+window.disablePushNotifications = async function () {
+    const user = auth.currentUser;
+    const token = localStorage.getItem('pushNotifToken');
+    try {
+        const messaging = await _getMessagingSafe();
+        if (messaging && token) { try { await deleteToken(messaging); } catch (e) { /* jeton déjà invalide, pas bloquant */ } }
+        if (token && user) await deleteDoc(doc(db, 'pushTokens', token));
+        localStorage.removeItem('pushNotifToken');
+        return { success: true };
+    } catch (e) {
+        console.warn('Désactivation des notifications push échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
+// Reflète l'état réel du toggle de settings.html au chargement de la page (demande du
+// jeton déjà enregistré + permission navigateur toujours accordée) plutôt qu'un simple
+// drapeau localStorage qui pourrait désynchroniser (permission révoquée depuis les
+// réglages du navigateur, par exemple).
+window.getPushNotificationStatus = function () {
+    const token = localStorage.getItem('pushNotifToken');
+    return !!token && typeof Notification !== 'undefined' && Notification.permission === 'granted';
 };
 
 // Édition directe d'un lieu déjà publié, par un admin, depuis l'icône crayon de sa fiche

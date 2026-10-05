@@ -109,3 +109,46 @@ self.addEventListener('fetch', (event) => {
     // (?v=...) ci-dessus le sont — ils portent déjà leur propre cache-busting, donc aucun
     // risque de rester bloqué sur une ancienne version après une mise à jour du site.
 });
+
+// ==========================================
+// NOTIFICATIONS PUSH (demande du 05/10/2026) — reçues via FCM (Firebase Cloud Messaging)
+// pendant que ce Service Worker est actif mais qu'aucun onglet du site n'a le focus
+// (c'est le cas normal : getToken() dans firebase-init.js enregistre CE fichier comme
+// Service Worker de la messagerie, voir serviceWorkerRegistration passé à getToken()).
+// Gestion volontairement "à la main" (pas d'import de firebase-messaging-sw.js) : un
+// seul gestionnaire `push`, quel que soit le site côté Firebase/FCM, cohérent avec le
+// reste de ce fichier qui ne dépend déjà d'aucun SDK Firebase. admin-scripts/
+// tour-night-agent.js et send-tour-push.js envoient volontairement des messages
+// "data-only" (jamais de clé `notification` au niveau racine) : avec une clé
+// `notification`, certains navigateurs affichent eux-mêmes une notification générique
+// SANS déclencher cet écouteur — "data-only" garantit que c'est TOUJOURS ce code-ci qui
+// construit la notification affichée (et son URL de clic, voir plus bas).
+self.addEventListener('push', (event) => {
+    let data = {};
+    try { data = event.data ? event.data.json().data || {} : {}; } catch (e) { /* payload non-JSON, ignoré ci-dessous */ }
+    const title = data.title || 'Screen To Street';
+    const body = data.body || '';
+    const url = data.url || '/map.html';
+    event.waitUntil(
+        self.registration.showNotification(title, {
+            body,
+            icon: '/icon-192.png',
+            data: { url }
+        })
+    );
+});
+
+// Clic sur la notification : ramène sur l'onglet déjà ouvert du site si possible (évite
+// une deuxième copie du site dans un nouvel onglet), sinon en ouvre un nouveau sur l'URL
+// ciblée (ex: map.html pour aller directement voir la nuit de concert publiée).
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    const url = (event.notification.data && event.notification.data.url) || '/map.html';
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientsArr) => {
+            const existing = clientsArr.find((c) => c.url.includes(self.location.origin));
+            if (existing) return existing.focus();
+            return self.clients.openWindow(url);
+        })
+    );
+});

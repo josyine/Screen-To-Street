@@ -254,6 +254,47 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
+    // ==========================================
+    // TOUR "ARIRANG" — chansons surprises & iconic moments (demande du 05/10/2026,
+    // "chaque fin de concert, qu'un agent IA ajoute automatiquement ces informations")
+    // ==========================================
+    // File de relecture des propositions de l'agent IA (admin-scripts/tour-night-agent.js,
+    // qui tourne en Admin SDK et contourne donc ces règles à l'écriture) : réservée à
+    // l'admin des deux côtés, même principe que liveEventSubmissions ci-dessus — rien
+    // n'est publié sur le site tant que l'admin n'a pas approuvé depuis l'onglet "Tour
+    // nights" de admin.html.
+    match /tourNightSubmissions/{submissionId} {
+      allow read, write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Nuits de concert approuvées (fusionnées dans ARIRANG_TOUR côté client au chargement
+    // de tour-mode.js, par-dessus les chansons surprises/iconic moments déjà codés en dur
+    // — même principe que liveEvents/newLocations ci-dessus). Lisible par tous, écrit
+    // uniquement par un admin (ou par admin-scripts/send-tour-push.js, Admin SDK, pour
+    // marquer pushSent une fois la notification envoyée).
+    match /tourNightOverrides/{overrideId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // ==========================================
+    // NOTIFICATIONS PUSH (demande du 05/10/2026) — jetons FCM (Firebase Cloud Messaging)
+    // ==========================================
+    // Un document par appareil/navigateur abonné, id = le jeton FCM lui-même (déduplication
+    // naturelle : ré-enregistrer le même appareil écrase le même document plutôt que d'en
+    // créer un deuxième). Un admin-scripts (Admin SDK) lit TOUTE la collection pour
+    // diffuser une notification — contourne ces règles, donc aucune lecture publique n'est
+    // nécessaire ici. Un compte ne peut créer/modifier/supprimer que SON PROPRE jeton
+    // (uid == son propre uid), jamais celui d'un autre — même schéma que friendIndex/
+    // photoLikes plus haut dans ce fichier.
+    match /pushTokens/{tokenId} {
+      allow read: if false;
+      allow create, update: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
     // Un seul document (siteConfig/hiddenLocations, { ids: [...] }) listant les lieux
     // "supprimés" depuis l'onglet admin "Existing locations" — un vrai supprimer étant
     // impossible pour un lieu codé en dur dans script.js sans modifier le code du site,

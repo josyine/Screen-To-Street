@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260982" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260983" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -451,10 +451,10 @@ select{border:1px solid #cbd5e1;border-radius:8px;padding:10px 16px;font-size:13
     </div>
 </div>
 
-<script src="countries.js?v=20260982"></script>
-<script type="module" src="firebase-init.js?v=20260982"></script>
-<script src="locations-data.js?v=20260982"></script>
-<script src="script.js?v=20260982"></script>
+<script src="countries.js?v=20260983"></script>
+<script type="module" src="firebase-init.js?v=20260983"></script>
+<script src="locations-data.js?v=20260983"></script>
+<script src="script.js?v=20260983"></script>
 <script>
     // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
     // updateCartPrice / soumission de #cart-form), pour être identique à map.html.
@@ -708,6 +708,14 @@ select{border:1px solid #cbd5e1;border-radius:8px;padding:10px 16px;font-size:13
                     // Désactivation : pas besoin de re-confirmer, on coupe directement.
                     setToggleState(toggle, false);
                     saveNotifPrefs({ [prefix + 'NotifEnabled']: false });
+                    // "push" seulement (demande du 05/10/2026) : ce bloc ne stockait jusqu'ici
+                    // qu'une PRÉFÉRENCE (pushNotifEnabled dans localStorage/le compte cloud),
+                    // sans jamais appeler l'API Notification du navigateur ni enregistrer de
+                    // jeton FCM — voir window.initPushNotifications()/disablePushNotifications()
+                    // dans firebase-init.js pour la vraie activation/désactivation ci-dessous.
+                    if (prefix === 'push' && typeof window.disablePushNotifications === 'function') {
+                        window.disablePushNotifications();
+                    }
                 } else {
                     modal.classList.remove('hidden');
                 }
@@ -716,8 +724,23 @@ select{border:1px solid #cbd5e1;border-radius:8px;padding:10px 16px;font-size:13
         const cancelBtn = document.getElementById(prefix + '-notif-cancel');
         if (cancelBtn) cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
         const acceptBtn = document.getElementById(prefix + '-notif-accept');
-        if (acceptBtn) acceptBtn.addEventListener('click', () => {
+        if (acceptBtn) acceptBtn.addEventListener('click', async () => {
             const groups = Array.from(document.querySelectorAll('.' + prefix + '-group-checkbox:checked')).map(cb => cb.value);
+            // "push" seulement : demande la permission navigateur + enregistre le jeton FCM
+            // de cet appareil AVANT d'afficher le toggle comme activé — si la personne refuse
+            // la permission (ou que VAPID_PUBLIC_KEY n'est pas encore configurée côté
+            // firebase-init.js), le toggle reste visuellement éteint plutôt que de prétendre
+            // à une activation qui n'a pas vraiment eu lieu.
+            if (prefix === 'push' && typeof window.initPushNotifications === 'function') {
+                const res = await window.initPushNotifications();
+                if (!res.success) {
+                    modal.classList.add('hidden');
+                    alert(res.code === 'not-signed-in'
+                        ? 'Please sign in first to enable push notifications.'
+                        : 'Could not enable push notifications on this device/browser.');
+                    return;
+                }
+            }
             setToggleState(toggle, true);
             saveNotifPrefs({ [prefix + 'NotifEnabled']: true, [prefix + 'NotifGroups']: groups, [prefix + 'NotifCountries']: getSelectedCountries(prefix) });
             modal.classList.add('hidden');
@@ -740,6 +763,18 @@ select{border:1px solid #cbd5e1;border-radius:8px;padding:10px 16px;font-size:13
             localStorage.setItem(prefix + 'NotifCountries', JSON.stringify(prefs[prefix + 'NotifCountries']));
         });
         applyNotifPrefsToUI(prefs);
+
+        // Recale le toggle "push" sur la réalité de CET appareil (jeton déjà enregistré +
+        // permission navigateur toujours accordée) — une préférence "activée" stockée dans
+        // le compte ne veut rien dire sur un nouvel appareil, ou si la permission a été
+        // révoquée depuis les réglages du navigateur entre deux visites.
+        if (typeof window.getPushNotificationStatus === 'function') {
+            const pushToggle = document.getElementById('push-notif-toggle');
+            if (pushToggle && prefs.pushNotifEnabled && !window.getPushNotificationStatus()) {
+                setToggleState(pushToggle, false);
+                saveNotifPrefs({ pushNotifEnabled: false });
+            }
+        }
     });
 
     // ==========================================
