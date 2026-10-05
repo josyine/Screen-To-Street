@@ -524,6 +524,23 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    s'applique sans changement. */
 .location-dot-marker div { width: 10px; height: 10px; border: none; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
 
+/* Point bleu "vous êtes ici" + cône de cap (demande du 05/10/2026, "je veux pouvoir voir
+   dans quelle direction de marche via mon point de géolocalisation") — voir
+   updateMyLocationMarker()/handleMyLocationDeviceOrientation() dans script.js. Le cône
+   n'est présent dans le HTML que si un cap fiable a déjà été lu (voir myLocationDivIcon()) ;
+   sans lui, seul le point bleu classique (convention Google/Apple Plans) s'affiche. */
+.my-location-dot-wrap { position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+.my-location-dot { position: relative; z-index: 2; width: 16px; height: 16px; border-radius: 50%; background: #4285F4; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+/* Secteur conique de 40° pointant vers le haut (0° = nord) au repos — tourné en JS via
+   transform:rotate(Xdeg) selon le cap réel. transform-origin au centre du marqueur (pas du
+   cône lui-même) pour que la rotation pivote bien autour du point bleu, pas d'un coin. */
+.my-location-heading-cone {
+    position: absolute; z-index: 1; inset: 0;
+    background: conic-gradient(from -20deg at 50% 50%, rgba(66,133,244,.38) 0deg 40deg, transparent 40deg 360deg);
+    transform-origin: 50% 50%;
+    pointer-events: none;
+}
+
 /* Repère temporaire affiché sur le marqueur du lieu qu'on vient d'ouvrir (clic sur une
    fiche, un point de timeline, un résultat de recherche...) — voir
    highlightSelectedLocationMarker() dans script.js. Sans ça, dans une zone dense, rien

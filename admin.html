@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260983" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260984" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -416,10 +416,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260983"></script>
-<script src="countries.js?v=20260983"></script>
-<script src="locations-data.js?v=20260983"></script>
-<script src="script.js?v=20260983"></script>
+<script type="module" src="firebase-init.js?v=20260984"></script>
+<script src="countries.js?v=20260984"></script>
+<script src="locations-data.js?v=20260984"></script>
+<script src="script.js?v=20260984"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -693,10 +693,34 @@ recomposée, sans texte ni légende.`;
         const m = (url || '').trim().match(/status\/(\d+)/i);
         return m ? m[1] : '';
     }
+    // BUG corrigé (demande du 05/10/2026, "il y a une zone blanche qui dépasse... le bloc
+    // est trop long par rapport au post") — même correctif que renderTweetEmbedOnDetails()
+    // dans script.js (fiche publique) : height="650" était une valeur FIXE, quelle que soit
+    // la longueur réelle du tweet, d'où la zone blanche pour tout tweet plus court que
+    // 650px. platform.twitter.com communique sa vraie hauteur via postMessage dès que
+    // l'iframe a fini de se dessiner — voir ensureTweetResizeListenerOnce() ci-dessous.
+    function ensureTweetResizeListenerOnce() {
+        if (window._stsTweetResizeListenerAdded) return;
+        window._stsTweetResizeListenerAdded = true;
+        window.addEventListener('message', (e) => {
+            if (!/^https:\/\/platform\.twitter\.com$/.test(e.origin)) return;
+            let data = e.data;
+            try { if (typeof data === 'string') data = JSON.parse(data); } catch (err) { return; }
+            const embed = data && data['twttr.embed'];
+            if (!embed || embed.method !== 'twttr.private.resize') return;
+            const params = embed.params && embed.params[0];
+            const height = params && params.height;
+            if (!height) return;
+            document.querySelectorAll('iframe[data-sts-tweet-embed]').forEach((ifr) => {
+                if (ifr.contentWindow === e.source) ifr.style.height = height + 'px';
+            });
+        });
+    }
     async function renderTweetEmbed(container, tweetUrl) {
         const tweetId = extractTweetId(tweetUrl);
         if (tweetId) {
-            container.innerHTML = `<iframe src="https://platform.twitter.com/embed/Tweet.html?id=${encodeURIComponent(tweetId)}&theme=light" width="550" height="650" frameborder="0" scrolling="yes" style="max-width:100%;border:none;"></iframe>`;
+            ensureTweetResizeListenerOnce();
+            container.innerHTML = `<iframe data-sts-tweet-embed src="https://platform.twitter.com/embed/Tweet.html?id=${encodeURIComponent(tweetId)}&theme=light" width="550" height="300" frameborder="0" scrolling="no" style="max-width:100%;border:none;display:block;"></iframe>`;
             return;
         }
         container.innerHTML = `<blockquote class="twitter-tweet"><a href="${escapeHtml(toTwitterComUrl(tweetUrl))}"></a></blockquote>`;
