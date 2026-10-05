@@ -9882,16 +9882,14 @@ function updateMyLocationMarker(pos) {
 // position GPS réelle de la personne passe à proximité d'un lieu, elle débloque
 // automatiquement son badge — appelée à CHAQUE évènement watchPosition ci-dessus (donc
 // tant que la géolocalisation reste active après un clic sur le bouton "localiser"),
-// jamais en continu en arrière-plan sans action de la personne. Rayon resserré à 10m
-// (demande explicite du 05/10/2026, "je veux pouvoir gagner un badge quand je suis dans
-// un rayon de 10m autour du lieu, corrige" — remplace l'ancien rayon de 100m, posé à
-// l'origine pour compenser la précision GPS en environnement urbain ; la précision GPS
-// réelle en environnement urbain, souvent 20-30m, peut rendre certains lieux rarement
-// débloquables à 10m, mais c'est le rayon explicitement demandé). Voir
-// window.awardLocationBadge() dans firebase-init.js pour l'écriture Firestore
-// (publicProfiles/{uid}.badges + compteur locationStats.checkinCount).
+// jamais en continu en arrière-plan sans action de la personne. Rayon repassé à 100m
+// (demande du 05/10/2026 — un rayon de 10m, demandé puis testé le même jour, rendait les
+// badges quasi jamais débloquables en pratique : la précision GPS réelle en environnement
+// urbain dépasse souvent 20-30m). Voir window.awardLocationBadge() dans firebase-init.js
+// pour l'écriture Firestore (publicProfiles/{uid}.badges + compteur
+// locationStats.checkinCount).
 // ==========================================
-const BADGE_UNLOCK_RADIUS_METERS = 10;
+const BADGE_UNLOCK_RADIUS_METERS = 100;
 let myUnlockedBadgeIds = null; // Set<string> — null tant que non chargé, voir loadMyUnlockedBadges()
 const badgeUnlockChecksInFlight = new Set(); // évite un double déblocage si deux évènements GPS arrivent avant que l'écriture Firestore du premier n'ait fini
 

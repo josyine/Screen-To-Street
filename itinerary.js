@@ -19,8 +19,14 @@
 // - Secours : estimation à vol d'oiseau à pied, "Pas de transports trouvés" + lien Google
 //   Maps en transports, et proposition d'activer la localisation si elle est refusée.
 (function () {
-    const TILE_URL = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
-    const TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>';
+    // BUG corrigé (demande du 05/10/2026, "le bouton Itinéraire ne fonctionne pas car il
+    // faut une clé API de carto.com") : le fond de carte du prototype (basemaps.cartocdn.com)
+    // exige désormais une clé API CARTO pour un usage en production — remplacé par les
+    // MÊMES tuiles que le reste du site (createOSMTileLayer() dans script.js, chargé avant
+    // ce fichier et visible ici en tant que fonction globale classique, comme ALL_TOURS
+    // l'est déjà pour tour-mode.js) : maps.wikimedia.org, gratuit et sans clé, avec son
+    // propre repli automatique vers tile.openstreetmap.org en cas d'erreur réseau — voir
+    // ensureMap() plus bas.
     const ICON_STORE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg>';
     const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -110,7 +116,7 @@
         function ensureMap() {
             if (imap) return;
             imap = L.map("stsItMap", { zoomControl: false, attributionControl: true });
-            L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 20, subdomains: "abcd" }).addTo(imap);
+            createOSMTileLayer(imap).addTo(imap); // mêmes tuiles que le reste du site (script.js), sans clé API
             layer = L.layerGroup().addTo(imap);
         }
         const meIcon = () => L.divIcon({ className: "", html: '<div class="sts-me-marker"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
