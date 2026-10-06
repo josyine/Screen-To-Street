@@ -8,19 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-04T13:23:49.899Z.
-// Ajout manuel (demande utilisateur) : 10 lieux de BTS Bon Voyage Season 2,
-// Episode 2 (Kailua-Kona, Hawaii — https://ramirei.tumblr.com/post/162611490808) ajoutés
-// ICI et dans historical-locations.json (ids 216-225), pour survivre au prochain
-// export-locations.js (qui régénère ce fichier depuis historical-locations.json +
-// Firestore, sans jamais fusionner avec la version précédente de ce fichier).
-// Ajout manuel (demande utilisateur) : 6 lieux de BTS Bon Voyage Season 2,
-// Episode 3 (Hilo / Mauna Kea, Hawaii — https://ramirei.tumblr.com/post/162933573393)
-// ajoutés ICI et dans historical-locations.json (ids 226-231), pour survivre au
-// prochain export-locations.js.
-// Ajout manuel (demande utilisateur) : lieux de BTS Bon Voyage Season 2,
-// Episodes 4-7 (Big Island volcanoes + Oahu — ramirei.tumblr.com) ajoutés ICI et dans
-// historical-locations.json (ids 232-256), pour survivre au prochain export-locations.js.
+// Généré le 2026-10-06T19:00:25.721Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -6241,19 +6229,19 @@ window.STATIC_LOCATIONS = [
     "id": 109,
     "name": "Seoul Forest",
     "group": "BTS",
-    "member": "All",
+    "member": "RM, Jin, Suga, J-Hope, Jimin, V, Jungkook",
     "country": "South Korea",
     "city": "Seoul",
-    "category": "Fashion",
+    "category": "MV Location",
     "year": "2017",
     "ytId": "BEFNhMkdVz4",
-    "address": "273 Ttukseom-ro, Seongdong-gu",
+    "address": "273 Ttukseom-ro, Seongdong-gu, Seoul",
     "lat": 37.5445,
     "lng": 127.0375,
     "img": "https://img.youtube.com/vi/BEFNhMkdVz4/hqdefault.jpg",
     "fullDescription": {
-      "en": "<p>Seoul Forest served as the backdrop for several key moments of the Love Yourself era, most notably the concrete tube where Suga is seen playing piano, and where Jungkook sits in a wheelchair.</p><p>Beyond those on-screen connections, Seoul Forest is famously one of RM's favourite spots for what fans call \"Namjooning,\" and the park even has a bench formally adopted by ARMY in his honour.</p>",
-      "fr": "<p>Seoul Forest a servi de décor à plusieurs moments clés de l'ère Love Yourself, notamment le tube en béton où l'on voit Suga jouer du piano, et où Jungkook est assis dans un fauteuil roulant.</p><p>Au-delà de ces liens avec les clips, Seoul Forest est réputé être l'un des endroits préférés de RM pour ce que les fans appellent le « Namjooning », et le parc compte même un banc officiellement adopté par l'ARMY en son honneur.</p>"
+      "fr": "<p>Seoul Forest a servi de décor à plusieurs moments clés de l'ère Love Yourself, notamment le tube en béton où l'on voit Suga jouer du piano, et où Jungkook est assis dans un fauteuil roulant.</p><p>Au-delà de ces liens avec les clips, Seoul Forest est réputé être l'un des endroits préférés de RM pour ce que les fans appellent le « Namjooning », et le parc compte même un banc officiellement adopté par l'ARMY en son honneur.</p>",
+      "en": "<p>Stretching across more than 1.1 million square meters along the Han River, Seoul Forest is one of the capital's largest and most beloved green oases. Once serving as royal hunting grounds during the Joseon Dynasty, the land went through various transformations over the centuries—functioning as Seoul’s first water purification plant, a racecourse, and a public park—before undergoing a massive eco-friendly redevelopment. Reopened in June 2005 as a community-funded project, the park now houses five distinct thematic zones, including a cultural art park, an eco-forest, and experiential learning centers. Beyond its lush foliage, deer enclosures, and seasonal cherry blossoms, Seoul Forest has grown into a major cultural landmark for music fans worldwide, hosting various fan-sponsored green initiatives and memorial benches.</p><!--stss:footsteps--><p>2017, Suga: Seoul Forest is home to one of BTS’s most iconic visual landmarks: the concrete pipe featured in Suga's official LOVE YOURSELF poster. Shot in August 2017 near the Wish House (Maison des Vœux) in the Woodland Playground area, this spot remains a primary destination for fans eager to recreate his pose. Additionally, fan-dedicated benches honoring Suga were adopted starting in 2018–2019 through Seoul Forest's park bench sponsorship program, engraved with heartfelt lyrics from his rap verse in Lee Sora's \"Song Request\".</p><p>2018, RM: As an avid lover of nature, art, and solo strolls, RM has frequented Seoul Forest over the years, making it a regular stop during his \"Namjooning\" trips across Seoul. In response, fans began dedicating bench spaces to him as early as 2018. Today, multiple RM benches can be found throughout the park—most notably near the entrance of the Ginkgo Tree Forest and along the basketball courts—engraved with reflective lyrics from \"EPILOGUE : Young Forever\", \"everythingoes\", and \"Sea\".</p><p>2023, J-Hope: In October 2023, the Seoul Metropolitan Government collaborated with J-Hope's fan community to officially open the J-Hope Garden (J-Hope Forest). Located near the park's Central Lake, this dedicated green space features a J-shaped wooden bench and a large, interactive \"HOPE\" sculpture equipped with a QR code that plays his solo music. The garden received a major community update in 2024 to celebrate his return from military service.</p><p>2018, Jin: Along the scenic edges of Seoul Forest's lake, near Saengsaeng Garden, fans installed a series of benches dedicated to Jin between 2018 and 2019. Each bench overlooks the water and features lyrics from his emotional solo tracks, including \"Epiphany\", \"Tonight\", and \"Moon\", providing a quiet space for reflection along the walking paths.</p><p>2018, Jimin: Tucked away on a gentle hill near the sports grounds, Jimin's dedicated bench was established by ARMYs following the release of his record-breaking solo track \"Promise\" in December 2018. The bench is inscribed with touching lyrics from the song and sits alongside a cluster of fan-sponsored picnic tables in the central park zone.</p><p>2019, V: Along Apple Tree Road near the park's main entrance lies the Winter Bear Garden (or V Garden), a quiet floral nook inspired by V's soulful 2019 solo single \"Winter Bear\". Established by fans shortly after the song's release, the area features dedicated benches and plaque inscriptions referencing \"Winter Bear\" and \"Scenery\", surrounded by seasonal trees.</p><p>2019, Jungkook: Along with individual benches placed near the park's central trails, Jungkook is commemorated through dedicated picnic tables installed by fans around 2019. Located near the lake and the \"Purple Bunny\" sculpture area, these tables are inscribed with messages celebrating the group's youngest member and his solo work.</p>"
     },
     "tipsList": [
       {
@@ -6280,7 +6268,50 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Look for the large cylindrical concrete play structures hidden in the park to recreate Suga's piano scene.",
       "fr": "Cherchez les grandes structures de jeu cylindriques en béton cachées dans le parc pour recréer la scène du piano de Suga."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-109-recreated-0.jpg"
+    ]
   },
   {
     "id": 110,
@@ -11778,6 +11809,2935 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": 216,
+    "name": "Ali'i Drive",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
+    "lat": 19.6391,
+    "lng": -155.9974,
+    "img": "images/admin-upload-216-photo.jpg",
+    "fullDescription": {
+      "en": "<p>Ali'i Drive is the oceanfront main street of Kailua-Kona, running for roughly four miles along the lava-rock coastline of Hawaii's Big Island. The name translates to \"Chiefly Road,\" a nod to the royal Hawaiian history concentrated along this stretch — the nearby Hulihe'e Palace and Moku'aikaua Church, the islands' oldest Christian church, both sit just off the drive.</p><p>Today it's the social backbone of Kailua-Kona: a low-rise strip of open-air shopping centers, casual restaurants, surf shops and ocean-view bars, all within walking distance of the historic Kailua Pier. Locals and visitors alike treat it as the town's default evening stroll, with sunset views over the water for most of its length.</p><!--stss:footsteps--><p>Ali'i Drive is the connective thread running through BTS's Bon Voyage Season 2, Episode 2, filmed here in 2017 during the group's trip to Hawaii. Nearly every stop the members made during their free day in Kailua-Kona — souvenir shopping, henna tattoos, meals, a heart-to-heart conversation, and the night's final group hangout — happened along this single short stretch of road, making it the easiest way to retrace the whole episode on foot.</p><p>The Maknae Line (Jimin, V and Jungkook) wandered Ali'i Drive's shops hunting for souvenirs, ducking into the ABC Store and several small boutiques inside the Kona Inn Shopping Village. SOPE (Suga and J-Hope) ate at Kona Canoe Club and got matching henna tattoos at Kona Henna Studio, both just off the drive. Namjoon and Jin had one of the episode's more reflective moments at Humpy's Big Island Alehouse overlooking the coast, then browsed the small shops of Waterfront Row for matching jewelry. The whole group reconvened at Huggo's On The Rocks at the end of the day, right on the sand just a short walk down Ali'i Drive from where it all began.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Ali'i Drive runs through the heart of Kailua-Kona on the Big Island's west (Kona) coast. Most visitors arrive via Ellison Onizuka Kona International Airport (KOA), about a 15-minute drive north; a rental car is the easiest way to get around, with several public lots and metered street parking along the drive itself."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Ali'i Drive is a public street, open and free to walk at all hours. Individual shops and restaurants along it generally operate from around 9am to 9-10pm, with some bars staying open later."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The drive has paved sidewalks for most of its length, with a seawall promenade in places offering ocean views. Mostly flat and stroller/wheelchair-friendly, though some sections narrow near the pier area during busy periods."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk it end to end"
+        },
+        "text": {
+          "en": "Ali'i Drive is short enough to walk in full, and every other Bon Voyage Episode 2 location on this list sits directly on it or just a block off — park once near the pier and see everything on foot."
+        }
+      },
+      {
+        "title": {
+          "en": "Time it for sunset"
+        },
+        "text": {
+          "en": "The drive faces almost due west across Kailua Bay, so the last hour before sunset is consistently the best light for photos anywhere along it."
+        }
+      },
+      {
+        "title": {
+          "en": "Go on a Wednesday or Saturday"
+        },
+        "text": {
+          "en": "The Kona Farmers Market sets up along Ali'i Drive on Wednesday and Saturday mornings, a good add-on stop before or after retracing the episode."
+        }
+      }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://bigisland.org/alii-drive-shopping-dining-swimming-and-sightseeing-along-konas-seaside-mainstreet/",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-216-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "imgCredit": "Ken Lund / CC BY-SA 2.0",
+    "episodeLink": "https://www.bilibili.tv/video/2041090259",
+    "ytId": "w4qN4b-id5o"
+  },
+  {
+    "id": 217,
+    "name": "ABC Store",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
+    "lat": 19.63999,
+    "lng": -155.99428,
+    "img": "images/admin-upload-217-photo.jpg",
+    "fullDescription": {
+      "en": "<p>ABC Stores are a Hawaii institution — a chain of convenience shops found on nearly every block of the islands' main tourist strips, stocking everything from sunscreen and beach mats to snacks, alcohol, and a wall of souvenirs and aloha-print clothing. The chain started on Oahu in 1964 and has since grown to dozens of locations across the state, with the Kailua-Kona branch on Ali'i Drive serving the town's steady flow of cruise-ship passengers and resort visitors.</p><p>It's not a destination in the usual sense, but it's one of the most reliably open, easy stops on the strip — the kind of place locals and tourists duck into several times a day for ice, a cold drink, or a last-minute souvenir before a flight home.</p><!--stss:footsteps--><p>This particular ABC Store is where the Maknae Line — Jimin, V and Jungkook — picked up a small, memorable souvenir during their shopping stretch of Bon Voyage Season 2, Episode 2: matching friendship pens. It's a tiny, almost throwaway purchase in the show, but it became one of fans' favorite small moments from the Hawaii trip precisely because of how ordinary it is — three members of one of the world's biggest groups, browsing a convenience-store stationery rack like anyone else on vacation.</p><p>The scene plays out as part of a longer souvenir-hunting stretch along Ali'i Drive and through the Kona Inn Shopping Village, where the trio also stopped at several small gift shops (including one visibly marked Alley Geckos) that don't have much of an online footprint today.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located directly on Ali'i Drive in downtown Kailua-Kona, within easy walking distance of the Kailua Pier and most other Ali'i Drive stops. No dedicated parking — use the public lots or metered street parking nearby."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Most ABC Store branches in Kailua-Kona are open daily, typically from around 7am to 11pm or later — no admission fee, open to all shoppers."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Street-level entrance, flat and wheelchair-accessible, with standard convenience-store aisle widths."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check the stationery rack"
+        },
+        "text": {
+          "en": "Skip the t-shirt wall and look at the pens, notepads and small knickknacks near the register — that's the kind of find that caught the Maknae Line's eye."
+        }
+      },
+      {
+        "title": {
+          "en": "Stock up before the beach"
+        },
+        "text": {
+          "en": "It's a practical stop too: sunscreen, beach towels and cold drinks are all here if you're combining your visit with time at Kailua Bay."
+        }
+      },
+      {
+        "title": {
+          "en": "There’s almost always one nearby"
+        },
+        "text": {
+          "en": "If this specific branch doesn't have what you want, ABC Store is nearly ubiquitous across Hawaii — useful to know for the rest of your trip, not just this stop."
+        }
+      }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "w4qN4b-id5o",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-217-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://abcstores.com/",
+    "episodeLink": "https://www.bilibili.tv/video/2041090259"
+  },
+  {
+    "id": 218,
+    "name": "Kona Inn Shopping Village",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6388,
+    "lng": -155.9975,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kona Inn Shopping Village is a low-rise, open-air shopping center on Ali'i Drive, built around a landscaped garden courtyard that faces the ocean. It takes its name from the historic Kona Inn hotel that once stood on the site — one of the Big Island's first tourist hotels, built in 1928 — before being converted into its current retail format.</p><p>The village is home to a rotating mix of small, independently run boutiques, gift shops, a henna studio, and a couple of casual restaurants, all connected by shaded outdoor walkways. Its ocean-facing side opens directly onto Oneo Bay, making it as much a scenic rest stop as a shopping destination.</p><!--stss:footsteps--><p>Kona Inn Shopping Village is the single busiest hub of BTS's Bon Voyage Season 2, Episode 2 within Kailua-Kona — three separate stops on this list (Mahina Pizza, Kona Canoe Club, and Kona Henna Studio) are all located inside it, and it's also where much of the Maknae Line's souvenir-shopping montage played out. Most of the small gift shops Jimin, V and Jungkook browsed here don't have a strong record online today, but the sign for one of them, Alley Geckos, is clearly visible on screen during the episode.</p><p>It's also where SOPE (Suga and J-Hope) paused to take in the ocean view over Oneo Bay from the village's waterfront side, one of several quieter, unscripted moments the show captured during the group's free day in Kailua-Kona.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 75-5744 Ali'i Dr, in the heart of Kailua-Kona, directly on Ali'i Drive. Walkable from the Kailua Pier in under 10 minutes; a small public parking lot serves the village directly, with additional street parking nearby."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Individual shop hours vary, but most operate roughly 9am-9pm daily. The village itself is open-air and free to walk through at any time."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, paved walkways throughout the courtyard, wheelchair and stroller-friendly, with ramp access from the Ali'i Drive sidewalk."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "One stop, three locations"
+        },
+        "text": {
+          "en": "With Mahina Pizza, Kona Canoe Club and Kona Henna Studio all inside the same village, this is the most time-efficient single stop on the whole Episode 2 trail."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk through to the water"
+        },
+        "text": {
+          "en": "Don't stop at the shops — the courtyard opens straight onto Oneo Bay on its ocean side, the same view SOPE paused for."
+        }
+      },
+      {
+        "title": {
+          "en": "Browse for a genuine local find"
+        },
+        "text": {
+          "en": "The small, independent gift shops here (unlike the chain stores elsewhere on Ali'i Drive) are a better bet for a one-of-a-kind souvenir, even if you can't track down the exact ones the Maknae Line visited."
+        }
+      }
+    ]
+  },
+  {
+    "id": 219,
+    "name": "Mahina Pizza",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
+    "lat": 19.6387,
+    "lng": -155.9975,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Mahina Pizza is a casual, counter-service pizzeria tucked inside the Kona Inn Shopping Village, serving New York-style slices and whole pies alongside a handful of local specialty toppings. \"Mahina\" means \"moon\" in Hawaiian, and the shop leans into a laid-back, no-frills island-pizza-joint identity — order at the counter, grab a seat in the courtyard or at one of a few indoor tables, and wait for your name to be called.</p><p>It's a popular, fast, affordable option for shopping village visitors and Ali'i Drive regulars looking for a quick meal between beach time and souvenir shopping, rather than a sit-down dining destination.</p><!--stss:footsteps--><p>Mahina Pizza is where the Maknae Line — Jimin, V and Jungkook — stopped for a pizza break during their shopping stretch of Bon Voyage Season 2, Episode 2. It's a short, low-key scene in the show, mostly remembered by fans not for the food itself but for a restaurant employee caught in the background casually lounging on a sofa — an unplanned, candid moment that became an unexpected highlight of the episode on rewatch.</p><p>There's no deeper story attached to the stop beyond that: three members, a pizza order, and the kind of mundane, funny slice-of-life moment that Bon Voyage built its entire appeal around, far removed from the group's usual stage presence.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Inside the Kona Inn Shopping Village at 75-5744 Ali'i Dr, Kailua-Kona — enter the village from Ali'i Drive and follow the courtyard signage."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily for lunch and dinner, roughly 11am-9pm; hours can vary, so checking ahead before a visit is worthwhile. No admission fee — pay per order at the counter."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor counter-service with flat courtyard and indoor seating, wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Order the same way"
+        },
+        "text": {
+          "en": "It's counter service — order and pay up front, then find a seat, exactly how the Maknae Line did it."
+        }
+      },
+      {
+        "title": {
+          "en": "Grab courtyard seating if it’s free"
+        },
+        "text": {
+          "en": "The outdoor tables in the shopping village courtyard are a nicer spot to eat than the small indoor area, when available."
+        }
+      },
+      {
+        "title": {
+          "en": "Pair it with a Kona Inn Shopping Village stop"
+        },
+        "text": {
+          "en": "Since you're already inside the village for this one, it's an easy combined visit with Kona Canoe Club and Kona Henna Studio."
+        }
+      }
+    ]
+  },
+  {
+    "id": 220,
+    "name": "Kona Canoe Club",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5739 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6386,
+    "lng": -155.9978,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kona Canoe Club is a casual sports-bar-style restaurant directly on Ali'i Drive, right across from the Kona Inn Shopping Village, with an open-air dining room looking out toward the ocean. The name nods to Hawaii's outrigger canoe racing tradition, a sport with deep roots on the Kona coast — local canoe clubs still train and race in the waters just offshore.</p><p>The menu leans toward classic American bar food with a local twist: burgers, sandwiches and fresh-caught Hawaiian fish, served alongside a full bar and a handful of TVs for sports. It's a popular, unfussy spot for both locals and visitors looking for a relaxed meal with an ocean view.</p><!--stss:footsteps--><p>Kona Canoe Club is where SOPE — Suga and J-Hope — sat down for a meal together during Bon Voyage Season 2, Episode 2, with the show specifically highlighting the restaurant's fish and burgers as the pair ate and talked. It's one of the more relaxed, low-key stops of the Kailua-Kona leg of the episode: no elaborate activity or deep conversation, just two members enjoying a casual lunch together with a view of Ali'i Drive and the coast.</p><p>The stop comes during the same stretch of the episode as the Maknae Line's shopping trip and SOPE's own henna tattoo session nearby at Kona Henna Studio, part of a loosely structured free afternoon the group spent exploring Kailua-Kona in smaller groups rather than together.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 75-5739 Ali'i Dr, directly across the street from the Kona Inn Shopping Village in downtown Kailua-Kona. Walkable from the Kailua Pier; street parking and nearby public lots serve the area."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily for lunch and dinner, roughly 11am-10pm. No admission fee — a standard restaurant menu with a full bar."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-level, open-air dining room with flat access from the sidewalk; wheelchair-accessible seating available."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Try the fish"
+        },
+        "text": {
+          "en": "Fresh local fish is the restaurant's standout, and the closest way to order the way SOPE did on screen."
+        }
+      },
+      {
+        "title": {
+          "en": "Ask for ocean-facing seating"
+        },
+        "text": {
+          "en": "The open-air side of the dining room looks out toward Ali'i Drive and the water — worth requesting if it's available."
+        }
+      },
+      {
+        "title": {
+          "en": "Go for a sports-bar evening"
+        },
+        "text": {
+          "en": "With a full bar and TVs, it's also a solid pick for watching a game in the evening, not just a lunch stop."
+        }
+      }
+    ]
+  },
+  {
+    "id": 221,
+    "name": "Kona Henna Studio",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
+    "lat": 19.6388,
+    "lng": -155.9976,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kona Henna Studio is a small, appointment-and-walk-in henna tattoo shop located inside the Kona Inn Shopping Village on Ali'i Drive. Henna — a temporary dye derived from the henna plant — has no traditional roots in Hawaiian culture, but the studio has become a popular stop for visitors drawn to its intricate, customizable designs as a lasting-but-temporary vacation souvenir.</p><p>Artists work from a catalog of patterns or freehand custom designs, applied directly to skin and left to dry for a couple of hours before the dried paste is brushed away, revealing a stain that typically lasts one to two weeks.</p><!--stss:footsteps--><p>Kona Henna Studio is where SOPE — Suga and J-Hope — got matching henna tattoos during their free time in Bon Voyage Season 2, Episode 2, a playful, lighthearted detour from the rest of the day's activities. The segment became one of the episode's more visually memorable moments, with the pair comparing their finished designs afterward and showing them off to the rest of the group.</p><p>It's a small but fondly remembered scene among fans, partly because it's such a rare, low-stakes glimpse of two members doing something purely for fun on a shared day off, with no itinerary or challenge attached — just a spontaneous stop during their Kailua-Kona shopping stretch.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Inside the Kona Inn Shopping Village at 75-5744 Ali'i Dr, Kailua-Kona — accessible from the village's courtyard, a short walk from Ali'i Drive."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily, roughly 10am-8pm, though hours can shift seasonally. Pricing is per design rather than a flat admission fee; walk-ins are generally welcome but appointments are recommended for intricate designs."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor, flat-access studio within the shopping village; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Get your own henna"
+        },
+        "text": {
+          "en": "Walk-in custom designs are usually available — an easy way to leave Kailua-Kona with the same kind of souvenir SOPE picked up."
+        }
+      },
+      {
+        "title": {
+          "en": "Budget drying time"
+        },
+        "text": {
+          "en": "Henna needs time to set before the paste is removed — plan for at least an hour or two before you need clean hands again."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring a design idea"
+        },
+        "text": {
+          "en": "Artists can work from a catalog, but bringing a reference photo or idea (as simple or detailed as you like) tends to get the best results."
+        }
+      }
+    ]
+  },
+  {
+    "id": 222,
+    "name": "Humpy's Big Island Alehouse",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5815 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6379,
+    "lng": -155.9981,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Humpy's Big Island Alehouse is a pub and restaurant directly on Ali'i Drive, with an open-air deck that looks straight out over the Kona coastline. It's a sister location to the original Humpy's Alaskan Alehouse chain, adapted for the Big Island with a menu of pub classics, local beers on tap, and fresh seafood, served in a casual, laid-back setting built for long sit-down meals with a view.</p><p>The alehouse's raised, ocean-facing deck is one of the better sunset vantage points directly on Ali'i Drive, drawing a steady crowd of locals and visitors alike for happy hour and evening drinks.</p><!--stss:footsteps--><p>Humpy's Big Island Alehouse is where Namjoon and Jin sat down for an unusually candid, reflective conversation during Bon Voyage Season 2, Episode 2 — one of the episode's quieter, more emotionally open moments, set against the alehouse's open-air coastal backdrop. It stands out from the rest of the group's activity-driven day as a deliberate pause, just the two of them talking over drinks as the Kona coast stretched out behind them.</p><p>The location also holds a specific place in BTS history beyond the episode itself: it's the setting for a now-famous photo RM posted to Twitter during the Hawaii trip, taken from this exact alehouse, which fans have since used to help pinpoint the location independently of the show.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 75-5815 Ali'i Dr, toward the southern end of Kailua-Kona's main strip. Walkable from the Kailua Pier in about 10-15 minutes; street parking and nearby lots serve the area."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily for lunch through late evening, roughly 11am-10pm or later. No admission fee — standard restaurant/bar menu."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor dining room with an open-air deck; flat, wheelchair-accessible access from the street."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Go at golden hour"
+        },
+        "text": {
+          "en": "Time your visit for late afternoon to catch the same warm coastal light visible behind Namjin during their conversation."
+        }
+      },
+      {
+        "title": {
+          "en": "Ask for deck seating"
+        },
+        "text": {
+          "en": "The open-air deck overlooking the coast is the restaurant's signature spot and the closest match to the episode's backdrop."
+        }
+      },
+      {
+        "title": {
+          "en": "Order a local beer"
+        },
+        "text": {
+          "en": "The alehouse's rotating tap list leans heavily on Hawaiian breweries — a good way to lean into the laid-back, conversational mood of the scene."
+        }
+      }
+    ]
+  },
+  {
+    "id": 223,
+    "name": "Kailua Bay and Oneo Bay",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
+    "lat": 19.6402,
+    "lng": -155.9973,
+    "img": "images/admin-upload-223-photo.jpg",
+    "fullDescription": {
+      "en": "<p>Kailua Bay and Oneo Bay are the two small, connected bays that make up the heart of Kailua-Kona's waterfront, both running directly alongside Ali'i Drive. Kailua Bay curves around the historic Kailua Pier and Kamakahonu Beach near the center of town — the site where King Kamehameha I once lived and where Captain Cook's ships first anchored in 1778 — while Oneo Bay sits just a short walk south, tucked behind the Kona Inn Shopping Village.</p><p>Both bays offer calm, relatively shallow water protected from the open ocean swell, making them popular for swimming, snorkeling, and paddleboarding, with a paved seawall path connecting most of the shoreline between them.</p><!--stss:footsteps--><p>The general Ali'i Drive coastline, including both bays, forms the scenic backdrop to much of BTS's time in Kailua-Kona during Bon Voyage Season 2, Episode 2. Oneo Bay specifically — the cove directly behind the Kona Inn Shopping Village — is where SOPE (Suga and J-Hope) paused during their shopping stretch to take in the view, drawn by the calm turquoise water and the open coastline beyond it, one of several quiet, unscripted breaks captured during the group's free day.</p><p>Because the two bays sit at either end of the same short stretch of coastline the group spent the day exploring, both appear in wider shots throughout the episode as the backdrop to the Maknae Line's shopping trip, SOPE's meals and henna tattoos, and Namjin's conversation at Humpy's — making the water itself almost a recurring presence in the episode, even without a single dedicated scene of its own.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Both bays run directly along Ali'i Drive in downtown Kailua-Kona; Kailua Bay is centered near the Kailua Pier, Oneo Bay a short walk south behind the Kona Inn Shopping Village. Public parking is available near the pier, with additional street parking along the drive."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Both bays are public beaches/waterfront, accessible at all hours and free to visit. Lifeguard presence and hours, where available, vary seasonally."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "A paved seawall path runs along most of the shoreline connecting the two bays, flat and wheelchair/stroller-friendly; direct beach access points have sand or rocky entry depending on location."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Look for the water behind Kona Inn"
+        },
+        "text": {
+          "en": "The bay SOPE stopped at is the small cove directly behind the Kona Inn Shopping Village — easy to miss if you're only looking at the street side of Ali'i Drive."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring snorkel gear"
+        },
+        "text": {
+          "en": "Both bays are popular, easy snorkeling spots thanks to their calm, sheltered water — a good way to spend extra time here beyond just the view."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Kamakahonu Beach too"
+        },
+        "text": {
+          "en": "The small beach by the pier at the north end of Kailua Bay has real historical significance (it was King Kamehameha I's residence) and pairs well with a walk down to Oneo Bay."
+        }
+      }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/bts_twt/status/894213355954515969?s=46",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "episodeLink": "https://www.bilibili.tv/video/2041090259",
+    "ytId": "w4qN4b-id5o",
+    "imgCredit": "Robert Linsdell / CC BY 2.0"
+  },
+  {
+    "id": 224,
+    "name": "Waterfront Row",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5770 Ali'i Dr, Kailua-Kona, HI 96740",
+    "lat": 19.6383,
+    "lng": -155.9977,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Waterfront Row is a small, low-key shopping center on Ali'i Drive, housing a handful of independent jewelry stores, art galleries and gift shops under a shared covered walkway. It's a quieter, more intimate alternative to the larger Kona Inn Shopping Village nearby, with a focus on locally made jewelry, art and specialty souvenirs rather than typical tourist-shop merchandise.</p><p>Its small footprint makes it an easy, unhurried browse — most visitors can see the whole center in fifteen to twenty minutes, making it a popular quick stop for a specific, considered souvenir rather than a long shopping trip.</p><!--stss:footsteps--><p>Waterfront Row is where Namjoon and Jin stopped to buy matching friendship jewelry during Bon Voyage Season 2, Episode 2 — specifically, a necklace with a small turtle charm, a deliberate nod to the honu (Hawaiian green sea turtles) that are a common, beloved sight along the Big Island's coastline. It's a brief but fondly remembered stop among fans, the kind of small, sentimental gesture the pair are known for during their trips together.</p><p>The stop fits into the same loosely structured free-time stretch of the episode as the Maknae Line's shopping trip and SOPE's henna tattoos elsewhere on Ali'i Drive — rather than a single planned group activity, much of Episode 2's Kailua-Kona content follows different pairs and subgroups making their own way through the same short stretch of road.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located on Ali'i Drive at approximately 75-5770, within easy walking distance of the Kona Inn Shopping Village and the Kailua Pier in downtown Kailua-Kona."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Individual shop hours vary, but most operate roughly 10am-8pm daily. No admission fee to browse the center."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor, covered walkway with flat access from the Ali'i Drive sidewalk; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Look for turtle jewelry"
+        },
+        "text": {
+          "en": "Several of the small shops here carry honu (sea turtle) themed pieces, similar to what Namjin picked up — a fitting, Hawaii-specific souvenir either way."
+        }
+      },
+      {
+        "title": {
+          "en": "Ask about local makers"
+        },
+        "text": {
+          "en": "Many of the jewelry and art pieces here are locally made rather than imported — worth asking staff about the artist behind a piece you like."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine it with a pier walk"
+        },
+        "text": {
+          "en": "Waterfront Row sits close enough to the Kailua Pier that it's easy to pair a browse here with a short walk out to see the historic pier and Kamakahonu Beach."
+        }
+      }
+    ]
+  },
+  {
+    "id": 225,
+    "name": "Huggo's On The Rocks",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kailua-Kona, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 2",
+    "address": "75-5824 Kahakai Rd, Kailua-Kona, HI 96740",
+    "lat": 19.6372,
+    "lng": -155.9988,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Huggo's On The Rocks is the casual, open-air sister restaurant and bar to the more formal Huggo's next door, built directly on the sand at the southern end of Ali'i Drive. Its signature feature is its setting: tables sit right at the waterline, close enough that waves occasionally reach the sand beneath diners' feet, with live local music most evenings.</p><p>The menu covers casual bar food, pupus (Hawaiian-style appetizers) and tropical cocktails, and the bar draws a steady crowd for sunset, when its unobstructed view over the water and nightly live music make it one of the most popular evening spots on Ali'i Drive.</p><!--stss:footsteps--><p>Huggo's On The Rocks is where the full group of BTS members met up to close out their day in Kailua-Kona at the end of Bon Voyage Season 2, Episode 2 — after spending the afternoon split into smaller pairs and groups across Ali'i Drive (the Maknae Line shopping, SOPE eating and getting henna tattoos, Namjin talking at Humpy's and browsing Waterfront Row), the episode brings everyone back together here for drinks, food and live music as the sun went down over the water.</p><p>As the episode's final Kailua-Kona location, it serves as a natural capstone to the whole day — the one scene in the Hawaii leg of Bon Voyage where all the threads of the afternoon's separate activities come back together in one place, with the sand-floor, live-music setting giving the reunion a relaxed, vacation-appropriate send-off.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at the southern end of Ali'i Drive in Kailua-Kona, next to the main Huggo's restaurant. Roughly a 15-20 minute walk from the Kailua Pier, or a short drive with nearby street parking."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily from late afternoon into the evening, roughly 3pm-close; no cover charge, standard restaurant/bar menu and seating."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Open-air, sand-floor seating directly on the beach — not fully wheelchair-accessible due to the sand, though the surrounding deck and entrance areas are flat."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Come for sunset"
+        },
+        "text": {
+          "en": "Live music typically starts in the early evening — time your visit to catch both the music and the sunset over the water, the same combination that closed out the episode."
+        }
+      },
+      {
+        "title": {
+          "en": "Reserve ahead on weekends"
+        },
+        "text": {
+          "en": "It's one of the most popular sunset spots on Ali'i Drive, so reservations are worth making in advance, especially Friday through Sunday."
+        }
+      },
+      {
+        "title": {
+          "en": "End your own Episode 2 day here"
+        },
+        "text": {
+          "en": "As the group's own final stop, it's a fitting last location if you're retracing the whole episode in order down Ali'i Drive."
+        }
+      }
+    ]
+  },
+  {
+    "id": 226,
+    "name": "Akaka Falls",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honomu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 3",
+    "address": "Akaka Falls State Park, Honomu, HI 96728",
+    "lat": 19.8572,
+    "lng": -155.1517,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Akaka Falls State Park is a 66-acre park on the Big Island's lush Hamakua Coast, built around a short, paved loop trail through a rainforest landscape of bamboo groves, wild orchids, ginger and ferns. The trail's centerpiece is Akaka Falls itself, a 442-foot single-drop waterfall plunging into a steep, moss-covered gorge — one of the tallest and most photographed waterfalls in Hawaii.</p><p>The loop also passes the smaller, 100-foot Kahuna Falls along the way. At under a mile round trip with paved paths and handrails, it's a far easier walk than most of Hawaii's other waterfall hikes, which is a large part of why it remains one of the Big Island's most visited natural landmarks.</p><!--stss:footsteps--><p>Akaka Falls was one of the calmer sightseeing stops of Bon Voyage Season 2, Episode 3, as the group spent the day exploring the Hilo side of the Big Island at a noticeably more relaxed pace than the shopping-heavy Kailua-Kona episode before it. The members walked the short loop trail together, taking in the view of the falls and the surrounding rainforest as a group.</p><p>It set the tone for an episode built more around sightseeing and natural scenery — waterfalls, gardens, and a volcano summit — than activities or errands, with Akaka Falls as the gentle, easy-hike opener before the rest of the day's stops around Hilo and up to Mauna Kea.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Akaka Falls State Park is on the Hamakua Coast, about a 25-30 minute drive north of Hilo via Highway 19 and Akaka Falls Road. There's no public transit directly to the park; a rental car is the practical option."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily, roughly 8:30am-5pm. Hawaii state park entrance fees apply for non-Hawaii-resident visitors (a small per-person and per-vehicle charge); Hawaii residents enter free with ID."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The loop trail is paved but includes stairs and some steep, uneven sections — not fully wheelchair-accessible, and sturdy footwear is recommended even though it's one of the easier waterfall trails on the island."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Arrive early"
+        },
+        "text": {
+          "en": "The parking lot is small and tour buses arrive mid-morning — an early visit means a quieter trail and easier parking."
+        }
+      },
+      {
+        "title": {
+          "en": "Stay on the trail"
+        },
+        "text": {
+          "en": "Swimming and off-trail access near the falls are prohibited for safety — the gorge's edges are steep and the rock is slick."
+        }
+      },
+      {
+        "title": {
+          "en": "Pair it with Hilo’s other waterfalls"
+        },
+        "text": {
+          "en": "Rainbow Falls, right in Hilo, is a short detour from Akaka Falls and makes for an easy two-waterfall morning."
+        }
+      }
+    ]
+  },
+  {
+    "id": 227,
+    "name": "Ken's House of Pancakes",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hilo, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 3",
+    "address": "1730 Kamehameha Ave, Hilo, HI 96720",
+    "lat": 19.7241,
+    "lng": -155.0701,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Ken's House of Pancakes — often shortened to just \"Ken's Pancake House\" — is a 24-hour diner on Kamehameha Avenue in Hilo, open continuously since 1971. It's the kind of old-school, all-day breakfast institution found in towns across America, adapted to local tastes: alongside pancakes and omelets, the menu runs through loco moco, Portuguese sausage, Spam musubi and full local-style plate lunches.</p><p>Its round-the-clock hours make it a fixture for Hilo's shift workers, late-night diners and early-rising visitors alike, and its unpretentious, diner-booth atmosphere has made it a long-running local favorite well beyond its tourist appeal.</p><!--stss:footsteps--><p>Ken's House of Pancakes is where the group stopped for a meal during their day exploring the Hilo side of the Big Island in Bon Voyage Season 2, Episode 3 — a simple, casual group breakfast at a genuine local institution rather than a tourist-oriented restaurant, fitting the more laid-back, sightseeing-focused tone of this episode.</p><p>It's a low-key stop in the show, without a major dedicated segment, but it's a real, verifiable piece of the group's actual itinerary on the Big Island, and one of the more easily revisitable spots on this list for any fan passing through Hilo.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 1730 Kamehameha Ave in Hilo, on the main road along Hilo Bay. Easily reached by car with on-site parking; downtown Hilo is a short drive away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open 24 hours a day, every day. No admission fee — standard diner menu."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor diner with flat access from the parking lot; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Try the loco moco"
+        },
+        "text": {
+          "en": "A rice-burger-patty-gravy-fried-egg plate that's a true Hawaii diner staple, and a solid way to eat like a local here."
+        }
+      },
+      {
+        "title": {
+          "en": "Go for the macadamia nut pancakes"
+        },
+        "text": {
+          "en": "A Big Island specialty twist on the diner's namesake dish, worth ordering at least once."
+        }
+      },
+      {
+        "title": {
+          "en": "Remember it never closes"
+        },
+        "text": {
+          "en": "Being open 24/7 makes it a reliable option for odd-hour arrivals or late-night cravings, not just a daytime stop."
+        }
+      }
+    ]
+  },
+  {
+    "id": 228,
+    "name": "Lili'uokalani Park and Gardens",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hilo, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 3",
+    "address": "189 Lihiwai St, Hilo, HI 96720",
+    "lat": 19.723,
+    "lng": -155.0633,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Lili'uokalani Park and Gardens is a 24-acre Japanese-style garden on the shore of Hilo Bay, built in the early 1900s and dedicated to Hilo's Japanese immigrant community. It's named for Queen Lili'uokalani, the last reigning monarch of the Kingdom of Hawaii, who gifted the land for the park's creation.</p><p>The grounds are laid out in classic Japanese garden style — stone lanterns, koi ponds, arched bridges, pagodas, and a ceremonial Moon Gate — with Hilo Bay and, on clear days, the snow-capped peak of Mauna Kea visible in the distance. It's considered one of the largest formal Japanese gardens outside of Japan itself.</p><!--stss:footsteps--><p>Lili'uokalani Park and Gardens is where the group stopped for lunch during Bon Voyage Season 2, Episode 3, eating together amid the garden's ponds and pagodas as part of the episode's more relaxed, sightseeing-driven day around Hilo. It's a quieter, more scenic meal setting than many of the show's restaurant stops, with the garden itself effectively serving as the backdrop for the scene.</p><p>The stop fits naturally into an episode built around natural beauty and calmer pacing — following the short hike at Akaka Falls earlier in the day and preceding the group's later stops at KTA Supermarket and Mauna Kea, the garden lunch gave the members a relaxed midday break in one of Hilo's most picturesque public spaces.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 189 Lihiwai St on the Banyan Drive peninsula in Hilo, a short drive or walk from downtown. Free public parking is available nearby."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from dawn to dusk. Free admission, no tickets required."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Mostly flat, paved paths throughout the garden, wheelchair and stroller-friendly; some of the traditional arched bridges have a slight incline."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Bring a picnic"
+        },
+        "text": {
+          "en": "Following the group's lead, the garden's lawns and waterfront benches are a genuinely nice spot for an outdoor lunch of your own."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk out to Moku Ola (Coconut Island)"
+        },
+        "text": {
+          "en": "A small footbridge connects the park to Coconut Island, a short, worthwhile detour with more bay views."
+        }
+      },
+      {
+        "title": {
+          "en": "Photograph the Moon Gate"
+        },
+        "text": {
+          "en": "The circular stone Moon Gate is the garden's most distinctive, photogenic structure — one of the best spots in the park for a quick photo."
+        }
+      }
+    ]
+  },
+  {
+    "id": 229,
+    "name": "KTA Super Stores (Puainako)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hilo, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 3",
+    "address": "50 E Puainako St, Hilo, HI 96720",
+    "lat": 19.6994,
+    "lng": -155.0797,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>KTA Super Stores is a locally owned Hawaii supermarket chain founded in 1916, with several branches across the Big Island. The Puainako Street location in Hilo is one of its larger stores, carrying standard groceries alongside a strong selection of local products — fresh poke, Hawaiian-style plate lunch items, and island-grown produce — that set it apart from mainland chain supermarkets.</p><p>For visitors, it's as much a glimpse of everyday local life as a place to shop: a genuine neighborhood grocery store rather than a tourist-oriented market, popular with both longtime Hilo residents and travelers stocking up on snacks or ingredients.</p><!--stss:footsteps--><p>KTA Supermarket is where the group went shopping for dinner ingredients during Bon Voyage Season 2, Episode 3 — a simple, unglamorous grocery run that stands out precisely because of how ordinary it is. Rather than eating out, the members picked up food here to prepare themselves, a rare glimpse of the kind of everyday errand most of the show's other locations don't capture.</p><p>It's one of the smaller, more low-key segments of the episode, but a genuinely memorable one for fans for exactly that reason — watching the group navigate a regular supermarket aisle like anyone else on a self-catered vacation day, in contrast to the sightseeing and dining-out that fills most of the rest of the episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 50 E Puainako St in Hilo, a short drive from downtown and from Lili'uokalani Park. On-site parking is available."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily, roughly 6am-11pm. No admission fee — a standard supermarket."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor store with flat, wide aisles; wheelchair-accessible with standard shopping carts available."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check the poke counter"
+        },
+        "text": {
+          "en": "KTA's deli and poke selection is a local highlight well worth trying, grocery run or not."
+        }
+      },
+      {
+        "title": {
+          "en": "Look for local snacks as souvenirs"
+        },
+        "text": {
+          "en": "Hawaii-grown coffee, macadamia nuts and local snack brands here make for better, more authentic souvenirs than typical gift-shop items."
+        }
+      },
+      {
+        "title": {
+          "en": "Good for self-catering"
+        },
+        "text": {
+          "en": "If you're staying nearby with a kitchen, it's a genuinely practical stop for stocking up, not just a novelty visit."
+        }
+      }
+    ]
+  },
+  {
+    "id": 230,
+    "name": "Mauna Kea",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Mauna Kea, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 3",
+    "address": "Mauna Kea Access Rd, Hawaii 96720",
+    "lat": 19.7645,
+    "lng": -155.4557,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Mauna Kea is a dormant shield volcano and the tallest peak in Hawaii, rising 13,803 feet above sea level — and, measured from its base on the ocean floor, taller than Mount Everest. It's also the only place in the Hawaiian Islands where snow regularly falls, capping the summit in white during winter months and giving the mountain its name, which means \"white mountain\" in Hawaiian.</p><p>The mountain holds deep significance in Hawaiian culture as wao akua, the realm of the gods, and is considered one of the most sacred sites in the islands. Its high elevation, dry air and remoteness from light pollution also make it one of the best stargazing and sunset-viewing locations in the world, with the Visitor Information Station at around 9,200 feet serving as the most accessible point for watching the sun go down over the clouds.</p><!--stss:footsteps--><p>Mauna Kea is where the group watched the sunset together during Bon Voyage Season 2, Episode 3, capping off a day built around sightseeing rather than activities — following the morning's hike at Akaka Falls, lunch at Lili'uokalani Park, and an errand run at KTA Supermarket, the volcano's summit area gave the members one last, quietly scenic group moment to end the day.</p><p>The stop fits the broader pattern of this episode, which leans more heavily on natural landmarks and scenery than the shopping and errands of the Kailua-Kona episode before it — Mauna Kea's elevation above the cloud line makes for a sunset unlike anything available at sea level, a fitting final backdrop for the Hilo-side leg of the group's Hawaii trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reached via Saddle Road (Highway 200) from either Hilo or Kailua-Kona, then the Mauna Kea Access Road to the Visitor Information Station at roughly 9,200 feet. A 4WD vehicle is strongly recommended, and required by rental car agreements beyond the Visitor Information Station toward the summit."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Visitor Information Station area is accessible and free at all hours, though sunset and stargazing hours are the most popular. No admission fee for the mountain itself."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "High altitude makes this a physically demanding visit — acclimatization at the Visitor Information Station is strongly advised before going higher, and the summit area is not recommended for young children, pregnant visitors, or anyone with heart or respiratory conditions."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Acclimate before going higher"
+        },
+        "text": {
+          "en": "Spend at least 30 minutes at the Visitor Information Station before continuing toward the summit — altitude sickness is a real risk above 9,000 feet."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring warm layers"
+        },
+        "text": {
+          "en": "Summit temperatures can drop below freezing even when it's warm at sea level — pack a jacket regardless of the season."
+        }
+      },
+      {
+        "title": {
+          "en": "Time your descent before full dark"
+        },
+        "text": {
+          "en": "The access road has no lighting — plan to start heading back down shortly after sunset rather than lingering until the sky is fully dark."
+        }
+      }
+    ]
+  },
+  {
+    "id": 231,
+    "name": "Mauna Kea Observatories",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Mauna Kea, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 3",
+    "address": "Mauna Kea Summit, Hawaii 96720",
+    "lat": 19.8207,
+    "lng": -155.4681,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>The summit of Mauna Kea, at roughly 13,796 feet, is home to one of the world's premier astronomical observation sites, hosting more than a dozen telescopes operated by research institutions from around the globe, including some of the largest and most powerful optical and infrared telescopes on Earth. Its combination of extreme elevation, dry stable air, and distance from light pollution makes it one of the best stargazing locations anywhere in the world.</p><p>Sitting above roughly 40% of the Earth's atmosphere, the summit offers exceptionally clear, steady viewing conditions rarely found at lower-altitude observatories, which is why so many major telescope projects — representing billions of dollars of international astronomical research — have been built on this single mountain.</p><!--stss:footsteps--><p>The Mauna Kea Observatories are mentioned as part of the same Mauna Kea sunset stop in Bon Voyage Season 2, Episode 3, with the mountain's dual identity — sacred volcano and world-class observatory site — both part of what made it such a striking final location for the group's day of Hilo-area sightseeing.</p><p>While the televised segment centers on the sunset itself rather than the telescopes specifically, the observatory domes visible from the summit area are an unmistakable part of Mauna Kea's identity, and a detail fans researching the episode's location have often noted when identifying exactly where on the mountain the group's visit took place.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The summit is reached via the Mauna Kea Access Road beyond the Visitor Information Station — a steep, unpaved stretch that requires a 4WD vehicle. Some rental car companies prohibit driving their vehicles on this road entirely, so check your rental agreement in advance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The summit area is open during daylight hours for visits; the telescopes themselves are working research facilities and not generally open to public tours. No admission fee for the summit area."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Extremely limited accessibility due to altitude and terrain — not recommended for young children, pregnant visitors, or anyone with heart, lung, or other conditions affected by high elevation; consult a doctor in advance if you have any health concerns."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check road conditions first"
+        },
+        "text": {
+          "en": "The summit road can close due to weather with little notice — check current conditions before committing to the drive."
+        }
+      },
+      {
+        "title": {
+          "en": "Don’t expect telescope tours"
+        },
+        "text": {
+          "en": "The observatories are active research facilities, not public attractions — the main draw at the summit is the view itself, not the telescopes."
+        }
+      },
+      {
+        "title": {
+          "en": "Stargaze at the Visitor Information Station instead"
+        },
+        "text": {
+          "en": "Public stargazing programs are run at the lower Visitor Information Station, not the summit — it's both safer and the more practical option for most visitors."
+        }
+      }
+    ]
+  },
+  {
+    "id": 232,
+    "name": "Hawaii Volcanoes National Park",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hawaii, Big Island",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 4",
+    "address": "1 Crater Rim Dr, Hawaii National Park, HI 96718",
+    "lat": 19.4194,
+    "lng": -155.2885,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Hawaii Volcanoes National Park is a 335,000-acre UNESCO World Heritage Site on the southeastern side of the Big Island, home to two of the world's most active volcanoes: Kilauea and Mauna Loa. The park spans an extraordinary range of environments in a single protected area, from steaming volcanic craters and stark black lava deserts to lush tropical rainforest, all connected by hiking trails and the scenic Crater Rim Drive.</p><p>Established in 1916, it's one of the oldest national parks in the US system and remains a working, constantly changing landscape — eruptions, steam vents and shifting lava fields mean the park looks different from one visit to the next. Camping, day hikes of every length, and ranger-led programs are all available for visitors who want to spend more than an afternoon exploring it.</p><!--stss:footsteps--><p>Hawaii Volcanoes National Park is where the group went hiking during Bon Voyage Season 2, Episode 4, an episode built entirely around the volcanic landscape of the Big Island. Walking through the park's shifting terrain of rainforest, steam vents and lava rock gave the members a direct, ground-level look at the same volcanic activity they'd later view from the air on their Blue Hawaiian Helicopters tour later in the episode.</p><p>The park's extreme environmental range — jungle in one section, barren black lava fields in the next — made for one of the more visually striking hiking segments of the group's Hawaii trip, grounding the episode's volcano theme in a real, physical sense of scale before the aerial sightseeing that followed.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The park's main entrance is on Highway 11, about a 45-minute drive from Hilo or roughly 2.5 hours from Kailua-Kona. A rental car is the only practical way to reach and explore it."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open 24 hours a day, every day. A per-vehicle entrance fee is charged (valid for 7 days); America the Beautiful annual passes are accepted."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Crater Rim Drive and several overlooks are paved and accessible by car; many trails are unpaved, uneven lava terrain not suited to wheelchairs, though a few short paved paths near the visitor center are accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check current eruption/closure status"
+        },
+        "text": {
+          "en": "Trails and overlooks close and reopen depending on volcanic activity — check the park's official alerts before planning your route."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring real hiking shoes"
+        },
+        "text": {
+          "en": "Lava rock trails are sharp and uneven even on \"easy\" sections — sturdy closed-toe shoes make a real difference here."
+        }
+      },
+      {
+        "title": {
+          "en": "Stay past sunset if conditions allow"
+        },
+        "text": {
+          "en": "When Kilauea is active, the glow from its crater is far more dramatic after dark — worth timing part of your visit around dusk if it's permitted."
+        }
+      }
+    ]
+  },
+  {
+    "id": 233,
+    "name": "Blue Hawaiian Helicopters (Hilo)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hilo, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 4",
+    "address": "2450 Kekuanaoa St, Hilo, HI 96720",
+    "lat": 19.7203,
+    "lng": -155.0486,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Blue Hawaiian Helicopters is a helicopter tour operator based at Hilo International Airport, running sightseeing flights over the Big Island's volcanic landscape since the 1980s. Its signature \"Circle of Fire\" route takes passengers over Kilauea's active crater and lava flows, through the rainforest-lined Hamakua Coast, and past dramatic waterfalls only reachable by air — terrain that's often impossible to view safely, or at all, from the ground.</p><p>The company operates a fleet of multi-passenger helicopters with wraparound windows designed for aerial photography, and its Hilo-based routes are consistently ranked among the best ways to see the scale of the Big Island's active volcanoes without the restrictions and distance limits of ground-level viewing areas.</p><!--stss:footsteps--><p>Blue Hawaiian Helicopters is where the group took their Circle of Fire helicopter tour during Bon Voyage Season 2, Episode 4, departing directly from Hilo International Airport for an aerial view of the island's volcanic activity. The flight gave the members a view of Kilauea's lava flowing into the ocean, along with a second volcanic crater holding visible lava that the tour passes over — a perspective impossible to get from any of the park's ground-level trails.</p><p>The helicopter tour forms the centerpiece of the episode's volcano theme, following the ground-level hike at Hawaii Volcanoes National Park earlier in the day with an aerial view of the same landscape from above — a deliberate before-and-after pairing that lets the show capture the scale of the island's volcanic activity from two completely different vantage points.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Departs from Hilo International Airport, a short drive from downtown Hilo. Check in at the Blue Hawaiian terminal at the airport before your scheduled flight time."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Tours run daily, with multiple scheduled departures; exact times vary seasonally. Pricing is per person and varies by tour length and route — booking in advance is strongly recommended, especially for the Circle of Fire route."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Boarding involves walking across tarmac to the helicopter and a moderate step up into the cabin; not wheelchair accessible, and there are minimum age/weight considerations for some seating."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book well ahead"
+        },
+        "text": {
+          "en": "Circle of Fire flights are popular and frequently sell out, especially when Kilauea is visibly active — reserve days or weeks ahead if possible."
+        }
+      },
+      {
+        "title": {
+          "en": "Ask for a window seat"
+        },
+        "text": {
+          "en": "Every seat has a view, but window seats on the side the pilot narrates toward tend to get the clearest unobstructed shots of the crater and coastline."
+        }
+      },
+      {
+        "title": {
+          "en": "Go earlier in the day"
+        },
+        "text": {
+          "en": "Morning flights generally have calmer winds and clearer visibility than afternoon departures, when Big Island weather is more likely to cloud up."
+        }
+      }
+    ]
+  },
+  {
+    "id": 234,
+    "name": "Downtown Honolulu — King Street (bus route)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 5",
+    "address": "King St, Honolulu, HI 96813",
+    "lat": 21.3059,
+    "lng": -157.8583,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>King Street is one of downtown Honolulu's main thoroughfares, running past some of the city's most significant historic and civic landmarks — including 'Iolani Palace, the only official state residence of royalty in the United States, and Honolulu Hale, the city's historic Spanish Mission Revival-style City Hall. The street sits at the heart of Honolulu's government and civic district, lined with a mix of 19th-century landmark buildings and modern office towers.</p><p>As a central artery of the city's public bus network (TheBus), King Street is also where many cross-town routes converge, making it a natural transfer point for anyone navigating Honolulu without a car — a common experience for both locals and visitors relying on public transit to get around the island.</p><!--stss:footsteps--><p>This stretch of downtown Honolulu is where the group passed through while navigating Oahu's public bus system during Bon Voyage Season 2, Episode 5 — an episode built around the members traveling by public transit rather than a chartered vehicle, in a deliberate callback to the long public-transportation challenges of the show's first season. Jin and J-Hope were photographed here on King Street as part of their leg of the journey, transferring buses near 'Iolani Palace and Honolulu Hale on their way from the airport toward Hawaii Kai.</p><p>The route itself became a memorable part of the episode: starting at the airport on bus #42 and #19, exiting downtown near these landmarks, then catching bus #1 eastbound toward Hawaii Kai — a genuinely long, multi-transfer ride that echoed the group's earlier public-transit misadventures, though notably shorter than their first season's Oahu-equivalent journey.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Served by multiple TheBus routes through downtown Honolulu; most visitors arrive here already using the public bus system, consistent with how the group reached it in the episode."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The street and surrounding public sidewalks are accessible at all times; 'Iolani Palace itself (a separate paid attraction nearby) has its own visiting hours and ticketed tours."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Standard downtown city sidewalks, flat and wheelchair-accessible; public buses are wheelchair-accessible as well."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Try the actual bus route"
+        },
+        "text": {
+          "en": "Riding TheBus #42/#19 from the airport and transferring near 'Iolani Palace is an easy, inexpensive way to retrace the exact start of the group's episode 5 journey."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit 'Iolani Palace while you're there"
+        },
+        "text": {
+          "en": "Since you're already passing it, the palace's guided tours are a worthwhile detour into Hawaiian royal history."
+        }
+      },
+      {
+        "title": {
+          "en": "Double check your transfer"
+        },
+        "text": {
+          "en": "Several similarly numbered eastbound buses split off in different directions past downtown — confirm you're on the right connecting route before you ride too far, a mistake the group nearly repeated later in the episode."
+        }
+      }
+    ]
+  },
+  {
+    "id": 235,
+    "name": "Domino's (Keeaumoku Street)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 5",
+    "address": "Keeaumoku St, Honolulu, HI 96814",
+    "lat": 21.2945,
+    "lng": -157.8389,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>This branch of Domino's Pizza sits on Keeaumoku Street in Honolulu, a busy commercial corridor near the Ala Moana shopping district known for its dense mix of local eateries, Korean restaurants, and 24-hour businesses. The street has become one of Honolulu's go-to areas for a quick, familiar meal at almost any hour, and this particular Domino's is one of several standard delivery-and-carryout branches serving the surrounding Makiki and Ala Moana neighborhoods.</p><p>There's nothing architecturally distinctive about the location itself — it's a standard American pizza chain outlet — but its spot on one of Honolulu's busiest local streets makes it a familiar, easy-to-find stop for residents and visitors staying nearby.</p><!--stss:footsteps--><p>This Domino's location is a stop the group made during their public-transit-driven day across Oahu in Bon Voyage Season 2, Episode 5 — a simple, low-key pizza order amid a day otherwise defined by long bus rides and navigating the island without a chartered vehicle. It's a brief, practical stop rather than a major segment, standing out mainly because of how ordinary it is against the rest of the episode's sightseeing.</p><p>As one of the few concretely identifiable stops along the group's Keeaumoku/downtown corridor route, it's become a point fans use to help trace the exact path the members took across Honolulu that day, between the airport, downtown, and their eventual destination in Hawaii Kai.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located on Keeaumoku Street near the Ala Moana area of Honolulu, reachable by TheBus or a short drive/walk from Ala Moana Center."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Standard Domino's hours, typically late morning through late night daily. No admission fee — order for delivery or carryout."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Standard storefront with flat street-level access; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Combine it with Ala Moana Center"
+        },
+        "text": {
+          "en": "Keeaumoku Street is a short walk from Ala Moana Center, Hawaii's largest open-air shopping mall, if you want to extend the stop into a bigger outing."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the rest of Keeaumoku Street"
+        },
+        "text": {
+          "en": "The street is known locally for a dense cluster of Korean restaurants and markets — worth a wander beyond just the pizza stop."
+        }
+      },
+      {
+        "title": {
+          "en": "Use it as a route landmark"
+        },
+        "text": {
+          "en": "If you're retracing the group's episode 5 bus route, this stop is a useful checkpoint between downtown and the Hawaii Kai leg of the journey."
+        }
+      }
+    ]
+  },
+  {
+    "id": 236,
+    "name": "Kahala Mall",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 5",
+    "address": "4211 Waialae Ave, Honolulu, HI 96816",
+    "lat": 21.2789,
+    "lng": -157.7853,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kahala Mall is a mid-size shopping center in Honolulu's upscale Kahala neighborhood, offering a mix of local and national retailers, a movie theater, and a food court, serving the surrounding residential area more than the big tour-bus crowds that flock to Ala Moana Center. It's a popular, lower-key alternative for shopping and errands among locals and visitors staying on the east side of Honolulu.</p><p>The mall also sits at a key point on Honolulu's public bus network: it's the final stop for one branch of the eastbound #1 bus route, which splits off from the route continuing further east toward Hawaii Kai — a distinction that matters more than it might seem for anyone navigating the city by bus.</p><!--stss:footsteps--><p>Kahala Mall plays a small but genuinely important role in Bon Voyage Season 2, Episode 5's bus-route storyline: there are two eastbound #1 buses that look identical at a glance, one terminating at Kahala Mall before circling back westbound, the other continuing on to Hawaii Kai. Taking the wrong one — as Jin and J-Hope nearly did — means ending up here instead of your actual destination, adding an extra, unplanned leg to an already long public-transit day.</p><p>The near-miss became one of the small, relatable mishaps that defined the episode's public-transportation theme, echoing the kind of real travel confusion any visitor relying on Honolulu's bus system might run into — a detail fans researching the episode's route have specifically flagged as worth knowing before attempting the same trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 4211 Waialae Ave in the Kahala neighborhood of Honolulu, served directly by TheBus route #1 (confirm the eastbound branch before boarding)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typical mall hours, roughly 10am-9pm daily, with some restaurants and the movie theater open later. No admission fee."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, fully accessible indoor/outdoor mall with standard accessible parking and entrances."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Double-check your bus branch"
+        },
+        "text": {
+          "en": "If you're riding the #1 eastbound to Hawaii Kai, confirm with the driver that your specific bus continues past Kahala Mall rather than terminating here, exactly the mix-up the group nearly made."
+        }
+      },
+      {
+        "title": {
+          "en": "Grab a meal at the food court"
+        },
+        "text": {
+          "en": "It's a convenient, less crowded alternative to Waikiki's busier food options if you're already on this side of the island."
+        }
+      },
+      {
+        "title": {
+          "en": "Check the movie theater schedule"
+        },
+        "text": {
+          "en": "Consolidated Theatres at Kahala Mall is a solid, air-conditioned break if you need a rest from a long day of sightseeing."
+        }
+      }
+    ]
+  },
+  {
+    "id": 237,
+    "name": "Yummy Korean B.B.Q. (Koko Marina Center)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 5",
+    "address": "7192 Kalanianaole Hwy, Honolulu, HI 96825",
+    "lat": 21.2814,
+    "lng": -157.7013,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Yummy Korean B.B.Q. is a local Hawaii restaurant chain serving Korean-style plate lunches — closer to a Hawaii-style bento box than traditional tabletop barbecue, despite the name — with locations spread across Oahu. The Koko Marina Center branch sits in the Hawaii Kai neighborhood at the eastern end of Honolulu, serving the surrounding residential area with quick, takeout-friendly Korean comfort food.</p><p>Koko Marina Center itself is a waterfront shopping center built around the Koko Marina, a small boat harbor in Hawaii Kai, with a mix of local restaurants and shops catering mostly to the surrounding neighborhood rather than tourists.</p><!--stss:footsteps--><p>Yummy Korean B.B.Q. at Koko Marina Center is where Jimin and Jungkook grabbed a meal during Bon Voyage Season 2, Episode 5, after the group's long public-transit journey out to Hawaii Kai on the eastern end of Oahu. It's a casual, local-style meal stop reflecting the episode's broader theme of getting around and eating the way an ordinary visitor using public transportation might, rather than a high-profile restaurant destination.</p><p>The stop is notable among fans mainly for being a genuine, verifiable local spot rather than a tourist restaurant — a glimpse of the kind of everyday plate-lunch meal widely eaten across Hawaii, cementing Hawaii Kai as the episode's eastern endpoint before the group's day wound back toward their accommodations.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located inside Koko Marina Center at 7192 Kalanianaole Hwy in Hawaii Kai, reachable via TheBus route #1 eastbound or a roughly 20-minute drive from Waikiki."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily for lunch and dinner, roughly 10:30am-9pm; hours can vary by location. No admission fee — order at the counter."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor, flat shopping-center access; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Set expectations for \"BBQ\""
+        },
+        "text": {
+          "en": "Despite the name, it's plate-lunch style rather than tabletop grilling — order accordingly if you're expecting a sit-down barbecue experience."
+        }
+      },
+      {
+        "title": {
+          "en": "Consider another location"
+        },
+        "text": {
+          "en": "Locals have mixed opinions on this specific branch — if you're after the best version of Yummy's food, it may be worth trying a different Oahu location."
+        }
+      },
+      {
+        "title": {
+          "en": "Enjoy the marina view"
+        },
+        "text": {
+          "en": "Koko Marina Center looks out over the boat harbor — a pleasant, quiet spot to eat outside of Waikiki's crowds."
+        }
+      }
+    ]
+  },
+  {
+    "id": 238,
+    "name": "Foodland (Aina Haina Shopping Center)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 5",
+    "address": "820 W Hind Dr, Honolulu, HI 96821",
+    "lat": 21.2873,
+    "lng": -157.7497,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Foodland is a Hawaii-based supermarket chain founded in 1948, with dozens of stores across the islands known for carrying a strong mix of mainland staples and distinctly local products — poke, Hawaiian-style prepared foods, and island-grown produce alongside standard grocery items. The Aina Haina Shopping Center branch serves the residential Aina Haina neighborhood on Oahu's southeast side, a quiet, mostly local area about ten minutes from Hawaii Kai.</p><p>Like most Foodland locations, it functions as a genuine neighborhood grocery store rather than a tourist stop — a reliable gauge of everyday local life on an island where most visitors never leave the resort and shopping districts.</p><!--stss:footsteps--><p>Foodland at Aina Haina Shopping Center is where the group did some grocery shopping during Bon Voyage Season 2, Episode 5, a short drive from where they were staying in Hawaii Kai. It's a brief, low-key stop in the show, part of the episode's broader focus on everyday local experiences rather than tourist attractions.</p><p>The stop became a small point of local pride among Hawaii Kai-area residents after the episode aired — including, notably, a store employee who was recognized by friends of the blogger who first documented this location, a detail that underlines just how closely this specific, ordinary supermarket run was watched and identified by fans retracing the group's real Oahu itinerary.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 820 W Hind Dr in the Aina Haina Shopping Center, about a 10-minute drive from Hawaii Kai and roughly 20 minutes from Waikiki."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily, roughly 6am-11pm. No admission fee — a standard supermarket."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor store with flat, wide aisles; wheelchair-accessible with standard shopping carts available."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Try the poke counter"
+        },
+        "text": {
+          "en": "Foodland's poke is a well-regarded local staple across all of its branches, this one included."
+        }
+      },
+      {
+        "title": {
+          "en": "Treat it as a local-life stop, not a sight"
+        },
+        "text": {
+          "en": "There's no dramatic scenery here — the appeal is seeing an ordinary slice of Oahu residential life the show rarely shows elsewhere."
+        }
+      },
+      {
+        "title": {
+          "en": "Pick up snacks for later stops"
+        },
+        "text": {
+          "en": "If you're continuing on to the North Shore or Waikiki locations on this list, it's a good spot to stock up before a longer day out."
+        }
+      }
+    ]
+  },
+  {
+    "id": 239,
+    "name": "North Shore Shark Adventures",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hale'iwa, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "66-105 Hale'iwa Rd, Hale'iwa, HI 96712",
+    "lat": 21.5944,
+    "lng": -158.1119,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>North Shore Shark Adventures is a boat tour operator running cage-diving and shark-viewing excursions roughly three miles off Oahu's North Shore, where wild sharks — mostly Galapagos and sandbar sharks — are regularly sighted in open water. Tours depart from Hale'iwa Boat Harbor and typically last around two hours, including the boat ride out and back.</p><p>Sharks hold deep cultural significance in Hawaii, long regarded in Hawaiian tradition as 'aumakua — family guardian spirits, often believed to be ancestors reborn as animals — and Hawaiian mythology includes several shark gods. The tour leans into this cultural context alongside the thrill of seeing wild sharks up close from inside a submerged viewing cage.</p><!--stss:footsteps--><p>North Shore Shark Adventures is where the group went on their shark-cage tour during Bon Voyage Season 2, Episode 6, part of an episode centered on Oahu's major tourist destinations. The open-ocean boat ride is known to cause seasickness for some passengers, and J-Hope and V both experienced this firsthand during the outing — one of the more memorably rough, candid moments of the episode.</p><p>The stop fits into the episode's broader tour of North Shore attractions, giving the members (and viewers) a genuine, unscripted look at wild sharks in their natural habitat, framed by the same cultural respect for sharks that's deeply embedded in Hawaiian tradition.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Tours depart from Hale'iwa Boat Harbor on Oahu's North Shore, about an hour's drive from Waikiki. Check-in is at the harbor before the scheduled departure."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Tours run multiple times daily, weather permitting; booking in advance online is recommended. Pricing is per person for the roughly two-hour excursion."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Involves boarding a boat and, for those who choose to enter the cage, getting in open water — not accessible for visitors with mobility limitations; boat-only viewing (without entering the cage) is typically available as an alternative."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Take seasickness precautions"
+        },
+        "text": {
+          "en": "Given what happened to J-Hope and V on screen, anyone prone to motion sickness should consider medication or remedies before boarding."
+        }
+      },
+      {
+        "title": {
+          "en": "Book ahead, especially in summer"
+        },
+        "text": {
+          "en": "These tours are popular and weather-dependent — reserve a spot in advance rather than hoping to walk up."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring a waterproof camera"
+        },
+        "text": {
+          "en": "Even if you don't enter the cage, sharks are often visible from the boat itself — worth having a camera that can handle ocean spray."
+        }
+      }
+    ]
+  },
+  {
+    "id": 240,
+    "name": "Hale'iwa",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hale'iwa, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "Hale'iwa, HI 96712",
+    "lat": 21.5944,
+    "lng": -158.1036,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Hale'iwa is the main town of Oahu's North Shore, widely known as the surfing capital of the world thanks to the legendary big-wave breaks along the nearby coastline, including Banzai Pipeline and Waimea Bay. Its small, historic plantation-era downtown is lined with surf shops, art galleries, and some of Oahu's most famous casual eateries, giving it a laid-back character distinct from the resort-driven atmosphere of Waikiki.</p><p>The town is also a convenient base for exploring the rest of the North Shore, within easy reach of the Dole Plantation's pineapple fields and the Polynesian Cultural Center further up the coast — making it as much a gateway to the area's other attractions as a destination in its own right.</p><!--stss:footsteps--><p>Hale'iwa is the base for several of the group's North Shore stops during Bon Voyage Season 2, Episode 6 — both Giovanni's Shrimp Truck and Teddy's Bigger Burgers, two of the episode's food stops, are located in the town, alongside the nearby departure point for the North Shore Shark Adventures boat tour. The town's famously relaxed, surf-town atmosphere stands in clear contrast to the dense, high-rise energy of Waikiki later in the same episode.</p><p>As the day's North Shore stretch of sightseeing wound down, the group's path through Hale'iwa set up the shift toward the episode's second half in Waikiki, pairing Oahu's laid-back surf culture with its most famous tourist strip within the same hour-long episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reached via Kamehameha Highway, about an hour's drive from Waikiki or downtown Honolulu. No direct rail access; a rental car or North Shore-bound bus/shuttle is the practical option."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The town itself is open and free to walk at all hours; individual shop and restaurant hours vary, generally 9am-9pm."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, walkable small-town streets with sidewalks throughout; mostly wheelchair-accessible, though some older storefronts have a step at the entrance."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Plan for traffic"
+        },
+        "text": {
+          "en": "The two-lane highway into Hale'iwa backs up badly on weekends and during good surf — leave extra time, especially in the afternoon."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk the whole main strip"
+        },
+        "text": {
+          "en": "Both Giovanni's and Teddy's, along with most of the town's other shops, are within easy walking distance of each other."
+        }
+      },
+      {
+        "title": {
+          "en": "Watch the surf if conditions allow"
+        },
+        "text": {
+          "en": "Depending on the season, the beaches just outside town can have some of the most dramatic big-wave surfing anywhere in the world — worth a look even if you don't surf yourself."
+        }
+      }
+    ]
+  },
+  {
+    "id": 241,
+    "name": "Giovanni's Shrimp Truck",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hale'iwa, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "66-472 Kamehameha Hwy, Kahuku, HI 96731",
+    "lat": 21.6453,
+    "lng": -157.9513,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Giovanni's Shrimp Truck is one of Oahu's most famous food trucks, a fixture of the North Shore's \"shrimp truck\" scene that's become a required stop for visitors touring the area. Painted bright yellow and parked along Kamehameha Highway, it's best known for its garlic shrimp plate — shell-on shrimp sautéed in a generous amount of garlic and butter, served over rice — a dish that's become almost synonymous with North Shore food culture.</p><p>The truck's long lines, especially around lunchtime, are part of its reputation: it's consistently one of the busiest, most photographed food stops on the entire North Shore, drawing both first-time visitors and Oahu locals making a return trip specifically for the shrimp.</p><!--stss:footsteps--><p>Giovanni's Shrimp Truck is one of the two famous North Shore food stops visited during Bon Voyage Season 2, Episode 6, as the group worked their way through Hale'iwa's most iconic eateries. Its garlic shrimp plate is the truck's signature dish and almost certainly what's featured in the episode, consistent with why it's one of the most recommended stops on the entire North Shore.</p><p>As one of the two paired food stops in this stretch of the episode (alongside Teddy's Bigger Burgers), Giovanni's represents the kind of must-try, extremely popular local food spot that even longtime Oahu residents sometimes put off visiting simply because of the crowds and traffic — a detail fans researching the location have specifically noted.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located along Kamehameha Highway in the Kahuku/Hale'iwa corridor of Oahu's North Shore, about an hour's drive from Waikiki. Roadside parking is available but can fill up during peak times."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily, roughly 10:30am-6pm, though hours can shift. No admission fee — pay per order at the truck window."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Outdoor, walk-up counter service with picnic-style seating; not fully wheelchair-accessible due to uneven roadside ground, though the ordering window itself is at street level."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Go early or go hungry for a wait"
+        },
+        "text": {
+          "en": "Lines build up fast around midday — an early lunch or late-afternoon visit means less time waiting."
+        }
+      },
+      {
+        "title": {
+          "en": "Order the garlic shrimp"
+        },
+        "text": {
+          "en": "It's the truck's signature dish and the reason for its fame — a safe default order for a first visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring cash and wet wipes"
+        },
+        "text": {
+          "en": "Shell-on shrimp means eating with your hands — napkins and a way to clean up afterward go a long way."
+        }
+      }
+    ]
+  },
+  {
+    "id": 242,
+    "name": "Teddy's Bigger Burgers (Hale'iwa)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Hale'iwa, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "66-197 Kamehameha Hwy, Hale'iwa, HI 96712",
+    "lat": 21.5908,
+    "lng": -158.1037,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Teddy's Bigger Burgers is a Hawaii-born burger chain, founded on Oahu and now with locations across the US mainland and internationally in Japan, the Philippines, and beyond — though many visitors are surprised to learn it started as a purely local brand. The Hale'iwa location serves the chain's signature hand-formed burgers, hand-cut fries, and old-fashioned milkshakes in a casual, counter-service setting on the North Shore's main strip.</p><p>Despite its global expansion, the chain has kept its reputation for quality consistent, and its North Shore locations remain popular with both tourists exploring Hale'iwa and locals who've been loyal customers since the original restaurant opened.</p><!--stss:footsteps--><p>Teddy's Bigger Burgers is the second of the two paired North Shore food stops in Bon Voyage Season 2, Episode 6, alongside Giovanni's Shrimp Truck, both located in Hale'iwa. The burger stop offered the group a different style of North Shore food from the shrimp truck's local specialty — a more familiar, American-diner-style meal with a distinctly Hawaiian point of origin.</p><p>Its inclusion in the episode highlights a detail a lot of fans don't realize: despite feeling like a mainland chain given its international reach, Teddy's genuinely started on Oahu, making it as much a piece of real Hawaii food culture as the more obviously local spots elsewhere in the episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 66-197 Kamehameha Hwy in Hale'iwa town, within easy walking distance of Giovanni's Shrimp Truck and the rest of the main strip."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily, roughly 10am-9pm. No admission fee — standard counter-service burger menu."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor counter service with flat, wheelchair-accessible seating and entrance."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Order a milkshake with your burger"
+        },
+        "text": {
+          "en": "It's a classic pairing here and one of the chain's standout menu items beyond the burgers themselves."
+        }
+      },
+      {
+        "title": {
+          "en": "Remember it's a genuine Hawaii original"
+        },
+        "text": {
+          "en": "Despite its mainland and international locations, this chain started right here on Oahu — worth knowing before writing it off as \"just another burger chain.\""
+        }
+      },
+      {
+        "title": {
+          "en": "Pair it with Giovanni's"
+        },
+        "text": {
+          "en": "Since both are in the same small town, it's easy to split a North Shore food stop between the two on the same visit."
+        }
+      }
+    ]
+  },
+  {
+    "id": 243,
+    "name": "Waikiki",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "Waikiki, Honolulu, HI 96815",
+    "lat": 21.2793,
+    "lng": -157.8294,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Waikiki is Honolulu's most famous neighborhood, a roughly two-mile stretch of coastline where the vast majority of Oahu's hotels are concentrated, making it the default base for most visitors to the island. Its mix of high-rise resorts, beachfront promenades, shopping centers and restaurants gives it an atmosphere closer to a dense international resort town than the rest of the more residential or rural parts of Oahu.</p><p>Once a retreat for Hawaiian royalty, Waikiki was transformed over the 20th century into the center of the islands' tourism industry, and today it draws visitors from around the world in numbers so high that the neighborhood can feel, at times, more like an international crossroads than a distinctly Hawaiian place.</p><!--stss:footsteps--><p>Waikiki is the setting for the entire second half of Bon Voyage Season 2, Episode 6, following the group's morning on the North Shore — a deliberate contrast within a single episode between Oahu's laid-back surf town and its busiest, most tourist-dense neighborhood. Every other location in this episode from Kapiolani Park onward (Waikiki Beach, the Duke Kahanamoku statue, King's Village, and the various restaurants and shops) is located within this single stretch of coastline.</p><p>The group's starting point for the Waikiki half of the episode was right in front of Waikiki Beach, and from there they worked their way through several of the neighborhood's most iconic stops — a tourist's-eye tour of the area that doubles as a genuine walking guide to Waikiki's highlights for anyone retracing the episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Served by Honolulu's rail and bus network and within a short drive or rideshare of Honolulu International Airport; most visitors stay within walking distance of everything in the neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Public areas of Waikiki (streets, the beach itself) are accessible at all hours; individual businesses keep their own hours."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Mostly flat, dense urban neighborhood with sidewalks and a beachfront promenade throughout; wheelchair-accessible in most areas."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk it like the group did"
+        },
+        "text": {
+          "en": "Nearly every other stop on this list from episode 6 is within walking distance inside Waikiki — comfortable shoes are enough to retrace the whole route."
+        }
+      },
+      {
+        "title": {
+          "en": "Expect crowds"
+        },
+        "text": {
+          "en": "Waikiki is consistently one of the busiest tourist areas in Hawaii — manage expectations, especially around Kalakaua Avenue in the evening."
+        }
+      },
+      {
+        "title": {
+          "en": "Venture beyond the main strip for better value"
+        },
+        "text": {
+          "en": "Prices directly on the beachfront run high; a block or two inland often gets the same food and shops for noticeably less."
+        }
+      }
+    ]
+  },
+  {
+    "id": 244,
+    "name": "Kapiolani Park",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "3840 Paki Ave, Honolulu, HI 96815",
+    "lat": 21.2669,
+    "lng": -157.8194,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kapiolani Park is Hawaii's oldest and largest public park, a 300-acre green space at the eastern end of Waikiki, bordered by the Honolulu Zoo and within walking distance of Waikiki Beach. Established in 1877 and named for Queen Kapi'olani, it's the site of Honolulu's largest recurring public events — the Okinawan Festival, Obon season celebrations, and numerous concerts and festivals — thanks to its large central stage and open lawns.</p><p>Beyond its role as an event space, the park is a genuine community gathering spot for joggers, picnickers, and families, offering a wide, open green counterpoint to the dense hotel towers that define the rest of Waikiki just steps away.</p><!--stss:footsteps--><p>Kapiolani Park is where the group began the Waikiki portion of their day in Bon Voyage Season 2, Episode 6, using the park as a starting point before working their way through the neighborhood's other landmarks. Its location next to the Honolulu Zoo and a short walk from Waikiki Beach made it a natural launching point for the rest of the episode's tourist-destination tour.</p><p>The park's open lawns and event-space character also made a fitting contrast to the dense commercial strip the group explored for the rest of the episode — a brief, green breathing space before diving into Waikiki's busier shops, restaurants and beachfront attractions.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at the eastern (Diamond Head) end of Waikiki, adjacent to the Honolulu Zoo; walkable from most Waikiki hotels or reachable by TheBus."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily, generally dawn to dusk for general park use (specific event hours vary). Free admission to the park itself."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, open lawns and paved paths throughout; wheelchair and stroller-friendly."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check for festivals"
+        },
+        "text": {
+          "en": "If your visit coincides with the Okinawan Festival, Obon season, or another scheduled event, the park's center stage is worth building time around."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit the zoo next door"
+        },
+        "text": {
+          "en": "The Honolulu Zoo sits directly alongside the park, an easy add-on if you're bringing kids."
+        }
+      },
+      {
+        "title": {
+          "en": "Start your own Waikiki walk here"
+        },
+        "text": {
+          "en": "Following the group's own route, it's a logical starting point before heading toward Waikiki Beach and the rest of the neighborhood's landmarks."
+        }
+      }
+    ]
+  },
+  {
+    "id": 245,
+    "name": "Waikiki Beach",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "Waikiki Beach, Honolulu, HI 96815",
+    "lat": 21.2766,
+    "lng": -157.8278,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Waikiki Beach is Hawaii's most famous stretch of sand, a roughly two-mile crescent of shoreline fronting Waikiki's dense row of hotels. Its calm, reef-protected waters and iconic view of Diamond Head have made it the single most visited beach in the islands, drawing enormous numbers of visitors who stay in the surrounding resorts within easy walking distance of the water.</p><p>The beach's popularity comes with real tradeoffs: it's consistently crowded, and many Oahu locals prefer quieter, less developed beaches elsewhere on the island. Even so, its central location, calm swimming conditions, and postcard views keep it the default beach destination for most first-time visitors to Hawaii.</p><!--stss:footsteps--><p>Waikiki Beach is where Suga and V took a beach walk together during Bon Voyage Season 2, Episode 6, part of the group's broader exploration of Waikiki's most iconic tourist landmarks. The walk captures the beach's famous shoreline and the dense hotel skyline behind it — the quintessential Waikiki image most visitors associate with Hawaii before they've even arrived.</p><p>As the beach the group's day in Waikiki was centered around — their starting point for the episode was directly in front of it — Waikiki Beach effectively anchors the entire second half of Episode 6, with nearly every other Waikiki stop on this list within a short walk of this stretch of sand.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Directly accessible from nearly every hotel along Kalakaua Avenue in Waikiki; no separate transportation needed if you're staying in the neighborhood."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Public beach access is available 24 hours; beach equipment rental stands typically operate roughly 8am-6pm."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, sandy beach with paved beachfront promenade access; wheelchairs with beach-specific wheels are available for rent in some areas, though standard wheelchairs struggle on sand."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Go early to beat the crowds"
+        },
+        "text": {
+          "en": "Waikiki Beach fills up fast by mid-morning — an early walk gets you closer to the quieter version seen in the episode."
+        }
+      },
+      {
+        "title": {
+          "en": "Try a beach walk, not just sunbathing"
+        },
+        "text": {
+          "en": "Following Suga and V's lead, walking the length of the beach is a good way to take in the view without needing to swim or rent equipment."
+        }
+      },
+      {
+        "title": {
+          "en": "Consider a quieter beach for actual swimming"
+        },
+        "text": {
+          "en": "If you want calmer, less crowded water, several beaches a short drive away offer a similar experience with far fewer people."
+        }
+      }
+    ]
+  },
+  {
+    "id": 246,
+    "name": "Duke Kahanamoku Statue",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "Kalakaua Ave, Honolulu, HI 96815",
+    "lat": 21.2759,
+    "lng": -157.8264,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>The Duke Kahanamoku statue stands on the beachfront promenade in front of Waikiki Beach, honoring the Hawaiian Olympic swimmer widely credited with popularizing surfing around the world. Born in Honolulu in 1890, Kahanamoku won multiple Olympic gold medals in swimming and later traveled internationally giving surfing demonstrations, introducing the sport to audiences in Australia, California and beyond who had never seen it before.</p><p>The bronze statue, depicting Kahanamoku with arms outstretched and often draped in fresh flower lei left by visitors, has become one of the most recognizable and frequently photographed landmarks in Waikiki — a tribute to a figure still regarded as the father of modern surfing nearly a century after his competitive career.</p><!--stss:footsteps--><p>The Duke Kahanamoku statue is where Namjoon and J-Hope stopped for a photo during Bon Voyage Season 2, Episode 6, part of the group's tour through Waikiki's most iconic landmarks. As one of the most photographed spots in the entire neighborhood, it's a natural stop for any visitor working through a checklist of Waikiki's must-see sights, which the episode largely follows.</p><p>The statue's significance goes beyond just a photo backdrop — Kahanamoku's role in popularizing surfing internationally connects directly to Hawaii's broader surf culture, a theme that runs through several other stops in this same episode, including Hale'iwa's famous North Shore surf breaks earlier in the day.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located directly on the beachfront promenade in front of Waikiki Beach, an easy walk from anywhere in central Waikiki."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Publicly accessible at all hours, no admission fee."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, paved beachfront promenade; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visit early for a clear photo"
+        },
+        "text": {
+          "en": "Like most of Waikiki's landmarks, it draws steady crowds — an early morning visit means an easier, less crowded photo."
+        }
+      },
+      {
+        "title": {
+          "en": "Learn his story before you go"
+        },
+        "text": {
+          "en": "Knowing Kahanamoku's actual significance to surfing history makes the stop far more meaningful than just another photo spot."
+        }
+      },
+      {
+        "title": {
+          "en": "Look for the lei"
+        },
+        "text": {
+          "en": "Visitors regularly leave fresh flower lei on the statue — part of its living, continually renewed tribute."
+        }
+      }
+    ]
+  },
+  {
+    "id": 247,
+    "name": "King's Village",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "131 Kaiulani Ave, Honolulu, HI 96815",
+    "lat": 21.2788,
+    "lng": -157.8282,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>King's Village is a small, historic-themed shopping center on Kaiulani Avenue in Waikiki, built in a 19th-century architectural style evoking the era of the Hawaiian monarchy, with cobblestone walkways and a changing-of-the-guard ceremony that once ran regularly as a tourist attraction. Its shops carry a mix of jewelry, souvenirs, and specialty goods, offering a smaller, more intimate shopping experience than Waikiki's larger malls.</p><p>The center has faced years of on-and-off redevelopment proposals, and its future layout and tenants may continue to change — a detail worth keeping in mind for anyone specifically trying to retrace what the center looked like during the group's visit.</p><!--stss:footsteps--><p>King's Village is where Suga and V bought matching bracelets and necklaces during Bon Voyage Season 2, Episode 6, a quick, sentimental shopping stop amid the group's broader tour of Waikiki. It's a smaller, easy-to-miss location compared to some of the episode's bigger landmarks, but a meaningful one for fans drawn to the pair's matching-jewelry moments throughout the show.</p><p>The stop reflects the more low-key, personal side of the group's Waikiki day — a brief pause for a shared souvenir between two members, in contrast to the larger group landmarks like the Duke Kahanamoku statue or Waikiki Beach that frame the rest of the episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 131 Kaiulani Ave in Waikiki, an easy walk from Waikiki Beach and most central Waikiki hotels."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Individual shop hours vary, generally late morning through evening; the center itself has faced redevelopment changes over the years, so current layout and tenants may differ from what's shown in the episode."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, outdoor walkway shopping center; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Confirm current status before visiting"
+        },
+        "text": {
+          "en": "Given years of redevelopment talk, it's worth checking that the center is still operating in its familiar form before planning a dedicated visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Look for matching jewelry of your own"
+        },
+        "text": {
+          "en": "Following Suga and V's lead, the center's jewelry shops are a fitting spot for a shared souvenir with a travel companion."
+        }
+      },
+      {
+        "title": {
+          "en": "Keep it brief"
+        },
+        "text": {
+          "en": "It's a small center — a quick stop rather than a destination to build a long visit around."
+        }
+      }
+    ]
+  },
+  {
+    "id": 248,
+    "name": "Marukame Udon",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "2310 Kuhio Ave, Honolulu, HI 96815",
+    "lat": 21.2795,
+    "lng": -157.8294,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Marukame Udon is a Japanese udon noodle shop that opened its Waikiki location in 2013, part of a chain with roots in Japan serving fresh, hand-pulled udon noodles cafeteria-style — order at the counter, watch your noodles made in front of you, then choose toppings and tempura as you move down the line. It quickly became one of Waikiki's most popular casual restaurants, known for genuinely excellent udon at an affordable price.</p><p>Its popularity comes with a well-known catch: long lines are a near-constant feature, especially during peak lunch and dinner hours, though the queue typically moves fast given the restaurant's quick, assembly-line-style service. Visiting during off-peak hours — locals suggest a mid-afternoon window — can mean a wait of just a few minutes instead of a much longer one.</p><!--stss:footsteps--><p>Marukame Udon is included in this list of Bon Voyage Season 2, Episode 6's Waikiki locations even though the group didn't end up eating there, likely deterred by the restaurant's famously long lines — but it's a prominent enough Waikiki landmark that it's worth knowing about regardless, especially for anyone retracing the group's route through the neighborhood.</p><p>As one of Waikiki's most consistently recommended casual restaurants, it represents the kind of popular, genuinely good food spot that even a group moving through a packed sightseeing itinerary might reasonably pass on, simply due to time and crowd constraints — a small, relatable detail in an otherwise landmark-heavy episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 2310 Kuhio Ave in central Waikiki, within walking distance of most Waikiki hotels and other locations on this list."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily, roughly 10:30am-10pm. No admission fee — cafeteria-style ordering and payment at the end of the line."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor, flat cafeteria-style restaurant; wheelchair-accessible, though the ordering line can be narrow during peak crowds."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visit around 2-3pm"
+        },
+        "text": {
+          "en": "This off-peak window tends to have dramatically shorter lines than the main lunch and dinner rushes."
+        }
+      },
+      {
+        "title": {
+          "en": "Add tempura as you go through the line"
+        },
+        "text": {
+          "en": "Part of the appeal is the self-serve tempura selection available as you move toward checkout — don't skip it."
+        }
+      },
+      {
+        "title": {
+          "en": "Don't be put off by the line length"
+        },
+        "text": {
+          "en": "The cafeteria-style setup moves quickly even when the queue looks long — it rarely takes as long as it appears from the street."
+        }
+      }
+    ]
+  },
+  {
+    "id": 249,
+    "name": "ABC Store (Waikiki)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "2229 Kalakaua Ave, Honolulu, HI 96815",
+    "lat": 21.2784,
+    "lng": -157.8281,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>ABC Stores are famously ubiquitous in Waikiki — with a location on nearly every block of the neighborhood's main streets, they're the default option for sunscreen, snacks, souvenirs and last-minute essentials for the dense concentration of hotel guests staying nearby. Waikiki's branches are generally considered among the chain's most tourist-priced locations, reflecting the area's high foot traffic and hotel-district rents.</p><p>Even locals who rely on ABC Store elsewhere on the islands tend to avoid the Waikiki branches except in a pinch, given the markup — a dynamic distinct from the more everyday, locally relied-upon version of the chain found in less touristy parts of Hawaii, including the Kailua-Kona branch visited during the group's earlier trip to the Big Island.</p><!--stss:footsteps--><p>This Waikiki branch of ABC Store is a callback within the group's own Bon Voyage Season 2 journey — the chain had already appeared earlier in the season during the group's time in Kailua-Kona, and its return here in Episode 6 underscores just how inescapable ABC Store is across every part of a Hawaii trip, island to island.</p><p>As with the earlier Big Island stop, the Waikiki branch functions as a practical, everyday errand stop within the episode rather than a planned sightseeing destination — a small, recurring detail that ties together the group's full Hawaii itinerary across both the Big Island and Oahu legs of their trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located on Kalakaua Avenue in central Waikiki; given the chain's density in the neighborhood, multiple branches are within a short walk of nearly any Waikiki hotel."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Most Waikiki ABC Store branches are open daily, typically 6am-midnight or later. No admission fee, open to all shoppers."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Street-level entrance, flat and wheelchair-accessible, standard convenience-store aisle widths."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Expect tourist pricing"
+        },
+        "text": {
+          "en": "Waikiki branches are known for higher markups than ABC Stores elsewhere in Hawaii — fine for true emergencies, less ideal for planned souvenir shopping."
+        }
+      },
+      {
+        "title": {
+          "en": "Use it for genuine essentials"
+        },
+        "text": {
+          "en": "Sunscreen, snacks and basic beach gear are the most practical things to grab here rather than big-ticket souvenirs."
+        }
+      },
+      {
+        "title": {
+          "en": "Compare it to the Big Island branch"
+        },
+        "text": {
+          "en": "If you're following the group's full Hawaii trip, this Waikiki stop makes an interesting contrast to the more local-feeling ABC Store in Kailua-Kona from earlier in the season."
+        }
+      }
+    ]
+  },
+  {
+    "id": 250,
+    "name": "Mikawon Korean Restaurant",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "Kuhio Ave & Nahua St, Honolulu, HI 96815",
+    "lat": 21.2801,
+    "lng": -157.8311,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Mikawon Korean Restaurant is a Korean restaurant tucked on the corner of Kuhio Avenue and Nahua Street in Waikiki, a bit removed from the neighborhood's busiest tourist strip. It serves an authentic, general Korean menu without a single signature specialty dish, instead offering a broad range of classic Korean home-style cooking in a straightforward, unpretentious setting — reliably good, if a bit higher-priced than some comparable spots.</p><p>Its slightly out-of-the-way location on a quieter corner of Waikiki has helped it stay a more local-feeling option than some of the neighborhood's more heavily trafficked restaurants, popular with both visiting Koreans and Korean food fans generally.</p><!--stss:footsteps--><p>Mikawon Korean Restaurant is where the '94-line members and Jin, J-Hope and Jimin (JJJ) went for a meal during Bon Voyage Season 2, Episode 6 — a stop that became unexpectedly significant to fans after someone discovered and photographed the restaurant's signage following the group's visit, helping confirm the exact location. The restaurant has since changed its signage at least once since the episode aired, a detail worth keeping in mind for anyone trying to visually match the spot to what's shown on screen.</p><p>The meal stands out among the episode's food stops specifically because of how much detective work fans put into confirming it — unlike the more obviously landmark locations elsewhere in the episode, pinpointing this specific restaurant corner required real community effort from fans piecing together clues from the broadcast itself.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located on the corner of Kuhio Avenue and Nahua Street in Waikiki, a short walk from the neighborhood's main Kalakaua Avenue strip but slightly removed from the busiest tourist blocks."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily for lunch and dinner; exact hours can vary, so checking ahead is worthwhile. No admission fee — standard restaurant menu, on the higher end for the area."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Ground-floor restaurant with flat street-level access; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Don't rely on old signage photos"
+        },
+        "text": {
+          "en": "The restaurant's exterior signage has changed at least once since the episode aired — use the street address/corner rather than matching a specific sign."
+        }
+      },
+      {
+        "title": {
+          "en": "Expect general, not specialty, Korean food"
+        },
+        "text": {
+          "en": "There's no single standout dish here — it's a solid all-around Korean menu rather than a destination for one specific item."
+        }
+      },
+      {
+        "title": {
+          "en": "Book ahead if visiting as a group"
+        },
+        "text": {
+          "en": "Given its fan-destination status post-episode, larger groups may want to call ahead, especially during peak Waikiki tourist season."
+        }
+      }
+    ]
+  },
+  {
+    "id": 251,
+    "name": "Seoul Jung Restaurant",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "2460 Koa Ave, Honolulu, HI 96815",
+    "lat": 21.2776,
+    "lng": -157.8274,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Seoul Jung Restaurant is a Korean restaurant located inside the Waikiki Resort Hotel, serving authentic Korean cuisine in a hotel-restaurant setting a short walk from Waikiki Beach. Its menu covers traditional Korean dishes in a sit-down format, distinguishing it from the more casual, plate-lunch-style Korean food found at some of Oahu's other local spots.</p><p>Reviews of the restaurant's food and service have been mixed over the years, and it's generally considered a bit higher-priced than comparable Korean restaurants elsewhere on the island — details worth weighing for anyone specifically planning a visit based on the group's own stop here.</p><!--stss:footsteps--><p>Seoul Jung Restaurant is where V and Suga ate during Bon Voyage Season 2, Episode 6, one of two separate Korean restaurant stops the group made in Waikiki within the same episode (alongside Mikawon, visited by a different subgroup). Its setting inside the Waikiki Resort Hotel gave the pair a quieter, more contained dining environment than a standalone street-level restaurant.</p><p>The stop adds to a running theme across the group's Hawaii trip of seeking out Korean food options while traveling — a small but consistent detail across multiple Bon Voyage episodes, reflecting a genuine, relatable preference many travelers share for familiar cuisine even while exploring somewhere new.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located inside the Waikiki Resort Hotel at 2460 Koa Ave, a short walk from Waikiki Beach and central Waikiki."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily for dinner service; exact hours can vary, so checking ahead or booking is worthwhile. No admission fee — standard restaurant menu, on the higher end."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Located inside a hotel with standard elevator/ground-floor access; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check recent reviews before booking"
+        },
+        "text": {
+          "en": "Service and food quality reports have varied over time — a quick check closer to your visit date is worth the few minutes it takes."
+        }
+      },
+      {
+        "title": {
+          "en": "Book ahead for dinner"
+        },
+        "text": {
+          "en": "As a hotel restaurant with limited seating, reservations are a safer bet than walking in, especially during busy Waikiki season."
+        }
+      },
+      {
+        "title": {
+          "en": "Compare it with Mikawon"
+        },
+        "text": {
+          "en": "If you're trying both Korean restaurant stops from this episode, Seoul Jung's hotel setting offers a different atmosphere worth comparing to Mikawon's standalone corner location."
+        }
+      }
+    ]
+  },
+  {
+    "id": 252,
+    "name": "H&M (Waikiki)",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 6",
+    "address": "2233 Kalakaua Ave, Honolulu, HI 96815",
+    "lat": 21.2789,
+    "lng": -157.8285,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>This H&M sits directly on Kalakaua Avenue, Waikiki's main commercial strip, one of several international fashion retailers that have moved into the neighborhood's high-traffic storefronts over the years. Beyond the shopping itself, the sidewalk directly in front of the store has become an informal, almost nightly gathering spot for street performers — particularly a group of b-boy dancers who regularly draw a crowd with impromptu breakdancing performances.</p><p>The combination of heavy foot traffic, a wide sidewalk, and Waikiki's evening crowds has made this specific stretch of storefront one of the more reliable spots on the strip to catch genuine, unplanned street performance, rather than a scheduled or ticketed show.</p><!--stss:footsteps--><p>The sidewalk in front of this H&M is where the group watched a group of b-boy dancers performing during Bon Voyage Season 2, Episode 6 — an unplanned, candid street-performance moment that fit naturally into the episode's walk through Waikiki's main strip. It's one of the more spontaneous, less touristy segments of the episode, capturing a genuine piece of only-in-Waikiki evening street life rather than a planned attraction.</p><p>The detail that these performers are reliably present most nights makes this an easy spot for fans to recreate the same experience, rather than a one-off moment that happened to be filmed — a rare case in the episode of a location whose appeal (the performance) isn't tied to a fixed opening-hours attraction.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located directly on Kalakaua Avenue in central Waikiki, an easy walk from Waikiki Beach and most of the neighborhood's other locations on this list."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Store hours are typically 9am-11pm; the street performers tend to appear in the evening, most nights, though timing isn't officially scheduled."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, wide Waikiki sidewalk; wheelchair-accessible."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Go in the evening for the performers"
+        },
+        "text": {
+          "en": "The b-boy dancers that drew the group's attention tend to show up most nights after dark, not during the day."
+        }
+      },
+      {
+        "title": {
+          "en": "Tip the performers"
+        },
+        "text": {
+          "en": "As with most informal street performances, a small tip is the expected, appreciated way to support the dancers if you stop to watch."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine it with a Kalakaua Avenue walk"
+        },
+        "text": {
+          "en": "This stretch of the strip is dense with shops and restaurants — easy to pair with other nearby errands or window shopping."
+        }
+      }
+    ]
+  },
+  {
+    "id": 253,
+    "name": "Kualoa Regional Park",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kaneohe, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 7",
+    "address": "49-479 Kamehameha Hwy, Kaneohe, HI 96744",
+    "lat": 21.5219,
+    "lng": -157.8406,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kualoa Regional Park is a waterfront park on Oahu's windward (eastern) coast, directly across the water from Kualoa Ranch, with sweeping views of Kaneohe Bay and the small, distinctively shaped island of Mokoli'i just offshore. Often nicknamed \"Chinaman's Hat\" for its conical silhouette, Mokoli'i holds deep roots in Hawaiian mythology — according to tradition, it's the remnant of a giant lizard's tail, severed by the goddess Hi'iaka.</p><p>The park itself is a popular, low-key spot for picnicking, camping and simply taking in the view, with wide grassy lawns running right up to the shoreline and one of the most photographed island backdrops on Oahu's windward side.</p><!--stss:footsteps--><p>Kualoa Regional Park is where the group ate lunch during Bon Voyage Season 2, Episode 7, with Mokoli'i Island visible across the water as a dramatic natural backdrop to the meal. Their food came from Mike's Huli Chicken, a well-known local rotisserie chicken stand that's also been featured on Food Network — giving the stop a genuine local-food credential on top of the scenery.</p><p>The park's view of Mokoli'i connects directly to the episode's broader theme of hands-on, nature-focused activities on Oahu's windward side, setting up the ranch tour and cultural center visit that followed later the same episode — a quieter, scenic meal before the day's more active stops.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 49-479 Kamehameha Hwy on Oahu's windward coast, about a 45-minute drive from Waikiki via the Pali or Likelike Highway."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily; camping requires a permit from the City and County of Honolulu. No admission fee for day use."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, grassy park with paved parking and pathways near the entrance; wheelchair-accessible in the main park areas."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Order from Mike's Huli Chicken"
+        },
+        "text": {
+          "en": "Following the group's lead, the nearby rotisserie chicken stand is a genuinely well-regarded local food stop worth pairing with the park visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring a picnic blanket"
+        },
+        "text": {
+          "en": "The park's open lawns facing Mokoli'i are made for exactly this kind of relaxed, scenic outdoor meal."
+        }
+      },
+      {
+        "title": {
+          "en": "Learn the Mokoli'i legend"
+        },
+        "text": {
+          "en": "Knowing the island's mythological backstory as a severed lizard's tail adds real context to what's otherwise just a striking view."
+        }
+      }
+    ]
+  },
+  {
+    "id": 254,
+    "name": "Kualoa Ranch",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Kaneohe, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 7",
+    "address": "49-560 Kamehameha Hwy, Kaneohe, HI 96744",
+    "lat": 21.5262,
+    "lng": -157.8389,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>Kualoa Ranch is a 4,000-acre private nature reserve and working ranch on Oahu's windward coast, offering guided tours, horseback riding, ATV rides, zipline courses and more across its dramatic valley and mountain terrain. Beyond its activities, the ranch has become one of Hollywood's most sought-after filming locations, with its jungle valleys and distinctive mountain backdrops standing in for fictional worlds in a remarkable number of major productions.</p><p>Godzilla, both Jurassic Park films shot on Oahu, Hawaii Five-0, and Lost have all filmed scenes at Kualoa Ranch, among many other productions — guided tours often specifically highlight exact filming spots, giving visitors a chance to stand in locations they may recognize from decades of movies and television.</p><!--stss:footsteps--><p>Kualoa Ranch is one of the hands-on activity stops of Bon Voyage Season 2, Episode 7, an episode built around more active, physical experiences than some of the group's earlier, more sightseeing-focused days. The ranch's combination of dramatic natural scenery and film-history significance made it a fitting stop for an episode themed around engaging directly with Hawaii's landscape rather than just viewing it.</p><p>Following their scenic lunch at Kualoa Regional Park just across the water, the group's visit to the ranch itself continued the day's focus on Oahu's windward coast, pairing the park's quiet lunch spot with the ranch's more active, guided exploration of the same dramatic valley terrain.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 49-560 Kamehameha Hwy, directly across Kamehameha Highway from Kualoa Regional Park, about a 45-minute drive from Waikiki."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Tour times vary by activity and are typically scheduled throughout the day; advance booking is recommended. Admission/pricing is per activity or tour package."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Varies significantly by activity — some tours (like certain bus tours) are more accessible, while horseback riding, ATV tours and ziplining have their own physical requirements; check specific tour accessibility before booking."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book the movie-sites tour if you're a film fan"
+        },
+        "text": {
+          "en": "Several tour options specifically highlight Jurassic Park, Godzilla and Lost filming locations, worth seeking out for any movie buff."
+        }
+      },
+      {
+        "title": {
+          "en": "Book well in advance"
+        },
+        "text": {
+          "en": "Popular tour slots, especially ziplining and ATV tours, can sell out days ahead during peak season."
+        }
+      },
+      {
+        "title": {
+          "en": "Wear real outdoor footwear"
+        },
+        "text": {
+          "en": "Most activities here involve genuine off-road, uneven terrain — leave the sandals for the beach stops."
+        }
+      }
+    ]
+  },
+  {
+    "id": 255,
+    "name": "Polynesian Cultural Center",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Laie, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 7",
+    "address": "55-370 Kamehameha Hwy, Laie, HI 96762",
+    "lat": 21.642,
+    "lng": -157.9219,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>The Polynesian Cultural Center is a cultural theme park and living-history museum in Laie, on Oahu's North Shore, dedicated to the cultures of Polynesia, including Hawaii, Samoa, Tonga, Fiji, Tahiti, Aotearoa (New Zealand) and the Marquesas. Visitors move between recreated island villages, each staffed by cultural performers (many of them students at the adjacent Brigham Young University-Hawaii), demonstrating traditional crafts, dance, and daily life specific to each culture represented.</p><p>The center's evening luau — a traditional Hawaiian feast accompanied by music and dance performances — is one of its signature draws, alongside a large-scale evening show. Open since 1963, it remains one of Oahu's most visited paid attractions, offering a far deeper cultural experience than a typical tourist luau elsewhere on the island.</p><!--stss:footsteps--><p>The Polynesian Cultural Center is where the group attended a luau during Bon Voyage Season 2, Episode 7, experiencing the traditional Hawaiian feast and accompanying entertainment that the center is especially known for. It's a natural fit for an episode focused on hands-on cultural and physical experiences, following the day's earlier stops at Kualoa Regional Park and Kualoa Ranch on the same windward side of the island.</p><p>While the show's segment centers on the luau specifically, the center offers a much broader experience across its full village-by-village layout representing multiple Pacific cultures — making it a stop that rewards spending considerably more time than just the featured meal and show the group's visit focused on.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located at 55-370 Kamehameha Hwy in Laie, about an hour's drive from Waikiki along the North Shore route, or reachable via scheduled shuttle service from Waikiki."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open select days (typically closed Sundays); ticket packages vary from general daytime admission up to premium packages including the luau and evening show. Advance booking is strongly recommended."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Mostly flat, paved pathways between village areas; wheelchair-accessible, with specific accommodations available — check with the center when booking."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book the luau package in advance"
+        },
+        "text": {
+          "en": "The dinner-and-show package the group experienced is among the center's most popular options and benefits from advance booking."
+        }
+      },
+      {
+        "title": {
+          "en": "Arrive early to see multiple villages"
+        },
+        "text": {
+          "en": "The luau is just one part of a much larger center — arriving well before the evening program lets you explore the other Pacific-culture villages too."
+        }
+      },
+      {
+        "title": {
+          "en": "Check the day of the week"
+        },
+        "text": {
+          "en": "The center is closed on select days — confirm it's open before planning a visit around it."
+        }
+      }
+    ]
+  },
+  {
+    "id": 256,
+    "name": "Beach in front of Kapiolani Park",
+    "group": "BTS",
+    "member": "All",
+    "country": "USA",
+    "city": "Honolulu, Hawaii",
+    "category": "Bon Voyage",
+    "year": "2017",
+    "episode": "Bon Voyage Season 2, Episode 7",
+    "address": "Queen’s Surf Beach, Honolulu, HI 96815",
+    "lat": 21.2693,
+    "lng": -157.822,
+    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "fullDescription": {
+      "en": "<p>This stretch of beach sits just east of Waikiki Beach proper, directly fronting Kapiolani Park, and is commonly known locally as Queen's Surf Beach. Compared to the denser hotel-backed sand of central Waikiki, it has a more open, park-adjacent feel, with the Honolulu Zoo and Kapiolani Park's lawns just behind it rather than a wall of high-rise resorts.</p><p>It's a popular spot for swimming, bodyboarding and people-watching among both locals and visitors looking for a slightly less crowded alternative to the main Waikiki Beach stretch, while still being an easy walk from the heart of the neighborhood.</p><!--stss:footsteps--><p>This beach, just to the left of Waikiki Beach in front of Kapiolani Park, appears as a location in Bon Voyage Season 2, Episode 7, offering a different stretch of Waikiki-area coastline from the main beach featured earlier in the season. Its quieter, park-adjacent setting gives it a distinct feel from the denser central Waikiki beachfront despite being only a short walk away.</p><p>As one of the episode's lower-key locations, it reflects the same hands-on, exploratory spirit as the rest of Episode 7 — a chance for the group to experience a different, somewhat less touristy slice of Oahu's coastline alongside the day's more structured stops at Kualoa Ranch and the Polynesian Cultural Center.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located directly in front of Kapiolani Park, a short walk east of central Waikiki Beach and the Honolulu Zoo."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Public beach access available 24 hours; no admission fee."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, sandy beach with paved paths through the adjacent park; mostly accessible, with standard beach-access limitations for wheelchairs on sand itself."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Treat it as the quieter Waikiki beach option"
+        },
+        "text": {
+          "en": "It tends to draw fewer crowds than the stretch directly in front of the main hotel strip."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine it with a Kapiolani Park visit"
+        },
+        "text": {
+          "en": "Since the two are directly adjacent, it's easy to pair a beach stop here with time in the park."
+        }
+      },
+      {
+        "title": {
+          "en": "Good for bodyboarding"
+        },
+        "text": {
+          "en": "Locals favor this stretch for bodyboarding more than swimming laps — worth renting a board if you want to try it."
+        }
+      }
+    ]
+  },
+  {
     "address": "Coron Island, Calamian Islands, Palawan, Philippines",
     "country": "Philippines",
     "city": "Coron (Palawan)",
@@ -16504,6 +19464,100 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://www.visitjeju.net/en/detail/view?contentsid=CNTS_200000000007344#"
   },
   {
+    "id": "new-manual-1791237155701-b29d0i",
+    "name": "Snoopy Garden",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "South Korea",
+    "city": "Jeju",
+    "category": "Landmark",
+    "year": "2021",
+    "address": "930 Geumbaekjo-ro, Gujwa-eup, Jeju-si, Jeju-do, Corée du Sud",
+    "lat": 33.44412,
+    "lng": 126.77829,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "officialLink": "https://www.snoopygarden.com/",
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Locate the Iconic"
+        },
+        "text": {
+          "en": "Walk through the Outdoor Garden toward the Peanuts Color Garden / Warm Heart Zone to find the exact wooden bench where Jimin sat next to Snoopy by the water."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Early for Quiet Photos"
+        },
+        "text": {
+          "en": "Snoopy Garden is one of Jeju's most popular attractions. Arrive right when it opens at 9:00 AM to enjoy the outdoor trails peacefully and avoid waiting in line for the bench photo spot."
+        }
+      },
+      {
+        "title": {
+          "en": "Try the Snoopy Cafe & Stamp Tour"
+        },
+        "text": {
+          "en": "After exploring the garden, stop by the on-site Snoopy Cafe for adorable Peanuts-themed drinks and desserts, and complete the garden stamp tour book for a special commemorative souvenir!"
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located in Songdang-ri, Gujwa-eup on Jeju Island, Snoopy Garden is a world-class, 20-acre garden and museum dedicated to Charles M. Schulz’s iconic Peanuts comic strip. Opened in 2020, the theme park seamlessly blends Jeju’s lush natural scenery, including hallabong trees, stone walls, and native flora, with themed indoor exhibits and outdoor walking trails. Its philosophy, \"Rest, Relax, and Recharge,\" invites visitors to slow down and experience life through the heartwarming world of Charlie Brown, Snoopy, and their friends.</p><!--stss:footsteps--><p>In September 2021, during a personal trip to Jeju Island, Jimin visited Snoopy Garden to take a peaceful break. He took a stroll through the outdoor garden trails and paused at one of the park's most iconic photo spots: sitting on a wooden bench right next to a life-sized Snoopy statue overlooking a tranquil pond. Photos of this cute, relaxing moment were shared on his Instagram account in December 2021, instantly making this spot a favorite photo location for ARMYs visiting Jeju.</p>"
+    },
+    "img": "images/admin-upload-new-manual-1791237155701-b29d0i-photo.jpg",
+    "imgCredit": "Screentoscreen",
+    "episodeLink": "https://theklocal.com/snoopy-garden-jeju-jimin-jisoo/",
+    "instagramUrl": "https://www.instagram.com/p/CwlVgCyyWpi/?utm_source=ig_web_button_share_sheet",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "If you are traveling by bus from Jeju International Airport or the Jeju City Bus Terminal, take Express Bus No. 211 or 212 to Songdang-ri, then transfer to Local Bus No. 810-1 or 810-2 and get off at the Snoopy Garden stop. If you prefer to drive or take a taxi, the journey takes approximately 40 to 50 minutes from Jeju International Airport, and free on-site parking is available."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Snoopy Garden is open daily throughout the year. From March to September, the park operates from 9:00 AM to 7:00 PM, while winter hours from October to February run from 9:00 AM to 6:00 PM, with last entry allowed one hour before closing. Admission costs approximately 18,000 KRW for adults (ages 19 and up), 15,000 KRW for youth (ages 13 to 18), and 12,000 KRW for children (ages 3 to 12)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The indoor Garden House and main outdoor walking paths are paved, flat, and wheelchair/stroller accessible. Wheelchair rentals are available at the main entrance."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791237155701-b29d0i-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-manual-1791237155701-b29d0i-recreated-1.jpg",
+        "official": true
+      }
+    ]
+  },
+  {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
     "name": "Kualoa Ranch",
     "group": "BTS",
@@ -17574,2876 +20628,6 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "recreatedPhoto": ""
-  },
-  {
-    "id": 216,
-    "name": "Ali'i Drive",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
-    "lat": 19.6391,
-    "lng": -155.9974,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Ali'i Drive is the oceanfront main street of Kailua-Kona, running for roughly four miles along the lava-rock coastline of Hawaii's Big Island. The name translates to \"Chiefly Road,\" a nod to the royal Hawaiian history concentrated along this stretch — the nearby Hulihe'e Palace and Moku'aikaua Church, the islands' oldest Christian church, both sit just off the drive.</p><p>Today it's the social backbone of Kailua-Kona: a low-rise strip of open-air shopping centers, casual restaurants, surf shops and ocean-view bars, all within walking distance of the historic Kailua Pier. Locals and visitors alike treat it as the town's default evening stroll, with sunset views over the water for most of its length.</p><!--stss:footsteps--><p>Ali'i Drive is the connective thread running through BTS's Bon Voyage Season 2, Episode 2, filmed here in 2017 during the group's trip to Hawaii. Nearly every stop the members made during their free day in Kailua-Kona — souvenir shopping, henna tattoos, meals, a heart-to-heart conversation, and the night's final group hangout — happened along this single short stretch of road, making it the easiest way to retrace the whole episode on foot.</p><p>The Maknae Line (Jimin, V and Jungkook) wandered Ali'i Drive's shops hunting for souvenirs, ducking into the ABC Store and several small boutiques inside the Kona Inn Shopping Village. SOPE (Suga and J-Hope) ate at Kona Canoe Club and got matching henna tattoos at Kona Henna Studio, both just off the drive. Namjoon and Jin had one of the episode's more reflective moments at Humpy's Big Island Alehouse overlooking the coast, then browsed the small shops of Waterfront Row for matching jewelry. The whole group reconvened at Huggo's On The Rocks at the end of the day, right on the sand just a short walk down Ali'i Drive from where it all began.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Ali'i Drive runs through the heart of Kailua-Kona on the Big Island's west (Kona) coast. Most visitors arrive via Ellison Onizuka Kona International Airport (KOA), about a 15-minute drive north; a rental car is the easiest way to get around, with several public lots and metered street parking along the drive itself."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Ali'i Drive is a public street, open and free to walk at all hours. Individual shops and restaurants along it generally operate from around 9am to 9-10pm, with some bars staying open later."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "The drive has paved sidewalks for most of its length, with a seawall promenade in places offering ocean views. Mostly flat and stroller/wheelchair-friendly, though some sections narrow near the pier area during busy periods."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Walk it end to end"
-        },
-        "text": {
-          "en": "Ali'i Drive is short enough to walk in full, and every other Bon Voyage Episode 2 location on this list sits directly on it or just a block off — park once near the pier and see everything on foot."
-        }
-      },
-      {
-        "title": {
-          "en": "Time it for sunset"
-        },
-        "text": {
-          "en": "The drive faces almost due west across Kailua Bay, so the last hour before sunset is consistently the best light for photos anywhere along it."
-        }
-      },
-      {
-        "title": {
-          "en": "Go on a Wednesday or Saturday"
-        },
-        "text": {
-          "en": "The Kona Farmers Market sets up along Ali'i Drive on Wednesday and Saturday mornings, a good add-on stop before or after retracing the episode."
-        }
-      }
-    ]
-  },
-  {
-    "id": 217,
-    "name": "ABC Store",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
-    "lat": 19.6398,
-    "lng": -155.9972,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>ABC Stores are a Hawaii institution — a chain of convenience shops found on nearly every block of the islands' main tourist strips, stocking everything from sunscreen and beach mats to snacks, alcohol, and a wall of souvenirs and aloha-print clothing. The chain started on Oahu in 1964 and has since grown to dozens of locations across the state, with the Kailua-Kona branch on Ali'i Drive serving the town's steady flow of cruise-ship passengers and resort visitors.</p><p>It's not a destination in the usual sense, but it's one of the most reliably open, easy stops on the strip — the kind of place locals and tourists duck into several times a day for ice, a cold drink, or a last-minute souvenir before a flight home.</p><!--stss:footsteps--><p>This particular ABC Store is where the Maknae Line — Jimin, V and Jungkook — picked up a small, memorable souvenir during their shopping stretch of Bon Voyage Season 2, Episode 2: matching friendship pens. It's a tiny, almost throwaway purchase in the show, but it became one of fans' favorite small moments from the Hawaii trip precisely because of how ordinary it is — three members of one of the world's biggest groups, browsing a convenience-store stationery rack like anyone else on vacation.</p><p>The scene plays out as part of a longer souvenir-hunting stretch along Ali'i Drive and through the Kona Inn Shopping Village, where the trio also stopped at several small gift shops (including one visibly marked Alley Geckos) that don't have much of an online footprint today.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located directly on Ali'i Drive in downtown Kailua-Kona, within easy walking distance of the Kailua Pier and most other Ali'i Drive stops. No dedicated parking — use the public lots or metered street parking nearby."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Most ABC Store branches in Kailua-Kona are open daily, typically from around 7am to 11pm or later — no admission fee, open to all shoppers."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Street-level entrance, flat and wheelchair-accessible, with standard convenience-store aisle widths."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Check the stationery rack"
-        },
-        "text": {
-          "en": "Skip the t-shirt wall and look at the pens, notepads and small knickknacks near the register — that's the kind of find that caught the Maknae Line's eye."
-        }
-      },
-      {
-        "title": {
-          "en": "Stock up before the beach"
-        },
-        "text": {
-          "en": "It's a practical stop too: sunscreen, beach towels and cold drinks are all here if you're combining your visit with time at Kailua Bay."
-        }
-      },
-      {
-        "title": {
-          "en": "There’s almost always one nearby"
-        },
-        "text": {
-          "en": "If this specific branch doesn't have what you want, ABC Store is nearly ubiquitous across Hawaii — useful to know for the rest of your trip, not just this stop."
-        }
-      }
-    ]
-  },
-  {
-    "id": 218,
-    "name": "Kona Inn Shopping Village",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6388,
-    "lng": -155.9975,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kona Inn Shopping Village is a low-rise, open-air shopping center on Ali'i Drive, built around a landscaped garden courtyard that faces the ocean. It takes its name from the historic Kona Inn hotel that once stood on the site — one of the Big Island's first tourist hotels, built in 1928 — before being converted into its current retail format.</p><p>The village is home to a rotating mix of small, independently run boutiques, gift shops, a henna studio, and a couple of casual restaurants, all connected by shaded outdoor walkways. Its ocean-facing side opens directly onto Oneo Bay, making it as much a scenic rest stop as a shopping destination.</p><!--stss:footsteps--><p>Kona Inn Shopping Village is the single busiest hub of BTS's Bon Voyage Season 2, Episode 2 within Kailua-Kona — three separate stops on this list (Mahina Pizza, Kona Canoe Club, and Kona Henna Studio) are all located inside it, and it's also where much of the Maknae Line's souvenir-shopping montage played out. Most of the small gift shops Jimin, V and Jungkook browsed here don't have a strong record online today, but the sign for one of them, Alley Geckos, is clearly visible on screen during the episode.</p><p>It's also where SOPE (Suga and J-Hope) paused to take in the ocean view over Oneo Bay from the village's waterfront side, one of several quieter, unscripted moments the show captured during the group's free day in Kailua-Kona.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 75-5744 Ali'i Dr, in the heart of Kailua-Kona, directly on Ali'i Drive. Walkable from the Kailua Pier in under 10 minutes; a small public parking lot serves the village directly, with additional street parking nearby."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Individual shop hours vary, but most operate roughly 9am-9pm daily. The village itself is open-air and free to walk through at any time."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, paved walkways throughout the courtyard, wheelchair and stroller-friendly, with ramp access from the Ali'i Drive sidewalk."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "One stop, three locations"
-        },
-        "text": {
-          "en": "With Mahina Pizza, Kona Canoe Club and Kona Henna Studio all inside the same village, this is the most time-efficient single stop on the whole Episode 2 trail."
-        }
-      },
-      {
-        "title": {
-          "en": "Walk through to the water"
-        },
-        "text": {
-          "en": "Don't stop at the shops — the courtyard opens straight onto Oneo Bay on its ocean side, the same view SOPE paused for."
-        }
-      },
-      {
-        "title": {
-          "en": "Browse for a genuine local find"
-        },
-        "text": {
-          "en": "The small, independent gift shops here (unlike the chain stores elsewhere on Ali'i Drive) are a better bet for a one-of-a-kind souvenir, even if you can't track down the exact ones the Maknae Line visited."
-        }
-      }
-    ]
-  },
-  {
-    "id": 219,
-    "name": "Mahina Pizza",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
-    "lat": 19.6387,
-    "lng": -155.9975,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Mahina Pizza is a casual, counter-service pizzeria tucked inside the Kona Inn Shopping Village, serving New York-style slices and whole pies alongside a handful of local specialty toppings. \"Mahina\" means \"moon\" in Hawaiian, and the shop leans into a laid-back, no-frills island-pizza-joint identity — order at the counter, grab a seat in the courtyard or at one of a few indoor tables, and wait for your name to be called.</p><p>It's a popular, fast, affordable option for shopping village visitors and Ali'i Drive regulars looking for a quick meal between beach time and souvenir shopping, rather than a sit-down dining destination.</p><!--stss:footsteps--><p>Mahina Pizza is where the Maknae Line — Jimin, V and Jungkook — stopped for a pizza break during their shopping stretch of Bon Voyage Season 2, Episode 2. It's a short, low-key scene in the show, mostly remembered by fans not for the food itself but for a restaurant employee caught in the background casually lounging on a sofa — an unplanned, candid moment that became an unexpected highlight of the episode on rewatch.</p><p>There's no deeper story attached to the stop beyond that: three members, a pizza order, and the kind of mundane, funny slice-of-life moment that Bon Voyage built its entire appeal around, far removed from the group's usual stage presence.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Inside the Kona Inn Shopping Village at 75-5744 Ali'i Dr, Kailua-Kona — enter the village from Ali'i Drive and follow the courtyard signage."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily for lunch and dinner, roughly 11am-9pm; hours can vary, so checking ahead before a visit is worthwhile. No admission fee — pay per order at the counter."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor counter-service with flat courtyard and indoor seating, wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Order the same way"
-        },
-        "text": {
-          "en": "It's counter service — order and pay up front, then find a seat, exactly how the Maknae Line did it."
-        }
-      },
-      {
-        "title": {
-          "en": "Grab courtyard seating if it’s free"
-        },
-        "text": {
-          "en": "The outdoor tables in the shopping village courtyard are a nicer spot to eat than the small indoor area, when available."
-        }
-      },
-      {
-        "title": {
-          "en": "Pair it with a Kona Inn Shopping Village stop"
-        },
-        "text": {
-          "en": "Since you're already inside the village for this one, it's an easy combined visit with Kona Canoe Club and Kona Henna Studio."
-        }
-      }
-    ]
-  },
-  {
-    "id": 220,
-    "name": "Kona Canoe Club",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5739 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6386,
-    "lng": -155.9978,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kona Canoe Club is a casual sports-bar-style restaurant directly on Ali'i Drive, right across from the Kona Inn Shopping Village, with an open-air dining room looking out toward the ocean. The name nods to Hawaii's outrigger canoe racing tradition, a sport with deep roots on the Kona coast — local canoe clubs still train and race in the waters just offshore.</p><p>The menu leans toward classic American bar food with a local twist: burgers, sandwiches and fresh-caught Hawaiian fish, served alongside a full bar and a handful of TVs for sports. It's a popular, unfussy spot for both locals and visitors looking for a relaxed meal with an ocean view.</p><!--stss:footsteps--><p>Kona Canoe Club is where SOPE — Suga and J-Hope — sat down for a meal together during Bon Voyage Season 2, Episode 2, with the show specifically highlighting the restaurant's fish and burgers as the pair ate and talked. It's one of the more relaxed, low-key stops of the Kailua-Kona leg of the episode: no elaborate activity or deep conversation, just two members enjoying a casual lunch together with a view of Ali'i Drive and the coast.</p><p>The stop comes during the same stretch of the episode as the Maknae Line's shopping trip and SOPE's own henna tattoo session nearby at Kona Henna Studio, part of a loosely structured free afternoon the group spent exploring Kailua-Kona in smaller groups rather than together.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 75-5739 Ali'i Dr, directly across the street from the Kona Inn Shopping Village in downtown Kailua-Kona. Walkable from the Kailua Pier; street parking and nearby public lots serve the area."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily for lunch and dinner, roughly 11am-10pm. No admission fee — a standard restaurant menu with a full bar."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-level, open-air dining room with flat access from the sidewalk; wheelchair-accessible seating available."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Try the fish"
-        },
-        "text": {
-          "en": "Fresh local fish is the restaurant's standout, and the closest way to order the way SOPE did on screen."
-        }
-      },
-      {
-        "title": {
-          "en": "Ask for ocean-facing seating"
-        },
-        "text": {
-          "en": "The open-air side of the dining room looks out toward Ali'i Drive and the water — worth requesting if it's available."
-        }
-      },
-      {
-        "title": {
-          "en": "Go for a sports-bar evening"
-        },
-        "text": {
-          "en": "With a full bar and TVs, it's also a solid pick for watching a game in the evening, not just a lunch stop."
-        }
-      }
-    ]
-  },
-  {
-    "id": 221,
-    "name": "Kona Henna Studio",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5744 Ali'i Dr, Kailua-Kona, HI 96740 (Kona Inn Shopping Village)",
-    "lat": 19.6388,
-    "lng": -155.9976,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kona Henna Studio is a small, appointment-and-walk-in henna tattoo shop located inside the Kona Inn Shopping Village on Ali'i Drive. Henna — a temporary dye derived from the henna plant — has no traditional roots in Hawaiian culture, but the studio has become a popular stop for visitors drawn to its intricate, customizable designs as a lasting-but-temporary vacation souvenir.</p><p>Artists work from a catalog of patterns or freehand custom designs, applied directly to skin and left to dry for a couple of hours before the dried paste is brushed away, revealing a stain that typically lasts one to two weeks.</p><!--stss:footsteps--><p>Kona Henna Studio is where SOPE — Suga and J-Hope — got matching henna tattoos during their free time in Bon Voyage Season 2, Episode 2, a playful, lighthearted detour from the rest of the day's activities. The segment became one of the episode's more visually memorable moments, with the pair comparing their finished designs afterward and showing them off to the rest of the group.</p><p>It's a small but fondly remembered scene among fans, partly because it's such a rare, low-stakes glimpse of two members doing something purely for fun on a shared day off, with no itinerary or challenge attached — just a spontaneous stop during their Kailua-Kona shopping stretch.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Inside the Kona Inn Shopping Village at 75-5744 Ali'i Dr, Kailua-Kona — accessible from the village's courtyard, a short walk from Ali'i Drive."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily, roughly 10am-8pm, though hours can shift seasonally. Pricing is per design rather than a flat admission fee; walk-ins are generally welcome but appointments are recommended for intricate designs."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor, flat-access studio within the shopping village; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Get your own henna"
-        },
-        "text": {
-          "en": "Walk-in custom designs are usually available — an easy way to leave Kailua-Kona with the same kind of souvenir SOPE picked up."
-        }
-      },
-      {
-        "title": {
-          "en": "Budget drying time"
-        },
-        "text": {
-          "en": "Henna needs time to set before the paste is removed — plan for at least an hour or two before you need clean hands again."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring a design idea"
-        },
-        "text": {
-          "en": "Artists can work from a catalog, but bringing a reference photo or idea (as simple or detailed as you like) tends to get the best results."
-        }
-      }
-    ]
-  },
-  {
-    "id": 222,
-    "name": "Humpy's Big Island Alehouse",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5815 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6379,
-    "lng": -155.9981,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Humpy's Big Island Alehouse is a pub and restaurant directly on Ali'i Drive, with an open-air deck that looks straight out over the Kona coastline. It's a sister location to the original Humpy's Alaskan Alehouse chain, adapted for the Big Island with a menu of pub classics, local beers on tap, and fresh seafood, served in a casual, laid-back setting built for long sit-down meals with a view.</p><p>The alehouse's raised, ocean-facing deck is one of the better sunset vantage points directly on Ali'i Drive, drawing a steady crowd of locals and visitors alike for happy hour and evening drinks.</p><!--stss:footsteps--><p>Humpy's Big Island Alehouse is where Namjoon and Jin sat down for an unusually candid, reflective conversation during Bon Voyage Season 2, Episode 2 — one of the episode's quieter, more emotionally open moments, set against the alehouse's open-air coastal backdrop. It stands out from the rest of the group's activity-driven day as a deliberate pause, just the two of them talking over drinks as the Kona coast stretched out behind them.</p><p>The location also holds a specific place in BTS history beyond the episode itself: it's the setting for a now-famous photo RM posted to Twitter during the Hawaii trip, taken from this exact alehouse, which fans have since used to help pinpoint the location independently of the show.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 75-5815 Ali'i Dr, toward the southern end of Kailua-Kona's main strip. Walkable from the Kailua Pier in about 10-15 minutes; street parking and nearby lots serve the area."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily for lunch through late evening, roughly 11am-10pm or later. No admission fee — standard restaurant/bar menu."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor dining room with an open-air deck; flat, wheelchair-accessible access from the street."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Go at golden hour"
-        },
-        "text": {
-          "en": "Time your visit for late afternoon to catch the same warm coastal light visible behind Namjin during their conversation."
-        }
-      },
-      {
-        "title": {
-          "en": "Ask for deck seating"
-        },
-        "text": {
-          "en": "The open-air deck overlooking the coast is the restaurant's signature spot and the closest match to the episode's backdrop."
-        }
-      },
-      {
-        "title": {
-          "en": "Order a local beer"
-        },
-        "text": {
-          "en": "The alehouse's rotating tap list leans heavily on Hawaiian breweries — a good way to lean into the laid-back, conversational mood of the scene."
-        }
-      }
-    ]
-  },
-  {
-    "id": 223,
-    "name": "Kailua Bay and Oneo Bay",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "Ali'i Drive, Kailua-Kona, HI 96740",
-    "lat": 19.6402,
-    "lng": -155.9973,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kailua Bay and Oneo Bay are the two small, connected bays that make up the heart of Kailua-Kona's waterfront, both running directly alongside Ali'i Drive. Kailua Bay curves around the historic Kailua Pier and Kamakahonu Beach near the center of town — the site where King Kamehameha I once lived and where Captain Cook's ships first anchored in 1778 — while Oneo Bay sits just a short walk south, tucked behind the Kona Inn Shopping Village.</p><p>Both bays offer calm, relatively shallow water protected from the open ocean swell, making them popular for swimming, snorkeling, and paddleboarding, with a paved seawall path connecting most of the shoreline between them.</p><!--stss:footsteps--><p>The general Ali'i Drive coastline, including both bays, forms the scenic backdrop to much of BTS's time in Kailua-Kona during Bon Voyage Season 2, Episode 2. Oneo Bay specifically — the cove directly behind the Kona Inn Shopping Village — is where SOPE (Suga and J-Hope) paused during their shopping stretch to take in the view, drawn by the calm turquoise water and the open coastline beyond it, one of several quiet, unscripted breaks captured during the group's free day.</p><p>Because the two bays sit at either end of the same short stretch of coastline the group spent the day exploring, both appear in wider shots throughout the episode as the backdrop to the Maknae Line's shopping trip, SOPE's meals and henna tattoos, and Namjin's conversation at Humpy's — making the water itself almost a recurring presence in the episode, even without a single dedicated scene of its own.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Both bays run directly along Ali'i Drive in downtown Kailua-Kona; Kailua Bay is centered near the Kailua Pier, Oneo Bay a short walk south behind the Kona Inn Shopping Village. Public parking is available near the pier, with additional street parking along the drive."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Both bays are public beaches/waterfront, accessible at all hours and free to visit. Lifeguard presence and hours, where available, vary seasonally."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "A paved seawall path runs along most of the shoreline connecting the two bays, flat and wheelchair/stroller-friendly; direct beach access points have sand or rocky entry depending on location."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Look for the water behind Kona Inn"
-        },
-        "text": {
-          "en": "The bay SOPE stopped at is the small cove directly behind the Kona Inn Shopping Village — easy to miss if you're only looking at the street side of Ali'i Drive."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring snorkel gear"
-        },
-        "text": {
-          "en": "Both bays are popular, easy snorkeling spots thanks to their calm, sheltered water — a good way to spend extra time here beyond just the view."
-        }
-      },
-      {
-        "title": {
-          "en": "Visit Kamakahonu Beach too"
-        },
-        "text": {
-          "en": "The small beach by the pier at the north end of Kailua Bay has real historical significance (it was King Kamehameha I's residence) and pairs well with a walk down to Oneo Bay."
-        }
-      }
-    ]
-  },
-  {
-    "id": 224,
-    "name": "Waterfront Row",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5770 Ali'i Dr, Kailua-Kona, HI 96740",
-    "lat": 19.6383,
-    "lng": -155.9977,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Waterfront Row is a small, low-key shopping center on Ali'i Drive, housing a handful of independent jewelry stores, art galleries and gift shops under a shared covered walkway. It's a quieter, more intimate alternative to the larger Kona Inn Shopping Village nearby, with a focus on locally made jewelry, art and specialty souvenirs rather than typical tourist-shop merchandise.</p><p>Its small footprint makes it an easy, unhurried browse — most visitors can see the whole center in fifteen to twenty minutes, making it a popular quick stop for a specific, considered souvenir rather than a long shopping trip.</p><!--stss:footsteps--><p>Waterfront Row is where Namjoon and Jin stopped to buy matching friendship jewelry during Bon Voyage Season 2, Episode 2 — specifically, a necklace with a small turtle charm, a deliberate nod to the honu (Hawaiian green sea turtles) that are a common, beloved sight along the Big Island's coastline. It's a brief but fondly remembered stop among fans, the kind of small, sentimental gesture the pair are known for during their trips together.</p><p>The stop fits into the same loosely structured free-time stretch of the episode as the Maknae Line's shopping trip and SOPE's henna tattoos elsewhere on Ali'i Drive — rather than a single planned group activity, much of Episode 2's Kailua-Kona content follows different pairs and subgroups making their own way through the same short stretch of road.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located on Ali'i Drive at approximately 75-5770, within easy walking distance of the Kona Inn Shopping Village and the Kailua Pier in downtown Kailua-Kona."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Individual shop hours vary, but most operate roughly 10am-8pm daily. No admission fee to browse the center."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor, covered walkway with flat access from the Ali'i Drive sidewalk; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Look for turtle jewelry"
-        },
-        "text": {
-          "en": "Several of the small shops here carry honu (sea turtle) themed pieces, similar to what Namjin picked up — a fitting, Hawaii-specific souvenir either way."
-        }
-      },
-      {
-        "title": {
-          "en": "Ask about local makers"
-        },
-        "text": {
-          "en": "Many of the jewelry and art pieces here are locally made rather than imported — worth asking staff about the artist behind a piece you like."
-        }
-      },
-      {
-        "title": {
-          "en": "Combine it with a pier walk"
-        },
-        "text": {
-          "en": "Waterfront Row sits close enough to the Kailua Pier that it's easy to pair a browse here with a short walk out to see the historic pier and Kamakahonu Beach."
-        }
-      }
-    ]
-  },
-  {
-    "id": 225,
-    "name": "Huggo's On The Rocks",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kailua-Kona, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 2",
-    "address": "75-5824 Kahakai Rd, Kailua-Kona, HI 96740",
-    "lat": 19.6372,
-    "lng": -155.9988,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Huggo's On The Rocks is the casual, open-air sister restaurant and bar to the more formal Huggo's next door, built directly on the sand at the southern end of Ali'i Drive. Its signature feature is its setting: tables sit right at the waterline, close enough that waves occasionally reach the sand beneath diners' feet, with live local music most evenings.</p><p>The menu covers casual bar food, pupus (Hawaiian-style appetizers) and tropical cocktails, and the bar draws a steady crowd for sunset, when its unobstructed view over the water and nightly live music make it one of the most popular evening spots on Ali'i Drive.</p><!--stss:footsteps--><p>Huggo's On The Rocks is where the full group of BTS members met up to close out their day in Kailua-Kona at the end of Bon Voyage Season 2, Episode 2 — after spending the afternoon split into smaller pairs and groups across Ali'i Drive (the Maknae Line shopping, SOPE eating and getting henna tattoos, Namjin talking at Humpy's and browsing Waterfront Row), the episode brings everyone back together here for drinks, food and live music as the sun went down over the water.</p><p>As the episode's final Kailua-Kona location, it serves as a natural capstone to the whole day — the one scene in the Hawaii leg of Bon Voyage where all the threads of the afternoon's separate activities come back together in one place, with the sand-floor, live-music setting giving the reunion a relaxed, vacation-appropriate send-off.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at the southern end of Ali'i Drive in Kailua-Kona, next to the main Huggo's restaurant. Roughly a 15-20 minute walk from the Kailua Pier, or a short drive with nearby street parking."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily from late afternoon into the evening, roughly 3pm-close; no cover charge, standard restaurant/bar menu and seating."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Open-air, sand-floor seating directly on the beach — not fully wheelchair-accessible due to the sand, though the surrounding deck and entrance areas are flat."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Come for sunset"
-        },
-        "text": {
-          "en": "Live music typically starts in the early evening — time your visit to catch both the music and the sunset over the water, the same combination that closed out the episode."
-        }
-      },
-      {
-        "title": {
-          "en": "Reserve ahead on weekends"
-        },
-        "text": {
-          "en": "It's one of the most popular sunset spots on Ali'i Drive, so reservations are worth making in advance, especially Friday through Sunday."
-        }
-      },
-      {
-        "title": {
-          "en": "End your own Episode 2 day here"
-        },
-        "text": {
-          "en": "As the group's own final stop, it's a fitting last location if you're retracing the whole episode in order down Ali'i Drive."
-        }
-      }
-    ]
-  },
-  {
-    "id": 226,
-    "name": "Akaka Falls",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honomu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 3",
-    "address": "Akaka Falls State Park, Honomu, HI 96728",
-    "lat": 19.8572,
-    "lng": -155.1517,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Akaka Falls State Park is a 66-acre park on the Big Island's lush Hamakua Coast, built around a short, paved loop trail through a rainforest landscape of bamboo groves, wild orchids, ginger and ferns. The trail's centerpiece is Akaka Falls itself, a 442-foot single-drop waterfall plunging into a steep, moss-covered gorge — one of the tallest and most photographed waterfalls in Hawaii.</p><p>The loop also passes the smaller, 100-foot Kahuna Falls along the way. At under a mile round trip with paved paths and handrails, it's a far easier walk than most of Hawaii's other waterfall hikes, which is a large part of why it remains one of the Big Island's most visited natural landmarks.</p><!--stss:footsteps--><p>Akaka Falls was one of the calmer sightseeing stops of Bon Voyage Season 2, Episode 3, as the group spent the day exploring the Hilo side of the Big Island at a noticeably more relaxed pace than the shopping-heavy Kailua-Kona episode before it. The members walked the short loop trail together, taking in the view of the falls and the surrounding rainforest as a group.</p><p>It set the tone for an episode built more around sightseeing and natural scenery — waterfalls, gardens, and a volcano summit — than activities or errands, with Akaka Falls as the gentle, easy-hike opener before the rest of the day's stops around Hilo and up to Mauna Kea.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Akaka Falls State Park is on the Hamakua Coast, about a 25-30 minute drive north of Hilo via Highway 19 and Akaka Falls Road. There's no public transit directly to the park; a rental car is the practical option."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open daily, roughly 8:30am-5pm. Hawaii state park entrance fees apply for non-Hawaii-resident visitors (a small per-person and per-vehicle charge); Hawaii residents enter free with ID."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "The loop trail is paved but includes stairs and some steep, uneven sections — not fully wheelchair-accessible, and sturdy footwear is recommended even though it's one of the easier waterfall trails on the island."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Arrive early"
-        },
-        "text": {
-          "en": "The parking lot is small and tour buses arrive mid-morning — an early visit means a quieter trail and easier parking."
-        }
-      },
-      {
-        "title": {
-          "en": "Stay on the trail"
-        },
-        "text": {
-          "en": "Swimming and off-trail access near the falls are prohibited for safety — the gorge's edges are steep and the rock is slick."
-        }
-      },
-      {
-        "title": {
-          "en": "Pair it with Hilo’s other waterfalls"
-        },
-        "text": {
-          "en": "Rainbow Falls, right in Hilo, is a short detour from Akaka Falls and makes for an easy two-waterfall morning."
-        }
-      }
-    ]
-  },
-  {
-    "id": 227,
-    "name": "Ken's House of Pancakes",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hilo, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 3",
-    "address": "1730 Kamehameha Ave, Hilo, HI 96720",
-    "lat": 19.7241,
-    "lng": -155.0701,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Ken's House of Pancakes — often shortened to just \"Ken's Pancake House\" — is a 24-hour diner on Kamehameha Avenue in Hilo, open continuously since 1971. It's the kind of old-school, all-day breakfast institution found in towns across America, adapted to local tastes: alongside pancakes and omelets, the menu runs through loco moco, Portuguese sausage, Spam musubi and full local-style plate lunches.</p><p>Its round-the-clock hours make it a fixture for Hilo's shift workers, late-night diners and early-rising visitors alike, and its unpretentious, diner-booth atmosphere has made it a long-running local favorite well beyond its tourist appeal.</p><!--stss:footsteps--><p>Ken's House of Pancakes is where the group stopped for a meal during their day exploring the Hilo side of the Big Island in Bon Voyage Season 2, Episode 3 — a simple, casual group breakfast at a genuine local institution rather than a tourist-oriented restaurant, fitting the more laid-back, sightseeing-focused tone of this episode.</p><p>It's a low-key stop in the show, without a major dedicated segment, but it's a real, verifiable piece of the group's actual itinerary on the Big Island, and one of the more easily revisitable spots on this list for any fan passing through Hilo.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 1730 Kamehameha Ave in Hilo, on the main road along Hilo Bay. Easily reached by car with on-site parking; downtown Hilo is a short drive away."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open 24 hours a day, every day. No admission fee — standard diner menu."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor diner with flat access from the parking lot; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Try the loco moco"
-        },
-        "text": {
-          "en": "A rice-burger-patty-gravy-fried-egg plate that's a true Hawaii diner staple, and a solid way to eat like a local here."
-        }
-      },
-      {
-        "title": {
-          "en": "Go for the macadamia nut pancakes"
-        },
-        "text": {
-          "en": "A Big Island specialty twist on the diner's namesake dish, worth ordering at least once."
-        }
-      },
-      {
-        "title": {
-          "en": "Remember it never closes"
-        },
-        "text": {
-          "en": "Being open 24/7 makes it a reliable option for odd-hour arrivals or late-night cravings, not just a daytime stop."
-        }
-      }
-    ]
-  },
-  {
-    "id": 228,
-    "name": "Lili'uokalani Park and Gardens",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hilo, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 3",
-    "address": "189 Lihiwai St, Hilo, HI 96720",
-    "lat": 19.723,
-    "lng": -155.0633,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Lili'uokalani Park and Gardens is a 24-acre Japanese-style garden on the shore of Hilo Bay, built in the early 1900s and dedicated to Hilo's Japanese immigrant community. It's named for Queen Lili'uokalani, the last reigning monarch of the Kingdom of Hawaii, who gifted the land for the park's creation.</p><p>The grounds are laid out in classic Japanese garden style — stone lanterns, koi ponds, arched bridges, pagodas, and a ceremonial Moon Gate — with Hilo Bay and, on clear days, the snow-capped peak of Mauna Kea visible in the distance. It's considered one of the largest formal Japanese gardens outside of Japan itself.</p><!--stss:footsteps--><p>Lili'uokalani Park and Gardens is where the group stopped for lunch during Bon Voyage Season 2, Episode 3, eating together amid the garden's ponds and pagodas as part of the episode's more relaxed, sightseeing-driven day around Hilo. It's a quieter, more scenic meal setting than many of the show's restaurant stops, with the garden itself effectively serving as the backdrop for the scene.</p><p>The stop fits naturally into an episode built around natural beauty and calmer pacing — following the short hike at Akaka Falls earlier in the day and preceding the group's later stops at KTA Supermarket and Mauna Kea, the garden lunch gave the members a relaxed midday break in one of Hilo's most picturesque public spaces.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 189 Lihiwai St on the Banyan Drive peninsula in Hilo, a short drive or walk from downtown. Free public parking is available nearby."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open daily from dawn to dusk. Free admission, no tickets required."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Mostly flat, paved paths throughout the garden, wheelchair and stroller-friendly; some of the traditional arched bridges have a slight incline."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Bring a picnic"
-        },
-        "text": {
-          "en": "Following the group's lead, the garden's lawns and waterfront benches are a genuinely nice spot for an outdoor lunch of your own."
-        }
-      },
-      {
-        "title": {
-          "en": "Walk out to Moku Ola (Coconut Island)"
-        },
-        "text": {
-          "en": "A small footbridge connects the park to Coconut Island, a short, worthwhile detour with more bay views."
-        }
-      },
-      {
-        "title": {
-          "en": "Photograph the Moon Gate"
-        },
-        "text": {
-          "en": "The circular stone Moon Gate is the garden's most distinctive, photogenic structure — one of the best spots in the park for a quick photo."
-        }
-      }
-    ]
-  },
-  {
-    "id": 229,
-    "name": "KTA Super Stores (Puainako)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hilo, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 3",
-    "address": "50 E Puainako St, Hilo, HI 96720",
-    "lat": 19.6994,
-    "lng": -155.0797,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>KTA Super Stores is a locally owned Hawaii supermarket chain founded in 1916, with several branches across the Big Island. The Puainako Street location in Hilo is one of its larger stores, carrying standard groceries alongside a strong selection of local products — fresh poke, Hawaiian-style plate lunch items, and island-grown produce — that set it apart from mainland chain supermarkets.</p><p>For visitors, it's as much a glimpse of everyday local life as a place to shop: a genuine neighborhood grocery store rather than a tourist-oriented market, popular with both longtime Hilo residents and travelers stocking up on snacks or ingredients.</p><!--stss:footsteps--><p>KTA Supermarket is where the group went shopping for dinner ingredients during Bon Voyage Season 2, Episode 3 — a simple, unglamorous grocery run that stands out precisely because of how ordinary it is. Rather than eating out, the members picked up food here to prepare themselves, a rare glimpse of the kind of everyday errand most of the show's other locations don't capture.</p><p>It's one of the smaller, more low-key segments of the episode, but a genuinely memorable one for fans for exactly that reason — watching the group navigate a regular supermarket aisle like anyone else on a self-catered vacation day, in contrast to the sightseeing and dining-out that fills most of the rest of the episode.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 50 E Puainako St in Hilo, a short drive from downtown and from Lili'uokalani Park. On-site parking is available."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily, roughly 6am-11pm. No admission fee — a standard supermarket."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor store with flat, wide aisles; wheelchair-accessible with standard shopping carts available."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Check the poke counter"
-        },
-        "text": {
-          "en": "KTA's deli and poke selection is a local highlight well worth trying, grocery run or not."
-        }
-      },
-      {
-        "title": {
-          "en": "Look for local snacks as souvenirs"
-        },
-        "text": {
-          "en": "Hawaii-grown coffee, macadamia nuts and local snack brands here make for better, more authentic souvenirs than typical gift-shop items."
-        }
-      },
-      {
-        "title": {
-          "en": "Good for self-catering"
-        },
-        "text": {
-          "en": "If you're staying nearby with a kitchen, it's a genuinely practical stop for stocking up, not just a novelty visit."
-        }
-      }
-    ]
-  },
-  {
-    "id": 230,
-    "name": "Mauna Kea",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Mauna Kea, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 3",
-    "address": "Mauna Kea Access Rd, Hawaii 96720",
-    "lat": 19.7645,
-    "lng": -155.4557,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Mauna Kea is a dormant shield volcano and the tallest peak in Hawaii, rising 13,803 feet above sea level — and, measured from its base on the ocean floor, taller than Mount Everest. It's also the only place in the Hawaiian Islands where snow regularly falls, capping the summit in white during winter months and giving the mountain its name, which means \"white mountain\" in Hawaiian.</p><p>The mountain holds deep significance in Hawaiian culture as wao akua, the realm of the gods, and is considered one of the most sacred sites in the islands. Its high elevation, dry air and remoteness from light pollution also make it one of the best stargazing and sunset-viewing locations in the world, with the Visitor Information Station at around 9,200 feet serving as the most accessible point for watching the sun go down over the clouds.</p><!--stss:footsteps--><p>Mauna Kea is where the group watched the sunset together during Bon Voyage Season 2, Episode 3, capping off a day built around sightseeing rather than activities — following the morning's hike at Akaka Falls, lunch at Lili'uokalani Park, and an errand run at KTA Supermarket, the volcano's summit area gave the members one last, quietly scenic group moment to end the day.</p><p>The stop fits the broader pattern of this episode, which leans more heavily on natural landmarks and scenery than the shopping and errands of the Kailua-Kona episode before it — Mauna Kea's elevation above the cloud line makes for a sunset unlike anything available at sea level, a fitting final backdrop for the Hilo-side leg of the group's Hawaii trip.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Reached via Saddle Road (Highway 200) from either Hilo or Kailua-Kona, then the Mauna Kea Access Road to the Visitor Information Station at roughly 9,200 feet. A 4WD vehicle is strongly recommended, and required by rental car agreements beyond the Visitor Information Station toward the summit."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "The Visitor Information Station area is accessible and free at all hours, though sunset and stargazing hours are the most popular. No admission fee for the mountain itself."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "High altitude makes this a physically demanding visit — acclimatization at the Visitor Information Station is strongly advised before going higher, and the summit area is not recommended for young children, pregnant visitors, or anyone with heart or respiratory conditions."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Acclimate before going higher"
-        },
-        "text": {
-          "en": "Spend at least 30 minutes at the Visitor Information Station before continuing toward the summit — altitude sickness is a real risk above 9,000 feet."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring warm layers"
-        },
-        "text": {
-          "en": "Summit temperatures can drop below freezing even when it's warm at sea level — pack a jacket regardless of the season."
-        }
-      },
-      {
-        "title": {
-          "en": "Time your descent before full dark"
-        },
-        "text": {
-          "en": "The access road has no lighting — plan to start heading back down shortly after sunset rather than lingering until the sky is fully dark."
-        }
-      }
-    ]
-  },
-  {
-    "id": 231,
-    "name": "Mauna Kea Observatories",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Mauna Kea, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 3",
-    "address": "Mauna Kea Summit, Hawaii 96720",
-    "lat": 19.8207,
-    "lng": -155.4681,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>The summit of Mauna Kea, at roughly 13,796 feet, is home to one of the world's premier astronomical observation sites, hosting more than a dozen telescopes operated by research institutions from around the globe, including some of the largest and most powerful optical and infrared telescopes on Earth. Its combination of extreme elevation, dry stable air, and distance from light pollution makes it one of the best stargazing locations anywhere in the world.</p><p>Sitting above roughly 40% of the Earth's atmosphere, the summit offers exceptionally clear, steady viewing conditions rarely found at lower-altitude observatories, which is why so many major telescope projects — representing billions of dollars of international astronomical research — have been built on this single mountain.</p><!--stss:footsteps--><p>The Mauna Kea Observatories are mentioned as part of the same Mauna Kea sunset stop in Bon Voyage Season 2, Episode 3, with the mountain's dual identity — sacred volcano and world-class observatory site — both part of what made it such a striking final location for the group's day of Hilo-area sightseeing.</p><p>While the televised segment centers on the sunset itself rather than the telescopes specifically, the observatory domes visible from the summit area are an unmistakable part of Mauna Kea's identity, and a detail fans researching the episode's location have often noted when identifying exactly where on the mountain the group's visit took place.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "The summit is reached via the Mauna Kea Access Road beyond the Visitor Information Station — a steep, unpaved stretch that requires a 4WD vehicle. Some rental car companies prohibit driving their vehicles on this road entirely, so check your rental agreement in advance."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "The summit area is open during daylight hours for visits; the telescopes themselves are working research facilities and not generally open to public tours. No admission fee for the summit area."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Extremely limited accessibility due to altitude and terrain — not recommended for young children, pregnant visitors, or anyone with heart, lung, or other conditions affected by high elevation; consult a doctor in advance if you have any health concerns."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Check road conditions first"
-        },
-        "text": {
-          "en": "The summit road can close due to weather with little notice — check current conditions before committing to the drive."
-        }
-      },
-      {
-        "title": {
-          "en": "Don’t expect telescope tours"
-        },
-        "text": {
-          "en": "The observatories are active research facilities, not public attractions — the main draw at the summit is the view itself, not the telescopes."
-        }
-      },
-      {
-        "title": {
-          "en": "Stargaze at the Visitor Information Station instead"
-        },
-        "text": {
-          "en": "Public stargazing programs are run at the lower Visitor Information Station, not the summit — it's both safer and the more practical option for most visitors."
-        }
-      }
-    ]
-  },
-  {
-    "id": 232,
-    "name": "Hawaii Volcanoes National Park",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hawaii, Big Island",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 4",
-    "address": "1 Crater Rim Dr, Hawaii National Park, HI 96718",
-    "lat": 19.4194,
-    "lng": -155.2885,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Hawaii Volcanoes National Park is a 335,000-acre UNESCO World Heritage Site on the southeastern side of the Big Island, home to two of the world's most active volcanoes: Kilauea and Mauna Loa. The park spans an extraordinary range of environments in a single protected area, from steaming volcanic craters and stark black lava deserts to lush tropical rainforest, all connected by hiking trails and the scenic Crater Rim Drive.</p><p>Established in 1916, it's one of the oldest national parks in the US system and remains a working, constantly changing landscape — eruptions, steam vents and shifting lava fields mean the park looks different from one visit to the next. Camping, day hikes of every length, and ranger-led programs are all available for visitors who want to spend more than an afternoon exploring it.</p><!--stss:footsteps--><p>Hawaii Volcanoes National Park is where the group went hiking during Bon Voyage Season 2, Episode 4, an episode built entirely around the volcanic landscape of the Big Island. Walking through the park's shifting terrain of rainforest, steam vents and lava rock gave the members a direct, ground-level look at the same volcanic activity they'd later view from the air on their Blue Hawaiian Helicopters tour later in the episode.</p><p>The park's extreme environmental range — jungle in one section, barren black lava fields in the next — made for one of the more visually striking hiking segments of the group's Hawaii trip, grounding the episode's volcano theme in a real, physical sense of scale before the aerial sightseeing that followed.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "The park's main entrance is on Highway 11, about a 45-minute drive from Hilo or roughly 2.5 hours from Kailua-Kona. A rental car is the only practical way to reach and explore it."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open 24 hours a day, every day. A per-vehicle entrance fee is charged (valid for 7 days); America the Beautiful annual passes are accepted."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Crater Rim Drive and several overlooks are paved and accessible by car; many trails are unpaved, uneven lava terrain not suited to wheelchairs, though a few short paved paths near the visitor center are accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Check current eruption/closure status"
-        },
-        "text": {
-          "en": "Trails and overlooks close and reopen depending on volcanic activity — check the park's official alerts before planning your route."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring real hiking shoes"
-        },
-        "text": {
-          "en": "Lava rock trails are sharp and uneven even on \"easy\" sections — sturdy closed-toe shoes make a real difference here."
-        }
-      },
-      {
-        "title": {
-          "en": "Stay past sunset if conditions allow"
-        },
-        "text": {
-          "en": "When Kilauea is active, the glow from its crater is far more dramatic after dark — worth timing part of your visit around dusk if it's permitted."
-        }
-      }
-    ]
-  },
-  {
-    "id": 233,
-    "name": "Blue Hawaiian Helicopters (Hilo)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hilo, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 4",
-    "address": "2450 Kekuanaoa St, Hilo, HI 96720",
-    "lat": 19.7203,
-    "lng": -155.0486,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Blue Hawaiian Helicopters is a helicopter tour operator based at Hilo International Airport, running sightseeing flights over the Big Island's volcanic landscape since the 1980s. Its signature \"Circle of Fire\" route takes passengers over Kilauea's active crater and lava flows, through the rainforest-lined Hamakua Coast, and past dramatic waterfalls only reachable by air — terrain that's often impossible to view safely, or at all, from the ground.</p><p>The company operates a fleet of multi-passenger helicopters with wraparound windows designed for aerial photography, and its Hilo-based routes are consistently ranked among the best ways to see the scale of the Big Island's active volcanoes without the restrictions and distance limits of ground-level viewing areas.</p><!--stss:footsteps--><p>Blue Hawaiian Helicopters is where the group took their Circle of Fire helicopter tour during Bon Voyage Season 2, Episode 4, departing directly from Hilo International Airport for an aerial view of the island's volcanic activity. The flight gave the members a view of Kilauea's lava flowing into the ocean, along with a second volcanic crater holding visible lava that the tour passes over — a perspective impossible to get from any of the park's ground-level trails.</p><p>The helicopter tour forms the centerpiece of the episode's volcano theme, following the ground-level hike at Hawaii Volcanoes National Park earlier in the day with an aerial view of the same landscape from above — a deliberate before-and-after pairing that lets the show capture the scale of the island's volcanic activity from two completely different vantage points.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Departs from Hilo International Airport, a short drive from downtown Hilo. Check in at the Blue Hawaiian terminal at the airport before your scheduled flight time."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Tours run daily, with multiple scheduled departures; exact times vary seasonally. Pricing is per person and varies by tour length and route — booking in advance is strongly recommended, especially for the Circle of Fire route."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Boarding involves walking across tarmac to the helicopter and a moderate step up into the cabin; not wheelchair accessible, and there are minimum age/weight considerations for some seating."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Book well ahead"
-        },
-        "text": {
-          "en": "Circle of Fire flights are popular and frequently sell out, especially when Kilauea is visibly active — reserve days or weeks ahead if possible."
-        }
-      },
-      {
-        "title": {
-          "en": "Ask for a window seat"
-        },
-        "text": {
-          "en": "Every seat has a view, but window seats on the side the pilot narrates toward tend to get the clearest unobstructed shots of the crater and coastline."
-        }
-      },
-      {
-        "title": {
-          "en": "Go earlier in the day"
-        },
-        "text": {
-          "en": "Morning flights generally have calmer winds and clearer visibility than afternoon departures, when Big Island weather is more likely to cloud up."
-        }
-      }
-    ]
-  },
-  {
-    "id": 234,
-    "name": "Downtown Honolulu — King Street (bus route)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 5",
-    "address": "King St, Honolulu, HI 96813",
-    "lat": 21.3059,
-    "lng": -157.8583,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>King Street is one of downtown Honolulu's main thoroughfares, running past some of the city's most significant historic and civic landmarks — including 'Iolani Palace, the only official state residence of royalty in the United States, and Honolulu Hale, the city's historic Spanish Mission Revival-style City Hall. The street sits at the heart of Honolulu's government and civic district, lined with a mix of 19th-century landmark buildings and modern office towers.</p><p>As a central artery of the city's public bus network (TheBus), King Street is also where many cross-town routes converge, making it a natural transfer point for anyone navigating Honolulu without a car — a common experience for both locals and visitors relying on public transit to get around the island.</p><!--stss:footsteps--><p>This stretch of downtown Honolulu is where the group passed through while navigating Oahu's public bus system during Bon Voyage Season 2, Episode 5 — an episode built around the members traveling by public transit rather than a chartered vehicle, in a deliberate callback to the long public-transportation challenges of the show's first season. Jin and J-Hope were photographed here on King Street as part of their leg of the journey, transferring buses near 'Iolani Palace and Honolulu Hale on their way from the airport toward Hawaii Kai.</p><p>The route itself became a memorable part of the episode: starting at the airport on bus #42 and #19, exiting downtown near these landmarks, then catching bus #1 eastbound toward Hawaii Kai — a genuinely long, multi-transfer ride that echoed the group's earlier public-transit misadventures, though notably shorter than their first season's Oahu-equivalent journey.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Served by multiple TheBus routes through downtown Honolulu; most visitors arrive here already using the public bus system, consistent with how the group reached it in the episode."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "The street and surrounding public sidewalks are accessible at all times; 'Iolani Palace itself (a separate paid attraction nearby) has its own visiting hours and ticketed tours."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Standard downtown city sidewalks, flat and wheelchair-accessible; public buses are wheelchair-accessible as well."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Try the actual bus route"
-        },
-        "text": {
-          "en": "Riding TheBus #42/#19 from the airport and transferring near 'Iolani Palace is an easy, inexpensive way to retrace the exact start of the group's episode 5 journey."
-        }
-      },
-      {
-        "title": {
-          "en": "Visit 'Iolani Palace while you're there"
-        },
-        "text": {
-          "en": "Since you're already passing it, the palace's guided tours are a worthwhile detour into Hawaiian royal history."
-        }
-      },
-      {
-        "title": {
-          "en": "Double check your transfer"
-        },
-        "text": {
-          "en": "Several similarly numbered eastbound buses split off in different directions past downtown — confirm you're on the right connecting route before you ride too far, a mistake the group nearly repeated later in the episode."
-        }
-      }
-    ]
-  },
-  {
-    "id": 235,
-    "name": "Domino's (Keeaumoku Street)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 5",
-    "address": "Keeaumoku St, Honolulu, HI 96814",
-    "lat": 21.2945,
-    "lng": -157.8389,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>This branch of Domino's Pizza sits on Keeaumoku Street in Honolulu, a busy commercial corridor near the Ala Moana shopping district known for its dense mix of local eateries, Korean restaurants, and 24-hour businesses. The street has become one of Honolulu's go-to areas for a quick, familiar meal at almost any hour, and this particular Domino's is one of several standard delivery-and-carryout branches serving the surrounding Makiki and Ala Moana neighborhoods.</p><p>There's nothing architecturally distinctive about the location itself — it's a standard American pizza chain outlet — but its spot on one of Honolulu's busiest local streets makes it a familiar, easy-to-find stop for residents and visitors staying nearby.</p><!--stss:footsteps--><p>This Domino's location is a stop the group made during their public-transit-driven day across Oahu in Bon Voyage Season 2, Episode 5 — a simple, low-key pizza order amid a day otherwise defined by long bus rides and navigating the island without a chartered vehicle. It's a brief, practical stop rather than a major segment, standing out mainly because of how ordinary it is against the rest of the episode's sightseeing.</p><p>As one of the few concretely identifiable stops along the group's Keeaumoku/downtown corridor route, it's become a point fans use to help trace the exact path the members took across Honolulu that day, between the airport, downtown, and their eventual destination in Hawaii Kai.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located on Keeaumoku Street near the Ala Moana area of Honolulu, reachable by TheBus or a short drive/walk from Ala Moana Center."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Standard Domino's hours, typically late morning through late night daily. No admission fee — order for delivery or carryout."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Standard storefront with flat street-level access; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Combine it with Ala Moana Center"
-        },
-        "text": {
-          "en": "Keeaumoku Street is a short walk from Ala Moana Center, Hawaii's largest open-air shopping mall, if you want to extend the stop into a bigger outing."
-        }
-      },
-      {
-        "title": {
-          "en": "Explore the rest of Keeaumoku Street"
-        },
-        "text": {
-          "en": "The street is known locally for a dense cluster of Korean restaurants and markets — worth a wander beyond just the pizza stop."
-        }
-      },
-      {
-        "title": {
-          "en": "Use it as a route landmark"
-        },
-        "text": {
-          "en": "If you're retracing the group's episode 5 bus route, this stop is a useful checkpoint between downtown and the Hawaii Kai leg of the journey."
-        }
-      }
-    ]
-  },
-  {
-    "id": 236,
-    "name": "Kahala Mall",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 5",
-    "address": "4211 Waialae Ave, Honolulu, HI 96816",
-    "lat": 21.2789,
-    "lng": -157.7853,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kahala Mall is a mid-size shopping center in Honolulu's upscale Kahala neighborhood, offering a mix of local and national retailers, a movie theater, and a food court, serving the surrounding residential area more than the big tour-bus crowds that flock to Ala Moana Center. It's a popular, lower-key alternative for shopping and errands among locals and visitors staying on the east side of Honolulu.</p><p>The mall also sits at a key point on Honolulu's public bus network: it's the final stop for one branch of the eastbound #1 bus route, which splits off from the route continuing further east toward Hawaii Kai — a distinction that matters more than it might seem for anyone navigating the city by bus.</p><!--stss:footsteps--><p>Kahala Mall plays a small but genuinely important role in Bon Voyage Season 2, Episode 5's bus-route storyline: there are two eastbound #1 buses that look identical at a glance, one terminating at Kahala Mall before circling back westbound, the other continuing on to Hawaii Kai. Taking the wrong one — as Jin and J-Hope nearly did — means ending up here instead of your actual destination, adding an extra, unplanned leg to an already long public-transit day.</p><p>The near-miss became one of the small, relatable mishaps that defined the episode's public-transportation theme, echoing the kind of real travel confusion any visitor relying on Honolulu's bus system might run into — a detail fans researching the episode's route have specifically flagged as worth knowing before attempting the same trip.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 4211 Waialae Ave in the Kahala neighborhood of Honolulu, served directly by TheBus route #1 (confirm the eastbound branch before boarding)."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typical mall hours, roughly 10am-9pm daily, with some restaurants and the movie theater open later. No admission fee."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, fully accessible indoor/outdoor mall with standard accessible parking and entrances."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Double-check your bus branch"
-        },
-        "text": {
-          "en": "If you're riding the #1 eastbound to Hawaii Kai, confirm with the driver that your specific bus continues past Kahala Mall rather than terminating here, exactly the mix-up the group nearly made."
-        }
-      },
-      {
-        "title": {
-          "en": "Grab a meal at the food court"
-        },
-        "text": {
-          "en": "It's a convenient, less crowded alternative to Waikiki's busier food options if you're already on this side of the island."
-        }
-      },
-      {
-        "title": {
-          "en": "Check the movie theater schedule"
-        },
-        "text": {
-          "en": "Consolidated Theatres at Kahala Mall is a solid, air-conditioned break if you need a rest from a long day of sightseeing."
-        }
-      }
-    ]
-  },
-  {
-    "id": 237,
-    "name": "Yummy Korean B.B.Q. (Koko Marina Center)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 5",
-    "address": "7192 Kalanianaole Hwy, Honolulu, HI 96825",
-    "lat": 21.2814,
-    "lng": -157.7013,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Yummy Korean B.B.Q. is a local Hawaii restaurant chain serving Korean-style plate lunches — closer to a Hawaii-style bento box than traditional tabletop barbecue, despite the name — with locations spread across Oahu. The Koko Marina Center branch sits in the Hawaii Kai neighborhood at the eastern end of Honolulu, serving the surrounding residential area with quick, takeout-friendly Korean comfort food.</p><p>Koko Marina Center itself is a waterfront shopping center built around the Koko Marina, a small boat harbor in Hawaii Kai, with a mix of local restaurants and shops catering mostly to the surrounding neighborhood rather than tourists.</p><!--stss:footsteps--><p>Yummy Korean B.B.Q. at Koko Marina Center is where Jimin and Jungkook grabbed a meal during Bon Voyage Season 2, Episode 5, after the group's long public-transit journey out to Hawaii Kai on the eastern end of Oahu. It's a casual, local-style meal stop reflecting the episode's broader theme of getting around and eating the way an ordinary visitor using public transportation might, rather than a high-profile restaurant destination.</p><p>The stop is notable among fans mainly for being a genuine, verifiable local spot rather than a tourist restaurant — a glimpse of the kind of everyday plate-lunch meal widely eaten across Hawaii, cementing Hawaii Kai as the episode's eastern endpoint before the group's day wound back toward their accommodations.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located inside Koko Marina Center at 7192 Kalanianaole Hwy in Hawaii Kai, reachable via TheBus route #1 eastbound or a roughly 20-minute drive from Waikiki."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily for lunch and dinner, roughly 10:30am-9pm; hours can vary by location. No admission fee — order at the counter."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor, flat shopping-center access; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Set expectations for \"BBQ\""
-        },
-        "text": {
-          "en": "Despite the name, it's plate-lunch style rather than tabletop grilling — order accordingly if you're expecting a sit-down barbecue experience."
-        }
-      },
-      {
-        "title": {
-          "en": "Consider another location"
-        },
-        "text": {
-          "en": "Locals have mixed opinions on this specific branch — if you're after the best version of Yummy's food, it may be worth trying a different Oahu location."
-        }
-      },
-      {
-        "title": {
-          "en": "Enjoy the marina view"
-        },
-        "text": {
-          "en": "Koko Marina Center looks out over the boat harbor — a pleasant, quiet spot to eat outside of Waikiki's crowds."
-        }
-      }
-    ]
-  },
-  {
-    "id": 238,
-    "name": "Foodland (Aina Haina Shopping Center)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 5",
-    "address": "820 W Hind Dr, Honolulu, HI 96821",
-    "lat": 21.2873,
-    "lng": -157.7497,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Foodland is a Hawaii-based supermarket chain founded in 1948, with dozens of stores across the islands known for carrying a strong mix of mainland staples and distinctly local products — poke, Hawaiian-style prepared foods, and island-grown produce alongside standard grocery items. The Aina Haina Shopping Center branch serves the residential Aina Haina neighborhood on Oahu's southeast side, a quiet, mostly local area about ten minutes from Hawaii Kai.</p><p>Like most Foodland locations, it functions as a genuine neighborhood grocery store rather than a tourist stop — a reliable gauge of everyday local life on an island where most visitors never leave the resort and shopping districts.</p><!--stss:footsteps--><p>Foodland at Aina Haina Shopping Center is where the group did some grocery shopping during Bon Voyage Season 2, Episode 5, a short drive from where they were staying in Hawaii Kai. It's a brief, low-key stop in the show, part of the episode's broader focus on everyday local experiences rather than tourist attractions.</p><p>The stop became a small point of local pride among Hawaii Kai-area residents after the episode aired — including, notably, a store employee who was recognized by friends of the blogger who first documented this location, a detail that underlines just how closely this specific, ordinary supermarket run was watched and identified by fans retracing the group's real Oahu itinerary.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 820 W Hind Dr in the Aina Haina Shopping Center, about a 10-minute drive from Hawaii Kai and roughly 20 minutes from Waikiki."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily, roughly 6am-11pm. No admission fee — a standard supermarket."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor store with flat, wide aisles; wheelchair-accessible with standard shopping carts available."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Try the poke counter"
-        },
-        "text": {
-          "en": "Foodland's poke is a well-regarded local staple across all of its branches, this one included."
-        }
-      },
-      {
-        "title": {
-          "en": "Treat it as a local-life stop, not a sight"
-        },
-        "text": {
-          "en": "There's no dramatic scenery here — the appeal is seeing an ordinary slice of Oahu residential life the show rarely shows elsewhere."
-        }
-      },
-      {
-        "title": {
-          "en": "Pick up snacks for later stops"
-        },
-        "text": {
-          "en": "If you're continuing on to the North Shore or Waikiki locations on this list, it's a good spot to stock up before a longer day out."
-        }
-      }
-    ]
-  },
-  {
-    "id": 239,
-    "name": "North Shore Shark Adventures",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hale'iwa, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "66-105 Hale'iwa Rd, Hale'iwa, HI 96712",
-    "lat": 21.5944,
-    "lng": -158.1119,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>North Shore Shark Adventures is a boat tour operator running cage-diving and shark-viewing excursions roughly three miles off Oahu's North Shore, where wild sharks — mostly Galapagos and sandbar sharks — are regularly sighted in open water. Tours depart from Hale'iwa Boat Harbor and typically last around two hours, including the boat ride out and back.</p><p>Sharks hold deep cultural significance in Hawaii, long regarded in Hawaiian tradition as 'aumakua — family guardian spirits, often believed to be ancestors reborn as animals — and Hawaiian mythology includes several shark gods. The tour leans into this cultural context alongside the thrill of seeing wild sharks up close from inside a submerged viewing cage.</p><!--stss:footsteps--><p>North Shore Shark Adventures is where the group went on their shark-cage tour during Bon Voyage Season 2, Episode 6, part of an episode centered on Oahu's major tourist destinations. The open-ocean boat ride is known to cause seasickness for some passengers, and J-Hope and V both experienced this firsthand during the outing — one of the more memorably rough, candid moments of the episode.</p><p>The stop fits into the episode's broader tour of North Shore attractions, giving the members (and viewers) a genuine, unscripted look at wild sharks in their natural habitat, framed by the same cultural respect for sharks that's deeply embedded in Hawaiian tradition.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Tours depart from Hale'iwa Boat Harbor on Oahu's North Shore, about an hour's drive from Waikiki. Check-in is at the harbor before the scheduled departure."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Tours run multiple times daily, weather permitting; booking in advance online is recommended. Pricing is per person for the roughly two-hour excursion."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Involves boarding a boat and, for those who choose to enter the cage, getting in open water — not accessible for visitors with mobility limitations; boat-only viewing (without entering the cage) is typically available as an alternative."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Take seasickness precautions"
-        },
-        "text": {
-          "en": "Given what happened to J-Hope and V on screen, anyone prone to motion sickness should consider medication or remedies before boarding."
-        }
-      },
-      {
-        "title": {
-          "en": "Book ahead, especially in summer"
-        },
-        "text": {
-          "en": "These tours are popular and weather-dependent — reserve a spot in advance rather than hoping to walk up."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring a waterproof camera"
-        },
-        "text": {
-          "en": "Even if you don't enter the cage, sharks are often visible from the boat itself — worth having a camera that can handle ocean spray."
-        }
-      }
-    ]
-  },
-  {
-    "id": 240,
-    "name": "Hale'iwa",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hale'iwa, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "Hale'iwa, HI 96712",
-    "lat": 21.5944,
-    "lng": -158.1036,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Hale'iwa is the main town of Oahu's North Shore, widely known as the surfing capital of the world thanks to the legendary big-wave breaks along the nearby coastline, including Banzai Pipeline and Waimea Bay. Its small, historic plantation-era downtown is lined with surf shops, art galleries, and some of Oahu's most famous casual eateries, giving it a laid-back character distinct from the resort-driven atmosphere of Waikiki.</p><p>The town is also a convenient base for exploring the rest of the North Shore, within easy reach of the Dole Plantation's pineapple fields and the Polynesian Cultural Center further up the coast — making it as much a gateway to the area's other attractions as a destination in its own right.</p><!--stss:footsteps--><p>Hale'iwa is the base for several of the group's North Shore stops during Bon Voyage Season 2, Episode 6 — both Giovanni's Shrimp Truck and Teddy's Bigger Burgers, two of the episode's food stops, are located in the town, alongside the nearby departure point for the North Shore Shark Adventures boat tour. The town's famously relaxed, surf-town atmosphere stands in clear contrast to the dense, high-rise energy of Waikiki later in the same episode.</p><p>As the day's North Shore stretch of sightseeing wound down, the group's path through Hale'iwa set up the shift toward the episode's second half in Waikiki, pairing Oahu's laid-back surf culture with its most famous tourist strip within the same hour-long episode.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Reached via Kamehameha Highway, about an hour's drive from Waikiki or downtown Honolulu. No direct rail access; a rental car or North Shore-bound bus/shuttle is the practical option."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "The town itself is open and free to walk at all hours; individual shop and restaurant hours vary, generally 9am-9pm."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, walkable small-town streets with sidewalks throughout; mostly wheelchair-accessible, though some older storefronts have a step at the entrance."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Plan for traffic"
-        },
-        "text": {
-          "en": "The two-lane highway into Hale'iwa backs up badly on weekends and during good surf — leave extra time, especially in the afternoon."
-        }
-      },
-      {
-        "title": {
-          "en": "Walk the whole main strip"
-        },
-        "text": {
-          "en": "Both Giovanni's and Teddy's, along with most of the town's other shops, are within easy walking distance of each other."
-        }
-      },
-      {
-        "title": {
-          "en": "Watch the surf if conditions allow"
-        },
-        "text": {
-          "en": "Depending on the season, the beaches just outside town can have some of the most dramatic big-wave surfing anywhere in the world — worth a look even if you don't surf yourself."
-        }
-      }
-    ]
-  },
-  {
-    "id": 241,
-    "name": "Giovanni's Shrimp Truck",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hale'iwa, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "66-472 Kamehameha Hwy, Kahuku, HI 96731",
-    "lat": 21.6453,
-    "lng": -157.9513,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Giovanni's Shrimp Truck is one of Oahu's most famous food trucks, a fixture of the North Shore's \"shrimp truck\" scene that's become a required stop for visitors touring the area. Painted bright yellow and parked along Kamehameha Highway, it's best known for its garlic shrimp plate — shell-on shrimp sautéed in a generous amount of garlic and butter, served over rice — a dish that's become almost synonymous with North Shore food culture.</p><p>The truck's long lines, especially around lunchtime, are part of its reputation: it's consistently one of the busiest, most photographed food stops on the entire North Shore, drawing both first-time visitors and Oahu locals making a return trip specifically for the shrimp.</p><!--stss:footsteps--><p>Giovanni's Shrimp Truck is one of the two famous North Shore food stops visited during Bon Voyage Season 2, Episode 6, as the group worked their way through Hale'iwa's most iconic eateries. Its garlic shrimp plate is the truck's signature dish and almost certainly what's featured in the episode, consistent with why it's one of the most recommended stops on the entire North Shore.</p><p>As one of the two paired food stops in this stretch of the episode (alongside Teddy's Bigger Burgers), Giovanni's represents the kind of must-try, extremely popular local food spot that even longtime Oahu residents sometimes put off visiting simply because of the crowds and traffic — a detail fans researching the location have specifically noted.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located along Kamehameha Highway in the Kahuku/Hale'iwa corridor of Oahu's North Shore, about an hour's drive from Waikiki. Roadside parking is available but can fill up during peak times."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily, roughly 10:30am-6pm, though hours can shift. No admission fee — pay per order at the truck window."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Outdoor, walk-up counter service with picnic-style seating; not fully wheelchair-accessible due to uneven roadside ground, though the ordering window itself is at street level."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Go early or go hungry for a wait"
-        },
-        "text": {
-          "en": "Lines build up fast around midday — an early lunch or late-afternoon visit means less time waiting."
-        }
-      },
-      {
-        "title": {
-          "en": "Order the garlic shrimp"
-        },
-        "text": {
-          "en": "It's the truck's signature dish and the reason for its fame — a safe default order for a first visit."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring cash and wet wipes"
-        },
-        "text": {
-          "en": "Shell-on shrimp means eating with your hands — napkins and a way to clean up afterward go a long way."
-        }
-      }
-    ]
-  },
-  {
-    "id": 242,
-    "name": "Teddy's Bigger Burgers (Hale'iwa)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Hale'iwa, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "66-197 Kamehameha Hwy, Hale'iwa, HI 96712",
-    "lat": 21.5908,
-    "lng": -158.1037,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Teddy's Bigger Burgers is a Hawaii-born burger chain, founded on Oahu and now with locations across the US mainland and internationally in Japan, the Philippines, and beyond — though many visitors are surprised to learn it started as a purely local brand. The Hale'iwa location serves the chain's signature hand-formed burgers, hand-cut fries, and old-fashioned milkshakes in a casual, counter-service setting on the North Shore's main strip.</p><p>Despite its global expansion, the chain has kept its reputation for quality consistent, and its North Shore locations remain popular with both tourists exploring Hale'iwa and locals who've been loyal customers since the original restaurant opened.</p><!--stss:footsteps--><p>Teddy's Bigger Burgers is the second of the two paired North Shore food stops in Bon Voyage Season 2, Episode 6, alongside Giovanni's Shrimp Truck, both located in Hale'iwa. The burger stop offered the group a different style of North Shore food from the shrimp truck's local specialty — a more familiar, American-diner-style meal with a distinctly Hawaiian point of origin.</p><p>Its inclusion in the episode highlights a detail a lot of fans don't realize: despite feeling like a mainland chain given its international reach, Teddy's genuinely started on Oahu, making it as much a piece of real Hawaii food culture as the more obviously local spots elsewhere in the episode.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 66-197 Kamehameha Hwy in Hale'iwa town, within easy walking distance of Giovanni's Shrimp Truck and the rest of the main strip."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily, roughly 10am-9pm. No admission fee — standard counter-service burger menu."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor counter service with flat, wheelchair-accessible seating and entrance."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Order a milkshake with your burger"
-        },
-        "text": {
-          "en": "It's a classic pairing here and one of the chain's standout menu items beyond the burgers themselves."
-        }
-      },
-      {
-        "title": {
-          "en": "Remember it's a genuine Hawaii original"
-        },
-        "text": {
-          "en": "Despite its mainland and international locations, this chain started right here on Oahu — worth knowing before writing it off as \"just another burger chain.\""
-        }
-      },
-      {
-        "title": {
-          "en": "Pair it with Giovanni's"
-        },
-        "text": {
-          "en": "Since both are in the same small town, it's easy to split a North Shore food stop between the two on the same visit."
-        }
-      }
-    ]
-  },
-  {
-    "id": 243,
-    "name": "Waikiki",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "Waikiki, Honolulu, HI 96815",
-    "lat": 21.2793,
-    "lng": -157.8294,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Waikiki is Honolulu's most famous neighborhood, a roughly two-mile stretch of coastline where the vast majority of Oahu's hotels are concentrated, making it the default base for most visitors to the island. Its mix of high-rise resorts, beachfront promenades, shopping centers and restaurants gives it an atmosphere closer to a dense international resort town than the rest of the more residential or rural parts of Oahu.</p><p>Once a retreat for Hawaiian royalty, Waikiki was transformed over the 20th century into the center of the islands' tourism industry, and today it draws visitors from around the world in numbers so high that the neighborhood can feel, at times, more like an international crossroads than a distinctly Hawaiian place.</p><!--stss:footsteps--><p>Waikiki is the setting for the entire second half of Bon Voyage Season 2, Episode 6, following the group's morning on the North Shore — a deliberate contrast within a single episode between Oahu's laid-back surf town and its busiest, most tourist-dense neighborhood. Every other location in this episode from Kapiolani Park onward (Waikiki Beach, the Duke Kahanamoku statue, King's Village, and the various restaurants and shops) is located within this single stretch of coastline.</p><p>The group's starting point for the Waikiki half of the episode was right in front of Waikiki Beach, and from there they worked their way through several of the neighborhood's most iconic stops — a tourist's-eye tour of the area that doubles as a genuine walking guide to Waikiki's highlights for anyone retracing the episode.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Served by Honolulu's rail and bus network and within a short drive or rideshare of Honolulu International Airport; most visitors stay within walking distance of everything in the neighborhood."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Public areas of Waikiki (streets, the beach itself) are accessible at all hours; individual businesses keep their own hours."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Mostly flat, dense urban neighborhood with sidewalks and a beachfront promenade throughout; wheelchair-accessible in most areas."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Walk it like the group did"
-        },
-        "text": {
-          "en": "Nearly every other stop on this list from episode 6 is within walking distance inside Waikiki — comfortable shoes are enough to retrace the whole route."
-        }
-      },
-      {
-        "title": {
-          "en": "Expect crowds"
-        },
-        "text": {
-          "en": "Waikiki is consistently one of the busiest tourist areas in Hawaii — manage expectations, especially around Kalakaua Avenue in the evening."
-        }
-      },
-      {
-        "title": {
-          "en": "Venture beyond the main strip for better value"
-        },
-        "text": {
-          "en": "Prices directly on the beachfront run high; a block or two inland often gets the same food and shops for noticeably less."
-        }
-      }
-    ]
-  },
-  {
-    "id": 244,
-    "name": "Kapiolani Park",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "3840 Paki Ave, Honolulu, HI 96815",
-    "lat": 21.2669,
-    "lng": -157.8194,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kapiolani Park is Hawaii's oldest and largest public park, a 300-acre green space at the eastern end of Waikiki, bordered by the Honolulu Zoo and within walking distance of Waikiki Beach. Established in 1877 and named for Queen Kapi'olani, it's the site of Honolulu's largest recurring public events — the Okinawan Festival, Obon season celebrations, and numerous concerts and festivals — thanks to its large central stage and open lawns.</p><p>Beyond its role as an event space, the park is a genuine community gathering spot for joggers, picnickers, and families, offering a wide, open green counterpoint to the dense hotel towers that define the rest of Waikiki just steps away.</p><!--stss:footsteps--><p>Kapiolani Park is where the group began the Waikiki portion of their day in Bon Voyage Season 2, Episode 6, using the park as a starting point before working their way through the neighborhood's other landmarks. Its location next to the Honolulu Zoo and a short walk from Waikiki Beach made it a natural launching point for the rest of the episode's tourist-destination tour.</p><p>The park's open lawns and event-space character also made a fitting contrast to the dense commercial strip the group explored for the rest of the episode — a brief, green breathing space before diving into Waikiki's busier shops, restaurants and beachfront attractions.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at the eastern (Diamond Head) end of Waikiki, adjacent to the Honolulu Zoo; walkable from most Waikiki hotels or reachable by TheBus."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open daily, generally dawn to dusk for general park use (specific event hours vary). Free admission to the park itself."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, open lawns and paved paths throughout; wheelchair and stroller-friendly."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Check for festivals"
-        },
-        "text": {
-          "en": "If your visit coincides with the Okinawan Festival, Obon season, or another scheduled event, the park's center stage is worth building time around."
-        }
-      },
-      {
-        "title": {
-          "en": "Visit the zoo next door"
-        },
-        "text": {
-          "en": "The Honolulu Zoo sits directly alongside the park, an easy add-on if you're bringing kids."
-        }
-      },
-      {
-        "title": {
-          "en": "Start your own Waikiki walk here"
-        },
-        "text": {
-          "en": "Following the group's own route, it's a logical starting point before heading toward Waikiki Beach and the rest of the neighborhood's landmarks."
-        }
-      }
-    ]
-  },
-  {
-    "id": 245,
-    "name": "Waikiki Beach",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "Waikiki Beach, Honolulu, HI 96815",
-    "lat": 21.2766,
-    "lng": -157.8278,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Waikiki Beach is Hawaii's most famous stretch of sand, a roughly two-mile crescent of shoreline fronting Waikiki's dense row of hotels. Its calm, reef-protected waters and iconic view of Diamond Head have made it the single most visited beach in the islands, drawing enormous numbers of visitors who stay in the surrounding resorts within easy walking distance of the water.</p><p>The beach's popularity comes with real tradeoffs: it's consistently crowded, and many Oahu locals prefer quieter, less developed beaches elsewhere on the island. Even so, its central location, calm swimming conditions, and postcard views keep it the default beach destination for most first-time visitors to Hawaii.</p><!--stss:footsteps--><p>Waikiki Beach is where Suga and V took a beach walk together during Bon Voyage Season 2, Episode 6, part of the group's broader exploration of Waikiki's most iconic tourist landmarks. The walk captures the beach's famous shoreline and the dense hotel skyline behind it — the quintessential Waikiki image most visitors associate with Hawaii before they've even arrived.</p><p>As the beach the group's day in Waikiki was centered around — their starting point for the episode was directly in front of it — Waikiki Beach effectively anchors the entire second half of Episode 6, with nearly every other Waikiki stop on this list within a short walk of this stretch of sand.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Directly accessible from nearly every hotel along Kalakaua Avenue in Waikiki; no separate transportation needed if you're staying in the neighborhood."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Public beach access is available 24 hours; beach equipment rental stands typically operate roughly 8am-6pm."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, sandy beach with paved beachfront promenade access; wheelchairs with beach-specific wheels are available for rent in some areas, though standard wheelchairs struggle on sand."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Go early to beat the crowds"
-        },
-        "text": {
-          "en": "Waikiki Beach fills up fast by mid-morning — an early walk gets you closer to the quieter version seen in the episode."
-        }
-      },
-      {
-        "title": {
-          "en": "Try a beach walk, not just sunbathing"
-        },
-        "text": {
-          "en": "Following Suga and V's lead, walking the length of the beach is a good way to take in the view without needing to swim or rent equipment."
-        }
-      },
-      {
-        "title": {
-          "en": "Consider a quieter beach for actual swimming"
-        },
-        "text": {
-          "en": "If you want calmer, less crowded water, several beaches a short drive away offer a similar experience with far fewer people."
-        }
-      }
-    ]
-  },
-  {
-    "id": 246,
-    "name": "Duke Kahanamoku Statue",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "Kalakaua Ave, Honolulu, HI 96815",
-    "lat": 21.2759,
-    "lng": -157.8264,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>The Duke Kahanamoku statue stands on the beachfront promenade in front of Waikiki Beach, honoring the Hawaiian Olympic swimmer widely credited with popularizing surfing around the world. Born in Honolulu in 1890, Kahanamoku won multiple Olympic gold medals in swimming and later traveled internationally giving surfing demonstrations, introducing the sport to audiences in Australia, California and beyond who had never seen it before.</p><p>The bronze statue, depicting Kahanamoku with arms outstretched and often draped in fresh flower lei left by visitors, has become one of the most recognizable and frequently photographed landmarks in Waikiki — a tribute to a figure still regarded as the father of modern surfing nearly a century after his competitive career.</p><!--stss:footsteps--><p>The Duke Kahanamoku statue is where Namjoon and J-Hope stopped for a photo during Bon Voyage Season 2, Episode 6, part of the group's tour through Waikiki's most iconic landmarks. As one of the most photographed spots in the entire neighborhood, it's a natural stop for any visitor working through a checklist of Waikiki's must-see sights, which the episode largely follows.</p><p>The statue's significance goes beyond just a photo backdrop — Kahanamoku's role in popularizing surfing internationally connects directly to Hawaii's broader surf culture, a theme that runs through several other stops in this same episode, including Hale'iwa's famous North Shore surf breaks earlier in the day.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located directly on the beachfront promenade in front of Waikiki Beach, an easy walk from anywhere in central Waikiki."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Publicly accessible at all hours, no admission fee."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, paved beachfront promenade; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Visit early for a clear photo"
-        },
-        "text": {
-          "en": "Like most of Waikiki's landmarks, it draws steady crowds — an early morning visit means an easier, less crowded photo."
-        }
-      },
-      {
-        "title": {
-          "en": "Learn his story before you go"
-        },
-        "text": {
-          "en": "Knowing Kahanamoku's actual significance to surfing history makes the stop far more meaningful than just another photo spot."
-        }
-      },
-      {
-        "title": {
-          "en": "Look for the lei"
-        },
-        "text": {
-          "en": "Visitors regularly leave fresh flower lei on the statue — part of its living, continually renewed tribute."
-        }
-      }
-    ]
-  },
-  {
-    "id": 247,
-    "name": "King's Village",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "131 Kaiulani Ave, Honolulu, HI 96815",
-    "lat": 21.2788,
-    "lng": -157.8282,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>King's Village is a small, historic-themed shopping center on Kaiulani Avenue in Waikiki, built in a 19th-century architectural style evoking the era of the Hawaiian monarchy, with cobblestone walkways and a changing-of-the-guard ceremony that once ran regularly as a tourist attraction. Its shops carry a mix of jewelry, souvenirs, and specialty goods, offering a smaller, more intimate shopping experience than Waikiki's larger malls.</p><p>The center has faced years of on-and-off redevelopment proposals, and its future layout and tenants may continue to change — a detail worth keeping in mind for anyone specifically trying to retrace what the center looked like during the group's visit.</p><!--stss:footsteps--><p>King's Village is where Suga and V bought matching bracelets and necklaces during Bon Voyage Season 2, Episode 6, a quick, sentimental shopping stop amid the group's broader tour of Waikiki. It's a smaller, easy-to-miss location compared to some of the episode's bigger landmarks, but a meaningful one for fans drawn to the pair's matching-jewelry moments throughout the show.</p><p>The stop reflects the more low-key, personal side of the group's Waikiki day — a brief pause for a shared souvenir between two members, in contrast to the larger group landmarks like the Duke Kahanamoku statue or Waikiki Beach that frame the rest of the episode.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 131 Kaiulani Ave in Waikiki, an easy walk from Waikiki Beach and most central Waikiki hotels."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Individual shop hours vary, generally late morning through evening; the center itself has faced redevelopment changes over the years, so current layout and tenants may differ from what's shown in the episode."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, outdoor walkway shopping center; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Confirm current status before visiting"
-        },
-        "text": {
-          "en": "Given years of redevelopment talk, it's worth checking that the center is still operating in its familiar form before planning a dedicated visit."
-        }
-      },
-      {
-        "title": {
-          "en": "Look for matching jewelry of your own"
-        },
-        "text": {
-          "en": "Following Suga and V's lead, the center's jewelry shops are a fitting spot for a shared souvenir with a travel companion."
-        }
-      },
-      {
-        "title": {
-          "en": "Keep it brief"
-        },
-        "text": {
-          "en": "It's a small center — a quick stop rather than a destination to build a long visit around."
-        }
-      }
-    ]
-  },
-  {
-    "id": 248,
-    "name": "Marukame Udon",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "2310 Kuhio Ave, Honolulu, HI 96815",
-    "lat": 21.2795,
-    "lng": -157.8294,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Marukame Udon is a Japanese udon noodle shop that opened its Waikiki location in 2013, part of a chain with roots in Japan serving fresh, hand-pulled udon noodles cafeteria-style — order at the counter, watch your noodles made in front of you, then choose toppings and tempura as you move down the line. It quickly became one of Waikiki's most popular casual restaurants, known for genuinely excellent udon at an affordable price.</p><p>Its popularity comes with a well-known catch: long lines are a near-constant feature, especially during peak lunch and dinner hours, though the queue typically moves fast given the restaurant's quick, assembly-line-style service. Visiting during off-peak hours — locals suggest a mid-afternoon window — can mean a wait of just a few minutes instead of a much longer one.</p><!--stss:footsteps--><p>Marukame Udon is included in this list of Bon Voyage Season 2, Episode 6's Waikiki locations even though the group didn't end up eating there, likely deterred by the restaurant's famously long lines — but it's a prominent enough Waikiki landmark that it's worth knowing about regardless, especially for anyone retracing the group's route through the neighborhood.</p><p>As one of Waikiki's most consistently recommended casual restaurants, it represents the kind of popular, genuinely good food spot that even a group moving through a packed sightseeing itinerary might reasonably pass on, simply due to time and crowd constraints — a small, relatable detail in an otherwise landmark-heavy episode.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 2310 Kuhio Ave in central Waikiki, within walking distance of most Waikiki hotels and other locations on this list."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily, roughly 10:30am-10pm. No admission fee — cafeteria-style ordering and payment at the end of the line."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor, flat cafeteria-style restaurant; wheelchair-accessible, though the ordering line can be narrow during peak crowds."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Visit around 2-3pm"
-        },
-        "text": {
-          "en": "This off-peak window tends to have dramatically shorter lines than the main lunch and dinner rushes."
-        }
-      },
-      {
-        "title": {
-          "en": "Add tempura as you go through the line"
-        },
-        "text": {
-          "en": "Part of the appeal is the self-serve tempura selection available as you move toward checkout — don't skip it."
-        }
-      },
-      {
-        "title": {
-          "en": "Don't be put off by the line length"
-        },
-        "text": {
-          "en": "The cafeteria-style setup moves quickly even when the queue looks long — it rarely takes as long as it appears from the street."
-        }
-      }
-    ]
-  },
-  {
-    "id": 249,
-    "name": "ABC Store (Waikiki)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "2229 Kalakaua Ave, Honolulu, HI 96815",
-    "lat": 21.2784,
-    "lng": -157.8281,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>ABC Stores are famously ubiquitous in Waikiki — with a location on nearly every block of the neighborhood's main streets, they're the default option for sunscreen, snacks, souvenirs and last-minute essentials for the dense concentration of hotel guests staying nearby. Waikiki's branches are generally considered among the chain's most tourist-priced locations, reflecting the area's high foot traffic and hotel-district rents.</p><p>Even locals who rely on ABC Store elsewhere on the islands tend to avoid the Waikiki branches except in a pinch, given the markup — a dynamic distinct from the more everyday, locally relied-upon version of the chain found in less touristy parts of Hawaii, including the Kailua-Kona branch visited during the group's earlier trip to the Big Island.</p><!--stss:footsteps--><p>This Waikiki branch of ABC Store is a callback within the group's own Bon Voyage Season 2 journey — the chain had already appeared earlier in the season during the group's time in Kailua-Kona, and its return here in Episode 6 underscores just how inescapable ABC Store is across every part of a Hawaii trip, island to island.</p><p>As with the earlier Big Island stop, the Waikiki branch functions as a practical, everyday errand stop within the episode rather than a planned sightseeing destination — a small, recurring detail that ties together the group's full Hawaii itinerary across both the Big Island and Oahu legs of their trip.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located on Kalakaua Avenue in central Waikiki; given the chain's density in the neighborhood, multiple branches are within a short walk of nearly any Waikiki hotel."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Most Waikiki ABC Store branches are open daily, typically 6am-midnight or later. No admission fee, open to all shoppers."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Street-level entrance, flat and wheelchair-accessible, standard convenience-store aisle widths."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Expect tourist pricing"
-        },
-        "text": {
-          "en": "Waikiki branches are known for higher markups than ABC Stores elsewhere in Hawaii — fine for true emergencies, less ideal for planned souvenir shopping."
-        }
-      },
-      {
-        "title": {
-          "en": "Use it for genuine essentials"
-        },
-        "text": {
-          "en": "Sunscreen, snacks and basic beach gear are the most practical things to grab here rather than big-ticket souvenirs."
-        }
-      },
-      {
-        "title": {
-          "en": "Compare it to the Big Island branch"
-        },
-        "text": {
-          "en": "If you're following the group's full Hawaii trip, this Waikiki stop makes an interesting contrast to the more local-feeling ABC Store in Kailua-Kona from earlier in the season."
-        }
-      }
-    ]
-  },
-  {
-    "id": 250,
-    "name": "Mikawon Korean Restaurant",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "Kuhio Ave & Nahua St, Honolulu, HI 96815",
-    "lat": 21.2801,
-    "lng": -157.8311,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Mikawon Korean Restaurant is a Korean restaurant tucked on the corner of Kuhio Avenue and Nahua Street in Waikiki, a bit removed from the neighborhood's busiest tourist strip. It serves an authentic, general Korean menu without a single signature specialty dish, instead offering a broad range of classic Korean home-style cooking in a straightforward, unpretentious setting — reliably good, if a bit higher-priced than some comparable spots.</p><p>Its slightly out-of-the-way location on a quieter corner of Waikiki has helped it stay a more local-feeling option than some of the neighborhood's more heavily trafficked restaurants, popular with both visiting Koreans and Korean food fans generally.</p><!--stss:footsteps--><p>Mikawon Korean Restaurant is where the '94-line members and Jin, J-Hope and Jimin (JJJ) went for a meal during Bon Voyage Season 2, Episode 6 — a stop that became unexpectedly significant to fans after someone discovered and photographed the restaurant's signage following the group's visit, helping confirm the exact location. The restaurant has since changed its signage at least once since the episode aired, a detail worth keeping in mind for anyone trying to visually match the spot to what's shown on screen.</p><p>The meal stands out among the episode's food stops specifically because of how much detective work fans put into confirming it — unlike the more obviously landmark locations elsewhere in the episode, pinpointing this specific restaurant corner required real community effort from fans piecing together clues from the broadcast itself.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located on the corner of Kuhio Avenue and Nahua Street in Waikiki, a short walk from the neighborhood's main Kalakaua Avenue strip but slightly removed from the busiest tourist blocks."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily for lunch and dinner; exact hours can vary, so checking ahead is worthwhile. No admission fee — standard restaurant menu, on the higher end for the area."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Ground-floor restaurant with flat street-level access; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Don't rely on old signage photos"
-        },
-        "text": {
-          "en": "The restaurant's exterior signage has changed at least once since the episode aired — use the street address/corner rather than matching a specific sign."
-        }
-      },
-      {
-        "title": {
-          "en": "Expect general, not specialty, Korean food"
-        },
-        "text": {
-          "en": "There's no single standout dish here — it's a solid all-around Korean menu rather than a destination for one specific item."
-        }
-      },
-      {
-        "title": {
-          "en": "Book ahead if visiting as a group"
-        },
-        "text": {
-          "en": "Given its fan-destination status post-episode, larger groups may want to call ahead, especially during peak Waikiki tourist season."
-        }
-      }
-    ]
-  },
-  {
-    "id": 251,
-    "name": "Seoul Jung Restaurant",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "2460 Koa Ave, Honolulu, HI 96815",
-    "lat": 21.2776,
-    "lng": -157.8274,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Seoul Jung Restaurant is a Korean restaurant located inside the Waikiki Resort Hotel, serving authentic Korean cuisine in a hotel-restaurant setting a short walk from Waikiki Beach. Its menu covers traditional Korean dishes in a sit-down format, distinguishing it from the more casual, plate-lunch-style Korean food found at some of Oahu's other local spots.</p><p>Reviews of the restaurant's food and service have been mixed over the years, and it's generally considered a bit higher-priced than comparable Korean restaurants elsewhere on the island — details worth weighing for anyone specifically planning a visit based on the group's own stop here.</p><!--stss:footsteps--><p>Seoul Jung Restaurant is where V and Suga ate during Bon Voyage Season 2, Episode 6, one of two separate Korean restaurant stops the group made in Waikiki within the same episode (alongside Mikawon, visited by a different subgroup). Its setting inside the Waikiki Resort Hotel gave the pair a quieter, more contained dining environment than a standalone street-level restaurant.</p><p>The stop adds to a running theme across the group's Hawaii trip of seeking out Korean food options while traveling — a small but consistent detail across multiple Bon Voyage episodes, reflecting a genuine, relatable preference many travelers share for familiar cuisine even while exploring somewhere new.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located inside the Waikiki Resort Hotel at 2460 Koa Ave, a short walk from Waikiki Beach and central Waikiki."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Typically open daily for dinner service; exact hours can vary, so checking ahead or booking is worthwhile. No admission fee — standard restaurant menu, on the higher end."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Located inside a hotel with standard elevator/ground-floor access; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Check recent reviews before booking"
-        },
-        "text": {
-          "en": "Service and food quality reports have varied over time — a quick check closer to your visit date is worth the few minutes it takes."
-        }
-      },
-      {
-        "title": {
-          "en": "Book ahead for dinner"
-        },
-        "text": {
-          "en": "As a hotel restaurant with limited seating, reservations are a safer bet than walking in, especially during busy Waikiki season."
-        }
-      },
-      {
-        "title": {
-          "en": "Compare it with Mikawon"
-        },
-        "text": {
-          "en": "If you're trying both Korean restaurant stops from this episode, Seoul Jung's hotel setting offers a different atmosphere worth comparing to Mikawon's standalone corner location."
-        }
-      }
-    ]
-  },
-  {
-    "id": 252,
-    "name": "H&M (Waikiki)",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 6",
-    "address": "2233 Kalakaua Ave, Honolulu, HI 96815",
-    "lat": 21.2789,
-    "lng": -157.8285,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>This H&M sits directly on Kalakaua Avenue, Waikiki's main commercial strip, one of several international fashion retailers that have moved into the neighborhood's high-traffic storefronts over the years. Beyond the shopping itself, the sidewalk directly in front of the store has become an informal, almost nightly gathering spot for street performers — particularly a group of b-boy dancers who regularly draw a crowd with impromptu breakdancing performances.</p><p>The combination of heavy foot traffic, a wide sidewalk, and Waikiki's evening crowds has made this specific stretch of storefront one of the more reliable spots on the strip to catch genuine, unplanned street performance, rather than a scheduled or ticketed show.</p><!--stss:footsteps--><p>The sidewalk in front of this H&M is where the group watched a group of b-boy dancers performing during Bon Voyage Season 2, Episode 6 — an unplanned, candid street-performance moment that fit naturally into the episode's walk through Waikiki's main strip. It's one of the more spontaneous, less touristy segments of the episode, capturing a genuine piece of only-in-Waikiki evening street life rather than a planned attraction.</p><p>The detail that these performers are reliably present most nights makes this an easy spot for fans to recreate the same experience, rather than a one-off moment that happened to be filmed — a rare case in the episode of a location whose appeal (the performance) isn't tied to a fixed opening-hours attraction.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located directly on Kalakaua Avenue in central Waikiki, an easy walk from Waikiki Beach and most of the neighborhood's other locations on this list."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Store hours are typically 9am-11pm; the street performers tend to appear in the evening, most nights, though timing isn't officially scheduled."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, wide Waikiki sidewalk; wheelchair-accessible."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Go in the evening for the performers"
-        },
-        "text": {
-          "en": "The b-boy dancers that drew the group's attention tend to show up most nights after dark, not during the day."
-        }
-      },
-      {
-        "title": {
-          "en": "Tip the performers"
-        },
-        "text": {
-          "en": "As with most informal street performances, a small tip is the expected, appreciated way to support the dancers if you stop to watch."
-        }
-      },
-      {
-        "title": {
-          "en": "Combine it with a Kalakaua Avenue walk"
-        },
-        "text": {
-          "en": "This stretch of the strip is dense with shops and restaurants — easy to pair with other nearby errands or window shopping."
-        }
-      }
-    ]
-  },
-  {
-    "id": 253,
-    "name": "Kualoa Regional Park",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kaneohe, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 7",
-    "address": "49-479 Kamehameha Hwy, Kaneohe, HI 96744",
-    "lat": 21.5219,
-    "lng": -157.8406,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kualoa Regional Park is a waterfront park on Oahu's windward (eastern) coast, directly across the water from Kualoa Ranch, with sweeping views of Kaneohe Bay and the small, distinctively shaped island of Mokoli'i just offshore. Often nicknamed \"Chinaman's Hat\" for its conical silhouette, Mokoli'i holds deep roots in Hawaiian mythology — according to tradition, it's the remnant of a giant lizard's tail, severed by the goddess Hi'iaka.</p><p>The park itself is a popular, low-key spot for picnicking, camping and simply taking in the view, with wide grassy lawns running right up to the shoreline and one of the most photographed island backdrops on Oahu's windward side.</p><!--stss:footsteps--><p>Kualoa Regional Park is where the group ate lunch during Bon Voyage Season 2, Episode 7, with Mokoli'i Island visible across the water as a dramatic natural backdrop to the meal. Their food came from Mike's Huli Chicken, a well-known local rotisserie chicken stand that's also been featured on Food Network — giving the stop a genuine local-food credential on top of the scenery.</p><p>The park's view of Mokoli'i connects directly to the episode's broader theme of hands-on, nature-focused activities on Oahu's windward side, setting up the ranch tour and cultural center visit that followed later the same episode — a quieter, scenic meal before the day's more active stops.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 49-479 Kamehameha Hwy on Oahu's windward coast, about a 45-minute drive from Waikiki via the Pali or Likelike Highway."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open daily; camping requires a permit from the City and County of Honolulu. No admission fee for day use."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, grassy park with paved parking and pathways near the entrance; wheelchair-accessible in the main park areas."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Order from Mike's Huli Chicken"
-        },
-        "text": {
-          "en": "Following the group's lead, the nearby rotisserie chicken stand is a genuinely well-regarded local food stop worth pairing with the park visit."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring a picnic blanket"
-        },
-        "text": {
-          "en": "The park's open lawns facing Mokoli'i are made for exactly this kind of relaxed, scenic outdoor meal."
-        }
-      },
-      {
-        "title": {
-          "en": "Learn the Mokoli'i legend"
-        },
-        "text": {
-          "en": "Knowing the island's mythological backstory as a severed lizard's tail adds real context to what's otherwise just a striking view."
-        }
-      }
-    ]
-  },
-  {
-    "id": 254,
-    "name": "Kualoa Ranch",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kaneohe, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 7",
-    "address": "49-560 Kamehameha Hwy, Kaneohe, HI 96744",
-    "lat": 21.5262,
-    "lng": -157.8389,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kualoa Ranch is a 4,000-acre private nature reserve and working ranch on Oahu's windward coast, offering guided tours, horseback riding, ATV rides, zipline courses and more across its dramatic valley and mountain terrain. Beyond its activities, the ranch has become one of Hollywood's most sought-after filming locations, with its jungle valleys and distinctive mountain backdrops standing in for fictional worlds in a remarkable number of major productions.</p><p>Godzilla, both Jurassic Park films shot on Oahu, Hawaii Five-0, and Lost have all filmed scenes at Kualoa Ranch, among many other productions — guided tours often specifically highlight exact filming spots, giving visitors a chance to stand in locations they may recognize from decades of movies and television.</p><!--stss:footsteps--><p>Kualoa Ranch is one of the hands-on activity stops of Bon Voyage Season 2, Episode 7, an episode built around more active, physical experiences than some of the group's earlier, more sightseeing-focused days. The ranch's combination of dramatic natural scenery and film-history significance made it a fitting stop for an episode themed around engaging directly with Hawaii's landscape rather than just viewing it.</p><p>Following their scenic lunch at Kualoa Regional Park just across the water, the group's visit to the ranch itself continued the day's focus on Oahu's windward coast, pairing the park's quiet lunch spot with the ranch's more active, guided exploration of the same dramatic valley terrain.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 49-560 Kamehameha Hwy, directly across Kamehameha Highway from Kualoa Regional Park, about a 45-minute drive from Waikiki."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Tour times vary by activity and are typically scheduled throughout the day; advance booking is recommended. Admission/pricing is per activity or tour package."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Varies significantly by activity — some tours (like certain bus tours) are more accessible, while horseback riding, ATV tours and ziplining have their own physical requirements; check specific tour accessibility before booking."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Book the movie-sites tour if you're a film fan"
-        },
-        "text": {
-          "en": "Several tour options specifically highlight Jurassic Park, Godzilla and Lost filming locations, worth seeking out for any movie buff."
-        }
-      },
-      {
-        "title": {
-          "en": "Book well in advance"
-        },
-        "text": {
-          "en": "Popular tour slots, especially ziplining and ATV tours, can sell out days ahead during peak season."
-        }
-      },
-      {
-        "title": {
-          "en": "Wear real outdoor footwear"
-        },
-        "text": {
-          "en": "Most activities here involve genuine off-road, uneven terrain — leave the sandals for the beach stops."
-        }
-      }
-    ]
-  },
-  {
-    "id": 255,
-    "name": "Polynesian Cultural Center",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Laie, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 7",
-    "address": "55-370 Kamehameha Hwy, Laie, HI 96762",
-    "lat": 21.642,
-    "lng": -157.9219,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>The Polynesian Cultural Center is a cultural theme park and living-history museum in Laie, on Oahu's North Shore, dedicated to the cultures of Polynesia, including Hawaii, Samoa, Tonga, Fiji, Tahiti, Aotearoa (New Zealand) and the Marquesas. Visitors move between recreated island villages, each staffed by cultural performers (many of them students at the adjacent Brigham Young University-Hawaii), demonstrating traditional crafts, dance, and daily life specific to each culture represented.</p><p>The center's evening luau — a traditional Hawaiian feast accompanied by music and dance performances — is one of its signature draws, alongside a large-scale evening show. Open since 1963, it remains one of Oahu's most visited paid attractions, offering a far deeper cultural experience than a typical tourist luau elsewhere on the island.</p><!--stss:footsteps--><p>The Polynesian Cultural Center is where the group attended a luau during Bon Voyage Season 2, Episode 7, experiencing the traditional Hawaiian feast and accompanying entertainment that the center is especially known for. It's a natural fit for an episode focused on hands-on cultural and physical experiences, following the day's earlier stops at Kualoa Regional Park and Kualoa Ranch on the same windward side of the island.</p><p>While the show's segment centers on the luau specifically, the center offers a much broader experience across its full village-by-village layout representing multiple Pacific cultures — making it a stop that rewards spending considerably more time than just the featured meal and show the group's visit focused on.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 55-370 Kamehameha Hwy in Laie, about an hour's drive from Waikiki along the North Shore route, or reachable via scheduled shuttle service from Waikiki."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open select days (typically closed Sundays); ticket packages vary from general daytime admission up to premium packages including the luau and evening show. Advance booking is strongly recommended."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Mostly flat, paved pathways between village areas; wheelchair-accessible, with specific accommodations available — check with the center when booking."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Book the luau package in advance"
-        },
-        "text": {
-          "en": "The dinner-and-show package the group experienced is among the center's most popular options and benefits from advance booking."
-        }
-      },
-      {
-        "title": {
-          "en": "Arrive early to see multiple villages"
-        },
-        "text": {
-          "en": "The luau is just one part of a much larger center — arriving well before the evening program lets you explore the other Pacific-culture villages too."
-        }
-      },
-      {
-        "title": {
-          "en": "Check the day of the week"
-        },
-        "text": {
-          "en": "The center is closed on select days — confirm it's open before planning a visit around it."
-        }
-      }
-    ]
-  },
-  {
-    "id": 256,
-    "name": "Beach in front of Kapiolani Park",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Honolulu, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 7",
-    "address": "Queen’s Surf Beach, Honolulu, HI 96815",
-    "lat": 21.2693,
-    "lng": -157.822,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>This stretch of beach sits just east of Waikiki Beach proper, directly fronting Kapiolani Park, and is commonly known locally as Queen's Surf Beach. Compared to the denser hotel-backed sand of central Waikiki, it has a more open, park-adjacent feel, with the Honolulu Zoo and Kapiolani Park's lawns just behind it rather than a wall of high-rise resorts.</p><p>It's a popular spot for swimming, bodyboarding and people-watching among both locals and visitors looking for a slightly less crowded alternative to the main Waikiki Beach stretch, while still being an easy walk from the heart of the neighborhood.</p><!--stss:footsteps--><p>This beach, just to the left of Waikiki Beach in front of Kapiolani Park, appears as a location in Bon Voyage Season 2, Episode 7, offering a different stretch of Waikiki-area coastline from the main beach featured earlier in the season. Its quieter, park-adjacent setting gives it a distinct feel from the denser central Waikiki beachfront despite being only a short walk away.</p><p>As one of the episode's lower-key locations, it reflects the same hands-on, exploratory spirit as the rest of Episode 7 — a chance for the group to experience a different, somewhat less touristy slice of Oahu's coastline alongside the day's more structured stops at Kualoa Ranch and the Polynesian Cultural Center.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located directly in front of Kapiolani Park, a short walk east of central Waikiki Beach and the Honolulu Zoo."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Public beach access available 24 hours; no admission fee."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, sandy beach with paved paths through the adjacent park; mostly accessible, with standard beach-access limitations for wheelchairs on sand itself."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Treat it as the quieter Waikiki beach option"
-        },
-        "text": {
-          "en": "It tends to draw fewer crowds than the stretch directly in front of the main hotel strip."
-        }
-      },
-      {
-        "title": {
-          "en": "Combine it with a Kapiolani Park visit"
-        },
-        "text": {
-          "en": "Since the two are directly adjacent, it's easy to pair a beach stop here with time in the park."
-        }
-      },
-      {
-        "title": {
-          "en": "Good for bodyboarding"
-        },
-        "text": {
-          "en": "Locals favor this stretch for bodyboarding more than swimming laps — worth renting a board if you want to try it."
-        }
-      }
-    ]
   },
   {
     "id": 257,
