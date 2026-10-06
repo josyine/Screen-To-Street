@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-06T07:58:35.423Z.
+// Généré le 2026-10-06T19:00:25.721Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -6229,19 +6229,19 @@ window.STATIC_LOCATIONS = [
     "id": 109,
     "name": "Seoul Forest",
     "group": "BTS",
-    "member": "All",
+    "member": "RM, Jin, Suga, J-Hope, Jimin, V, Jungkook",
     "country": "South Korea",
     "city": "Seoul",
-    "category": "Fashion",
+    "category": "MV Location",
     "year": "2017",
     "ytId": "BEFNhMkdVz4",
-    "address": "273 Ttukseom-ro, Seongdong-gu",
+    "address": "273 Ttukseom-ro, Seongdong-gu, Seoul",
     "lat": 37.5445,
     "lng": 127.0375,
     "img": "https://img.youtube.com/vi/BEFNhMkdVz4/hqdefault.jpg",
     "fullDescription": {
-      "en": "<p>Seoul Forest served as the backdrop for several key moments of the Love Yourself era, most notably the concrete tube where Suga is seen playing piano, and where Jungkook sits in a wheelchair.</p><p>Beyond those on-screen connections, Seoul Forest is famously one of RM's favourite spots for what fans call \"Namjooning,\" and the park even has a bench formally adopted by ARMY in his honour.</p>",
-      "fr": "<p>Seoul Forest a servi de décor à plusieurs moments clés de l'ère Love Yourself, notamment le tube en béton où l'on voit Suga jouer du piano, et où Jungkook est assis dans un fauteuil roulant.</p><p>Au-delà de ces liens avec les clips, Seoul Forest est réputé être l'un des endroits préférés de RM pour ce que les fans appellent le « Namjooning », et le parc compte même un banc officiellement adopté par l'ARMY en son honneur.</p>"
+      "fr": "<p>Seoul Forest a servi de décor à plusieurs moments clés de l'ère Love Yourself, notamment le tube en béton où l'on voit Suga jouer du piano, et où Jungkook est assis dans un fauteuil roulant.</p><p>Au-delà de ces liens avec les clips, Seoul Forest est réputé être l'un des endroits préférés de RM pour ce que les fans appellent le « Namjooning », et le parc compte même un banc officiellement adopté par l'ARMY en son honneur.</p>",
+      "en": "<p>Stretching across more than 1.1 million square meters along the Han River, Seoul Forest is one of the capital's largest and most beloved green oases. Once serving as royal hunting grounds during the Joseon Dynasty, the land went through various transformations over the centuries—functioning as Seoul’s first water purification plant, a racecourse, and a public park—before undergoing a massive eco-friendly redevelopment. Reopened in June 2005 as a community-funded project, the park now houses five distinct thematic zones, including a cultural art park, an eco-forest, and experiential learning centers. Beyond its lush foliage, deer enclosures, and seasonal cherry blossoms, Seoul Forest has grown into a major cultural landmark for music fans worldwide, hosting various fan-sponsored green initiatives and memorial benches.</p><!--stss:footsteps--><p>2017, Suga: Seoul Forest is home to one of BTS’s most iconic visual landmarks: the concrete pipe featured in Suga's official LOVE YOURSELF poster. Shot in August 2017 near the Wish House (Maison des Vœux) in the Woodland Playground area, this spot remains a primary destination for fans eager to recreate his pose. Additionally, fan-dedicated benches honoring Suga were adopted starting in 2018–2019 through Seoul Forest's park bench sponsorship program, engraved with heartfelt lyrics from his rap verse in Lee Sora's \"Song Request\".</p><p>2018, RM: As an avid lover of nature, art, and solo strolls, RM has frequented Seoul Forest over the years, making it a regular stop during his \"Namjooning\" trips across Seoul. In response, fans began dedicating bench spaces to him as early as 2018. Today, multiple RM benches can be found throughout the park—most notably near the entrance of the Ginkgo Tree Forest and along the basketball courts—engraved with reflective lyrics from \"EPILOGUE : Young Forever\", \"everythingoes\", and \"Sea\".</p><p>2023, J-Hope: In October 2023, the Seoul Metropolitan Government collaborated with J-Hope's fan community to officially open the J-Hope Garden (J-Hope Forest). Located near the park's Central Lake, this dedicated green space features a J-shaped wooden bench and a large, interactive \"HOPE\" sculpture equipped with a QR code that plays his solo music. The garden received a major community update in 2024 to celebrate his return from military service.</p><p>2018, Jin: Along the scenic edges of Seoul Forest's lake, near Saengsaeng Garden, fans installed a series of benches dedicated to Jin between 2018 and 2019. Each bench overlooks the water and features lyrics from his emotional solo tracks, including \"Epiphany\", \"Tonight\", and \"Moon\", providing a quiet space for reflection along the walking paths.</p><p>2018, Jimin: Tucked away on a gentle hill near the sports grounds, Jimin's dedicated bench was established by ARMYs following the release of his record-breaking solo track \"Promise\" in December 2018. The bench is inscribed with touching lyrics from the song and sits alongside a cluster of fan-sponsored picnic tables in the central park zone.</p><p>2019, V: Along Apple Tree Road near the park's main entrance lies the Winter Bear Garden (or V Garden), a quiet floral nook inspired by V's soulful 2019 solo single \"Winter Bear\". Established by fans shortly after the song's release, the area features dedicated benches and plaque inscriptions referencing \"Winter Bear\" and \"Scenery\", surrounded by seasonal trees.</p><p>2019, Jungkook: Along with individual benches placed near the park's central trails, Jungkook is commemorated through dedicated picnic tables installed by fans around 2019. Located near the lake and the \"Purple Bunny\" sculpture area, these tables are inscribed with messages celebrating the group's youngest member and his solo work.</p>"
     },
     "tipsList": [
       {
@@ -6268,7 +6268,50 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Look for the large cylindrical concrete play structures hidden in the park to recreate Suga's piano scene.",
       "fr": "Cherchez les grandes structures de jeu cylindriques en béton cachées dans le parc pour recréer la scène du piano de Suga."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-109-recreated-0.jpg"
+    ]
   },
   {
     "id": 110,
