@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-05T21:13:22.408Z.
+// Généré le 2026-10-06T07:58:35.423Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -11869,7 +11869,7 @@ window.STATIC_LOCATIONS = [
     "address": "Ali'i Drive, Kailua-Kona, HI 96740",
     "lat": 19.63999,
     "lng": -155.99428,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
+    "img": "images/admin-upload-217-photo.jpg",
     "fullDescription": {
       "en": "<p>ABC Stores are a Hawaii institution — a chain of convenience shops found on nearly every block of the islands' main tourist strips, stocking everything from sunscreen and beach mats to snacks, alcohol, and a wall of souvenirs and aloha-print clothing. The chain started on Oahu in 1964 and has since grown to dozens of locations across the state, with the Kailua-Kona branch on Ali'i Drive serving the town's steady flow of cruise-ship passengers and resort visitors.</p><p>It's not a destination in the usual sense, but it's one of the most reliably open, easy stops on the strip — the kind of place locals and tourists duck into several times a day for ice, a cold drink, or a last-minute souvenir before a flight home.</p><!--stss:footsteps--><p>This particular ABC Store is where the Maknae Line — Jimin, V and Jungkook — picked up a small, memorable souvenir during their shopping stretch of Bon Voyage Season 2, Episode 2: matching friendship pens. It's a tiny, almost throwaway purchase in the show, but it became one of fans' favorite small moments from the Hawaii trip precisely because of how ordinary it is — three members of one of the world's biggest groups, browsing a convenience-store stationery rack like anyone else on vacation.</p><p>The scene plays out as part of a longer souvenir-hunting stretch along Ali'i Drive and through the Kona Inn Shopping Village, where the trio also stopped at several small gift shops (including one visibly marked Alley Geckos) that don't have much of an online footprint today.</p>"
     },
@@ -11927,7 +11927,6 @@ window.STATIC_LOCATIONS = [
     ],
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "",
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
@@ -11935,13 +11934,18 @@ window.STATIC_LOCATIONS = [
     "ytId": "w4qN4b-id5o",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
     "tweetUrls": [],
-    "recreatedPhoto": ""
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-217-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://abcstores.com/",
+    "episodeLink": "https://www.bilibili.tv/video/2041090259"
   },
   {
     "id": 218,
@@ -19415,6 +19419,100 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "officialLink": "https://www.visitjeju.net/en/detail/view?contentsid=CNTS_200000000007344#"
+  },
+  {
+    "id": "new-manual-1791237155701-b29d0i",
+    "name": "Snoopy Garden",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "South Korea",
+    "city": "Jeju",
+    "category": "Landmark",
+    "year": "2021",
+    "address": "930 Geumbaekjo-ro, Gujwa-eup, Jeju-si, Jeju-do, Corée du Sud",
+    "lat": 33.44412,
+    "lng": 126.77829,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "officialLink": "https://www.snoopygarden.com/",
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Locate the Iconic"
+        },
+        "text": {
+          "en": "Walk through the Outdoor Garden toward the Peanuts Color Garden / Warm Heart Zone to find the exact wooden bench where Jimin sat next to Snoopy by the water."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Early for Quiet Photos"
+        },
+        "text": {
+          "en": "Snoopy Garden is one of Jeju's most popular attractions. Arrive right when it opens at 9:00 AM to enjoy the outdoor trails peacefully and avoid waiting in line for the bench photo spot."
+        }
+      },
+      {
+        "title": {
+          "en": "Try the Snoopy Cafe & Stamp Tour"
+        },
+        "text": {
+          "en": "After exploring the garden, stop by the on-site Snoopy Cafe for adorable Peanuts-themed drinks and desserts, and complete the garden stamp tour book for a special commemorative souvenir!"
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located in Songdang-ri, Gujwa-eup on Jeju Island, Snoopy Garden is a world-class, 20-acre garden and museum dedicated to Charles M. Schulz’s iconic Peanuts comic strip. Opened in 2020, the theme park seamlessly blends Jeju’s lush natural scenery, including hallabong trees, stone walls, and native flora, with themed indoor exhibits and outdoor walking trails. Its philosophy, \"Rest, Relax, and Recharge,\" invites visitors to slow down and experience life through the heartwarming world of Charlie Brown, Snoopy, and their friends.</p><!--stss:footsteps--><p>In September 2021, during a personal trip to Jeju Island, Jimin visited Snoopy Garden to take a peaceful break. He took a stroll through the outdoor garden trails and paused at one of the park's most iconic photo spots: sitting on a wooden bench right next to a life-sized Snoopy statue overlooking a tranquil pond. Photos of this cute, relaxing moment were shared on his Instagram account in December 2021, instantly making this spot a favorite photo location for ARMYs visiting Jeju.</p>"
+    },
+    "img": "images/admin-upload-new-manual-1791237155701-b29d0i-photo.jpg",
+    "imgCredit": "Screentoscreen",
+    "episodeLink": "https://theklocal.com/snoopy-garden-jeju-jimin-jisoo/",
+    "instagramUrl": "https://www.instagram.com/p/CwlVgCyyWpi/?utm_source=ig_web_button_share_sheet",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "If you are traveling by bus from Jeju International Airport or the Jeju City Bus Terminal, take Express Bus No. 211 or 212 to Songdang-ri, then transfer to Local Bus No. 810-1 or 810-2 and get off at the Snoopy Garden stop. If you prefer to drive or take a taxi, the journey takes approximately 40 to 50 minutes from Jeju International Airport, and free on-site parking is available."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Snoopy Garden is open daily throughout the year. From March to September, the park operates from 9:00 AM to 7:00 PM, while winter hours from October to February run from 9:00 AM to 6:00 PM, with last entry allowed one hour before closing. Admission costs approximately 18,000 KRW for adults (ages 19 and up), 15,000 KRW for youth (ages 13 to 18), and 12,000 KRW for children (ages 3 to 12)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The indoor Garden House and main outdoor walking paths are paved, flat, and wheelchair/stroller accessible. Wheelchair rentals are available at the main entrance."
+        }
+      }
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791237155701-b29d0i-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-manual-1791237155701-b29d0i-recreated-1.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
