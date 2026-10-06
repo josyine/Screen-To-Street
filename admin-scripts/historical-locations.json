@@ -12059,5 +12059,845 @@
         }
       }
     ]
+  },
+  {
+    "id": 257,
+    "name": "Shortlets Malta Waterfront Apartment",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Valletta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Valletta Waterfront (Pinto Wharf), Valletta",
+    "lat": 35.8974,
+    "lng": 14.5128,
+    "img": "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600",
+    "fullDescription": {
+      "en": "<p>The Valletta Waterfront is a long, honey-coloured promenade of former 18th-century warehouses built by Grandmaster Pinto for the Knights of St John, now converted into restaurants, shops and cruise terminal facilities right on the edge of the Grand Harbour, a short walk from the Valletta-Sliema ferry landing.</p><p>Short-let apartments along this stretch put guests directly on the water, a few steps from the restaurants lining the wharf and the ferry that crosses to Sliema — one of the most central, walkable bases on the island for exploring Valletta on foot.</p><!--stss:footsteps--><p>This is where BTS stayed while filming Bon Voyage Season 3 in Malta — the group's actual accommodation for the whole Valletta leg of the trip, right next to the ferry terminal and the restaurant where they had several of their meals.</p><p>It's also the setting for one of the episode's most memorable unscripted moments: Jin and Suga fishing directly off the waterfront in front of the apartment, a scene fans still reference as one of the trip's funniest, most low-key segments.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "On Valletta's Marsamxett Harbour side, reachable on foot from the City Gate bus terminus in about 10-15 minutes, or by the small passenger ferry that crosses from Sliema directly to the Valletta waterfront."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Short-let apartments here are privately booked (via sites like booking.com), so there's no fixed visiting hours — the waterfront promenade itself is open to the public at all times, even if you're not a guest."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, paved promenade with no steps, suitable for wheelchairs and strollers — one of the more accessible stretches of Valletta, which is otherwise a hilly, fortified city."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk the promenade at golden hour"
+        },
+        "text": {
+          "en": "The warehouses glow gold in the late-afternoon light, and this stretch is far less crowded than Valletta's main streets at that time of day."
+        }
+      },
+      {
+        "title": {
+          "en": "Book early if you want this exact view"
+        },
+        "text": {
+          "en": "Waterfront apartments along this row book out quickly, especially since fans started requesting this specific stretch after the episode aired."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with a ferry ride"
+        },
+        "text": {
+          "en": "The passenger ferry to Sliema leaves right from this waterfront and gives a view of Valletta's fortifications from the water, similar to what the group would have seen."
+        }
+      }
+    ]
+  },
+  {
+    "id": 258,
+    "name": "Cockney's Restaurant",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Valletta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Marsamxett Wharf, Valletta VLT 1213",
+    "lat": 35.8978,
+    "lng": 14.5115,
+    "img": "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=600",
+    "fullDescription": {
+      "en": "<p>Cockney's is a seafront restaurant on Valletta's Marsamxett Wharf, serving fresh fish bought daily from local fishermen alongside Maltese platters, meat dishes and antipasti, with outdoor terrace seating looking out over Marsamxett Harbour toward Fort Manoel and Sliema.</p><p>Its location right on the waterfront, a few steps from the Valletta-Sliema ferry landing, makes it one of the more visible restaurants along this stretch — the kind of spot visitors pass by on foot long before they ever sit down to eat there.</p><!--stss:footsteps--><p>BTS had their first meal in Malta here, and returned for another meal on the restaurant's outdoor terrace during Bon Voyage Season 3 — it became one of the trip's recurring settings rather than a single one-off stop.</p><p>Jin also struck up a genuine friendship with the restaurant's owner, Charles, which became one of the episode's warmer threads — notably the scene where Jin, left behind by Jungkook during one of the show's errands, ends up spending time at the restaurant with Charles instead.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "On the Valletta Waterfront, a short walk from the City Gate bus terminus or directly accessible from the Sliema-Valletta ferry landing right next door."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Generally open for lunch and dinner daily; exact hours vary seasonally, so check ahead, especially outside peak tourist season."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat waterfront access with outdoor terrace seating; the dining room itself may have a small step at the entrance — worth calling ahead if mobility is a concern."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Ask for terrace seating"
+        },
+        "text": {
+          "en": "The outdoor terrace overlooking the harbour is the same spot BTS was filmed in — request it specifically if you want the view they had."
+        }
+      },
+      {
+        "title": {
+          "en": "Go for the fresh fish"
+        },
+        "text": {
+          "en": "The restaurant's reputation rests on fish bought same-day from local fishermen — it's the dish to order here over the meat options."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit at sunset"
+        },
+        "text": {
+          "en": "Marsamxett Harbour catches warm evening light facing west toward Sliema, making an early dinner reservation worth planning around."
+        }
+      }
+    ]
+  },
+  {
+    "id": 259,
+    "name": "Lascaris War Rooms",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Valletta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Lascaris Ditch, Valletta VLT 2000",
+    "lat": 35.8958,
+    "lng": 14.5144,
+    "img": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=600",
+    "fullDescription": {
+      "en": "<p>Carved into the bastion ditch beneath Valletta's Upper Barrakka Gardens, the Lascaris War Rooms are a preserved underground command complex used by the Allies during the Siege of Malta in the Second World War — the war rooms from which Malta's air and sea defence, and later the Allied invasion of Sicily, were coordinated.</p><p>The complex has been restored as a museum, with original plotting tables, communication equipment and briefing rooms open to visitors, giving a rare, tangible sense of a working wartime command centre rather than a reconstruction.</p><!--stss:footsteps--><p>Namjoon and Hoseok visited the Lascaris War Rooms during Bon Voyage Season 3's Valletta leg, taking in the underground tunnels and historical displays as one of the trip's more reflective, history-focused stops.</p><p>It stood out from the episode's lighter, more playful segments as a genuine detour into Malta's wartime history — the kind of stop that let the show's history-minded members (particularly Namjoon, known for his museum visits across multiple seasons) explore at their own pace.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located under the Upper Barrakka Gardens and the Saluting Battery near the south corner of Valletta — reachable on foot from the City Gate bus terminus in about 10-15 minutes, following signs toward Upper Barrakka Gardens."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open Monday to Saturday, roughly 10:00-16:30 (last entry around 16:00); check the official website before visiting as hours can change seasonally."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The underground complex involves stairs and tunnel-style corridors with uneven original flooring in places — not fully wheelchair accessible; contact the site in advance if mobility assistance is needed."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book a guided tour slot"
+        },
+        "text": {
+          "en": "The war rooms are best understood with a guide or audio tour explaining what each plotting table and room was actually used for — the space alone doesn't tell the full story."
+        }
+      },
+      {
+        "title": {
+          "en": "Pair it with the Saluting Battery above"
+        },
+        "text": {
+          "en": "The daily midday cannon fire at the Saluting Battery happens directly above the war rooms, in Upper Barrakka Gardens — easy to combine into one visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring a light layer"
+        },
+        "text": {
+          "en": "The underground tunnels stay noticeably cooler than the streets above, even in Malta's summer heat."
+        }
+      }
+    ]
+  },
+  {
+    "id": 260,
+    "name": "Grandmaster's Palace",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Valletta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Palace Square, Valletta VLT 1191",
+    "lat": 35.8975,
+    "lng": 14.5144,
+    "img": "https://images.unsplash.com/photo-1589391886645-d51941baf7fb?w=600",
+    "fullDescription": {
+      "en": "<p>Facing St. George's Square in the heart of Valletta, the Grandmaster's Palace was built in the 16th century as the seat of the Grand Master of the Knights of St John and now houses the offices of Malta's President alongside a museum of state apartments and the Palace Armoury.</p><p>Its grand courtyards, frescoed state rooms and one of Europe's best-preserved collections of historical armour make it one of Valletta's most-visited landmarks, sitting right at the symbolic centre of the fortified capital.</p><!--stss:footsteps--><p>Jimin and Jungkook visited the Grandmaster's Palace during Bon Voyage Season 3, taking in the palace's courtyards and historical interiors as part of their day exploring Valletta.</p><p>The stop fit into the episode's broader rhythm of pairing the group off into smaller groups to independently explore different corners of the city — Jimin and Jungkook's palace visit ran alongside Namjoon and Hoseok's war rooms detour and the Hyung line's wander through Valletta's streets.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Right in the centre of Valletta on St. George's Square (Palace Square), a 5-10 minute walk from the City Gate bus terminus along Republic Street."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Generally open daily except when state functions are taking place inside (the palace remains a working government building) — check the official Heritage Malta hours before visiting, and expect occasional closures."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Mostly flat within the courtyards, though the state apartments involve some stairs; the armoury section has level access."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Check for state functions first"
+        },
+        "text": {
+          "en": "Since the palace still houses the President's office, parts of it occasionally close for official events — check ahead if the armoury or state rooms are your priority."
+        }
+      },
+      {
+        "title": {
+          "en": "Don't skip the Palace Armoury"
+        },
+        "text": {
+          "en": "It's one of the largest surviving collections of arms and armour from the Knights of St John anywhere in the world, and easy to overlook if you only visit the courtyards."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with St. George's Square"
+        },
+        "text": {
+          "en": "The square right outside hosts events and is a good spot to rest after the palace — many Valletta walking routes naturally pass through it."
+        }
+      }
+    ]
+  },
+  {
+    "id": 261,
+    "name": "Dinner in the Sky Malta",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Floriana",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Belt is-Sebħ, Floriana",
+    "lat": 35.8946,
+    "lng": 14.5086,
+    "img": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600",
+    "fullDescription": {
+      "en": "<p>Dinner in the Sky Malta is a travelling dining experience that lifts a table of around 22 guests roughly 40 metres into the air by crane, typically set up in Floriana overlooking Marsamxett Harbour — guests are strapped in and served a full meal suspended above the rooftops of the island.</p><p>It's one of the more unusual, high-adrenaline dining concepts to operate in Malta, running seasonally rather than as a permanent fixture, with the exact setup location shifting slightly between events.</p><!--stss:footsteps--><p>BTS spent their last night in Malta during Bon Voyage Season 3 dining in the sky, literally lifted above the city for a group meal together — one of the episode's most visually dramatic closing moments.</p><p>The segment became an emotional send-off for the Malta leg of the trip, the group reflecting on the days they'd spent together on the island while suspended above it, before the view below transitioned into the final footage of the episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Typically set up on open ground in Floriana, a short walk or taxi ride from Valletta's City Gate — exact setup location varies by event date since this is a travelling installation, not a fixed venue."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Operates seasonally with scheduled sittings rather than daily opening hours — check the official Dinner in the Sky Malta booking page for current dates before planning a visit, as it isn't always running."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Guests are lifted by crane and secured with safety harnesses; not suitable for anyone with a fear of heights, mobility limitations that prevent using the lift platform, or certain medical conditions — check the operator's requirements before booking."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book well ahead"
+        },
+        "text": {
+          "en": "Seats are limited to roughly 22 guests per sitting and this is a popular novelty experience — reservations fill up fast once dates are announced."
+        }
+      },
+      {
+        "title": {
+          "en": "Check it's actually running"
+        },
+        "text": {
+          "en": "Because it's a seasonal, travelling setup rather than a permanent attraction, confirm current dates on the official site before planning a trip around it."
+        }
+      },
+      {
+        "title": {
+          "en": "Go at sunset for the view BTS had"
+        },
+        "text": {
+          "en": "An evening sitting gives the same golden-hour-over-the-harbour view visible in the episode's closing footage."
+        }
+      }
+    ]
+  },
+  {
+    "id": 262,
+    "name": "St Andrew's Divers Cove",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Xlendi, Gozo",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "St Simon Street, Xlendi Bay XLN 1302, Gozo",
+    "lat": 35.9538,
+    "lng": 14.2097,
+    "img": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600",
+    "fullDescription": {
+      "en": "<p>St Andrew's Divers Cove is a PADI dive centre in Xlendi Bay on the island of Gozo, around 20 metres from the water, running beginner try-dives, recreational dives and technical diving courses close to some of Malta's best-known dive sites, including the famous Blue Hole.</p><p>Xlendi itself is a small fishing village wrapped around a narrow inlet, with the dive centre's boats launching directly from the bay into clear, relatively sheltered water that makes it a popular base for both first-time divers and experienced ones.</p><!--stss:footsteps--><p>The group visited St Andrew's Divers Cove to try scuba diving during Bon Voyage Season 3's Gozo leg, one of the trip's more physically adventurous segments compared to the sightseeing-heavy days spent in Valletta.</p><p>It marked a shift in the episode's pacing — after days built around walking tours, restaurants and shopping on the main island, the Gozo stop gave the group a genuine outdoor activity together, in open water rather than city streets.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "In Xlendi, on the south-west coast of Gozo — reachable by car or bus from Victoria (Gozo's main town), or by ferry from Malta to Mgarr harbour followed by a short taxi/bus ride."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Dive centre hours vary by season and booked activity; beginner try-dive sessions typically run daily during the main season — contact the centre directly ahead of a visit to book a slot."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The dive centre itself is at street level near the water, but the activity requires being able to enter/exit a boat and the water — not accessible for visitors with certain mobility limitations; contact the centre to discuss specific needs."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book a try-dive if you've never dived"
+        },
+        "text": {
+          "en": "No prior certification is needed for their beginner sessions — staff run a safety briefing and shallow-water practice before taking you out."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with Gozo's Blue Hole"
+        },
+        "text": {
+          "en": "One of Malta's most famous dive sites is close by and often included in dive packages from this centre."
+        }
+      },
+      {
+        "title": {
+          "en": "Go early in the season for calmer water"
+        },
+        "text": {
+          "en": "Xlendi Bay is relatively sheltered, but visibility and conditions are generally best in the late spring and early summer before peak tourist season."
+        }
+      }
+    ]
+  },
+  {
+    "id": 263,
+    "name": "Love Statue",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "St Julian's",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Spinola Bay, St Julian's",
+    "lat": 35.9195,
+    "lng": 14.4891,
+    "img": "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=600",
+    "fullDescription": {
+      "en": "<p>Created by Maltese architect and artist Richard England, the LOVE sculpture sits at Spinola Bay in St Julian's — giant letters spelling the word backwards, designed so it reads correctly in its reflection on the water or in its shadow depending on the time of day.</p><p>It's become one of Malta's most photographed spots and a popular place for couples to attach love locks, set against the backdrop of Spinola Bay's traditional luzzu fishing boats and waterfront restaurants.</p><!--stss:footsteps--><p>Namjoon and Hoseok visited the LOVE statue in St Julian's during Bon Voyage Season 3, stopping to take photos in front of it as part of their day exploring the area.</p><p>The stop was a brief, lighter moment in the episode compared to some of the trip's longer sightseeing segments — the kind of quick, photogenic detour that's since turned the statue into something of a pilgrimage spot for fans visiting Malta.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "At Spinola Bay in St Julian's, reachable by bus from Valletta (roughly 20-30 minutes) or a short taxi ride from Sliema; walkable along the coast from Sliema in about 20-30 minutes."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The statue is outdoors and viewable at any time, with no admission fee — early morning or evening avoids the heaviest foot traffic around the bay."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat waterfront promenade with no steps, suitable for wheelchairs and strollers."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visit at golden hour for the reflection"
+        },
+        "text": {
+          "en": "The lettering is designed to reflect correctly on the water's surface — late afternoon light along Spinola Bay makes this most visible."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Spinola Bay itself afterward"
+        },
+        "text": {
+          "en": "The bay is lined with restaurants serving fresh seafood, right where traditional Maltese fishing boats still moor."
+        }
+      },
+      {
+        "title": {
+          "en": "Expect it to be busy"
+        },
+        "text": {
+          "en": "This has become one of Malta's most Instagrammed spots since the episode aired — visit early if you want photos without a crowd."
+        }
+      }
+    ]
+  },
+  {
+    "id": 264,
+    "name": "Popeye Village",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Mellieħa",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Triq Tal-Prajjet, Il-Mellieħa",
+    "lat": 35.961,
+    "lng": 14.3407,
+    "img": "https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=600",
+    "fullDescription": {
+      "en": "<p>Popeye Village, also known as Sweethaven Village, is a cluster of rustic wooden buildings in Anchor Bay near Mellieħa, originally built as the full-scale film set for the 1980 musical film Popeye starring Robin Williams, and later converted into a small family attraction and swimming spot.</p><p>Visitors can wander the film set's wooden houses, watch short shows, swim in Anchor Bay, or take a boat ride around the cove — the site sits right on the water in one of the more dramatic, cliff-lined corners of Malta's coastline.</p><!--stss:footsteps--><p>Taehyung visited Popeye Village during Bon Voyage Season 3, exploring the colourful film-set village on his own before meeting back up with the rest of the group — one of several moments in the season where members split off to pursue their own interests.</p><p>The stop added a playful, slightly surreal note to the Malta leg of the trip, with the village's cartoonish wooden buildings standing in sharp contrast to Valletta's baroque stonework seen earlier in the same episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "In Anchor Bay near Mellieħa, in the north-west of Malta — a car or taxi is the practical option, as it's a 15-20 minute drive from Mellieħa's town centre down a fairly steep access road."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily, with hours varying by season (generally shorter in winter) — check the official Popeye Village website before visiting, especially outside peak summer months."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The village is built on a slope with some uneven, rustic wooden walkways between buildings — not fully wheelchair accessible; contact the attraction in advance for specific access needs."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Go early to beat the tour groups"
+        },
+        "text": {
+          "en": "Anchor Bay is a popular stop on Malta's cruise and coach tour circuits — arriving at opening avoids the biggest crowds."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring swimwear"
+        },
+        "text": {
+          "en": "Anchor Bay below the village is a genuine swimming spot, and a boat trip around the cove is included with some ticket options."
+        }
+      },
+      {
+        "title": {
+          "en": "Check the boat trip schedule"
+        },
+        "text": {
+          "en": "The short boat ride around the bay gives the best view of the village's dramatic cliffside setting — worth timing your visit around it."
+        }
+      }
+    ]
+  },
+  {
+    "id": 265,
+    "name": "Golden Bay Horse Riding",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Mellieħa",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Golden Bay, near Għajn Tuffieħa",
+    "lat": 35.9365,
+    "lng": 14.3434,
+    "img": "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600",
+    "fullDescription": {
+      "en": "<p>Golden Bay is one of Malta's largest and best-known sandy beaches, on the island's north-west coast, backed by low cliffs and the rural countryside around Għajn Tuffieħa — a stretch of coast popular for swimming, watersports, and beachside horseback riding along the sand.</p><p>Stables operating near the bay run guided rides along the beach and surrounding countryside trails, with sunset rides being a particular draw given the bay's unobstructed westward view over the Mediterranean.</p><!--stss:footsteps--><p>BTS went horse riding along Golden Bay during Bon Voyage Season 3, with the group filmed riding together into the sunset along the sand — one of the episode's most visually striking, widely-clipped segments.</p><p>It became one of the defining images fans associate with the Malta season: the group on horseback silhouetted against the water, a world away from the city streets and restaurants that filled most of the rest of the episode.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "On Malta's north-west coast near Għajn Tuffieħa, reachable by bus from Valletta or Sliema (roughly 40-50 minutes) or a shorter drive/taxi ride; stables operating rides are generally a short walk from the beach itself."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Ride availability depends on the specific stable and season — sunset rides are typically bookable in advance directly with the operator; check ahead rather than showing up without a reservation."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Horseback riding requires basic mobility to mount and ride; beginner-friendly sessions are generally available, but check specific requirements with the stable when booking."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book a sunset ride specifically"
+        },
+        "text": {
+          "en": "This is the version BTS was filmed doing — Golden Bay faces west, so a late-afternoon or evening ride times with the same light."
+        }
+      },
+      {
+        "title": {
+          "en": "Reserve ahead in summer"
+        },
+        "text": {
+          "en": "Golden Bay is one of Malta's most popular beaches and riding slots can fill up during peak season."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring a change of clothes"
+        },
+        "text": {
+          "en": "Some rides go through shallow water along the shoreline — worth planning for getting a little wet."
+        }
+      }
+    ]
+  },
+  {
+    "id": 266,
+    "name": "The Point (Tigné Point)",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Sliema",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Triq Il-Fortina, Tigné Point, Sliema TPO 0001",
+    "lat": 35.9138,
+    "lng": 14.5004,
+    "img": "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=600",
+    "fullDescription": {
+      "en": "<p>The Point is Malta's largest shopping mall, part of the Tigné Point redevelopment in Sliema, with around 17,000 square metres of retail space across three levels — a supermarket, more than 50 shops, and a seafront promenade with views back across the water to Valletta.</p><p>Opened in 2010 on the site of a former British military barracks, Tigné Point has become one of Sliema's main shopping and dining destinations, popular with both residents and tourists staying in the area.</p><!--stss:footsteps--><p>Hoseok and Namjoon visited The Point during Bon Voyage Season 3, where the two ended up in what the episode framed as a seemingly never-ending loop of forgetting and losing track of their belongings — one of the season's more comedic, unscripted segments.</p><p>The mall visit stood out as a rare stretch of modern, everyday Malta in an episode otherwise dominated by historic Valletta streets and dramatic coastal scenery, giving fans a glimpse of a more ordinary side of the trip.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "In Sliema's Tigné Point development, a short walk from Sliema's ferry landing and waterfront, or reachable by bus from Valletta (roughly 20-30 minutes)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Shops generally open daily, roughly 9am/10am to 9pm/10pm depending on the store — standard Maltese retail hours, though some outlets may close earlier on Sundays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully accessible modern shopping centre with lifts, flat floors and standard mall facilities across all three levels."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Combine with the Sliema waterfront"
+        },
+        "text": {
+          "en": "Tigné Point sits right on the water with a promenade looking back toward Valletta — worth a walk before or after shopping."
+        }
+      },
+      {
+        "title": {
+          "en": "Go on a weekday to avoid crowds"
+        },
+        "text": {
+          "en": "Weekends, especially Saturday afternoons, are the mall's busiest times with both locals and tourists."
+        }
+      },
+      {
+        "title": {
+          "en": "Check for the supermarket if self-catering"
+        },
+        "text": {
+          "en": "The Point's supermarket is a convenient stop for travellers staying in short-let apartments nearby."
+        }
+      }
+    ]
+  },
+  {
+    "id": 267,
+    "name": "McDonald's (Sliema)",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Sliema",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Tower Road, Sliema",
+    "lat": 35.9113,
+    "lng": 14.5019,
+    "img": "https://images.unsplash.com/photo-1619881589738-5e7a3b3b4b7c?w=600",
+    "fullDescription": {
+      "en": "<p>Sliema's seafront McDonald's sits along Tower Road, one of the town's main promenade streets facing the Mediterranean — a two-storey branch with street-level and upper-floor terrace seating, part of the chain's flagship presence on the island.</p><p>Tower Road itself is one of Sliema's busiest pedestrian stretches, lined with cafes, restaurants and shops facing the sea, making this branch one of the more visible fast-food stops for anyone walking the promenade.</p><!--stss:footsteps--><p>Taehyung and Jimin stopped at this McDonald's in Sliema during Bon Voyage Season 3, a brief, low-key moment of the two grabbing familiar fast food amid an itinerary otherwise full of Maltese specialties and fine dining.</p><p>It's the kind of unscripted, relatable detour that recurs throughout Bon Voyage's various seasons — the group choosing something simple and familiar in between the show's more elaborate planned stops.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "On Tower Road in Sliema, along the seafront promenade — walkable from the Sliema ferry landing in about 10-15 minutes, or reachable by bus from Valletta (roughly 20-30 minutes)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Standard fast-food hours, typically open from early morning until late at night daily — check current hours locally as they can shift seasonally."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully accessible with street-level seating; the upper-floor terrace may be reached by stairs depending on the specific branch layout."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Ask for upper-terrace seating"
+        },
+        "text": {
+          "en": "The upper floor has sea-facing terrace seating looking out over Tower Road and the water, a nicer spot than the street-level counter area."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with a Tower Road walk"
+        },
+        "text": {
+          "en": "This stretch of Sliema's promenade is worth walking regardless, with sea views toward Valletta's fortifications."
+        }
+      },
+      {
+        "title": {
+          "en": "Not a destination on its own"
+        },
+        "text": {
+          "en": "This is a quick, low-key stop rather than a sightseeing highlight — best combined with other things to do nearby in Sliema."
+        }
+      }
+    ]
+  },
+  {
+    "id": 268,
+    "name": "Marsaxlokk Market",
+    "group": "BTS",
+    "member": "All",
+    "country": "Malta",
+    "city": "Marsaxlokk",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "episode": "Bon Voyage Season 3",
+    "address": "Xatt is-Sajjieda, Marsaxlokk",
+    "lat": 35.8415,
+    "lng": 14.5444,
+    "img": "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=600",
+    "fullDescription": {
+      "en": "<p>Marsaxlokk is a traditional fishing village on Malta's south-east coast, its harbour lined with the colourful, eye-painted luzzu fishing boats the island is famous for. Its Sunday market, running along the waterfront from early morning, started as a fish market selling the night's catch and has since grown to include local honey, fruit jams, wine, vegetables, clothes and souvenirs.</p><p>The market remains one of Malta's most popular weekend outings for both locals and tourists, with the freshest fish typically sold out by late morning, and the harbour itself — all brightly painted boats bobbing against blue water — considered one of the most photographed scenes on the island.</p><!--stss:footsteps--><p>BTS visited Marsaxlokk Market during Bon Voyage Season 3, wandering the stalls along the harbour — and it's here that Namjoon bought Hoseok a flower-patterned bag to carry his money in, a small, affectionate gesture that became one of fans' favourite little moments from the Malta episodes.</p><p>The market stop gave the episode a slower, more local texture compared to Valletta's landmark-heavy sightseeing, grounding the group's trip in an everyday Maltese Sunday ritual rather than another historic site.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "On Malta's south-east coast, reachable by bus from Valletta (roughly 30-40 minutes) or a shorter drive/taxi ride; the market is right along the harbour front in the village centre."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main market runs Sunday mornings, roughly from 6-7am until around noon when the freshest fish sells out — arrive early for the best selection, though some stalls and the general souvenir market continue through the week on a smaller scale."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Flat, open-air harbourside walk with no steps, suitable for wheelchairs and strollers, though it gets crowded with foot traffic on Sunday mornings."
+        }
+      }
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Go early for the fish"
+        },
+        "text": {
+          "en": "The best catch sells out by mid-morning — arrive by 7-8am if seeing the fresh fish stalls in full swing matters to you."
+        }
+      },
+      {
+        "title": {
+          "en": "Try a harbourside lunch after shopping"
+        },
+        "text": {
+          "en": "Marsaxlokk's waterfront restaurants are known for serving the same fresh fish sold at the market that same morning."
+        }
+      },
+      {
+        "title": {
+          "en": "It's Sunday-specific for the full market"
+        },
+        "text": {
+          "en": "Visiting on another day of the week will find a much smaller market — plan around a Sunday if the full experience is the goal."
+        }
+      }
+    ]
   }
 ]
