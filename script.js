@@ -4868,15 +4868,33 @@ function initializeFilters() {
 // Area en un clic. initializeFilters() régénère les listes MEMBER/AREA pour group="All"
 // (comportement déjà utilisé au changement de groupe, voir ci-dessus) et remet aussi la
 // catégorie active à "All".
+// BUG corrigé (demande du 06/10/2026, "il faut mettre tous les filtres à l'état initial") :
+// Member et Area (country-select) n'étaient en fait JAMAIS remis à "All" par ce bouton.
+// initializeFilters() lit previousMemberValues/previousCountryValues AVANT de reconstruire
+// ces deux <select> pour les reconduire ensuite sur la nouvelle liste d'options — un
+// comportement volontaire quand on change simplement de groupe (ne pas effacer silencieusement
+// les autres filtres déjà posés), mais qui annule justement tout effet du bouton "reset" sur
+// ces deux champs précis : comme ce bouton ne les touchait pas AVANT d'appeler
+// initializeFilters(), leurs anciennes sélections étaient relues puis réappliquées telles
+// quelles sur les nouvelles options. Les décocher explicitement ici, avant cet appel, répare
+// ça sans toucher au comportement normal d'un changement de groupe. Le champ de recherche
+// est lui aussi effacé : "all" veut dire un panneau filtres entièrement vierge, pas juste les
+// menus déroulants.
 window.resetMapFilters = function () {
     const groupSelect = document.getElementById('group-select');
+    const memberSelect = document.getElementById('member-select');
+    const countrySelect = document.getElementById('country-select');
     const yearSelect = document.getElementById('year-select');
+    const searchInput = document.getElementById('search-input');
     if (!groupSelect) return;
     Array.from(groupSelect.options).forEach(o => { o.selected = (o.value === 'All'); });
+    if (memberSelect) Array.from(memberSelect.options).forEach(o => { o.selected = (o.value === 'All'); });
+    if (countrySelect) Array.from(countrySelect.options).forEach(o => { o.selected = (o.value === 'All'); });
     if (yearSelect) {
         Array.from(yearSelect.options).forEach(o => { o.selected = (o.value === 'All'); });
         buildMultiSelectUI('year-select');
     }
+    if (searchInput) searchInput.value = '';
     verifiedFilterMode = 'all';
     const verifiedBtn = document.getElementById('verified-filter-btn');
     if (verifiedBtn) verifiedBtn.classList.remove('active');
