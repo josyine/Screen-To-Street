@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-07T07:36:08.469Z.
+// Généré le 2026-10-07T19:28:24.802Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -1515,9 +1515,9 @@ window.STATIC_LOCATIONS = [
     "city": "Valletta",
     "category": "Bon Voyage",
     "year": "2018",
-    "address": "292 Triq Sant' Orsla",
-    "lat": 35.8964,
-    "lng": 14.5155,
+    "address": "292 Triq Sant' Orsla, Il-Belt Valletta, VLT 1220, Malta",
+    "lat": 35.89487,
+    "lng": 14.51205,
     "img": "images/admin-upload-26-photo.jpg",
     "fullDescription": {
       "fr": "<p>Perché sur le plus haut bastion de La Valette, le jardin d'Upper Barrakka domine le Grand Port et offre une vue directe sur les Trois Cités, entre arcades et statues qui attirent les visiteurs depuis l'ouverture du jardin au public au XIXe siècle. Le groupe s'y est arrêté pour contempler le paysage, les caméras davantage tournées vers l'eau en contrebas que les uns vers les autres.</p><p>C'est le genre de lieu vers lequel Bon Voyage revient sans cesse — pas un décor à proprement parler, juste un endroit sincèrement beau où les membres ont pu simplement s'arrêter et se taire un instant, ce qui, dès la saison 3, était devenu une part de l'attrait de l'émission au même titre que les séquences plus construites.</p>",
@@ -1573,13 +1573,17 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-26-recreated-0.jpg"
     ],
+    "tweetUrl": "https://x.com/BTS_twt/status/1026426397227532289",
+    "tweetUrls": [
+      "https://x.com/bts_twt/status/1026427270032805888?s=46"
+    ],
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": ""
+          "en": "Located at the southeastern edge of Valletta's city center, just a short walk from the main City Gate or Castille Square."
         }
       },
       {
@@ -1587,7 +1591,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Typically open daily from 7:00 AM to 10:00 PM. The gardens are completely free to enter."
         }
       },
       {
@@ -1595,13 +1599,9 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Fully accessible. The park features flat, paved pathways throughout, and is equipped with elevators (including the Barrakka Lift) for wheelchair and stroller access."
         }
       }
-    ],
-    "tweetUrl": "https://x.com/BTS_twt/status/1026426397227532289",
-    "tweetUrls": [
-      "https://x.com/bts_twt/status/1026427270032805888?s=46"
     ]
   },
   {
@@ -14846,8 +14846,8 @@ window.STATIC_LOCATIONS = [
     "year": "2018",
     "episode": "Bon Voyage Season 3",
     "address": "Valletta Waterfront (Pinto Wharf), Valletta",
-    "lat": 35.8974,
-    "lng": 14.5128,
+    "lat": 35.9001,
+    "lng": 14.50951,
     "img": "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600",
     "fullDescription": {
       "en": "<p>The Valletta Waterfront is a long, honey-coloured promenade of former 18th-century warehouses built by Grandmaster Pinto for the Knights of St John, now converted into restaurants, shops and cruise terminal facilities right on the edge of the Grand Harbour, a short walk from the Valletta-Sliema ferry landing.</p><p>Short-let apartments along this stretch put guests directly on the water, a few steps from the restaurants lining the wharf and the ferry that crosses to Sliema — one of the most central, walkable bases on the island for exploring Valletta on foot.</p><!--stss:footsteps--><p>This is where BTS stayed while filming Bon Voyage Season 3 in Malta — the group's actual accommodation for the whole Valletta leg of the trip, right next to the ferry terminal and the restaurant where they had several of their meals.</p><p>It's also the setting for one of the episode's most memorable unscripted moments: Jin and Suga fishing directly off the waterfront in front of the apartment, a scene fans still reference as one of the trip's funniest, most low-key segments.</p>"
@@ -14903,7 +14903,24 @@ window.STATIC_LOCATIONS = [
           "en": "The passenger ferry to Sliema leaves right from this waterfront and gives a view of Valletta's fortifications from the water, similar to what the group would have seen."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "officialLink": "https://maps.app.goo.gl/rW1gVGqftMPFDfjF6?g_st=ic",
+    "ytId": "57KW0YMxUes",
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "id": 258,
@@ -15000,7 +15017,7 @@ window.STATIC_LOCATIONS = [
     "id": 259,
     "name": "Lascaris War Rooms",
     "group": "BTS",
-    "member": "All",
+    "member": "RM, J-Hope",
     "country": "Malta",
     "city": "Valletta",
     "category": "Bon Voyage",
@@ -15009,7 +15026,7 @@ window.STATIC_LOCATIONS = [
     "address": "Lascaris Ditch, Valletta VLT 2000",
     "lat": 35.8958,
     "lng": 14.5144,
-    "img": "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=600",
+    "img": "images/admin-upload-259-photo.jpg",
     "fullDescription": {
       "en": "<p>Carved into the bastion ditch beneath Valletta's Upper Barrakka Gardens, the Lascaris War Rooms are a preserved underground command complex used by the Allies during the Siege of Malta in the Second World War — the war rooms from which Malta's air and sea defence, and later the Allied invasion of Sicily, were coordinated.</p><p>The complex has been restored as a museum, with original plotting tables, communication equipment and briefing rooms open to visitors, giving a rare, tangible sense of a working wartime command centre rather than a reconstruction.</p><!--stss:footsteps--><p>Namjoon and Hoseok visited the Lascaris War Rooms during Bon Voyage Season 3's Valletta leg, taking in the underground tunnels and historical displays as one of the trip's more reflective, history-focused stops.</p><p>It stood out from the episode's lighter, more playful segments as a genuine detour into Malta's wartime history — the kind of stop that let the show's history-minded members (particularly Namjoon, known for his museum visits across multiple seasons) explore at their own pace.</p>"
     },
@@ -15064,7 +15081,24 @@ window.STATIC_LOCATIONS = [
           "en": "The underground tunnels stay noticeably cooler than the streets above, even in Malta's summer heat."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.lascariswarrooms.com/",
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "ytId": "jEQRdsfPpkM",
+    "imgCredit": "Frank Vincentz / CC BY-SA 3.0",
+    "episodeLink": "https://weverse.io/bts/media/0-6741590"
   },
   {
     "id": 260,
