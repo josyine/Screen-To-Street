@@ -853,8 +853,21 @@ async function renderTikTokEmbedOnDetails(container, tiktokUrl) {
 // retraité par //assets.pinterest.com/js/pinit.js. Un simple lien de profil/board (pas une
 // épingle précise) n'a pas d'équivalent embarquable et reste donc un lien "Follow" classique,
 // voir isPinterestPinUrl ci-dessous.
+// BUG corrigé (demande du 06/10/2026, "le lien embeded Pinterest ne fonctionne pas, il
+// apparait en lien dans la section Info") : la regex exigeait un segment "/pin/" après le
+// domaine pour pin.it AUSSI — mais un lien raccourci pin.it (ex: pin.it/1a2B3c4D) va
+// directement du domaine au code court, SANS jamais passer par "/pin/" (contrairement à
+// pinterest.com/pin/12345.../, qui lui a vraiment ce segment). Résultat : AUCUN lien pin.it
+// ne pouvait jamais matcher, donc partitionEmbeddableUrls() le classait systématiquement
+// comme lien de profil/board non-embarquable, renvoyé en simple lien "Follow" dans l'onglet
+// Info — alors qu'un lien pin.it pointe TOUJOURS vers une épingle précise, jamais un
+// profil/board (il n'existe pas de lien pin.it "de profil"). extractPinterestUrlForEdit()
+// plus bas (validité générale) traitait déjà pin.it correctement, sans exiger "/pin/" —
+// seule cette fonction-ci, plus stricte par conception, avait la régression.
 function isPinterestPinUrl(url) {
-    return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/pin\/[\w-]+/i.test((url || '').trim());
+    const s = (url || '').trim();
+    return /^https?:\/\/([a-z0-9-]+\.)?pinterest\.[a-z.]{2,6}\/pin\/[\w-]+/i.test(s)
+        || /^https?:\/\/pin\.it\/[\w-]+/i.test(s);
 }
 // BUG corrigé (demande du 19/09/2026, lieu "LINE Store & BT21 Cafe — Itaewon" — un lien
 // pinterest.com/pin/128282289370654878/ pourtant valide restait bloqué sur "View this Pin

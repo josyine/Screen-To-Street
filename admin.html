@@ -28,7 +28,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260988" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260989" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -416,10 +416,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20260988"></script>
-<script src="countries.js?v=20260988"></script>
-<script src="locations-data.js?v=20260988"></script>
-<script src="script.js?v=20260988"></script>
+<script type="module" src="firebase-init.js?v=20260989"></script>
+<script src="countries.js?v=20260989"></script>
+<script src="locations-data.js?v=20260989"></script>
+<script src="script.js?v=20260989"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -839,8 +839,14 @@ recomposée, sans texte ni légende.`;
     // officiel sans clé API, valable seulement pour une épingle PRÉCISE, pas pour un simple
     // lien de profil/board (voir isPinterestPinUrl). Même correctif que
     // renderPinterestEmbedOnDetails() dans script.js (fiche publique).
+    // BUG corrigé (demande du 06/10/2026) — même correctif que isPinterestPinUrl() dans
+    // script.js : un lien raccourci pin.it (ex: pin.it/1a2B3c4D) ne passe JAMAIS par un
+    // segment "/pin/" contrairement à pinterest.com/pin/12345.../ — la regex précédente
+    // l'exigeait pour les deux, donc aucun lien pin.it ne pouvait jamais matcher.
     function isPinterestPinUrl(url) {
-        return /^https?:\/\/([a-z0-9-]+\.)?(pinterest\.[a-z.]{2,6}|pin\.it)\/pin\/[\w-]+/i.test((url || '').trim());
+        const s = (url || '').trim();
+        return /^https?:\/\/([a-z0-9-]+\.)?pinterest\.[a-z.]{2,6}\/pin\/[\w-]+/i.test(s)
+            || /^https?:\/\/pin\.it\/[\w-]+/i.test(s);
     }
     // BUG corrigé (demande du 19/09/2026, lieu "LINE Store & BT21 Cafe — Itaewon" — un lien
     // pinterest.com/pin/128282289370654878/ pourtant valide restait bloqué sur son lien de
