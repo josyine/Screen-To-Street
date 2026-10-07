@@ -65,8 +65,22 @@ const auth = getAuth(firebaseApp);
 // long-polling HTTP classique (requêtes courtes et répétées, bien plus tolérant aux
 // proxys/pare-feux) quand ce type de blocage est détecté, sans rien changer sur les
 // réseaux qui fonctionnaient déjà avec le canal de streaming.
+//
+// BUG corrigé (demande du 07/10/2026, "sur mon ordinateur ça marche, mais sur un autre
+// ordinateur ou sur téléphone il y a toujours 'Connection issue'") : la DÉTECTION
+// automatique ci-dessus se fait via une sonde envoyée au tout premier appel Firestore —
+// sur un réseau qui bloque ou coupe silencieusement le canal de streaming (voir
+// l'explication au-dessus), cette sonde elle-même peut ne jamais aboutir proprement, donc
+// le SDK ne bascule pas toujours à temps (ou pas du tout) sur le long-polling avant que
+// syncUserData()/etc. plus bas n'échouent déjà — "toujours" (pas juste parfois) sur CES
+// appareils précis pointe vers une détection qui ne se déclenche jamais sur leur réseau,
+// plutôt qu'un simple problème intermittent. experimentalForceLongPolling retire cette
+// détection et impose le long-polling dès le départ, pour TOUS les appareils — un peu
+// moins réactif que le canal de streaming (latence de quelques centaines de ms en plus
+// sur les mises à jour en temps réel, onSnapshot compris) mais ne dépend plus jamais d'une
+// sonde réseau qui peut elle-même échouer.
 const db = initializeFirestore(firebaseApp, {
-    experimentalAutoDetectLongPolling: true,
+    experimentalForceLongPolling: true,
     useFetchStreams: false
 });
 const googleProvider = new GoogleAuthProvider();
