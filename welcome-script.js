@@ -15,7 +15,7 @@ import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 import {
-    getFirestore,
+    initializeFirestore,
     doc,
     setDoc,
     getDoc,
@@ -34,7 +34,20 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp);
+// experimentalForceLongPolling (demande du 07/10/2026, "sur mon ordinateur ça marche, mais
+// sur un autre ordinateur ou sur téléphone il y a toujours 'Connection issue'") : copie
+// séparée de firebaseApp/db (voir le commentaire en haut de ce fichier, firebase-init.js
+// n'est pas chargé sur index.html), qui utilisait encore getFirestore() par défaut — le
+// même canal de streaming (WebChannel/gRPC-Web) que le bug déjà corrigé dans
+// firebase-init.js (voir son propre commentaire), bloqué en silence par certains
+// réseaux/proxys mobiles. C'est sur CETTE page (inscription/connexion) qu'un nouvel
+// appareil atterrit en premier, donc le point le plus probable pour que le problème
+// passe inaperçu sur l'ordinateur habituel de l'utilisateur (déjà connecté, ne repasse
+// plus par ce flux) tout en touchant systématiquement tout autre appareil/téléphone.
+const db = initializeFirestore(firebaseApp, {
+    experimentalForceLongPolling: true,
+    useFetchStreams: false
+});
 const googleProvider = new GoogleAuthProvider();
 
 // On garde une trace de l'état de connexion, utile pour éviter de rouvrir la modale
