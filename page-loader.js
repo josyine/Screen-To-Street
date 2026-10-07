@@ -132,9 +132,29 @@ const LAND = [
     shown += (prog - shown) * .08; if (Math.abs(prog - shown) < .001) shown = prog;
     const v = Math.round(shown * 100); pctEl.textContent = v; el.setAttribute("aria-valuenow", v); ringEl.style.strokeDashoffset = 100 - shown * 100;
     const k = Math.min(STEPS.length - 1, Math.floor(shown * STEPS.length)); if (k !== lastStep) { lastStep = k; stepEl.textContent = STEPS[k]; stepEl.classList.remove("flip"); void stepEl.offsetWidth; stepEl.classList.add("flip"); }
-    if (finished && !diving && shown > .995) { diving = now; el.classList.add("diving"); setTimeout(() => { el.classList.add("out"); document.dispatchEvent(new CustomEvent("stsl:hidden")); }, 900); }
+    // BUG corrigé (demande du 07/10/2026, "la partie finale avec le zoom sur la carte...
+    // c'est pas assez fluide") : cette boucle continuait à redessiner le globe en canvas
+    // à CHAQUE frame pendant toute la transition CSS de zoom (transform:scale), le
+    // thread principal redessinant donc en même temps que le compositeur agrandissait
+    // l'image — source directe de saccades, surtout sur mobile. Dès que la plongée
+    // démarre, on fige la dernière image dessinée (plus aucun appel à drawGlobe, plus
+    // aucune frame redemandée) et on laisse la transition CSS (transform + filter, voir
+    // .stsl.diving .stsl-stage) tourner seule, sans rien sur le thread principal pour la
+    // perturber. Le fondu de sortie (.out) est aussi déclenché un peu APRÈS le début du
+    // zoom plutôt qu'en même temps que lui (chevauchement voulu, pas deux étapes qui
+    // s'enchaînent) pour que le fond continue de masquer le canvas pixelisé pendant que
+    // le flou monte en même temps — avant, le fond restait opaque pendant 900ms puis le
+    // canvas se dévoilait déjà bien zoomé/anguleux, ce qui donnait l'impression de
+    // saccade décrite.
+    if (finished && !diving && shown > .995) {
+      diving = now;
+      el.classList.add("diving");
+      setTimeout(() => { el.classList.add("out"); }, 450);
+      setTimeout(() => { document.dispatchEvent(new CustomEvent("stsl:hidden")); }, 1350);
+      raf = 0;
+      return; // dernière frame avec le globe encore dessiné à l'instant présent — la suite est purement CSS
+    }
     drawGlobe(ctx, W, dpr, state((now - t0) / 1000, shown, now));
-    if (diving && now - diving > 1700) { cancelAnimationFrame(raf); raf = 0; return; }
     raf = requestAnimationFrame(loop);
   }
   function reset() { prog = 0; shown = 0; diving = null; finished = false; lastStep = -1; t0 = performance.now(); el.classList.remove("out", "diving"); size(); if (!raf) raf = requestAnimationFrame(loop); }
