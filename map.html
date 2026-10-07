@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20260994" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260995" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -646,7 +646,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20260994';
+        s.src = 'page-loader.js?v=20260995';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1428,10 +1428,12 @@
 
         <!-- Bouton "Badges" (demande du 07/10/2026) : au-dessus du bouton de géolocalisation
              (même colonne, voir alignLocateBtnWithZoomControl() dans script.js, étendu pour
-             aussi aligner CE bouton sur le zoom Leaflet côté ordinateur). Ouvre
-             window.openBadgesPanel() (script.js) — pas de pastille avec un nombre dessus
-             (demande explicite), contrairement à la maquette d'origine. -->
-        <button id="badges-fab-btn" class="badges-fab-btn" type="button" title="My badges" onclick="if(window.openBadgesPanel) window.openBadgesPanel();">
+             aussi aligner CE bouton sur le zoom Leaflet côté ordinateur). Navigue vers
+             badges.html, une vraie page séparée (demande du 07/10/2026, "je veux que ce
+             soit une nouvelle page qui s'ouvre") — même convention que les autres icônes
+             du header (#feed-icon-btn, #message-icon-btn...). Pas de pastille avec un
+             nombre dessus (demande explicite), contrairement à la maquette d'origine. -->
+        <button id="badges-fab-btn" class="badges-fab-btn" type="button" title="My badges" onclick="window.location.href='badges.html';">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-2 6M16 3l2 6"></path><circle cx="12" cy="14.5" r="6"></circle><path d="M12 11.5l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="#fff" stroke="none"></path></svg>
         </button>
 
@@ -1777,13 +1779,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20260994"></script>
-<script type="module" src="firebase-init.js?v=20260994"></script>
-<script src="locations-data.js?v=20260994"></script>
-<script src="script.js?v=20260994"></script>
+<script src="countries.js?v=20260995"></script>
+<script type="module" src="firebase-init.js?v=20260995"></script>
+<script src="locations-data.js?v=20260995"></script>
+<script src="script.js?v=20260995"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20260994"></script>
-<script src="map-tour.js?v=20260994"></script>
+<script src="itinerary.js?v=20260995"></script>
+<script src="map-tour.js?v=20260995"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
