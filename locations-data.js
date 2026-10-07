@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-07T19:28:24.802Z.
+// Généré le 2026-10-07T23:49:33.030Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -1420,12 +1420,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2018",
     "address": "Vjal Nelson",
-    "lat": 35.8968,
-    "lng": 14.5125,
+    "lat": 35.89566,
+    "lng": 14.50855,
     "img": "images/admin-upload-25-photo.jpg",
     "fullDescription": {
       "fr": "<p>Trois tritons de bronze agenouillés autour d'un large bassin, juste devant la porte de La Valette : la fontaine de Triton sert de porte d'entrée officieuse à la capitale maltaise depuis les années 1950, et c'est la première chose que le groupe a vue en arrivant en ville pour la saison 3 de Bon Voyage.</p><p>C'est un passage bref dans l'émission, davantage une transition qu'une destination en soi, mais il marque le début de l'un des segments les plus visuellement marquants de toute la série — la pierre calcaire dorée, les églises baroques et la lumière méditerranéenne remplaçant le bois et l'eau des saisons nordiques précédentes.</p>",
-      "en": "<p>Three majestic bronze Tritons (mythological mermen) kneel around a wide travertine basin just outside Valletta's City Gate, holding up a giant bronze platter. The Triton Fountain has served as the spectacular, unofficial front door to Malta's capital since 1959. Freshly restored to its original glory just before the group's visit in 2018, the landmark perfectly captures the grandeur and welcoming spirit of this historic island nation.</p><p>The fountain is the very first thing the group saw when stepping into the city for Bon Voyage Season 3. While it appears as a brief transition in the show rather than a lingering destination, it acts as a striking cinematic threshold. Walking past these bronze mermen marked the start of one of the most visually stunning legs of the entire series. It signaled a glorious shift in aesthetic—trading the cool mountains and wooden cabins of previous seasons for Malta's sun-drenched golden limestone, baroque churches, and brilliant Mediterranean light.</p>"
+      "en": "<p>Three majestic bronze Tritons (mythological mermen) kneel around a wide travertine basin just outside Valletta's City Gate, holding up a giant bronze platter. The Triton Fountain has served as the spectacular, unofficial front door to Malta's capital since 1959. Freshly restored to its original glory just before the group's visit in 2018, the landmark perfectly captures the grandeur and welcoming spirit of this historic island nation.</p><!--stss:footsteps--><p>The fountain is the very first thing the group saw when stepping into the city for Bon Voyage Season 3. While it appears as a brief transition in the show rather than a lingering destination, it acts as a striking cinematic threshold. Walking past these bronze mermen marked the start of one of the most visually stunning legs of the entire series. It signaled a glorious shift in aesthetic—trading the cool mountains and wooden cabins of previous seasons for Malta's sun-drenched golden limestone, baroque churches, and brilliant Mediterranean light.</p>"
     },
     "tipsList": [
       {
@@ -1702,8 +1702,8 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2018",
     "address": "Triq San Gwann",
-    "lat": 35.8977,
-    "lng": 14.5136,
+    "lat": 35.89772,
+    "lng": 14.51274,
     "img": "images/admin-upload-29-photo.jpg",
     "fullDescription": {
       "fr": "<p>Vue de l'extérieur, la co-cathédrale Saint-Jean paraît presque austère — une façade de pierre calcaire sobre, typique de l'architecture défensive de La Valette. Une fois à l'intérieur, c'est l'un des intérieurs baroques les plus richement ornés d'Europe : chaque centimètre du plafond est doré, et le sol est entièrement composé de dalles funéraires incrustées de marbre. La visite du groupe ici a été l'une des étapes les plus solennelles et les plus impressionnées de la saison.</p><p>Ce n'est pas un lieu pensé pour le confort d'une équipe de tournage — silencieux, sombre, réellement sacré — et les images en gardent cette retenue, les membres s'exprimant presque à voix basse en découvrant un édifice qui pousse l'excès baroque aussi loin que possible.</p>",
@@ -6296,7 +6296,7 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 109,
-    "name": "Seoul Forest",
+    "name": "Seoul Forest: Tunnel",
     "group": "BTS",
     "member": "Suga",
     "country": "South Korea",
@@ -6353,13 +6353,9 @@ window.STATIC_LOCATIONS = [
     "youtubeUrls": [],
     "tiktokUrl": "",
     "facebookUrl": "",
-    "tweetUrl": "",
     "episodeLink": "",
     "facebookUrls": [],
     "tweetUrls": [],
-    "recreatedPhotos": [
-      "images/admin-upload-109-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -6388,7 +6384,14 @@ window.STATIC_LOCATIONS = [
     ],
     "officialLink": "https://parks.seoul.go.kr/error/error.html?indexURL=",
     "pinterestUrl": "https://pin.it/2osaAHWd0",
-    "instagramUrl": ""
+    "instagramUrl": "",
+    "tweetUrl": "https://x.com/taexprr/status/2107925125328970075?s=46&t=k09_VEzEB_5AlH4tB6PEcA",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-109-recreated-0.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 110,
@@ -14848,7 +14851,7 @@ window.STATIC_LOCATIONS = [
     "address": "Valletta Waterfront (Pinto Wharf), Valletta",
     "lat": 35.9001,
     "lng": 14.50951,
-    "img": "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600",
+    "img": "images/admin-upload-257-photo.jpg",
     "fullDescription": {
       "en": "<p>The Valletta Waterfront is a long, honey-coloured promenade of former 18th-century warehouses built by Grandmaster Pinto for the Knights of St John, now converted into restaurants, shops and cruise terminal facilities right on the edge of the Grand Harbour, a short walk from the Valletta-Sliema ferry landing.</p><p>Short-let apartments along this stretch put guests directly on the water, a few steps from the restaurants lining the wharf and the ferry that crosses to Sliema — one of the most central, walkable bases on the island for exploring Valletta on foot.</p><!--stss:footsteps--><p>This is where BTS stayed while filming Bon Voyage Season 3 in Malta — the group's actual accommodation for the whole Valletta leg of the trip, right next to the ferry terminal and the restaurant where they had several of their meals.</p><p>It's also the setting for one of the episode's most memorable unscripted moments: Jin and Suga fishing directly off the waterfront in front of the apartment, a scene fans still reference as one of the trip's funniest, most low-key segments.</p>"
     },
@@ -14911,16 +14914,24 @@ window.STATIC_LOCATIONS = [
     "youtubeUrls": [],
     "tiktokUrl": "",
     "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
-    "recreatedPhoto": "",
     "officialLink": "https://maps.app.goo.gl/rW1gVGqftMPFDfjF6?g_st=ic",
-    "ytId": "57KW0YMxUes",
-    "imgCredit": "AI-generated illustrative image"
+    "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://www.dailymotion.com/video/x6u82uz",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-257-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-257-recreated-1.jpg",
+        "official": true
+      }
+    ],
+    "ytId": "",
+    "tweetUrl": "https://x.com/taexprr/status/2107930035541999952?s=46"
   },
   {
     "id": 258,
@@ -15181,8 +15192,8 @@ window.STATIC_LOCATIONS = [
     "year": "2018",
     "episode": "Bon Voyage Season 3",
     "address": "Belt is-Sebħ, Floriana",
-    "lat": 35.8946,
-    "lng": 14.5086,
+    "lat": 35.89577,
+    "lng": 14.50436,
     "img": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600",
     "fullDescription": {
       "en": "<p>Dinner in the Sky Malta is a travelling dining experience that lifts a table of around 22 guests roughly 40 metres into the air by crane, typically set up in Floriana overlooking Marsamxett Harbour — guests are strapped in and served a full meal suspended above the rooftops of the island.</p><p>It's one of the more unusual, high-adrenaline dining concepts to operate in Malta, running seasonally rather than as a permanent fixture, with the exact setup location shifting slightly between events.</p><!--stss:footsteps--><p>BTS spent their last night in Malta during Bon Voyage Season 3 dining in the sky, literally lifted above the city for a group meal together — one of the episode's most visually dramatic closing moments.</p><p>The segment became an emotional send-off for the Malta leg of the trip, the group reflecting on the days they'd spent together on the island while suspended above it, before the view below transitioned into the final footage of the episode.</p>"
@@ -15237,6 +15248,27 @@ window.STATIC_LOCATIONS = [
         "text": {
           "en": "An evening sitting gives the same golden-hour-over-the-harbour view visible in the episode's closing footage."
         }
+      }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "officialLink": "https://www.instagram.com/dinnerintheskymalta/?hl=fr",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-261-recreated-0.jpg",
+        "official": true
       }
     ]
   },
@@ -20546,6 +20578,184 @@ window.STATIC_LOCATIONS = [
       },
       {
         "url": "images/admin-upload-new-manual-1791237155701-b29d0i-recreated-1.jpg",
+        "official": true
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1791404653831-20uvsc",
+    "name": "Seoul Forest: Dedicated Benches 1",
+    "group": "BTS",
+    "member": "RM",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273 Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54562,
+    "lng": 127.0406,
+    "img": "images/admin-upload-new-manual-1791404653831-20uvsc-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "officialLink": "https://parks.seoul.go.kr/error/error.html?indexURL=",
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1791404653831-20uvsc-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best Season to Visit"
+        },
+        "text": {
+          "en": "Autumn (late October to mid-November) is the ultimate time to visit, as the Ginkgo tree leaves turn a vibrant gold, creating the perfect backdrop for RM’s cozy aesthetic."
+        }
+      },
+      {
+        "title": {
+          "en": "Photo Tip"
+        },
+        "text": {
+          "en": "Take a close-up picture of the engraved brass plaques on the benches, or capture a wide shot while resting on the bench under the tree canopy."
+        }
+      },
+      {
+        "title": {
+          "en": "Pro-Tip"
+        },
+        "text": {
+          "en": "Bring your headphones and play \"everythingoes\" or \"mono.\" while sitting on one of his benches to fully immerse yourself in the serene \"Namjooning\" atmosphere."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>As an avid lover of nature, art, and solo strolls, RM has frequented Seoul Forest over the years, making it a regular stop during his \"Namjooning\" trips across Seoul. In response, fans began dedicating bench spaces to him as early as 2018. The Ginkgo Tree Forest benches are among the most famous fan-dedicated spots in the park, featuring engraved plaques with reflective lyrics from songs like \"Sea\" and \"Moonchild\".</p><!--stss:footsteps--><p>Visiting these specific benches allows fans to immerse themselves in RM’s peaceful \"Namjooning\" routine. Located right at the edge of the iconic Ginkgo grove, this spot provides a quiet setting to sit, read, or listen to music under the golden tree canopy, surrounded by the very lyrics that defined some of BTS and RM’s most introspective eras.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching this location in Seoul Forest is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and head out through Exit 3 or Exit 4, placing you a quick five-minute walk from the park entrance. Alternatively, take Line 2 to Ttukseom Station via Exit 8 for a brief ten-minute walk to the entrance. The official address is 273 Ttukseom-ro, Seongdong-gu, Seoul. To locate these specific benches in the Ginkgo Tree Forest using navigation apps, use the exact coordinates 37.5441 N, 127.0396 E."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park and all bench areas are accessible twenty-four hours a day throughout the entire year, and entry is completely free for all visitors. While the outdoor grounds never close, indoor facilities such as the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and remain closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be highly accessible for all visitors. Smooth, wide, and paved pathways link every section of the park, ensuring that all RM bench locations are easily reachable by wheelchairs and strollers. Accessible restrooms and nursing rooms are available near the main plaza and entrance, and free wheelchair rentals can be requested at the main visitor center by showing a valid ID."
+        }
+      }
+    ],
+    "storyImage": "images/admin-upload-new-manual-1791404653831-20uvsc-story.jpg"
+  },
+  {
+    "id": "new-manual-1791405945065-ofbvso",
+    "name": "Comino Island",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "Malta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "lat": 36.01344,
+    "lng": 14.32235,
+    "address": "Blue Lagoon, Comino Island, Malta",
+    "city": "Comino Island",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated between the small island of Comino and the tiny islet of Cominotto, the Blue Lagoon is the crown jewel of the Maltese archipelago. Famous for its dazzling, translucent turquoise waters and white sandy seabed, this sheltered cove looks like a slice of the Caribbean dropped into the middle of the Mediterranean Sea. Surrounded by rugged limestone cliffs and wild nature, it is Malta's ultimate destination for swimming, snorkeling, and boat charters.</p><!--stss:footsteps--><p>This breathtaking lagoon became an iconic fandom landmark when Jungkook visited the island during the filming of BTS Bon Voyage Season 3 (2018). Taking a break from the historic streets of Valletta, Jungkook boarded a private rented boat to sail out onto the crystal-clear waters of Comino.</p><p>Fans fondly remember this leg of the trip for its relaxed, joyful atmosphere. Jungkook spent his time unwinding on the boat's deck, marveling at the wild beauty of the island, and sharing funny, chaotic behind-the-scenes moments—such as the memorable sunscreen application scenes with Jimin. Showcasing Jungkook's sun-drenched adventures on the Mediterranean, the broadcast of these stunning Maltese landscapes directly sparked a spectacular explosion of South Korean tourism to the archipelago.</p>"
+    },
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Take a Boat Tour"
+        },
+        "text": {
+          "en": "To fully recreate Jungkook's experience, rent a boat or join a private charter to cruise the waters around Comino and view the lagoon directly from the deck."
+        }
+      },
+      {
+        "title": {
+          "en": "Don't Forget the Sunscreen"
+        },
+        "text": {
+          "en": "Channel Jungkook's hilarious behind-the-scenes moments by making sure you are well-protected from the strong Maltese sun before lounging on the water."
+        }
+      },
+      {
+        "title": {
+          "en": "Arrive Early"
+        },
+        "text": {
+          "en": "The Blue Lagoon is incredibly popular. Take the first morning water taxi to experience the translucent turquoise waters in peace before the afternoon crowds arrive."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Comino is a car-free island. Accessible only by water, you can take a quick 15-minute ferry, speed boat, or water taxi from Cirkewwa (on the main island of Malta) or Mgarr (on the island of Gozo)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The lagoon is a public natural site open 24/7, though ferry services and boat charters typically operate from early morning (around 8:30 AM) to late afternoon. Free admission (excluding transport/boat costs)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Reached via boat. The shore terrain on Comino is rugged, rocky, and unpaved, making mobility on land challenging. Wheelchair access is extremely limited on the island itself, though some larger sightseeing cruise boats offer accessible main decks."
+        }
+      }
+    ],
+    "ytId": "",
+    "officialLink": "https://fr.wikipedia.org/wiki/Comino",
+    "tweetUrl": "https://x.com/bts_twt/status/1025373063762698240?s=46",
+    "imgCredit": "Christian Formosa / CC BY-SA 4.0",
+    "img": "images/admin-upload-new-manual-1791405945065-ofbvso-photo.jpg",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791405945065-ofbvso-recreated-0.jpg",
         "official": true
       }
     ]
