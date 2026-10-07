@@ -440,7 +440,10 @@
             iconSize: [16, 16], iconAnchor: [8, 8]
         });
         liveMapMarker = L.marker([live.lat, live.lng], { icon, zIndexOffset: 2000 }).addTo(map);
-        const label = live.member ? `${live.member} — ${live.eventName}<br>${live.city}, ${live.country}` : `🔴 ${TOUR_MODE_DATA.tourName}<br>${live.city}, ${live.country}`;
+        // Émoji rond rouge retiré du titre (demande du 07/10/2026) — le marqueur lui-même
+        // est déjà un point rouge pulsant (voir l'icône juste au-dessus), l'émoji dans le
+        // texte était redondant.
+        const label = live.member ? `${live.member} — ${live.eventName}<br>${live.city}, ${live.country}` : `${TOUR_MODE_DATA.tourName}<br>${live.city}, ${live.country}`;
         liveMapMarker.bindTooltip(label, { direction: 'top', offset: [0, -8] });
     }
 

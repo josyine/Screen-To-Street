@@ -6161,6 +6161,21 @@ function renderLocationRichContent(loc) {
         }
     }
 
+    // Image optionnelle sous "The story of this place" (demande du 07/10/2026) —
+    // loc.storyImage, une simple chaîne, distincte de "Mei's Pictures" juste en dessous
+    // (loc.recreatedPhotos). Masquée entièrement tant qu'aucune image n'est fournie, voir
+    // le bouton "+ Add an image" de openLocationEditModal() plus bas dans ce fichier.
+    const storyImageEl = document.getElementById('details-story-image');
+    if (storyImageEl) {
+        if (loc.storyImage) {
+            storyImageEl.src = loc.storyImage;
+            storyImageEl.classList.remove('hidden');
+        } else {
+            storyImageEl.src = '';
+            storyImageEl.classList.add('hidden');
+        }
+    }
+
     // "Mei's Pictures" (demande du 14/09/2026, renommé et rendu multi-photos le
     // 18/09/2026 : "je veux pouvoir ajouter plusieurs photo") — loc.recreatedPhotos
     // (tableau) est le format courant ; loc.recreatedPhoto (une seule chaîne) reste lu en
@@ -6876,6 +6891,31 @@ function ensureLocationEditModal() {
                  fullDescription.en à la sauvegarde (voir saveLocationEdit()). -->
             <label style="${labelStyle}">The story of this place</label>
             <textarea id="location-edit-story-place" rows="3" style="${fieldStyle} margin-bottom:10px; resize:vertical;" placeholder="Describe the place itself — what it is, where it is."></textarea>
+            <!-- "+ Add an image" sous "The story of this place" (demande du 07/10/2026) :
+                 une seule photo optionnelle illustrant le lieu lui-même (loc.storyImage),
+                 affichée directement sous ce texte sur la fiche lieu publique (voir
+                 renderLocationRichContent() plus haut dans ce fichier) — distincte de "Mei's
+                 Pictures" juste au-dessus (galerie de photos retouchées avec un avatar du
+                 site), donc pas de bascule "pose officielle" ici. Même pattern
+                 pending/touched que "Header photo" plus haut (voir
+                 updateLocationEditStoryImagePreview()/wireLocationEditStoryImageInputOnce()
+                 plus bas dans ce fichier), un seul emplacement plutôt que la galerie
+                 réutilisable createPhotoGalleryField(). -->
+            <div id="location-edit-story-image-preview" style="margin-bottom:8px; border-radius:10px; overflow:hidden; display:none; position:relative;">
+                <img style="display:block; width:100%; max-height:160px; object-fit:cover;">
+                <button type="button" id="location-edit-story-image-remove" title="Remove this image" style="position:absolute; top:6px; right:6px; width:26px; height:26px; border-radius:50%; border:1.5px solid #e2e8f0; background:#fff; color:#64748b; font-size:15px; line-height:1; cursor:pointer;">&times;</button>
+            </div>
+            <div id="location-edit-story-image-add-row" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
+                <button type="button" id="location-edit-story-image-add-btn" style="background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">+ Add an image</button>
+                <button type="button" id="location-edit-story-image-url-toggle-btn" style="background:none; border:none; color:#D42759; font-size:11.5px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif;">or paste an image URL</button>
+            </div>
+            <input type="file" id="location-edit-story-image-file-input" accept="image/*,.heic,.heif" class="hidden">
+            <div id="location-edit-story-image-url-row" class="hidden" style="display:flex; gap:6px; margin-bottom:8px;">
+                <input type="url" id="location-edit-story-image-url-input" style="${fieldStyle}" placeholder="Image URL">
+                <button type="button" id="location-edit-story-image-url-confirm-btn" style="background:#D42759; color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif;">Add</button>
+            </div>
+            <div id="location-edit-story-image-error" class="hidden" style="${errStyle}"></div>
+            <div style="font-size:10px; color:#94a3b8; margin-bottom:14px;">Shown right below "The story of this place" text on the location page — hidden entirely while empty.</div>
             <!-- Une section par visite (demande du 15/09/2026, "ajoute une section de
                  rédaction par année et membres... s'il n'y a qu'une seule visite, il ne
                  faut pas afficher l'année") — voir window.createVisitSectionsField() plus
@@ -7053,6 +7093,7 @@ function ensureLocationEditModal() {
         </div>`;
     document.body.appendChild(modal);
     wireLocationEditPhotoInputOnce(modal);
+    wireLocationEditStoryImageInputOnce(modal);
     // Bouton "×" du champ "Link" (voir le commentaire au-dessus de ce champ dans le HTML
     // ci-dessus) : vide le champ et déclenche un évènement 'input' manuellement, puisque
     // poser `.value = ''` en JS n'en déclenche aucun tout seul — sans ça, le listener
@@ -7192,10 +7233,21 @@ window.openImageCropModal = async function (dataUrl, onDone) {
         // sinon getCroppedCanvas()/toDataURL() lève une SecurityError (canvas "tainted") —
         // repli sur la photo d'origine inchangée plutôt qu'une exception non rattrapée, même
         // esprit que le repli déjà en place plus bas si Cropper.js lui-même ne charge pas.
+        // BUG corrigé (demande du 07/10/2026, "lorsque j'ajoute 3 images [Mei's Pictures]
+        // ça indique que ça dépasse le stockage") : ce recadrage réencodait systématiquement
+        // à une résolution/qualité PLUS HAUTE (2000px, 0.9) que la compression initiale de
+        // l'import (fileToResizedDataUrl → resizeTripCoverDataUrl, 1200px/0.7 — voir plus
+        // haut), annulant purement et simplement cette compression à chaque "Apply crop" —
+        // puisque la galerie "Mei's Pictures" ouvre CE modal automatiquement après chaque
+        // upload (voir window.createPhotoGalleryField() plus haut dans ce fichier), chaque
+        // photo ajoutée pesait donc bien plus que prévu en base64 dans le même document
+        // Firestore, jusqu'à dépasser sa limite de 1 Mo au bout de 2-3 photos. Mêmes valeurs
+        // que resizeTripCoverDataUrl ici pour qu'un recadrage ne puisse plus jamais produire
+        // une image plus lourde que l'import d'origine.
         let result = dataUrl;
         try {
-            const canvas = cropper.getCroppedCanvas({ maxWidth: 2000, maxHeight: 2000, imageSmoothingQuality: 'high' });
-            if (canvas) result = canvas.toDataURL('image/jpeg', 0.9);
+            const canvas = cropper.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: 'high' });
+            if (canvas) result = canvas.toDataURL('image/jpeg', 0.7);
         } catch (err) {
             console.warn('Recadrage impossible (image distante sans CORS ?), photo laissée inchangée :', err);
             window.alert("This photo couldn't be cropped (the source doesn't allow it) — it was left unchanged.");
@@ -7275,6 +7327,88 @@ function wireLocationEditPhotoInputOnce(modal) {
     }
 }
 
+// Image sous "The story of this place" (demande du 07/10/2026) — même pattern
+// pending/touched que "Header photo" ci-dessus, mais avec le bouton "+ Add an image" caché
+// dès qu'une image est déjà posée (remplacé par la vignette + son "×"), plutôt qu'un champ
+// toujours visible : un seul emplacement, pas une galerie, donc pas besoin d'afficher les
+// deux à la fois.
+let locationEditPendingStoryImage = null; // dataURL/URL de l'image tout juste importée ou collée, ou null
+let locationEditStoryImageTouched = false; // true dès que l'admin a changé cette image cette session
+function updateLocationEditStoryImagePreview(src) {
+    const preview = document.getElementById('location-edit-story-image-preview');
+    const addRow = document.getElementById('location-edit-story-image-add-row');
+    const urlRow = document.getElementById('location-edit-story-image-url-row');
+    if (src) {
+        preview.style.display = 'block';
+        preview.querySelector('img').src = src;
+        if (addRow) addRow.classList.add('hidden');
+        if (urlRow) urlRow.classList.add('hidden');
+    } else {
+        preview.style.display = 'none';
+        preview.querySelector('img').src = '';
+        if (addRow) addRow.classList.remove('hidden');
+    }
+}
+function wireLocationEditStoryImageInputOnce(modal) {
+    const addBtn = modal.querySelector('#location-edit-story-image-add-btn');
+    const input = modal.querySelector('#location-edit-story-image-file-input');
+    const removeBtn = modal.querySelector('#location-edit-story-image-remove');
+    const urlToggleBtn = modal.querySelector('#location-edit-story-image-url-toggle-btn');
+    const urlRow = modal.querySelector('#location-edit-story-image-url-row');
+    const urlInput = modal.querySelector('#location-edit-story-image-url-input');
+    const urlConfirmBtn = modal.querySelector('#location-edit-story-image-url-confirm-btn');
+    const errorEl = modal.querySelector('#location-edit-story-image-error');
+    if (!addBtn || !input || input.dataset.wired) return;
+    input.dataset.wired = '1';
+    addBtn.addEventListener('click', () => input.click());
+    input.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        errorEl.classList.add('hidden');
+        addBtn.disabled = true;
+        try {
+            const resized = await fileToResizedDataUrl(file, 1200);
+            window.openImageCropModal(resized, (cropped) => {
+                if (cropped === null) return; // cropping cancelled — nothing added
+                locationEditPendingStoryImage = cropped;
+                locationEditStoryImageTouched = true;
+                updateLocationEditStoryImagePreview(cropped);
+            });
+        } catch (err) {
+            console.warn('Import de l\'image (story) échoué :', err);
+            errorEl.textContent = isHeicFile(file)
+                ? "Couldn't convert this HEIC photo. Try exporting it as JPEG first, or paste an Image URL instead."
+                : "Couldn't read this photo. Try a different file, or paste an Image URL instead.";
+            errorEl.classList.remove('hidden');
+        }
+        addBtn.disabled = false;
+        input.value = '';
+    });
+    if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+            locationEditPendingStoryImage = null;
+            locationEditStoryImageTouched = true;
+            updateLocationEditStoryImagePreview(null);
+        });
+    }
+    if (urlToggleBtn && urlRow) {
+        urlToggleBtn.addEventListener('click', () => {
+            urlRow.classList.toggle('hidden');
+            if (!urlRow.classList.contains('hidden') && urlInput) urlInput.focus();
+        });
+    }
+    if (urlConfirmBtn && urlInput) {
+        urlConfirmBtn.addEventListener('click', () => {
+            const val = urlInput.value.trim();
+            if (!val) return;
+            locationEditPendingStoryImage = val;
+            locationEditStoryImageTouched = true;
+            urlInput.value = '';
+            updateLocationEditStoryImagePreview(val);
+        });
+    }
+}
+
 // "Mei's Pictures" (demande du 14/09/2026, passée en galerie multi-photos le 18/09/2026) —
 // plus de wireXInputOnce()/pending-state dédié comme "Header photo" ci-dessus : le widget
 // partagé window.createPhotoGalleryField() (voir le haut de ce fichier) gère lui-même tout
@@ -7285,6 +7419,7 @@ let locationEditRecreateGalleryWidget = null;
 let locationEditCurrentId = null;
 let locationEditExistingFullDescription = {};
 let locationEditExistingImg = '';
+let locationEditExistingStoryImage = '';
 let locationEditExtraWidgets = {};
 // Valeurs d'origine des liens (voir le commentaire dans fillForm() plus bas et dans
 // saveLocationEdit()) — permet de ne revalider que ce que l'admin a réellement changé.
@@ -7458,6 +7593,16 @@ window.openLocationEditModal = async function (locId) {
         // convention que admin.html pour ce même champ.
         document.getElementById('location-edit-photo-url').value = locationEditExistingImg.startsWith('data:') ? '' : locationEditExistingImg;
         updateLocationEditPhotoPreview(locationEditExistingImg || null);
+        // Image sous "The story of this place" (demande du 07/10/2026) — même convention
+        // pending/touched que "Header photo" ci-dessus.
+        locationEditExistingStoryImage = data.storyImage || '';
+        locationEditPendingStoryImage = null;
+        locationEditStoryImageTouched = false;
+        const storyImageUrlInput = document.getElementById('location-edit-story-image-url-input');
+        if (storyImageUrlInput) storyImageUrlInput.value = '';
+        const storyImageUrlRow = document.getElementById('location-edit-story-image-url-row');
+        if (storyImageUrlRow) storyImageUrlRow.classList.add('hidden');
+        updateLocationEditStoryImagePreview(locationEditExistingStoryImage || null);
         // "Mei's Pictures" (demande du 14/09/2026, galerie multi-photos le 18/09/2026) —
         // widget partagé, recréé à chaque ouverture du modal ; repli sur l'ancien champ
         // recreatedPhoto (chaîne unique) pour les lieux jamais migrés en tableau.
@@ -7726,6 +7871,13 @@ async function saveLocationEdit(locId, modal) {
         fields.img = locationEditPendingImg || '';
     } else if (!locationEditExistingImg && ytId) {
         fields.img = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+    }
+    // Image sous "The story of this place" (demande du 07/10/2026) — même convention que
+    // "Header photo" ci-dessus : n'écrit ce champ que si l'admin l'a réellement touché
+    // cette session (ajout, remplacement ou suppression via le "×"), jamais un champ resté
+    // intact.
+    if (locationEditStoryImageTouched) {
+        fields.storyImage = locationEditPendingStoryImage || '';
     }
     // "Mei's Pictures" (demande du 14/09/2026, galerie multi-photos le 18/09/2026) —
     // recreatedPhotos est le tableau courant. BUG corrigé (demande du 19/09/2026, cause

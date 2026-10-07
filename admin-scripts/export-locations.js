@@ -150,14 +150,17 @@ async function main() {
     const MIME_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
     let extractedCount = 0;
     published.forEach((loc) => {
-        ['img', 'recreatedPhoto'].forEach((field) => {
+        // storyImage (demande du 07/10/2026, "+ Add an image" sous "The story of this
+        // place") ajouté à cette liste : même risque de bloat de locations-data.js qu'img/
+        // recreatedPhoto si laissé en data URL (voir le commentaire ci-dessus).
+        ['img', 'recreatedPhoto', 'storyImage'].forEach((field) => {
             const val = loc[field];
             if (typeof val !== 'string' || !val.startsWith('data:image/')) return;
             const m = val.match(/^data:(image\/[a-z]+);base64,(.*)$/s);
             if (!m) return;
             const ext = MIME_EXT[m[1]] || 'jpg';
             const safeId = String(loc.id).replace(/[^a-zA-Z0-9_-]/g, '');
-            const fieldSlug = field === 'img' ? 'photo' : 'recreated';
+            const fieldSlug = field === 'img' ? 'photo' : (field === 'storyImage' ? 'story' : 'recreated');
             const filename = `admin-upload-${safeId}-${fieldSlug}.${ext}`;
             fs.writeFileSync(path.join(imagesDir, filename), Buffer.from(m[2], 'base64'));
             loc[field] = `images/${filename}`;
