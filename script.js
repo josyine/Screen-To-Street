@@ -3395,12 +3395,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const alignLocateBtnWithZoomControl = () => {
             const zoomEl = map.getContainer().querySelector('.leaflet-control-zoom');
             const locateBtn = document.getElementById('locate-country-btn');
+            // Bouton "Badges" (demande du 07/10/2026) : même colonne que locate-country-btn
+            // (juste au-dessus, voir style.css) — doit donc être réaligné exactement pareil,
+            // sinon il reste bloqué sur son `right` de repli du CSS pendant que
+            // locate-country-btn suit le zoom Leaflet (largeur variable selon
+            // .leaflet-touch), ce qui les désaligne visuellement l'un de l'autre.
+            const badgesBtn = document.getElementById('badges-fab-btn');
             if (!zoomEl || !locateBtn) return;
             const zoomRect = zoomEl.getBoundingClientRect();
-            if (zoomRect.width === 0) { locateBtn.style.right = ''; return; }
+            if (zoomRect.width === 0) {
+                locateBtn.style.right = '';
+                if (badgesBtn) badgesBtn.style.right = '';
+                return;
+            }
             const mapRect = map.getContainer().getBoundingClientRect();
             const zoomCenterFromRight = mapRect.right - (zoomRect.left + zoomRect.width / 2);
             locateBtn.style.right = (zoomCenterFromRight - locateBtn.offsetWidth / 2) + 'px';
+            if (badgesBtn) badgesBtn.style.right = (zoomCenterFromRight - badgesBtn.offsetWidth / 2) + 'px';
         };
         requestAnimationFrame(alignLocateBtnWithZoomControl);
         window.addEventListener('resize', alignLocateBtnWithZoomControl);
@@ -10218,6 +10229,269 @@ function showBadgeUnlockCelebration(loc, rank) {
         try { navigator.vibrate([40, 30, 40]); } catch (e) { /* pas bloquant */ }
     }
 }
+
+// ==========================================================================
+// Page "Mes badges" (demande du 07/10/2026, bouton .badges-fab-btn au-dessus de la
+// géolocalisation, voir map.html) — même notion de badge que ci-dessus
+// (publicProfiles/{uid}.badges, débloqué par proximité GPS réelle via
+// checkBadgeUnlocksNearPosition()), jamais le système "visited" séparé et manuel de
+// getVisitedLocs()/visited.html. Univers des lieux = même filtre que partout ailleurs sur
+// la carte (groupes débloqués par le pass + lieux non fermés), pour qu'un badge
+// "verrouillé" ici corresponde toujours à un lieu réellement visible/atteignable.
+// Reprend le design de la maquette fournie (tiroir du bas/panneau latéral, grille de
+// médailles rondes, fiche détail, classement) sans sa section "Défis" (aucun système de
+// défis n'existe sur le site) ni son sous-classement "Défis" (un seul classement réel :
+// nombre de badges débloqués, voir renderRankTab() plus bas).
+// ==========================================================================
+let badgesPanelGroupFilter = '__ALL__';
+let badgesPanelShowAll = false;
+let badgesPanelTab = 'badges';
+let badgesPanelMyBadges = {}; // {idStr: {unlockedAt}} — rechargé à chaque ouverture du panneau
+
+function badgesPanelAllLocations() {
+    const unlockedGroups = getUnlockedGroups();
+    return celebLocations.filter(loc => unlockedGroups.includes(loc.group) && !(loc.name || '').startsWith('[CLOSED] '));
+}
+
+async function getMyBadgesMap() {
+    const user = window.firebaseCurrentUser;
+    if (!user || typeof window.fetchPublicProfile !== 'function') return {};
+    try {
+        const profile = await window.fetchPublicProfile(user.uid);
+        return profile.badges || {};
+    } catch (e) {
+        console.warn('Chargement de la collection de badges échoué :', e);
+        return {};
+    }
+}
+
+// unlockedAt est un Timestamp Firestore côté lecture normale (toMillis() disponible) ;
+// absent/incomplet juste après une écriture locale non confirmée (serverTimestamp()) —
+// traité comme "pas de date connue" plutôt que de planter, même prudence que
+// resolveDeleteMarkers() dans firebase-init.js pour d'autres champs serverTimestamp().
+function badgeUnlockedAtMillis(entry) {
+    return (entry && entry.unlockedAt && typeof entry.unlockedAt.toMillis === 'function') ? entry.unlockedAt.toMillis() : 0;
+}
+function badgeUnlockedAtLabel(entry, isFr) {
+    const ms = badgeUnlockedAtMillis(entry);
+    if (!ms) return '';
+    return new Date(ms).toLocaleDateString(isFr ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+// Photo du lieu dans le badge débloqué (demande explicite du 07/10/2026) — loc.img en
+// fond, anneau rose ; verrouillé = simple rond gris + cadenas, AUCUNE photo tant que le
+// badge n'est pas débloqué. `large` agrandit le rond pour la fiche détail (voir
+// showBadgeDetail() plus bas) — même markup, juste une classe CSS en plus (voir style.css).
+function badgeItemPhotoHtml(loc, locked, large) {
+    const sizeClass = large ? ' lg' : '';
+    if (locked) return `<span class="badges-photo lock${sizeClass}">${badgeLockSvg}</span>`;
+    const catIcon = iconsSVG[loc.category] || iconsSVG['Default'];
+    const baseColor = groupColors[loc.group] || '#9B3CEB';
+    const bg = loc.img ? `background-image:url('${escapeHtml(loc.img)}');` : `background:${baseColor};`;
+    return `<span class="badges-photo${sizeClass}"><span class="in" style="${bg} color:#fff;">${loc.img ? '' : catIcon}</span></span>`;
+}
+
+function ensureBadgesPanel() {
+    let panel = document.getElementById('badges-panel');
+    if (panel) return panel;
+    const isFr = currentLang === 'fr';
+    panel = document.createElement('div');
+    panel.id = 'badges-panel';
+    panel.className = 'badges-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML = `
+        <div class="badges-panel-top">
+            <div class="badges-panel-bar">
+                <h2>${isFr ? 'Mes badges' : 'My badges'}</h2>
+                <button type="button" class="badges-panel-iconbtn" id="badges-panel-close" aria-label="${isFr ? 'Fermer' : 'Close'}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+                </button>
+            </div>
+            <div class="badges-panel-tabs" role="tablist">
+                <button type="button" role="tab" data-tab="badges" aria-selected="true">${isFr ? 'Badges' : 'Badges'}</button>
+                <button type="button" role="tab" data-tab="rank" aria-selected="false">${isFr ? 'Classement' : 'Leaderboard'}</button>
+            </div>
+        </div>
+        <div class="badges-panel-body">
+            <div class="badges-tab on" id="badges-tab-badges" role="tabpanel"></div>
+            <div class="badges-tab" id="badges-tab-rank" role="tabpanel"></div>
+        </div>`;
+    document.body.appendChild(panel);
+
+    const dim = document.createElement('div');
+    dim.className = 'badges-dim';
+    dim.id = 'badges-dim';
+    document.body.appendChild(dim);
+    const detail = document.createElement('div');
+    detail.className = 'badges-detail';
+    detail.id = 'badges-detail';
+    detail.setAttribute('role', 'dialog');
+    detail.setAttribute('aria-modal', 'true');
+    document.body.appendChild(detail);
+
+    panel.querySelector('#badges-panel-close').addEventListener('click', closeBadgesPanel);
+    panel.addEventListener('click', (e) => {
+        const tabBtn = e.target.closest('[role=tab]');
+        if (tabBtn) { selectBadgesPanelTab(tabBtn.dataset.tab); return; }
+        const chip = e.target.closest('[data-group]');
+        if (chip) { badgesPanelGroupFilter = chip.dataset.group; badgesPanelShowAll = false; renderBadgesTab(); return; }
+        const more = e.target.closest('[data-act="more"]');
+        if (more) { badgesPanelShowAll = !badgesPanelShowAll; renderBadgesTab(); return; }
+        const item = e.target.closest('[data-badge-loc]');
+        if (item) { showBadgeDetail(Number(item.dataset.badgeLoc), item.dataset.locked === '1'); return; }
+    });
+    dim.addEventListener('click', closeBadgeDetail);
+    detail.addEventListener('click', (e) => {
+        const cta = e.target.closest('[data-act="map"]');
+        if (!cta) return;
+        const locId = Number(cta.dataset.locId);
+        const loc = celebLocations.find(l => l.id === locId);
+        closeBadgeDetail();
+        closeBadgesPanel();
+        if (loc && map) { map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 }); window.openDetailsPanel(locId); }
+    });
+    return panel;
+}
+
+function selectBadgesPanelTab(tabName) {
+    badgesPanelTab = tabName;
+    const panel = document.getElementById('badges-panel');
+    if (!panel) return;
+    panel.querySelectorAll('[role=tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tabName));
+    document.getElementById('badges-tab-badges').classList.toggle('on', tabName === 'badges');
+    document.getElementById('badges-tab-rank').classList.toggle('on', tabName === 'rank');
+    if (tabName === 'rank') renderRankTab();
+}
+
+function closeBadgeDetail() {
+    const dim = document.getElementById('badges-dim');
+    const detail = document.getElementById('badges-detail');
+    if (dim) dim.classList.remove('on');
+    if (detail) detail.classList.remove('on');
+}
+
+function closeBadgesPanel() {
+    closeBadgeDetail();
+    const panel = document.getElementById('badges-panel');
+    if (panel) { panel.classList.remove('on'); panel.setAttribute('aria-hidden', 'true'); }
+}
+
+function renderBadgesTab() {
+    const tab = document.getElementById('badges-tab-badges');
+    if (!tab) return;
+    const isFr = currentLang === 'fr';
+    const allLocs = badgesPanelAllLocations();
+    const myBadges = badgesPanelMyBadges || {};
+    const isSignedIn = !!window.firebaseCurrentUser;
+    const groups = ['__ALL__', ...new Set(allLocs.map(l => l.group))];
+    const filtered = allLocs.filter(l => badgesPanelGroupFilter === '__ALL__' || l.group === badgesPanelGroupFilter);
+    const unlocked = filtered.filter(l => myBadges[String(l.id)]);
+    const locked = filtered.filter(l => !myBadges[String(l.id)]);
+    // Les débloqués d'abord, les plus récents en premier (même convention que la maquette
+    // fournie).
+    unlocked.sort((a, b) => badgeUnlockedAtMillis(myBadges[String(b.id)]) - badgeUnlockedAtMillis(myBadges[String(a.id)]));
+    const all = unlocked.map(l => [l, false]).concat(locked.map(l => [l, true]));
+    const shown = badgesPanelShowAll ? all : all.slice(0, 9);
+    tab.innerHTML = `
+        ${!isSignedIn ? `<div class="badges-note">${isFr ? "Connecte-toi pour commencer à débloquer des badges en visitant des lieux en vrai." : 'Log in to start unlocking badges by visiting places in real life.'}</div>` : ''}
+        <div class="badges-sec"><h3>${isFr ? 'Lieux débloqués' : 'Unlocked places'}</h3><small>${unlocked.length}/${allLocs.length}</small></div>
+        <div class="badges-chips">${groups.map(g => `<button type="button" class="badges-chip" data-group="${escapeHtml(g)}" aria-pressed="${g === badgesPanelGroupFilter}">${escapeHtml(g === '__ALL__' ? (isFr ? 'Tous' : 'All') : g)}</button>`).join('')}</div>
+        <div class="badges-grid">${shown.map(([loc, isLocked]) => `
+            <button type="button" class="badges-item${isLocked ? ' locked' : ''}" data-badge-loc="${loc.id}" data-locked="${isLocked ? 1 : 0}">
+                ${badgeItemPhotoHtml(loc, isLocked)}
+                <b>${escapeHtml(loc.name)}</b>
+            </button>`).join('')}</div>
+        ${all.length > 9 ? `<button type="button" class="badges-more" data-act="more">${badgesPanelShowAll ? (isFr ? 'Afficher moins' : 'Show less') : (isFr ? 'Voir tout' : 'See all')}</button>` : ''}
+        <div class="badges-note">${isFr ? `Les badges se débloquent automatiquement en se rendant sur place (à moins de ${BADGE_UNLOCK_RADIUS_METERS}m), géolocalisation activée.` : `Badges unlock automatically by visiting a place in real life (within ${BADGE_UNLOCK_RADIUS_METERS}m), with location enabled.`}</div>
+    `;
+}
+
+function showBadgeDetail(locId, locked) {
+    const loc = celebLocations.find(l => l.id === locId);
+    const dim = document.getElementById('badges-dim');
+    const detail = document.getElementById('badges-detail');
+    if (!loc || !dim || !detail) return;
+    const isFr = currentLang === 'fr';
+    const entry = badgesPanelMyBadges[String(locId)];
+    const dateLabel = !locked ? badgeUnlockedAtLabel(entry, isFr) : '';
+    detail.innerHTML = `
+        <div class="hd"></div>
+        ${badgeItemPhotoHtml(loc, locked, true)}
+        <div class="k" style="margin-top:10px">${escapeHtml(loc.group || '')}${loc.category ? ' · ' + escapeHtml(getCatName(loc.category)) : ''}</div>
+        <h4>${escapeHtml(loc.name)}</h4>
+        <div style="font-size:13px;color:#6B6478;">${escapeHtml(loc.city || '')}</div>
+        <p>${locked
+            ? (isFr ? `Pas encore débloqué : rends-toi sur place (à moins de ${BADGE_UNLOCK_RADIUS_METERS}m), géolocalisation activée, pour débloquer ce badge.` : `Not unlocked yet: get within ${BADGE_UNLOCK_RADIUS_METERS}m of this place, with location enabled, to unlock this badge.`)
+            : (dateLabel ? (isFr ? `Débloqué le <b style="color:#1F2430">${dateLabel}</b>` : `Unlocked on <b style="color:#1F2430">${dateLabel}</b>`) : (isFr ? 'Débloqué !' : 'Unlocked!'))}</p>
+        <button type="button" class="badges-detail-cta" data-act="map" data-loc-id="${loc.id}">${locked ? (isFr ? 'Y aller' : 'Go there') : (isFr ? 'Voir sur la carte' : 'View on map')}</button>
+    `;
+    dim.classList.add('on');
+    detail.classList.add('on');
+}
+
+// Classement réel par nombre de badges débloqués — "Toi" + tes amis (window.listMyFriends,
+// même liste que friends.html), chacun recompté via window.fetchPublicProfile(uid).badges.
+// Pas de faux comptes comme dans la maquette fournie : juste "Toi" si tu n'as encore
+// aucun ami.
+async function renderRankTab() {
+    const tab = document.getElementById('badges-tab-rank');
+    if (!tab) return;
+    const isFr = currentLang === 'fr';
+    const user = window.firebaseCurrentUser;
+    if (!user) {
+        tab.innerHTML = `<div class="badges-note">${isFr ? 'Connecte-toi pour voir le classement de tes amis.' : 'Log in to see your friends leaderboard.'}</div>`;
+        return;
+    }
+    tab.innerHTML = `<div class="badges-note">${isFr ? 'Chargement…' : 'Loading…'}</div>`;
+    const palette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
+    const rows = [{ username: isFr ? 'Toi' : 'You', count: Object.keys(badgesPanelMyBadges || {}).length, me: true, color: '#9B3CEB' }];
+    if (typeof window.listMyFriends === 'function' && typeof window.fetchPublicProfile === 'function') {
+        try {
+            const friends = await window.listMyFriends();
+            const profiles = await Promise.all(friends.map(f => window.fetchPublicProfile(f.uid).catch(() => ({ badges: {} }))));
+            friends.forEach((f, i) => {
+                rows.push({ username: f.username, count: Object.keys((profiles[i] && profiles[i].badges) || {}).length, me: false, color: palette[i % palette.length] });
+            });
+        } catch (e) { /* classement réduit à "Toi" si la lecture échoue — pas bloquant */ }
+    }
+    // L'onglet a pu changer pendant le chargement (clic rapide Badges/Classement) — on
+    // n'écrase pas un rendu plus récent avec cette réponse arrivée en retard.
+    if (badgesPanelTab !== 'rank') return;
+    rows.sort((a, b) => b.count - a.count);
+    const max = rows[0].count || 1;
+    tab.innerHTML = `
+        <div class="badges-rank-list">${rows.map((r, i) => `
+            <div class="badges-rank-row${r.me ? ' me' : ''}">
+                <span class="r" style="${i === 0 ? 'color:#E0156B' : ''}">${i + 1}</span>
+                <div class="badges-rank-avatar" style="background:${r.color}">${escapeHtml((r.username || '?').charAt(0).toUpperCase())}</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:${r.me ? 700 : 600};font-size:13.5px;color:#1F2430;">${escapeHtml(r.username || '')}${r.me ? `<span class="badges-you-tag">${isFr ? 'TOI' : 'YOU'}</span>` : ''}</div>
+                    <div class="bar"><i style="width:${(r.count / max * 100).toFixed(1)}%"></i></div>
+                </div>
+                <div style="font-weight:700;min-width:28px;text-align:right;color:#1F2430;">${r.count}</div>
+            </div>`).join('')}</div>
+        <div class="badges-note">${isFr ? 'Nombre de badges débloqués' : 'Number of badges unlocked'}</div>
+    `;
+}
+
+window.openBadgesPanel = function () {
+    const panel = ensureBadgesPanel();
+    badgesPanelGroupFilter = '__ALL__';
+    badgesPanelShowAll = false;
+    panel.classList.add('on');
+    panel.setAttribute('aria-hidden', 'false');
+    panel.scrollTop = 0;
+    selectBadgesPanelTab('badges');
+    const isFr = currentLang === 'fr';
+    const tab = document.getElementById('badges-tab-badges');
+    if (tab) tab.innerHTML = `<div class="badges-note">${isFr ? 'Chargement…' : 'Loading…'}</div>`;
+    getMyBadgesMap().then(badgesMap => {
+        badgesPanelMyBadges = badgesMap;
+        renderBadgesTab();
+    });
+};
 
 window.openFilteredListModal = function(type) {
     const modal = document.getElementById('list-modal');
