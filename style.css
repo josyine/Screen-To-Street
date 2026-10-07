@@ -412,12 +412,28 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
     cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.2s;
 }
 .locate-country-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: var(--primary-magenta); transform: translateY(-2px); }
+
+/* Bouton "Badges" (demande du 07/10/2026) : juste au-dessus de .locate-country-btn,
+   même colonne (voir alignLocateBtnWithZoomControl() dans script.js, qui aligne aussi le
+   `right` de CE bouton sur le zoom Leaflet côté ordinateur, exactement comme pour
+   .locate-country-btn) — valeur de repli ci-dessous avant que le JS ne s'exécute. Dégradé
+   et icône repris tels quels de la maquette fournie, sans la pastille avec un nombre
+   dessus (demande explicite, contrairement à la maquette). */
+.badges-fab-btn {
+    position: absolute; bottom: 168px; right: 3px; z-index: 2000;
+    width: 46px; height: 46px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; background: linear-gradient(135deg, #9B3CEB, #E0156B);
+    border: none; cursor: pointer; box-shadow: 0 8px 18px rgba(224, 21, 107, .35); transition: transform .15s;
+}
+.badges-fab-btn:active { transform: scale(.92); }
+.badges-fab-btn:hover { transform: translateY(-2px); }
 @media (max-width: 760px) {
     /* Descendu (demande du 11/09/2026) : le zoom Leaflet +/- est maintenant masqué sur
        mobile (voir .leaflet-control-zoom plus bas — pincer pour zoomer reste possible),
        donc plus besoin de lui réserver de la place au-dessus ; seule la nav du bas
        (~14px + ~52px de haut) doit encore être dégagée. */
     .locate-country-btn { bottom: 80px; right: 14px; width: 38px; height: 38px; }
+    .badges-fab-btn { bottom: 128px; right: 14px; width: 44px; height: 44px; }
     /* Boutons +/- Leaflet masqués sur mobile (demande du 11/09/2026) : le pincement
        (pinch-to-zoom) reste le geste naturel sur tactile, ces boutons ne faisaient que
        prendre de la place et chevaucher d'autres contrôles en bas à droite. */
@@ -896,6 +912,7 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 @media (max-width: 760px) and (display-mode: standalone) {
     .mobile-bottom-nav { bottom: calc(26px + env(safe-area-inset-bottom)); }
     .locate-country-btn { bottom: 92px; }
+    .badges-fab-btn { bottom: 140px; }
     .tab-panel { padding-bottom: calc(102px + env(safe-area-inset-bottom)); }
     .loc-visitors-chevron-tab { bottom: calc(86px + env(safe-area-inset-bottom)); }
 }
@@ -1049,3 +1066,74 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .badge-unlock-rank { position: relative; z-index: 1; font-size: 12.5px; color: #c9bfe8; margin-bottom: 22px; min-height: 1em; }
 .badge-unlock-btn { position: relative; z-index: 1; background: #fff; color: #212832; border: none; border-radius: 100px; padding: 12px 26px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; }
 .badge-unlock-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
+
+/* ==========================================================================
+   Page "Mes badges" (demande du 07/10/2026) — ouverte depuis .badges-fab-btn
+   (voir map.html/script.js), reprend le même concept de badge géolocalisé que
+   .badge-unlock-modal ci-dessus (publicProfiles/{uid}.badges). Classes
+   préfixées .badges-panel-*/.badges-* pour rester isolées du reste du site,
+   même principe que .modal pour les popups classiques mais en plein-écran
+   (mobile : tiroir du bas : ordinateur : panneau latéral, comme .sts-it de
+   l'itinéraire). */
+.badges-panel { position: fixed; inset: 0; z-index: 10800; background: #F7F5FB; transform: translateY(100%); visibility: hidden; transition: transform .38s cubic-bezier(.2,.8,.2,1), visibility 0s .38s; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.badges-panel.on { transform: none; visibility: visible; transition: transform .38s cubic-bezier(.2,.8,.2,1); }
+@media (min-width: 700px) { .badges-panel { left: auto; width: 420px; box-shadow: -20px 0 50px rgba(30,20,50,.18); transform: translateX(100%); } .badges-panel.on { transform: none; } }
+.badges-panel-top { position: sticky; top: 0; z-index: 3; background: #F7F5FB; padding: calc(env(safe-area-inset-top,0px) + 14px) 16px 12px; }
+.badges-panel-bar { display: flex; justify-content: space-between; align-items: center; }
+.badges-panel-bar h2 { margin: 0; font-size: 17px; color: #1F2430; }
+.badges-panel-iconbtn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff; border: 1.5px solid #ECE8F2; cursor: pointer; color: #1F2430; }
+.badges-panel-tabs { display: flex; background: #F1EEF6; border-radius: 14px; padding: 4px; gap: 4px; margin-top: 12px; }
+.badges-panel-tabs button { flex: 1; height: 40px; border-radius: 11px; border: none; background: none; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #6B6478; font-family: 'Poppins', sans-serif; cursor: pointer; transition: background .2s, color .2s; }
+.badges-panel-tabs button[aria-selected="true"] { background: #fff; color: #1F2430; box-shadow: 0 2px 8px rgba(30,20,50,.1); }
+.badges-panel-body { padding: 4px 16px calc(env(safe-area-inset-bottom,0px) + 30px); }
+.badges-tab { display: none; }
+.badges-tab.on { display: block; animation: badgesTabIn .3s; }
+@keyframes badgesTabIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.badges-sec { display: flex; justify-content: space-between; align-items: baseline; margin: 22px 0 12px; }
+.badges-sec h3 { margin: 0; font-size: 16px; color: #1F2430; }
+.badges-sec small { font-size: 12px; color: #6B6478; font-weight: 500; }
+.badges-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 14px; padding: 0 16px; }
+.badges-chips::-webkit-scrollbar { display: none; }
+.badges-chip { flex: 0 0 auto; height: 30px; padding: 0 14px; border-radius: 999px; font-size: 12px; font-weight: 600; background: #fff; color: #6B6478; border: 1px solid #ECE8F2; cursor: pointer; font-family: 'Poppins', sans-serif; }
+.badges-chip[aria-pressed="true"] { background: #1F2430; color: #fff; border-color: #1F2430; }
+.badges-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 8px; }
+.badges-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; background: none; border: none; padding: 0; font-family: 'Poppins', sans-serif; cursor: pointer; transition: transform .15s; }
+.badges-item:active { transform: scale(.94); }
+.badges-item b { font-size: 11.5px; font-weight: 600; line-height: 1.25; color: #1F2430; }
+.badges-item.locked b { color: #B4ADC2; font-weight: 500; }
+.badges-more { display: block; margin: 16px auto 0; height: 38px; padding: 0 18px; border-radius: 999px; background: #fff; border: 1.5px solid #ECE8F2; font-size: 12.5px; font-weight: 600; color: #9B3CEB; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.badges-note { text-align: center; font-size: 12px; color: #6B6478; margin-top: 18px; line-height: 1.5; }
+/* Photo du lieu dans le badge débloqué (demande explicite du 07/10/2026) — anneau rose,
+   loc.img en fond (voir renderBadgesTab() dans script.js) ; verrouillé = simple rond gris
+   avec cadenas, aucune photo affichée tant que le badge n'est pas débloqué. */
+.badges-photo { position: relative; display: block; width: 62px; height: 62px; border-radius: 50%; padding: 3px; background: #E0156B; box-shadow: 0 4px 12px rgba(224,21,107,.25); margin: 0 auto; }
+.badges-photo .in { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 2px solid #fff; background-size: cover; background-position: center; }
+.badges-photo .in svg { width: 24px; height: 24px; }
+.badges-photo.lock { padding: 0; background: #EFEBF5; box-shadow: inset 0 0 0 1px #E4DEEE; display: flex; align-items: center; justify-content: center; color: #B4ADC2; }
+/* Agrandi pour la fiche détail (showBadgeDetail() dans script.js) — même markup, juste
+   une classe en plus. */
+.badges-photo.lg { width: 110px; height: 110px; padding: 4px; }
+.badges-photo.lg .in svg { width: 36px; height: 36px; }
+.badges-photo.lg.lock svg { width: 32px; height: 32px; }
+.badges-rank-list { background: #fff; border-radius: 18px; padding: 4px; }
+.badges-rank-row { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; }
+.badges-rank-row.me { background: linear-gradient(90deg, rgba(155,60,235,.1), rgba(224,21,107,.1)); }
+.badges-rank-row .r { width: 20px; font-weight: 700; font-size: 13px; color: #9C95AA; text-align: center; }
+.badges-rank-avatar { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; }
+.badges-rank-row .bar { height: 6px; border-radius: 6px; background: #EFEAF6; margin-top: 6px; overflow: hidden; }
+.badges-rank-row .bar i { display: block; height: 100%; border-radius: 6px; background: #C9BCE6; transition: width .6s cubic-bezier(.2,.8,.2,1); }
+.badges-rank-row.me .bar i { background: linear-gradient(90deg, #9B3CEB, #E0156B); }
+.badges-you-tag { display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 999px; font-size: 9.5px; font-weight: 700; background: linear-gradient(90deg, #9B3CEB, #E0156B); color: #fff; vertical-align: 1px; margin-left: 4px; }
+
+/* Fiche détail d'un badge (tiroir du bas, au-dessus du panneau) */
+.badges-dim { position: fixed; inset: 0; z-index: 10900; background: rgba(31,36,48,.35); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.badges-dim.on { opacity: 1; pointer-events: auto; }
+.badges-detail { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10901; background: #fff; border-radius: 26px 26px 0 0; padding: 12px 22px calc(env(safe-area-inset-bottom,0px) + 26px); box-shadow: 0 -14px 34px rgba(30,20,50,.2); transform: translateY(105%); transition: transform .32s cubic-bezier(.2,.8,.2,1); text-align: center; max-height: 85%; overflow-y: auto; }
+@media (min-width: 700px) { .badges-detail { left: auto; width: 420px; } }
+.badges-detail.on { transform: none; }
+.badges-detail .hd { width: 44px; height: 5px; border-radius: 9px; background: #DDD8E6; margin: 0 auto 14px; }
+.badges-detail h4 { font-size: 19px; margin: 8px 0 2px; color: #1F2430; }
+.badges-detail .k { font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #9B3CEB; text-transform: uppercase; }
+.badges-detail p { font-size: 13px; color: #6B6478; margin: 8px 0 14px; line-height: 1.5; }
+.badges-detail-cta { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; border-radius: 14px; background: linear-gradient(90deg, #9B3CEB, #E0156B); color: #fff; border: none; font-size: 14.5px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 8px 18px rgba(224,21,107,.25); }
+@media (prefers-reduced-motion: reduce) { .badges-panel, .badges-detail { transition: none; } }
