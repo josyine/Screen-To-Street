@@ -55,85 +55,24 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Screen To Street">
-<meta name="theme-color" content="#E7E9EC">
+<meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260995" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260996" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
+/* BUG rapporté le 08/10/2026 ("ça ne va pas la page badge... reprends la page html que
+   je t'ai envoyé pour mobile") : cette page réutilisait jusqu'ici le gabarit générique
+   des pages secondaires (grande carte blanche centrée + header du site avec logo/icônes,
+   voir visited.html) — remplacé par la mise en page plein écran de la maquette fournie :
+   bord à bord, barre du haut collante (retour/titre/fermer) + onglets segmentés
+   directement sous elle, sans le header universel du site (pas de place pour lui dans
+   cette maquette, et cette page est de toute façon un sous-écran de la carte, pas une
+   section du menu profil comme visited.html/wishlist.html). */
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
-a{text-decoration:none;}
-body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:auto;}
-.hidden { display: none !important; }
-
-/* FOND ANIMÉ */
-.hero-background { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; background: linear-gradient(135deg, #F5F3FC, #E3DEF5, #D8CFF0, #E3DEF5); background-size: 200% 200%; animation: gradientShift 10s ease infinite; }
-@keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-.blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; animation: float 12s infinite ease-in-out alternate; }
-.blob-1 { top: -10%; left: -10%; width: 40vw; height: 40vw; background: #e3d5f8; }
-.blob-2 { bottom: -10%; right: -10%; width: 35vw; height: 35vw; background: #fce7f0; animation-delay: -4s; }
-.blob-3 { top: 40%; left: 60%; width: 25vw; height: 25vw; background: #d9cdee; animation-delay: -8s; }
-.bg-route { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.5; }
-.route-line { stroke-dasharray: 1 12; animation: flow 14s linear infinite; }
-@keyframes flow { to { stroke-dashoffset: -260; } }
-.dot { transform-box: fill-box; transform-origin: center; }
-.dot-a { animation: floatA 3.2s ease-in-out infinite; }
-.dot-b { animation: floatB 3.6s ease-in-out infinite; animation-delay: .4s; }
-.dot-c { animation: floatC 2.8s ease-in-out infinite; animation-delay: .7s; }
-@keyframes floatA{ 0%,100%{transform:translate(0,0);} 50%{transform:translate(16px,-20px);} }
-@keyframes floatB{ 0%,100%{transform:translate(0,0);} 50%{transform:translate(-18px,18px);} }
-@keyframes floatC{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(14px,16px) scale(1.35);} }
-@keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.05); } }
-
-/* Synchronise les animations du fond avec index.html/trips.html, même si cette page a
-   été ouverte après (via --sync-t, calculé depuis un timestamp partagé en sessionStorage). */
-.hero-background { animation-delay: calc(0s - var(--sync-t, 0s)) !important; }
-.route-line { animation-delay: calc(0s - var(--sync-t, 0s)) !important; }
-
-/* HEADER SEPARÉ POUR LE Z-INDEX */
-.universal-logo { position: fixed; top: 25px; left: 20px; z-index: 1000; display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
-.brand-text { font-size: 19px; font-weight: 700; color: #2E3644; line-height: 1.2; }
-.tagline { font-size: 12px; color: #5B6472; margin-top: 3px; line-height: 1.3;}
-
-.universal-icons { position: fixed; top: 20px; right: 20px; z-index: 3000; display: flex; gap: 9px; align-items: center; }
-.dropdown-container { position: relative; display: inline-block; }
-.header-icon-btn { width: 42px; height: 42px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; color: #2E3644; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; font-size: 16px; font-weight: bold; box-shadow: 0 4px 14px rgba(80,60,120,.05); }
-.header-icon-btn:hover { background: #FCE7F0; border-color: #fbcfe8; color: #D42759; transform: translateY(-2px);}
-.user-avatar-btn { color: #000000 !important; overflow: hidden; padding: 0;}
-
-.dropdown-menu { position: absolute; right: 0; top: 52px; background: white; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-width: 190px; padding: 6px; display: flex; flex-direction: column; gap: 2px; }
-.dropdown-option { padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 500; color: #1e293b; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 8px; text-align: left; text-decoration: none; white-space: nowrap;}
-.dropdown-option svg { flex-shrink: 0; }
-.dropdown-option:hover { background: #f1f5f9; color: #D42759; }
-.dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 8px; }
-
-/* CENTRAGE ET Z-INDEX DU BLOC PRINCIPAL — agrandi et harmonisé avec les autres pages */
-.page { position: relative; z-index: 2000; width: 100vw; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 120px 20px 80px 20px; pointer-events: none; }
-.card { background: #fff; border-radius: 20px; padding: 50px 60px; width: 100%; max-width: 680px; box-shadow: 0 15px 40px rgba(80,60,120,.08); pointer-events: auto; }
-
-.back-link { color: #D42759; font-weight: 700; font-size: 13.5px; display: inline-block; margin-bottom: 20px;}
-.back-link:hover { text-decoration: underline; }
-h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: center; margin: 0 0 8px 0; }
-.pg-sub { text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 26px; }
-
-/* ==========================================
-   RESPONSIVE MOBILE (n'affecte pas le desktop)
-   ========================================== */
-@media (max-width: 760px) {
-  .universal-logo { top: 14px; left: 14px; gap: 8px; }
-  .universal-logo svg { width: 32px; height: 32px; }
-  .universal-logo .tagline { display: none; }
-  .universal-logo .brand-text { font-size: 15px; }
-  .universal-icons { top: 14px; right: 14px; gap: 6px; }
-  .header-icon-btn { width: 36px; height: 36px; }
-
-  /* Plein-bleed sur mobile : le bloc blanc de la page touche les bords de l'écran
-     (pas de marge latérale sur .page, pas d'arrondi sur .card) pour qu'on ne voie
-     jamais le fond dégradé sur les côtés et que le contenu utilise toute la largeur,
-     même marge basse que les autres pages pour dégager .mobile-bottom-nav. */
-  .page { padding: 92px 0 calc(90px + env(safe-area-inset-bottom)) 0; }
-  .card { padding: 26px 16px; border-radius: 0; }
-  h1.pg-title { font-size: 22px; }
-}
+a{text-decoration:none;color:inherit;}
+button{font-family:inherit;}
+body{background:#F7F5FB;min-height:100vh;overflow-x:hidden;}
+.hidden{display:none!important;}
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -175,7 +114,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20260995';
+        s.src = 'page-loader.js?v=20260996';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -193,88 +132,34 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 })();
 </script>
 
-<div class="hero-background">
-    <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
-    <svg class="bg-route" viewBox="0 0 1180 600" preserveAspectRatio="xMidYMid slice">
-      <path class="route-line" d="M-40,420 C160,380 220,300 380,340 C540,380 600,260 820,300 C980,330 1040,240 1220,260" fill="none" stroke="#C6B8E3" stroke-width="2.5" stroke-linecap="round"/>
-      <circle class="dot dot-a" cx="380" cy="340" r="6" fill="#B9A8DA"/>
-      <circle class="dot dot-b" cx="820" cy="300" r="6" fill="#B9A8DA"/>
-      <circle class="dot dot-c" cx="1040" cy="240" r="8" fill="#D42759"/>
-    </svg>
-</div>
-
-<a href="map.html" class="universal-logo">
-    <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
-        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
-        <circle cx="200" cy="150" r="26" fill="#D42759"/>
-    </svg>
-    <div>
-        <div class="brand-text">Screen To <b style="color: #D42759;">Street</b></div>
+<!-- Barre du haut + onglets (même structure que la maquette fournie : .stb-top/.stb-bar/
+     .stb-seg, voir le commentaire CSS plus haut) — "Retour"/"Fermer" renvoient tous les
+     deux vers map.html (vrais liens, voir window.initBadgesPage()/renderBadgesTab()/
+     renderRankTab() dans script.js pour le contenu des deux onglets ci-dessous). -->
+<div class="badges-page-top">
+    <div class="badges-page-bar">
+        <a href="map.html" class="badges-page-iconbtn" id="badges-back-btn" aria-label="Back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+        </a>
+        <h2 id="badges-page-title">My badges</h2>
+        <a href="map.html" class="badges-page-iconbtn" id="badges-close-btn" style="background:#F1EEF6;border:0;" aria-label="Close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </a>
     </div>
-</a>
-
-<div class="universal-icons">
-    <div class="dropdown-container">
-        <button id="lang-btn" class="header-icon-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+    <div class="badges-page-tabs" id="badges-page-tabs" role="tablist">
+        <button type="button" role="tab" data-tab="badges" aria-selected="true" id="badges-page-tab-badges-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-2 6M16 3l2 6"></path><circle cx="12" cy="14.5" r="6"></circle></svg>
+            <span id="badges-page-tab-badges-label">Badges</span>
         </button>
-        <div id="lang-menu" class="dropdown-menu hidden">
-            <a href="#" class="dropdown-option" onclick="changeLang('en'); return false;">English</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('fr'); return false;">Français</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('es'); return false;">Español</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('it'); return false;">Italiano</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('pt'); return false;">Português</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('ko'); return false;">한국어</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('ja'); return false;">日本語</a>
-            <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
-        </div>
-    </div>
-    <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
-    </button>
-    <button id="feed-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='feed.html'" title="Explore feed">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    </button>
-    <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-        <span id="message-icon-badge" class="notif-badge hidden">0</span>
-    </button>
-    <div class="dropdown-container">
-        <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
-        <div id="profile-menu" class="dropdown-menu hidden">
-            <a href="profile.html" class="dropdown-profile-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span data-i18n="profileMenuOption">Your Profile</span></a>
-            <div class="dropdown-divider"></div>
-            <a href="map-destinations.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg><span data-i18n="exploreDestOption">Explore Destinations</span></a>
-            <a href="map-artists.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg><span data-i18n="exploreArtistsOption">Explore Artists</span></a>
-            <div class="dropdown-divider"></div>
-            <a href="account.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg><span data-i18n="accountOption">Your Account</span></a>
-            <a href="visited.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-i18n="visitedOption">Visited</span></a>
-            <a href="wishlist.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"></path></svg><span data-i18n="wishlistOption">My Wishlist</span></a>
-            <a href="trips.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span data-i18n="tripsOption">My Trips</span></a>
-            <a href="friends.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span data-i18n="friendsOption">Friends</span></a>
-            <a href="settings.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span data-i18n="settingsOption">Settings</span></a>
-            <div class="dropdown-divider"></div>
-            <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span data-i18n="logoutOption">Logout</span></a>
-        </div>
+        <button type="button" role="tab" data-tab="rank" aria-selected="false" id="badges-page-tab-rank-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"></path></svg>
+            <span id="badges-page-tab-rank-label">Leaderboard</span>
+        </button>
     </div>
 </div>
-
-<div class="page">
-    <div class="card">
-      <a href="map.html" class="back-link" id="badges-back-link">← Back to Map</a>
-      <h1 class="pg-title" id="badges-page-title">My badges</h1>
-      <div class="pg-sub" id="badges-page-sub">Unlocked by visiting places in real life</div>
-
-      <!-- Même structure Badges/Classement que la maquette fournie (demande du
-           07/10/2026) — voir window.initBadgesPage()/renderBadgesTab()/renderRankTab()
-           dans script.js, qui remplissent ces deux panneaux. -->
-      <div class="badges-page-tabs" id="badges-page-tabs" role="tablist">
-          <button type="button" role="tab" data-tab="badges" aria-selected="true" id="badges-page-tab-badges-btn">Badges</button>
-          <button type="button" role="tab" data-tab="rank" aria-selected="false" id="badges-page-tab-rank-btn">Leaderboard</button>
-      </div>
-      <div class="badges-tab on" id="badges-tab-badges" role="tabpanel"></div>
-      <div class="badges-tab" id="badges-tab-rank" role="tabpanel"></div>
-    </div>
+<div class="badges-page-body">
+    <div class="badges-tab on" id="badges-tab-badges" role="tabpanel"></div>
+    <div class="badges-tab" id="badges-tab-rank" role="tabpanel"></div>
 </div>
 
 <!-- Fiche détail d'un badge (tiroir du bas, rempli par showBadgeDetail() dans
@@ -282,39 +167,23 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 <div class="badges-dim" id="badges-dim"></div>
 <div class="badges-detail" id="badges-detail" role="dialog" aria-modal="true"></div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20260995"></script>
-<script src="locations-data.js?v=20260995"></script>
-<script src="script.js?v=20260995"></script>
+<script type="module" src="firebase-init.js?v=20260996"></script>
+<script src="locations-data.js?v=20260996"></script>
+<script src="script.js?v=20260996"></script>
 <script>
-    // Initiale de l'avatar : prénom en priorité (comme Google), sinon pseudo.
-    const savedFirstName = (localStorage.getItem('userFirstName') || '').trim();
-    const savedName = (localStorage.getItem('userName') || 'User').trim();
-    const avatarInitial = (savedFirstName || savedName || 'U').charAt(0).toUpperCase();
-    const savedPic = localStorage.getItem('userPhoto');
-    document.querySelectorAll('.user-avatar-btn').forEach(btn => {
-        if(savedPic) { btn.innerHTML = `<img src="${savedPic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; }
-        else { btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'; }
-    });
-
     // Textes bilingues de la page (même convention `isFr` que window.initBadgesPage() /
     // renderBadgesTab() / renderRankTab() dans script.js, pas le dictionnaire data-i18n
-    // à 8 langues — texte annexe, pas une des chaînes déjà partagées entre pages).
+    // à 8 langues — cette page n'a pas de sélecteur de langue propre, voir le commentaire
+    // CSS plus haut, elle reprend juste la langue déjà choisie ailleurs sur le site).
     function applyBadgesPageTexts() {
         const isFr = currentLang === 'fr';
-        document.getElementById('badges-back-link').textContent = isFr ? '← Retour à la carte' : '← Back to Map';
+        document.getElementById('badges-back-btn').setAttribute('aria-label', isFr ? 'Retour' : 'Back');
+        document.getElementById('badges-close-btn').setAttribute('aria-label', isFr ? 'Fermer' : 'Close');
         document.getElementById('badges-page-title').textContent = isFr ? 'Mes badges' : 'My badges';
-        document.getElementById('badges-page-sub').textContent = isFr ? 'Débloqués en te rendant sur place, en vrai' : 'Unlocked by visiting places in real life';
-        document.getElementById('badges-page-tab-badges-btn').textContent = isFr ? 'Badges' : 'Badges';
-        document.getElementById('badges-page-tab-rank-btn').textContent = isFr ? 'Classement' : 'Leaderboard';
+        document.getElementById('badges-page-tab-badges-label').textContent = 'Badges';
+        document.getElementById('badges-page-tab-rank-label').textContent = isFr ? 'Classement' : 'Leaderboard';
     }
     applyBadgesPageTexts();
-    const _badgesOriginalChangeLang = window.changeLang;
-    window.changeLang = function(lang) {
-        _badgesOriginalChangeLang(lang);
-        applyBadgesPageTexts();
-        if (typeof window.initBadgesPage === 'function') window.initBadgesPage();
-    };
 
     if (typeof window.initBadgesPage === 'function') window.initBadgesPage();
 </script>

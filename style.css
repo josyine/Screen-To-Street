@@ -1071,14 +1071,23 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    Page "Mes badges" (badges.html — demande du 07/10/2026) — ouverte depuis
    .badges-fab-btn (voir map.html), reprend le même concept de badge géolocalisé que
    .badge-unlock-modal ci-dessus (publicProfiles/{uid}.badges). Classes préfixées
-   "badges-" pour rester isolées du reste du site. Vraie page séparée (demande du
-   07/10/2026, "je veux que ce soit une nouvelle page qui s'ouvre") plutôt qu'un panneau
-   superposé sur la carte — le "chrome" de page (fond, header, .page/.card, titre,
-   back-link) est le même que celui déjà partagé par visited.html/wishlist.html, seul le
-   contenu ci-dessous est spécifique. */
-.badges-page-tabs { display: flex; background: #F1EEF6; border-radius: 14px; padding: 4px; gap: 4px; margin: 18px 0 4px; }
+   "badges-" pour rester isolées du reste du site.
+   BUG rapporté le 08/10/2026 ("ça ne va pas la page badge... reprends la page html que
+   je t'ai envoyé pour mobile") : la 1re version de cette page réutilisait le gabarit
+   générique des autres pages secondaires (visited.html — grande carte blanche centrée,
+   header du site avec logo/icônes) plutôt que la mise en page plein écran de la maquette
+   fournie (barre du haut collante avec retour/titre/fermer + onglets, contenu bord à
+   bord) — ce bloc reprend donc directement ce gabarit (.badges-page-top/-bar/-iconbtn/
+   -tabs/-body), juste en vraie page (liens classiques vers map.html) plutôt qu'en
+   panneau superposé en position:fixed comme l'original. */
+.badges-page-top { position: sticky; top: 0; z-index: 3; background: #F7F5FB; padding: calc(env(safe-area-inset-top,0px) + 14px) 16px 12px; }
+.badges-page-bar { display: flex; justify-content: space-between; align-items: center; max-width: 640px; margin: 0 auto; }
+.badges-page-bar h2 { margin: 0; font-size: 17px; color: #1F2430; }
+.badges-page-iconbtn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff; border: 1.5px solid #ECE8F2; color: #1F2430; flex-shrink: 0; }
+.badges-page-tabs { display: flex; background: #F1EEF6; border-radius: 14px; padding: 4px; gap: 4px; margin: 12px auto 0; max-width: 640px; }
 .badges-page-tabs button { flex: 1; height: 40px; border-radius: 11px; border: none; background: none; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #6B6478; font-family: 'Poppins', sans-serif; cursor: pointer; transition: background .2s, color .2s; }
 .badges-page-tabs button[aria-selected="true"] { background: #fff; color: #1F2430; box-shadow: 0 2px 8px rgba(30,20,50,.1); }
+.badges-page-body { padding: 4px 16px calc(env(safe-area-inset-bottom,0px) + 30px); max-width: 640px; margin: 0 auto; }
 .badges-tab { display: none; }
 .badges-tab.on { display: block; animation: badgesTabIn .3s; }
 @keyframes badgesTabIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
