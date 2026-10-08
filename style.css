@@ -1068,24 +1068,17 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .badge-unlock-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
 
 /* ==========================================================================
-   Page "Mes badges" (demande du 07/10/2026) — ouverte depuis .badges-fab-btn
-   (voir map.html/script.js), reprend le même concept de badge géolocalisé que
-   .badge-unlock-modal ci-dessus (publicProfiles/{uid}.badges). Classes
-   préfixées .badges-panel-*/.badges-* pour rester isolées du reste du site,
-   même principe que .modal pour les popups classiques mais en plein-écran
-   (mobile : tiroir du bas : ordinateur : panneau latéral, comme .sts-it de
-   l'itinéraire). */
-.badges-panel { position: fixed; inset: 0; z-index: 10800; background: #F7F5FB; transform: translateY(100%); visibility: hidden; transition: transform .38s cubic-bezier(.2,.8,.2,1), visibility 0s .38s; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
-.badges-panel.on { transform: none; visibility: visible; transition: transform .38s cubic-bezier(.2,.8,.2,1); }
-@media (min-width: 700px) { .badges-panel { left: auto; width: 420px; box-shadow: -20px 0 50px rgba(30,20,50,.18); transform: translateX(100%); } .badges-panel.on { transform: none; } }
-.badges-panel-top { position: sticky; top: 0; z-index: 3; background: #F7F5FB; padding: calc(env(safe-area-inset-top,0px) + 14px) 16px 12px; }
-.badges-panel-bar { display: flex; justify-content: space-between; align-items: center; }
-.badges-panel-bar h2 { margin: 0; font-size: 17px; color: #1F2430; }
-.badges-panel-iconbtn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff; border: 1.5px solid #ECE8F2; cursor: pointer; color: #1F2430; }
-.badges-panel-tabs { display: flex; background: #F1EEF6; border-radius: 14px; padding: 4px; gap: 4px; margin-top: 12px; }
-.badges-panel-tabs button { flex: 1; height: 40px; border-radius: 11px; border: none; background: none; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #6B6478; font-family: 'Poppins', sans-serif; cursor: pointer; transition: background .2s, color .2s; }
-.badges-panel-tabs button[aria-selected="true"] { background: #fff; color: #1F2430; box-shadow: 0 2px 8px rgba(30,20,50,.1); }
-.badges-panel-body { padding: 4px 16px calc(env(safe-area-inset-bottom,0px) + 30px); }
+   Page "Mes badges" (badges.html — demande du 07/10/2026) — ouverte depuis
+   .badges-fab-btn (voir map.html), reprend le même concept de badge géolocalisé que
+   .badge-unlock-modal ci-dessus (publicProfiles/{uid}.badges). Classes préfixées
+   "badges-" pour rester isolées du reste du site. Vraie page séparée (demande du
+   07/10/2026, "je veux que ce soit une nouvelle page qui s'ouvre") plutôt qu'un panneau
+   superposé sur la carte — le "chrome" de page (fond, header, .page/.card, titre,
+   back-link) est le même que celui déjà partagé par visited.html/wishlist.html, seul le
+   contenu ci-dessous est spécifique. */
+.badges-page-tabs { display: flex; background: #F1EEF6; border-radius: 14px; padding: 4px; gap: 4px; margin: 18px 0 4px; }
+.badges-page-tabs button { flex: 1; height: 40px; border-radius: 11px; border: none; background: none; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #6B6478; font-family: 'Poppins', sans-serif; cursor: pointer; transition: background .2s, color .2s; }
+.badges-page-tabs button[aria-selected="true"] { background: #fff; color: #1F2430; box-shadow: 0 2px 8px rgba(30,20,50,.1); }
 .badges-tab { display: none; }
 .badges-tab.on { display: block; animation: badgesTabIn .3s; }
 @keyframes badgesTabIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -1125,15 +1118,19 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .badges-rank-row.me .bar i { background: linear-gradient(90deg, #9B3CEB, #E0156B); }
 .badges-you-tag { display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 999px; font-size: 9.5px; font-weight: 700; background: linear-gradient(90deg, #9B3CEB, #E0156B); color: #fff; vertical-align: 1px; margin-left: 4px; }
 
-/* Fiche détail d'un badge (tiroir du bas, au-dessus du panneau) */
-.badges-dim { position: fixed; inset: 0; z-index: 10900; background: rgba(31,36,48,.35); opacity: 0; pointer-events: none; transition: opacity .3s; }
+/* Fiche détail d'un badge (tiroir du bas superposé à la page, rempli par
+   showBadgeDetail() dans script.js) — même z-index que .modal (9999, voir plus haut),
+   cette page n'a pas la pile de contrôles map.html au-dessus desquels il fallait passer
+   avant. */
+.badges-dim { position: fixed; inset: 0; z-index: 9999; background: rgba(31,36,48,.35); opacity: 0; pointer-events: none; transition: opacity .3s; }
 .badges-dim.on { opacity: 1; pointer-events: auto; }
-.badges-detail { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10901; background: #fff; border-radius: 26px 26px 0 0; padding: 12px 22px calc(env(safe-area-inset-bottom,0px) + 26px); box-shadow: 0 -14px 34px rgba(30,20,50,.2); transform: translateY(105%); transition: transform .32s cubic-bezier(.2,.8,.2,1); text-align: center; max-height: 85%; overflow-y: auto; }
+.badges-detail { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10000; background: #fff; border-radius: 26px 26px 0 0; padding: 12px 22px calc(env(safe-area-inset-bottom,0px) + 26px); box-shadow: 0 -14px 34px rgba(30,20,50,.2); transform: translateY(105%); transition: transform .32s cubic-bezier(.2,.8,.2,1); text-align: center; max-height: 85%; overflow-y: auto; }
 @media (min-width: 700px) { .badges-detail { left: auto; width: 420px; } }
 .badges-detail.on { transform: none; }
 .badges-detail .hd { width: 44px; height: 5px; border-radius: 9px; background: #DDD8E6; margin: 0 auto 14px; }
+.badges-detail-close { position: absolute; top: 14px; right: 16px; width: 30px; height: 30px; border-radius: 50%; border: none; background: #F1EEF6; color: #6B6478; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .badges-detail h4 { font-size: 19px; margin: 8px 0 2px; color: #1F2430; }
 .badges-detail .k { font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #9B3CEB; text-transform: uppercase; }
 .badges-detail p { font-size: 13px; color: #6B6478; margin: 8px 0 14px; line-height: 1.5; }
-.badges-detail-cta { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; border-radius: 14px; background: linear-gradient(90deg, #9B3CEB, #E0156B); color: #fff; border: none; font-size: 14.5px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 8px 18px rgba(224,21,107,.25); }
-@media (prefers-reduced-motion: reduce) { .badges-panel, .badges-detail { transition: none; } }
+.badges-detail-cta { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; border-radius: 14px; background: linear-gradient(90deg, #9B3CEB, #E0156B); color: #fff; border: none; font-size: 14.5px; font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 8px 18px rgba(224,21,107,.25); text-decoration: none; }
+@media (prefers-reduced-motion: reduce) { .badges-detail { transition: none; } }

@@ -48,7 +48,7 @@
   .stsl.diving .stsl-stage{transform:none!important;filter:none!important;opacity:0}
 }
 </style>
-<title>Screen To Street — My Wishlist</title>
+<title>Screen To Street — My badges</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -58,7 +58,6 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="style.css?v=20260995" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
@@ -109,39 +108,12 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 
 /* CENTRAGE ET Z-INDEX DU BLOC PRINCIPAL — agrandi et harmonisé avec les autres pages */
 .page { position: relative; z-index: 2000; width: 100vw; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 120px 20px 80px 20px; pointer-events: none; }
-.card { background: #fff; border-radius: 20px; padding: 50px 60px; width: 100%; max-width: 960px; box-shadow: 0 15px 40px rgba(80,60,120,.08); pointer-events: auto; }
+.card { background: #fff; border-radius: 20px; padding: 50px 60px; width: 100%; max-width: 680px; box-shadow: 0 15px 40px rgba(80,60,120,.08); pointer-events: auto; }
 
 .back-link { color: #D42759; font-weight: 700; font-size: 13.5px; display: inline-block; margin-bottom: 20px;}
 .back-link:hover { text-decoration: underline; }
 h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: center; margin: 0 0 8px 0; }
-.pg-sub { text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 30px; }
-
-.wish-group-title { font-size: 12px; font-weight: 700; letter-spacing: .6px; color: #94a3b8; text-transform: uppercase; margin: 26px 0 12px 0; }
-.wish-group-title:first-of-type { margin-top: 0; }
-.wish-list { display: flex; flex-direction: column; gap: 10px; }
-.wish-row { display: flex; gap: 14px; align-items: center; background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 16px; cursor: pointer; transition: 0.2s; }
-.wish-row:hover { border-color: #D42759; background: #fff; box-shadow: 0 6px 16px rgba(80,60,120,.06); }
-.wish-thumb { width: 56px; height: 56px; border-radius: 12px; background-size: cover; background-position: center; flex-shrink: 0; }
-.wish-name { font-size: 14.5px; font-weight: 700; color: #212832; }
-.wish-meta { font-size: 11.5px; color: #94a3b8; margin-top: 2px; }
-.wish-remove { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #94a3b8; transition: 0.2s; flex-shrink: 0; }
-.wish-remove:hover { background: #fef2f2; color: #ef4444; }
-.empty-wish { text-align: center; color: #94a3b8; font-size: 13.5px; padding: 60px 0; }
-
-/* MODAL LIEU (identique à la charte de map.html) */
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-.modal-content { background: white; width: 90%; max-width: 560px; max-height: 90vh; border-radius: 16px; overflow-y: auto; position: relative; }
-.close-btn { position: absolute; top: 12px; right: 18px; font-size: 2rem; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.4); cursor: pointer; z-index: 10; }
-#modal-hero { height: 220px; background-size: cover; background-position: center; border-radius: 16px 16px 0 0; display: flex; align-items: flex-end; padding: 20px; }
-#modal-title { color: #fff; font-size: 22px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
-.modal-body { padding: 22px 26px 28px 26px; }
-#modal-meta { font-size: 12.5px; color: #D42759; font-weight: 700; margin-bottom: 16px; }
-.modal-sub-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
-#modal-meta-box { background: #f8fafc; border-radius: 12px; padding: 14px 16px; margin-bottom: 18px; font-size: 12.5px; line-height: 2; color: #334155; }
-#modal-desc { font-size: 13px; line-height: 1.8; color: #3f495c; margin-bottom: 18px; }
-#modal-map { width: 100%; height: 200px; border-radius: 12px; margin-bottom: 16px; }
-.modal-map-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #2E3644; font-size: 12.5px; font-weight: 600; transition: .2s; }
-.modal-map-link:hover { border-color: #D42759; color: #D42759; }
+.pg-sub { text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 26px; }
 
 /* ==========================================
    RESPONSIVE MOBILE (n'affecte pas le desktop)
@@ -156,15 +128,11 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 
   /* Plein-bleed sur mobile : le bloc blanc de la page touche les bords de l'écran
      (pas de marge latérale sur .page, pas d'arrondi sur .card) pour qu'on ne voie
-     jamais le fond dégradé sur les côtés et que le contenu utilise toute la largeur. */
-  /* BUG rapporté le 12/09/2026 ("la barre du bas chevauche les pages") : 50px de marge basse ne suffisait pas à dégager .mobile-bottom-nav (position:fixed, ~54px de haut + jusqu'à env(safe-area-inset-bottom) de plus sur un iPhone à encoche) — la fin du contenu se retrouvait cachée derrière elle. Portée à la même marge que les autres pages (feed.html/profile.html...), qui tient compte explicitement de cette zone. */
+     jamais le fond dégradé sur les côtés et que le contenu utilise toute la largeur,
+     même marge basse que les autres pages pour dégager .mobile-bottom-nav. */
   .page { padding: 92px 0 calc(90px + env(safe-area-inset-bottom)) 0; }
   .card { padding: 26px 16px; border-radius: 0; }
   h1.pg-title { font-size: 22px; }
-  .wish-thumb { width: 46px; height: 46px; }
-  .modal-content { width: 97%; border-radius: 12px; }
-  .modal-body { padding: 18px 18px 22px 18px; }
-  #modal-hero { height: 170px; border-radius: 12px 12px 0 0; }
 }
 </style>
 <script>
@@ -261,22 +229,12 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
         </div>
     </div>
-    <div class="dropdown-container">
-        <button id="cart-btn" class="header-icon-btn" onclick="openCartModal()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-        </button>
-    </div>
     <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
     </button>
-    <!-- Icone "Ami" (profil public) retirée du header (demande du 13/09/2026) : le
-         profil est desormais accessible via le bouton colore du menu deroulant
-         (#profile-menu, plus bas), plus besoin d'une icone dediee ici. -->
     <button id="feed-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='feed.html'" title="Explore feed">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
     </button>
-    <!-- Icone "Message" (demande du 08/09/2026) : messagerie (friends.html). Porte le
-         badge de notification, voir window.refreshFriendNotifications() dans script.js. -->
     <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
         <span id="message-icon-badge" class="notif-badge hidden">0</span>
@@ -291,7 +249,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
             <div class="dropdown-divider"></div>
             <a href="account.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg><span data-i18n="accountOption">Your Account</span></a>
             <a href="visited.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-i18n="visitedOption">Visited</span></a>
-            <a href="wishlist.html" class="dropdown-option" style="color: #D42759; font-weight: bold;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"></path></svg><span data-i18n="wishlistOption">My Wishlist</span></a>
+            <a href="wishlist.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"></path></svg><span data-i18n="wishlistOption">My Wishlist</span></a>
             <a href="trips.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span data-i18n="tripsOption">My Trips</span></a>
             <a href="friends.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span data-i18n="friendsOption">Friends</span></a>
             <a href="settings.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span data-i18n="settingsOption">Settings</span></a>
@@ -303,99 +261,32 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 
 <div class="page">
     <div class="card">
-      <a href="map.html" class="back-link" data-i18n="backToMap">← Back to Map</a>
-      <h1 class="pg-title" data-i18n="wishTitle">My Wishlist</h1>
-      <div class="pg-sub" id="wish-count-sub">0 places saved</div>
+      <a href="map.html" class="back-link" id="badges-back-link">← Back to Map</a>
+      <h1 class="pg-title" id="badges-page-title">My badges</h1>
+      <div class="pg-sub" id="badges-page-sub">Unlocked by visiting places in real life</div>
 
-      <div id="wish-container"></div>
-      <div class="empty-wish hidden" id="empty-wish" data-i18n="wishEmpty">You haven't saved any places yet. Explore the map and click "Add to Wishlist"!</div>
+      <!-- Même structure Badges/Classement que la maquette fournie (demande du
+           07/10/2026) — voir window.initBadgesPage()/renderBadgesTab()/renderRankTab()
+           dans script.js, qui remplissent ces deux panneaux. -->
+      <div class="badges-page-tabs" id="badges-page-tabs" role="tablist">
+          <button type="button" role="tab" data-tab="badges" aria-selected="true" id="badges-page-tab-badges-btn">Badges</button>
+          <button type="button" role="tab" data-tab="rank" aria-selected="false" id="badges-page-tab-rank-btn">Leaderboard</button>
+      </div>
+      <div class="badges-tab on" id="badges-tab-badges" role="tabpanel"></div>
+      <div class="badges-tab" id="badges-tab-rank" role="tabpanel"></div>
     </div>
 </div>
 
-<!-- MODAL LIEU (rempli par window.openLocModal / closeLocModal du script.js partagé) -->
-<div id="loc-modal" class="modal hidden">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeLocModal()">&times;</span>
-        <div id="modal-hero"><div id="modal-title"></div></div>
-        <div class="modal-body">
-            <div id="modal-meta"></div>
-            <span class="modal-sub-label" id="modal-details-label">Details</span>
-            <div id="modal-meta-box"></div>
-            <span class="modal-sub-label" id="modal-about-label">About this place</span>
-            <div id="modal-desc"></div>
-            <div id="modal-map"></div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <span id="modal-map-link-text">Open in Google Maps</span>
-                </a>
-                <a id="modal-more-details" href="map.html" class="modal-map-link" style="border-color:#D42759; color:#D42759;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                    More details
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Panier (Cart) — identique à celui de map.html -->
-<!-- Paywall "Pass Guide" (30/08/2026) : plus jamais "débloquer un groupe/artiste" — les
-     deux pass ci-dessous débloquent le GUIDE dans son ensemble. -->
-<!-- Paywall "Pass Guide" (30/08/2026) : plus jamais "débloquer un groupe/artiste" — les
-     deux pass ci-dessous débloquent le GUIDE dans son ensemble. Déclenché soit
-     manuellement (bouton "Unlock Passes" du header), soit automatiquement après la 3e
-     fiche lieu consultée gratuitement (voir openDetailsPanel() dans script.js). Le
-     contenu change si la personne a déjà un pass actif (voir openGuidePaywallModal()) :
-     plus de message "limite atteinte" ni d'offres, juste une confirmation. -->
-<div id="cart-modal" class="modal hidden">
-    <div class="modal-content paywall-modal-content">
-        <span class="close-btn" onclick="closeModal('cart-modal')">&times;</span>
-        <div id="paywall-limit-block">
-            <h2 class="paywall-title" data-i18n="paywallTitle">You've reached your free limit (3/3)</h2>
-            <p class="paywall-body" data-i18n="paywallBody">Loving the secret map? There are still 500+ addresses left to discover! Unlock every filming location, iconic restaurant, and address your idols frequent to plan the trip of your dreams.</p>
-        </div>
-        <div id="paywall-active-block" class="hidden">
-            <h2 class="paywall-title" data-i18n="paywallActiveTitle">You already have an active pass</h2>
-            <p class="paywall-body" id="paywall-active-desc"></p>
-        </div>
-
-        <div class="paywall-cards" id="paywall-cards">
-            <div class="paywall-card">
-                <div class="paywall-card-name" data-i18n="paywallMonthlyName">TRAVEL PASS (1 Month)</div>
-                <div class="paywall-card-desc" data-i18n="paywallMonthlyDesc">Perfect for planning a short trip.</div>
-                <ul class="paywall-features">
-                    <li>✔️ <span data-i18n="paywallFeatureFullAccess">Full access to 500+ addresses</span></li>
-                    <li>✔️ <span data-i18n="paywallFeatureGPS">Exact GPS coordinates</span></li>
-                </ul>
-                <div class="paywall-price" data-i18n="paywallMonthlyPrice">€9.99 / month</div>
-                <div class="paywall-terms" data-i18n="paywallMonthlyTerms">No commitment</div>
-                <button type="button" class="paywall-buy-btn" onclick="window.location.href='payment.html?plan=monthly'" data-i18n="paywallBuyMonthly">Get the Travel Pass</button>
-            </div>
-            <div class="paywall-card paywall-card-vip">
-                <div class="paywall-vip-badge" data-i18n="paywallVipBadge">BEST VALUE</div>
-                <div class="paywall-card-name" data-i18n="paywallVipName">VIP PASS (Lifetime Access)</div>
-                <div class="paywall-card-desc" data-i18n="paywallVipDesc">For true fans. Pay once, enjoy forever.</div>
-                <ul class="paywall-features">
-                    <li>✔️ <span data-i18n="paywallFeatureFullAccess">Full access to 500+ addresses</span></li>
-                    <li>✔️ <span data-i18n="paywallFeatureGPS">Exact GPS coordinates</span></li>
-                    <li>✔️ <span data-i18n="paywallFeatureUpdates">Updates included (new locations added monthly)</span></li>
-                    <li>✔️ <span data-i18n="paywallFeatureOffline">Offline mode (coming soon)</span></li>
-                </ul>
-                <div class="paywall-price" data-i18n="paywallVipPrice">€19.99 (one-time payment)</div>
-                <button type="button" class="paywall-buy-btn paywall-buy-btn-vip" onclick="window.location.href='payment.html?plan=lifetime'" data-i18n="paywallBuyVip">Get the VIP Pass</button>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Fiche détail d'un badge (tiroir du bas, rempli par showBadgeDetail() dans
+     script.js) -->
+<div class="badges-dim" id="badges-dim"></div>
+<div class="badges-detail" id="badges-detail" role="dialog" aria-modal="true"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module" src="firebase-init.js?v=20260995"></script>
 <script src="locations-data.js?v=20260995"></script>
 <script src="script.js?v=20260995"></script>
 <script>
-    // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
-    // updateCartPrice / soumission de #cart-form), pour être identique à map.html.
-
     // Initiale de l'avatar : prénom en priorité (comme Google), sinon pseudo.
     const savedFirstName = (localStorage.getItem('userFirstName') || '').trim();
     const savedName = (localStorage.getItem('userName') || 'User').trim();
@@ -406,88 +297,26 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         else { btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'; }
     });
 
-    // --- LISTE DE LA WISHLIST (groupée par voyage) ---
-    function renderWishlist() {
-        const wList = JSON.parse(localStorage.getItem('wishlistLocs') || '[]');
-        const trips = JSON.parse(localStorage.getItem('myTrips') || '[]');
-        const container = document.getElementById('wish-container');
-        const emptyEl = document.getElementById('empty-wish');
-        container.innerHTML = '';
-
-        document.getElementById('wish-count-sub').textContent = currentLang === 'fr'
-            ? `${wList.length} lieu${wList.length > 1 ? 'x' : ''} enregistré${wList.length > 1 ? 's' : ''}`
-            : `${wList.length} place${wList.length > 1 ? 's' : ''} saved`;
-
-        if (wList.length === 0) {
-            emptyEl.classList.remove('hidden');
-            return;
-        }
-        emptyEl.classList.add('hidden');
-
-        // Groupement par tripId ("none" = "Someday")
-        const groups = {};
-        wList.forEach(w => {
-            const key = w.tripId && w.tripId !== 'none' ? w.tripId : 'none';
-            if (!groups[key]) groups[key] = [];
-            groups[key].push(w);
-        });
-
-        const orderedKeys = Object.keys(groups).sort((a, b) => (a === 'none' ? 1 : b === 'none' ? -1 : 0));
-
-        orderedKeys.forEach(key => {
-            const trip = trips.find(t => t.id === key);
-            const label = trip ? trip.name : t('wishSomeday');
-
-            const titleEl = document.createElement('div');
-            titleEl.className = 'wish-group-title';
-            titleEl.textContent = label;
-            container.appendChild(titleEl);
-
-            const listEl = document.createElement('div');
-            listEl.className = 'wish-list';
-
-            groups[key].forEach(w => {
-                const loc = celebLocations.find(l => l.id === Number(w.id));
-                if (!loc) return;
-                const row = document.createElement('div');
-                row.className = 'wish-row';
-                row.onclick = () => openLocModal(loc.id);
-                row.innerHTML = `
-                    <div class="wish-thumb" style="background-image:url('${loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg')}');"></div>
-                    <div>
-                        <div class="wish-name">${loc.name}</div>
-                        <div class="wish-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div>
-                    </div>
-                    <div class="wish-remove" onclick="event.stopPropagation(); removeFromWishlist(${loc.id}, '${key}');">✕</div>
-                `;
-                listEl.appendChild(row);
-            });
-            container.appendChild(listEl);
-        });
+    // Textes bilingues de la page (même convention `isFr` que window.initBadgesPage() /
+    // renderBadgesTab() / renderRankTab() dans script.js, pas le dictionnaire data-i18n
+    // à 8 langues — texte annexe, pas une des chaînes déjà partagées entre pages).
+    function applyBadgesPageTexts() {
+        const isFr = currentLang === 'fr';
+        document.getElementById('badges-back-link').textContent = isFr ? '← Retour à la carte' : '← Back to Map';
+        document.getElementById('badges-page-title').textContent = isFr ? 'Mes badges' : 'My badges';
+        document.getElementById('badges-page-sub').textContent = isFr ? 'Débloqués en te rendant sur place, en vrai' : 'Unlocked by visiting places in real life';
+        document.getElementById('badges-page-tab-badges-btn').textContent = isFr ? 'Badges' : 'Badges';
+        document.getElementById('badges-page-tab-rank-btn').textContent = isFr ? 'Classement' : 'Leaderboard';
     }
-
-    function removeFromWishlist(id, tripId) {
-        let wList = JSON.parse(localStorage.getItem('wishlistLocs') || '[]');
-        wList = wList.filter(w => !(Number(w.id) === Number(id) && ((w.tripId && w.tripId !== 'none' ? w.tripId : 'none') === tripId)));
-        localStorage.setItem('wishlistLocs', JSON.stringify(wList));
-        if (typeof syncWishlist === 'function') syncWishlist(wList);
-        else if (typeof window.syncUserData === 'function') window.syncUserData({ wishlistLocs: wList });
-        renderWishlist();
-    }
-
-    // Permet à firebase-init.js / script.js de rafraîchir cette page une fois la
-    // vraie wishlist du compte récupérée depuis Firestore (voir l'écouteur
-    // "firebase-ready" dans script.js).
-    window.refreshWishlistFromCloud = renderWishlist;
-
-    renderWishlist();
-
-    // Recharge la liste (traduction des catégories, du compteur, du libellé "Someday"...) au changement de langue
-    const _wishOriginalChangeLang = window.changeLang;
+    applyBadgesPageTexts();
+    const _badgesOriginalChangeLang = window.changeLang;
     window.changeLang = function(lang) {
-        _wishOriginalChangeLang(lang);
-        renderWishlist();
+        _badgesOriginalChangeLang(lang);
+        applyBadgesPageTexts();
+        if (typeof window.initBadgesPage === 'function') window.initBadgesPage();
     };
+
+    if (typeof window.initBadgesPage === 'function') window.initBadgesPage();
 </script>
 </body>
 </html>

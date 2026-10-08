@@ -10231,22 +10231,26 @@ function showBadgeUnlockCelebration(loc, rank) {
 }
 
 // ==========================================================================
-// Page "Mes badges" (demande du 07/10/2026, bouton .badges-fab-btn au-dessus de la
-// géolocalisation, voir map.html) — même notion de badge que ci-dessus
-// (publicProfiles/{uid}.badges, débloqué par proximité GPS réelle via
-// checkBadgeUnlocksNearPosition()), jamais le système "visited" séparé et manuel de
-// getVisitedLocs()/visited.html. Univers des lieux = même filtre que partout ailleurs sur
-// la carte (groupes débloqués par le pass + lieux non fermés), pour qu'un badge
-// "verrouillé" ici corresponde toujours à un lieu réellement visible/atteignable.
-// Reprend le design de la maquette fournie (tiroir du bas/panneau latéral, grille de
-// médailles rondes, fiche détail, classement) sans sa section "Défis" (aucun système de
-// défis n'existe sur le site) ni son sous-classement "Défis" (un seul classement réel :
-// nombre de badges débloqués, voir renderRankTab() plus bas).
+// Page "Mes badges" (badges.html — demande du 07/10/2026, bouton .badges-fab-btn
+// au-dessus de la géolocalisation sur map.html, qui navigue maintenant vers cette
+// VRAIE page plutôt que d'ouvrir un panneau superposé sur la carte, comme demandé le
+// 07/10/2026 : "je veux que ce soit une nouvelle page qui s'ouvre") — même notion de
+// badge que .badge-unlock-modal ci-dessus (publicProfiles/{uid}.badges, débloqué par
+// proximité GPS réelle via checkBadgeUnlocksNearPosition()), jamais le système "visited"
+// séparé et manuel de getVisitedLocs()/visited.html. Univers des lieux = même filtre que
+// partout ailleurs sur la carte (groupes débloqués par le pass + lieux non fermés), pour
+// qu'un badge "verrouillé" ici corresponde toujours à un lieu réellement
+// visible/atteignable. Reprend le design de la maquette fournie (grille de médailles
+// rondes, fiche détail, classement) sans sa section "Défis" (aucun système de défis
+// n'existe sur le site) ni son sous-classement "Défis" (un seul classement réel : nombre
+// de badges débloqués, voir renderRankTab() plus bas). Tout ce bloc est appelé depuis
+// badges.html uniquement (window.initBadgesPage(), tout en bas) — chargé par script.js
+// comme toute autre page, mais n'a d'effet que si ses éléments existent dans le DOM.
 // ==========================================================================
 let badgesPanelGroupFilter = '__ALL__';
 let badgesPanelShowAll = false;
 let badgesPanelTab = 'badges';
-let badgesPanelMyBadges = {}; // {idStr: {unlockedAt}} — rechargé à chaque ouverture du panneau
+let badgesPanelMyBadges = {}; // {idStr: {unlockedAt}} — rechargé au chargement de la page
 
 function badgesPanelAllLocations() {
     const unlockedGroups = getUnlockedGroups();
@@ -10291,75 +10295,48 @@ function badgeItemPhotoHtml(loc, locked, large) {
     return `<span class="badges-photo${sizeClass}"><span class="in" style="${bg} color:#fff;">${loc.img ? '' : catIcon}</span></span>`;
 }
 
-function ensureBadgesPanel() {
-    let panel = document.getElementById('badges-panel');
-    if (panel) return panel;
-    const isFr = currentLang === 'fr';
-    panel = document.createElement('div');
-    panel.id = 'badges-panel';
-    panel.className = 'badges-panel';
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-modal', 'true');
-    panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML = `
-        <div class="badges-panel-top">
-            <div class="badges-panel-bar">
-                <h2>${isFr ? 'Mes badges' : 'My badges'}</h2>
-                <button type="button" class="badges-panel-iconbtn" id="badges-panel-close" aria-label="${isFr ? 'Fermer' : 'Close'}">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
-                </button>
-            </div>
-            <div class="badges-panel-tabs" role="tablist">
-                <button type="button" role="tab" data-tab="badges" aria-selected="true">${isFr ? 'Badges' : 'Badges'}</button>
-                <button type="button" role="tab" data-tab="rank" aria-selected="false">${isFr ? 'Classement' : 'Leaderboard'}</button>
-            </div>
-        </div>
-        <div class="badges-panel-body">
-            <div class="badges-tab on" id="badges-tab-badges" role="tabpanel"></div>
-            <div class="badges-tab" id="badges-tab-rank" role="tabpanel"></div>
-        </div>`;
-    document.body.appendChild(panel);
-
-    const dim = document.createElement('div');
-    dim.className = 'badges-dim';
-    dim.id = 'badges-dim';
-    document.body.appendChild(dim);
-    const detail = document.createElement('div');
-    detail.className = 'badges-detail';
-    detail.id = 'badges-detail';
-    detail.setAttribute('role', 'dialog');
-    detail.setAttribute('aria-modal', 'true');
-    document.body.appendChild(detail);
-
-    panel.querySelector('#badges-panel-close').addEventListener('click', closeBadgesPanel);
-    panel.addEventListener('click', (e) => {
-        const tabBtn = e.target.closest('[role=tab]');
-        if (tabBtn) { selectBadgesPanelTab(tabBtn.dataset.tab); return; }
-        const chip = e.target.closest('[data-group]');
-        if (chip) { badgesPanelGroupFilter = chip.dataset.group; badgesPanelShowAll = false; renderBadgesTab(); return; }
-        const more = e.target.closest('[data-act="more"]');
-        if (more) { badgesPanelShowAll = !badgesPanelShowAll; renderBadgesTab(); return; }
-        const item = e.target.closest('[data-badge-loc]');
-        if (item) { showBadgeDetail(Number(item.dataset.badgeLoc), item.dataset.locked === '1'); return; }
-    });
-    dim.addEventListener('click', closeBadgeDetail);
-    detail.addEventListener('click', (e) => {
-        const cta = e.target.closest('[data-act="map"]');
-        if (!cta) return;
-        const locId = Number(cta.dataset.locId);
-        const loc = celebLocations.find(l => l.id === locId);
-        closeBadgeDetail();
-        closeBadgesPanel();
-        if (loc && map) { map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 }); window.openDetailsPanel(locId); }
-    });
-    return panel;
+// Câble les interactions sur les éléments STATIQUES de badges.html (plus de panneau
+// injecté dynamiquement — voir window.initBadgesPage() tout en bas de ce bloc) : onglets,
+// chips de filtre par groupe, "Voir tout", clic sur un badge, fermeture de la fiche
+// détail. Un seul écouteur délégué par zone — garde-fou badgesPageWired car
+// window.initBadgesPage() (qui appelle cette fonction) est aussi rappelée à chaque
+// changement de langue (voir badges.html) pour retraduire le contenu déjà affiché ; sans
+// ce garde-fou, chaque clic finirait par déclencher l'action plusieurs fois (un jeu
+// d'écouteurs par changement de langue, jamais retirés).
+let badgesPageWired = false;
+function wireBadgesPageEventsOnce() {
+    if (badgesPageWired) return;
+    badgesPageWired = true;
+    const tabsEl = document.getElementById('badges-page-tabs');
+    if (tabsEl) {
+        tabsEl.addEventListener('click', (e) => {
+            const tabBtn = e.target.closest('[role=tab]');
+            if (tabBtn) selectBadgesPanelTab(tabBtn.dataset.tab);
+        });
+    }
+    const badgesTabEl = document.getElementById('badges-tab-badges');
+    if (badgesTabEl) {
+        badgesTabEl.addEventListener('click', (e) => {
+            const chip = e.target.closest('[data-group]');
+            if (chip) { badgesPanelGroupFilter = chip.dataset.group; badgesPanelShowAll = false; renderBadgesTab(); return; }
+            const more = e.target.closest('[data-act="more"]');
+            if (more) { badgesPanelShowAll = !badgesPanelShowAll; renderBadgesTab(); return; }
+            const item = e.target.closest('[data-badge-loc]');
+            if (item) showBadgeDetail(Number(item.dataset.badgeLoc), item.dataset.locked === '1');
+        });
+    }
+    const dim = document.getElementById('badges-dim');
+    if (dim) dim.addEventListener('click', closeBadgeDetail);
+    // Pas de close-btn ici : #badges-detail-close est recréé à chaque showBadgeDetail()
+    // (innerHTML remplacé), donc câblé directement là-bas plutôt qu'ici où il n'existe pas
+    // encore au premier chargement de la page.
 }
 
 function selectBadgesPanelTab(tabName) {
     badgesPanelTab = tabName;
-    const panel = document.getElementById('badges-panel');
-    if (!panel) return;
-    panel.querySelectorAll('[role=tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tabName));
+    const tabsEl = document.getElementById('badges-page-tabs');
+    if (!tabsEl) return;
+    tabsEl.querySelectorAll('[role=tab]').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === tabName));
     document.getElementById('badges-tab-badges').classList.toggle('on', tabName === 'badges');
     document.getElementById('badges-tab-rank').classList.toggle('on', tabName === 'rank');
     if (tabName === 'rank') renderRankTab();
@@ -10370,12 +10347,6 @@ function closeBadgeDetail() {
     const detail = document.getElementById('badges-detail');
     if (dim) dim.classList.remove('on');
     if (detail) detail.classList.remove('on');
-}
-
-function closeBadgesPanel() {
-    closeBadgeDetail();
-    const panel = document.getElementById('badges-panel');
-    if (panel) { panel.classList.remove('on'); panel.setAttribute('aria-hidden', 'true'); }
 }
 
 function renderBadgesTab() {
@@ -10416,8 +10387,16 @@ function showBadgeDetail(locId, locked) {
     const isFr = currentLang === 'fr';
     const entry = badgesPanelMyBadges[String(locId)];
     const dateLabel = !locked ? badgeUnlockedAtLabel(entry, isFr) : '';
+    // Lien direct map.html?loc=ID (demande du 07/10/2026, "une nouvelle page qui
+    // s'ouvre") plutôt qu'un flyTo()/openDetailsPanel() en JS — cette page n'a plus
+    // elle-même de carte Leaflet à faire voler, et map.html?loc=ID est déjà la convention
+    // du site pour pointer vers un lieu précis depuis une autre page (voir feed.html,
+    // friends.html, "More details" dans script.js).
     detail.innerHTML = `
         <div class="hd"></div>
+        <button type="button" class="badges-detail-close" id="badges-detail-close" aria-label="${isFr ? 'Fermer' : 'Close'}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
         ${badgeItemPhotoHtml(loc, locked, true)}
         <div class="k" style="margin-top:10px">${escapeHtml(loc.group || '')}${loc.category ? ' · ' + escapeHtml(getCatName(loc.category)) : ''}</div>
         <h4>${escapeHtml(loc.name)}</h4>
@@ -10425,8 +10404,9 @@ function showBadgeDetail(locId, locked) {
         <p>${locked
             ? (isFr ? `Pas encore débloqué : rends-toi sur place (à moins de ${BADGE_UNLOCK_RADIUS_METERS}m), géolocalisation activée, pour débloquer ce badge.` : `Not unlocked yet: get within ${BADGE_UNLOCK_RADIUS_METERS}m of this place, with location enabled, to unlock this badge.`)
             : (dateLabel ? (isFr ? `Débloqué le <b style="color:#1F2430">${dateLabel}</b>` : `Unlocked on <b style="color:#1F2430">${dateLabel}</b>`) : (isFr ? 'Débloqué !' : 'Unlocked!'))}</p>
-        <button type="button" class="badges-detail-cta" data-act="map" data-loc-id="${loc.id}">${locked ? (isFr ? 'Y aller' : 'Go there') : (isFr ? 'Voir sur la carte' : 'View on map')}</button>
+        <a class="badges-detail-cta" href="map.html?loc=${loc.id}">${locked ? (isFr ? 'Y aller' : 'Go there') : (isFr ? 'Voir sur la carte' : 'View on map')}</a>
     `;
+    document.getElementById('badges-detail-close').addEventListener('click', closeBadgeDetail);
     dim.classList.add('on');
     detail.classList.add('on');
 }
@@ -10476,13 +10456,11 @@ async function renderRankTab() {
     `;
 }
 
-window.openBadgesPanel = function () {
-    const panel = ensureBadgesPanel();
-    badgesPanelGroupFilter = '__ALL__';
-    badgesPanelShowAll = false;
-    panel.classList.add('on');
-    panel.setAttribute('aria-hidden', 'false');
-    panel.scrollTop = 0;
+// Point d'entrée appelé par badges.html lui-même (voir le <script> en bas de cette page)
+// une fois celebLocations (locations-data.js) chargé — même moment que renderVisited()
+// dans visited.html.
+window.initBadgesPage = function () {
+    wireBadgesPageEventsOnce();
     selectBadgesPanelTab('badges');
     const isFr = currentLang === 'fr';
     const tab = document.getElementById('badges-tab-badges');
