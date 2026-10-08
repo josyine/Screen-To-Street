@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260999" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261000" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -179,6 +179,108 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
    sur le site pour ce même problème (voir le commentaire associé dans style.css) : 90px
    + la zone de sécurité iOS, plutôt qu'une redevinette au pif. */
 @media (max-width:760px){.stb-body{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
+
+/* =====================================================================
+   Version ordinateur (demande du 09/10/2026, "améliore la version
+   ordinateur... reprend le document ci joint et applique le") — reprise
+   telle quelle du fichier HTML fourni (badges_ordinateur.html), CSS
+   copié-collé sans changement, préfixé .sbd- pour ne rien casser sur le
+   reste du site (même principe que .stb- ci-dessus pour mobile). #sbdRoot
+   (posé autour de tout ce markup dans le <body>, voir plus bas) bascule
+   son affichage sur le MÊME point de rupture que .stb-page ci-dessus
+   (700px) : la version mobile (.stb-page, plein écran/panneau) et la
+   version ordinateur (#sbdRoot, 2 colonnes) ne sont donc jamais affichées
+   toutes les deux à la fois.
+   ===================================================================== */
+#sbdRoot{display:none}
+@media (min-width:700px){
+  #sbdRoot{display:block}
+  .stb-page,.stb-dim,.stb-det,.stb-toast{display:none!important}
+}
+:root{--sbd-mag:#E0156B;--sbd-pur:#9B3CEB;--sbd-grad:linear-gradient(90deg,#9B3CEB,#E0156B);--sbd-ink:#1F2430;--sbd-soft:#6B6478;--sbd-line:#ECE8F2;--sbd-bg:#F7F5FB}
+#sbdRoot *{box-sizing:border-box}
+#sbdRoot button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0}
+
+.sbd-top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--sbd-line)}
+.sbd-top .in{max-width:1240px;margin:0 auto;height:64px;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+.sbd-brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px}.sbd-brand b{color:var(--sbd-mag)}
+.sbd-backlink{text-decoration:none;display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--sbd-soft);padding:8px 14px;border-radius:999px;transition:background .2s}
+.sbd-backlink:hover{background:#F1EEF6;color:var(--sbd-ink)}
+
+.sbd-wrap{max-width:1240px;margin:0 auto;padding:36px 32px 64px}
+.sbd-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px;flex-wrap:wrap}
+.sbd-head h1{margin:0;font-size:32px;letter-spacing:-.01em}
+.sbd-head p{margin:6px 0 0;color:var(--sbd-soft);font-size:14.5px}
+.sbd-head p b{color:var(--sbd-ink)}
+.sbd-seg{display:flex;background:#EFEBF6;border-radius:14px;padding:4px;gap:4px}
+.sbd-seg button{height:42px;padding:0 22px;border-radius:11px;font-size:14px;font-weight:600;color:var(--sbd-soft);display:flex;align-items:center;gap:8px;transition:background .2s,color .2s}
+.sbd-seg button:hover{color:var(--sbd-ink)}
+.sbd-seg button[aria-selected="true"]{background:#fff;color:var(--sbd-ink);box-shadow:0 2px 8px rgba(30,20,50,.1)}
+.sbd-tab{display:none}.sbd-tab.on{display:block;animation:sbdIn .3s}
+@keyframes sbdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.sbd-cols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
+.sbd-card{background:#fff;border-radius:22px;padding:24px;box-shadow:0 6px 24px rgba(30,20,50,.05)}
+.sbd-side{position:sticky;top:88px}
+.sbd-sec{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 16px}
+.sbd-sec h2{margin:0;font-size:18px}
+.sbd-sec small{font-size:13px;color:var(--sbd-soft);font-weight:500}
+.sbd-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.sbd-chip{height:34px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;background:#fff;color:var(--sbd-soft);border:1px solid var(--sbd-line);transition:all .2s}
+.sbd-chip:hover{border-color:#D8D0E6;color:var(--sbd-ink)}
+.sbd-chip[aria-pressed="true"]{background:var(--sbd-ink);color:#fff;border-color:var(--sbd-ink)}
+.sbd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:26px 12px}
+.sbd-b{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;border-radius:16px;padding:8px 4px;transition:transform .2s,background .2s}
+.sbd-b:hover{transform:translateY(-4px);background:#FAF7FD}
+.sbd-b:hover .stb-ph:not(.lock){box-shadow:0 10px 22px rgba(224,21,107,.35)}
+.sbd-b b{font-size:12.5px;font-weight:600;line-height:1.3}
+.sbd-b span.c{font-size:11px;color:var(--sbd-soft);margin-top:-4px}
+.sbd-b.locked b{color:#B4ADC2;font-weight:500}
+.sbd-more{display:block;margin:26px auto 0;height:40px;padding:0 22px;border-radius:999px;background:#fff;border:1.5px solid var(--sbd-line);font-size:13px;font-weight:600;color:var(--sbd-pur);transition:background .2s}
+.sbd-more:hover{background:#FAF5FF}
+
+.sbd-list{display:flex;flex-direction:column}
+.sbd-ch{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:11px 8px;border-radius:14px;transition:background .2s}
+.sbd-ch:hover{background:#FAF7FD}
+.sbd-ch .t{font-weight:600;font-size:14px}
+.sbd-ch .d{font-size:12px;color:var(--sbd-soft);margin-top:1px}
+.sbd-prog{height:6px;border-radius:6px;background:#EFEAF6;margin-top:8px;overflow:hidden}.sbd-prog i{display:block;height:100%;border-radius:6px;background:var(--sbd-grad)}
+.sbd-ok{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:700;background:#E7F8EF;color:#0E8A55;flex:0 0 26px}
+.sbd-num{font-weight:700;font-size:13px}
+.sbd-sub{font-size:12.5px;font-weight:600;color:var(--sbd-soft);margin:18px 8px 6px;text-transform:uppercase;letter-spacing:.06em}
+
+.sbd-ranks{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.sbd-row{display:flex;align-items:center;gap:14px;padding:12px 12px;border-radius:14px}
+.sbd-row.me{background:linear-gradient(90deg,rgba(155,60,235,.1),rgba(224,21,107,.1))}
+.sbd-row .r{width:22px;font-weight:700;font-size:14px;color:#9C95AA;text-align:center}
+.sbd-av{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px}
+.sbd-row .bar{height:7px;border-radius:7px;background:#EFEAF6;margin-top:7px;overflow:hidden}
+.sbd-row .bar i{display:block;height:100%;border-radius:7px;background:#C9BCE6;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.sbd-row.me .bar i{background:var(--sbd-grad)}
+.sbd-row.d .bar i{background:#F4C67A}.sbd-row.me.d .bar i{background:linear-gradient(90deg,#F59E0B,#E0156B)}
+.sbd-you{display:inline-flex;align-items:center;height:19px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:700;background:var(--sbd-grad);color:#fff;vertical-align:1px;margin-left:6px}
+.sbd-val{font-weight:700;font-size:16px;min-width:40px;text-align:right}
+
+.sbd-dim{position:fixed;inset:0;z-index:50;background:rgba(31,36,48,.4);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s}
+.sbd-dim.on{opacity:1;pointer-events:auto}
+.sbd-modal{position:fixed;left:50%;top:50%;z-index:51;width:420px;max-width:calc(100% - 32px);max-height:calc(100% - 64px);overflow:auto;background:#fff;border-radius:26px;padding:30px 30px 26px;text-align:center;
+  box-shadow:0 30px 70px rgba(30,20,50,.3);transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.2,.8,.2,1)}
+.sbd-modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.sbd-x{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:50%;background:#F1EEF6;display:flex;align-items:center;justify-content:center}
+.sbd-x:hover{background:#E7E1F0}
+.sbd-modal .k{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--sbd-pur);text-transform:uppercase;margin-top:14px}
+.sbd-modal h3{font-size:22px;margin:6px 0 2px}
+.sbd-modal p{font-size:14px;color:var(--sbd-soft);margin:10px 0 18px;line-height:1.55}
+.sbd-modal ul{list-style:none;margin:0 0 18px;padding:0;text-align:left}
+.sbd-modal li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F3F0F7;font-size:14px}
+.sbd-modal li .c{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 24px;font-size:12px}
+.sbd-cta{display:flex;align-items:center;justify-content:center;width:100%;height:50px;border-radius:14px;background:var(--sbd-grad);color:#fff;font-size:15px;font-weight:600;box-shadow:0 8px 18px rgba(224,21,107,.25);transition:filter .2s}
+.sbd-cta:hover{filter:brightness(1.06)}
+.sbd-toast{position:fixed;left:50%;top:80px;z-index:60;transform:translate(-50%,-20px);opacity:0;transition:all .3s;background:var(--sbd-ink);color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:999px;pointer-events:none}
+.sbd-toast.on{transform:translate(-50%,0);opacity:1}
+
+@media (max-width:980px){.sbd-cols{grid-template-columns:1fr}.sbd-side{position:static}.sbd-ranks{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.sbd-modal,.sbd-dim,.sbd-row .bar i,.sbd-b{transition:none}}
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -220,7 +322,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20260999';
+        s.src = 'page-loader.js?v=20261000';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -266,9 +368,42 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="stb-det" id="stbDet" role="dialog" aria-modal="true" aria-label="Détail du badge"></div>
 <div class="stb-toast" id="stbToast" role="status" aria-live="polite"></div>
 
-<script src="locations-data.js?v=20260999"></script>
-<script type="module" src="firebase-init.js?v=20260999"></script>
-<script src="script.js?v=20260999"></script>
+<!-- ============ Version ordinateur (demande du 09/10/2026, "améliore la version
+     ordinateur... reprend le document ci joint et applique le") — markup du fichier
+     fourni (badges_ordinateur.html), inchangé à part #sbdRoot (bascule mobile/
+     ordinateur, voir CSS ci-dessus) et le lien "Retour à la carte" qui navigue pour
+     de vrai vers map.html (href direct, plus besoin du toast de démonstration du
+     fichier d'origine). ============ -->
+<div id="sbdRoot">
+<header class="sbd-top"><div class="in">
+  <div class="sbd-brand"><svg width="16" height="18" viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" fill="#212832"/></svg>Screen To <b>Street</b></div>
+  <a class="sbd-backlink" href="map.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Retour à la carte</a>
+</div></header>
+
+<main class="sbd-wrap">
+  <div class="sbd-head">
+    <div><h1>Mes badges</h1><p id="sbdSummary"></p></div>
+    <div class="sbd-seg" role="tablist">
+      <button role="tab" data-tab="badges" aria-selected="true">Badges</button>
+      <button role="tab" data-tab="rank" aria-selected="false">Classement</button>
+    </div>
+  </div>
+  <section class="sbd-tab on" id="sbdTabBadges" role="tabpanel">
+    <div class="sbd-cols">
+      <div class="sbd-card" id="sbdPlaces"></div>
+      <aside class="sbd-card sbd-side" id="sbdChallenges"></aside>
+    </div>
+  </section>
+  <section class="sbd-tab" id="sbdTabRank" role="tabpanel"><div class="sbd-ranks" id="sbdRanks"></div></section>
+</main>
+<div class="sbd-dim" id="sbdDim"></div>
+<div class="sbd-modal" id="sbdModal" role="dialog" aria-modal="true" aria-label="Détail"></div>
+<div class="sbd-toast" id="sbdToast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="locations-data.js?v=20261000"></script>
+<script type="module" src="firebase-init.js?v=20261000"></script>
+<script src="script.js?v=20261000"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -541,7 +676,7 @@ window.StbBadges=StbBadges;
         }catch(e){}
     }
 
-    window.StbBadges.setData({
+    const badgesPayload={
         me:{id:"me",name:myName,initial:myInitial,color:"#9B3CEB"},
         totalVisited:visited.length,
         totalPlaces:allLocs.length,
@@ -550,8 +685,178 @@ window.StbBadges=StbBadges;
         challenges:myChallenges,
         rankChallenges,
         ranking
-    });
+    };
+    window.StbBadges.setData(badgesPayload);
     window.StbBadges.open();
+    // AJOUT SITE (demande du 09/10/2026, "améliore la version ordinateur... reprend le
+    // document ci joint") : même objet déjà calculé ci-dessus, transmis en plus à la
+    // version ordinateur (SbdBadges, défini par le script juste en dessous) — pas de
+    // second appel Firestore/amis, juste le même rendu avec un autre gabarit.
+    if(window.SbdBadges){window.SbdBadges.setData(badgesPayload);window.SbdBadges.render();}
+})();
+</script>
+
+<script>
+/* =====================================================================
+   Version ordinateur (demande du 09/10/2026, "améliore la version
+   ordinateur... reprend le document ci joint et applique le") — logique du
+   fichier fourni (badges_ordinateur.html) reprise telle quelle, seulement
+   enveloppée dans une IIFE pour ne pas entrer en collision avec les
+   identifiants de même nom déjà déclarés par le script mobile juste
+   au-dessus (DATA, IC, $, placeBadge, challIcon, toast, modal... mêmes
+   noms dans les deux fichiers fournis, portées maintenant bien séparées —
+   voir la note "collision de portée" déjà appliquée ailleurs sur ce site).
+   Seuls ajouts marqués "AJOUT SITE" : coquille de données vide (remplie
+   par window.SbdBadges.setData(), appelé depuis loadRealBadgesData()
+   juste au-dessus avec les MÊMES données réelles déjà calculées pour la
+   version mobile — aucune logique dupliquée), les vrais groupes/couleurs
+   du site, et la navigation réelle du bouton "Voir sur la carte"/"Y
+   aller".
+   ===================================================================== */
+(function(){
+/* ===== 1. DONNÉES + VISUELS (identiques à la version mobile) ===== */
+const DATA={
+  me:{id:"me",name:"",initial:"?",color:"#9B3CEB"},
+  totalVisited:0,
+  totalPlaces:0,
+  visited:[],
+  notVisited:[],
+  challenges:[],
+  rankChallenges:[["me","","?","#9B3CEB",0]],
+  ranking:[["me","","?","#9B3CEB",0]]
+};
+const IC={
+ star:'<path d="M12 3l2.6 5.5 6 .7-4.4 4.1 1.2 6L12 16.4 6.6 19.3l1.2-6L3.4 9.2l6-.7z" fill="#fff"/>',
+ tower:'<path d="M12 3l1.5 6h-3zM10 9h4l1.2 6h-6.4zM8 15h8l2 6h-3l-1-3h-4l-1 3H6z" fill="#fff"/>',
+ cam:'<rect x="4" y="8" width="16" height="11" rx="2.5" fill="#fff"/><circle cx="12" cy="13.5" r="3.2" fill="currentColor"/><rect x="8.5" y="5.5" width="7" height="3" rx="1" fill="#fff"/>',
+ mic:'<rect x="9.5" y="3.5" width="5" height="10" rx="2.5" fill="#fff"/><path d="M7 11a5 5 0 0 0 10 0M12 16v4M9 20h6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>',
+ cup:'<path d="M6 8h10v5a5 5 0 0 1-10 0z" fill="#fff"/><path d="M16 9.5h1.5a2 2 0 0 1 0 4H16" stroke="#fff" stroke-width="1.8" fill="none"/><path d="M5 20h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
+ plane:'<path d="M2 13l7-2 4-8 2 1-2 7 6-1 2-3h2l-1 5 1 5h-2l-2-3-6-1 2 7-2 1-4-8-7-2z" fill="#fff"/>',
+ pin:'<path d="M12 3C8.7 3 6 5.6 6 8.9 6 13.3 12 21 12 21s6-7.7 6-12.1C18 5.6 15.3 3 12 3z" fill="#fff"/><circle cx="12" cy="9" r="2.4" fill="currentColor"/>',
+ heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="#fff"/>',
+ crown:'<path d="M4 17l-1-9 5 4 4-7 4 7 5-4-1 9z" fill="#fff"/><rect x="4" y="18" width="16" height="2.5" rx="1" fill="#fff"/>',
+ bag:'<rect x="5" y="8" width="14" height="12" rx="2" fill="#fff"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke="#fff" stroke-width="2" fill="none"/>',
+ lock:'<rect x="6.5" y="11" width="11" height="9" rx="2" fill="#fff"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11" stroke="#fff" stroke-width="2" fill="none"/>'
+};
+/* AJOUT SITE : vrais groupes/couleurs du site (mêmes valeurs que dans le script
+   mobile juste au-dessus) au lieu des 3 groupes de démo du fichier fourni. */
+const GROUP_COL={"BTS":["#8b5cf6","#8b5cf6"],"Blackpink":["#ec4899","#ec4899"],"Twice":["#f43f5e","#f43f5e"],"Seventeen":["#3b82f6","#3b82f6"],"Katseye":["#10b981","#10b981"],"TXT":["#f59e0b","#f59e0b"]};
+const DEF_COL=["#3B82F6","#9B3CEB"];
+let gid=0;
+/* Médaille hexagonale. kind: "place" (lieu) ou "challenge" (défi, avec anneau de progression si non terminé) */
+function medal({icon,colors,done=true,progress=null},size=64){
+  const id="sbdm"+(gid++), a=done?colors[0]:"#D9D4E3", z=done?colors[1]:"#C7C0D6";
+  const ring=progress!=null&&!done?`<circle cx="32" cy="32" r="30" fill="none" stroke="#EAE5F2" stroke-width="3"/><circle cx="32" cy="32" r="30" fill="none" stroke="#9B3CEB" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(progress*188.5).toFixed(1)} 188.5" transform="rotate(-90 32 32)"/>`:"";
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" style="color:${z}" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${z}"/></linearGradient></defs>
+   ${ring}<path d="M32 9l20 11.5v23L32 55 12 43.5v-23z" fill="url(#${id})"/><path d="M32 9l20 11.5v23L32 55 12 43.5v-23z" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+   <g transform="translate(20 20)">${done?IC[icon]:IC.lock}</g>${done?'<path d="M18 22 q14 -10 28 0" stroke="rgba(255,255,255,.35)" stroke-width="3" fill="none" stroke-linecap="round"/>':""}</svg>`;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const short=d=>d.replace(/ 20\d\d$/,"");
+const needN=c=>Array.isArray(c.need)?c.need.length:c.need;
+const isDone=c=>c.done>=needN(c);
+const LOCK_SVG='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B4ADC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9.5" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function placeBadge(v,size=64,locked=false){
+  if(locked) return `<span class="stb-ph lock" style="width:${size}px;height:${size}px">${LOCK_SVG}</span>`;
+  const c=GROUP_COL[v.group]||DEF_COL, fb=`background:linear-gradient(135deg,${c[0]},${c[1]})`;
+  return `<span class="stb-ph" style="width:${size}px;height:${size}px"><span class="in" style="${fb}"><svg width="${size*.38}" height="${size*.38}" viewBox="0 0 24 24">${IC[v.icon]||IC.pin}</svg>${v.photo?`<img src="${esc(v.photo)}" alt="" loading="lazy" onerror="this.remove()">`:""}</span></span>`;
+}
+/* Défi : hexagone pastel au contour coloré (couleurs de la charte) — gris + cadenas si pas encore relevé */
+const CH_COL=["#E0156B","#9B3CEB","#F97316"];
+function challIcon(c,size=44){
+  const done=isDone(c), k=done?CH_COL[DATA.challenges.indexOf(c)%3]:"#C9C2D6", HEX="M32 6l22.5 13v26L32 58 9.5 45V19z";
+  const glyph=(done?IC[c.icon]:IC.lock).replace(/#fff/g,done?k:"#B4ADC2").replace(/currentColor/g,"#fff");
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><path d="${HEX}" fill="${done?k+"1F":"#F1EEF6"}" stroke="${k}" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(21 21) scale(.92)">${glyph}</g></svg>`;
+}
+/* ===== 2. RENDU ORDINATEUR ===== */
+const $=id=>document.getElementById(id);
+let groupFilter="Tous", showAll=false;
+const PAGE=18;
+function renderSummary(){
+  const d=DATA.challenges.filter(isDone).length;
+  $("sbdSummary").innerHTML=`<b>${DATA.totalVisited}</b> lieux visités sur ${DATA.totalPlaces} · <b>${d}</b> défis relevés`;
+}
+function renderPlaces(){
+  const groups=["Tous",...new Set(DATA.visited.concat(DATA.notVisited).map(v=>v.group))];
+  const f=v=>groupFilter==="Tous"||v.group===groupFilter;
+  const all=DATA.visited.filter(f).map(v=>[v,false]).concat(DATA.notVisited.filter(f).map(v=>[v,true]));
+  const shown=showAll?all:all.slice(0,PAGE);
+  $("sbdPlaces").innerHTML=`<div class="sbd-sec"><h2>Lieux visités</h2><small>${DATA.totalVisited}/${DATA.totalPlaces}</small></div>
+   <div class="sbd-chips">${groups.map(g=>`<button class="sbd-chip" data-group="${esc(g)}" aria-pressed="${g===groupFilter}">${esc(g)}</button>`).join("")}</div>
+   <div class="sbd-grid">${shown.map(([v,l])=>`<button class="sbd-b${l?" locked":""}" data-place="${v.id}" data-locked="${l?1:0}" title="${esc(v.name)} · ${esc(v.city)}">${placeBadge(v,80,l)}<b>${esc(v.name)}</b><span class="c">${esc(v.city)}</span></button>`).join("")}</div>
+   ${all.length>PAGE?`<button class="sbd-more" data-act="more">${showAll?"Afficher moins":"Voir tout"}</button>`:""}`;
+}
+function chRow(c){
+  const n=needN(c), done=isDone(c);
+  return `<button class="sbd-ch" data-challenge="${c.id}">${challIcon(c,46)}<div style="flex:1;min-width:0"><div class="t">${esc(c.name)}</div><div class="d">${esc(c.desc)}</div>${done?"":`<div class="sbd-prog"><i style="width:${c.done/n*100}%"></i></div>`}</div>${done?'<span class="sbd-ok" aria-label="Relevé">✓</span>':`<span class="sbd-num">${c.done}/${n}</span>`}</button>`;
+}
+function renderChallenges(){
+  const dn=DATA.challenges.filter(isDone), op=DATA.challenges.filter(c=>!isDone(c));
+  $("sbdChallenges").innerHTML=`<div class="sbd-sec"><h2>Défis</h2><small>${dn.length}/${DATA.challenges.length} relevés</small></div>
+   <div class="sbd-sub" style="margin-top:0">Relevés</div><div class="sbd-list">${dn.map(chRow).join("")}</div>
+   <div class="sbd-sub">En cours</div><div class="sbd-list">${op.map(chRow).join("")}</div>`;
+}
+function rankCard(title,unit,list,isD){
+  const L=[...list].sort((a,b)=>b[4]-a[4]), max=L[0][4]||1;
+  return `<div class="sbd-card"><div class="sbd-sec"><h2>${title}</h2><small>${unit}</small></div>
+   ${L.map((f,k)=>`<div class="sbd-row${f[0]==="me"?" me":""}${isD?" d":""}"><span class="r" style="${k===0?"color:#E0156B":""}">${k+1}</span><div class="sbd-av" style="background:${f[3]}">${f[2]}</div>
+    <div style="flex:1;min-width:0"><div style="font-weight:${f[0]==="me"?700:600};font-size:14.5px">${esc(f[1])}${f[0]==="me"?'<span class="sbd-you">TOI</span>':""}</div><div class="bar"><i style="width:0" data-w="${f[4]/max*100}"></i></div></div>
+    <div class="sbd-val">${f[4]}</div></div>`).join("")}</div>`;
+}
+function renderRanks(){
+  $("sbdRanks").innerHTML=rankCard("Classement des lieux","lieux visités",DATA.ranking,false)+rankCard("Classement des défis","défis relevés",DATA.rankChallenges,true);
+  requestAnimationFrame(()=>$("sbdRanks").querySelectorAll("[data-w]").forEach(b=>b.style.width=b.dataset.w+"%"));
+}
+/* ===== 3. FENÊTRE DE DÉTAIL ===== */
+const modal=$("sbdModal"), dim=$("sbdDim");
+const X='<button class="sbd-x" data-act="close" aria-label="Fermer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+function openModal(h){modal.innerHTML=X+h;modal.classList.add("on");dim.classList.add("on");modal.querySelector(".sbd-x").focus();}
+function closeModal(){modal.classList.remove("on");dim.classList.remove("on");}
+function showPlace(id,locked){
+  const v=(locked?DATA.notVisited:DATA.visited).find(x=>x.id===id);
+  openModal(`${placeBadge(v,130,locked)}<div class="k">${esc(v.group)}${v.show?" · "+esc(v.show):""}</div><h3>${esc(v.name)}</h3><div style="font-size:14px;color:var(--sbd-soft)">${esc(v.city)}</div>
+   <p>${locked?"Pas encore visité : rends-toi sur place pour débloquer ce badge.":`Visité le <b style="color:var(--sbd-ink)">${esc(v.date)}</b>`}</p>
+   <button class="sbd-cta" data-act="map" data-loc-id="${esc(v.id)}">${locked?"Y aller":"Voir sur la carte"}</button>`);
+}
+function showChallenge(id){
+  const c=DATA.challenges.find(x=>x.id===id), n=needN(c), done=isDone(c);
+  const items=Array.isArray(c.need)?`<ul>${c.need.map((p,k)=>{const ok=k<c.done;return `<li><span class="c" style="background:${ok?"#E7F8EF":"#F1EEF6"};color:${ok?"#0E8A55":"#9C95AA"}">${ok?"✓":k+1}</span><span style="flex:1;${ok?"":"color:var(--sbd-soft)"}">${esc(p)}</span>${ok?"":'<span style="font-size:12px;color:var(--sbd-pur);font-weight:600">à visiter</span>'}</li>`;}).join("")}</ul>`:"";
+  openModal(`${challIcon(c,120)}<div class="k">Défi</div><h3>${esc(c.name)}</h3>
+   <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--sbd-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
+   ${items}<button class="sbd-cta" data-act="${done?"close":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`);
+}
+function toast(t){const e=$("sbdToast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1900);}
+/* ===== 4. ÉVÉNEMENTS ===== */
+function selectTab(t){document.querySelectorAll(".sbd-seg [role=tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  $("sbdTabBadges").classList.toggle("on",t==="badges");$("sbdTabRank").classList.toggle("on",t==="rank");if(t==="rank")renderRanks();
+  history.replaceState(null,"",t==="rank"?"#classement":"#badges");}
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const tab=t.closest(".sbd-seg [role=tab]"); if(tab){selectTab(tab.dataset.tab);return;}
+  const g=t.closest("[data-group]"); if(g){groupFilter=g.dataset.group;showAll=false;renderPlaces();return;}
+  const p=t.closest("[data-place]"); if(p){showPlace(p.dataset.place,p.dataset.locked==="1");return;}
+  const c=t.closest("[data-challenge]"); if(c){showChallenge(c.dataset.challenge);return;}
+  if(t.closest("#sbdDim")){closeModal();return;}
+  const a=t.closest("[data-act]"); if(!a)return;
+  if(a.dataset.act==="more"){showAll=!showAll;renderPlaces();}
+  if(a.dataset.act==="close")closeModal();
+  /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, même convention que la
+     version mobile ci-dessus) au lieu du simple toast de démonstration du fichier
+     fourni — data-loc-id posé par showPlace() ci-dessus (absent pour un défi, qui ne
+     correspond pas à un seul lieu : on retombe alors sur le toast, exactement comme
+     côté mobile pour le même cas). */
+  if(a.dataset.act==="map"){const locId=a.dataset.locId;closeModal();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");}
+});
+addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+renderSummary();renderPlaces();renderChallenges();
+if(location.hash==="#classement")selectTab("rank");
+/* ===== 5. AJOUT SITE — pont avec les vraies données déjà chargées par
+   loadRealBadgesData() (script mobile ci-dessus) : pas de 2e appel Firestore,
+   on reçoit le même objet déjà calculé. ===== */
+window.SbdBadges={
+  setData(d){Object.assign(DATA,d);},
+  render(){renderSummary();renderPlaces();renderChallenges();if(document.getElementById("sbdTabRank").classList.contains("on"))renderRanks();}
+};
 })();
 </script>
 </body>

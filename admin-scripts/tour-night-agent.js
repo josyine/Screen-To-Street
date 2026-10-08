@@ -171,20 +171,27 @@ async function runAgent() {
         let addedCount = 0;
         let firstCity = null;
 
-        // Un essai supplémentaire pour les erreurs explicitement temporaires (503 "high
-        // demand" vu dans les logs — le message lui-même dit "usually temporary, please
-        // try again later") ; inutile de s'acharner sur un 429 de quota épuisé (reset
-        // quotidien côté Gemini, pas quelque chose qu'un court délai résout), mais ça ne
-        // coûte rien de réessayer une fois avant d'abandonner cette nuit pour aujourd'hui.
+        // BUG corrigé (demande du 09/10/2026, "l'agent IA ne fonctionne toujours pas") : les
+        // logs du passage du 08/10/2026 (run #3, après le 1er correctif ci-dessus) montrent
+        // que ce n'était PLUS le quota (429, corrigé) mais un [503 Service Unavailable]
+        // "high demand" sur TOUTES les 8 nuits traitées, y compris après le seul essai
+        // supplémentaire déjà en place — Lima inclus. Un unique retry après 15s ne suffisait
+        // donc pas à passer une fenêtre de surcharge un peu plus longue. Jusqu'à 3 essais au
+        // total maintenant (au lieu de 2), avec un délai croissant (15s, puis 30s) — toujours
+        // rien pour un 429 de quota (inutile de s'acharner, reset quotidien côté Gemini, pas
+        // quelque chose qu'un délai résout).
         async function generateWithRetry(prompt) {
-            try {
-                return await model.generateContent(prompt);
-            } catch (err) {
-                const msg = (err && err.message) || '';
-                if (!/\[503/.test(msg)) throw err;
-                console.log('   ⏳ 503 (surcharge temporaire du modèle) — nouvel essai dans 15s...');
-                await new Promise(r => setTimeout(r, 15000));
-                return await model.generateContent(prompt);
+            const delays = [15000, 30000];
+            for (let attempt = 0; ; attempt++) {
+                try {
+                    return await model.generateContent(prompt);
+                } catch (err) {
+                    const msg = (err && err.message) || '';
+                    if (!/\[503/.test(msg) || attempt >= delays.length) throw err;
+                    const delay = delays[attempt];
+                    console.log(`   ⏳ 503 (surcharge temporaire du modèle) — nouvel essai dans ${delay / 1000}s...`);
+                    await new Promise(r => setTimeout(r, delay));
+                }
             }
         }
 
