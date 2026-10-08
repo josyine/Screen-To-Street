@@ -41,6 +41,14 @@
         if (!root || !sheet) return { open: () => {}, close: () => {} }; // page sans le panneau (ex: pas encore chargé) — no-op plutôt qu'une erreur
         let imap = null, layer = null, me = null, to = null, from = null, reversed = false, mode = "walk";
         let walk = null, transit = null, sel = { walk: 0, transit: 0 }, watchId = null, req = 0;
+        // Guidage en direct, étape par étape (demande du 08/10/2026, "vraiment être en mode
+        // guidage comme dans Google Map") : guideSteps/guideIdx pour le mode "à pied" (étapes
+        // OSRM, voir buildWalkSteps()), guideLegIdx pour le mode "transports" (progression
+        // dans les legs marche/bus/métro déjà décodés par fetchTransit(), pas de virage par
+        // virage disponible pour ce mode — Google Maps lui-même ne guide pas virage par
+        // virage à l'intérieur d'un trajet en transports, seulement "marchez jusqu'à l'arrêt"
+        // / "descendez à X").
+        let guideSteps = [], guideIdx = 0, guideLegIdx = 0;
 
         const fmtMin = s => { const m = Math.max(1, Math.round(s / 60)); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}`; };
         const fmtKm = m => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace(".", ",")} km`;
@@ -58,6 +66,18 @@
         }
 
         /* --- calculs d'itinéraire --- */
+        // Étapes de virage par virage (demande du 08/10/2026) : CFG.walkUrl demande déjà
+        // steps=true à OSRM, mais la réponse n'était jusqu'ici lue que pour la ligne/durée/
+        // distance globales — chaque "step" OSRM (maneuver.type/modifier/location, name de
+        // la rue) était ignoré. maneuver.location est en [lon,lat] (GeoJSON), inversé ici en
+        // [lat,lon] pour correspondre à Leaflet comme le reste du fichier.
+        function buildWalkSteps(steps) {
+            if (!Array.isArray(steps)) return [];
+            return steps.filter(s => s.maneuver && s.maneuver.location).map(s => ({
+                loc: [s.maneuver.location[1], s.maneuver.location[0]],
+                type: s.maneuver.type, modifier: s.maneuver.modifier, name: s.name || ""
+            }));
+        }
         async function fetchWalk(a, b) {
             if (CFG.demo) return demoWalk(a, b);
             const r = await fetch(CFG.walkUrl(a, b)); if (!r.ok) throw new Error("walk");
@@ -65,7 +85,8 @@
             return j.routes.slice(0, 3).map(rt => ({
                 duration: rt.duration, distance: rt.distance,
                 via: (rt.legs[0] && rt.legs[0].summary) || "",
-                line: rt.geometry.coordinates.map(([x, y]) => [y, x])
+                line: rt.geometry.coordinates.map(([x, y]) => [y, x]),
+                steps: buildWalkSteps(rt.legs[0] && rt.legs[0].steps)
             }));
         }
         async function fetchTransit(a, b) {
@@ -95,9 +116,15 @@
         /* --- données d'exemple (?demo) --- */
         function demoWalk(a, b) {
             const mid = (t, dx, dy) => [a.lat + (b.lat - a.lat) * t + dy, a.lon + (b.lon - a.lon) * t + dx];
+            const steps = (p1, p2) => [
+                { loc: [a.lat, a.lon], type: "depart", modifier: null, name: "la rue principale" },
+                { loc: p1, type: "turn", modifier: "right", name: "Rue de la Gare" },
+                { loc: p2, type: "turn", modifier: "left", name: "la rue principale" },
+                { loc: [b.lat, b.lon], type: "arrive", modifier: null, name: "" }
+            ];
             return [
-                { duration: 18 * 60, distance: 1300, via: "la rue principale", line: [[a.lat, a.lon], mid(.3, .0012, -.0004), mid(.6, -.0006, .0008), [b.lat, b.lon]] },
-                { duration: 21 * 60, distance: 1500, via: "le front de mer", line: [[a.lat, a.lon], mid(.35, -.0022, .0002), mid(.7, -.0018, .0006), [b.lat, b.lon]] }
+                { duration: 18 * 60, distance: 1300, via: "la rue principale", line: [[a.lat, a.lon], mid(.3, .0012, -.0004), mid(.6, -.0006, .0008), [b.lat, b.lon]], steps: steps(mid(.3, .0012, -.0004), mid(.6, -.0006, .0008)) },
+                { duration: 21 * 60, distance: 1500, via: "le front de mer", line: [[a.lat, a.lon], mid(.35, -.0022, .0002), mid(.7, -.0018, .0006), [b.lat, b.lon]], steps: steps(mid(.35, -.0022, .0002), mid(.7, -.0018, .0006)) }
             ];
         }
         function demoTransit(a, b) {
@@ -158,12 +185,18 @@
         const IC = {
             walk: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2" fill="currentColor" stroke="none"/><path d="M10 21l2-6-3-3 1-5 4 3 3 1"/></svg>',
             bus: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16"/></svg>',
+            // AJOUT (demande du 08/10/2026, "aligne bien le métro") : jusqu'ici SUBWAY/METRO
+            // réutilisaient IC.bus (silhouette de bus) faute d'icône dédiée — ce rond + "M" en
+            // trait (même style monoline que les autres icônes ci-dessus, tracé plutôt que
+            // <text>, pour éviter tout souci d'alignement de ligne de base) le remplace
+            // spécifiquement pour ces deux modes dans chip() plus bas.
+            metro: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M8 15.5v-7l4 5 4-5v7"/></svg>',
             nav: '<svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2l8 20-8-5-8 5z" fill="#fff"/></svg>',
             share: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>'
         };
         const MODE_FR = { BUS: "Bus", TRAM: "Tram", SUBWAY: "Métro", METRO: "Métro", RAIL: "Train", REGIONAL_RAIL: "Train", HIGHSPEED_RAIL: "Train", LONG_DISTANCE: "Train", FERRY: "Ferry", COACH: "Car", CABLE_CAR: "Téléphérique", FUNICULAR: "Funiculaire" };
         const chip = l => l.mode === "WALK" ? `<span class="sts-chip">${IC.walk}${Math.max(1, Math.round(l.duration / 60))}</span>`
-            : `<span class="sts-chip tr" style="background:${l.color || "#F59E0B"}">${IC.bus}${esc(l.line || MODE_FR[l.mode] || "")}</span>`;
+            : `<span class="sts-chip tr" style="background:${l.color || "#F59E0B"}">${(l.mode === "SUBWAY" || l.mode === "METRO") ? IC.metro : IC.bus}${esc(l.line || MODE_FR[l.mode] || "")}</span>`;
         const chips = it => `<div class="sts-chips">${it.legs.filter(l => !(l.mode === "WALK" && l.duration < 60)).map(chip).join("<i>›</i>")}</div>`;
         const loading = () => `<button class="sts-handle" data-act="toggle" aria-label="Agrandir ou réduire"></button><div class="sts-skel" style="width:45%;height:26px"></div><div class="sts-skel" style="width:70%"></div><div class="sts-skel" style="height:58px;border-radius:14px;margin:14px 0"></div><div class="sts-skel" style="height:50px;border-radius:14px"></div>`;
 
@@ -220,19 +253,98 @@
             draw();
         }
 
-        /* --- guidage simple (suivi de la position) --- */
+        /* --- guidage en direct, virage par virage (demande du 08/10/2026) --- */
+        const TURN_FR = { uturn: "demi-tour", "sharp right": "fortement à droite", right: "à droite", "slight right": "légèrement à droite", straight: "tout droit", "slight left": "légèrement à gauche", left: "à gauche", "sharp left": "fortement à gauche" };
+        const TURN_ANGLE = { uturn: 180, "sharp right": 120, right: 90, "slight right": 45, straight: 0, "slight left": -45, left: -90, "sharp left": -120 };
+        const ARRIVE_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+        const arrowIconHtml = angle => angle == null ? ARRIVE_ICON : `<svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(${angle}deg)"><path d="M12 3l7 10h-4.5v8h-5v-8H5z" fill="#fff"/></svg>`;
+        function stepInstruction(step, isFirst, isLast) {
+            if (isLast) return `Vous arrivez à ${esc(to.name)}`;
+            if (isFirst) return "Dirigez-vous vers " + esc(step.name || "votre destination");
+            if (step.type === "roundabout" || step.type === "rotary") return "Au rond-point" + (step.name ? ", direction " + esc(step.name) : "");
+            if (step.modifier && TURN_FR[step.modifier] && step.modifier !== "straight") return "Tournez " + TURN_FR[step.modifier] + (step.name ? " sur " + esc(step.name) : "");
+            return "Continuez" + (step.name ? " sur " + esc(step.name) : "");
+        }
+        function renderGuideBanner(iconHtml, distText, instrText) {
+            const arrowEl = $("stsGuideArrow"), distEl = $("stsGuideDist"), instrEl = $("stsGuideInstr");
+            if (arrowEl) arrowEl.innerHTML = iconHtml;
+            if (distEl) distEl.textContent = distText;
+            if (instrEl) instrEl.textContent = instrText;
+        }
+        // Chaque "step" OSRM est une manœuvre déjà exécutée à son propre point (guideSteps[i]
+        // .loc EST le point de la manœuvre i, par ex. guideSteps[0] = le point de départ,
+        // trivialement déjà atteint) — son instruction reste donc affichée tant qu'on n'a
+        // pas atteint le point de la manœuvre SUIVANTE (steps[i+1]), jamais en comparant à
+        // son propre point (BUG trouvé en testant : comparer au point courant avançait tout
+        // de suite à l'étape suivante dès le départ, ou n'avançait jamais ensuite puisque ce
+        // point, déjà dépassé, ne redevient jamais proche). Ne dépasse jamais la dernière
+        // étape ("arrive"), gérée par ailleurs par le seuil d'arrivée déjà présent dans
+        // startGuide() (toast + stopGuide()).
+        function updateGuideForWalk(pos) {
+            if (!guideSteps.length) return;
+            const ll = L.latLng(pos);
+            while (guideIdx < guideSteps.length - 1 && ll.distanceTo(guideSteps[guideIdx + 1].loc) < 18) guideIdx++;
+            const isLast = guideIdx === guideSteps.length - 1;
+            const step = guideSteps[guideIdx];
+            const targetLoc = isLast ? step.loc : guideSteps[guideIdx + 1].loc;
+            const d = Math.round(ll.distanceTo(targetLoc));
+            const angle = isLast ? null : (step.modifier && TURN_ANGLE[step.modifier] != null ? TURN_ANGLE[step.modifier] : 0);
+            renderGuideBanner(arrowIconHtml(angle), isLast ? "Arrivée" : "Dans " + fmtKm(d), stepInstruction(step, guideIdx === 0, isLast));
+        }
+        // Pas de virage par virage pour les transports (Transitous ne fournit pas ce détail
+        // pour les segments bus/métro, et Google Maps lui-même ne guide pas à ce niveau sur ce
+        // mode) : on suit plutôt la progression entre legs marche/bus/métro déjà décodés par
+        // fetchTransit() — "Marchez jusqu'à l'arrêt X", puis "Bus/Métro ... descendez à Y".
+        function updateGuideForTransit(pos) {
+            const it = transit && transit[sel.transit]; if (!it) return;
+            const ll = L.latLng(pos), legs = it.legs;
+            while (guideLegIdx < legs.length - 1 && ll.distanceTo(legs[guideLegIdx].path[legs[guideLegIdx].path.length - 1]) < 30) guideLegIdx++;
+            const leg = legs[guideLegIdx];
+            const endPt = leg.path[leg.path.length - 1];
+            const d = Math.round(ll.distanceTo(endPt));
+            const isLastLeg = guideLegIdx === legs.length - 1;
+            let instr, angle;
+            if (leg.mode === "WALK") {
+                const next = legs[guideLegIdx + 1];
+                instr = next ? `Marchez jusqu'à l'arrêt ${esc(next.from || "")}` : `Marchez jusqu'à ${esc(to.name)}`;
+                angle = isLastLeg ? null : 0;
+            } else {
+                instr = `${MODE_FR[leg.mode] || "Transport"}${leg.line ? " " + esc(leg.line) : ""} · descendez à ${esc(leg.to || "")}`;
+                angle = null;
+            }
+            renderGuideBanner(leg.mode === "WALK" ? arrowIconHtml(angle) : ((leg.mode === "SUBWAY" || leg.mode === "METRO") ? IC.metro : IC.bus), isLastLeg && d < 30 ? "Arrivée" : "Dans " + fmtKm(d), instr);
+        }
+        function showGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.remove("hidden"); const top = $("stsItTop"); if (top) top.classList.add("guiding"); }
+        function hideGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.add("hidden"); const top = $("stsItTop"); if (top) top.classList.remove("guiding"); }
         function startGuide() {
             if (!navigator.geolocation || CFG.demo) { toast(CFG.demo ? "Guidage simulé (mode démo)" : "Localisation indisponible"); return; }
+            guideIdx = 0; guideLegIdx = 0;
+            guideSteps = (mode === "walk" && walk && walk[sel.walk] && walk[sel.walk].steps) || [];
+            showGuideBanner();
+            sheet.classList.add("compact");
+            if (me) { if (mode === "walk") updateGuideForWalk([me.lat, me.lon]); else updateGuideForTransit([me.lat, me.lon]); }
             watchId = navigator.geolocation.watchPosition(p => {
                 const pos = [p.coords.latitude, p.coords.longitude];
                 if (!startGuide.m) { startGuide.m = L.marker(pos, { icon: meIcon(), interactive: false, zIndexOffset: 1000 }).addTo(imap); } else startGuide.m.setLatLng(pos);
-                imap.setView(pos, Math.max(imap.getZoom(), 17), { animate: true });
+                imap.setView(pos, Math.max(imap.getZoom(), 18), { animate: true });
+                if (mode === "walk") updateGuideForWalk(pos); else updateGuideForTransit(pos);
                 const left = L.latLng(pos).distanceTo([to.lat, to.lon]);
                 if (left < 40) { toast("Tu es arrivé(e) à " + to.name + " !"); stopGuide(); }
             }, () => toast("Impossible de suivre ta position"), { enableHighAccuracy: true, maximumAge: 5000 });
             render(); toast("C'est parti ! Suis le tracé violet");
+            // Le changement de hauteur de .sts-it-top (bannière affichée, .sts-row/.sts-seg
+            // masqués) et de .sts-sheet (passage en "compact") déplace le cadrage carte —
+            // même délai que le toggle manuel existant (data-act="toggle" ci-dessous).
+            setTimeout(draw, 320);
         }
-        function stopGuide() { if (watchId != null) { navigator.geolocation.clearWatch(watchId); watchId = null; } if (startGuide.m) { startGuide.m.remove(); startGuide.m = null; } render(); draw(); }
+        function stopGuide() {
+            if (watchId != null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+            if (startGuide.m) { startGuide.m.remove(); startGuide.m = null; }
+            hideGuideBanner();
+            sheet.classList.remove("compact");
+            guideSteps = []; guideIdx = 0; guideLegIdx = 0;
+            render(); draw();
+        }
 
         /* --- événements --- */
         root.querySelectorAll(".sts-seg button").forEach(b => b.addEventListener("click", () => {
@@ -256,6 +368,8 @@
         });
         const backBtn = $("stsBack");
         if (backBtn) backBtn.addEventListener("click", () => close());
+        const guideStopBtn = $("stsGuideStop");
+        if (guideStopBtn) guideStopBtn.addEventListener("click", () => stopGuide());
         addEventListener("keydown", e => { if (e.key === "Escape" && root.classList.contains("on")) close(); });
         addEventListener("popstate", () => { if (root.classList.contains("on")) close(true); });
 
