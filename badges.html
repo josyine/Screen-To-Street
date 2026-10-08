@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260997" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260998" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -147,7 +147,15 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 /* ---------- fiche d'un badge ---------- */
 .stb-dim{position:fixed;inset:0;z-index:2100;background:rgba(31,36,48,.35);opacity:0;pointer-events:none;transition:opacity .3s}
 .stb-dim.on{opacity:1;pointer-events:auto}
-.stb-det{position:fixed;left:0;right:0;bottom:0;z-index:2101;background:#fff;border-radius:26px 26px 0 0;padding:12px 22px calc(env(safe-area-inset-bottom,0px) + 26px);box-shadow:0 -14px 34px rgba(30,20,50,.2);transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);text-align:center;max-height:85%;overflow-y:auto}
+/* BUG corrigé (demande du 08/10/2026, "quand je clique sur un badge... ça chevauche la
+   barre du haut, je ne vois pas ce qu'il y a en dessous") : max-height:85% laissait
+   seulement 15% de la hauteur d'écran visible en haut, ce qui est moins que la hauteur
+   réelle de .stb-top (barre retour/titre/fermer + onglets, environ 122px + l'encoche
+   éventuelle) — la fiche recouvrait donc le bas de .stb-top sur la plupart des écrans
+   mobiles. Remplacé par une limite calculée à partir de cette même hauteur (122px, plus
+   un peu de marge) au lieu d'un pourcentage fixe, pour que .stb-top reste toujours
+   entièrement visible au-dessus. */
+.stb-det{position:fixed;left:0;right:0;bottom:0;z-index:2101;background:#fff;border-radius:26px 26px 0 0;padding:12px 22px calc(env(safe-area-inset-bottom,0px) + 26px);box-shadow:0 -14px 34px rgba(30,20,50,.2);transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);text-align:center;max-height:calc(100% - 132px - env(safe-area-inset-top,0px));overflow-y:auto}
 @media (min-width:700px){.stb-det{left:auto;width:420px}}
 .stb-det.on{transform:none}
 .stb-det .hd{width:44px;height:5px;border-radius:9px;background:#DDD8E6;margin:0 auto 14px}
@@ -202,7 +210,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20260997';
+        s.src = 'page-loader.js?v=20260998';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -248,9 +256,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="stb-det" id="stbDet" role="dialog" aria-modal="true" aria-label="Détail du badge"></div>
 <div class="stb-toast" id="stbToast" role="status" aria-live="polite"></div>
 
-<script src="locations-data.js?v=20260997"></script>
-<script type="module" src="firebase-init.js?v=20260997"></script>
-<script src="script.js?v=20260997"></script>
+<script src="locations-data.js?v=20260998"></script>
+<script type="module" src="firebase-init.js?v=20260998"></script>
+<script src="script.js?v=20260998"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -443,6 +451,55 @@ window.StbBadges=StbBadges;
     if(user&&typeof window.fetchPublicProfile==="function"){
         try{ const profile=await window.fetchPublicProfile(user.uid); myBadges=profile.badges||{}; }catch(e){}
     }
+    // AJOUT SITE (demande du 08/10/2026, "ajoute également la partie 'Défis relevés'...
+    // par exemple le défi 'Visiter 3 lieux de l'émission Bon Voyage'") — défis RÉELS,
+    // générés depuis les vraies catégories/groupes/pays des lieux du site plutôt qu'une
+    // liste inventée à la main : chaque défi reste vrai quel que soit le catalogue
+    // (ajout/suppression de lieux), jamais besoin de le retoucher à la main. Mêmes
+    // règles que challIcon()/isDone() plus haut (icon doit être une clé de IC, need un
+    // nombre pour un défi "N lieux de...", voir needN()).
+    const CATEGORY_ICON={"Bon Voyage":"plane","Run BTS":"cam","Concert":"mic","Cafe":"cup","Restaurant":"cup","Restaurants":"cup","MV Location":"cam","Museum":"star","Museums":"star","Art Museum":"star","Fashion":"bag","Pop-up Store":"bag","Landmark":"tower","Landmarks":"tower","In The Soop":"tower","Hotel":"tower"};
+    function buildRealChallenges(allLocs,unlockedIds,isFr){
+        const challenges=[];
+        const doneCountFor=pred=>allLocs.filter(l=>unlockedIds.has(String(l.id))&&pred(l)).length;
+        challenges.push({id:"first",name:isFr?"Premier pas":"First step",desc:isFr?"Visiter ton tout premier lieu.":"Visit your very first place.",need:1,done:Math.min(1,unlockedIds.size),icon:"pin"});
+        const catCounts={};
+        allLocs.forEach(l=>{ if(l.category) catCounts[l.category]=(catCounts[l.category]||0)+1; });
+        const topCats=Object.keys(catCounts).filter(cat=>catCounts[cat]>=3).sort((a,b)=>catCounts[b]-catCounts[a]).slice(0,5);
+        topCats.forEach(cat=>{
+            const target=Math.min(3,catCounts[cat]);
+            challenges.push({
+                id:"cat-"+cat.toLowerCase().replace(/[^a-z0-9]+/g,"-"),
+                name:cat,
+                desc:(isFr?`Visiter ${target} lieux de l'émission `:`Visit ${target} places from `)+cat+".",
+                need:target,
+                done:Math.min(doneCountFor(l=>l.category===cat),target),
+                icon:CATEGORY_ICON[cat]||"pin"
+            });
+        });
+        const groupCounts={};
+        allLocs.forEach(l=>{ if(l.group) groupCounts[l.group]=(groupCounts[l.group]||0)+1; });
+        const topGroup=Object.keys(groupCounts).filter(g=>groupCounts[g]>=5).sort((a,b)=>groupCounts[b]-groupCounts[a])[0];
+        if(topGroup){
+            const target=Math.min(5,groupCounts[topGroup]);
+            challenges.push({
+                id:"group-"+topGroup.toLowerCase().replace(/[^a-z0-9]+/g,"-"),
+                name:(isFr?"Fan de ":"Fan of ")+topGroup,
+                desc:(isFr?`Visiter ${target} lieux liés à `:`Visit ${target} places linked to `)+topGroup+".",
+                need:target,
+                done:Math.min(doneCountFor(l=>l.group===topGroup),target),
+                icon:"heart"
+            });
+        }
+        const countries=new Set(allLocs.map(l=>l.country).filter(Boolean));
+        if(countries.size>=3){
+            const target=Math.min(5,countries.size);
+            const doneCountries=new Set(allLocs.filter(l=>unlockedIds.has(String(l.id))).map(l=>l.country).filter(Boolean)).size;
+            challenges.push({id:"globe",name:isFr?"Globe-trotteur":"Globetrotter",desc:isFr?`Visiter des lieux dans ${target} pays différents.`:`Visit places in ${target} different countries.`,need:target,done:Math.min(doneCountries,target),icon:"crown"});
+        }
+        return challenges;
+    }
+
     const allLocs=allRealLocations();
     const visited=[], notVisited=[];
     allLocs.forEach(loc=>{
@@ -455,18 +512,21 @@ window.StbBadges=StbBadges;
     const isFr=(typeof currentLang!=="undefined"&&currentLang==="fr");
     const myName=(localStorage.getItem("userFirstName")||localStorage.getItem("userName")||(isFr?"Toi":"You")).trim()||(isFr?"Toi":"You");
     const myInitial=(myName.charAt(0)||"?").toUpperCase();
+    const myChallenges=buildRealChallenges(allLocs,new Set(Object.keys(myBadges)),isFr);
     const ranking=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",Object.keys(myBadges).length]];
-    const rankChallenges=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",0]];
+    const rankChallenges=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",myChallenges.filter(isDone).length]];
     const palette=["#D42759","#8B5CF6","#F06090","#10b981","#3b82f6","#f59e0b"];
     if(user&&typeof window.listMyFriends==="function"&&typeof window.fetchPublicProfile==="function"){
         try{
             const friends=await window.listMyFriends();
             const profiles=await Promise.all(friends.map(f=>window.fetchPublicProfile(f.uid).catch(()=>({badges:{}}))));
             friends.forEach((f,i)=>{
-                const count=Object.keys((profiles[i]&&profiles[i].badges)||{}).length;
+                const friendBadges=(profiles[i]&&profiles[i].badges)||{};
+                const count=Object.keys(friendBadges).length;
                 const color=palette[i%palette.length], initial=(f.username||"?").charAt(0).toUpperCase();
+                const friendChallengesDone=buildRealChallenges(allLocs,new Set(Object.keys(friendBadges)),isFr).filter(isDone).length;
                 ranking.push([f.uid,f.username,initial,color,count]);
-                rankChallenges.push([f.uid,f.username,initial,color,0]);
+                rankChallenges.push([f.uid,f.username,initial,color,friendChallengesDone]);
             });
         }catch(e){}
     }
@@ -477,7 +537,7 @@ window.StbBadges=StbBadges;
         totalPlaces:allLocs.length,
         visited,
         notVisited,
-        challenges:[],
+        challenges:myChallenges,
         rankChallenges,
         ranking
     });

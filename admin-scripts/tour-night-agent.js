@@ -150,11 +150,45 @@ async function runAgent() {
         }
         console.log(`   ${pendingDates.length} nuit(s) de concert déjà passée(s) sans fiche encore proposée.`);
 
+        // BUG corrigé (demande du 08/10/2026, "l'agent IA n'a pas fonctionné... concert
+        // hier à Lima") : ce script traitait jusqu'ici tout le retard dans l'ordre
+        // chronologique du calendrier (avril 2026 en premier) — avec des dizaines de
+        // nuits jamais couvertes depuis le lancement de cette fonctionnalité, ça épuisait
+        // le quota Gemini (429 "exceeded your current quota") bien avant d'atteindre les
+        // nuits RÉCENTES (Bogota, puis Lima) qui sont les seules qui comptent encore pour
+        // l'admin — un concert d'avril n'a plus d'intérêt à être proposé en octobre. Les
+        // plus récentes d'abord, et un plafond par exécution, pour ne plus jamais épuiser
+        // le quota avant de les atteindre (le reste du retard sera traité au fil des
+        // prochains passages quotidiens, plus récent en premier à chaque fois).
+        pendingDates.sort((a, b) => b.date.localeCompare(a.date));
+        const MAX_NIGHTS_PER_RUN = 8;
+        const nightsToProcess = pendingDates.slice(0, MAX_NIGHTS_PER_RUN);
+        if (pendingDates.length > MAX_NIGHTS_PER_RUN) {
+            console.log(`   (${pendingDates.length - MAX_NIGHTS_PER_RUN} nuit(s) plus ancienne(s) laissée(s) pour un prochain passage — priorité aux plus récentes.)`);
+        }
+
         const model = genAI.getGenerativeModel({ model: 'gemini-3.6-flash', generationConfig: { maxOutputTokens: 4096 } });
         let addedCount = 0;
         let firstCity = null;
 
-        for (const night of pendingDates) {
+        // Un essai supplémentaire pour les erreurs explicitement temporaires (503 "high
+        // demand" vu dans les logs — le message lui-même dit "usually temporary, please
+        // try again later") ; inutile de s'acharner sur un 429 de quota épuisé (reset
+        // quotidien côté Gemini, pas quelque chose qu'un court délai résout), mais ça ne
+        // coûte rien de réessayer une fois avant d'abandonner cette nuit pour aujourd'hui.
+        async function generateWithRetry(prompt) {
+            try {
+                return await model.generateContent(prompt);
+            } catch (err) {
+                const msg = (err && err.message) || '';
+                if (!/\[503/.test(msg)) throw err;
+                console.log('   ⏳ 503 (surcharge temporaire du modèle) — nouvel essai dans 15s...');
+                await new Promise(r => setTimeout(r, 15000));
+                return await model.generateContent(prompt);
+            }
+        }
+
+        for (const night of nightsToProcess) {
             console.log(`🤖 Recherche pour ${night.city} (${night.date})...`);
             const prompt = `Tu es un expert BTS suivant de très près la tournée mondiale "Arirang" (2026-2027).
 
@@ -182,7 +216,7 @@ Renvoie UNIQUEMENT un objet JSON avec cette structure exacte :
 }`;
 
             try {
-                const result = await model.generateContent(prompt);
+                const result = await generateWithRetry(prompt);
                 const text = result.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
                 const parsed = JSON.parse(text);
                 const surpriseSongs = Array.isArray(parsed.surpriseSongs) ? parsed.surpriseSongs.filter(Boolean) : [];
@@ -213,6 +247,11 @@ Renvoie UNIQUEMENT un objet JSON avec cette structure exacte :
             } catch (err) {
                 console.error(`❌ Échec pour ${night.city} (${night.date}) :`, err.message || err);
             }
+            // Petite pause entre deux nuits (demande du 08/10/2026, voir la note plus haut
+            // sur le 429 "exceeded your current quota") — n'empêche pas un quota déjà
+            // épuisé de l'être, mais réduit le risque de le déclencher en premier lieu en
+            // espaçant les appels plutôt que de les envoyer en rafale.
+            await new Promise(r => setTimeout(r, 3000));
         }
 
         console.log(`🎉 Terminé ! ${addedCount} nouvelle(s) nuit(s) à relire dans l'onglet "Tour nights" de admin.html.`);
