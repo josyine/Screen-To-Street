@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260998" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260999" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -169,6 +169,16 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .stb-toast{position:fixed;left:50%;top:18px;z-index:3000;transform:translate(-50%,-40px);opacity:0;transition:all .3s;background:var(--stb-ink);color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;pointer-events:none;white-space:nowrap}
 .stb-toast.on{transform:translate(-50%,0);opacity:1}
 @media (prefers-reduced-motion:reduce){.stb-page,.stb-det{transition:none}}
+
+/* AJOUT SITE (demande du 08/10/2026, "les icones du bas chevauchent la page quand on
+   swipe jusqu'en bas... arrête l'affichage de la page au dessus des icones") : la nav du
+   bas du site (.mobile-bottom-nav, injectée par script.js sur toutes les pages,
+   position:fixed — voir style.css) vit HORS du flux scrollable de .stb-page. Les 30px de
+   padding-bottom d'origine de .stb-body (ligne ci-dessus) ne suffisaient donc pas à la
+   dégager une fois le contenu scrollé tout en bas. Même valeur que .tab-panel ailleurs
+   sur le site pour ce même problème (voir le commentaire associé dans style.css) : 90px
+   + la zone de sécurité iOS, plutôt qu'une redevinette au pif. */
+@media (max-width:760px){.stb-body{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -210,7 +220,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20260998';
+        s.src = 'page-loader.js?v=20260999';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -256,9 +266,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="stb-det" id="stbDet" role="dialog" aria-modal="true" aria-label="Détail du badge"></div>
 <div class="stb-toast" id="stbToast" role="status" aria-live="polite"></div>
 
-<script src="locations-data.js?v=20260998"></script>
-<script type="module" src="firebase-init.js?v=20260998"></script>
-<script src="script.js?v=20260998"></script>
+<script src="locations-data.js?v=20260999"></script>
+<script type="module" src="firebase-init.js?v=20260999"></script>
+<script src="script.js?v=20260999"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
