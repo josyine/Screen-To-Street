@@ -417,11 +417,17 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    même colonne (voir alignLocateBtnWithZoomControl() dans script.js, qui aligne aussi le
    `right` de CE bouton sur le zoom Leaflet côté ordinateur, exactement comme pour
    .locate-country-btn) — valeur de repli ci-dessous avant que le JS ne s'exécute. Dégradé
-   et icône repris tels quels de la maquette fournie, sans la pastille avec un nombre
-   dessus (demande explicite, contrairement à la maquette). */
+   repris tel quel de la maquette fournie, sans la pastille avec un nombre dessus (demande
+   explicite, contrairement à la maquette).
+   BUG corrigé (demande du 08/10/2026, "aligne le bouton Badge et le bouton
+   géolocalisation... fais en sorte qu'ils fassent la même taille") : ce bouton gardait la
+   taille 46px de la maquette d'origine, plus grande que .locate-country-btn (40px) —
+   l'écart de taille donnait l'impression que les deux étaient mal alignés même si leur
+   `right`/centrage (voir alignLocateBtnWithZoomControl()) était déjà identique. Mêmes
+   dimensions que .locate-country-btn ci-dessus, desktop et mobile. */
 .badges-fab-btn {
     position: absolute; bottom: 168px; right: 3px; z-index: 2000;
-    width: 46px; height: 46px; display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
     border-radius: 50%; background: linear-gradient(135deg, #9B3CEB, #E0156B);
     border: none; cursor: pointer; box-shadow: 0 8px 18px rgba(224, 21, 107, .35); transition: transform .15s;
 }
@@ -433,7 +439,7 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        donc plus besoin de lui réserver de la place au-dessus ; seule la nav du bas
        (~14px + ~52px de haut) doit encore être dégagée. */
     .locate-country-btn { bottom: 80px; right: 14px; width: 38px; height: 38px; }
-    .badges-fab-btn { bottom: 128px; right: 14px; width: 44px; height: 44px; }
+    .badges-fab-btn { bottom: 128px; right: 14px; width: 38px; height: 38px; }
     /* Boutons +/- Leaflet masqués sur mobile (demande du 11/09/2026) : le pincement
        (pinch-to-zoom) reste le geste naturel sur tactile, ces boutons ne faisaient que
        prendre de la place et chevaucher d'autres contrôles en bas à droite. */

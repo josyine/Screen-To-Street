@@ -14,11 +14,11 @@
 <meta name="theme-color" content="#F5F3FC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="welcome-style.css?v=20260998" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="welcome-style.css?v=20260999" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- Onboarding de Mei (demande du 03/10/2026), mobile uniquement — voir mei-onboarding.css/
      .js et la note dans welcome-script.js (.open-auth-btn). Chargé ici seulement, jamais sur
      les autres pages du site. -->
-<link rel="stylesheet" href="mei-onboarding.css?v=20260998">
+<link rel="stylesheet" href="mei-onboarding.css?v=20260999">
 <style>
     a { text-decoration: none !important; }
     
@@ -123,7 +123,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20260998';
+        s.src = 'page-loader.js?v=20260999';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -430,8 +430,8 @@
     </div>
 </div>
 
-<script src="countries.js?v=20260998"></script>
-<script type="module" src="welcome-script.js?v=20260998"></script>
+<script src="countries.js?v=20260999"></script>
+<script type="module" src="welcome-script.js?v=20260999"></script>
 
 <!-- Onboarding de Mei (demande du 03/10/2026) — markup repris du prototype fourni, voir
      mei-onboarding.css/.js. Masqué par défaut (.hidden) : window.MeiOnboarding.open()
@@ -476,6 +476,6 @@
   </div>
  </div>
 </div>
-<script defer src="mei-onboarding.js?v=20260998"></script>
+<script defer src="mei-onboarding.js?v=20260999"></script>
 </body>
 </html>
