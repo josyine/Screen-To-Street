@@ -1851,6 +1851,10 @@ window.openLivePanel = function() {
     if (typeof window.switchLiveView === 'function') window.switchLiveView('list');
     panel.classList.remove('hidden');
     requestAnimationFrame(() => panel.classList.add('open'));
+    // Pastille de la nav du bas (demande du 08/10/2026) : "Live" n'a pas de page propre,
+    // donc on la déplace sous son icône tant que le panneau reste ouvert (voir
+    // window.closeLivePanel() pour le retour sur "Home").
+    if (typeof window.mbnSetActive === 'function') window.mbnSetActive(document.getElementById('mbn-live-btn'));
 };
 
 // Vue "Calendrier" du panneau Live (demande du 08/09/2026) : mois par mois, un jour est mis
@@ -2035,6 +2039,12 @@ window.closeLivePanel = function() {
     const openBubble = document.getElementById('live-cal-day-bubble');
     if (openBubble) openBubble.classList.remove('open');
     if (typeof closeLiveMapView === 'function') closeLiveMapView();
+    // Pastille de la nav du bas (demande du 08/10/2026) : le panneau Live n'existe que
+    // sur map.html, donc sa fermeture redonne la pastille à "Home".
+    if (typeof window.mbnSetActive === 'function') {
+        const nav = document.getElementById('mobile-bottom-nav');
+        window.mbnSetActive(nav ? nav.querySelector('a[href="map.html"]') : null);
+    }
 };
 
 // Petit point rouge sur l'icône "Live" du header dès qu'un arrêt de tournée ou un
@@ -2988,6 +2998,7 @@ function injectMobileBottomNav() {
     nav.id = 'mobile-bottom-nav';
     nav.className = 'mobile-bottom-nav';
     nav.innerHTML = `
+        <span class="mbn-pill" aria-hidden="true"></span>
         <a href="map.html" class="mbn-item" data-stnav title="Home">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V9.5Z"/></svg>
         </a>
@@ -3023,6 +3034,39 @@ function injectMobileBottomNav() {
             e.preventDefault();
             window.stNavigate(a.getAttribute('href'));
         });
+    });
+
+    // Pastille rose pâle glissante sous l'onglet actif (demande du 08/10/2026, "une
+    // pastille rose pâle glisse derrière l'icône choisie, avec un léger rebond, et
+    // l'icône active passe en rose"), portée depuis la maquette fournie (StnNav.set()) :
+    // ici "actif" suit la VRAIE page courante (Home=map.html / Search=feed.html /
+    // Profil=profile.html), pas un onglet choisi côté client comme dans la maquette —
+    // la nav du bas est la même sur toutes les pages, donc on la déduit du pathname.
+    // Aucune page ne correspond (ex. badges.html, friends.html) → pastille masquée plutôt
+    // que de mettre en avant une icône qui ne représente pas la page affichée. "Live" n'a
+    // pas de page propre : il devient actif tant que le panneau Live est ouvert (voir
+    // window.openLivePanel()/window.closeLivePanel() ci-dessous), puis "Home" reprend sa
+    // place à la fermeture.
+    const pill = nav.querySelector('.mbn-pill');
+    window.mbnSetActive = function (tab, instant) {
+        nav.querySelectorAll('.mbn-item[aria-current]').forEach(el => el.removeAttribute('aria-current'));
+        if (!tab) { pill.classList.remove('mbn-pill-visible'); return; }
+        tab.setAttribute('aria-current', 'page');
+        const x = tab.offsetLeft + tab.offsetWidth / 2 - pill.offsetWidth / 2;
+        if (instant) pill.style.transition = 'none';
+        pill.style.transform = `translateX(${x}px)`;
+        pill.classList.add('mbn-pill-visible');
+        if (instant) { void pill.offsetWidth; pill.style.transition = ''; }
+    };
+
+    const currentPage = (window.location.pathname.split('/').pop() || 'map.html');
+    let initialTab = null;
+    if (currentPage === 'map.html' || currentPage === '') initialTab = nav.querySelector('a[href="map.html"]');
+    else if (currentPage === 'feed.html') initialTab = nav.querySelector('a[href="feed.html"]');
+    else if (currentPage === 'profile.html') initialTab = document.getElementById('mbn-avatar-link');
+    window.mbnSetActive(initialTab, true);
+    window.addEventListener('resize', () => {
+        window.mbnSetActive(nav.querySelector('.mbn-item[aria-current="page"]'), true);
     });
 }
 

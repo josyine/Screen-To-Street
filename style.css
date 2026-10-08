@@ -848,8 +848,14 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 /* Chevron PERMANENT intégré à la nav (voir injectLocVisitorsChevron() dans script.js) —
    masqué par défaut (desktop), seule la media query mobile ci-dessous l'affiche. */
 .loc-visitors-chevron-tab { display: none; }
-.mbn-item { background: none; border: none; padding: 6px; margin: 0; cursor: pointer; color: #2E3644; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; text-decoration: none; }
+.mbn-item { background: none; border: none; padding: 6px; margin: 0; cursor: pointer; color: #2E3644; display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; text-decoration: none; position: relative; z-index: 1; transition: color .3s; }
 .mbn-add svg { background: #D42759; border-radius: 50%; padding: 8px; box-sizing: content-box; color: #fff; }
+/* Icône active en rose (demande du 08/10/2026, "l'icône active passe en rose") — le
+   bouton "+" (.mbn-add) garde toujours son propre fond rose et n'est jamais une page
+   active, donc exclu ; l'avatar (photo ou lettre sur fond coloré) prend un anneau plutôt
+   qu'un changement de couleur de texte, qui casserait son contraste. */
+.mbn-item[aria-current="page"]:not(.mbn-avatar) { color: #D42759; }
+.mbn-avatar[aria-current="page"] { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #D42759; }
 /* BUG rapporté le 11/09/2026 : ".mbn-item" (padding:6px, hérité par ".mbn-avatar") ne
    laissait que 14x14px de boîte de contenu dans les 26x26px de l'avatar — la photo de
    profil (width/height:100%) ne remplissait donc que ce petit carré central, laissant la
@@ -868,6 +874,18 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
         z-index: 3500;
     }
     .mobile-bottom-nav.menu-open { display: none !important; }
+
+    /* Pastille rose pâle glissante sous l'onglet actif (demande du 08/10/2026, "une
+       pastille rose pâle glisse derrière l'icône choisie, avec un léger rebond") — reprend
+       le mécanisme de la maquette fournie (.stn-pill : translateX calculé en JS depuis
+       offsetLeft, rebond via cubic-bezier) posé ici sur la vraie nav. Voir mbnSetActive()
+       dans injectMobileBottomNav() (script.js) qui déplace/affiche cette pastille. */
+    .mbn-pill {
+        position: absolute; top: 50%; left: 0; width: 40px; height: 40px; margin-top: -20px;
+        border-radius: 50%; background: #FCE7F1; pointer-events: none; opacity: 0;
+        transition: transform .42s cubic-bezier(.5,1.6,.4,1), opacity .25s;
+    }
+    .mbn-pill.mbn-pill-visible { opacity: 1; }
 
     /* BUG rapporté le 11/09/2026 : sur mobile, le bouton "Open in Google Maps" en bas
        de la fiche lieu (#sidebar-details, .tab-panel) reste caché derrière la nav du
@@ -907,6 +925,10 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        .mobile-bottom-nav/.mobile-map-search ci-dessus/plus bas, posé sur toggleMobileMenu().
        */
     .loc-visitors-chevron-tab.menu-open { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mbn-pill, .mbn-item { transition: none; }
 }
 
 /* PWA installée (mode standalone) : bug rapporté le 11/09/2026 — sans le footer du
