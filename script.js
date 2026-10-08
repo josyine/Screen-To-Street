@@ -5173,7 +5173,7 @@ function renderLocations(skipFitBounds) {
             // la fiche détail — le clic ne faisait plus que voler vers le lieu sur la carte
             // dès que le champ de recherche contenait du texte. Ouvre systématiquement la
             // fiche détail désormais, recherche active ou non.
-            window.openDetailsPanel(loc.id);
+            window.openDetailsPanel(loc.id, true);
         });
         locationListElement.appendChild(card);
     });
@@ -5449,7 +5449,7 @@ function renderVisitedTabList() {
             // depuis (demande du 14/09/2026, "quand je clique sur un lieu dans le menu, je
             // veux que ça ouvre la page détail du lieu") : même comportement qu'ordinateur,
             // voir renderLocations() plus haut.
-            window.openDetailsPanel(loc.id);
+            window.openDetailsPanel(loc.id, true);
         });
         listEl.appendChild(card);
     });
@@ -8215,9 +8215,24 @@ function renderLocationHeroBg(loc) {
     }
 }
 
-window.openDetailsPanel = function(id) {
+window.openDetailsPanel = function(id, fromList) {
     const loc = celebLocations.find(l => l.id === id);
     if(!loc) return;
+
+    // BUG corrigé (demande du 08/10/2026, "quand je clique sur Back to list, il faut que
+    // ça nous redirige vers la liste de tous les lieux, exactement où on était") : seul un
+    // clic sur une carte DANS la liste (voir renderLocations()/renderVisitedTabList() plus
+    // bas) passe fromList=true — un tap sur un marqueur carte ou un lien partagé laisse ce
+    // 2e argument absent, et closeDetailsPanel() garde alors son comportement d'origine
+    // ("retour à la carte"). On retient ici la position de scroll du panneau actif AVANT
+    // qu'openDetailsPanel ne le masque, pour que closeDetailsPanel() puisse la restaurer.
+    window.__detailsOpenedFromList = !!fromList;
+    if (fromList) {
+        const activeListPanel = document.querySelector('.sidebar-main-panel.active');
+        window.__detailsListScrollState = activeListPanel ? { id: activeListPanel.id, scrollTop: activeListPanel.scrollTop } : null;
+    } else {
+        window.__detailsListScrollState = null;
+    }
 
     // Mur de paiement : 3 fiches lieu différentes consultables gratuitement (comptées
     // une seule fois par lieu, pas par clic — revoir un lieu déjà vu ne consomme rien),
@@ -9013,13 +9028,24 @@ window.closeDetailsPanel = function() {
     // lieu force la sidebar en plein écran (voir openDetailsPanel plus haut) — sans ce
     // retrait, fermer la fiche laissait la sidebar bloquée en plein écran par-dessus la
     // carte (et, dans le guide de démo, par-dessus le menu profil des étapes suivantes).
+    // BUG corrigé (demande du 08/10/2026, "Back to list doit nous rediriger vers la liste,
+    // exactement où on était") : si la fiche a été ouverte DEPUIS la liste (voir le flag
+    // posé par openDetailsPanel ci-dessus), garder "open" — sur mobile .sidebar.open seul
+    // occupe déjà tout l'écran (voir style.css), donc ça réaffiche directement la liste,
+    // plutôt que de retomber sur la carte comme avant ce correctif. Le chrome mobile (nav
+    // du bas/icônes du haut) reste masqué dans ce cas, exactement comme quand on ouvre la
+    // liste depuis le bouton hamburger (voir toggleMobileMenu()).
     const sidebar = document.getElementById('app-sidebar');
-    if(sidebar) { sidebar.classList.remove('expanded'); sidebar.classList.remove('open'); }
-    // Symétrique du masquage posé dans openDetailsPanel() (voir sa note du 27/09/2026) :
-    // referme le sidebar sur mobile équivaut toujours à "retour à la carte" ici (jamais un
-    // simple retour à la liste, voir le commentaire juste au-dessus), donc restaurer la nav
-    // du bas/les icônes du haut est toujours correct à ce stade.
-    if (typeof window.setMobileChromeHidden === 'function') window.setMobileChromeHidden(false);
+    const backToList = window.__detailsOpenedFromList;
+    if(sidebar) { sidebar.classList.remove('expanded'); if (!backToList) sidebar.classList.remove('open'); }
+    if (!backToList && typeof window.setMobileChromeHidden === 'function') window.setMobileChromeHidden(false);
+    if (backToList && window.__detailsListScrollState) {
+        const { id: panelId, scrollTop } = window.__detailsListScrollState;
+        const panel = document.getElementById(panelId);
+        if (panel) requestAnimationFrame(() => { panel.scrollTop = scrollTop; });
+    }
+    window.__detailsOpenedFromList = false;
+    window.__detailsListScrollState = null;
 
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));

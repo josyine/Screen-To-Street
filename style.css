@@ -780,6 +780,16 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        milieu du bandeau quel que soit le côté où vit le bouton croix. */
     .brand-row { justify-content: center; padding-left: 0 !important; padding-right: 0 !important; }
 
+    /* BUG corrigé (demande du 08/10/2026, "quand je suis dans un lieu, supprime le logo de
+       Screen to Street, mais garde bien le texte") : fiche lieu ouverte = #app-sidebar
+       porte "expanded" (voir openDetailsPanel()/closeDetailsPanel() dans script.js) — ne
+       masque QUE l'icône SVG du bandeau .brand-row ci-dessus, le texte "Screen To Street"
+       et le sous-titre restent affichés (display:none retire l'icône du flex, justify-
+       content:center ci-dessus re-centre seul le texte restant, pas de trou laissé).
+       N'affecte jamais ordinateur (.expanded y change seulement une largeur, pas de logo) :
+       cette règle vit dans la media query mobile. */
+    .sidebar.expanded .brand-row svg { display: none; }
+
     .tour-tooltip { width: calc(100vw - 32px); max-width: 320px; padding: 18px 20px; }
 }
 
