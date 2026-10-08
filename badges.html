@@ -48,7 +48,7 @@
   .stsl.diving .stsl-stage{transform:none!important;filter:none!important;opacity:0}
 }
 </style>
-<title>Screen To Street — My badges</title>
+<title>Screen To Street · Mes badges</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -58,21 +58,109 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260996" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20260997" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<!-- =====================================================================
+     Screen To Street — page Badges / Classement
+     Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
+     08/10/2026 "reprend le fichier badges_final (1) et applique le sans rien modifier") :
+     tout le CSS ci-dessous est copié-collé sans changement, toujours préfixé .stb- pour
+     ne rien casser sur le reste du site. Seules les quelques lignes JS strictement
+     nécessaires pour brancher les VRAIES données du compte (au lieu des données de démo
+     du fichier d'origine) sont signalées par un commentaire "AJOUT SITE" plus bas — tout
+     le reste (CSS, structure, fonctions de rendu) est inchangé. -->
 <style>
-/* BUG rapporté le 08/10/2026 ("ça ne va pas la page badge... reprends la page html que
-   je t'ai envoyé pour mobile") : cette page réutilisait jusqu'ici le gabarit générique
-   des pages secondaires (grande carte blanche centrée + header du site avec logo/icônes,
-   voir visited.html) — remplacé par la mise en page plein écran de la maquette fournie :
-   bord à bord, barre du haut collante (retour/titre/fermer) + onglets segmentés
-   directement sous elle, sans le header universel du site (pas de place pour lui dans
-   cette maquette, et cette page est de toute façon un sous-écran de la carte, pas une
-   section du menu profil comme visited.html/wishlist.html). */
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
-a{text-decoration:none;color:inherit;}
-button{font-family:inherit;}
-body{background:#F7F5FB;min-height:100vh;overflow-x:hidden;}
-.hidden{display:none!important;}
+/* =====================================================================
+   Screen To Street — Bouton « Badges » + page Badges / Classement (version 2)
+   Tout le CSS spécifique est préfixé .stb- pour ne rien casser sur le site.
+   ===================================================================== */
+:root{--stb-mag:#E0156B;--stb-pur:#9B3CEB;--stb-grad:linear-gradient(90deg,#9B3CEB,#E0156B);--stb-ink:#1F2430;--stb-soft:#6B6478;--stb-line:#ECE8F2}
+body{font-family:Poppins,system-ui,sans-serif;color:var(--stb-ink);-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0}
+
+/* ---------- le bouton (au-dessus de la géolocalisation) ---------- */
+.stb-fab{position:fixed;right:15px;bottom:calc(env(safe-area-inset-bottom,0px) + 152px);z-index:1000;width:46px;height:46px;border-radius:50%;background:var(--stb-grad);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(224,21,107,.35);transition:transform .15s}
+.stb-fab:active{transform:scale(.92)}
+.stb-fab .stb-cnt{position:absolute;right:-6px;top:-5px;min-width:22px;height:20px;border-radius:10px;background:#fff;color:var(--stb-mag);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.15);padding:0 5px}
+
+/* ---------- la page ---------- */
+.stb-page{position:fixed;inset:0;z-index:2000;background:#F7F5FB;transform:translateY(100%);visibility:hidden;transition:transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s .38s;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.stb-page.on{transform:none;visibility:visible;transition:transform .38s cubic-bezier(.2,.8,.2,1)}
+@media (min-width:700px){.stb-page{left:auto;width:420px;box-shadow:-20px 0 50px rgba(30,20,50,.18);transform:translateX(100%)}}
+.stb-top{position:sticky;top:0;z-index:3;background:#F7F5FB;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 12px}
+.stb-bar{display:flex;justify-content:space-between;align-items:center}
+.stb-bar h2{margin:0;font-size:17px}
+.stb-ib{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;border:1.5px solid var(--stb-line)}
+.stb-seg{display:flex;background:#F1EEF6;border-radius:14px;padding:4px;gap:4px;margin-top:12px}
+.stb-seg button{flex:1;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--stb-soft);transition:background .2s,color .2s}
+.stb-seg button[aria-selected="true"]{background:#fff;color:var(--stb-ink);box-shadow:0 2px 8px rgba(30,20,50,.1)}
+.stb-body{padding:4px 16px calc(env(safe-area-inset-bottom,0px) + 30px)}
+.stb-tab{display:none}.stb-tab.on{display:block;animation:stbIn .3s}
+@keyframes stbIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.stb-sec{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 12px}
+.stb-sec h3{margin:0;font-size:16px}
+.stb-sec small{font-size:12px;color:var(--stb-soft);font-weight:500}
+.stb-sum{display:flex;gap:10px;margin-top:6px}
+.stb-sum div{flex:1;background:#fff;border-radius:16px;padding:10px 12px;box-shadow:0 6px 18px rgba(30,20,50,.06)}
+.stb-sum b{display:block;font-size:22px;background:var(--stb-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stb-sum span{font-size:11.5px;color:var(--stb-soft)}
+.stb-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 14px;padding:0 16px}
+.stb-chips::-webkit-scrollbar{display:none}
+.stb-chip{flex:0 0 auto;height:30px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:600;background:#fff;color:var(--stb-soft);border:1px solid var(--stb-line)}
+.stb-chip[aria-pressed="true"]{background:var(--stb-ink);color:#fff;border-color:var(--stb-ink)}
+.stb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 8px}
+.stb-b{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;transition:transform .15s}
+.stb-b:active{transform:scale(.94)}
+.stb-b b{font-size:11.5px;font-weight:600;line-height:1.25}
+.stb-b span{font-size:10px;color:var(--stb-soft);line-height:1.25}
+.stb-more{display:block;margin:16px auto 0;height:38px;padding:0 18px;border-radius:999px;background:#fff;border:1.5px solid var(--stb-line);font-size:12.5px;font-weight:600;color:var(--stb-pur)}
+.stb-list{background:#fff;border-radius:18px;padding:2px 12px}
+.stb-ch{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 0;border-bottom:1px solid #F3F0F7}
+.stb-list .stb-ch:last-child{border:0}
+.stb-sub{font-size:12px;font-weight:600;color:var(--stb-soft);margin:16px 0 8px}
+.stb-ch .t{font-weight:600;font-size:13.5px}
+.stb-ch .d{font-size:11.5px;color:var(--stb-soft);margin-top:1px}
+.stb-prog{height:6px;border-radius:6px;background:#EFEAF6;margin-top:7px;overflow:hidden}
+.stb-prog i{display:block;height:100%;border-radius:6px;background:var(--stb-grad)}
+.stb-ok{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:700;background:#E7F8EF;color:#0E8A55}
+.stb-num{font-weight:700;font-size:13px;white-space:nowrap}
+.stb-gap{margin:6px 0 12px;padding:12px 14px;border-radius:14px;background:#FDE8F1;color:#9D1450;font-size:13px;font-weight:600}
+.stb-ph{position:relative;display:block;border-radius:50%;padding:3px;background:#E0156B;box-shadow:0 4px 12px rgba(224,21,107,.25);margin:0 auto}
+.stb-ph .in{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;overflow:hidden;border:2px solid #fff}
+.stb-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.stb-ph.lock{padding:0;background:#EFEBF5;box-shadow:inset 0 0 0 1px #E4DEEE;display:flex;align-items:center;justify-content:center}
+.stb-b.locked b{color:#B4ADC2;font-weight:500}
+.stb-sub2{display:flex;background:#fff;border:1px solid var(--stb-line);border-radius:12px;padding:3px;gap:3px;margin:16px 0 12px}
+.stb-sub2 button{flex:1;height:34px;border-radius:9px;font-size:13px;font-weight:600;color:var(--stb-soft)}
+.stb-sub2 button[aria-selected="true"]{background:#F3E8FF;color:var(--stb-pur)}
+.stb-note{text-align:center;font-size:11.5px;color:var(--stb-soft);margin-top:10px}
+.stb-row.d .bar i{background:#F4C67A}.stb-row.me.d .bar i{background:linear-gradient(90deg,#F59E0B,#E0156B)}
+.stb-rank{background:#fff;border-radius:18px;padding:4px}
+.stb-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px}
+.stb-row.me{background:linear-gradient(90deg,rgba(155,60,235,.1),rgba(224,21,107,.1))}
+.stb-row .r{width:20px;font-weight:700;font-size:13px;color:#9C95AA;text-align:center}
+.stb-av{flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.stb-row .bar{height:6px;border-radius:6px;background:#EFEAF6;margin-top:6px;overflow:hidden}
+.stb-row .bar i{display:block;height:100%;border-radius:6px;background:#C9BCE6;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.stb-row.me .bar i{background:var(--stb-grad)}
+.stb-you{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:999px;font-size:9.5px;font-weight:700;background:var(--stb-grad);color:#fff;vertical-align:1px;margin-left:4px}
+
+/* ---------- fiche d'un badge ---------- */
+.stb-dim{position:fixed;inset:0;z-index:2100;background:rgba(31,36,48,.35);opacity:0;pointer-events:none;transition:opacity .3s}
+.stb-dim.on{opacity:1;pointer-events:auto}
+.stb-det{position:fixed;left:0;right:0;bottom:0;z-index:2101;background:#fff;border-radius:26px 26px 0 0;padding:12px 22px calc(env(safe-area-inset-bottom,0px) + 26px);box-shadow:0 -14px 34px rgba(30,20,50,.2);transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);text-align:center;max-height:85%;overflow-y:auto}
+@media (min-width:700px){.stb-det{left:auto;width:420px}}
+.stb-det.on{transform:none}
+.stb-det .hd{width:44px;height:5px;border-radius:9px;background:#DDD8E6;margin:0 auto 14px}
+.stb-det h4{font-size:19px;margin:8px 0 2px}
+.stb-det .k{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--stb-pur);text-transform:uppercase}
+.stb-det p{font-size:13px;color:var(--stb-soft);margin:8px 0 14px;line-height:1.5}
+.stb-det ul{list-style:none;margin:0 0 16px;padding:0;text-align:left}
+.stb-det li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F3F0F7;font-size:13px}
+.stb-det li .c{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 22px}
+.stb-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:48px;border-radius:14px;background:var(--stb-grad);color:#fff;font-size:14.5px;font-weight:600;box-shadow:0 8px 18px rgba(224,21,107,.25)}
+.stb-toast{position:fixed;left:50%;top:18px;z-index:3000;transform:translate(-50%,-40px);opacity:0;transition:all .3s;background:var(--stb-ink);color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;pointer-events:none;white-space:nowrap}
+.stb-toast.on{transform:translate(-50%,0);opacity:1}
+@media (prefers-reduced-motion:reduce){.stb-page,.stb-det{transition:none}}
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -114,7 +202,7 @@ body{background:#F7F5FB;min-height:100vh;overflow-x:hidden;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20260996';
+        s.src = 'page-loader.js?v=20260997';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -132,60 +220,269 @@ body{background:#F7F5FB;min-height:100vh;overflow-x:hidden;}
 })();
 </script>
 
-<!-- Barre du haut + onglets (même structure que la maquette fournie : .stb-top/.stb-bar/
-     .stb-seg, voir le commentaire CSS plus haut) — "Retour"/"Fermer" renvoient tous les
-     deux vers map.html (vrais liens, voir window.initBadgesPage()/renderBadgesTab()/
-     renderRankTab() dans script.js pour le contenu des deux onglets ci-dessous). -->
-<div class="badges-page-top">
-    <div class="badges-page-bar">
-        <a href="map.html" class="badges-page-iconbtn" id="badges-back-btn" aria-label="Back">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
-        </a>
-        <h2 id="badges-page-title">My badges</h2>
-        <a href="map.html" class="badges-page-iconbtn" id="badges-close-btn" style="background:#F1EEF6;border:0;" aria-label="Close">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
-        </a>
+<!-- ============ Page Badges / Classement (markup du fichier fourni, inchangé) ============
+     Bouton .stb-fab et fausse carte de démo du fichier d'origine retirés : sur le site, le
+     bouton qui ouvre cette page vit déjà sur map.html (voir .badges-fab-btn), pas besoin de
+     le dupliquer ici ; #stbCnt (pastille avec un nombre, déjà explicitement exclue de la
+     demande) est gardé caché ci-dessous uniquement pour que le JS plus bas (non modifié,
+     $("stbCnt")...) continue de s'exécuter sans erreur. -->
+<span id="stbCnt" class="hidden"></span>
+<section class="stb-page" id="stbPage" role="dialog" aria-modal="true" aria-label="Mes badges" aria-hidden="true">
+  <div class="stb-top">
+    <div class="stb-bar">
+      <button class="stb-ib" data-act="close" aria-label="Retour"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>Mes badges</h2>
+      <button class="stb-ib" data-act="close" aria-label="Fermer" style="background:#F1EEF6;border:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
-    <div class="badges-page-tabs" id="badges-page-tabs" role="tablist">
-        <button type="button" role="tab" data-tab="badges" aria-selected="true" id="badges-page-tab-badges-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-2 6M16 3l2 6"></path><circle cx="12" cy="14.5" r="6"></circle></svg>
-            <span id="badges-page-tab-badges-label">Badges</span>
-        </button>
-        <button type="button" role="tab" data-tab="rank" aria-selected="false" id="badges-page-tab-rank-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"></path></svg>
-            <span id="badges-page-tab-rank-label">Leaderboard</span>
-        </button>
+    <div class="stb-seg" role="tablist">
+      <button role="tab" data-tab="badges" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-2 6M16 3l2 6"/><circle cx="12" cy="14.5" r="6"/></svg>Badges</button>
+      <button role="tab" data-tab="rank" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/></svg>Classement</button>
     </div>
-</div>
-<div class="badges-page-body">
-    <div class="badges-tab on" id="badges-tab-badges" role="tabpanel"></div>
-    <div class="badges-tab" id="badges-tab-rank" role="tabpanel"></div>
-</div>
+  </div>
+  <div class="stb-body">
+    <div class="stb-tab on" id="stbTabBadges" role="tabpanel"></div>
+    <div class="stb-tab" id="stbTabRank" role="tabpanel"></div>
+  </div>
+</section>
+<div class="stb-dim" id="stbDim"></div>
+<div class="stb-det" id="stbDet" role="dialog" aria-modal="true" aria-label="Détail du badge"></div>
+<div class="stb-toast" id="stbToast" role="status" aria-live="polite"></div>
 
-<!-- Fiche détail d'un badge (tiroir du bas, rempli par showBadgeDetail() dans
-     script.js) -->
-<div class="badges-dim" id="badges-dim"></div>
-<div class="badges-detail" id="badges-detail" role="dialog" aria-modal="true"></div>
-
-<script type="module" src="firebase-init.js?v=20260996"></script>
-<script src="locations-data.js?v=20260996"></script>
-<script src="script.js?v=20260996"></script>
+<script src="locations-data.js?v=20260997"></script>
+<script type="module" src="firebase-init.js?v=20260997"></script>
+<script src="script.js?v=20260997"></script>
 <script>
-    // Textes bilingues de la page (même convention `isFr` que window.initBadgesPage() /
-    // renderBadgesTab() / renderRankTab() dans script.js, pas le dictionnaire data-i18n
-    // à 8 langues — cette page n'a pas de sélecteur de langue propre, voir le commentaire
-    // CSS plus haut, elle reprend juste la langue déjà choisie ailleurs sur le site).
-    function applyBadgesPageTexts() {
-        const isFr = currentLang === 'fr';
-        document.getElementById('badges-back-btn').setAttribute('aria-label', isFr ? 'Retour' : 'Back');
-        document.getElementById('badges-close-btn').setAttribute('aria-label', isFr ? 'Fermer' : 'Close');
-        document.getElementById('badges-page-title').textContent = isFr ? 'Mes badges' : 'My badges';
-        document.getElementById('badges-page-tab-badges-label').textContent = 'Badges';
-        document.getElementById('badges-page-tab-rank-label').textContent = isFr ? 'Classement' : 'Leaderboard';
-    }
-    applyBadgesPageTexts();
+/* =====================================================================
+   1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
+      données (voir la section 5 tout en bas de ce script), via
+      StbBadges.setData() déjà prévu à cet effet dans le fichier fourni.
+   ===================================================================== */
+const DATA={
+  me:{id:"me",name:"",initial:"?",color:"#9B3CEB"},
+  totalVisited:0,
+  totalPlaces:0,
+  visited:[],
+  notVisited:[],
+  challenges:[],
+  rankChallenges:[["me","",   "?","#9B3CEB",0]],
+  ranking:[["me","","?","#9B3CEB",0]]
+};
 
-    if (typeof window.initBadgesPage === 'function') window.initBadgesPage();
+/* =====================================================================
+   2. VISUELS
+   ===================================================================== */
+const IC={
+ star:'<path d="M12 3l2.6 5.5 6 .7-4.4 4.1 1.2 6L12 16.4 6.6 19.3l1.2-6L3.4 9.2l6-.7z" fill="#fff"/>',
+ tower:'<path d="M12 3l1.5 6h-3zM10 9h4l1.2 6h-6.4zM8 15h8l2 6h-3l-1-3h-4l-1 3H6z" fill="#fff"/>',
+ cam:'<rect x="4" y="8" width="16" height="11" rx="2.5" fill="#fff"/><circle cx="12" cy="13.5" r="3.2" fill="currentColor"/><rect x="8.5" y="5.5" width="7" height="3" rx="1" fill="#fff"/>',
+ mic:'<rect x="9.5" y="3.5" width="5" height="10" rx="2.5" fill="#fff"/><path d="M7 11a5 5 0 0 0 10 0M12 16v4M9 20h6" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>',
+ cup:'<path d="M6 8h10v5a5 5 0 0 1-10 0z" fill="#fff"/><path d="M16 9.5h1.5a2 2 0 0 1 0 4H16" stroke="#fff" stroke-width="1.8" fill="none"/><path d="M5 20h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
+ plane:'<path d="M2 13l7-2 4-8 2 1-2 7 6-1 2-3h2l-1 5 1 5h-2l-2-3-6-1 2 7-2 1-4-8-7-2z" fill="#fff"/>',
+ pin:'<path d="M12 3C8.7 3 6 5.6 6 8.9 6 13.3 12 21 12 21s6-7.7 6-12.1C18 5.6 15.3 3 12 3z" fill="#fff"/><circle cx="12" cy="9" r="2.4" fill="currentColor"/>',
+ heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="#fff"/>',
+ crown:'<path d="M4 17l-1-9 5 4 4-7 4 7 5-4-1 9z" fill="#fff"/><rect x="4" y="18" width="16" height="2.5" rx="1" fill="#fff"/>',
+ bag:'<rect x="5" y="8" width="14" height="12" rx="2" fill="#fff"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke="#fff" stroke-width="2" fill="none"/>',
+ lock:'<rect x="6.5" y="11" width="11" height="9" rx="2" fill="#fff"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11" stroke="#fff" stroke-width="2" fill="none"/>'
+};
+/* AJOUT SITE : vrais groupes/couleurs du site (même valeurs que groupColors dans
+   script.js) au lieu des 3 groupes de démo du fichier d'origine — même objet, même
+   usage dans placeBadge() plus bas, aucune autre ligne changée. */
+const GROUP_COL={"BTS":["#8b5cf6","#8b5cf6"],"Blackpink":["#ec4899","#ec4899"],"Twice":["#f43f5e","#f43f5e"],"Seventeen":["#3b82f6","#3b82f6"],"Katseye":["#10b981","#10b981"],"TXT":["#f59e0b","#f59e0b"]};
+const DEF_COL=["#3B82F6","#9B3CEB"];
+let gid=0;
+/* Médaille hexagonale. kind: "place" (lieu) ou "challenge" (défi, avec anneau de progression si non terminé) */
+function medal({icon,colors,done=true,progress=null},size=64){
+  const id="stbm"+(gid++), a=done?colors[0]:"#D9D4E3", z=done?colors[1]:"#C7C0D6";
+  const ring=progress!=null&&!done?`<circle cx="32" cy="32" r="30" fill="none" stroke="#EAE5F2" stroke-width="3"/><circle cx="32" cy="32" r="30" fill="none" stroke="#9B3CEB" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(progress*188.5).toFixed(1)} 188.5" transform="rotate(-90 32 32)"/>`:"";
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" style="color:${z}" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${z}"/></linearGradient></defs>
+   ${ring}<path d="M32 9l20 11.5v23L32 55 12 43.5v-23z" fill="url(#${id})"/><path d="M32 9l20 11.5v23L32 55 12 43.5v-23z" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
+   <g transform="translate(20 20)">${done?IC[icon]:IC.lock}</g>${done?'<path d="M18 22 q14 -10 28 0" stroke="rgba(255,255,255,.35)" stroke-width="3" fill="none" stroke-linecap="round"/>':""}</svg>`;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const short=d=>d.replace(/ 20\d\d$/,"");
+const needN=c=>Array.isArray(c.need)?c.need.length:c.need;
+const isDone=c=>c.done>=needN(c);
+
+/* =====================================================================
+   3. RENDU
+   ===================================================================== */
+const $=id=>document.getElementById(id);
+const tabB=$("stbTabBadges"), tabR=$("stbTabRank");
+let groupFilter="Tous", showAll=false;
+
+/* Badge de lieu : rond avec la photo du lieu (anneau rose) — cadenas si pas encore visité */
+const LOCK_SVG='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B4ADC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9.5" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function placeBadge(v,size=64,locked=false){
+  if(locked) return `<span class="stb-ph lock" style="width:${size}px;height:${size}px">${LOCK_SVG}</span>`;
+  const c=GROUP_COL[v.group]||DEF_COL, fb=`background:linear-gradient(135deg,${c[0]},${c[1]})`;
+  return `<span class="stb-ph" style="width:${size}px;height:${size}px"><span class="in" style="${fb}"><svg width="${size*.38}" height="${size*.38}" viewBox="0 0 24 24">${IC[v.icon]||IC.pin}</svg>${v.photo?`<img src="${esc(v.photo)}" alt="" loading="lazy" onerror="this.remove()">`:""}</span></span>`;
+}
+/* Défi : hexagone pastel au contour coloré (couleurs de la charte) — gris + cadenas si pas encore relevé */
+const CH_COL=["#E0156B","#9B3CEB","#F97316"];
+function challIcon(c,size=44){
+  const done=isDone(c), k=done?CH_COL[DATA.challenges.indexOf(c)%3]:"#C9C2D6", HEX="M32 6l22.5 13v26L32 58 9.5 45V19z";
+  const glyph=(done?IC[c.icon]:IC.lock).replace(/#fff/g,done?k:"#B4ADC2").replace(/currentColor/g,"#fff");
+  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><path d="${HEX}" fill="${done?k+"1F":"#F1EEF6"}" stroke="${k}" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(21 21) scale(.92)">${glyph}</g></svg>`;
+}
+function renderBadges(){
+  const groups=["Tous",...new Set(DATA.visited.map(v=>v.group))];
+  const vis=DATA.visited.filter(v=>groupFilter==="Tous"||v.group===groupFilter);
+  const lock=DATA.notVisited.filter(v=>groupFilter==="Tous"||v.group===groupFilter);
+  const all=vis.map(v=>[v,false]).concat(lock.map(v=>[v,true]));
+  const shown=showAll?all:all.slice(0,9);
+  const doneCh=DATA.challenges.filter(isDone), openCh=DATA.challenges.filter(c=>!isDone(c));
+  tabB.innerHTML=`
+   <div class="stb-sec"><h3>Lieux visités</h3><small>${DATA.totalVisited}/${DATA.totalPlaces}</small></div>
+   <div class="stb-chips">${groups.map(g=>`<button class="stb-chip" data-group="${esc(g)}" aria-pressed="${g===groupFilter}">${esc(g)}</button>`).join("")}</div>
+   <div class="stb-grid">${shown.map(([v,l])=>`<button class="stb-b${l?" locked":""}" data-place="${v.id}" data-locked="${l?1:0}">${placeBadge(v,62,l)}<b>${esc(v.name)}</b></button>`).join("")}</div>
+   ${all.length>9?`<button class="stb-more" data-act="more">${showAll?"Afficher moins":"Voir tout"}</button>`:""}
+   ${DATA.challenges.length?`<div class="stb-sec" style="margin-top:28px"><h3>Défis relevés</h3><small>${doneCh.length}/${DATA.challenges.length}</small></div>
+   <div class="stb-list">${doneCh.map(c=>challengeRow(c)).join("")}</div>
+   <div class="stb-sub">En cours</div>
+   <div class="stb-list">${openCh.map(c=>challengeRow(c)).join("")}</div>`:""}`;
+}
+function challengeRow(c){
+  const n=needN(c), done=isDone(c);
+  return `<button class="stb-ch" data-challenge="${c.id}">${challIcon(c,42)}
+   <div style="flex:1;min-width:0"><div class="t">${esc(c.name)}</div>${done?"":`<div class="stb-prog"><i style="width:${c.done/n*100}%"></i></div>`}</div>
+   ${done?`<span class="stb-ok" aria-label="Relevé">✓</span>`:`<span class="stb-num">${c.done}/${n}</span>`}</button>`;
+}
+let rankSub="lieux";
+function renderRank(){
+  const isD=rankSub==="defis", L=[...(isD?DATA.rankChallenges:DATA.ranking)].sort((a,b)=>b[4]-a[4]), max=L[0][4]||1;
+  tabR.innerHTML=`<div class="stb-sub2" role="tablist"><button data-sub="lieux" aria-selected="${!isD}">Lieux</button><button data-sub="defis" aria-selected="${isD}">Défis</button></div>
+   <div class="stb-rank">${L.map((f,k)=>`<div class="stb-row${f[0]==="me"?" me":""}${isD?" d":""}"><span class="r" style="${k===0?"color:#E0156B":""}">${k+1}</span>
+     <div class="stb-av" style="width:36px;height:36px;background:${f[3]};font-size:14px">${f[2]}</div>
+     <div style="flex:1;min-width:0"><div style="font-weight:${f[0]==="me"?700:600};font-size:13.5px">${esc(f[1])}${f[0]==="me"?'<span class="stb-you">TOI</span>':""}</div><div class="bar"><i style="width:0" data-w="${f[4]/max*100}"></i></div></div>
+     <div style="font-weight:700;min-width:32px;text-align:right">${f[4]}</div></div>`).join("")}</div>
+   <div class="stb-note">${isD?"Nombre de défis relevés":"Nombre de lieux visités"}</div>`;
+  requestAnimationFrame(()=>tabR.querySelectorAll("[data-w]").forEach(b=>b.style.width=b.dataset.w+"%"));
+}
+
+/* ---------- fiche détail ---------- */
+const det=$("stbDet"), dim=$("stbDim");
+function showPlace(id,locked){
+  const v=(locked?DATA.notVisited:DATA.visited).find(x=>x.id===id);
+  det.innerHTML=`<div class="hd"></div>${placeBadge(v,110,locked)}
+   <div class="k" style="margin-top:10px">${esc(v.group)}${v.show?" · "+esc(v.show):""}</div><h4>${esc(v.name)}</h4><div style="font-size:13px;color:var(--stb-soft)">${esc(v.city)}</div>
+   <p>${locked?"Pas encore visité : rends-toi sur place pour débloquer ce badge.":`Visité le <b style="color:var(--stb-ink)">${esc(v.date)}</b>`}</p>
+   <button class="stb-cta" data-act="map" data-loc-id="${esc(v.id)}">${locked?"Y aller":"Voir sur la carte"}</button>`;
+  openDet();
+}
+function showChallenge(id){
+  const c=DATA.challenges.find(x=>x.id===id), n=needN(c), done=isDone(c);
+  const items=Array.isArray(c.need)?`<ul>${c.need.map((p,k)=>{const ok=k<c.done;return `<li><span class="c" style="background:${ok?"#E7F8EF":"#F1EEF6"};color:${ok?"#0E8A55":"#9C95AA"}">${ok?"✓":k+1}</span><span style="flex:1;${ok?"":"color:var(--stb-soft)"}">${esc(p)}</span>${ok?"":'<span style="font-size:11px;color:var(--stb-pur);font-weight:600">à visiter</span>'}</li>`;}).join("")}</ul>`:"";
+  det.innerHTML=`<div class="hd"></div>${challIcon(c,100)}
+   <div class="k">Défi</div><h4>${esc(c.name)}</h4>
+   <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--stb-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
+   ${items}<button class="stb-cta" data-act="${done?"close-det":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`;
+  openDet();
+}
+function openDet(){det.classList.add("on");dim.classList.add("on");}
+function closeDet(){det.classList.remove("on");dim.classList.remove("on");}
+function toast(t){const e=$("stbToast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1900);}
+
+/* =====================================================================
+   4. OUVERTURE / FERMETURE + ÉVÉNEMENTS
+   ===================================================================== */
+const page=$("stbPage");
+const StbBadges={
+  open(tab="badges"){renderBadges();renderRank();selectTab(tab);page.classList.add("on");page.setAttribute("aria-hidden","false");page.scrollTop=0;history.pushState({stb:1},"");},
+  close(fromHistory){closeDet();page.classList.remove("on");page.setAttribute("aria-hidden","true");if(!fromHistory&&history.state&&history.state.stb)history.back();},
+  setData(d){Object.assign(DATA,d);$("stbCnt").textContent=DATA.totalVisited;}
+};
+function selectTab(t){page.querySelectorAll("[role=tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));tabB.classList.toggle("on",t==="badges");tabR.classList.toggle("on",t==="rank");if(t==="rank")renderRank();}
+$("stbCnt").textContent=DATA.totalVisited;
+page.addEventListener("click",e=>{
+  const t=e.target;
+  const tab=t.closest("[role=tab]"); if(tab){selectTab(tab.dataset.tab);return;}
+  const g=t.closest("[data-group]"); if(g){groupFilter=g.dataset.group;showAll=false;renderBadges();return;}
+  const sb=t.closest("[data-sub]"); if(sb){rankSub=sb.dataset.sub;renderRank();return;}
+  const p=t.closest("[data-place]"); if(p){showPlace(p.dataset.place,p.dataset.locked==="1");return;}
+  const c=t.closest("[data-challenge]"); if(c){showChallenge(c.dataset.challenge);return;}
+  const a=t.closest("[data-act]"); if(!a)return;
+  if(a.dataset.act==="close")StbBadges.close();
+  if(a.dataset.act==="more"){showAll=!showAll;renderBadges();}
+});
+dim.addEventListener("click",closeDet);
+det.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(!a)return;
+  if(a.dataset.act==="close-det")closeDet();
+  /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, convention déjà utilisée
+     partout ailleurs sur le site pour ce genre de lien) au lieu du simple toast de
+     démonstration du fichier d'origine — data-loc-id posé par showPlace() ci-dessus. */
+  if(a.dataset.act==="map"){const locId=a.dataset.locId;StbBadges.close();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");}});
+addEventListener("keydown",e=>{if(e.key==="Escape"){if(det.classList.contains("on"))closeDet();else if(page.classList.contains("on"))StbBadges.close();}});
+addEventListener("popstate",()=>{if(page.classList.contains("on"))StbBadges.close(true);});
+window.StbBadges=StbBadges;
+
+/* =====================================================================
+   5. AJOUT SITE — chargement des vraies données du compte, puis
+      StbBadges.setData()/StbBadges.open() (déjà prévus pour ça par le fichier
+      fourni ci-dessus, aucune autre ligne n'est modifiée).
+   ===================================================================== */
+(async function loadRealBadgesData(){
+    function allRealLocations(){
+        const groups=(typeof getUnlockedGroups==="function")?getUnlockedGroups():[];
+        return (typeof celebLocations!=="undefined"?celebLocations:[]).filter(loc=>groups.includes(loc.group)&&!(loc.name||"").startsWith("[CLOSED] "));
+    }
+    function unlockedAtMillis(entry){return (entry&&entry.unlockedAt&&typeof entry.unlockedAt.toMillis==="function")?entry.unlockedAt.toMillis():0;}
+    function unlockedAtLabel(entry){
+        const ms=unlockedAtMillis(entry);
+        if(!ms) return "";
+        const isFr=(typeof currentLang!=="undefined"&&currentLang==="fr");
+        return new Date(ms).toLocaleDateString(isFr?"fr-FR":"en-US",{day:"numeric",month:"long",year:"numeric"});
+    }
+    // Attend "firebase-ready" (voir onAuthStateChanged dans firebase-init.js, qui pose
+    // window.firebaseCurrentUser juste avant de le déclencher) : ce script <script> classique
+    // s'exécute avant le module firebase-init.js (les modules sont différés), donc
+    // window.firebaseCurrentUser vaudrait encore toujours null ici sans attendre cet
+    // évènement — un compte connecté verrait alors tous ses badges comme non débloqués.
+    await new Promise(resolve => window.addEventListener('firebase-ready', resolve, { once: true }));
+    const user=window.firebaseCurrentUser;
+    let myBadges={};
+    if(user&&typeof window.fetchPublicProfile==="function"){
+        try{ const profile=await window.fetchPublicProfile(user.uid); myBadges=profile.badges||{}; }catch(e){}
+    }
+    const allLocs=allRealLocations();
+    const visited=[], notVisited=[];
+    allLocs.forEach(loc=>{
+        const idStr=String(loc.id);
+        if(myBadges[idStr]) visited.push({id:idStr,name:loc.name,group:loc.group,city:loc.city,date:unlockedAtLabel(myBadges[idStr]),photo:loc.img||""});
+        else notVisited.push({id:idStr,name:loc.name,group:loc.group,city:loc.city});
+    });
+    visited.sort((a,b)=>unlockedAtMillis(myBadges[b.id])-unlockedAtMillis(myBadges[a.id]));
+
+    const isFr=(typeof currentLang!=="undefined"&&currentLang==="fr");
+    const myName=(localStorage.getItem("userFirstName")||localStorage.getItem("userName")||(isFr?"Toi":"You")).trim()||(isFr?"Toi":"You");
+    const myInitial=(myName.charAt(0)||"?").toUpperCase();
+    const ranking=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",Object.keys(myBadges).length]];
+    const rankChallenges=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",0]];
+    const palette=["#D42759","#8B5CF6","#F06090","#10b981","#3b82f6","#f59e0b"];
+    if(user&&typeof window.listMyFriends==="function"&&typeof window.fetchPublicProfile==="function"){
+        try{
+            const friends=await window.listMyFriends();
+            const profiles=await Promise.all(friends.map(f=>window.fetchPublicProfile(f.uid).catch(()=>({badges:{}}))));
+            friends.forEach((f,i)=>{
+                const count=Object.keys((profiles[i]&&profiles[i].badges)||{}).length;
+                const color=palette[i%palette.length], initial=(f.username||"?").charAt(0).toUpperCase();
+                ranking.push([f.uid,f.username,initial,color,count]);
+                rankChallenges.push([f.uid,f.username,initial,color,0]);
+            });
+        }catch(e){}
+    }
+
+    window.StbBadges.setData({
+        me:{id:"me",name:myName,initial:myInitial,color:"#9B3CEB"},
+        totalVisited:visited.length,
+        totalPlaces:allLocs.length,
+        visited,
+        notVisited,
+        challenges:[],
+        rankChallenges,
+        ranking
+    });
+    window.StbBadges.open();
+})();
 </script>
 </body>
 </html>
