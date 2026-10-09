@@ -590,6 +590,23 @@
   .sts-seg button[aria-pressed="true"]{background:#fff;color:var(--sts-ink);box-shadow:0 2px 8px rgba(30,20,50,.1)}
   .sts-seg button[aria-pressed="true"] .sts-t{color:var(--sts-mag)}
   .sts-seg .sts-t{font-weight:700}
+  /* Mode "rapide" (demande du 09/10/2026, "quand on clique sur Y aller [...] il ne faut
+     afficher que cet itinéraire [la pastille], avec le tracé sur la carte") : posé par
+     openLocationItinerary(loc, {autoGuide:true}) — voir open() dans itinerary.js — donc
+     UNIQUEMENT pour le flux déclenché depuis la notification de proximité, jamais pour un
+     "Itinéraire" classique (bouton sur une fiche de lieu), qui garde la vue complète
+     (champs départ/arrivée, choix du mode, alternatives...). Masque tout sauf la carte et
+     la pastille : .sts-it-top perd son fond blanc pour laisser la pastille flotter
+     directement sur la carte, .sts-row/.sts-seg (déjà masqués pendant le guidage par la
+     règle .guiding ci-dessous) sont masqués dès l'ouverture pour ne jamais les montrer
+     même pendant le bref calcul d'itinéraire, et .sts-sheet (résumé + alternatives) ne
+     s'affiche jamais. Sortie : le geste "retour" du téléphone (déjà géré par le
+     history.pushState existant) avant le début du guidage, ou le bouton "Arrêter le
+     guidage" de la pastille une fois en route (stopGuide() ferme directement le panneau
+     dans ce mode, voir itinerary.js). */
+  .sts-it.quick .sts-it-top{background:transparent;box-shadow:none}
+  .sts-it.quick .sts-row,.sts-it.quick .sts-seg{display:none}
+  .sts-it.quick .sts-sheet{display:none}
   /* Bannière de guidage (demande du 08/10/2026) — masque les champs/le sélecteur de mode
      pendant le guidage pour se concentrer sur l'instruction en cours, comme Google Maps.
      Redessinée en "pastille" GPS (demande du 09/10/2026, d'après le prototype

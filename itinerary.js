@@ -368,7 +368,7 @@
                 imap.setView(pos, Math.max(imap.getZoom(), 18), { animate: true });
                 if (mode === "walk") updateGuideForWalk(pos); else updateGuideForTransit(pos);
                 const left = L.latLng(pos).distanceTo([to.lat, to.lon]);
-                if (left < 40) { toast("Tu es arrivé(e) à " + to.name + " !"); stopGuide(); }
+                if (left < 40) { toast("Tu es arrivé(e) à " + to.name + " !"); stopGuideOrClose(); }
             }, () => toast("Impossible de suivre ta position"), { enableHighAccuracy: true, maximumAge: 5000 });
             render(); toast("C'est parti ! Suis le tracé violet");
             // Le changement de hauteur de .sts-it-top (bannière affichée, .sts-row/.sts-seg
@@ -384,6 +384,14 @@
             guideSteps = []; guideIdx = 0; guideLegIdx = 0; guideStartDist = null;
             render(); draw();
         }
+        // Mode "rapide" (demande du 09/10/2026) : rien d'autre à montrer une fois le guidage
+        // arrêté (pas de fiche/alternatives dans ce mode) — "Arrêter le guidage"/l'arrivée
+        // ramènent donc directement à la carte au lieu de révéler la vue complète masquée
+        // par .sts-it.quick. close() appelle déjà stopGuide() lui-même (voir plus bas) : ne
+        // JAMAIS appeler close() depuis stopGuide() directement, ça boucle à l'infini —
+        // cette fonction choisit laquelle des deux appeler, à utiliser sur chaque point de
+        // sortie du guidage à la place de stopGuide() seul.
+        function stopGuideOrClose() { if (root.classList.contains("quick")) close(); else stopGuide(); }
 
         /* --- événements --- */
         root.querySelectorAll(".sts-seg button").forEach(b => b.addEventListener("click", () => {
@@ -408,7 +416,7 @@
         const backBtn = $("stsBack");
         if (backBtn) backBtn.addEventListener("click", () => close());
         const guideStopBtn = $("stsGuideStop");
-        if (guideStopBtn) guideStopBtn.addEventListener("click", () => stopGuide());
+        if (guideStopBtn) guideStopBtn.addEventListener("click", () => stopGuideOrClose());
         addEventListener("keydown", e => { if (e.key === "Escape" && root.classList.contains("on")) close(); });
         addEventListener("popstate", () => { if (root.classList.contains("on")) close(true); });
 
@@ -416,6 +424,11 @@
         async function open(spot, opts) {
             to = spot; reversed = false; mode = "walk";
             autoGuideOnReady = !!(opts && opts.autoGuide);
+            // Mode "rapide" (demande du 09/10/2026) : la vue complète (champs, choix du
+            // mode, alternatives) ne s'affiche jamais pour ce flux, voir le CSS .sts-it.quick
+            // dans map.html — seul le flux "Y aller" de la notification de proximité passe
+            // autoGuide:true, donc réutilisé tel quel comme signal plutôt qu'une option à part.
+            root.classList.toggle("quick", autoGuideOnReady);
             root.querySelectorAll(".sts-seg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.mode === "walk"));
             $("stsFrom").innerHTML = '<span class="sts-dot me"></span><span>Ma position</span>';
             $("stsTo").innerHTML = `<span class="sts-dot to"></span><b>${esc(spot.name)}</b>`;
@@ -425,6 +438,15 @@
             imap.setView([spot.lat, spot.lon], 15); layer.clearLayers(); L.marker([spot.lat, spot.lon], { icon: toIcon() }).addTo(layer);
             try { from = me = await locate(); }
             catch (_) {
+                // Mode "rapide" : .sts-sheet (où vivait ce message) reste masqué par
+                // .sts-it.quick, donc rien n'y serait visible — un toast + retour à la
+                // carte à la place, où la personne peut réessayer via le bouton "localiser"
+                // normal du site plutôt qu'un bouton dédié qui n'existerait nulle part ici.
+                if (root.classList.contains("quick")) {
+                    toast("Active ta localisation pour lancer le guidage");
+                    setTimeout(() => close(), 1600);
+                    return;
+                }
                 sheet.innerHTML = `<button class="sts-handle"></button><div class="sts-big" style="font-size:19px">Où es-tu ?</div>
                   <div class="sts-msg">Autorise la localisation pour calculer ton itinéraire jusqu'à <b>${esc(spot.name)}</b>.</div>
                   <button class="sts-cta" id="stsRetry" type="button">Activer ma localisation</button>
