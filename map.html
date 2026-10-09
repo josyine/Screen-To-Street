@@ -591,17 +591,43 @@
   .sts-seg button[aria-pressed="true"] .sts-t{color:var(--sts-mag)}
   .sts-seg .sts-t{font-weight:700}
   /* Bannière de guidage (demande du 08/10/2026) — masque les champs/le sélecteur de mode
-     pendant le guidage pour se concentrer sur l'instruction en cours, comme Google Maps. */
-  .sts-it-top.guiding .sts-row,.sts-it-top.guiding .sts-seg{display:none}
-  .sts-guide-banner{display:flex;align-items:center;gap:12px;background:var(--sts-ink);border-radius:16px;padding:12px 12px 12px 14px;color:#fff}
+     pendant le guidage pour se concentrer sur l'instruction en cours, comme Google Maps.
+     Redessinée en "pastille" GPS (demande du 09/10/2026, d'après le prototype
+     notification_y_aller_5_versions.html, version 2 "Pastille + direction") : flèche de
+     direction dans un bloc dégradé (au lieu d'un rond discret), distance en plus gros, et
+     une barre de progression du trajet en plus de l'instruction — voir guideStartDist dans
+     itinerary.js pour le calcul du pourcentage. */
+  .sts-guide-banner{display:flex;flex-direction:column;gap:10px;background:var(--sts-ink);border-radius:20px;padding:14px 16px;color:#fff}
   .sts-guide-banner.hidden{display:none}
-  .sts-guide-arrow{flex:0 0 42px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+  .sts-guide-row{display:flex;align-items:center;gap:14px}
+  .sts-guide-arrow{flex:0 0 52px;width:52px;height:52px;border-radius:16px;background:var(--sts-grad);display:flex;align-items:center;justify-content:center}
   .sts-guide-arrow svg{transition:transform .25s cubic-bezier(.3,1.4,.4,1)}
   .sts-guide-text{flex:1;min-width:0}
-  .sts-guide-dist{font-size:19px;font-weight:700;line-height:1.15}
-  .sts-guide-instr{font-size:12.5px;color:#D7D2E0;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sts-guide-dist{font-size:22px;font-weight:700;line-height:1.15}
+  .sts-guide-instr{font-size:12.5px;color:#D7D2E0;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sts-guide-stop{flex:0 0 34px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer}
   .sts-guide-stop:active{background:rgba(255,255,255,.3)}
+  .sts-guide-prog{height:5px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden}
+  .sts-guide-prog i{display:block;height:100%;border-radius:5px;background:var(--sts-grad);transition:width .6s ease}
+  /* Notification de proximité (demande du 09/10/2026, "construire toute la notification de
+     proximité", d'après le même prototype, version 1 "Pastille seule" pour la bannière
+     d'invitation) : apparaît quand la position GPS réelle entre dans un rayon "à pied"
+     d'un lieu pas encore débloqué — voir checkNearbyPlaceNotification() dans script.js.
+     Rayon volontairement plus large que BADGE_UNLOCK_RADIUS_METERS (100 m) pour laisser le
+     temps de proposer "Y aller" avant le déblocage automatique du badge à l'arrivée. */
+  .sts-nearby{position:fixed;left:14px;right:14px;top:calc(env(safe-area-inset-top,0px) + 14px);z-index:5000;max-width:420px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 16px 36px rgba(30,20,50,.22);padding:14px;font-family:'Poppins',sans-serif;color:var(--sts-ink);transform:translateY(-140%);transition:transform .45s cubic-bezier(.2,1.2,.3,1)}
+  .sts-nearby.on{transform:none}
+  .sts-nearby-row{display:flex;align-items:center;gap:12px}
+  .sts-nearby-photo{flex:0 0 48px;width:48px;height:48px;border-radius:50%;background:var(--sts-grad) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  .sts-nearby-kicker{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--sts-pur)}
+  .sts-nearby-title{font-weight:700;font-size:14.5px}
+  .sts-nearby-sub{font-size:12px;color:var(--sts-soft)}
+  .sts-nearby-x{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--sts-field);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .sts-nearby-acts{display:flex;gap:8px;margin-top:10px}
+  .sts-nearby-acts button{flex:1;height:38px;border-radius:11px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer}
+  .sts-nearby-view{border:1.5px solid var(--sts-pur);color:var(--sts-pur);background:#fff}
+  .sts-nearby-go{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--sts-grad);color:#fff;border:0;box-shadow:0 6px 14px rgba(224,21,107,.22)}
+  @media (max-width:760px){.sts-nearby{left:10px;right:10px}}
   .sts-sheet{position:absolute;left:0;right:0;bottom:0;z-index:3;background:#fff;border-radius:24px 24px 0 0;box-shadow:0 -10px 30px rgba(30,20,50,.12);padding:10px 18px calc(env(safe-area-inset-bottom,0px) + 22px);max-height:62%;overflow-y:auto;overscroll-behavior:contain;transition:max-height .3s;font-family:'Poppins',sans-serif;color:var(--sts-ink)}
   .sts-sheet.compact .sts-alts,.sts-sheet.compact .sts-legs-detail{display:none}
   .sts-handle{display:block;width:44px;height:5px;border-radius:9px;background:#DDD8E6;margin:0 auto 12px;border:0;padding:0;cursor:pointer}
@@ -1700,16 +1726,41 @@
          .sts-it-top.offsetHeight). Affichée/masquée et remplie par startGuide()/stopGuide()/
          updateGuideForWalk()/updateGuideForTransit() dans itinerary.js. -->
     <div class="sts-guide-banner hidden" id="stsGuideBanner" aria-live="polite">
-      <div class="sts-guide-arrow" id="stsGuideArrow"></div>
-      <div class="sts-guide-text">
-        <div class="sts-guide-dist" id="stsGuideDist"></div>
-        <div class="sts-guide-instr" id="stsGuideInstr"></div>
+      <div class="sts-guide-row">
+        <div class="sts-guide-arrow" id="stsGuideArrow"></div>
+        <div class="sts-guide-text">
+          <div class="sts-guide-dist" id="stsGuideDist"></div>
+          <div class="sts-guide-instr" id="stsGuideInstr"></div>
+        </div>
+        <button class="sts-guide-stop" id="stsGuideStop" aria-label="Arrêter le guidage" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
-      <button class="sts-guide-stop" id="stsGuideStop" aria-label="Arrêter le guidage" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <div class="sts-guide-prog"><i id="stsGuideProg" style="width:0%"></i></div>
     </div>
   </div>
   <div class="sts-sheet" id="stsSheet" aria-live="polite"></div>
 </section>
+
+<!-- Notification de proximité "Y aller ?" (demande du 09/10/2026) : injectée vide ici,
+     remplie et affichée par showNearbyPlaceBanner() dans script.js dès que la position GPS
+     réelle (voir startWatchingMyLocation()) entre dans le rayon d'un lieu pas encore
+     débloqué. "Voir" ouvre la fiche du lieu (openDetailsPanel) ; "Y aller" ouvre ce même
+     panneau Itinéraire ci-dessus et démarre le guidage immédiatement
+     (window.openLocationItinerary(loc, {autoGuide:true})). -->
+<div class="sts-nearby" id="stsNearbyBanner" role="dialog" aria-live="polite" aria-hidden="true">
+  <div class="sts-nearby-row">
+    <div class="sts-nearby-photo" id="stsNearbyPhoto"></div>
+    <div style="flex:1;min-width:0">
+      <div class="sts-nearby-kicker">SCREEN TO STREET · MAINTENANT</div>
+      <div class="sts-nearby-title" id="stsNearbyTitle"></div>
+      <div class="sts-nearby-sub" id="stsNearbySub"></div>
+    </div>
+    <button class="sts-nearby-x" id="stsNearbyX" aria-label="Fermer" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6478" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sts-nearby-acts">
+    <button class="sts-nearby-view" id="stsNearbyView" type="button">Voir</button>
+    <button class="sts-nearby-go" id="stsNearbyGo" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>Y aller</button>
+  </div>
+</div>
 <div class="sts-toast" id="stsToast" role="status" aria-live="polite"></div>
 
 <!-- Mode "Défi sur la carte" (demande du 09/10/2026, "quand je clique sur un défis et
