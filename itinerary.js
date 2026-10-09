@@ -185,18 +185,34 @@
         const IC = {
             walk: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2" fill="currentColor" stroke="none"/><path d="M10 21l2-6-3-3 1-5 4 3 3 1"/></svg>',
             bus: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16"/></svg>',
-            // AJOUT (demande du 08/10/2026, "aligne bien le métro") : jusqu'ici SUBWAY/METRO
-            // réutilisaient IC.bus (silhouette de bus) faute d'icône dédiée — ce rond + "M" en
-            // trait (même style monoline que les autres icônes ci-dessus, tracé plutôt que
-            // <text>, pour éviter tout souci d'alignement de ligne de base) le remplace
-            // spécifiquement pour ces deux modes dans chip() plus bas.
-            metro: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M8 15.5v-7l4 5 4-5v7"/></svg>',
+            // AJOUT (demande du 08/10/2026, "aligne bien le métro", précisée le 09/10/2026
+            // "l'icone du métro n'est pas aligné avec le numéro... aussi RER et bus") :
+            // jusqu'ici SUBWAY/METRO réutilisaient IC.bus (silhouette de bus) faute d'icône
+            // dédiée. Rond + "M" en trait (même style monoline que les autres icônes
+            // ci-dessus, tracé plutôt que <text>, pour éviter tout souci de ligne de base) —
+            // le vrai décalage visuel rapporté le 09/10 venait en réalité du <svg> inline
+            // lui-même (display:inline par défaut du navigateur, corrigé en CSS ci-dessus/
+            // voir .sts-chip svg dans map.html), pas de ce tracé, mais le rond est resserré
+            // ici (r 9.5→9) pour rester lisible à 12px malgré tout.
+            metro: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 15v-6l4 4 4-4v6"/></svg>',
+            // AJOUT (demande du 09/10/2026, "icones de rer... soient bien alignés") : RAIL/
+            // REGIONAL_RAIL/HIGHSPEED_RAIL/LONG_DISTANCE (= "Train" dans MODE_FR plus bas,
+            // RER inclus) réutilisaient aussi IC.bus faute d'icône dédiée — silhouette de
+            // train (toit arrondi + 2 roues), même style monoline.
+            train: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="13" rx="4"/><path d="M5 10h14"/><circle cx="9" cy="19" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="19" r="1" fill="currentColor" stroke="none"/></svg>',
             nav: '<svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2l8 20-8-5-8 5z" fill="#fff"/></svg>',
             share: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg>'
         };
         const MODE_FR = { BUS: "Bus", TRAM: "Tram", SUBWAY: "Métro", METRO: "Métro", RAIL: "Train", REGIONAL_RAIL: "Train", HIGHSPEED_RAIL: "Train", LONG_DISTANCE: "Train", FERRY: "Ferry", COACH: "Car", CABLE_CAR: "Téléphérique", FUNICULAR: "Funiculaire" };
+        // AJOUT (demande du 09/10/2026, "ajoute un icone quand c'est un bus") : silhouette de
+        // bus déjà réutilisée pour tous les modes (métro/RER compris, faute d'icône dédiée)
+        // avant les deux ajouts ci-dessus — reste maintenant le repli explicite pour BUS et
+        // tout mode moins courant (ferry, car, téléphérique...).
+        const transitIcon = l => (l.mode === "SUBWAY" || l.mode === "METRO") ? IC.metro
+            : (l.mode === "RAIL" || l.mode === "REGIONAL_RAIL" || l.mode === "HIGHSPEED_RAIL" || l.mode === "LONG_DISTANCE") ? IC.train
+            : IC.bus;
         const chip = l => l.mode === "WALK" ? `<span class="sts-chip">${IC.walk}${Math.max(1, Math.round(l.duration / 60))}</span>`
-            : `<span class="sts-chip tr" style="background:${l.color || "#F59E0B"}">${(l.mode === "SUBWAY" || l.mode === "METRO") ? IC.metro : IC.bus}${esc(l.line || MODE_FR[l.mode] || "")}</span>`;
+            : `<span class="sts-chip tr" style="background:${l.color || "#F59E0B"}">${transitIcon(l)}${esc(l.line || MODE_FR[l.mode] || "")}</span>`;
         const chips = it => `<div class="sts-chips">${it.legs.filter(l => !(l.mode === "WALK" && l.duration < 60)).map(chip).join("<i>›</i>")}</div>`;
         const loading = () => `<button class="sts-handle" data-act="toggle" aria-label="Agrandir ou réduire"></button><div class="sts-skel" style="width:45%;height:26px"></div><div class="sts-skel" style="width:70%"></div><div class="sts-skel" style="height:58px;border-radius:14px;margin:14px 0"></div><div class="sts-skel" style="height:50px;border-radius:14px"></div>`;
 
@@ -312,7 +328,7 @@
                 instr = `${MODE_FR[leg.mode] || "Transport"}${leg.line ? " " + esc(leg.line) : ""} · descendez à ${esc(leg.to || "")}`;
                 angle = null;
             }
-            renderGuideBanner(leg.mode === "WALK" ? arrowIconHtml(angle) : ((leg.mode === "SUBWAY" || leg.mode === "METRO") ? IC.metro : IC.bus), isLastLeg && d < 30 ? "Arrivée" : "Dans " + fmtKm(d), instr);
+            renderGuideBanner(leg.mode === "WALK" ? arrowIconHtml(angle) : transitIcon(leg), isLastLeg && d < 30 ? "Arrivée" : "Dans " + fmtKm(d), instr);
         }
         function showGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.remove("hidden"); const top = $("stsItTop"); if (top) top.classList.add("guiding"); }
         function hideGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.add("hidden"); const top = $("stsItTop"); if (top) top.classList.remove("guiding"); }

@@ -179,6 +179,18 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
    sur le site pour ce même problème (voir le commentaire associé dans style.css) : 90px
    + la zone de sécurité iOS, plutôt qu'une redevinette au pif. */
 @media (max-width:760px){.stb-body{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
+/* BUG corrigé (demande du 09/10/2026, "quand je clique sur un badge ou un défis...
+   l'affichage est coupé par la barre de navigation du bas") : .stb-det (z-index 2101) a
+   bottom:0 — son bord bas touche donc le même endroit que .mobile-bottom-nav
+   (position:fixed, z-index 3500, voir style.css), qui passe PAR-DESSUS une bonne partie
+   de la fiche puisque son z-index est plus élevé. Même solution que la bannière de
+   guidage/le panneau Live : on remonte le bord bas de la fiche au lieu d'essayer de
+   gagner la bataille de z-index (qui la ferait seulement passer SOUS la nav, pas au-dessus
+   comme demandé : "montant l'affichage au dessus de la barre de navigation"). max-height
+   réduit d'autant pour ne jamais redépasser .stb-top en haut sur un petit écran. */
+@media (max-width:760px){
+  .stb-det{bottom:calc(90px + env(safe-area-inset-bottom,0px));max-height:calc(100% - 132px - 90px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+}
 
 /* =====================================================================
    Version ordinateur (demande du 09/10/2026, "améliore la version
@@ -194,7 +206,16 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
    ===================================================================== */
 #sbdRoot{display:none}
 @media (min-width:700px){
-  #sbdRoot{display:block}
+  /* BUG corrigé (demande du 09/10/2026, "il y a un problème avec la page badge de
+     version ordinateur... corrige pour que ça s'affiche sur tout l'écran") : body est
+     display:flex sur tout le site (voir style.css, utilisé par map.html pour poser
+     sidebar+carte côte à côte) — display:block tout seul ne fait qu'un ENFANT flex comme
+     un autre, qui se contente alors de la largeur de son CONTENU (le texte/les cartes)
+     au lieu de remplir l'écran, laissant une grande zone grise vide à droite. position:
+     fixed;inset:0 sort complètement #sbdRoot du flux flex (même technique que .stb-page
+     ci-dessus pour mobile), il peut alors remplir tout le viewport sans dépendre du
+     display du parent. */
+  #sbdRoot{display:block;position:fixed;inset:0;overflow-y:auto;background:var(--sbd-bg);z-index:1500}
   .stb-page,.stb-dim,.stb-det,.stb-toast{display:none!important}
 }
 :root{--sbd-mag:#E0156B;--sbd-pur:#9B3CEB;--sbd-grad:linear-gradient(90deg,#9B3CEB,#E0156B);--sbd-ink:#1F2430;--sbd-soft:#6B6478;--sbd-line:#ECE8F2;--sbd-bg:#F7F5FB}

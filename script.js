@@ -5161,6 +5161,13 @@ function renderLocations(skipFitBounds) {
         `;
         card.addEventListener('click', () => {
             if (isNew) dismissNewLocationBadge(loc.id);
+            // AJOUT SITE (demande du 09/10/2026, "sur ordinateur, quand je clique sur un
+            // lieu de la liste, puis Back to list, il faut me repositionner exactement où
+            // j'étais précédemment sur la carte") : capture la vue AVANT le flyTo() ci-dessous
+            // (donc la vue d'avant clic) — lue par openDetailsPanel()/closeDetailsPanel() plus
+            // bas pour la restaurer à la fermeture, au lieu de laisser la carte sur le lieu
+            // qu'on vient de quitter.
+            if (map) window.__preOpenMapView = { center: map.getCenter(), zoom: map.getZoom() };
             map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
             // Sur mobile, cette liste vit dans le menu déroulant de la carte (hamburger) —
             // un tap dessus ouvrait seulement le pin (demande du 13/09/2026), mais plus
@@ -5443,6 +5450,9 @@ function renderVisitedTabList() {
             // options, Leaflet calcule sa propre durée de vol en fonction de la distance —
             // souvent 1.5 à 4s pour un lieu éloigné du centre actuel. Même valeur fixe
             // partout où flyTo() est appelé sur ce fichier, pour une sensation cohérente.
+            // AJOUT SITE (demande du 09/10/2026) : capture la vue avant flyTo(), voir le
+            // commentaire jumeau dans renderLocations() plus haut.
+            if (map) window.__preOpenMapView = { center: map.getCenter(), zoom: map.getZoom() };
             map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
             // Sur mobile, cette liste vit dans le menu déroulant de la carte (hamburger) —
             // un tap dessus ouvrait seulement le pin (demande du 13/09/2026), mais plus
@@ -6544,6 +6554,47 @@ function renderLocationRichContent(loc) {
         extraCont.classList.toggle('hidden', !extraHtml);
     }
 }
+
+// ==========================================
+// VISIONNEUSE PLEIN ÉCRAN "MEI'S PICTURES" (demande du 09/10/2026, "quand je clique sur
+// une photo... je veux que ça ouvre la photo et que je puisse zoomer dessus... floute
+// l'arrière-plan... quand je clique hors de la photo je retourne où j'étais")
+// ==========================================
+// Overlay générique (#photo-lightbox dans map.html), jamais de navigation — un clic en
+// dehors de la photo referme simplement le calque, la fiche lieu en dessous n'a jamais
+// bougé. Câblé une seule fois ici (pas dans renderLocationRichContent() ci-dessus, qui
+// re-rend la galerie à CHAQUE ouverture de fiche) en déléguant sur #details-recreate-
+// photo-gallery lui-même : cet élément conteneur reste stable d'un lieu à l'autre, seul
+// son contenu (innerHTML) est remplacé.
+window.openPhotoLightbox = function (url) {
+    const lb = document.getElementById('photo-lightbox');
+    const img = document.getElementById('photo-lightbox-img');
+    if (!lb || !img || !url) return;
+    img.src = url;
+    img.classList.remove('zoomed');
+    lb.classList.add('open');
+};
+window.closePhotoLightbox = function () {
+    const lb = document.getElementById('photo-lightbox');
+    if (lb) lb.classList.remove('open');
+};
+(function initPhotoLightbox() {
+    const gallery = document.getElementById('details-recreate-photo-gallery');
+    if (gallery) gallery.addEventListener('click', (e) => {
+        const img = e.target.closest('.recreate-photo-item img');
+        if (img) window.openPhotoLightbox(img.src);
+    });
+    const lb = document.getElementById('photo-lightbox');
+    if (!lb) return;
+    // Clic sur le fond flouté (pas sur la photo ni le bouton fermer, déjà gérés à part) :
+    // e.target === lb seulement quand le clic tombe directement sur l'overlay lui-même.
+    lb.addEventListener('click', (e) => { if (e.target === lb) window.closePhotoLightbox(); });
+    const lbImg = document.getElementById('photo-lightbox-img');
+    if (lbImg) lbImg.addEventListener('click', () => lbImg.classList.toggle('zoomed'));
+    const closeBtn = document.getElementById('photo-lightbox-close');
+    if (closeBtn) closeBtn.addEventListener('click', window.closePhotoLightbox);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closePhotoLightbox(); });
+})();
 
 // ==========================================
 // ÉDITION DIRECTE D'UN LIEU PAR UN ADMIN (icône crayon sur la fiche du lieu, demande du
@@ -8230,8 +8281,16 @@ window.openDetailsPanel = function(id, fromList) {
     if (fromList) {
         const activeListPanel = document.querySelector('.sidebar-main-panel.active');
         window.__detailsListScrollState = activeListPanel ? { id: activeListPanel.id, scrollTop: activeListPanel.scrollTop } : null;
+        // AJOUT SITE (demande du 09/10/2026, "sur ordinateur... Back to list doit me
+        // repositionner exactement où j'étais sur la carte") : window.__preOpenMapView est
+        // posé par le clic sur la carte DANS la liste (voir renderLocations()/
+        // renderVisitedTabList()), juste avant son propre flyTo() vers le lieu — repris ici
+        // tel quel pour que closeDetailsPanel() puisse y revoler à la fermeture.
+        window.__detailsMapView = window.__preOpenMapView || null;
+        window.__preOpenMapView = null;
     } else {
         window.__detailsListScrollState = null;
+        window.__detailsMapView = null;
     }
 
     // Mur de paiement : 3 fiches lieu différentes consultables gratuitement (comptées
@@ -9044,8 +9103,17 @@ window.closeDetailsPanel = function() {
         const panel = document.getElementById(panelId);
         if (panel) requestAnimationFrame(() => { panel.scrollTop = scrollTop; });
     }
+    // AJOUT SITE (demande du 09/10/2026, "sur ordinateur... Back to list doit me
+    // repositionner exactement où j'étais sur la carte") : revole à la vue capturée avant
+    // le flyTo() qui avait suivi le clic sur la liste (voir openDetailsPanel ci-dessus) —
+    // jamais déclenché pour un lieu ouvert depuis un marqueur/lien partagé (pas de
+    // window.__detailsMapView posé dans ce cas).
+    if (backToList && window.__detailsMapView && map) {
+        map.flyTo(window.__detailsMapView.center, window.__detailsMapView.zoom, { duration: 0.6 });
+    }
     window.__detailsOpenedFromList = false;
     window.__detailsListScrollState = null;
+    window.__detailsMapView = null;
 
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -10253,7 +10321,10 @@ function ensureBadgeUnlockModal() {
     if (typeof updateUI === 'function') updateUI();
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
     document.getElementById('badge-unlock-view-btn').addEventListener('click', () => {
-        window.location.href = 'profile.html?tab=badges';
+        // AJOUT SITE (demande du 09/10/2026, "supprime la section badges de profile, car ça
+        // apparait déjà dans la page badges") : redirige maintenant vers la vraie page
+        // badges.html (profile.html n'a plus d'onglet "Badges", voir profile.html).
+        window.location.href = 'badges.html';
     });
     return modal;
 }

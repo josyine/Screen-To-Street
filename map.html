@@ -457,6 +457,27 @@
          panneau — plus de fond visible ni de coins arrondis. */
       .live-panel { background: #fff; backdrop-filter: none; padding: 0; }
       .live-panel-card { width: 100%; max-width: none; height: 100%; max-height: none; border-radius: 0; }
+      /* BUG corrigé (demande du 09/10/2026, "quand je clique sur l'icone 'Agenda', je veux
+         que la barre de navigation en bas apparaisse") : .live-panel est en position:fixed;
+         inset:0 avec un z-index (9500) plus élevé que .mobile-bottom-nav (3500, voir
+         style.css) — sur mobile, le panneau plein écran ci-dessus recouvrait donc
+         entièrement la nav du bas, qui restait pourtant dans le DOM (openLivePanel() ne la
+         masque jamais, contrairement à toggleMobileMenu()/openDetailsPanel() qui appellent
+         setMobileChromeHidden()). On réserve ici le même espace que partout ailleurs sur le
+         site pour ce problème (.tab-panel, .stb-body...) en remontant le bord bas du
+         panneau — la nav redevient visible ET cliquable en dessous, sans toucher au z-index
+         ni dupliquer la logique JS de masquage. */
+      .live-panel { bottom: calc(90px + env(safe-area-inset-bottom,0px)); }
+  }
+
+  /* BUG corrigé (demande du 09/10/2026, "agrandis la section Agenda, car l'affichage de
+     la carte de Agenda est coupée") : .live-panel-mapview réutilise .tour-mode-mapwrap/
+     .tour-mode-rail (rail ~280px de large, voir plus haut) — dans les 520px d'origine de
+     .live-panel-card, ça ne laissait presque plus de place pour la carte Leaflet
+     elle-même. Élargi et un peu agrandi en hauteur sur ordinateur seulement (mobile reste
+     géré par le bloc plein écran ci-dessus). */
+  @media (min-width: 801px) {
+      .live-panel-card { width: 760px; max-width: calc(100vw - 64px); max-height: 85vh; }
   }
 
   /* Bulle résumé au survol d'un pin (demande du 05/09/2026) : même style que la bulle du
@@ -598,6 +619,14 @@
   .sts-alt span{display:block;font-size:12px;color:var(--sts-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sts-chips{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:6px}
   .sts-chip{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;background:#F3E8FF;color:var(--sts-pur)}
+  /* BUG corrigé (demande du 09/10/2026, "l'icone du métro n'est pas aligné avec le
+     numéro") : un <svg> inline garde par défaut son display:inline du navigateur, qui lui
+     laisse un peu d'espace de "descente" sous la ligne de base — invisible pour une icône
+     carrée simple (bus) mais assez pour décaler visiblement une icône ronde (métro/RER) du
+     chiffre juste à côté, même avec align-items:center sur le conteneur flex (ça centre
+     la BOITE de l'icône, pas son contenu visuel si cette boîte a cette marge invisible en
+     trop). display:block retire cette marge, l'icône se centre alors vraiment. */
+  .sts-chip svg{display:block;flex-shrink:0}
   .sts-chip.tr{color:#fff;background:#F59E0B}
   .sts-chips i{color:#B9B3C6;font-style:normal;font-size:12px}
   .sts-legs-detail{margin:2px 0 14px;padding:0;list-style:none;font-size:13px}
@@ -1157,6 +1186,23 @@
                         <div id="details-recreate-photo-gallery" class="recreate-photo-gallery"></div>
                     </div>
 
+                    <!-- Visionneuse plein écran pour une photo "Mei's Pictures" (demande du
+                         09/10/2026, "je veux que ça ouvre la photo et que je puisse zoomer
+                         dessus... floute l'arrière-plan... clique hors de la photo je
+                         retourne où j'étais") — overlay générique, jamais de navigation :
+                         ouverte/fermée par openPhotoLightbox()/closePhotoLightbox() dans
+                         script.js, qui câble le clic sur #details-recreate-photo-gallery
+                         ci-dessus. Posée ici (plutôt qu'en fin de <body>) pour exister dans
+                         le DOM AVANT le <script src="script.js"> plus bas, qui cherche cet
+                         élément par id dès son exécution (classique, pas de module différé
+                         — BUG trouvé en testant : posée après ce <script>, elle n'existait
+                         pas encore au moment où le câblage tournait, qui échouait alors en
+                         silence sans jamais relier le clic sur une photo à l'ouverture). -->
+                    <div class="photo-lightbox" id="photo-lightbox" role="dialog" aria-modal="true" aria-label="Photo">
+                        <button type="button" class="photo-lightbox-close" id="photo-lightbox-close" aria-label="Fermer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+                        <img class="photo-lightbox-img" id="photo-lightbox-img" src="" alt="" title="Cliquer pour zoomer">
+                    </div>
+
                     <span class="sub-label" data-i18n="lPractical">Practical information &amp; access</span>
                     <div class="practical-box" id="details-practical-list"></div>
 
@@ -1319,8 +1365,18 @@
                 </div>
             </div>
             <div class="dropdown-container">
-                <button id="cart-btn" class="header-icon-btn" onclick="openCartModal()" title="Unlock Passes">
+                <!-- BUG corrigé (demande du 09/10/2026, "masque l'icone cadis pour acheter
+                     un pass... met l'icone badge qui est actuellement au dessus du bouton
+                     géolocalisation à la place") : masqué plutôt que supprimé (demande
+                     explicite, "pour le moment"), remplacé ci-dessous par l'icône badges
+                     dans ce même emplacement du header. -->
+                <button id="cart-btn" class="header-icon-btn hidden" onclick="openCartModal()" title="Unlock Passes">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                </button>
+            </div>
+            <div class="dropdown-container">
+                <button id="badges-header-btn" class="header-icon-btn" type="button" onclick="window.location.href='badges.html';" title="My badges">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-2 6M16 3l2 6"></path><circle cx="12" cy="14.5" r="6"></circle><path d="M12 11.5l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor" stroke="none"></path></svg>
                 </button>
             </div>
             <!-- Accès direct à la file de relecture des nouveaux lieux (admin.html) — masqué
@@ -1996,5 +2052,6 @@
 <!-- Messages éphémères annonçant les nouveaux lieux ajoutés (voir showNewLocationToasts()
      dans script.js) : empilés en bas à gauche, disparaissent seuls après quelques secondes. -->
 <div id="new-location-toast-container" class="new-location-toast-container"></div>
+
 </body>
 </html>
