@@ -10404,12 +10404,20 @@ let nearbyBannerLoc = null; // lieu actuellement affiché dans la bannière (ou 
 
 function checkNearbyPlaceNotification(pos) {
     if (typeof celebLocations === 'undefined') return;
-    // Jamais par-dessus un panneau déjà ouvert (itinéraire ou fiche d'un lieu) — la
-    // bannière réapparaîtra au prochain évènement GPS une fois revenu sur la carte.
+    // Jamais par-dessus le panneau itinéraire (plein écran, z-index 9800 > les 5000 de
+    // .sts-nearby, donc la bannière serait de toute façon invisible dessous) — la bannière
+    // réapparaîtra au prochain évènement GPS une fois revenu sur la carte.
+    // BUG corrigé (demande du 09/10/2026, "je ne vois pas la notification de proximité
+    // alors que je suis proche d'un lieu") : un garde-fou équivalent sur #app-sidebar.open
+    // bloquait la bannière en silence et DÉFINITIVEMENT dès qu'on avait ouvert n'importe
+    // quelle liste (amis, voyages, résultats de recherche...) — cette classe reste "open"
+    // volontairement après fermeture d'une fiche ouverte depuis une liste (voir le flag
+    // backToList plus haut dans ce fichier), ce n'est donc pas un signal fiable de "panneau
+    // qui recouvre vraiment l'écran maintenant". Pas besoin de ce garde-fou de toute façon :
+    // .sts-nearby (z-index 5000) s'affiche déjà correctement PAR-DESSUS la sidebar
+    // (z-index 3000) quand elle est réellement ouverte.
     const itPanel = document.getElementById('stsIt');
     if (itPanel && itPanel.classList.contains('on')) return;
-    const sidebar = document.getElementById('app-sidebar');
-    if (sidebar && sidebar.classList.contains('open')) return;
     const { latitude, longitude } = pos.coords;
     let nearest = null, nearestDist = Infinity;
     celebLocations.forEach(loc => {
