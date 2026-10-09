@@ -458,16 +458,15 @@
       .live-panel { background: #fff; backdrop-filter: none; padding: 0; }
       .live-panel-card { width: 100%; max-width: none; height: 100%; max-height: none; border-radius: 0; }
       /* BUG corrigé (demande du 09/10/2026, "quand je clique sur l'icone 'Agenda', je veux
-         que la barre de navigation en bas apparaisse") : .live-panel est en position:fixed;
-         inset:0 avec un z-index (9500) plus élevé que .mobile-bottom-nav (3500, voir
-         style.css) — sur mobile, le panneau plein écran ci-dessus recouvrait donc
-         entièrement la nav du bas, qui restait pourtant dans le DOM (openLivePanel() ne la
-         masque jamais, contrairement à toggleMobileMenu()/openDetailsPanel() qui appellent
-         setMobileChromeHidden()). On réserve ici le même espace que partout ailleurs sur le
-         site pour ce problème (.tab-panel, .stb-body...) en remontant le bord bas du
-         panneau — la nav redevient visible ET cliquable en dessous, sans toucher au z-index
-         ni dupliquer la logique JS de masquage. */
-      .live-panel { bottom: calc(90px + env(safe-area-inset-bottom,0px)); }
+         que la barre de navigation en bas apparaisse") puis précisé le même jour ("il faut
+         afficher les icones du bas par dessus la page Agenda") : un premier essai remontait
+         le bord bas du panneau pour révéler la nav dans l'espace ainsi dégagé (comme pour
+         .stb-det/.tab-panel ailleurs sur le site) — mais ici, contrairement à ces fiches
+         partielles, .live-panel est censé occuper TOUT l'écran sur mobile (voir le
+         commentaire juste au-dessus, "je ne veux pas voir la page map en dessous") ; lui
+         laisser un bord tronqué cassait ce plein écran voulu. La VRAIE nav du bas flotte
+         donc maintenant par-dessus (voir .mobile-bottom-nav dans style.css, sélecteur de
+         voisin ciblé sur .live-panel.open) plutôt que de rogner le panneau. */
   }
 
   /* BUG corrigé (demande du 09/10/2026, "agrandis la section Agenda, car l'affichage de
@@ -618,7 +617,13 @@
   .sts-alt b{display:block;font-size:15px}
   .sts-alt span{display:block;font-size:12px;color:var(--sts-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sts-chips{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:6px}
-  .sts-chip{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;background:#F3E8FF;color:var(--sts-pur)}
+  /* BUG corrigé (demande du 09/10/2026, "l'icone métro doit être aligné horizontalement
+     avec le numéro, et non verticalement") : flex-direction/white-space posés ici de
+     façon EXPLICITE (row était déjà la valeur par défaut d'inline-flex, mais implicite —
+     rien n'empêchait un wrap vertical si le numéro ne tenait pas sur la même ligne que
+     l'icône). Les deux restent désormais toujours côte à côte sur une seule ligne, quelle
+     que soit la largeur du chiffre (ligne à 2-3 caractères comprise). */
+  .sts-chip{display:inline-flex;flex-direction:row;align-items:center;white-space:nowrap;gap:3px;height:22px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;background:#F3E8FF;color:var(--sts-pur)}
   /* BUG corrigé (demande du 09/10/2026, "l'icone du métro n'est pas aligné avec le
      numéro") : un <svg> inline garde par défaut son display:inline du navigateur, qui lui
      laisse un peu d'espace de "descente" sous la ligne de base — invisible pour une icône
@@ -1251,9 +1256,16 @@
                          élément par id dès son exécution (classique, pas de module différé
                          — BUG trouvé en testant : posée après ce <script>, elle n'existait
                          pas encore au moment où le câblage tournait, qui échouait alors en
-                         silence sans jamais relier le clic sur une photo à l'ouverture). -->
+                         silence sans jamais relier le clic sur une photo à l'ouverture).
+                         BUG corrigé (demande du 09/10/2026, "supprime la croix en haut à
+                         droite car il y a déjà la croix en haut à gauche") : son propre
+                         bouton fermer (.photo-lightbox-close) retiré — la croix "en haut à
+                         gauche" que la personne voit à travers le fond flouté est celle de
+                         la fiche lieu EN DESSOUS (#sidebar-details), pas une croix à elle ;
+                         cliquer dessus retombe donc sur le clic-en-dehors-de-la-photo déjà
+                         câblé ci-dessous (ferme la visionneuse, révèle la vraie fiche et SA
+                         vraie croix, cliquable normalement ensuite). -->
                     <div class="photo-lightbox" id="photo-lightbox" role="dialog" aria-modal="true" aria-label="Photo">
-                        <button type="button" class="photo-lightbox-close" id="photo-lightbox-close" aria-label="Fermer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
                         <img class="photo-lightbox-img" id="photo-lightbox-img" src="" alt="" title="Cliquer pour zoomer">
                     </div>
 

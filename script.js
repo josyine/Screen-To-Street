@@ -6584,12 +6584,12 @@ window.openPhotoLightbox = function (url) {
     const img = document.getElementById('photo-lightbox-img');
     if (!lb || !img || !url) return;
     img.src = url;
-    img.classList.remove('zoomed');
+    lb.classList.remove('zoomed');
     lb.classList.add('open');
 };
 window.closePhotoLightbox = function () {
     const lb = document.getElementById('photo-lightbox');
-    if (lb) lb.classList.remove('open');
+    if (lb) { lb.classList.remove('open'); lb.classList.remove('zoomed'); }
 };
 (function initPhotoLightbox() {
     const gallery = document.getElementById('details-recreate-photo-gallery');
@@ -6599,13 +6599,19 @@ window.closePhotoLightbox = function () {
     });
     const lb = document.getElementById('photo-lightbox');
     if (!lb) return;
-    // Clic sur le fond flouté (pas sur la photo ni le bouton fermer, déjà gérés à part) :
-    // e.target === lb seulement quand le clic tombe directement sur l'overlay lui-même.
+    // BUG corrigé (demande du 09/10/2026, "supprime la croix en haut à droite car il y a
+    // déjà la croix en haut à gauche") : plus de bouton fermer dédié — cliquer sur le fond
+    // flouté (jamais sur la photo elle-même, gérée à part juste en dessous) ferme la
+    // visionneuse et révèle la fiche lieu en dessous avec SA propre croix, déjà visible
+    // par transparence à travers le flou. e.target === lb seulement quand le clic tombe
+    // directement sur l'overlay (pas sur l'image, qui est un enfant distinct).
     lb.addEventListener('click', (e) => { if (e.target === lb) window.closePhotoLightbox(); });
+    // BUG corrigé (demande du 09/10/2026, "fais en sorte qu'on puisse zoomer") : bascule la
+    // classe sur le CONTENEUR (pas juste l'image, voir .photo-lightbox.zoomed dans
+    // style.css) pour aussi activer le défilement du fond — une image zoomée qui dépasse
+    // l'écran doit pouvoir être parcourue, pas seulement agrandie sur place.
     const lbImg = document.getElementById('photo-lightbox-img');
-    if (lbImg) lbImg.addEventListener('click', () => lbImg.classList.toggle('zoomed'));
-    const closeBtn = document.getElementById('photo-lightbox-close');
-    if (closeBtn) closeBtn.addEventListener('click', window.closePhotoLightbox);
+    if (lbImg) lbImg.addEventListener('click', () => lb.classList.toggle('zoomed'));
     addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closePhotoLightbox(); });
 })();
 
