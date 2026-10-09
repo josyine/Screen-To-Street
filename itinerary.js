@@ -49,6 +49,15 @@
         // virage à l'intérieur d'un trajet en transports, seulement "marchez jusqu'à l'arrêt"
         // / "descendez à X").
         let guideSteps = [], guideIdx = 0, guideLegIdx = 0;
+        // Distance initiale (position de départ -> destination), figée au lancement du
+        // guidage, pour calculer le pourcentage de la barre de progression de la pastille
+        // (demande du 09/10/2026) — jamais recalculée pendant la marche, sinon la barre
+        // reculerait à chaque petit détour au lieu d'avancer de façon monotone.
+        let guideStartDist = null;
+        // "Y aller" direct depuis la notification de proximité (demande du 09/10/2026) :
+        // démarre le guidage automatiquement dès que le trajet à pied est chargé, sans
+        // attendre que la personne retouche "Démarrer" — voir open()/compute() plus bas.
+        let autoGuideOnReady = false;
 
         const fmtMin = s => { const m = Math.max(1, Math.round(s / 60)); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}`; };
         const fmtKm = m => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace(".", ",")} km`;
@@ -263,7 +272,10 @@
             fetchWalk(a, b).then(r => { if (id !== req) return; walk = r; }).catch(() => {
                 if (id !== req) return;
                 const d = L.latLng(a.lat, a.lon).distanceTo([b.lat, b.lon]) * 1.3; walk = [{ duration: d / 1.3, distance: d, estimate: true, line: [[a.lat, a.lon], [b.lat, b.lon]] }];
-            }).finally(() => { if (id !== req) return; times(); if (mode === "walk") { render(); draw(); } });
+            }).finally(() => {
+                if (id !== req) return; times(); if (mode === "walk") { render(); draw(); }
+                if (autoGuideOnReady) { autoGuideOnReady = false; startGuide(); }
+            });
             fetchTransit(a, b).then(r => { if (id !== req) return; transit = r; }).catch(() => { if (id !== req) return; transit = []; })
                 .finally(() => { if (id !== req) return; times(); if (mode === "transit") { render(); draw(); } });
             draw();
@@ -281,11 +293,21 @@
             if (step.modifier && TURN_FR[step.modifier] && step.modifier !== "straight") return "Tournez " + TURN_FR[step.modifier] + (step.name ? " sur " + esc(step.name) : "");
             return "Continuez" + (step.name ? " sur " + esc(step.name) : "");
         }
-        function renderGuideBanner(iconHtml, distText, instrText) {
-            const arrowEl = $("stsGuideArrow"), distEl = $("stsGuideDist"), instrEl = $("stsGuideInstr");
+        function renderGuideBanner(iconHtml, distText, instrText, progressPct) {
+            const arrowEl = $("stsGuideArrow"), distEl = $("stsGuideDist"), instrEl = $("stsGuideInstr"), progEl = $("stsGuideProg");
             if (arrowEl) arrowEl.innerHTML = iconHtml;
             if (distEl) distEl.textContent = distText;
             if (instrEl) instrEl.textContent = instrText;
+            if (progEl && progressPct != null) progEl.style.width = progressPct + "%";
+        }
+        // Pourcentage du trajet déjà parcouru, à partir de la distance à vol d'oiseau restante
+        // jusqu'à la destination finale (pas jusqu'à la prochaine manœuvre, sinon la barre
+        // sauterait à chaque virage) — bornée à [0,100] au cas où la position GPS dérive
+        // légèrement au-delà du point de départ ou d'arrivée.
+        function guideProgressPct(pos) {
+            if (!guideStartDist) return 0;
+            const left = L.latLng(pos).distanceTo([to.lat, to.lon]);
+            return Math.max(0, Math.min(100, 100 - (left / guideStartDist * 100)));
         }
         // Chaque "step" OSRM est une manœuvre déjà exécutée à son propre point (guideSteps[i]
         // .loc EST le point de la manœuvre i, par ex. guideSteps[0] = le point de départ,
@@ -305,7 +327,7 @@
             const targetLoc = isLast ? step.loc : guideSteps[guideIdx + 1].loc;
             const d = Math.round(ll.distanceTo(targetLoc));
             const angle = isLast ? null : (step.modifier && TURN_ANGLE[step.modifier] != null ? TURN_ANGLE[step.modifier] : 0);
-            renderGuideBanner(arrowIconHtml(angle), isLast ? "Arrivée" : "Dans " + fmtKm(d), stepInstruction(step, guideIdx === 0, isLast));
+            renderGuideBanner(arrowIconHtml(angle), isLast ? "Arrivée" : "Dans " + fmtKm(d), stepInstruction(step, guideIdx === 0, isLast), guideProgressPct(pos));
         }
         // Pas de virage par virage pour les transports (Transitous ne fournit pas ce détail
         // pour les segments bus/métro, et Google Maps lui-même ne guide pas à ce niveau sur ce
@@ -328,7 +350,7 @@
                 instr = `${MODE_FR[leg.mode] || "Transport"}${leg.line ? " " + esc(leg.line) : ""} · descendez à ${esc(leg.to || "")}`;
                 angle = null;
             }
-            renderGuideBanner(leg.mode === "WALK" ? arrowIconHtml(angle) : transitIcon(leg), isLastLeg && d < 30 ? "Arrivée" : "Dans " + fmtKm(d), instr);
+            renderGuideBanner(leg.mode === "WALK" ? arrowIconHtml(angle) : transitIcon(leg), isLastLeg && d < 30 ? "Arrivée" : "Dans " + fmtKm(d), instr, guideProgressPct(pos));
         }
         function showGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.remove("hidden"); const top = $("stsItTop"); if (top) top.classList.add("guiding"); }
         function hideGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.add("hidden"); const top = $("stsItTop"); if (top) top.classList.remove("guiding"); }
@@ -336,6 +358,7 @@
             if (!navigator.geolocation || CFG.demo) { toast(CFG.demo ? "Guidage simulé (mode démo)" : "Localisation indisponible"); return; }
             guideIdx = 0; guideLegIdx = 0;
             guideSteps = (mode === "walk" && walk && walk[sel.walk] && walk[sel.walk].steps) || [];
+            guideStartDist = me ? L.latLng([me.lat, me.lon]).distanceTo([to.lat, to.lon]) : null;
             showGuideBanner();
             sheet.classList.add("compact");
             if (me) { if (mode === "walk") updateGuideForWalk([me.lat, me.lon]); else updateGuideForTransit([me.lat, me.lon]); }
@@ -358,7 +381,7 @@
             if (startGuide.m) { startGuide.m.remove(); startGuide.m = null; }
             hideGuideBanner();
             sheet.classList.remove("compact");
-            guideSteps = []; guideIdx = 0; guideLegIdx = 0;
+            guideSteps = []; guideIdx = 0; guideLegIdx = 0; guideStartDist = null;
             render(); draw();
         }
 
@@ -390,8 +413,9 @@
         addEventListener("popstate", () => { if (root.classList.contains("on")) close(true); });
 
         /* --- API publique --- */
-        async function open(spot) {
+        async function open(spot, opts) {
             to = spot; reversed = false; mode = "walk";
+            autoGuideOnReady = !!(opts && opts.autoGuide);
             root.querySelectorAll(".sts-seg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.mode === "walk"));
             $("stsFrom").innerHTML = '<span class="sts-dot me"></span><span>Ma position</span>';
             $("stsTo").innerHTML = `<span class="sts-dot to"></span><b>${esc(spot.name)}</b>`;
@@ -420,7 +444,7 @@
     // Point d'entrée depuis la bulle .map-hover-tip (voir showMapHoverTip() dans script.js)
     // — convertit un lieu du site (lat/lng) au format {lat, lon, name, show, address}
     // attendu par le module ci-dessus.
-    window.openLocationItinerary = function (loc) {
+    window.openLocationItinerary = function (loc, opts) {
         if (!loc || typeof loc.lat !== 'number' || typeof loc.lng !== 'number') return;
         const spot = {
             id: String(loc.id),
@@ -430,7 +454,7 @@
             lat: loc.lat,
             lon: loc.lng
         };
-        Itinerary.open(spot);
+        Itinerary.open(spot, opts);
     };
     window.Itinerary = Itinerary;
 })();

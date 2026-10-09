@@ -10335,6 +10335,7 @@ function updateMyLocationMarker(pos) {
         }
     }
     checkBadgeUnlocksNearPosition(pos);
+    checkNearbyPlaceNotification(pos);
 }
 
 // ==========================================
@@ -10382,6 +10383,105 @@ async function checkBadgeUnlocksNearPosition(pos) {
             unlockBadgeForLocation(loc);
         }
     });
+}
+
+// ==========================================
+// NOTIFICATION DE PROXIMITÉ "Y ALLER ?" (demande du 09/10/2026, d'après le prototype
+// notification_y_aller_5_versions.html fourni) : pendant que la géolocalisation réelle est
+// active (voir startWatchingMyLocation() ci-dessus), si la personne approche d'un lieu dont
+// elle n'a pas encore le badge, une bannière lui propose de lancer le guidage à pied —
+// appelée à CHAQUE évènement watchPosition, comme checkBadgeUnlocksNearPosition()
+// ci-dessus, avec la même règle : jamais en continu en arrière-plan sans que la personne
+// ait d'abord activé sa localisation. Rayon volontairement plus large que
+// BADGE_UNLOCK_RADIUS_METERS (100 m) : sinon la notification et le déblocage automatique
+// du badge arriveraient en même temps, ce qui ne laisserait jamais le temps de proposer
+// "Y aller" avant l'arrivée — l'arrivée elle-même (badge + confettis) reste entièrement
+// gérée par checkBadgeUnlocksNearPosition()/unlockBadgeForLocation() ci-dessus, inchangés.
+// ==========================================
+const NEARBY_NOTIFY_RADIUS_METERS = 400;
+let nearbyNotifiedIds = new Set(); // lieux déjà proposés/fermés tant qu'on reste dans leur rayon
+let nearbyBannerLoc = null; // lieu actuellement affiché dans la bannière (ou null)
+
+function checkNearbyPlaceNotification(pos) {
+    if (typeof celebLocations === 'undefined') return;
+    // Jamais par-dessus un panneau déjà ouvert (itinéraire ou fiche d'un lieu) — la
+    // bannière réapparaîtra au prochain évènement GPS une fois revenu sur la carte.
+    const itPanel = document.getElementById('stsIt');
+    if (itPanel && itPanel.classList.contains('on')) return;
+    const sidebar = document.getElementById('app-sidebar');
+    if (sidebar && sidebar.classList.contains('open')) return;
+    const { latitude, longitude } = pos.coords;
+    let nearest = null, nearestDist = Infinity;
+    celebLocations.forEach(loc => {
+        const idStr = String(loc.id);
+        if (myUnlockedBadgeIds && myUnlockedBadgeIds.has(idStr)) return;
+        if (typeof loc.lat !== 'number' || typeof loc.lng !== 'number') return;
+        const distanceMeters = haversineKm(latitude, longitude, loc.lat, loc.lng) * 1000;
+        if (distanceMeters <= NEARBY_NOTIFY_RADIUS_METERS && distanceMeters < nearestDist) {
+            nearest = loc; nearestDist = distanceMeters;
+        }
+    });
+    if (!nearest) {
+        // Hors de portée de tout lieu : on oublie les notifications déjà montrées, pour
+        // qu'une prochaine approche du même lieu puisse re-proposer "Y aller".
+        nearbyNotifiedIds.clear();
+        if (nearbyBannerLoc) hideNearbyPlaceBanner();
+        return;
+    }
+    const idStr = String(nearest.id);
+    if (nearbyNotifiedIds.has(idStr)) return; // déjà proposé/fermé pour cette approche
+    if (nearbyBannerLoc && String(nearbyBannerLoc.id) === idStr) return; // déjà affichée
+    showNearbyPlaceBanner(nearest, nearestDist);
+}
+
+function ensureNearbyBannerWired() {
+    if (ensureNearbyBannerWired.done) return;
+    ensureNearbyBannerWired.done = true;
+    const x = document.getElementById('stsNearbyX');
+    const viewBtn = document.getElementById('stsNearbyView');
+    const goBtn = document.getElementById('stsNearbyGo');
+    if (x) x.addEventListener('click', () => {
+        if (nearbyBannerLoc) nearbyNotifiedIds.add(String(nearbyBannerLoc.id));
+        hideNearbyPlaceBanner();
+    });
+    if (viewBtn) viewBtn.addEventListener('click', () => {
+        if (!nearbyBannerLoc) return;
+        const loc = nearbyBannerLoc;
+        nearbyNotifiedIds.add(String(loc.id));
+        hideNearbyPlaceBanner();
+        window.openDetailsPanel(loc.id);
+    });
+    if (goBtn) goBtn.addEventListener('click', () => {
+        if (!nearbyBannerLoc) return;
+        const loc = nearbyBannerLoc;
+        nearbyNotifiedIds.add(String(loc.id));
+        hideNearbyPlaceBanner();
+        if (typeof window.openLocationItinerary === 'function') window.openLocationItinerary(loc, { autoGuide: true });
+    });
+}
+
+function showNearbyPlaceBanner(loc, distanceMeters) {
+    ensureNearbyBannerWired();
+    const el = document.getElementById('stsNearbyBanner');
+    if (!el) return;
+    nearbyBannerLoc = loc;
+    const photo = document.getElementById('stsNearbyPhoto');
+    if (photo) {
+        if (loc.img) { photo.style.backgroundImage = `url('${loc.img}')`; photo.textContent = ''; }
+        else { photo.style.backgroundImage = ''; photo.textContent = (loc.name || '?').charAt(0).toUpperCase(); }
+    }
+    const title = document.getElementById('stsNearbyTitle');
+    if (title) title.textContent = `Tu es à ${Math.round(distanceMeters / 10) * 10} m de ${loc.name || ''}`;
+    const sub = document.getElementById('stsNearbySub');
+    if (sub) sub.textContent = [loc.category, loc.group].filter(Boolean).join(' · ') + ' — viens débloquer ton badge !';
+    el.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(() => el.classList.add('on'));
+}
+
+function hideNearbyPlaceBanner() {
+    const el = document.getElementById('stsNearbyBanner');
+    if (el) { el.classList.remove('on'); el.setAttribute('aria-hidden', 'true'); }
+    nearbyBannerLoc = null;
 }
 
 // Garde-fou localStorage (demande du 13/09/2026, "affiche le pop up qu'une seule fois")
