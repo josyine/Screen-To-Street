@@ -8,8 +8,18 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .app-container { width: 100%; height: 100%; display: flex; background: #fff; position: relative; }
 
 /* Top Nav (pour Map et Trips) */
-.top-nav { position: absolute; top: 20px; right: 20px; z-index: 2000; display: flex; gap: 9px; pointer-events: auto; }
-.dropdown-container { position: relative; display: inline-block; }
+.top-nav { position: absolute; top: 20px; right: 20px; z-index: 2000; display: flex; align-items: center; gap: 9px; pointer-events: auto; }
+/* BUG corrigé (demande du 09/10/2026, "le bouton changement de langue est décalé" dans
+   .top-nav) : certaines icônes du header (langue, panier/badges) sont enveloppées dans ce
+   conteneur pour ancrer leur menu déroulant, d'autres (admin/feed/message...) sont des
+   <button class="header-icon-btn"> directement enfants de .top-nav — display:inline-block
+   ici réservait un peu d'espace de ligne sous le bouton (même famille de bug que le <svg>
+   inline des puces de transport, déjà corrigé ailleurs ce jour), rendant CE bouton-là
+   légèrement plus haut que ses voisins malgré align-items:center ajouté ci-dessus sur
+   .top-nav (ça centre la BOITE du conteneur, pas son contenu si la boîte a cette marge en
+   trop). inline-flex élimine cette marge, les deux familles de boutons s'alignent
+   maintenant exactement pareil. */
+.dropdown-container { position: relative; display: inline-flex; align-items: center; }
 
 /* Boutons d'icônes du header : alignés à 100% sur le style utilisé par map.html
    (mêmes dimensions, même ombre, même bordure) pour que le header soit identique
@@ -324,13 +334,20 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
    openPhotoLightbox()/closePhotoLightbox() dans script.js. z-index au-dessus de
    #sidebar-details (3000) et .live-panel (9500) mais sous le panneau Itinéraire/son toast
    (9800/9900, improbable d'être ouverts en même temps qu'une photo de fiche lieu). */
-.photo-lightbox { position: fixed; inset: 0; z-index: 9600; background: rgba(20,16,36,.6); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+.photo-lightbox { position: fixed; inset: 0; z-index: 9600; background: rgba(20,16,36,.6); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .25s ease; overflow: auto; }
 .photo-lightbox.open { opacity: 1; pointer-events: auto; }
-.photo-lightbox-img { max-width: 100%; max-height: 100%; border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.4); cursor: zoom-in; transition: transform .25s cubic-bezier(.2,.8,.2,1); }
-.photo-lightbox-img.zoomed { transform: scale(1.8); cursor: zoom-out; }
-.photo-lightbox-close { position: absolute; top: 18px; right: 18px; width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,.15); border: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.photo-lightbox-close:hover { background: rgba(255,255,255,.25); }
-@media (prefers-reduced-motion: reduce) { .photo-lightbox, .photo-lightbox-img { transition: none; } }
+/* BUG corrigé (demande du 09/10/2026, "fais en sorte qu'on puisse zoomer") : la version
+   précédente (transform:scale) agrandissait bien l'image visuellement, mais overflow
+   n'était pas activé sur le fond — impossible de voir/atteindre le reste d'une photo plus
+   grande que l'écran une fois zoomée, donc pas un vrai zoom utilisable. Zoomée, l'image
+   grandit maintenant pour de vrai (width, pas juste un transform) et le fond devient
+   défilable (overflow:auto) — aligné en haut-gauche plutôt que centré pendant ce temps
+   (centrer + overflow:auto recadre mal la zone atteignable au défilement, problème CSS
+   connu), pour pouvoir vraiment parcourir toute la photo agrandie au doigt/à la molette. */
+.photo-lightbox.zoomed { align-items: flex-start; justify-content: flex-start; padding: 0; }
+.photo-lightbox-img { max-width: 100%; max-height: 100%; border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.4); cursor: zoom-in; }
+.photo-lightbox.zoomed .photo-lightbox-img { max-width: none; max-height: none; width: 220%; border-radius: 0; cursor: zoom-out; }
+@media (prefers-reduced-motion: reduce) { .photo-lightbox { transition: none; } }
 
 /* Image optionnelle sous "The story of this place" (demande du 07/10/2026) — voir
    #details-story-image dans map.html. Même gabarit que les photos "Mei's Pictures"
@@ -906,6 +923,17 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
     }
     .mobile-bottom-nav.menu-open { display: none !important; }
 
+    /* BUG corrigé (demande du 09/10/2026, "il faut afficher les icones du bas par dessus
+       la page Agenda") : .live-panel occupe tout l'écran sur mobile (z-index 9500, voir
+       map.html) et passe donc normalement PAR-DESSUS cette nav (z-index 3500 ci-dessus) —
+       voulu quand elle recouvre juste une fiche partielle, mais pas ici où le panneau
+       Agenda est censé prendre tout l'écran. #mobile-bottom-nav est injecté en toute fin
+       de <body> par injectMobileBottomNav() (script.js), donc toujours APRÈS .live-panel
+       dans le DOM — le sélecteur de voisin général ci-dessous cible la nav uniquement
+       pendant que ce panneau précis est ouvert (.live-panel.open), sans toucher à son
+       z-index le reste du temps ni sur les autres panneaux/fiches du site. */
+    .live-panel.open ~ #mobile-bottom-nav { z-index: 9600; }
+
     /* Pastille rose pâle glissante sous l'onglet actif (demande du 08/10/2026, "une
        pastille rose pâle glisse derrière l'icône choisie, avec un léger rebond") — reprend
        le mécanisme de la maquette fournie (.stn-pill : translateX calculé en JS depuis
@@ -923,8 +951,12 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        bas une fois scrollé tout en bas — la nav est en position:fixed, donc hors du
        flux scrollable de la fiche, et le padding-bottom desktop (30px) ne suffit pas à
        la dégager. On réserve l'espace réellement occupé par la nav (hauteur ~52px +
-       son offset bottom de 14px + la zone de sécurité iOS, avec une marge). */
-    .tab-panel { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+       son offset bottom de 14px + la zone de sécurité iOS, avec une marge).
+       BUG corrigé (demande du 09/10/2026, "augmente la marge à la fin de la page... ça
+       permet de ne pas couper l'affichage des boutons à la fin") : 90px restait trop
+       juste en pratique (bouton "More details" encore limite sous la nav sur certains
+       écrans) — marge augmentée. */
+    .tab-panel { padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
 
     /* Chevron permanent (demande du 11/09/2026, redemandé le 12 et 13/09/2026 "chevauche
        toujours le +, mal aligné") : deux tentatives de valeur bottom fixe en CSS (49px,

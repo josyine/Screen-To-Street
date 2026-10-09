@@ -458,16 +458,15 @@
       .live-panel { background: #fff; backdrop-filter: none; padding: 0; }
       .live-panel-card { width: 100%; max-width: none; height: 100%; max-height: none; border-radius: 0; }
       /* BUG corrigé (demande du 09/10/2026, "quand je clique sur l'icone 'Agenda', je veux
-         que la barre de navigation en bas apparaisse") : .live-panel est en position:fixed;
-         inset:0 avec un z-index (9500) plus élevé que .mobile-bottom-nav (3500, voir
-         style.css) — sur mobile, le panneau plein écran ci-dessus recouvrait donc
-         entièrement la nav du bas, qui restait pourtant dans le DOM (openLivePanel() ne la
-         masque jamais, contrairement à toggleMobileMenu()/openDetailsPanel() qui appellent
-         setMobileChromeHidden()). On réserve ici le même espace que partout ailleurs sur le
-         site pour ce problème (.tab-panel, .stb-body...) en remontant le bord bas du
-         panneau — la nav redevient visible ET cliquable en dessous, sans toucher au z-index
-         ni dupliquer la logique JS de masquage. */
-      .live-panel { bottom: calc(90px + env(safe-area-inset-bottom,0px)); }
+         que la barre de navigation en bas apparaisse") puis précisé le même jour ("il faut
+         afficher les icones du bas par dessus la page Agenda") : un premier essai remontait
+         le bord bas du panneau pour révéler la nav dans l'espace ainsi dégagé (comme pour
+         .stb-det/.tab-panel ailleurs sur le site) — mais ici, contrairement à ces fiches
+         partielles, .live-panel est censé occuper TOUT l'écran sur mobile (voir le
+         commentaire juste au-dessus, "je ne veux pas voir la page map en dessous") ; lui
+         laisser un bord tronqué cassait ce plein écran voulu. La VRAIE nav du bas flotte
+         donc maintenant par-dessus (voir .mobile-bottom-nav dans style.css, sélecteur de
+         voisin ciblé sur .live-panel.open) plutôt que de rogner le panneau. */
   }
 
   /* BUG corrigé (demande du 09/10/2026, "agrandis la section Agenda, car l'affichage de
@@ -618,7 +617,13 @@
   .sts-alt b{display:block;font-size:15px}
   .sts-alt span{display:block;font-size:12px;color:var(--sts-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sts-chips{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:6px}
-  .sts-chip{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;background:#F3E8FF;color:var(--sts-pur)}
+  /* BUG corrigé (demande du 09/10/2026, "l'icone métro doit être aligné horizontalement
+     avec le numéro, et non verticalement") : flex-direction/white-space posés ici de
+     façon EXPLICITE (row était déjà la valeur par défaut d'inline-flex, mais implicite —
+     rien n'empêchait un wrap vertical si le numéro ne tenait pas sur la même ligne que
+     l'icône). Les deux restent désormais toujours côte à côte sur une seule ligne, quelle
+     que soit la largeur du chiffre (ligne à 2-3 caractères comprise). */
+  .sts-chip{display:inline-flex;flex-direction:row;align-items:center;white-space:nowrap;gap:3px;height:22px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:700;background:#F3E8FF;color:var(--sts-pur)}
   /* BUG corrigé (demande du 09/10/2026, "l'icone du métro n'est pas aligné avec le
      numéro") : un <svg> inline garde par défaut son display:inline du navigateur, qui lui
      laisse un peu d'espace de "descente" sous la ligne de base — invisible pour une icône
@@ -650,6 +655,60 @@
     .sts-it.on{transform:none}
   }
   @media (prefers-reduced-motion:reduce){.sts-it{transition:none}}
+
+  /* =====================================================================
+     Mode « Défi sur la carte » (demande du 09/10/2026) — reprise quasi telle
+     quelle du fichier HTML fourni (defi_sur_carte.html, préfixe .stc-
+     conservé), avec la fiche .demo-nav/bouton .demo-open du prototype
+     retirés (la vraie nav du bas du site existe déjà). Voir ChallengeMap
+     dans script.js pour la logique de câblage sur la VRAIE carte/les
+     VRAIS marqueurs/lieux du site.
+     ===================================================================== */
+  :root{--stc-mag:#E0156B;--stc-pur:#9B3CEB;--stc-grad:linear-gradient(90deg,#9B3CEB,#E0156B);--stc-ink:#1F2430;--stc-soft:#6B6478;--stc-line:#ECE8F2}
+  .stc-pin{position:relative;width:38px;height:48px;transition:transform .25s cubic-bezier(.3,1.6,.4,1);transform-origin:50% 100%}
+  .stc-pin.sel{transform:scale(1.25)}
+  .stc-pin svg{display:block;filter:drop-shadow(0 4px 6px rgba(30,20,50,.28))}
+  .stc-pin .n{position:absolute;left:0;right:0;top:8px;text-align:center;font:700 13px Poppins,sans-serif;color:var(--stc-mag)}
+  /* AJOUT SITE : dédié aux VRAIS marqueurs du site (.custom-category-marker, voir
+     addSingleLocationMarker() dans script.js) plutôt qu'une classe posée par marqueur —
+     ChallengeMap les estompe/restaure directement via marker.setOpacity(), cette règle ne
+     sert donc qu'à transitionner le changement en douceur. */
+  .leaflet-marker-icon.custom-category-marker{transition:opacity .25s}
+  .stc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:3400;background:#fff;border-radius:26px 26px 0 0;box-shadow:0 -12px 30px rgba(30,20,50,.15);
+    padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.8,.2,1);max-width:560px;margin:0 auto}
+  /* AJOUT SITE (même correctif que .stb-det/.live-panel ailleurs sur le site, demande du
+     09/10/2026 "les icones du bas chevauchent la page") : .mobile-bottom-nav (position:
+     fixed, z-index 3500, voir style.css) passerait par-dessus le bas de cette fiche si
+     elle allait jusqu'à bottom:0 comme dans le fichier fourni — on remonte son bord bas
+     pour laisser la nav visible et cliquable en dessous, plutôt que de lui disputer le
+     z-index. Ordinateur non concerné (pas de nav du bas, voir le ?700px ci-dessous). */
+  @media (max-width:760px){.stc-sheet{bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
+  .stc-sheet.on{transform:none}
+  .stc-sheet.min .stc-body{display:none}
+  .stc-handle{display:block;width:44px;height:5px;border-radius:9px;background:#DDD8E6;margin:0 auto 12px}
+  .stc-head{display:flex;align-items:center;gap:12px}
+  .stc-head .k{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--stc-pur)}
+  .stc-head .t{font-weight:700;font-size:15.5px}
+  .stc-head .d{font-size:12px;color:var(--stc-soft)}
+  .stc-x{flex:0 0 36px;height:36px;border-radius:50%;background:#F1EEF6;display:flex;align-items:center;justify-content:center}
+  .stc-progrow{display:flex;align-items:center;gap:10px;margin:10px 0 12px}
+  .stc-prog{flex:1;height:6px;border-radius:6px;background:#EFEAF6;overflow:hidden}.stc-prog i{display:block;height:100%;border-radius:6px;background:var(--stc-grad);transition:width .5s}
+  .stc-progrow b{font-size:13px}
+  .stc-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 16px 4px;margin:0 -16px}
+  .stc-car::-webkit-scrollbar{display:none}
+  .stc-card{flex:0 0 72%;max-width:260px;scroll-snap-align:center;display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;border:1.5px solid var(--stc-line);background:#fff;text-align:left;transition:border-color .2s,background .2s}
+  .stc-card.sel{border-color:var(--stc-mag);background:#FFF8FB}
+  .stc-ph{position:relative;flex:0 0 46px;height:46px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;border:2px solid var(--stc-mag);color:var(--stc-mag);background:#fff}
+  .stc-ph.ok{background:var(--stc-mag);color:#fff}
+  .stc-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .stc-ph .chk{position:absolute;right:-1px;bottom:-1px;width:18px;height:18px;border-radius:50%;background:var(--stc-mag);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+  .stc-card b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stc-card span.s{font-size:11.5px;color:var(--stc-soft)}
+  .stc-acts{display:flex;gap:8px;margin-top:12px}
+  .stc-acts button{flex:1;height:42px;border-radius:12px;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:7px}
+  .stc-view{background:var(--stc-grad);color:#fff;box-shadow:0 6px 14px rgba(224,21,107,.22)}
+  .stc-route{border:1.5px solid var(--stc-pur)!important;color:var(--stc-pur)}
+  @media (prefers-reduced-motion:reduce){.stc-sheet,.stc-pin{transition:none}}
 </style>
 </head>
 <body class="auth-gate-active">
@@ -1197,9 +1256,16 @@
                          élément par id dès son exécution (classique, pas de module différé
                          — BUG trouvé en testant : posée après ce <script>, elle n'existait
                          pas encore au moment où le câblage tournait, qui échouait alors en
-                         silence sans jamais relier le clic sur une photo à l'ouverture). -->
+                         silence sans jamais relier le clic sur une photo à l'ouverture).
+                         BUG corrigé (demande du 09/10/2026, "supprime la croix en haut à
+                         droite car il y a déjà la croix en haut à gauche") : son propre
+                         bouton fermer (.photo-lightbox-close) retiré — la croix "en haut à
+                         gauche" que la personne voit à travers le fond flouté est celle de
+                         la fiche lieu EN DESSOUS (#sidebar-details), pas une croix à elle ;
+                         cliquer dessus retombe donc sur le clic-en-dehors-de-la-photo déjà
+                         câblé ci-dessous (ferme la visionneuse, révèle la vraie fiche et SA
+                         vraie croix, cliquable normalement ensuite). -->
                     <div class="photo-lightbox" id="photo-lightbox" role="dialog" aria-modal="true" aria-label="Photo">
-                        <button type="button" class="photo-lightbox-close" id="photo-lightbox-close" aria-label="Fermer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
                         <img class="photo-lightbox-img" id="photo-lightbox-img" src="" alt="" title="Cliquer pour zoomer">
                     </div>
 
@@ -1645,6 +1711,30 @@
   <div class="sts-sheet" id="stsSheet" aria-live="polite"></div>
 </section>
 <div class="sts-toast" id="stsToast" role="status" aria-live="polite"></div>
+
+<!-- Mode "Défi sur la carte" (demande du 09/10/2026, "quand je clique sur un défis et
+     'voir les lieux sur la carte', il faut afficher les lieux du défi sur la carte") —
+     markup du fichier fourni (defi_sur_carte.html), fiche .demo-nav/bouton .demo-open du
+     prototype retirés (vraie nav du bas déjà présente sur cette page). Ouvert par
+     ChallengeMap.open() dans script.js, déclenché par ?challenge=1 (voir le bootstrap de
+     la page) — le vrai défi (nom/description/lieux) vient de sessionStorage, posé par
+     badges.html juste avant la navigation. Posée ici, bien avant <script src="script.js">
+     plus bas, pour exister dans le DOM dès son exécution (même correctif que pour
+     #photo-lightbox plus haut dans ce fichier). -->
+<section class="stc-sheet" id="stcSheet" role="dialog" aria-label="Défi sur la carte" aria-hidden="true">
+  <button class="stc-handle" data-act="toggle" aria-label="Réduire ou agrandir"></button>
+  <div class="stc-head">
+    <span id="stcIcon"></span>
+    <div style="flex:1;min-width:0"><div class="k">DÉFI</div><div class="t" id="stcName"></div><div class="d" id="stcDesc"></div></div>
+    <button class="stc-x" data-act="close" aria-label="Quitter le défi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="stc-progrow"><div class="stc-prog"><i id="stcBar"></i></div><b id="stcCount"></b></div>
+  <div class="stc-body">
+    <div class="stc-car" id="stcCar"></div>
+    <div class="stc-acts"><button class="stc-view" data-act="view">View</button>
+      <button class="stc-route" data-act="route"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>Itinéraire</button></div>
+  </div>
+</section>
 
 <!-- Panneau "Live" : timeline unifiée (tournée du groupe + activités solo des membres,
      ex. Jimin à la Fashion Week de Paris) filtrable par membre via la rangée d'avatars.

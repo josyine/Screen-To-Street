@@ -3558,7 +3558,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // lieux fusionnés en un seul cluster peuvent redevenir individuels en
             // zoomant, et l'inverse en dézoomant) — sans reconstruire la liste latérale
             // ni relancer un fitBounds, seulement pour ce zoom-ci.
-            if (!window.__tripViewActive && typeof renderMapMarkers === 'function' && Array.isArray(currentFilteredLocations)) {
+            if (!window.__tripViewActive && !window.__challengeMapActive && typeof renderMapMarkers === 'function' && Array.isArray(currentFilteredLocations)) {
                 renderMapMarkers(currentFilteredLocations, { fitBounds: false });
             }
         });
@@ -3827,6 +3827,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.showSimpleToast(msgByKind[quickAddKind] || t('quickAddPickLocation'));
                 }
             }, 700);
+        }
+        // ?challenge=1 (demande du 09/10/2026) : bouton "Voir les lieux sur la carte" d'un
+        // défi, sur badges.html — le vrai défi (nom/description/lieux) a été posé dans
+        // sessionStorage juste avant la navigation (voir badges.html), trop volumineux
+        // pour tenir proprement dans l'URL elle-même. Retiré de sessionStorage aussitôt lu
+        // (usage unique, comme ?loc=/?live=1 ci-dessus qui ne survivent pas non plus à un
+        // rechargement volontaire de la page).
+        if (params.get('challenge')) {
+            let pending = null;
+            try { pending = JSON.parse(sessionStorage.getItem('pendingChallengeMap') || 'null'); sessionStorage.removeItem('pendingChallengeMap'); } catch (e) {}
+            if (pending && Array.isArray(pending.places) && pending.places.length) {
+                setTimeout(() => { if (window.ChallengeMap) window.ChallengeMap.open(pending); }, 700);
+            }
         }
     }
 });
@@ -6571,12 +6584,12 @@ window.openPhotoLightbox = function (url) {
     const img = document.getElementById('photo-lightbox-img');
     if (!lb || !img || !url) return;
     img.src = url;
-    img.classList.remove('zoomed');
+    lb.classList.remove('zoomed');
     lb.classList.add('open');
 };
 window.closePhotoLightbox = function () {
     const lb = document.getElementById('photo-lightbox');
-    if (lb) lb.classList.remove('open');
+    if (lb) { lb.classList.remove('open'); lb.classList.remove('zoomed'); }
 };
 (function initPhotoLightbox() {
     const gallery = document.getElementById('details-recreate-photo-gallery');
@@ -6586,15 +6599,130 @@ window.closePhotoLightbox = function () {
     });
     const lb = document.getElementById('photo-lightbox');
     if (!lb) return;
-    // Clic sur le fond flouté (pas sur la photo ni le bouton fermer, déjà gérés à part) :
-    // e.target === lb seulement quand le clic tombe directement sur l'overlay lui-même.
+    // BUG corrigé (demande du 09/10/2026, "supprime la croix en haut à droite car il y a
+    // déjà la croix en haut à gauche") : plus de bouton fermer dédié — cliquer sur le fond
+    // flouté (jamais sur la photo elle-même, gérée à part juste en dessous) ferme la
+    // visionneuse et révèle la fiche lieu en dessous avec SA propre croix, déjà visible
+    // par transparence à travers le flou. e.target === lb seulement quand le clic tombe
+    // directement sur l'overlay (pas sur l'image, qui est un enfant distinct).
     lb.addEventListener('click', (e) => { if (e.target === lb) window.closePhotoLightbox(); });
+    // BUG corrigé (demande du 09/10/2026, "fais en sorte qu'on puisse zoomer") : bascule la
+    // classe sur le CONTENEUR (pas juste l'image, voir .photo-lightbox.zoomed dans
+    // style.css) pour aussi activer le défilement du fond — une image zoomée qui dépasse
+    // l'écran doit pouvoir être parcourue, pas seulement agrandie sur place.
     const lbImg = document.getElementById('photo-lightbox-img');
-    if (lbImg) lbImg.addEventListener('click', () => lbImg.classList.toggle('zoomed'));
-    const closeBtn = document.getElementById('photo-lightbox-close');
-    if (closeBtn) closeBtn.addEventListener('click', window.closePhotoLightbox);
+    if (lbImg) lbImg.addEventListener('click', () => lb.classList.toggle('zoomed'));
     addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closePhotoLightbox(); });
 })();
+
+// ==========================================
+// MODE "DÉFI SUR LA CARTE" (demande du 09/10/2026, "quand je clique sur badges, puis que
+// je clique sur un défis et 'voir les lieux sur la carte', il faut afficher les lieux du
+// défi sur la carte")
+// ==========================================
+// Port quasi verbatim de ChallengeMap depuis le fichier fourni (defi_sur_carte.html,
+// préfixe .stc- conservé — voir #stcSheet dans map.html) sur la VRAIE carte/les VRAIS
+// marqueurs du site plutôt que sur la fausse carte de démo/les faux marqueurs .stc-other
+// du prototype :
+//  - "les autres lieux s'estompent en gris" → marker.setOpacity(.25) sur chaque marqueur
+//    de markerGroup qui n'est PAS un lieu du défi (restauré à 1 à la fermeture), plutôt
+//    que la classe CSS .stc-other du prototype (nos marqueurs réels n'ont pas cette
+//    classe) — fonctionne quel que soit le type d'icône, natif à L.Marker.
+//  - "par ordre de plus proche au plus loin" (demande explicite, absente du prototype
+//    fourni, qui se contentait d'afficher la distance sans trier) : ch.places est
+//    re-trié par map.distance() dès que la position réelle est connue, puis la fiche et
+//    la sélection du premier lieu non visité sont relancées sur ce nouvel ordre.
+//  - "View"/"Itinéraire" branchés sur les vraies fonctions du site (openDetailsPanel()/
+//    openLocationItinerary()) plutôt que les toasts de démonstration.
+const ChallengeMap = (() => {
+    const $ = id => document.getElementById(id), sheet = $('stcSheet'), car = $('stcCar');
+    if (!sheet || !car) return { open() {}, close() {} }; // page sans le panneau (ex: pas encore chargé) — no-op plutôt qu'une erreur
+    let ch = null, stcLayer = null, markers = {}, sel = null, me = null, prevView = null, dimmedMarkers = [];
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const fmtKm = m => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
+    const HEX = done => `<svg width="46" height="46" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6l22.5 13v26L32 58 9.5 45V19z" fill="${done ? '#E0156B1F' : '#F1EEF6'}" stroke="${done ? '#E0156B' : '#C9C2D6'}" stroke-width="2.6" stroke-linejoin="round"/>${done
+        ? '<path d="M22 32l7 7 13-14" fill="none" stroke="#E0156B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'
+        : '<rect x="25" y="30" width="14" height="11" rx="2.5" fill="#B4ADC2"/><path d="M28 30v-3a4 4 0 0 1 8 0v3" stroke="#B4ADC2" stroke-width="2.6" fill="none"/>'}</svg>`;
+    const pinIcon = (p, i) => L.divIcon({ className: '', iconSize: [38, 48], iconAnchor: [19, 48], html: `<div class="stc-pin" data-id="${p.id}">${p.visited
+        ? '<svg width="38" height="48" viewBox="0 0 38 48"><path d="M19 1C9 1 1 9 1 19c0 13 18 28 18 28s18-15 18-28C37 9 29 1 19 1z" fill="#E0156B" stroke="#fff" stroke-width="2"/><path d="M11 19l5.5 5.5L27 14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        : `<svg width="38" height="48" viewBox="0 0 38 48"><path d="M19 1C9 1 1 9 1 19c0 13 18 28 18 28s18-15 18-28C37 9 29 1 19 1z" fill="#fff" stroke="#E0156B" stroke-width="2.6"/></svg><span class="n">${i + 1}</span>`}</div>` });
+
+    function renderSheet() {
+        const done = ch.places.filter(p => p.visited).length, n = ch.need || ch.places.length;
+        $('stcIcon').innerHTML = HEX(done >= n); $('stcName').textContent = ch.name; $('stcDesc').textContent = ch.desc || '';
+        $('stcBar').style.width = (done / n * 100) + '%'; $('stcCount').textContent = `${done}/${n}`;
+        car.innerHTML = ch.places.map((p, i) => {
+            const d = me ? fmtKm(map.distance([me.lat, me.lon], [p.lat, p.lng])) + ' · ' : '';
+            return `<button class="stc-card" data-id="${p.id}"><span class="stc-ph${p.visited && !p.photo ? ' ok' : ''}">${p.photo ? `<img src="${esc(p.photo)}" alt="" onerror="this.remove()">` : (p.visited ? '✓' : i + 1)}${p.photo && p.visited ? '<span class="chk">✓</span>' : ''}</span>
+        <span style="min-width:0"><b>${esc(p.name)}</b><span class="s">${d}${p.visited ? 'visité' : 'à visiter'}</span></span></button>`;
+        }).join('');
+    }
+    function select(id, { pan = true, scroll = true } = {}) {
+        sel = ch.places.find(p => String(p.id) === String(id)); if (!sel) return;
+        document.querySelectorAll('.stc-pin').forEach(e => e.classList.toggle('sel', e.dataset.id === String(id)));
+        car.querySelectorAll('.stc-card').forEach(c => c.classList.toggle('sel', c.dataset.id === String(id)));
+        Object.entries(markers).forEach(([k, m]) => m.setZIndexOffset(k === String(id) ? 1000 : 0));
+        if (scroll) { const c = car.querySelector(`.stc-card[data-id="${id}"]`); c && car.scrollTo({ left: c.offsetLeft - car.offsetWidth / 2 + c.offsetWidth / 2, behavior: 'smooth' }); }
+        if (pan) map.panInside([sel.lat, sel.lng], { paddingTopLeft: [40, 80], paddingBottomRight: [40, sheet.offsetHeight + 30] });
+    }
+    function fit() {
+        const b = L.latLngBounds(ch.places.map(p => [p.lat, p.lng])); me && b.extend([me.lat, me.lon]);
+        map.fitBounds(b, { paddingTopLeft: [50, 70], paddingBottomRight: [50, sheet.offsetHeight + 40], maxZoom: 16 });
+    }
+    function selectFirstNotVisited() { const first = ch.places.find(p => !p.visited) || ch.places[0]; if (first) select(first.id, { pan: false }); }
+
+    let tm; car.addEventListener('scroll', () => {
+        clearTimeout(tm); tm = setTimeout(() => {   // le carrousel pilote la carte
+            const mid = car.scrollLeft + car.offsetWidth / 2; let best = null, bd = 1e9;
+            car.querySelectorAll('.stc-card').forEach(c => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = c; } });
+            if (best && (!sel || String(best.dataset.id) !== String(sel.id))) select(best.dataset.id, { scroll: false });
+        }, 140);
+    });
+    sheet.addEventListener('click', e => {
+        const c = e.target.closest('.stc-card'); if (c) { select(c.dataset.id); return; }
+        const a = e.target.closest('[data-act]'); if (!a) return;
+        if (a.dataset.act === 'close') api.close();
+        if (a.dataset.act === 'toggle') { sheet.classList.toggle('min'); setTimeout(fit, 350); }
+        if (a.dataset.act === 'view' && sel) window.openDetailsPanel(sel.id);
+        if (a.dataset.act === 'route' && sel) { if (typeof window.openLocationItinerary === 'function') window.openLocationItinerary(sel); }
+    });
+
+    const api = {
+        onClose: null,
+        open(defi) {
+            if (!map || !markerGroup) return;
+            ch = defi; prevView = { c: map.getCenter(), z: map.getZoom() };
+            // Bloque les re-rendus de markerGroup pendant ce mode (zoomend — voir
+            // window.__tripViewActive, même principe) : ils recréeraient des marqueurs
+            // frais avec une opacité par défaut, effaçant l'estompage ci-dessous.
+            window.__challengeMapActive = true;
+            const challengeIds = new Set(ch.places.map(p => String(p.id)));
+            dimmedMarkers = [];
+            markerGroup.eachLayer(m => { if (!challengeIds.has(String(m.__locId))) { m.setOpacity(.25); dimmedMarkers.push(m); } });
+            stcLayer && stcLayer.remove(); stcLayer = L.layerGroup().addTo(map); markers = {};
+            ch.places.forEach((p, i) => { markers[p.id] = L.marker([p.lat, p.lng], { icon: pinIcon(p, i), keyboard: false }).addTo(stcLayer).on('click', () => select(p.id)); });
+            renderSheet(); sheet.classList.remove('min'); sheet.classList.add('on'); sheet.setAttribute('aria-hidden', 'false');
+            setTimeout(() => { fit(); selectFirstNotVisited(); }, 60);
+            if (navigator.geolocation) navigator.geolocation.getCurrentPosition(pos => {
+                me = { lat: pos.coords.latitude, lon: pos.coords.longitude }; if (ch !== defi) return;
+                ch.places.sort((a, b) => map.distance([me.lat, me.lon], [a.lat, a.lng]) - map.distance([me.lat, me.lon], [b.lat, b.lng]));
+                renderSheet(); selectFirstNotVisited();
+            }, () => {}, { maximumAge: 60000, timeout: 8000 });
+        },
+        close() {
+            if (!ch) return; sheet.classList.remove('on'); sheet.setAttribute('aria-hidden', 'true');
+            dimmedMarkers.forEach(m => m.setOpacity(1)); dimmedMarkers = [];
+            stcLayer && stcLayer.remove(); stcLayer = null;
+            window.__challengeMapActive = false;
+            prevView && map.setView(prevView.c, prevView.z, { animate: true });
+            ch = null; sel = null; me = null;
+            api.onClose && api.onClose();
+        }
+    };
+    addEventListener('keydown', e => { if (e.key === 'Escape' && ch) api.close(); });
+    return api;
+})();
+window.ChallengeMap = ChallengeMap;
 
 // ==========================================
 // ÉDITION DIRECTE D'UN LIEU PAR UN ADMIN (icône crayon sur la fiche du lieu, demande du

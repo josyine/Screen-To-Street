@@ -549,7 +549,7 @@ function showChallenge(id){
   det.innerHTML=`<div class="hd"></div>${challIcon(c,100)}
    <div class="k">Défi</div><h4>${esc(c.name)}</h4>
    <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--stb-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
-   ${items}<button class="stb-cta" data-act="${done?"close-det":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`;
+   ${items}<button class="stb-cta" data-act="${done?"close-det":"map"}" data-challenge-id="${esc(c.id)}">${done?"Super !":"Voir les lieux sur la carte"}</button>`;
   openDet();
 }
 function openDet(){det.classList.add("on");dim.classList.add("on");}
@@ -584,7 +584,24 @@ det.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(!a)re
   /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, convention déjà utilisée
      partout ailleurs sur le site pour ce genre de lien) au lieu du simple toast de
      démonstration du fichier d'origine — data-loc-id posé par showPlace() ci-dessus. */
-  if(a.dataset.act==="map"){const locId=a.dataset.locId;StbBadges.close();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");}});
+  /* AJOUT SITE (demande du 09/10/2026, "quand je clique sur un défis et 'voir les lieux
+     sur la carte', il faut afficher les lieux du défi sur la carte") : un défi n'a pas
+     UN lieu (pas de data-loc-id, contrairement à showPlace() ci-dessus) mais plusieurs —
+     c.places (voir buildRealChallenges(), withPlaces=true) est déjà les vrais lieux de
+     CE défi. Transmis à map.html via sessionStorage plutôt que l'URL (une liste de lieux
+     dépasserait vite une longueur d'URL raisonnable) — ChallengeMap (map.html) lit
+     'pendingChallengeMap' au chargement et trie par distance une fois la position connue. */
+  if(a.dataset.act==="map"){
+    const challengeId=a.dataset.challengeId;
+    const c=challengeId?DATA.challenges.find(x=>x.id===challengeId):null;
+    if(c&&Array.isArray(c.places)&&c.places.length){
+      StbBadges.close();
+      try{ sessionStorage.setItem("pendingChallengeMap",JSON.stringify({name:c.name,desc:c.desc,need:needN(c),places:c.places})); }catch(e){}
+      window.location.href="map.html?challenge=1";
+      return;
+    }
+    const locId=a.dataset.locId;StbBadges.close();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");
+  }});
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(det.classList.contains("on"))closeDet();else if(page.classList.contains("on"))StbBadges.close();}});
 addEventListener("popstate",()=>{if(page.classList.contains("on"))StbBadges.close(true);});
 window.StbBadges=StbBadges;
@@ -625,10 +642,18 @@ window.StbBadges=StbBadges;
     // règles que challIcon()/isDone() plus haut (icon doit être une clé de IC, need un
     // nombre pour un défi "N lieux de...", voir needN()).
     const CATEGORY_ICON={"Bon Voyage":"plane","Run BTS":"cam","Concert":"mic","Cafe":"cup","Restaurant":"cup","Restaurants":"cup","MV Location":"cam","Museum":"star","Museums":"star","Art Museum":"star","Fashion":"bag","Pop-up Store":"bag","Landmark":"tower","Landmarks":"tower","In The Soop":"tower","Hotel":"tower"};
-    function buildRealChallenges(allLocs,unlockedIds,isFr){
+    // AJOUT SITE (demande du 09/10/2026, "quand je clique sur un défis et 'voir les lieux
+    // sur la carte', il faut afficher les lieux du défi sur la carte") : withPlaces (false
+    // par défaut) attache en plus un tableau `places` par défi — les VRAIS lieux qui
+    // comptent pour ce défi (pas juste son nombre), pour le mode "Défi sur la carte" sur
+    // map.html (voir plus bas). Seulement pour MES défis (appel avec withPlaces=true) :
+    // calculer ces tableaux pour chaque ami aussi (appels suivants, withPlaces omis)
+    // serait du travail inutile, leurs défis ne servent qu'à leur score au classement.
+    function buildRealChallenges(allLocs,unlockedIds,isFr,withPlaces){
         const challenges=[];
         const doneCountFor=pred=>allLocs.filter(l=>unlockedIds.has(String(l.id))&&pred(l)).length;
-        challenges.push({id:"first",name:isFr?"Premier pas":"First step",desc:isFr?"Visiter ton tout premier lieu.":"Visit your very first place.",need:1,done:Math.min(1,unlockedIds.size),icon:"pin"});
+        const placesFor=pred=>withPlaces?allLocs.filter(pred).map(l=>({id:String(l.id),name:l.name,group:l.group,lat:l.lat,lng:l.lng,visited:unlockedIds.has(String(l.id)),photo:l.img||""})):undefined;
+        challenges.push({id:"first",name:isFr?"Premier pas":"First step",desc:isFr?"Visiter ton tout premier lieu.":"Visit your very first place.",need:1,done:Math.min(1,unlockedIds.size),icon:"pin",places:placesFor(()=>true)});
         const catCounts={};
         allLocs.forEach(l=>{ if(l.category) catCounts[l.category]=(catCounts[l.category]||0)+1; });
         const topCats=Object.keys(catCounts).filter(cat=>catCounts[cat]>=3).sort((a,b)=>catCounts[b]-catCounts[a]).slice(0,5);
@@ -640,7 +665,8 @@ window.StbBadges=StbBadges;
                 desc:(isFr?`Visiter ${target} lieux de l'émission `:`Visit ${target} places from `)+cat+".",
                 need:target,
                 done:Math.min(doneCountFor(l=>l.category===cat),target),
-                icon:CATEGORY_ICON[cat]||"pin"
+                icon:CATEGORY_ICON[cat]||"pin",
+                places:placesFor(l=>l.category===cat)
             });
         });
         const groupCounts={};
@@ -654,14 +680,15 @@ window.StbBadges=StbBadges;
                 desc:(isFr?`Visiter ${target} lieux liés à `:`Visit ${target} places linked to `)+topGroup+".",
                 need:target,
                 done:Math.min(doneCountFor(l=>l.group===topGroup),target),
-                icon:"heart"
+                icon:"heart",
+                places:placesFor(l=>l.group===topGroup)
             });
         }
         const countries=new Set(allLocs.map(l=>l.country).filter(Boolean));
         if(countries.size>=3){
             const target=Math.min(5,countries.size);
             const doneCountries=new Set(allLocs.filter(l=>unlockedIds.has(String(l.id))).map(l=>l.country).filter(Boolean)).size;
-            challenges.push({id:"globe",name:isFr?"Globe-trotteur":"Globetrotter",desc:isFr?`Visiter des lieux dans ${target} pays différents.`:`Visit places in ${target} different countries.`,need:target,done:Math.min(doneCountries,target),icon:"crown"});
+            challenges.push({id:"globe",name:isFr?"Globe-trotteur":"Globetrotter",desc:isFr?`Visiter des lieux dans ${target} pays différents.`:`Visit places in ${target} different countries.`,need:target,done:Math.min(doneCountries,target),icon:"crown",places:placesFor(()=>true)});
         }
         return challenges;
     }
@@ -678,7 +705,7 @@ window.StbBadges=StbBadges;
     const isFr=(typeof currentLang!=="undefined"&&currentLang==="fr");
     const myName=(localStorage.getItem("userFirstName")||localStorage.getItem("userName")||(isFr?"Toi":"You")).trim()||(isFr?"Toi":"You");
     const myInitial=(myName.charAt(0)||"?").toUpperCase();
-    const myChallenges=buildRealChallenges(allLocs,new Set(Object.keys(myBadges)),isFr);
+    const myChallenges=buildRealChallenges(allLocs,new Set(Object.keys(myBadges)),isFr,true);
     const ranking=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",Object.keys(myBadges).length]];
     const rankChallenges=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",myChallenges.filter(isDone).length]];
     const palette=["#D42759","#8B5CF6","#F06090","#10b981","#3b82f6","#f59e0b"];
