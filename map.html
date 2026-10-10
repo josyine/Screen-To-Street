@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261006" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261007" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -757,9 +757,13 @@
      près du bas. Toujours le même bouton .stc-handle (même data-act="toggle", aucun JS
      changé) : juste son icône (chevron, masqué par défaut ci-dessus) qui remplace la
      petite barre grise horizontale quand .stc-sheet est à la fois .min et sur mobile.
-     L'état DÉPLIÉ (.on sans .min) n'est pas concerné, toujours la fiche du bas classique. */
+     L'état DÉPLIÉ (.on sans .min) n'est pas concerné, toujours la fiche du bas classique.
+     MAJ (demande du 10/10/2026, "Affiche la notification des défis en haut. On ne voit
+     pas en bas.") : l'onglet n'est plus centré verticalement (top:50%) mais ancré près du
+     HAUT de l'écran (sous l'encoche/barre de statut, voir env(safe-area-inset-top)) — pour
+     rester visible immédiatement sans avoir à faire défiler/chercher à mi-hauteur. */
   @media (max-width:760px){
-    .stc-sheet.min{left:auto;right:0;top:50%;bottom:auto;transform:translateY(-50%);width:auto;max-width:none;margin:0;border-radius:16px 0 0 16px;padding:14px 10px;box-shadow:-6px 6px 24px rgba(30,20,50,.2);display:flex;flex-direction:column;align-items:center;gap:8px}
+    .stc-sheet.min{left:auto;right:0;top:calc(env(safe-area-inset-top,0px) + 90px);bottom:auto;transform:none;width:auto;max-width:none;margin:0;border-radius:16px 0 0 16px;padding:14px 10px;box-shadow:-6px 6px 24px rgba(30,20,50,.2);display:flex;flex-direction:column;align-items:center;gap:8px}
     .stc-sheet.min .stc-head{flex-direction:column;order:1}
     .stc-sheet.min .stc-head>div,.stc-sheet.min .stc-x,.stc-sheet.min .stc-progrow{display:none}
     .stc-sheet.min .stc-handle{order:2;width:auto;height:auto;background:none;margin:0;display:flex;align-items:center;justify-content:center;padding:0}
@@ -830,7 +834,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261006';
+        s.src = 'page-loader.js?v=20261007';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -2061,13 +2065,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20261006"></script>
-<script type="module" src="firebase-init.js?v=20261006"></script>
-<script src="locations-data.js?v=20261006"></script>
-<script src="script.js?v=20261006"></script>
+<script src="countries.js?v=20261007"></script>
+<script type="module" src="firebase-init.js?v=20261007"></script>
+<script src="locations-data.js?v=20261007"></script>
+<script src="script.js?v=20261007"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261006"></script>
-<script src="map-tour.js?v=20261006"></script>
+<script src="itinerary.js?v=20261007"></script>
+<script src="map-tour.js?v=20261007"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
