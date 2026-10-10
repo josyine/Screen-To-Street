@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261004" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261005" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -735,8 +735,12 @@
      fixed, z-index 3500, voir style.css) passerait par-dessus le bas de cette fiche si
      elle allait jusqu'à bottom:0 comme dans le fichier fourni — on remonte son bord bas
      pour laisser la nav visible et cliquable en dessous, plutôt que de lui disputer le
-     z-index. Ordinateur non concerné (pas de nav du bas, voir le ?700px ci-dessous). */
-  @media (max-width:760px){.stc-sheet{bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
+     z-index. Ordinateur non concerné (pas de nav du bas, voir le ?700px ci-dessous).
+     BUG corrigé (demande du 10/10/2026, "la partie défi ne chevauche pas les icones de la
+     barre de navigation du bas") : 90px s'est déjà révélé insuffisant en pratique pour ce
+     même type de recouvrement sur .tab-panel ailleurs sur le site (bumpé à 130px ce
+     jour-là) — même valeur reprise ici plutôt que réintroduire le même défaut. */
+  @media (max-width:760px){.stc-sheet{bottom:calc(130px + env(safe-area-inset-bottom,0px))}}
   .stc-sheet.on{transform:none}
   .stc-sheet.min .stc-body{display:none}
   .stc-handle{display:block;width:44px;height:5px;border-radius:9px;background:#DDD8E6;margin:0 auto 12px}
@@ -805,7 +809,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261004';
+        s.src = 'page-loader.js?v=20261005';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -2036,13 +2040,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20261004"></script>
-<script type="module" src="firebase-init.js?v=20261004"></script>
-<script src="locations-data.js?v=20261004"></script>
-<script src="script.js?v=20261004"></script>
+<script src="countries.js?v=20261005"></script>
+<script type="module" src="firebase-init.js?v=20261005"></script>
+<script src="locations-data.js?v=20261005"></script>
+<script src="script.js?v=20261005"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261004"></script>
-<script src="map-tour.js?v=20261004"></script>
+<script src="itinerary.js?v=20261005"></script>
+<script src="map-tour.js?v=20261005"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
