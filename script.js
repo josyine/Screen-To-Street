@@ -10283,8 +10283,7 @@ window.allRealLocations = allRealLocations;
 const CATEGORY_ICON = { 'Bon Voyage': 'plane', 'Run BTS': 'cam', 'Concert': 'mic', 'Cafe': 'cup', 'Restaurant': 'cup', 'Restaurants': 'cup', 'MV Location': 'cam', 'Museum': 'star', 'Museums': 'star', 'Art Museum': 'star', 'Fashion': 'bag', 'Pop-up Store': 'bag', 'Landmark': 'tower', 'Landmarks': 'tower', 'In The Soop': 'tower', 'Hotel': 'tower' };
 
 // withPlaces (false par défaut) attache en plus un tableau `places` par défi — les VRAIS
-// lieux qui comptent pour ce défi (pas juste son nombre), utilisé pour savoir si un lieu
-// précis compte pour un défi en cours (voir findInProgressChallengeForLocation() plus bas).
+// lieux qui comptent pour ce défi (pas juste son nombre).
 function buildRealChallenges(allLocs, unlockedIds, isFr, withPlaces) {
     const challenges = [];
     const doneCountFor = pred => allLocs.filter(l => unlockedIds.has(String(l.id)) && pred(l)).length;
@@ -10413,21 +10412,6 @@ function ensureNearbyBannerWired() {
     });
 }
 
-// AJOUT (demande du 10/10/2026, "corrige la notification défi pour garder la notification
-// ci joint") : d'après notification_defi.html fourni — si le lieu approché compte pour un
-// défi en cours (pas encore relevé), renvoie ce défi (avec done/need) pour que
-// showNearbyPlaceBanner() ci-dessous affiche la variante "défi" de la bannière au lieu de
-// la bannière générique. myUnlockedBadgeIds peut encore valoir null au tout premier
-// évènement GPS (chargement Firestore pas encore résolu, voir loadMyUnlockedBadges()) :
-// dans ce cas on retombe simplement sur la bannière générique, sans bloquer.
-function findInProgressChallengeForLocation(loc) {
-    if (!myUnlockedBadgeIds || typeof celebLocations === 'undefined') return null;
-    const idStr = String(loc.id);
-    const isFr = (typeof currentLang !== 'undefined' && currentLang === 'fr');
-    const challenges = buildRealChallenges(allRealLocations(), myUnlockedBadgeIds, isFr, true);
-    return challenges.find(c => c.done < c.need && Array.isArray(c.places) && c.places.some(p => p.id === idStr)) || null;
-}
-
 function showNearbyPlaceBanner(loc, distanceMeters) {
     ensureNearbyBannerWired();
     const el = document.getElementById('stsNearbyBanner');
@@ -10438,30 +10422,10 @@ function showNearbyPlaceBanner(loc, distanceMeters) {
         if (loc.img) { photo.style.backgroundImage = `url('${loc.img}')`; photo.textContent = ''; }
         else { photo.style.backgroundImage = ''; photo.textContent = (loc.name || '?').charAt(0).toUpperCase(); }
     }
-    const kicker = document.getElementById('stsNearbyKicker');
     const title = document.getElementById('stsNearbyTitle');
+    if (title) title.textContent = `Tu es à ${Math.round(distanceMeters / 10) * 10} m de ${loc.name || ''}`;
     const sub = document.getElementById('stsNearbySub');
-    const prog = document.getElementById('stsNearbyProg');
-    const bar = document.getElementById('stsNearbyBar');
-    const count = document.getElementById('stsNearbyCount');
-    const goTxt = document.getElementById('stsNearbyGoTxt');
-    const challenge = findInProgressChallengeForLocation(loc);
-    if (challenge) {
-        const left = challenge.need - challenge.done;
-        if (kicker) kicker.textContent = `DÉFI « ${challenge.name.toUpperCase()} » · ${challenge.done}/${challenge.need}`;
-        if (title) title.textContent = left === 1 ? 'Plus qu\'un lieu pour relever le défi !' : `Ce lieu compte pour le défi « ${challenge.name} » !`;
-        if (sub) sub.innerHTML = `${loc.name || ''} est à <b style="color:var(--sts-mag)">${Math.round(distanceMeters / 10) * 10} m</b>`;
-        if (prog) prog.hidden = false;
-        if (count) count.textContent = `${challenge.done}/${challenge.need}`;
-        if (bar) { bar.style.width = '0'; requestAnimationFrame(() => { bar.style.width = (challenge.done / challenge.need * 100) + '%'; }); }
-        if (goTxt) goTxt.textContent = 'Relever le défi';
-    } else {
-        if (kicker) kicker.textContent = 'SCREEN TO STREET · MAINTENANT';
-        if (title) title.textContent = `Tu es à ${Math.round(distanceMeters / 10) * 10} m de ${loc.name || ''}`;
-        if (sub) sub.textContent = [loc.category, loc.group].filter(Boolean).join(' · ') + ' — viens débloquer ton badge !';
-        if (prog) prog.hidden = true;
-        if (goTxt) goTxt.textContent = 'Y aller';
-    }
+    if (sub) sub.textContent = [loc.category, loc.group].filter(Boolean).join(' · ') + ' — viens débloquer ton badge !';
     el.setAttribute('aria-hidden', 'false');
     requestAnimationFrame(() => el.classList.add('on'));
 }
