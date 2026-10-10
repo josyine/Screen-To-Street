@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-10T07:37:25.967Z.
+// Généré le 2026-10-10T17:57:29.021Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -7932,26 +7932,34 @@ window.STATIC_LOCATIONS = [
     "address": "",
     "lat": 48.8388,
     "lng": 2.3788,
-    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/AccorHotels_Arena_@_Bercy_@_Paris_(27157316713).jpg",
+    "img": "images/admin-upload-142-photo.jpg",
     "fullDescription": {
-      "en": "<p>Accor Arena in Paris hosted BTS during the \"Love Yourself World Tour\" (2018) — one of dozens of stops on a run that took the group across five continents and cemented just how far their live audience had grown.</p><p>Details on the exact staging and setlist for this stop are limited compared to the group's more recent, heavily documented tours — but the show itself is a matter of public record, part of the official tour schedule of the era.</p>",
-      "fr": "<p>Accor Arena à Paris a accueilli BTS lors de la tournée « Love Yourself World Tour » (2018) — l'une des dizaines d'étapes d'une tournée qui a mené le groupe sur cinq continents et confirmé l'ampleur déjà considérable de son public en concert.</p><p>Les détails précis sur la mise en scène et la setlist de cette étape sont plus limités que pour les tournées plus récentes du groupe, bien mieux documentées — mais la date elle-même est un fait de notoriété publique, inscrite au calendrier officiel de la tournée de l'époque.</p>"
+      "fr": "<p>Accor Arena à Paris a accueilli BTS lors de la tournée « Love Yourself World Tour » (2018) — l'une des dizaines d'étapes d'une tournée qui a mené le groupe sur cinq continents et confirmé l'ampleur déjà considérable de son public en concert.</p><p>Les détails précis sur la mise en scène et la setlist de cette étape sont plus limités que pour les tournées plus récentes du groupe, bien mieux documentées — mais la date elle-même est un fait de notoriété publique, inscrite au calendrier officiel de la tournée de l'époque.</p>",
+      "en": "<p>Located along the right bank of the Seine in the 12th arrondissement, the Accor Arena (historically known as the Palais Omnisports de Paris-Bercy) is one of France's largest and most iconic indoor arenas. Easily recognizable by its striking, pyramid-like architecture covered in sloping green lawns, the venue is a cultural staple in the French capital. For decades, it has hosted the world's biggest musical acts, international sporting events, and massive cultural spectacles, acting as the ultimate stage for artists achieving global superstardom.</p><!--stss:footsteps--><p>This massive arena holds a profoundly special place in the hearts of French ARMYs. On October 19 and 20, 2018, BTS took over the Accor Arena for two completely sold-out nights as part of their monumental Love Yourself World Tour.</p><p>This tour stop was a historic milestone for the group, marking one of dozens of stops on a run that took them across five continents, but serving as their definitive, triumphant arena debut in Paris. The shows cemented just how far their live audience had grown, bringing thousands of European fans together to witness their synchronized choreography, legendary solo stages, and emotional anthems. Today, visiting the Accor Arena serves as a powerful reminder of the exact moment BTS firmly planted their flag in the European live music landscape and solidified their status as a global phenomenon.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Check current venue info"
+          "en": "Admire the Architecture"
         },
         "text": {
-          "en": "This stop is from an earlier BTS world tour — check the venue's own website for current opening hours or public tours, as they can change independently of the concert date shown here."
+          "en": "Even if there isn't a concert going on, take a walk around the exterior to see the venue's unique, grass-covered sloping walls that make it a standout Parisian landmark."
         }
       },
       {
         "title": {
-          "en": "A venue with several names"
+          "en": "Stroll Through Parc de Bercy"
         },
         "text": {
-          "en": "This arena has been renamed twice since 2018 (Accor Arena, then briefly Adidas Arena for the 2024 Olympics before reverting) — the same building has hosted everything from Olympic gymnastics to decades of major touring acts."
+          "en": "Right next to the arena is the beautiful Parc de Bercy. Grab a coffee, put on your favorite tracks from the Love Yourself: Answer album, and take a relaxing walk through the gardens just as fans did while waiting in line back in 2018."
+        }
+      },
+      {
+        "title": {
+          "en": "Catch a Live Show"
+        },
+        "text": {
+          "en": "To truly experience the magic of the venue, book tickets for a live music event and feel the incredible acoustics and energy of a packed Parisian crowd."
         }
       }
     ],
@@ -7962,7 +7970,53 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "This stop is from an earlier BTS world tour — check the venue's own website for current opening hours or public tours, as they can change independently of the concert date shown here.",
       "fr": "Cette étape provient d'une tournée mondiale précédente de BTS — vérifiez le site officiel du lieu pour les horaires d'ouverture ou visites publiques actuelles, qui peuvent avoir changé depuis la date de concert indiquée ici."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "DiscoA340 / CC BY-SA 4.0",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-142-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Extremely accessible via the Paris Métro. Take Line 6 or Line 14 to Bercy station, which exits right at the doorstep of the arena. It is also a short walk from the Gare de Lyon major transit hub."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The exterior grounds and surrounding park are accessible 24/7. Interior access, operating hours, and ticket prices depend entirely on the scheduled concerts and events."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Fully accessible. The arena is equipped with dedicated elevators, ramps, wide concourses, and specifically designated seating sections for visitors with reduced mobility."
+        }
+      }
+    ]
   },
   {
     "id": 143,
@@ -15020,9 +15074,9 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "tweetUrls": [],
     "officialLink": "https://www.cockneysrestaurant.com/",
-    "imgCredit": "AI-generated illustrative image",
     "episodeLink": "https://www.bilibili.tv/video/2044778646",
-    "ytId": "-FJTPdxPy5Q"
+    "ytId": "-FJTPdxPy5Q",
+    "imgCredit": "Screentostreet"
   },
   {
     "id": 259,
@@ -15190,11 +15244,11 @@ window.STATIC_LOCATIONS = [
     "city": "Floriana",
     "category": "Bon Voyage",
     "year": "2018",
-    "episode": "Bon Voyage Season 3",
+    "episode": "Bon Voyage Season 3 Episode 8",
     "address": "Belt is-Sebħ, Floriana",
     "lat": 35.89577,
     "lng": 14.50436,
-    "img": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600",
+    "img": "images/admin-upload-261-photo.jpg",
     "fullDescription": {
       "en": "<p>Dinner in the Sky Malta is a travelling dining experience that lifts a table of around 22 guests roughly 40 metres into the air by crane, typically set up in Floriana overlooking Marsamxett Harbour — guests are strapped in and served a full meal suspended above the rooftops of the island.</p><p>It's one of the more unusual, high-adrenaline dining concepts to operate in Malta, running seasonally rather than as a permanent fixture, with the exact setup location shifting slightly between events.</p><!--stss:footsteps--><p>BTS spent their last night in Malta during Bon Voyage Season 3 dining in the sky, literally lifted above the city for a group meal together — one of the episode's most visually dramatic closing moments.</p><p>The segment became an emotional send-off for the Malta leg of the trip, the group reflecting on the days they'd spent together on the island while suspended above it, before the view below transitioned into the final footage of the episode.</p>"
     },
@@ -15252,22 +15306,26 @@ window.STATIC_LOCATIONS = [
     ],
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "imgCredit": "",
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
     "tiktokUrl": "",
-    "ytId": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "episodeLink": "",
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
-    "officialLink": "https://www.instagram.com/dinnerintheskymalta/?hl=fr",
+    "episodeLink": "https://weverse.io/bts/media/1-6738927",
+    "ytId": "hiinBr15xyQ",
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://dinnerintheskymalta.com/menu/",
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-261-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-261-recreated-1.jpg",
         "official": true
       }
     ]
@@ -15346,18 +15404,18 @@ window.STATIC_LOCATIONS = [
     "id": 263,
     "name": "Love Statue",
     "group": "BTS",
-    "member": "All",
+    "member": "RM, J-Hope",
     "country": "Malta",
     "city": "St Julian's",
     "category": "Bon Voyage",
     "year": "2018",
-    "episode": "Bon Voyage Season 3",
+    "episode": "Bon Voyage Season 3 E2",
     "address": "Spinola Bay, St Julian's",
-    "lat": 35.9195,
-    "lng": 14.4891,
-    "img": "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?w=600",
+    "lat": 35.91903,
+    "lng": 14.49011,
+    "img": "images/admin-upload-263-photo.jpg",
     "fullDescription": {
-      "en": "<p>Created by Maltese architect and artist Richard England, the LOVE sculpture sits at Spinola Bay in St Julian's — giant letters spelling the word backwards, designed so it reads correctly in its reflection on the water or in its shadow depending on the time of day.</p><p>It's become one of Malta's most photographed spots and a popular place for couples to attach love locks, set against the backdrop of Spinola Bay's traditional luzzu fishing boats and waterfront restaurants.</p><!--stss:footsteps--><p>Namjoon and Hoseok visited the LOVE statue in St Julian's during Bon Voyage Season 3, stopping to take photos in front of it as part of their day exploring the area.</p><p>The stop was a brief, lighter moment in the episode compared to some of the trip's longer sightseeing segments — the kind of quick, photogenic detour that's since turned the statue into something of a pilgrimage spot for fans visiting Malta.</p>"
+      "en": "<p>Created by renowned Maltese architect and artist Richard England, the LOVE sculpture is a striking piece of public art situated right on the picturesque waterfront of Spinola Bay in St. Julian's. The monument features giant stone letters spelling the word \"LOVE\" inverted. The clever architectural design is meant to be read correctly either through its shadow cast on the pavement during the day, or via its reflection sparkling on the calm waters of the bay. Framed by traditional, brightly painted Maltese luzzu fishing boats and a lively promenade of waterfront restaurants, it has become one of Malta's most photographed landmarks and a popular spot for visitors to attach \"love locks.\"</p><!--stss:footsteps--><p>During the filming of BTS Bon Voyage Season 3 in 2018, RM and J-Hope (often affectionately dubbed the \"94z\" by fans due to being born in 1994) spent some quality time exploring the vibrant streets and bays of St. Julian's. Their stroll led them directly to the LOVE Monument at Spinola Bay.</p><p>Fans fondly remember the duo playfully interacting with the inverted letters and taking in the beautiful waterfront views. The site perfectly captured the relaxed, affectionate, and artistic vibe of their Mediterranean getaway. Today, ARMYs visiting Malta make sure to stop by this exact spot to take photos by the sculpture, honoring the warm friendship between Namjoon and Hobi while enjoying the same sunny promenade they walked.</p>"
     },
     "practicalInfo": [
       {
@@ -15410,22 +15468,43 @@ window.STATIC_LOCATIONS = [
           "en": "This has become one of Malta's most Instagrammed spots since the episode aired — visit early if you want photos without a crowd."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "instagramUrl": "https://www.instagram.com/p/CDjiF4epCYc/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-263-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "officialLink": "https://mymalta.guide/other-landmarks/love-monument/",
+    "episodeLink": "https://weverse.io/bts/media/2-6741268"
   },
   {
     "id": 264,
     "name": "Popeye Village",
     "group": "BTS",
-    "member": "All",
+    "member": "V",
     "country": "Malta",
     "city": "Mellieħa",
     "category": "Bon Voyage",
     "year": "2018",
     "episode": "Bon Voyage Season 3",
     "address": "Triq Tal-Prajjet, Il-Mellieħa",
-    "lat": 35.961,
-    "lng": 14.3407,
-    "img": "https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=600",
+    "lat": 35.96079,
+    "lng": 14.34076,
+    "img": "images/admin-upload-264-photo.jpg",
     "fullDescription": {
       "en": "<p>Popeye Village, also known as Sweethaven Village, is a cluster of rustic wooden buildings in Anchor Bay near Mellieħa, originally built as the full-scale film set for the 1980 musical film Popeye starring Robin Williams, and later converted into a small family attraction and swimming spot.</p><p>Visitors can wander the film set's wooden houses, watch short shows, swim in Anchor Bay, or take a boat ride around the cove — the site sits right on the water in one of the more dramatic, cliff-lined corners of Malta's coastline.</p><!--stss:footsteps--><p>Taehyung visited Popeye Village during Bon Voyage Season 3, exploring the colourful film-set village on his own before meeting back up with the rest of the group — one of several moments in the season where members split off to pursue their own interests.</p><p>The stop added a playful, slightly surreal note to the Malta leg of the trip, with the village's cartoonish wooden buildings standing in sharp contrast to Valletta's baroque stonework seen earlier in the same episode.</p>"
     },
@@ -15479,6 +15558,31 @@ window.STATIC_LOCATIONS = [
         "text": {
           "en": "The short boat ride around the bay gives the best view of the village's dramatic cliffside setting — worth timing your visit around it."
         }
+      }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "DXR / CC BY-SA 4.0",
+    "episodeLink": "https://weverse.io/bts/media/1-6738472",
+    "officialLink": "https://www.popeyemalta.com/",
+    "tweetUrl": "https://x.com/cupoftaewithsga/status/1388543813015179272?s=46",
+    "instagramUrl": "https://www.instagram.com/p/CXRByj4PUMK/?img_index=4&dlrf=Z2Fpb283MDQ3NGUz",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-264-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-264-recreated-1.jpg",
+        "official": true
       }
     ]
   },
@@ -20586,14 +20690,14 @@ window.STATIC_LOCATIONS = [
     "id": "new-manual-1791404653831-20uvsc",
     "name": "Seoul Forest: Dedicated Benches 1",
     "group": "BTS",
-    "member": "RM",
+    "member": "V",
     "country": "South Korea",
     "city": "Seoul",
     "category": "Landmark",
     "year": "2018",
     "address": "273 Ttukseom-ro, Seongdong-gu, Seoul",
-    "lat": 37.54562,
-    "lng": 127.0406,
+    "lat": 37.54222,
+    "lng": 127.04091,
     "img": "images/admin-upload-new-manual-1791404653831-20uvsc-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -20613,34 +20717,35 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       "images/admin-upload-new-manual-1791404653831-20uvsc-recreated-0.jpg"
     ],
+    "storyImage": "images/admin-upload-new-manual-1791404653831-20uvsc-story.jpg",
     "tipsList": [
       {
         "title": {
-          "en": "Best Season to Visit"
+          "en": "Best Time for Golden Hour Photography"
         },
         "text": {
-          "en": "Autumn (late October to mid-November) is the ultimate time to visit, as the Ginkgo tree leaves turn a vibrant gold, creating the perfect backdrop for RM’s cozy aesthetic."
+          "en": "Visit during late afternoon to capture the golden light filtering through the apple trees, creating a warm, vintage aesthetic characteristic of V’s photography style."
         }
       },
       {
         "title": {
-          "en": "Photo Tip"
+          "en": "Plaque Close-ups and Framing"
         },
         "text": {
-          "en": "Take a close-up picture of the engraved brass plaques on the benches, or capture a wide shot while resting on the bench under the tree canopy."
+          "en": "Take a close-up picture of the engraved plaque on the bench before framing a wide landscape photo along Apple Tree Road."
         }
       },
       {
         "title": {
-          "en": "Pro-Tip"
+          "en": "V's Signature Playlist"
         },
         "text": {
-          "en": "Bring your headphones and play \"everythingoes\" or \"mono.\" while sitting on one of his benches to fully immerse yourself in the serene \"Namjooning\" atmosphere."
+          "en": "Put on V’s solo tracks like \"Winter Bear\", \"Scenery\", or \"Slow Dancing\" to create the perfect soundscape while enjoying your walk."
         }
       }
     ],
     "fullDescription": {
-      "en": "<p>As an avid lover of nature, art, and solo strolls, RM has frequented Seoul Forest over the years, making it a regular stop during his \"Namjooning\" trips across Seoul. In response, fans began dedicating bench spaces to him as early as 2018. The Ginkgo Tree Forest benches are among the most famous fan-dedicated spots in the park, featuring engraved plaques with reflective lyrics from songs like \"Sea\" and \"Moonchild\".</p><!--stss:footsteps--><p>Visiting these specific benches allows fans to immerse themselves in RM’s peaceful \"Namjooning\" routine. Located right at the edge of the iconic Ginkgo grove, this spot provides a quiet setting to sit, read, or listen to music under the golden tree canopy, surrounded by the very lyrics that defined some of BTS and RM’s most introspective eras.</p>"
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by passionate ARMYs to celebrate Kim Taehyung (V), this bench is situated along the charming Apple Tree Road near the southern perimeter of the park. Marked with commemorative plaques that highlight touching lyrics and heartfelt birthday wishes, this bench stands as a quiet tribute to V’s warm personality, artistic depth, and profound love for his fans.</p><!--stss:footsteps--><p>Visiting V’s first bench allows fans to start their Seoul Forest tour in a peaceful, scenic corner of the grounds. Situated along Apple Tree Road, this location reflects V’s fondness for serene walking paths, photography, and gentle natural light. Sitting on this bench offers a moment of reflection, allowing visitors to pause, listen to V’s soulful solo tracks, and absorb the gentle atmosphere that inspired so much of his creative journey.</p>"
     },
     "practicalInfo": [
       {
@@ -20648,7 +20753,7 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Reaching this location in Seoul Forest is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and head out through Exit 3 or Exit 4, placing you a quick five-minute walk from the park entrance. Alternatively, take Line 2 to Ttukseom Station via Exit 8 for a brief ten-minute walk to the entrance. The official address is 273 Ttukseom-ro, Seongdong-gu, Seoul. To locate these specific benches in the Ginkgo Tree Forest using navigation apps, use the exact coordinates 37.5441 N, 127.0396 E."
+          "en": "Reaching Bench 1 on Apple Tree Road is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, which places you right at the edge of the park’s main pedestrian avenue. From the station entrance, walk directly south along the main road border toward Apple Tree Road, where Bench 1 is positioned just inside the tree line. The official street address is 273 Ttukseom-ro, Seongdong-gu, Seoul. To easily pinpoint this exact bench using navigation apps, search for coordinates."
         }
       },
       {
@@ -20656,7 +20761,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "The main outdoor park and all bench areas are accessible twenty-four hours a day throughout the entire year, and entry is completely free for all visitors. While the outdoor grounds never close, indoor facilities such as the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and remain closed on Mondays."
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
         }
       },
       {
@@ -20664,17 +20769,16 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": "Seoul Forest is designed to be highly accessible for all visitors. Smooth, wide, and paved pathways link every section of the park, ensuring that all RM bench locations are easily reachable by wheelchairs and strollers. Accessible restrooms and nursing rooms are available near the main plaza and entrance, and free wheelchair rentals can be requested at the main visitor center by showing a valid ID."
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide, paved, and flat pathways connect the station exit directly to Apple Tree Road, ensuring that Bench 1 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
         }
       }
-    ],
-    "storyImage": "images/admin-upload-new-manual-1791404653831-20uvsc-story.jpg"
+    ]
   },
   {
     "id": "new-manual-1791405945065-ofbvso",
     "name": "Comino Island",
     "group": "BTS",
-    "member": "Jungkook",
+    "member": "RM, Jungkook",
     "country": "Malta",
     "category": "Bon Voyage",
     "year": "2018",
@@ -20690,7 +20794,6 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Situated between the small island of Comino and the tiny islet of Cominotto, the Blue Lagoon is the crown jewel of the Maltese archipelago. Famous for its dazzling, translucent turquoise waters and white sandy seabed, this sheltered cove looks like a slice of the Caribbean dropped into the middle of the Mediterranean Sea. Surrounded by rugged limestone cliffs and wild nature, it is Malta's ultimate destination for swimming, snorkeling, and boat charters.</p><!--stss:footsteps--><p>This breathtaking lagoon became an iconic fandom landmark when Jungkook visited the island during the filming of BTS Bon Voyage Season 3 (2018). Taking a break from the historic streets of Valletta, Jungkook boarded a private rented boat to sail out onto the crystal-clear waters of Comino.</p><p>Fans fondly remember this leg of the trip for its relaxed, joyful atmosphere. Jungkook spent his time unwinding on the boat's deck, marveling at the wild beauty of the island, and sharing funny, chaotic behind-the-scenes moments—such as the memorable sunscreen application scenes with Jimin. Showcasing Jungkook's sun-drenched adventures on the Mediterranean, the broadcast of these stunning Maltese landscapes directly sparked a spectacular explosion of South Korean tourism to the archipelago.</p>"
     },
-    "tweetUrls": [],
     "pinterestUrl": "",
     "facebookUrl": "",
     "episodeLink": "",
@@ -20758,7 +20861,100 @@ window.STATIC_LOCATIONS = [
         "url": "images/admin-upload-new-manual-1791405945065-ofbvso-recreated-0.jpg",
         "official": true
       }
+    ],
+    "tweetUrls": [
+      "https://x.com/bts_twt/status/1026427270032805888?s=46"
     ]
+  },
+  {
+    "id": "new-manual-1791647674802-mlqoco",
+    "name": "Spinola Bay Promenade",
+    "group": "BTS",
+    "member": "RM, J-Hope",
+    "country": "Malta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "address": "Spinola Bay Promenade, Triq San Gorg, San Ġiljan (St. Julian's), Malta",
+    "lat": 35.91784,
+    "lng": 14.49272,
+    "city": "St. Julian's",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find a Waterfront Bench at Night"
+        },
+        "text": {
+          "en": "Recreate this peaceful \"94z\" moment by visiting Spinola Bay after dark. Sit on one of the wooden benches along the promenade, watch the golden lights reflect on the water, and take some time to quietly reflect or chat with a friend."
+        }
+      },
+      {
+        "title": {
+          "en": "Spot the Traditional Luzzu"
+        },
+        "text": {
+          "en": "During the day or early evening, look out for the brightly painted fishing boats bobbing in the marina and try to spot the protective \"Eye of Osiris\" painted on their bows."
+        }
+      },
+      {
+        "title": {
+          "en": "Stroll Like Namjoon and Hobi"
+        },
+        "text": {
+          "en": "Take a relaxed evening walk along the paved walkway, enjoying the Mediterranean sea breeze before or after a late dinner at one of the surrounding waterfront restaurants."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Spinola Bay is the historic heart and scenic jewel of St. Julian's on Malta's northeast coast. Once a quiet, traditional fishing port, it now beautifully blends old-world Mediterranean charm with the island's modern dynamism. The bay is framed by a paved pedestrian promenade lined with wrought-iron balustrades, classic streetlamps, and golden limestone buildings that cascade down toward the water. The harbor serves as a sanctuary for traditional Maltese luzzu—wooden fishing boats painted in vibrant stripes of blue, yellow, and red, adorned with the ancient Eye of Osiris to ward off evil at sea.</p><p>At night, the atmosphere transforms into something magical and intimate. The energetic hum of the nearby Paceville nightlife district fades into the background, replaced by the gentle lapping of the tide. Hundreds of golden lights from restaurant terraces and waterfront apartments reflect directly onto the calm surface of the sea, creating a spectacular luminous mirror.</p><!--stss:footsteps--><p>This picturesque bay hosted one of the most beloved, quiet moments of BTS Bon Voyage Season 3 (Episode 3). During a free evening, the members scattered across the city: Jimin explored alone, Jin and Suga shared a drink, and Jungkook rested back at their accommodation. Meanwhile, RM and J-Hope—affectionately known as the \"94-line\"—decided to take a relaxed night stroll through St. Julian's.</p><p>Drawn by the beauty and tranquility of the marina, the two rappers sought a peaceful spot to rest after a long day of travel and filming. Dressed casually, with RM wearing his signature oversized white straw hat and J-Hope in a black tank top, they sat side-by-side on a wooden bench facing the boats. For several minutes, with the cameras quietly filming their backs, they watched the glowing harbor in silence, shared intimate reflections on their lives as artists, and snapped a few souvenir photos. This improvised, peaceful pause perfectly captured the core purpose of the travel show: giving the members genuine moments of escape and allowing them to appreciate their bond far away from the frenzy of the global stage.</p>"
+    },
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located right in the center of St. Julian's. It is easily accessible via numerous public bus routes from Valletta (such as lines 13, 14, 16, 212, or 222) by alighting at the \"Spinola\" bus stop."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The public waterfront promenade is accessible 24/7. Completely free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Highly accessible. The waterfront path is wide, paved, and flat, making it perfectly suitable for wheelchairs, strollers, and leisurely evening walks."
+        }
+      }
+    ],
+    "ytId": "",
+    "img": "images/admin-upload-new-manual-1791647674802-mlqoco-photo.jpg",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791647674802-mlqoco-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "episodeLink": "https://weverse.io/bts/media/2-6741268",
+    "imgCredit": "AI-generated illustrative image",
+    "instagramUrl": "",
+    "pinterestUrl": "https://it.pinterest.com/pin/855050679279860349/"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
