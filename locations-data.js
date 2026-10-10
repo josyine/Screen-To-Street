@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-10T17:57:29.021Z.
+// Généré le 2026-10-10T22:51:00.776Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -15169,16 +15169,16 @@ window.STATIC_LOCATIONS = [
     "id": 260,
     "name": "Grandmaster's Palace",
     "group": "BTS",
-    "member": "All",
+    "member": "Jimin, Jungkook",
     "country": "Malta",
     "city": "Valletta",
     "category": "Bon Voyage",
     "year": "2018",
     "episode": "Bon Voyage Season 3",
     "address": "Palace Square, Valletta VLT 1191",
-    "lat": 35.8975,
-    "lng": 14.5144,
-    "img": "https://images.unsplash.com/photo-1589391886645-d51941baf7fb?w=600",
+    "lat": 35.89861,
+    "lng": 14.51409,
+    "img": "images/admin-upload-260-photo.jpg",
     "fullDescription": {
       "en": "<p>Facing St. George's Square in the heart of Valletta, the Grandmaster's Palace was built in the 16th century as the seat of the Grand Master of the Knights of St John and now houses the offices of Malta's President alongside a museum of state apartments and the Palace Armoury.</p><p>Its grand courtyards, frescoed state rooms and one of Europe's best-preserved collections of historical armour make it one of Valletta's most-visited landmarks, sitting right at the symbolic centre of the fortified capital.</p><!--stss:footsteps--><p>Jimin and Jungkook visited the Grandmaster's Palace during Bon Voyage Season 3, taking in the palace's courtyards and historical interiors as part of their day exploring Valletta.</p><p>The stop fit into the episode's broader rhythm of pairing the group off into smaller groups to independently explore different corners of the city — Jimin and Jungkook's palace visit ran alongside Namjoon and Hoseok's war rooms detour and the Hyung line's wander through Valletta's streets.</p>"
     },
@@ -15233,7 +15233,32 @@ window.STATIC_LOCATIONS = [
           "en": "The square right outside hosts events and is a good spot to rest after the palace — many Valletta walking routes naturally pass through it."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "episodeLink": "https://weverse.io/bts/media/2-6741268",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "officialLink": "https://heritagemalta.mt/explore/grand-masters-palace/",
+    "imgCredit": "Simon Burchell / CC BY-SA 4.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-260-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-260-recreated-1.jpg",
+        "official": true
+      }
+    ],
+    "tweetUrl": "https://x.com/taexprr/status/2109038908713660671?s=46"
   },
   {
     "id": 261,
@@ -15730,18 +15755,18 @@ window.STATIC_LOCATIONS = [
     "id": 267,
     "name": "McDonald's (Sliema)",
     "group": "BTS",
-    "member": "All",
+    "member": "Jimin, V",
     "country": "Malta",
     "city": "Sliema",
     "category": "Bon Voyage",
     "year": "2018",
-    "episode": "Bon Voyage Season 3",
-    "address": "Tower Road, Sliema",
-    "lat": 35.9113,
-    "lng": 14.5019,
-    "img": "https://images.unsplash.com/photo-1619881589738-5e7a3b3b4b7c?w=600",
+    "episode": "Bon Voyage Season 3 Ep 7",
+    "address": "Sliema Promenade, Triq Ix - Xatt (The Strand), Tas-Sliema, Malta",
+    "lat": 35.90881,
+    "lng": 14.50621,
+    "img": "images/admin-upload-267-photo.jpg",
     "fullDescription": {
-      "en": "<p>Sliema's seafront McDonald's sits along Tower Road, one of the town's main promenade streets facing the Mediterranean — a two-storey branch with street-level and upper-floor terrace seating, part of the chain's flagship presence on the island.</p><p>Tower Road itself is one of Sliema's busiest pedestrian stretches, lined with cafes, restaurants and shops facing the sea, making this branch one of the more visible fast-food stops for anyone walking the promenade.</p><!--stss:footsteps--><p>Taehyung and Jimin stopped at this McDonald's in Sliema during Bon Voyage Season 3, a brief, low-key moment of the two grabbing familiar fast food amid an itinerary otherwise full of Maltese specialties and fine dining.</p><p>It's the kind of unscripted, relatable detour that recurs throughout Bon Voyage's various seasons — the group choosing something simple and familiar in between the show's more elaborate planned stops.</p>"
+      "en": "<p>Sliema's seafront McDonald's sits along Tower Road, one of the town's main promenade streets facing the Mediterranean — a two-storey branch with street-level and upper-floor terrace seating, part of the chain's flagship presence on the island.</p><p>Tower Road itself is one of Sliema's busiest pedestrian stretches, lined with cafes, restaurants and shops facing the sea, making this branch one of the more visible fast-food stops for anyone walking the promenade.</p><!--stss:footsteps--><p>This seemingly ordinary fast-food joint became the backdrop for a highly relatable and heartwarming \"Vmin\" (Taehyung and Jimin) moment during BTS Bon Voyage Season 3. Because Taehyung had to arrive in Malta later than the rest of the group due to personal matters, Jimin made it his mission to take care of his fellow '95-liner and personally show him around the island to help him catch up on the vacation experience.</p><p>In Episode 7, amidst an itinerary filled with historic sightseeing, sailing, and local specialties, the two best friends took an unscripted detour and decided to grab dinner at this Sliema McDonald's. Amused fans watched (and lucky locals spotted them in August 2018) as the duo opted for the ultimate comfort food—grabbing simple hamburgers and fries. The scene perfectly highlights the recurring, charming reality of Bon Voyage: no matter how spectacular the destination or how famous the group, they will inevitably crave a simple, familiar fast-food burger while navigating a foreign country.</p>"
     },
     "practicalInfo": [
       {
@@ -15794,7 +15819,28 @@ window.STATIC_LOCATIONS = [
           "en": "This is a quick, low-key stop rather than a sightseeing highlight — best combined with other things to do nearby in Sliema."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "episodeLink": "https://weverse.io/bts/media/0-6742019?hl=es",
+    "imgCredit": "Continentaleurope / CC BY-SA 4.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-267-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "officialLink": "https://mcdonalds.com.mt/location/sliema/",
+    "pinterestUrl": "https://fr.pinterest.com/pin/792070653191040752/"
   },
   {
     "id": 268,
