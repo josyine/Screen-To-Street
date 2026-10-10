@@ -14,7 +14,19 @@
 // IMPORTANT : ne touche jamais aux requêtes cross-origin (Firebase/Firestore, polices
 // Google, tuiles Leaflet...) — seuls les fichiers statiques du même domaine sont
 // concernés, jamais les données live du compte.
-const CACHE_VERSION = 'stns-static-v20260920g';
+// BUG corrigé (demande du 10/10/2026, plusieurs correctifs "pas visibles" ce jour-là
+// malgré un ?v=... déjà bumpé sur script.js/map.html/etc.) : CACHE_VERSION ci-dessous
+// n'avait pas changé depuis le 20/09/2026, donc les OCTETS de ce fichier sw.js
+// lui-même n'avaient pas bougé pendant toute cette session — un navigateur ne déclenche
+// la mise à jour d'un Service Worker (install → activate → clients.claim(), déjà codés
+// plus bas) qu'en détectant un changement d'octets dans SON PROPRE fichier. Sans ça, un
+// appareil ayant déjà ce worker installé AVANT aujourd'hui pouvait rester bloqué sur son
+// instance JS en mémoire, qui ne relit jamais le ?v=... des pages pour décider quoi
+// servir — ce bump-ci (du fichier sw.js lui-même, pas seulement des pages qu'il sert)
+// force enfin cette détection, où aucun des bumps précédents de cette session n'avait
+// de prise. À refaire à chaque fois que la LOGIQUE de ce fichier change ; inutile pour
+// un simple changement dans script.js/map.html/etc. (déjà couvert par leur propre ?v=).
+const CACHE_VERSION = 'stns-static-v20261010';
 
 // Bibliothèques externes figées par version dans leur URL (unpkg pour Leaflet,
 // gstatic pour le SDK Firebase) : contrairement à Firestore/Auth (données live,
