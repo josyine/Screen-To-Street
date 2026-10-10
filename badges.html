@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261010" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261012" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -204,13 +204,14 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
    mobile (.stb-page, plein écran/panneau) et la version ordinateur
    (#sbdRoot, menu latéral) ne sont donc jamais affichées toutes les deux
    à la fois.
-   BUG corrigé (demande du 10/10/2026, "il y a un problème avec la page
-   Badges sur ordinateur, prend exactement la page ci joint et applique
-   le") : une première tentative avait remplacé le bandeau d'icônes du
-   fichier fourni (.sbx-hd/.sbx-icons) par le vrai bandeau du site
-   (.universal-logo/.universal-icons) — demande explicite de reprendre
-   EXACTEMENT le fichier cette fois, donc son propre bandeau (.sbx-hd/
-   .sbx-logo/.sbx-icons/.sbx-ic ci-dessous) est repris tel quel. */
+   AJOUT SITE (demande du 10/10/2026, "dans la page Badges, reprend ces
+   icones [capture du bandeau de map.html] et fais en sorte que les
+   boutons fonctionnent lorsqu'on clique dessus") : le bandeau d'icônes du
+   fichier fourni (.sbx-hd/.sbx-icons, factice) est remplacé par le VRAI
+   bandeau du site (.universal-logo/.universal-icons, voir plus bas dans
+   le <body>), déjà utilisé par toutes les autres pages — mêmes icônes,
+   mêmes menus déroulants qui fonctionnent vraiment (langue, profil...),
+   au lieu d'icônes qui ne font rien au clic. */
 #sbdRoot{display:none}
 @media (min-width:700px){
   /* BUG corrigé (demande du 09/10/2026, "il y a un problème avec la page badge de
@@ -238,16 +239,17 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 :where(#sbdRoot) button{all:unset;box-sizing:border-box;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
 #sbdRoot button:focus-visible{outline:2px solid var(--sbx-pur);outline-offset:2px}
 
-.sbx-hd{position:sticky;top:0;z-index:20;height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 28px;background:linear-gradient(120deg,rgba(238,231,250,.92),rgba(230,224,246,.92));backdrop-filter:blur(10px)}
-.sbx-logo{display:flex;align-items:center;gap:22px;font-weight:700;font-size:19px;color:#2B3040;text-decoration:none}
-.sbx-logo b{color:var(--sbx-mag)}
-.sbx-icons{display:flex;gap:11px}
-.sbx-ic{width:40px;height:40px;border-radius:50%;background:#fff;display:flex!important;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(30,20,50,.06);transition:transform .15s,box-shadow .2s}
-.sbx-ic:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(30,20,50,.12)}
-.sbx-ic.on{box-shadow:0 0 0 2px var(--sbx-mag)}
+/* Même bandeau fixe que toutes les autres pages (voir .universal-logo/.universal-icons
+   dans le <body> plus bas) : ici scopé à la version ordinateur uniquement, puisque la
+   version mobile (.stb-page) a déjà son propre bouton retour/fermer. */
+.universal-logo,.universal-icons{display:none}
+@media (min-width:700px){
+  .universal-logo{display:flex;position:fixed;top:24px;left:32px;z-index:1600;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:17px;color:var(--sbx-ink)}
+  .universal-icons{display:flex;position:fixed;top:24px;right:32px;z-index:1600;gap:9px;align-items:center}
+}
 
-.sbx-layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1360px;margin:0 auto;min-height:calc(100vh - 84px)}
-.sbx-side{padding:26px 20px;position:sticky;top:84px;align-self:start}
+.sbx-layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1360px;margin:0 auto;min-height:100%;padding-top:96px}
+.sbx-side{padding:0 20px 26px;position:sticky;top:96px;align-self:start}
 .sbx-side h1{font-size:26px;margin:0 8px 20px;letter-spacing:-.01em}
 .sbx-nav{display:flex!important;align-items:center;justify-content:space-between;width:100%;height:48px;padding:0 16px;border-radius:14px;font-size:14.5px;font-weight:600;color:var(--sbx-soft);margin-bottom:4px;transition:background .2s,color .2s}
 .sbx-nav:hover{background:rgba(255,255,255,.55);color:var(--sbx-ink)}
@@ -258,7 +260,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .sbx-prog .k{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--sbx-pur)}
 .sbx-prog b{display:block;font-size:24px;margin:2px 0 6px}
 .sbx-prog small{display:block;font-size:12px;color:var(--sbx-soft);margin-top:8px}
-.sbx-main{padding:26px 34px 60px}
+.sbx-main{padding:0 34px 60px}
 .sbx-panel{display:none;background:#fff;border-radius:24px;padding:26px 28px;box-shadow:0 8px 28px rgba(30,20,50,.06);animation:sbxIn .3s}
 .sbx-panel.on{display:block}
 @keyframes sbxIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -362,7 +364,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261010';
+        s.src = 'page-loader.js?v=20261012';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -408,24 +410,81 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="stb-det" id="stbDet" role="dialog" aria-modal="true" aria-label="Détail du badge"></div>
 <div class="stb-toast" id="stbToast" role="status" aria-live="polite"></div>
 
-<!-- ============ Version ordinateur (demande du 10/10/2026, "il y a un problème avec la
-     page Badges sur ordinateur, prend exactement la page ci joint et applique le") —
-     markup repris EXACTEMENT du fichier fourni (badges_ordinateur_v3.html, menu latéral),
-     y compris son propre bandeau d'icônes (.sbx-hd/.sbx-logo/.sbx-icons/.sbx-ic, factice —
-     aucune de ces icônes n'a d'action dans le fichier fourni, laissées telles quelles).
-     Seul changement : le logo pointe vraiment vers map.html (href="#" dans le fichier
-     fourni, un simple placeholder de démo). ============ -->
+<!-- ============ Version ordinateur (demande du 10/10/2026, "dans la page Badges, reprend
+     ces icones et fais en sorte que les boutons fonctionnent lorsqu'on clique dessus") —
+     bandeau d'icônes du fichier fourni (.sbx-hd/.sbx-icons) remplacé par le VRAI bandeau du
+     site (.universal-logo/.universal-icons, repris à l'identique d'account.html — mêmes
+     ids, mêmes menus déroulants déjà câblés par script.js) : mêmes icônes que sur
+     map.html (voir capture jointe à la demande), qui fonctionnent vraiment au clic, au
+     lieu des icônes factices du fichier fourni. ============ -->
 <div id="sbdRoot">
-<header class="sbx-hd"><a class="sbx-logo" href="map.html"><svg width="20" height="28" viewBox="0 0 24 32"><path d="M12 1C5.9 1 1 5.8 1 11.8 1 20 12 31 12 31s11-11 11-19.2C23 5.8 18.1 1 12 1z" fill="#2B3040"/><circle cx="12" cy="11.5" r="2.6" fill="#E0156B"/></svg><span>Screen To <b>Street</b></span></a>
-  <nav class="sbx-icons" aria-label="Menu">
-    <button class="sbx-ic" aria-label="Langue"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2B3040" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 3.5-3 14.5 0 18M12 3c3 3.5 3 14.5 0 18"/></svg></button>
-    <button class="sbx-ic" aria-label="Panier"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2B3040" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h10.2L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg></button>
-    <button class="sbx-ic on" aria-label="Mes badges" aria-current="page"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2B3040" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l7.5 3v5.5c0 4.6-3.2 8.3-7.5 9.5-4.3-1.2-7.5-4.9-7.5-9.5V6z"/><path d="M8.8 12l2.2 2.2 4.2-4.4" stroke-linecap="round"/></svg></button>
-    <button class="sbx-ic" aria-label="Rechercher"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2B3040" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg></button>
-    <button class="sbx-ic" aria-label="Messages"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2B3040" stroke-width="1.8" stroke-linejoin="round"><path d="M4 12a8 8 0 1 1 3.4 6.5L4 19.8l1.1-3.4A8 8 0 0 1 4 12z"/></svg></button>
-    <button class="sbx-ic" aria-label="Profil"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#2B3040" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c1-3.6 3.8-5.5 7-5.5s6 1.9 7 5.5"/></svg></button>
-  </nav>
-</header>
+<a href="map.html" class="universal-logo">
+    <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
+        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+        <circle cx="200" cy="150" r="26" fill="#D42759"/>
+    </svg>
+    <div>
+        <div class="brand-text">Screen To <b style="color: #D42759;">Street</b></div>
+    </div>
+</a>
+<div class="universal-icons">
+    <div class="dropdown-container">
+        <button id="lang-btn" class="header-icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <div id="lang-menu" class="dropdown-menu hidden">
+            <a href="#" class="dropdown-option" onclick="changeLang('en'); return false;">English</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('fr'); return false;">Français</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('es'); return false;">Español</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('it'); return false;">Italiano</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('pt'); return false;">Português</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ko'); return false;">한국어</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ja'); return false;">日本語</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
+        </div>
+    </div>
+    <div class="dropdown-container">
+        <!-- Icone masquée (voir map.html, demande du 09/10/2026) : remplacée par l'icône
+             badges ci-dessous, au même emplacement du header, pour rester cohérent avec
+             le reste du site (demande du 10/10/2026 : mêmes icônes sur toutes les pages). -->
+        <button id="cart-btn" class="header-icon-btn hidden" onclick="openCartModal()" title="Unlock Passes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        </button>
+    </div>
+    <div class="dropdown-container">
+        <button id="badges-header-btn" class="header-icon-btn" type="button" onclick="window.location.href='badges.html';" title="My badges">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-2 6M16 3l2 6"></path><circle cx="12" cy="14.5" r="6"></circle><path d="M12 11.5l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor" stroke="none"></path></svg>
+        </button>
+    </div>
+    <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+    </button>
+    <button id="feed-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='feed.html'" title="Explore feed">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
+    <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        <span id="message-icon-badge" class="notif-badge hidden">0</span>
+    </button>
+    <div class="dropdown-container">
+        <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
+        <div id="profile-menu" class="dropdown-menu hidden">
+            <a href="profile.html" class="dropdown-profile-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span data-i18n="profileMenuOption">Your Profile</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="map-destinations.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg><span data-i18n="exploreDestOption">Explore Destinations</span></a>
+            <a href="map-artists.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg><span data-i18n="exploreArtistsOption">Explore Artists</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="account.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg><span data-i18n="accountOption">Your Account</span></a>
+            <a href="visited.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-i18n="visitedOption">Visited</span></a>
+            <a href="wishlist.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"></path></svg><span data-i18n="wishlistOption">My Wishlist</span></a>
+            <a href="trips.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span data-i18n="tripsOption">My Trips</span></a>
+            <a href="friends.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span data-i18n="friendsOption">Friends</span></a>
+            <a href="settings.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span data-i18n="settingsOption">Settings</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span data-i18n="logoutOption">Logout</span></a>
+        </div>
+    </div>
+</div>
 
 <div class="sbx-layout">
   <aside class="sbx-side">
@@ -448,9 +507,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
 </div>
 
-<script src="locations-data.js?v=20261010"></script>
-<script type="module" src="firebase-init.js?v=20261010"></script>
-<script src="script.js?v=20261010"></script>
+<script src="locations-data.js?v=20261012"></script>
+<script type="module" src="firebase-init.js?v=20261012"></script>
+<script src="script.js?v=20261012"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -575,7 +634,7 @@ function showChallenge(id){
   det.innerHTML=`<div class="hd"></div>${challIcon(c,100)}
    <div class="k">Défi</div><h4>${esc(c.name)}</h4>
    <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--stb-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
-   ${items}<button class="stb-cta" data-act="${done?"close-det":"map"}" data-challenge-id="${esc(c.id)}">${done?"Super !":"Voir les lieux sur la carte"}</button>`;
+   ${items}<button class="stb-cta" data-act="${done?"close-det":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`;
   openDet();
 }
 function openDet(){det.classList.add("on");dim.classList.add("on");}
@@ -609,24 +668,14 @@ det.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(!a)re
   if(a.dataset.act==="close-det")closeDet();
   /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, convention déjà utilisée
      partout ailleurs sur le site pour ce genre de lien) au lieu du simple toast de
-     démonstration du fichier d'origine — data-loc-id posé par showPlace() ci-dessus. */
-  /* AJOUT SITE (demande du 09/10/2026, "quand je clique sur un défis et 'voir les lieux
-     sur la carte', il faut afficher les lieux du défi sur la carte") : un défi n'a pas
-     UN lieu (pas de data-loc-id, contrairement à showPlace() ci-dessus) mais plusieurs —
-     c.places (voir buildRealChallenges(), withPlaces=true) est déjà les vrais lieux de
-     CE défi. Transmis à map.html via sessionStorage plutôt que l'URL (une liste de lieux
-     dépasserait vite une longueur d'URL raisonnable) — ChallengeMap (map.html) lit
-     'pendingChallengeMap' au chargement et trie par distance une fois la position connue. */
+     démonstration du fichier d'origine — data-loc-id posé par showPlace() ci-dessus.
+     BUG corrigé (demande du 10/10/2026, "supprime la fiche de map [...] pour l'ouvrir il
+     faut passer par la page badges") : la fiche "défi sur la carte" (ChallengeMap,
+     map.html?challenge=1) chevauchait la barre de navigation du bas malgré plusieurs
+     correctifs — retirée ; "Voir les lieux sur la carte" d'un défi va maintenant
+     simplement sur la carte, sans fiche spéciale. */
   if(a.dataset.act==="map"){
-    const challengeId=a.dataset.challengeId;
-    const c=challengeId?DATA.challenges.find(x=>x.id===challengeId):null;
-    if(c&&Array.isArray(c.places)&&c.places.length){
-      StbBadges.close();
-      try{ sessionStorage.setItem("pendingChallengeMap",JSON.stringify({name:c.name,desc:c.desc,need:needN(c),places:c.places})); }catch(e){}
-      window.location.href="map.html?challenge=1";
-      return;
-    }
-    const locId=a.dataset.locId;StbBadges.close();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");
+    const locId=a.dataset.locId;StbBadges.close();window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
   }});
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(det.classList.contains("on"))closeDet();else if(page.classList.contains("on"))StbBadges.close();}});
 addEventListener("popstate",()=>{if(page.classList.contains("on"))StbBadges.close(true);});
@@ -729,10 +778,8 @@ window.StbBadges=StbBadges;
    les mêmes médailles hexagonales (IC/medal/placeBadge/challIcon) que les
    versions mobile et v2 précédente (identité visuelle du site conservée,
    seule la mise en page change), et la navigation réelle des boutons
-   "Voir sur la carte"/"Y aller" — y compris pour un défi (sessionStorage
-   'pendingChallengeMap' + map.html?challenge=1, même mécanisme que la
-   version mobile ci-dessus, qui affiche vraiment les lieux du défi sur la
-   carte au lieu du simple toast de démonstration du fichier fourni).
+   "Voir sur la carte"/"Y aller" vers map.html (au lieu du simple toast de
+   démonstration du fichier fourni).
    ===================================================================== */
 (function(){
 /* ===== 1. DONNÉES + VISUELS (identiques aux versions mobile/v2) ===== */
@@ -842,7 +889,7 @@ function showChallenge(id){
   const c=DATA.challenges.find(x=>x.id===id), n=needN(c), done=isDone(c);
   openModal(`${challIcon(c,120)}<div class="k">Défi</div><h3>${esc(c.name)}</h3>
    <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--sbx-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
-   <button class="sbx-cta" data-act="${done?"close":"map"}" data-challenge-id="${esc(c.id)}">${done?"Super !":"Voir les lieux sur la carte"}</button>`);
+   <button class="sbx-cta" data-act="${done?"close":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`);
 }
 function toast(t){const e=$("sbxToast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1900);}
 /* ===== 4. ÉVÉNEMENTS ===== */
@@ -857,20 +904,12 @@ document.addEventListener("click",e=>{
   if(a.dataset.act==="more"){showAll=!showAll;renderLieux();}
   if(a.dataset.act==="close")closeModal();
   /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, même convention que la
-     version mobile) ou, pour un défi, affiche ses vrais lieux sur la carte (même
-     mécanisme sessionStorage 'pendingChallengeMap' + map.html?challenge=1 que la
-     version mobile ci-dessus) au lieu du simple toast de démonstration du fichier
-     fourni. */
+     version mobile) au lieu du simple toast de démonstration du fichier fourni.
+     BUG corrigé (demande du 10/10/2026, "supprime la fiche de map") : la fiche "défi sur
+     la carte" (ChallengeMap) a été retirée — "Voir les lieux sur la carte" d'un défi va
+     maintenant simplement sur la carte, sans fiche spéciale. */
   if(a.dataset.act==="map"){
-    const challengeId=a.dataset.challengeId;
-    const c=challengeId?DATA.challenges.find(x=>x.id===challengeId):null;
-    if(c&&Array.isArray(c.places)&&c.places.length){
-      closeModal();
-      try{ sessionStorage.setItem("pendingChallengeMap",JSON.stringify({name:c.name,desc:c.desc,need:needN(c),places:c.places})); }catch(e){}
-      window.location.href="map.html?challenge=1";
-      return;
-    }
-    const locId=a.dataset.locId;closeModal();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");
+    const locId=a.dataset.locId;closeModal();window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
   }
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
