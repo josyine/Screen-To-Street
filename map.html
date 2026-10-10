@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261008" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261009" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -640,6 +640,17 @@
   .sts-nearby-title{font-weight:700;font-size:14.5px}
   .sts-nearby-sub{font-size:12px;color:var(--sts-soft)}
   .sts-nearby-x{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--sts-field);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  /* AJOUT (demande du 10/10/2026, "corrige la notification défi pour garder la
+     notification ci joint") : variante "défi" de la bannière, d'après le prototype
+     notification_defi.html fourni — quand le lieu proche compte pour un défi en cours
+     (voir findInProgressChallengeForLocation() dans script.js), une barre de progression
+     du défi s'affiche ici (masquée par défaut, [hidden] ci-dessous), en plus du texte/
+     bouton qui changent déjà dynamiquement (voir showNearbyPlaceBanner()). */
+  .sts-nearby-prog{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .sts-nearby-prog[hidden]{display:none}
+  .sts-nearby-bar{flex:1;height:7px;border-radius:7px;background:var(--sts-field);overflow:hidden}
+  .sts-nearby-bar i{display:block;height:100%;border-radius:7px;background:var(--sts-grad);transition:width .8s .3s}
+  .sts-nearby-count{font-size:12.5px;font-weight:700}
   .sts-nearby-acts{display:flex;gap:8px;margin-top:10px}
   .sts-nearby-acts button{flex:1;height:38px;border-radius:11px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer}
   .sts-nearby-view{border:1.5px solid var(--sts-pur);color:var(--sts-pur);background:#fff}
@@ -834,7 +845,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261008';
+        s.src = 'page-loader.js?v=20261009';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1802,25 +1813,27 @@
   <div class="sts-sheet" id="stsSheet" aria-live="polite"></div>
 </section>
 
-<!-- Notification de proximité "Y aller ?" (demande du 09/10/2026) : injectée vide ici,
-     remplie et affichée par showNearbyPlaceBanner() dans script.js dès que la position GPS
-     réelle (voir startWatchingMyLocation()) entre dans le rayon d'un lieu pas encore
-     débloqué. "Voir" ouvre la fiche du lieu (openDetailsPanel) ; "Y aller" ouvre ce même
-     panneau Itinéraire ci-dessus et démarre le guidage immédiatement
+<!-- Notification de proximité "Y aller ?" (demande du 09/10/2026, variante "défi" ajoutée
+     le 10/10/2026, d'après notification_defi.html fourni) : injectée vide ici, remplie et
+     affichée par showNearbyPlaceBanner() dans script.js dès que la position GPS réelle
+     (voir startWatchingMyLocation()) entre dans le rayon d'un lieu pas encore débloqué.
+     "Voir" ouvre la fiche du lieu (openDetailsPanel) ; "Y aller"/"Relever le défi" ouvre ce
+     même panneau Itinéraire ci-dessus et démarre le guidage immédiatement
      (window.openLocationItinerary(loc, {autoGuide:true})). -->
 <div class="sts-nearby" id="stsNearbyBanner" role="dialog" aria-live="polite" aria-hidden="true">
   <div class="sts-nearby-row">
     <div class="sts-nearby-photo" id="stsNearbyPhoto"></div>
     <div style="flex:1;min-width:0">
-      <div class="sts-nearby-kicker">SCREEN TO STREET · MAINTENANT</div>
+      <div class="sts-nearby-kicker" id="stsNearbyKicker">SCREEN TO STREET · MAINTENANT</div>
       <div class="sts-nearby-title" id="stsNearbyTitle"></div>
       <div class="sts-nearby-sub" id="stsNearbySub"></div>
     </div>
     <button class="sts-nearby-x" id="stsNearbyX" aria-label="Fermer" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B6478" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
+  <div class="sts-nearby-prog" id="stsNearbyProg" hidden><div class="sts-nearby-bar"><i id="stsNearbyBar"></i></div><b id="stsNearbyCount"></b></div>
   <div class="sts-nearby-acts">
     <button class="sts-nearby-view" id="stsNearbyView" type="button">Voir</button>
-    <button class="sts-nearby-go" id="stsNearbyGo" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>Y aller</button>
+    <button class="sts-nearby-go" id="stsNearbyGo" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg><span id="stsNearbyGoTxt">Y aller</span></button>
   </div>
 </div>
 <div class="sts-toast" id="stsToast" role="status" aria-live="polite"></div>
@@ -2065,13 +2078,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20261008"></script>
-<script type="module" src="firebase-init.js?v=20261008"></script>
-<script src="locations-data.js?v=20261008"></script>
-<script src="script.js?v=20261008"></script>
+<script src="countries.js?v=20261009"></script>
+<script type="module" src="firebase-init.js?v=20261009"></script>
+<script src="locations-data.js?v=20261009"></script>
+<script src="script.js?v=20261009"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261008"></script>
-<script src="map-tour.js?v=20261008"></script>
+<script src="itinerary.js?v=20261009"></script>
+<script src="map-tour.js?v=20261009"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE

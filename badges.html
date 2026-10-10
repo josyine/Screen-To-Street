@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261008" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261009" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -357,7 +357,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261008';
+        s.src = 'page-loader.js?v=20261009';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -499,9 +499,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
 </div>
 
-<script src="locations-data.js?v=20261008"></script>
-<script type="module" src="firebase-init.js?v=20261008"></script>
-<script src="script.js?v=20261008"></script>
+<script src="locations-data.js?v=20261009"></script>
+<script type="module" src="firebase-init.js?v=20261009"></script>
+<script src="script.js?v=20261009"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -689,10 +689,12 @@ window.StbBadges=StbBadges;
       fourni ci-dessus, aucune autre ligne n'est modifiée).
    ===================================================================== */
 (async function loadRealBadgesData(){
-    function allRealLocations(){
-        const groups=(typeof getUnlockedGroups==="function")?getUnlockedGroups():[];
-        return (typeof celebLocations!=="undefined"?celebLocations:[]).filter(loc=>groups.includes(loc.group)&&!(loc.name||"").startsWith("[CLOSED] "));
-    }
+    // AJOUT SITE (demande du 10/10/2026) : allRealLocations()/buildRealChallenges() ont
+    // déménagé dans script.js (déjà chargé plus haut), pour être partagées avec la
+    // notification de proximité de map.html (voir findInProgressChallengeForLocation()
+    // dans script.js) — un seul calcul des vrais défis, jamais deux copies qui pourraient
+    // diverger. Ce fichier appelle désormais ces mêmes fonctions globales au lieu d'en
+    // garder sa propre copie.
     function unlockedAtMillis(entry){return (entry&&entry.unlockedAt&&typeof entry.unlockedAt.toMillis==="function")?entry.unlockedAt.toMillis():0;}
     function unlockedAtLabel(entry){
         const ms=unlockedAtMillis(entry);
@@ -711,65 +713,6 @@ window.StbBadges=StbBadges;
     if(user&&typeof window.fetchPublicProfile==="function"){
         try{ const profile=await window.fetchPublicProfile(user.uid); myBadges=profile.badges||{}; }catch(e){}
     }
-    // AJOUT SITE (demande du 08/10/2026, "ajoute également la partie 'Défis relevés'...
-    // par exemple le défi 'Visiter 3 lieux de l'émission Bon Voyage'") — défis RÉELS,
-    // générés depuis les vraies catégories/groupes/pays des lieux du site plutôt qu'une
-    // liste inventée à la main : chaque défi reste vrai quel que soit le catalogue
-    // (ajout/suppression de lieux), jamais besoin de le retoucher à la main. Mêmes
-    // règles que challIcon()/isDone() plus haut (icon doit être une clé de IC, need un
-    // nombre pour un défi "N lieux de...", voir needN()).
-    const CATEGORY_ICON={"Bon Voyage":"plane","Run BTS":"cam","Concert":"mic","Cafe":"cup","Restaurant":"cup","Restaurants":"cup","MV Location":"cam","Museum":"star","Museums":"star","Art Museum":"star","Fashion":"bag","Pop-up Store":"bag","Landmark":"tower","Landmarks":"tower","In The Soop":"tower","Hotel":"tower"};
-    // AJOUT SITE (demande du 09/10/2026, "quand je clique sur un défis et 'voir les lieux
-    // sur la carte', il faut afficher les lieux du défi sur la carte") : withPlaces (false
-    // par défaut) attache en plus un tableau `places` par défi — les VRAIS lieux qui
-    // comptent pour ce défi (pas juste son nombre), pour le mode "Défi sur la carte" sur
-    // map.html (voir plus bas). Seulement pour MES défis (appel avec withPlaces=true) :
-    // calculer ces tableaux pour chaque ami aussi (appels suivants, withPlaces omis)
-    // serait du travail inutile, leurs défis ne servent qu'à leur score au classement.
-    function buildRealChallenges(allLocs,unlockedIds,isFr,withPlaces){
-        const challenges=[];
-        const doneCountFor=pred=>allLocs.filter(l=>unlockedIds.has(String(l.id))&&pred(l)).length;
-        const placesFor=pred=>withPlaces?allLocs.filter(pred).map(l=>({id:String(l.id),name:l.name,group:l.group,lat:l.lat,lng:l.lng,visited:unlockedIds.has(String(l.id)),photo:l.img||""})):undefined;
-        challenges.push({id:"first",name:isFr?"Premier pas":"First step",desc:isFr?"Visiter ton tout premier lieu.":"Visit your very first place.",need:1,done:Math.min(1,unlockedIds.size),icon:"pin",places:placesFor(()=>true)});
-        const catCounts={};
-        allLocs.forEach(l=>{ if(l.category) catCounts[l.category]=(catCounts[l.category]||0)+1; });
-        const topCats=Object.keys(catCounts).filter(cat=>catCounts[cat]>=3).sort((a,b)=>catCounts[b]-catCounts[a]).slice(0,5);
-        topCats.forEach(cat=>{
-            const target=Math.min(3,catCounts[cat]);
-            challenges.push({
-                id:"cat-"+cat.toLowerCase().replace(/[^a-z0-9]+/g,"-"),
-                name:cat,
-                desc:(isFr?`Visiter ${target} lieux de l'émission `:`Visit ${target} places from `)+cat+".",
-                need:target,
-                done:Math.min(doneCountFor(l=>l.category===cat),target),
-                icon:CATEGORY_ICON[cat]||"pin",
-                places:placesFor(l=>l.category===cat)
-            });
-        });
-        const groupCounts={};
-        allLocs.forEach(l=>{ if(l.group) groupCounts[l.group]=(groupCounts[l.group]||0)+1; });
-        const topGroup=Object.keys(groupCounts).filter(g=>groupCounts[g]>=5).sort((a,b)=>groupCounts[b]-groupCounts[a])[0];
-        if(topGroup){
-            const target=Math.min(5,groupCounts[topGroup]);
-            challenges.push({
-                id:"group-"+topGroup.toLowerCase().replace(/[^a-z0-9]+/g,"-"),
-                name:(isFr?"Fan de ":"Fan of ")+topGroup,
-                desc:(isFr?`Visiter ${target} lieux liés à `:`Visit ${target} places linked to `)+topGroup+".",
-                need:target,
-                done:Math.min(doneCountFor(l=>l.group===topGroup),target),
-                icon:"heart",
-                places:placesFor(l=>l.group===topGroup)
-            });
-        }
-        const countries=new Set(allLocs.map(l=>l.country).filter(Boolean));
-        if(countries.size>=3){
-            const target=Math.min(5,countries.size);
-            const doneCountries=new Set(allLocs.filter(l=>unlockedIds.has(String(l.id))).map(l=>l.country).filter(Boolean)).size;
-            challenges.push({id:"globe",name:isFr?"Globe-trotteur":"Globetrotter",desc:isFr?`Visiter des lieux dans ${target} pays différents.`:`Visit places in ${target} different countries.`,need:target,done:Math.min(doneCountries,target),icon:"crown",places:placesFor(()=>true)});
-        }
-        return challenges;
-    }
-
     const allLocs=allRealLocations();
     const visited=[], notVisited=[];
     allLocs.forEach(loc=>{
