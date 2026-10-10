@@ -6717,7 +6717,20 @@ const ChallengeMap = (() => {
             prevView && map.setView(prevView.c, prevView.z, { animate: true });
             ch = null; sel = null; me = null;
             api.onClose && api.onClose();
-        }
+        },
+        // BUG corrigé (demande du 10/10/2026, "dans le détail d'un lieu il y a en bas une
+        // fenêtre 'défi' qui s'affiche, supprime-la") : "Voir" (data-act="view" ci-dessus)
+        // ouvre volontairement la fiche du lieu SANS fermer le mode défi (close() ci-dessus
+        // le ferait complètement : remarqueurs restaurés, carte repositionnée...), pour
+        // pouvoir y revenir en fermant la fiche. Mais #stcSheet (z-index 3400) passe
+        // PAR-DESSUS #app-sidebar (z-index 3000, voir style.css) une fois ouverte — sa
+        // bande du bas ("DÉFI" + barre de progression) restait donc visible par-dessus
+        // n'importe quelle fiche de lieu. hideForDetails()/showAfterDetails() masquent
+        // juste la bannière (comme close() le fait) SANS toucher à l'état du défi
+        // (marqueurs, carte, sélection) — appelées depuis openDetailsPanel()/
+        // closeDetailsPanel(), no-op si le mode défi n'est pas actif.
+        hideForDetails() { if (ch) { sheet.classList.remove('on'); sheet.setAttribute('aria-hidden', 'true'); } },
+        showAfterDetails() { if (ch) { sheet.classList.add('on'); sheet.setAttribute('aria-hidden', 'false'); } }
     };
     addEventListener('keydown', e => { if (e.key === 'Escape' && ch) api.close(); });
     return api;
@@ -8397,6 +8410,7 @@ function renderLocationHeroBg(loc) {
 window.openDetailsPanel = function(id, fromList) {
     const loc = celebLocations.find(l => l.id === id);
     if(!loc) return;
+    if (window.ChallengeMap && typeof window.ChallengeMap.hideForDetails === 'function') window.ChallengeMap.hideForDetails();
 
     // BUG corrigé (demande du 08/10/2026, "quand je clique sur Back to list, il faut que
     // ça nous redirige vers la liste de tous les lieux, exactement où on était") : seul un
@@ -9226,6 +9240,10 @@ window.closeDetailsPanel = function() {
     const backToList = window.__detailsOpenedFromList;
     if(sidebar) { sidebar.classList.remove('expanded'); if (!backToList) sidebar.classList.remove('open'); }
     if (!backToList && typeof window.setMobileChromeHidden === 'function') window.setMobileChromeHidden(false);
+    // Réaffiche la bannière "défi" masquée par openDetailsPanel() (voir hideForDetails()
+    // dans ChallengeMap ci-dessus) — no-op si le mode défi n'était pas actif, donc sans
+    // effet pour une fiche ouverte normalement (marqueur, liste, lien partagé...).
+    if (window.ChallengeMap && typeof window.ChallengeMap.showAfterDetails === 'function') window.ChallengeMap.showAfterDetails();
     if (backToList && window.__detailsListScrollState) {
         const { id: panelId, scrollTop } = window.__detailsListScrollState;
         const panel = document.getElementById(panelId);
