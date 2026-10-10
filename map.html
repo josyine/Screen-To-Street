@@ -717,7 +717,18 @@
      ChallengeMap les estompe/restaure directement via marker.setOpacity(), cette règle ne
      sert donc qu'à transitionner le changement en douceur. */
   .leaflet-marker-icon.custom-category-marker{transition:opacity .25s}
-  .stc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:3400;background:#fff;border-radius:26px 26px 0 0;box-shadow:0 -12px 30px rgba(30,20,50,.15);
+  /* BUG corrigé (demande du 10/10/2026, "il y a encore la fiche Défi qui apparait dans le
+     detail d'un lieu") : hideForDetails()/showAfterDetails() (script.js) masquent déjà
+     cette bannière pendant que #sidebar-details est ouvert, mais un rapport persistant
+     même en arrivant sur une fiche SANS passer par un défi laisse penser qu'un autre
+     chemin peut la laisser affichée — plutôt que de continuer à chasser cette cause
+     précise, filet de sécurité CSS : z-index abaissé SOUS celui de .sidebar (3000, voir
+     style.css) au lieu d'au-dessus (3400 avant). Les deux ne se chevauchent jamais quand
+     .sidebar est fermée (hors écran, left:-100%) donc aucun effet sur l'affichage normal
+     du mode défi ; mais si .sidebar est ouverte (n'importe quelle fiche de lieu, pour
+     n'importe quelle raison), elle la recouvre maintenant entièrement, quel que soit
+     l'état JS exact de ChallengeMap à ce moment-là. */
+  .stc-sheet{position:fixed;left:0;right:0;bottom:0;z-index:2900;background:#fff;border-radius:26px 26px 0 0;box-shadow:0 -12px 30px rgba(30,20,50,.15);
     padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.8,.2,1);max-width:560px;margin:0 auto}
   /* AJOUT SITE (même correctif que .stb-det/.live-panel ailleurs sur le site, demande du
      09/10/2026 "les icones du bas chevauchent la page") : .mobile-bottom-nav (position:
