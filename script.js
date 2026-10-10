@@ -10439,6 +10439,73 @@ async function checkBadgeUnlocksNearPosition(pos) {
 }
 
 // ==========================================
+// DÉFIS RÉELS (demande du 08/10/2026 pour badges.html, partagé ici depuis le 10/10/2026
+// pour la notification de proximité ci-dessous) : générés depuis les vraies catégories/
+// groupes/pays des lieux du site plutôt qu'une liste inventée à la main. Déplacé de
+// badges.html vers ce fichier (chargé par TOUTES les pages) pour que la notification de
+// proximité sur map.html puisse savoir, en temps réel pendant qu'on marche, si le lieu
+// qu'on approche compte pour un défi en cours — badges.html appelle désormais ces mêmes
+// fonctions (window.allRealLocations/window.buildRealChallenges) au lieu d'en garder sa
+// propre copie, pour que les deux endroits ne puissent jamais partir en désaccord.
+// ==========================================
+function allRealLocations() {
+    const groups = (typeof getUnlockedGroups === 'function') ? getUnlockedGroups() : [];
+    return (typeof celebLocations !== 'undefined' ? celebLocations : []).filter(loc => groups.includes(loc.group) && !(loc.name || '').startsWith('[CLOSED] '));
+}
+window.allRealLocations = allRealLocations;
+
+const CATEGORY_ICON = { 'Bon Voyage': 'plane', 'Run BTS': 'cam', 'Concert': 'mic', 'Cafe': 'cup', 'Restaurant': 'cup', 'Restaurants': 'cup', 'MV Location': 'cam', 'Museum': 'star', 'Museums': 'star', 'Art Museum': 'star', 'Fashion': 'bag', 'Pop-up Store': 'bag', 'Landmark': 'tower', 'Landmarks': 'tower', 'In The Soop': 'tower', 'Hotel': 'tower' };
+
+// withPlaces (false par défaut) attache en plus un tableau `places` par défi — les VRAIS
+// lieux qui comptent pour ce défi (pas juste son nombre), utilisé pour le mode "Défi sur
+// la carte" (badges.html -> map.html?challenge=1) et pour savoir si un lieu précis compte
+// pour un défi en cours (voir findInProgressChallengeForLocation() plus bas).
+function buildRealChallenges(allLocs, unlockedIds, isFr, withPlaces) {
+    const challenges = [];
+    const doneCountFor = pred => allLocs.filter(l => unlockedIds.has(String(l.id)) && pred(l)).length;
+    const placesFor = pred => withPlaces ? allLocs.filter(pred).map(l => ({ id: String(l.id), name: l.name, group: l.group, lat: l.lat, lng: l.lng, visited: unlockedIds.has(String(l.id)), photo: l.img || '' })) : undefined;
+    challenges.push({ id: 'first', name: isFr ? 'Premier pas' : 'First step', desc: isFr ? 'Visiter ton tout premier lieu.' : 'Visit your very first place.', need: 1, done: Math.min(1, unlockedIds.size), icon: 'pin', places: placesFor(() => true) });
+    const catCounts = {};
+    allLocs.forEach(l => { if (l.category) catCounts[l.category] = (catCounts[l.category] || 0) + 1; });
+    const topCats = Object.keys(catCounts).filter(cat => catCounts[cat] >= 3).sort((a, b) => catCounts[b] - catCounts[a]).slice(0, 5);
+    topCats.forEach(cat => {
+        const target = Math.min(3, catCounts[cat]);
+        challenges.push({
+            id: 'cat-' + cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            name: cat,
+            desc: (isFr ? `Visiter ${target} lieux de l'émission ` : `Visit ${target} places from `) + cat + '.',
+            need: target,
+            done: Math.min(doneCountFor(l => l.category === cat), target),
+            icon: CATEGORY_ICON[cat] || 'pin',
+            places: placesFor(l => l.category === cat)
+        });
+    });
+    const groupCounts = {};
+    allLocs.forEach(l => { if (l.group) groupCounts[l.group] = (groupCounts[l.group] || 0) + 1; });
+    const topGroup = Object.keys(groupCounts).filter(g => groupCounts[g] >= 5).sort((a, b) => groupCounts[b] - groupCounts[a])[0];
+    if (topGroup) {
+        const target = Math.min(5, groupCounts[topGroup]);
+        challenges.push({
+            id: 'group-' + topGroup.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            name: (isFr ? 'Fan de ' : 'Fan of ') + topGroup,
+            desc: (isFr ? `Visiter ${target} lieux liés à ` : `Visit ${target} places linked to `) + topGroup + '.',
+            need: target,
+            done: Math.min(doneCountFor(l => l.group === topGroup), target),
+            icon: 'heart',
+            places: placesFor(l => l.group === topGroup)
+        });
+    }
+    const countries = new Set(allLocs.map(l => l.country).filter(Boolean));
+    if (countries.size >= 3) {
+        const target = Math.min(5, countries.size);
+        const doneCountries = new Set(allLocs.filter(l => unlockedIds.has(String(l.id))).map(l => l.country).filter(Boolean)).size;
+        challenges.push({ id: 'globe', name: isFr ? 'Globe-trotteur' : 'Globetrotter', desc: isFr ? `Visiter des lieux dans ${target} pays différents.` : `Visit places in ${target} different countries.`, need: target, done: Math.min(doneCountries, target), icon: 'crown', places: placesFor(() => true) });
+    }
+    return challenges;
+}
+window.buildRealChallenges = buildRealChallenges;
+
+// ==========================================
 // NOTIFICATION DE PROXIMITÉ "Y ALLER ?" (demande du 09/10/2026, d'après le prototype
 // notification_y_aller_5_versions.html fourni) : pendant que la géolocalisation réelle est
 // active (voir startWatchingMyLocation() ci-dessus), si la personne approche d'un lieu dont
@@ -10521,6 +10588,21 @@ function ensureNearbyBannerWired() {
     });
 }
 
+// AJOUT (demande du 10/10/2026, "corrige la notification défi pour garder la notification
+// ci joint") : d'après notification_defi.html fourni — si le lieu approché compte pour un
+// défi en cours (pas encore relevé), renvoie ce défi (avec done/need) pour que
+// showNearbyPlaceBanner() ci-dessous affiche la variante "défi" de la bannière au lieu de
+// la bannière générique. myUnlockedBadgeIds peut encore valoir null au tout premier
+// évènement GPS (chargement Firestore pas encore résolu, voir loadMyUnlockedBadges()) :
+// dans ce cas on retombe simplement sur la bannière générique, sans bloquer.
+function findInProgressChallengeForLocation(loc) {
+    if (!myUnlockedBadgeIds || typeof celebLocations === 'undefined') return null;
+    const idStr = String(loc.id);
+    const isFr = (typeof currentLang !== 'undefined' && currentLang === 'fr');
+    const challenges = buildRealChallenges(allRealLocations(), myUnlockedBadgeIds, isFr, true);
+    return challenges.find(c => c.done < c.need && Array.isArray(c.places) && c.places.some(p => p.id === idStr)) || null;
+}
+
 function showNearbyPlaceBanner(loc, distanceMeters) {
     ensureNearbyBannerWired();
     const el = document.getElementById('stsNearbyBanner');
@@ -10531,10 +10613,30 @@ function showNearbyPlaceBanner(loc, distanceMeters) {
         if (loc.img) { photo.style.backgroundImage = `url('${loc.img}')`; photo.textContent = ''; }
         else { photo.style.backgroundImage = ''; photo.textContent = (loc.name || '?').charAt(0).toUpperCase(); }
     }
+    const kicker = document.getElementById('stsNearbyKicker');
     const title = document.getElementById('stsNearbyTitle');
-    if (title) title.textContent = `Tu es à ${Math.round(distanceMeters / 10) * 10} m de ${loc.name || ''}`;
     const sub = document.getElementById('stsNearbySub');
-    if (sub) sub.textContent = [loc.category, loc.group].filter(Boolean).join(' · ') + ' — viens débloquer ton badge !';
+    const prog = document.getElementById('stsNearbyProg');
+    const bar = document.getElementById('stsNearbyBar');
+    const count = document.getElementById('stsNearbyCount');
+    const goTxt = document.getElementById('stsNearbyGoTxt');
+    const challenge = findInProgressChallengeForLocation(loc);
+    if (challenge) {
+        const left = challenge.need - challenge.done;
+        if (kicker) kicker.textContent = `DÉFI « ${challenge.name.toUpperCase()} » · ${challenge.done}/${challenge.need}`;
+        if (title) title.textContent = left === 1 ? 'Plus qu\'un lieu pour relever le défi !' : `Ce lieu compte pour le défi « ${challenge.name} » !`;
+        if (sub) sub.innerHTML = `${loc.name || ''} est à <b style="color:var(--sts-mag)">${Math.round(distanceMeters / 10) * 10} m</b>`;
+        if (prog) prog.hidden = false;
+        if (count) count.textContent = `${challenge.done}/${challenge.need}`;
+        if (bar) { bar.style.width = '0'; requestAnimationFrame(() => { bar.style.width = (challenge.done / challenge.need * 100) + '%'; }); }
+        if (goTxt) goTxt.textContent = 'Relever le défi';
+    } else {
+        if (kicker) kicker.textContent = 'SCREEN TO STREET · MAINTENANT';
+        if (title) title.textContent = `Tu es à ${Math.round(distanceMeters / 10) * 10} m de ${loc.name || ''}`;
+        if (sub) sub.textContent = [loc.category, loc.group].filter(Boolean).join(' · ') + ' — viens débloquer ton badge !';
+        if (prog) prog.hidden = true;
+        if (goTxt) goTxt.textContent = 'Y aller';
+    }
     el.setAttribute('aria-hidden', 'false');
     requestAnimationFrame(() => el.classList.add('on'));
 }
