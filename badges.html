@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261011" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261012" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -364,7 +364,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261011';
+        s.src = 'page-loader.js?v=20261012';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -507,9 +507,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
 </div>
 
-<script src="locations-data.js?v=20261011"></script>
-<script type="module" src="firebase-init.js?v=20261011"></script>
-<script src="script.js?v=20261011"></script>
+<script src="locations-data.js?v=20261012"></script>
+<script type="module" src="firebase-init.js?v=20261012"></script>
+<script src="script.js?v=20261012"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -634,7 +634,7 @@ function showChallenge(id){
   det.innerHTML=`<div class="hd"></div>${challIcon(c,100)}
    <div class="k">Défi</div><h4>${esc(c.name)}</h4>
    <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--stb-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
-   ${items}<button class="stb-cta" data-act="${done?"close-det":"map"}" data-challenge-id="${esc(c.id)}">${done?"Super !":"Voir les lieux sur la carte"}</button>`;
+   ${items}<button class="stb-cta" data-act="${done?"close-det":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`;
   openDet();
 }
 function openDet(){det.classList.add("on");dim.classList.add("on");}
@@ -668,24 +668,14 @@ det.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(!a)re
   if(a.dataset.act==="close-det")closeDet();
   /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, convention déjà utilisée
      partout ailleurs sur le site pour ce genre de lien) au lieu du simple toast de
-     démonstration du fichier d'origine — data-loc-id posé par showPlace() ci-dessus. */
-  /* AJOUT SITE (demande du 09/10/2026, "quand je clique sur un défis et 'voir les lieux
-     sur la carte', il faut afficher les lieux du défi sur la carte") : un défi n'a pas
-     UN lieu (pas de data-loc-id, contrairement à showPlace() ci-dessus) mais plusieurs —
-     c.places (voir buildRealChallenges(), withPlaces=true) est déjà les vrais lieux de
-     CE défi. Transmis à map.html via sessionStorage plutôt que l'URL (une liste de lieux
-     dépasserait vite une longueur d'URL raisonnable) — ChallengeMap (map.html) lit
-     'pendingChallengeMap' au chargement et trie par distance une fois la position connue. */
+     démonstration du fichier d'origine — data-loc-id posé par showPlace() ci-dessus.
+     BUG corrigé (demande du 10/10/2026, "supprime la fiche de map [...] pour l'ouvrir il
+     faut passer par la page badges") : la fiche "défi sur la carte" (ChallengeMap,
+     map.html?challenge=1) chevauchait la barre de navigation du bas malgré plusieurs
+     correctifs — retirée ; "Voir les lieux sur la carte" d'un défi va maintenant
+     simplement sur la carte, sans fiche spéciale. */
   if(a.dataset.act==="map"){
-    const challengeId=a.dataset.challengeId;
-    const c=challengeId?DATA.challenges.find(x=>x.id===challengeId):null;
-    if(c&&Array.isArray(c.places)&&c.places.length){
-      StbBadges.close();
-      try{ sessionStorage.setItem("pendingChallengeMap",JSON.stringify({name:c.name,desc:c.desc,need:needN(c),places:c.places})); }catch(e){}
-      window.location.href="map.html?challenge=1";
-      return;
-    }
-    const locId=a.dataset.locId;StbBadges.close();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");
+    const locId=a.dataset.locId;StbBadges.close();window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
   }});
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(det.classList.contains("on"))closeDet();else if(page.classList.contains("on"))StbBadges.close();}});
 addEventListener("popstate",()=>{if(page.classList.contains("on"))StbBadges.close(true);});
@@ -788,10 +778,8 @@ window.StbBadges=StbBadges;
    les mêmes médailles hexagonales (IC/medal/placeBadge/challIcon) que les
    versions mobile et v2 précédente (identité visuelle du site conservée,
    seule la mise en page change), et la navigation réelle des boutons
-   "Voir sur la carte"/"Y aller" — y compris pour un défi (sessionStorage
-   'pendingChallengeMap' + map.html?challenge=1, même mécanisme que la
-   version mobile ci-dessus, qui affiche vraiment les lieux du défi sur la
-   carte au lieu du simple toast de démonstration du fichier fourni).
+   "Voir sur la carte"/"Y aller" vers map.html (au lieu du simple toast de
+   démonstration du fichier fourni).
    ===================================================================== */
 (function(){
 /* ===== 1. DONNÉES + VISUELS (identiques aux versions mobile/v2) ===== */
@@ -901,7 +889,7 @@ function showChallenge(id){
   const c=DATA.challenges.find(x=>x.id===id), n=needN(c), done=isDone(c);
   openModal(`${challIcon(c,120)}<div class="k">Défi</div><h3>${esc(c.name)}</h3>
    <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--sbx-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
-   <button class="sbx-cta" data-act="${done?"close":"map"}" data-challenge-id="${esc(c.id)}">${done?"Super !":"Voir les lieux sur la carte"}</button>`);
+   <button class="sbx-cta" data-act="${done?"close":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`);
 }
 function toast(t){const e=$("sbxToast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1900);}
 /* ===== 4. ÉVÉNEMENTS ===== */
@@ -916,20 +904,12 @@ document.addEventListener("click",e=>{
   if(a.dataset.act==="more"){showAll=!showAll;renderLieux();}
   if(a.dataset.act==="close")closeModal();
   /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, même convention que la
-     version mobile) ou, pour un défi, affiche ses vrais lieux sur la carte (même
-     mécanisme sessionStorage 'pendingChallengeMap' + map.html?challenge=1 que la
-     version mobile ci-dessus) au lieu du simple toast de démonstration du fichier
-     fourni. */
+     version mobile) au lieu du simple toast de démonstration du fichier fourni.
+     BUG corrigé (demande du 10/10/2026, "supprime la fiche de map") : la fiche "défi sur
+     la carte" (ChallengeMap) a été retirée — "Voir les lieux sur la carte" d'un défi va
+     maintenant simplement sur la carte, sans fiche spéciale. */
   if(a.dataset.act==="map"){
-    const challengeId=a.dataset.challengeId;
-    const c=challengeId?DATA.challenges.find(x=>x.id===challengeId):null;
-    if(c&&Array.isArray(c.places)&&c.places.length){
-      closeModal();
-      try{ sessionStorage.setItem("pendingChallengeMap",JSON.stringify({name:c.name,desc:c.desc,need:needN(c),places:c.places})); }catch(e){}
-      window.location.href="map.html?challenge=1";
-      return;
-    }
-    const locId=a.dataset.locId;closeModal();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");
+    const locId=a.dataset.locId;closeModal();window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
   }
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
