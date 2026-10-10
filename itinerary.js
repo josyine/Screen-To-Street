@@ -370,7 +370,12 @@
                 const left = L.latLng(pos).distanceTo([to.lat, to.lon]);
                 if (left < 40) { toast("Tu es arrivé(e) à " + to.name + " !"); stopGuideOrClose(); }
             }, () => toast("Impossible de suivre ta position"), { enableHighAccuracy: true, maximumAge: 5000 });
-            render(); toast("C'est parti ! Suis le tracé violet");
+            render();
+            // Demande du 10/10/2026 : plus ce toast pour le guidage lancé depuis "Y aller"
+            // (notification de proximité, mode "rapide" — voir .sts-it.quick) ; gardé pour
+            // le bouton "Démarrer" classique du panneau complet, où rien d'autre n'indique
+            // que le guidage vient de démarrer.
+            if (!root.classList.contains("quick")) toast("C'est parti ! Suis le tracé violet");
             // Le changement de hauteur de .sts-it-top (bannière affichée, .sts-row/.sts-seg
             // masqués) et de .sts-sheet (passage en "compact") déplace le cadrage carte —
             // même délai que le toggle manuel existant (data-act="toggle" ci-dessous).
