@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261002" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261003" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -750,6 +750,11 @@
   .stc-progrow b{font-size:13px}
   .stc-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 16px 4px;margin:0 -16px}
   .stc-car::-webkit-scrollbar{display:none}
+  /* États "en attente de position" / "rien à proximité" (demande du 10/10/2026, "n'affiche
+     que les lieux dans la même ville que moi") — remplace le carrousel le temps que la
+     position soit connue, ou si aucun lieu du défi n'est dans son rayon (voir
+     applyCityFilter()/SAME_CITY_RADIUS_KM dans script.js). */
+  .stc-empty{padding:18px 10px;text-align:center;font-size:12.5px;color:var(--stc-soft);line-height:1.5}
   .stc-card{flex:0 0 72%;max-width:260px;scroll-snap-align:center;display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;border:1.5px solid var(--stc-line);background:#fff;text-align:left;transition:border-color .2s,background .2s}
   .stc-card.sel{border-color:var(--stc-mag);background:#FFF8FB}
   .stc-ph{position:relative;flex:0 0 46px;height:46px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;border:2px solid var(--stc-mag);color:var(--stc-mag);background:#fff}
@@ -800,7 +805,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261002';
+        s.src = 'page-loader.js?v=20261003';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -2031,13 +2036,13 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20261002"></script>
-<script type="module" src="firebase-init.js?v=20261002"></script>
-<script src="locations-data.js?v=20261002"></script>
-<script src="script.js?v=20261002"></script>
+<script src="countries.js?v=20261003"></script>
+<script type="module" src="firebase-init.js?v=20261003"></script>
+<script src="locations-data.js?v=20261003"></script>
+<script src="script.js?v=20261003"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261002"></script>
-<script src="map-tour.js?v=20261002"></script>
+<script src="itinerary.js?v=20261003"></script>
+<script src="map-tour.js?v=20261003"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
