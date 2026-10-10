@@ -6638,6 +6638,19 @@ const ChallengeMap = (() => {
     const $ = id => document.getElementById(id), sheet = $('stcSheet'), car = $('stcCar');
     if (!sheet || !car) return { open() {}, close() {} }; // page sans le panneau (ex: pas encore chargé) — no-op plutôt qu'une erreur
     let ch = null, stcLayer = null, markers = {}, sel = null, me = null, prevView = null, dimmedMarkers = [];
+    // Lieux du défi réellement affichés (demande du 10/10/2026, "n'affiche que les lieux
+    // dans la même ville que moi" — jusqu'ici ch.places, TOUS les lieux correspondant au
+    // défi dans le monde entier, étaient montrés tels quels sur la carte/le carrousel).
+    // ch.places/ch.need restent la vérité globale du défi (le badge demande N lieux au
+    // total, n'importe où — ça ne change pas) ; displayPlaces est le sous-ensemble
+    // réellement proche de la position de la personne, recalculé une fois celle-ci
+    // connue (voir applyCityFilter() plus bas). Pas de vraie frontière de ville
+    // disponible sans géocodage inverse (API externe, jamais utilisée ailleurs sur ce
+    // site) — un rayon couvre la même intention ("pas à l'autre bout du monde") sans
+    // cette dépendance, et tolère mieux les petites incohérences de `city` dans les
+    // données (accents, "Paris"/"Paris, France"...) qu'une comparaison de chaînes.
+    const SAME_CITY_RADIUS_KM = 50;
+    let displayPlaces = [];
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const fmtKm = m => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
     const HEX = done => `<svg width="46" height="46" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6l22.5 13v26L32 58 9.5 45V19z" fill="${done ? '#E0156B1F' : '#F1EEF6'}" stroke="${done ? '#E0156B' : '#C9C2D6'}" stroke-width="2.6" stroke-linejoin="round"/>${done
@@ -6651,14 +6664,16 @@ const ChallengeMap = (() => {
         const done = ch.places.filter(p => p.visited).length, n = ch.need || ch.places.length;
         $('stcIcon').innerHTML = HEX(done >= n); $('stcName').textContent = ch.name; $('stcDesc').textContent = ch.desc || '';
         $('stcBar').style.width = (done / n * 100) + '%'; $('stcCount').textContent = `${done}/${n}`;
-        car.innerHTML = ch.places.map((p, i) => {
+        if (!me) { car.innerHTML = `<div class="stc-empty">Recherche de ta position pour afficher les lieux de ce défi près de chez toi…</div>`; return; }
+        if (!displayPlaces.length) { car.innerHTML = `<div class="stc-empty">Aucun lieu de ce défi dans ta ville pour l'instant.</div>`; return; }
+        car.innerHTML = displayPlaces.map((p, i) => {
             const d = me ? fmtKm(map.distance([me.lat, me.lon], [p.lat, p.lng])) + ' · ' : '';
             return `<button class="stc-card" data-id="${p.id}"><span class="stc-ph${p.visited && !p.photo ? ' ok' : ''}">${p.photo ? `<img src="${esc(p.photo)}" alt="" onerror="this.remove()">` : (p.visited ? '✓' : i + 1)}${p.photo && p.visited ? '<span class="chk">✓</span>' : ''}</span>
         <span style="min-width:0"><b>${esc(p.name)}</b><span class="s">${d}${p.visited ? 'visité' : 'à visiter'}</span></span></button>`;
         }).join('');
     }
     function select(id, { pan = true, scroll = true } = {}) {
-        sel = ch.places.find(p => String(p.id) === String(id)); if (!sel) return;
+        sel = displayPlaces.find(p => String(p.id) === String(id)); if (!sel) return;
         document.querySelectorAll('.stc-pin').forEach(e => e.classList.toggle('sel', e.dataset.id === String(id)));
         car.querySelectorAll('.stc-card').forEach(c => c.classList.toggle('sel', c.dataset.id === String(id)));
         Object.entries(markers).forEach(([k, m]) => m.setZIndexOffset(k === String(id) ? 1000 : 0));
@@ -6666,10 +6681,27 @@ const ChallengeMap = (() => {
         if (pan) map.panInside([sel.lat, sel.lng], { paddingTopLeft: [40, 80], paddingBottomRight: [40, sheet.offsetHeight + 30] });
     }
     function fit() {
-        const b = L.latLngBounds(ch.places.map(p => [p.lat, p.lng])); me && b.extend([me.lat, me.lon]);
+        if (!displayPlaces.length) return;
+        const b = L.latLngBounds(displayPlaces.map(p => [p.lat, p.lng])); me && b.extend([me.lat, me.lon]);
         map.fitBounds(b, { paddingTopLeft: [50, 70], paddingBottomRight: [50, sheet.offsetHeight + 40], maxZoom: 16 });
     }
-    function selectFirstNotVisited() { const first = ch.places.find(p => !p.visited) || ch.places[0]; if (first) select(first.id, { pan: false }); }
+    function selectFirstNotVisited() { const first = displayPlaces.find(p => !p.visited) || displayPlaces[0]; if (first) select(first.id, { pan: false }); }
+    // Calcule displayPlaces (lieux du défi à ≤ SAME_CITY_RADIUS_KM de `me`), triés du plus
+    // proche au plus loin, puis (re)dessine marqueurs/estompage/carrousel en conséquence —
+    // appelée une fois la position connue (voir open() plus bas), jamais avant : impossible
+    // de savoir ce qui est "près de chez toi" sans elle.
+    function applyCityFilter() {
+        displayPlaces = ch.places
+            .filter(p => map.distance([me.lat, me.lon], [p.lat, p.lng]) / 1000 <= SAME_CITY_RADIUS_KM)
+            .sort((a, b) => map.distance([me.lat, me.lon], [a.lat, a.lng]) - map.distance([me.lat, me.lon], [b.lat, b.lng]));
+        const displayIds = new Set(displayPlaces.map(p => String(p.id)));
+        dimmedMarkers = [];
+        markerGroup.eachLayer(m => { if (!displayIds.has(String(m.__locId))) { m.setOpacity(.25); dimmedMarkers.push(m); } });
+        stcLayer.clearLayers(); markers = {};
+        displayPlaces.forEach((p, i) => { markers[p.id] = L.marker([p.lat, p.lng], { icon: pinIcon(p, i), keyboard: false }).addTo(stcLayer).on('click', () => select(p.id)); });
+        renderSheet();
+        if (displayPlaces.length) setTimeout(() => { fit(); selectFirstNotVisited(); }, 60);
+    }
 
     let tm; car.addEventListener('scroll', () => {
         clearTimeout(tm); tm = setTimeout(() => {   // le carrousel pilote la carte
@@ -6691,23 +6723,26 @@ const ChallengeMap = (() => {
         onClose: null,
         open(defi) {
             if (!map || !markerGroup) return;
-            ch = defi; prevView = { c: map.getCenter(), z: map.getZoom() };
+            ch = defi; prevView = { c: map.getCenter(), z: map.getZoom() }; displayPlaces = []; me = null;
             // Bloque les re-rendus de markerGroup pendant ce mode (zoomend — voir
             // window.__tripViewActive, même principe) : ils recréeraient des marqueurs
-            // frais avec une opacité par défaut, effaçant l'estompage ci-dessous.
+            // frais avec une opacité par défaut, effaçant l'estompage posé par
+            // applyCityFilter() une fois la position connue.
             window.__challengeMapActive = true;
-            const challengeIds = new Set(ch.places.map(p => String(p.id)));
-            dimmedMarkers = [];
-            markerGroup.eachLayer(m => { if (!challengeIds.has(String(m.__locId))) { m.setOpacity(.25); dimmedMarkers.push(m); } });
             stcLayer && stcLayer.remove(); stcLayer = L.layerGroup().addTo(map); markers = {};
-            ch.places.forEach((p, i) => { markers[p.id] = L.marker([p.lat, p.lng], { icon: pinIcon(p, i), keyboard: false }).addTo(stcLayer).on('click', () => select(p.id)); });
-            renderSheet(); sheet.classList.remove('min'); sheet.classList.add('on'); sheet.setAttribute('aria-hidden', 'false');
-            setTimeout(() => { fit(); selectFirstNotVisited(); }, 60);
-            if (navigator.geolocation) navigator.geolocation.getCurrentPosition(pos => {
+            sheet.classList.remove('min'); sheet.classList.add('on'); sheet.setAttribute('aria-hidden', 'false');
+            // Rien à afficher (ni marqueurs ni carrousel) tant que la position n'est pas
+            // connue — impossible de savoir ce qui est "dans ta ville" avant ça. renderSheet()
+            // montre son état "recherche de ta position…" en attendant (voir plus haut).
+            renderSheet();
+            if (!navigator.geolocation) { car.innerHTML = `<div class="stc-empty">Active ta localisation pour voir les lieux de ce défi près de chez toi.</div>`; return; }
+            navigator.geolocation.getCurrentPosition(pos => {
                 me = { lat: pos.coords.latitude, lon: pos.coords.longitude }; if (ch !== defi) return;
-                ch.places.sort((a, b) => map.distance([me.lat, me.lon], [a.lat, a.lng]) - map.distance([me.lat, me.lon], [b.lat, b.lng]));
-                renderSheet(); selectFirstNotVisited();
-            }, () => {}, { maximumAge: 60000, timeout: 8000 });
+                applyCityFilter();
+            }, () => {
+                if (ch !== defi) return;
+                car.innerHTML = `<div class="stc-empty">Localisation indisponible — impossible d'afficher les lieux de ce défi près de chez toi.</div>`;
+            }, { maximumAge: 60000, timeout: 8000 });
         },
         close() {
             if (!ch) return; sheet.classList.remove('on'); sheet.setAttribute('aria-hidden', 'true');
@@ -6715,7 +6750,7 @@ const ChallengeMap = (() => {
             stcLayer && stcLayer.remove(); stcLayer = null;
             window.__challengeMapActive = false;
             prevView && map.setView(prevView.c, prevView.z, { animate: true });
-            ch = null; sel = null; me = null;
+            ch = null; sel = null; me = null; displayPlaces = [];
             api.onClose && api.onClose();
         },
         // BUG corrigé (demande du 10/10/2026, "dans le détail d'un lieu il y a en bas une
