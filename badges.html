@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261007" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261008" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -193,17 +193,25 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 }
 
 /* =====================================================================
-   Version ordinateur (demande du 09/10/2026, "améliore la version
-   ordinateur... reprend le document ci joint et applique le") — reprise
-   telle quelle du fichier HTML fourni (badges_ordinateur.html), CSS
-   copié-collé sans changement, préfixé .sbd- pour ne rien casser sur le
-   reste du site (même principe que .stb- ci-dessus pour mobile). #sbdRoot
-   (posé autour de tout ce markup dans le <body>, voir plus bas) bascule
-   son affichage sur le MÊME point de rupture que .stb-page ci-dessus
-   (700px) : la version mobile (.stb-page, plein écran/panneau) et la
-   version ordinateur (#sbdRoot, 2 colonnes) ne sont donc jamais affichées
-   toutes les deux à la fois.
-   ===================================================================== */
+   Version ordinateur (demande du 10/10/2026, "modifie la version
+   ordinateur de badge pour prendre la version ci joint html" — fichier
+   fourni badges_ordinateur_v3.html, menu latéral) — remplace la version 2
+   précédente (ex .sbd-, même principe de bascule) : CSS repris du fichier
+   fourni, préfixé .sbx- pour ne rien casser sur le reste du site (même
+   principe que .stb- plus haut pour mobile). #sbdRoot (posé autour de tout
+   ce markup dans le <body>, voir plus bas) bascule son affichage sur le
+   MÊME point de rupture que .stb-page ci-dessus (700px) : la version
+   mobile (.stb-page, plein écran/panneau) et la version ordinateur
+   (#sbdRoot, menu latéral) ne sont donc jamais affichées toutes les deux
+   à la fois.
+   AJOUT SITE : le fichier fourni a son propre bandeau d'icônes (.sbx-hd/
+   .sbx-icons, langue/panier/badges/recherche/messages/profil factices) —
+   retiré ici au profit du VRAI bandeau du site (.universal-logo/
+   .universal-icons, voir plus bas dans le <body>), déjà utilisé par
+   toutes les autres pages (demande du 10/10/2026, "affiche tous les
+   icones... dans toutes les pages du site") : mêmes icônes, mêmes
+   menus déroulants qui fonctionnent vraiment (langue, profil...), au
+   lieu de dupliquer un second système d'icônes qui ne ferait rien. */
 #sbdRoot{display:none}
 @media (min-width:700px){
   /* BUG corrigé (demande du 09/10/2026, "il y a un problème avec la page badge de
@@ -215,93 +223,99 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
      fixed;inset:0 sort complètement #sbdRoot du flux flex (même technique que .stb-page
      ci-dessus pour mobile), il peut alors remplir tout le viewport sans dépendre du
      display du parent. */
-  #sbdRoot{display:block;position:fixed;inset:0;overflow-y:auto;background:var(--sbd-bg);z-index:1500}
+  #sbdRoot{display:block;position:fixed;inset:0;overflow-y:auto;background:var(--sbx-bg);z-index:1500}
   .stb-page,.stb-dim,.stb-det,.stb-toast{display:none!important}
 }
-:root{--sbd-mag:#E0156B;--sbd-pur:#9B3CEB;--sbd-grad:linear-gradient(90deg,#9B3CEB,#E0156B);--sbd-ink:#1F2430;--sbd-soft:#6B6478;--sbd-line:#ECE8F2;--sbd-bg:#F7F5FB}
+:root{--sbx-mag:#E0156B;--sbx-pur:#9B3CEB;--sbx-grad:linear-gradient(90deg,#9B3CEB,#E0156B);--sbx-ink:#2B3040;--sbx-soft:#6B6478;--sbx-line:#E7E1F0;--sbx-bg:linear-gradient(120deg,#EEE7FA 0%,#E6E0F6 45%,#E3DBF4 100%)}
 #sbdRoot *{box-sizing:border-box}
-#sbdRoot button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0}
+#sbdRoot button{all:unset;box-sizing:border-box;cursor:pointer;font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
+#sbdRoot button:focus-visible{outline:2px solid var(--sbx-pur);outline-offset:2px}
 
-.sbd-top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--sbd-line)}
-.sbd-top .in{max-width:1240px;margin:0 auto;height:64px;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
-.sbd-brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px}.sbd-brand b{color:var(--sbd-mag)}
-.sbd-backlink{text-decoration:none;display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--sbd-soft);padding:8px 14px;border-radius:999px;transition:background .2s}
-.sbd-backlink:hover{background:#F1EEF6;color:var(--sbd-ink)}
+/* Même bandeau fixe que toutes les autres pages (voir .universal-logo/.universal-icons
+   dans le <body> plus bas) : ici scopé à la version ordinateur uniquement, puisque la
+   version mobile (.stb-page) a déjà son propre bouton retour/fermer. */
+.universal-logo,.universal-icons{display:none}
+@media (min-width:700px){
+  .universal-logo{display:flex;position:fixed;top:24px;left:32px;z-index:1600;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:17px;color:var(--sbx-ink)}
+  .universal-icons{display:flex;position:fixed;top:24px;right:32px;z-index:1600;gap:9px;align-items:center}
+}
 
-.sbd-wrap{max-width:1240px;margin:0 auto;padding:36px 32px 64px}
-.sbd-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px;flex-wrap:wrap}
-.sbd-head h1{margin:0;font-size:32px;letter-spacing:-.01em}
-.sbd-head p{margin:6px 0 0;color:var(--sbd-soft);font-size:14.5px}
-.sbd-head p b{color:var(--sbd-ink)}
-.sbd-seg{display:flex;background:#EFEBF6;border-radius:14px;padding:4px;gap:4px}
-.sbd-seg button{height:42px;padding:0 22px;border-radius:11px;font-size:14px;font-weight:600;color:var(--sbd-soft);display:flex;align-items:center;gap:8px;transition:background .2s,color .2s}
-.sbd-seg button:hover{color:var(--sbd-ink)}
-.sbd-seg button[aria-selected="true"]{background:#fff;color:var(--sbd-ink);box-shadow:0 2px 8px rgba(30,20,50,.1)}
-.sbd-tab{display:none}.sbd-tab.on{display:block;animation:sbdIn .3s}
-@keyframes sbdIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sbx-layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1360px;margin:0 auto;min-height:100%;padding-top:96px}
+.sbx-side{padding:0 20px 26px;position:sticky;top:96px;align-self:start}
+.sbx-side h1{font-size:26px;margin:0 8px 20px;letter-spacing:-.01em;color:var(--sbx-ink)}
+.sbx-nav{display:flex;align-items:center;justify-content:space-between;width:100%;height:48px;padding:0 16px;border-radius:14px;font-size:14.5px;font-weight:600;color:var(--sbx-soft);margin-bottom:4px;transition:background .2s,color .2s}
+.sbx-nav:hover{background:rgba(255,255,255,.55);color:var(--sbx-ink)}
+.sbx-nav[aria-selected="true"]{background:#fff;color:var(--sbx-ink);box-shadow:0 4px 14px rgba(30,20,50,.06)}
+.sbx-nav span{font-size:12.5px;color:#9C95AA}
+.sbx-nav[aria-selected="true"] span{color:var(--sbx-mag);font-weight:700}
+.sbx-prog{margin:24px 8px 0;padding:16px;border-radius:18px;background:#fff;box-shadow:0 4px 14px rgba(30,20,50,.05)}
+.sbx-prog .k{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--sbx-pur)}
+.sbx-prog b{display:block;font-size:24px;margin:2px 0 6px;color:var(--sbx-ink)}
+.sbx-prog small{display:block;font-size:12px;color:var(--sbx-soft);margin-top:8px}
+.sbx-main{padding:0 34px 60px}
+.sbx-panel{display:none;background:#fff;border-radius:24px;padding:26px 28px;box-shadow:0 8px 28px rgba(30,20,50,.06);animation:sbxIn .3s}
+.sbx-panel.on{display:block}
+@keyframes sbxIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sbx-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.sbx-h h2{margin:0;font-size:21px;color:var(--sbx-ink)}.sbx-h small{font-size:13px;color:var(--sbx-soft)}
+.sbx-bar{height:6px;border-radius:6px;background:#EFEAF6;overflow:hidden}.sbx-bar i{display:block;height:100%;border-radius:6px;background:var(--sbx-grad)}
 
-.sbd-cols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
-.sbd-card{background:#fff;border-radius:22px;padding:24px;box-shadow:0 6px 24px rgba(30,20,50,.05)}
-.sbd-side{position:sticky;top:88px}
-.sbd-sec{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 16px}
-.sbd-sec h2{margin:0;font-size:18px}
-.sbd-sec small{font-size:13px;color:var(--sbd-soft);font-weight:500}
-.sbd-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
-.sbd-chip{height:34px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;background:#fff;color:var(--sbd-soft);border:1px solid var(--sbd-line);transition:all .2s}
-.sbd-chip:hover{border-color:#D8D0E6;color:var(--sbd-ink)}
-.sbd-chip[aria-pressed="true"]{background:var(--sbd-ink);color:#fff;border-color:var(--sbd-ink)}
-.sbd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:26px 12px}
-.sbd-b{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;border-radius:16px;padding:8px 4px;transition:transform .2s,background .2s}
-.sbd-b:hover{transform:translateY(-4px);background:#FAF7FD}
-.sbd-b:hover .stb-ph:not(.lock){box-shadow:0 10px 22px rgba(224,21,107,.35)}
-.sbd-b b{font-size:12.5px;font-weight:600;line-height:1.3}
-.sbd-b span.c{font-size:11px;color:var(--sbd-soft);margin-top:-4px}
-.sbd-b.locked b{color:#B4ADC2;font-weight:500}
-.sbd-more{display:block;margin:26px auto 0;height:40px;padding:0 22px;border-radius:999px;background:#fff;border:1.5px solid var(--sbd-line);font-size:13px;font-weight:600;color:var(--sbd-pur);transition:background .2s}
-.sbd-more:hover{background:#FAF5FF}
+.sbx-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.sbx-chip{height:34px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;background:#fff;color:var(--sbx-soft);border:1px solid var(--sbx-line);display:inline-flex;align-items:center;transition:all .2s}
+.sbx-chip:hover{border-color:#D3C9E4;color:var(--sbx-ink)}
+.sbx-chip[aria-pressed="true"]{background:var(--sbx-ink);color:#fff;border-color:var(--sbx-ink)}
 
-.sbd-list{display:flex;flex-direction:column}
-.sbd-ch{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:11px 8px;border-radius:14px;transition:background .2s}
-.sbd-ch:hover{background:#FAF7FD}
-.sbd-ch .t{font-weight:600;font-size:14px}
-.sbd-ch .d{font-size:12px;color:var(--sbd-soft);margin-top:1px}
-.sbd-prog{height:6px;border-radius:6px;background:#EFEAF6;margin-top:8px;overflow:hidden}.sbd-prog i{display:block;height:100%;border-radius:6px;background:var(--sbd-grad)}
-.sbd-ok{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:700;background:#E7F8EF;color:#0E8A55;flex:0 0 26px}
-.sbd-num{font-weight:700;font-size:13px}
-.sbd-sub{font-size:12.5px;font-weight:600;color:var(--sbd-soft);margin:18px 8px 6px;text-transform:uppercase;letter-spacing:.06em}
+.sbx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:26px 10px}
+.sbx-b{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;padding:8px 4px;border-radius:16px;transition:transform .2s,background .2s}
+.sbx-b:hover{transform:translateY(-4px);background:#FAF7FD}
+.sbx-b b{font-size:12.5px;font-weight:600;line-height:1.3;color:var(--sbx-ink)}
+.sbx-b .c{font-size:11px;color:var(--sbx-soft);margin-top:-4px}
+.sbx-b.locked b{color:#B4ADC2;font-weight:500}
+.sbx-b:hover .stb-ph:not(.lock){box-shadow:0 10px 22px rgba(224,21,107,.35)}
+.sbx-more{display:flex;margin:26px auto 0;height:40px;padding:0 22px;border-radius:999px;background:#fff;border:1.5px solid var(--sbx-line);font-size:13px;font-weight:600;color:var(--sbx-pur);align-items:center;width:max-content}
 
-.sbd-ranks{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.sbd-row{display:flex;align-items:center;gap:14px;padding:12px 12px;border-radius:14px}
-.sbd-row.me{background:linear-gradient(90deg,rgba(155,60,235,.1),rgba(224,21,107,.1))}
-.sbd-row .r{width:22px;font-weight:700;font-size:14px;color:#9C95AA;text-align:center}
-.sbd-av{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px}
-.sbd-row .bar{height:7px;border-radius:7px;background:#EFEAF6;margin-top:7px;overflow:hidden}
-.sbd-row .bar i{display:block;height:100%;border-radius:7px;background:#C9BCE6;transition:width .7s cubic-bezier(.2,.8,.2,1)}
-.sbd-row.me .bar i{background:var(--sbd-grad)}
-.sbd-row.d .bar i{background:#F4C67A}.sbd-row.me.d .bar i{background:linear-gradient(90deg,#F59E0B,#E0156B)}
-.sbd-you{display:inline-flex;align-items:center;height:19px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:700;background:var(--sbd-grad);color:#fff;vertical-align:1px;margin-left:6px}
-.sbd-val{font-weight:700;font-size:16px;min-width:40px;text-align:right}
+.sbx-cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.sbx-cc{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 18px;border-radius:20px;border:1px solid var(--sbx-line);background:#fff;transition:transform .2s,box-shadow .2s;width:100%}
+.sbx-cc:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(30,20,50,.08)}
+.sbx-cc b{font-size:15px;margin-top:8px;color:var(--sbx-ink)}
+.sbx-cc .d{font-size:12px;color:var(--sbx-soft);margin:4px 0 12px;min-height:34px}
+.sbx-cc .sbx-bar{width:100%}
+.sbx-cc .n{font-size:12.5px;font-weight:700;margin-top:6px;color:var(--sbx-ink)}
+.sbx-ok{color:#0E8A55;font-weight:700;font-size:13px}
+.sbx-sub{font-size:12px;font-weight:700;letter-spacing:.07em;color:var(--sbx-soft);margin:6px 0 12px;text-transform:uppercase}
 
-.sbd-dim{position:fixed;inset:0;z-index:50;background:rgba(31,36,48,.4);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s}
-.sbd-dim.on{opacity:1;pointer-events:auto}
-.sbd-modal{position:fixed;left:50%;top:50%;z-index:51;width:420px;max-width:calc(100% - 32px);max-height:calc(100% - 64px);overflow:auto;background:#fff;border-radius:26px;padding:30px 30px 26px;text-align:center;
-  box-shadow:0 30px 70px rgba(30,20,50,.3);transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.2,.8,.2,1)}
-.sbd-modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
-.sbd-x{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:50%;background:#F1EEF6;display:flex;align-items:center;justify-content:center}
-.sbd-x:hover{background:#E7E1F0}
-.sbd-modal .k{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--sbd-pur);text-transform:uppercase;margin-top:14px}
-.sbd-modal h3{font-size:22px;margin:6px 0 2px}
-.sbd-modal p{font-size:14px;color:var(--sbd-soft);margin:10px 0 18px;line-height:1.55}
-.sbd-modal ul{list-style:none;margin:0 0 18px;padding:0;text-align:left}
-.sbd-modal li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F3F0F7;font-size:14px}
-.sbd-modal li .c{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 24px;font-size:12px}
-.sbd-cta{display:flex;align-items:center;justify-content:center;width:100%;height:50px;border-radius:14px;background:var(--sbd-grad);color:#fff;font-size:15px;font-weight:600;box-shadow:0 8px 18px rgba(224,21,107,.25);transition:filter .2s}
-.sbd-cta:hover{filter:brightness(1.06)}
-.sbd-toast{position:fixed;left:50%;top:80px;z-index:60;transform:translate(-50%,-20px);opacity:0;transition:all .3s;background:var(--sbd-ink);color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:999px;pointer-events:none}
-.sbd-toast.on{transform:translate(-50%,0);opacity:1}
+.sbx-ranks{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.sbx-rank{border:1px solid var(--sbx-line);border-radius:20px;padding:18px;background:#fff}
+.sbx-rank h3{margin:0 0 10px;font-size:16px;color:var(--sbx-ink)}
+.sbx-row{display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px}
+.sbx-row.me{background:linear-gradient(90deg,rgba(155,60,235,.1),rgba(224,21,107,.1))}
+.sbx-row .r{width:20px;text-align:center;font-weight:700;font-size:13px;color:#9C95AA}
+.sbx-av{flex:0 0 38px;height:38px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sbx-rb{height:6px;border-radius:6px;background:#EFEAF6;margin-top:5px;overflow:hidden}.sbx-rb i{display:block;height:100%;border-radius:6px;background:#C9BCE6;transition:width .7s}
+.sbx-row.me .sbx-rb i{background:var(--sbx-grad)}
+.sbx-rank.d .sbx-rb i{background:#F4C67A}.sbx-rank.d .sbx-row.me .sbx-rb i{background:linear-gradient(90deg,#F59E0B,#E0156B)}
+.sbx-you{display:inline-flex;height:18px;padding:0 7px;border-radius:999px;background:var(--sbx-grad);color:#fff;font-size:9.5px;font-weight:700;align-items:center;margin-left:6px;vertical-align:1px}
+.sbx-val{font-weight:700;font-size:16px;min-width:40px;text-align:right;color:var(--sbx-ink)}
 
-@media (max-width:980px){.sbd-cols{grid-template-columns:1fr}.sbd-side{position:static}.sbd-ranks{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.sbd-modal,.sbd-dim,.sbd-row .bar i,.sbd-b{transition:none}}
+.sbx-dim{position:fixed;inset:0;z-index:50;background:rgba(31,36,48,.4);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .25s}
+.sbx-dim.on{opacity:1;pointer-events:auto}
+.sbx-modal{position:fixed;left:50%;top:50%;z-index:51;width:420px;max-width:calc(100% - 32px);max-height:calc(100% - 64px);overflow:auto;background:#fff;border-radius:26px;padding:30px 30px 26px;text-align:center;box-shadow:0 30px 70px rgba(30,20,50,.3);transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.2,.8,.2,1)}
+.sbx-modal.on{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+.sbx-x{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:50%;background:#F1EEF6;display:flex;align-items:center;justify-content:center}
+.sbx-x:hover{background:#E7E1F0}
+.sbx-modal .k{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--sbx-pur);text-transform:uppercase;margin-top:14px}
+.sbx-modal h3{font-size:22px;margin:6px 0 2px;color:var(--sbx-ink)}
+.sbx-modal p{font-size:14px;color:var(--sbx-soft);margin:10px 0 18px;line-height:1.55}
+.sbx-modal ul{list-style:none;margin:0 0 18px;padding:0;text-align:left}
+.sbx-modal li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F3F0F7;font-size:14px}
+.sbx-modal li .c{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 24px;font-size:12px}
+.sbx-cta{display:flex;align-items:center;justify-content:center;width:100%;height:50px;border-radius:14px;background:var(--sbx-grad);color:#fff;font-size:15px;font-weight:600;box-shadow:0 8px 18px rgba(224,21,107,.25);transition:filter .2s}
+.sbx-cta:hover{filter:brightness(1.06)}
+.sbx-toast{position:fixed;left:50%;top:96px;z-index:60;transform:translate(-50%,-20px);opacity:0;transition:all .3s;background:#1F2430;color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:999px;pointer-events:none}
+.sbx-toast.on{transform:translate(-50%,0);opacity:1}
+
+@media (max-width:1000px){.sbx-layout{grid-template-columns:1fr;padding-top:84px}.sbx-side{position:static;display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:0 20px}.sbx-side h1{width:100%}.sbx-nav{width:auto;gap:10px}.sbx-prog{display:none}.sbx-ranks{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){#sbdRoot *{transition:none!important;animation:none!important}}
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -343,7 +357,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261007';
+        s.src = 'page-loader.js?v=20261008';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -389,42 +403,105 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="stb-det" id="stbDet" role="dialog" aria-modal="true" aria-label="Détail du badge"></div>
 <div class="stb-toast" id="stbToast" role="status" aria-live="polite"></div>
 
-<!-- ============ Version ordinateur (demande du 09/10/2026, "améliore la version
-     ordinateur... reprend le document ci joint et applique le") — markup du fichier
-     fourni (badges_ordinateur.html), inchangé à part #sbdRoot (bascule mobile/
-     ordinateur, voir CSS ci-dessus) et le lien "Retour à la carte" qui navigue pour
-     de vrai vers map.html (href direct, plus besoin du toast de démonstration du
-     fichier d'origine). ============ -->
+<!-- ============ Version ordinateur (demande du 10/10/2026, "modifie la version
+     ordinateur de badge pour prendre la version ci joint html") — markup du fichier
+     fourni (badges_ordinateur_v3.html, menu latéral), adapté pour utiliser le VRAI
+     bandeau d'icônes du site (.universal-logo/.universal-icons, repris à l'identique
+     d'account.html — mêmes ids, mêmes menus déroulants déjà câblés par script.js) au
+     lieu du bandeau factice du fichier fourni, voir commentaire CSS plus haut. ============ -->
 <div id="sbdRoot">
-<header class="sbd-top"><div class="in">
-  <div class="sbd-brand"><svg width="16" height="18" viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" fill="#212832"/></svg>Screen To <b>Street</b></div>
-  <a class="sbd-backlink" href="map.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Retour à la carte</a>
-</div></header>
-
-<main class="sbd-wrap">
-  <div class="sbd-head">
-    <div><h1>Mes badges</h1><p id="sbdSummary"></p></div>
-    <div class="sbd-seg" role="tablist">
-      <button role="tab" data-tab="badges" aria-selected="true">Badges</button>
-      <button role="tab" data-tab="rank" aria-selected="false">Classement</button>
+<a href="map.html" class="universal-logo">
+    <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
+        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+        <circle cx="200" cy="150" r="26" fill="#D42759"/>
+    </svg>
+    <div>
+        <div class="brand-text">Screen To <b style="color: #D42759;">Street</b></div>
     </div>
-  </div>
-  <section class="sbd-tab on" id="sbdTabBadges" role="tabpanel">
-    <div class="sbd-cols">
-      <div class="sbd-card" id="sbdPlaces"></div>
-      <aside class="sbd-card sbd-side" id="sbdChallenges"></aside>
+</a>
+<div class="universal-icons">
+    <div class="dropdown-container">
+        <button id="lang-btn" class="header-icon-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <div id="lang-menu" class="dropdown-menu hidden">
+            <a href="#" class="dropdown-option" onclick="changeLang('en'); return false;">English</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('fr'); return false;">Français</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('es'); return false;">Español</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('it'); return false;">Italiano</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('pt'); return false;">Português</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ko'); return false;">한국어</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('ja'); return false;">日本語</a>
+            <a href="#" class="dropdown-option" onclick="changeLang('zh'); return false;">中文</a>
+        </div>
     </div>
-  </section>
-  <section class="sbd-tab" id="sbdTabRank" role="tabpanel"><div class="sbd-ranks" id="sbdRanks"></div></section>
-</main>
-<div class="sbd-dim" id="sbdDim"></div>
-<div class="sbd-modal" id="sbdModal" role="dialog" aria-modal="true" aria-label="Détail"></div>
-<div class="sbd-toast" id="sbdToast" role="status" aria-live="polite"></div>
+    <div class="dropdown-container">
+        <!-- Icone masquée (voir map.html, demande du 09/10/2026) : remplacée par l'icône
+             badges ci-dessous, au même emplacement du header, pour rester cohérent avec
+             le reste du site (demande du 10/10/2026 : mêmes icônes sur toutes les pages). -->
+        <button id="cart-btn" class="header-icon-btn hidden" onclick="openCartModal()" title="Unlock Passes">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        </button>
+    </div>
+    <div class="dropdown-container">
+        <button id="badges-header-btn" class="header-icon-btn" type="button" onclick="window.location.href='badges.html';" title="My badges">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l-2 6M16 3l2 6"></path><circle cx="12" cy="14.5" r="6"></circle><path d="M12 11.5l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor" stroke="none"></path></svg>
+        </button>
+    </div>
+    <button id="admin-shortcut-btn" class="header-icon-btn hidden" onclick="window.location.href='admin.html'" title="Location submissions">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+    </button>
+    <button id="feed-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='feed.html'" title="Explore feed">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
+    <button id="message-icon-btn" class="header-icon-btn hidden" onclick="window.location.href='friends.html'" title="Messages">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        <span id="message-icon-badge" class="notif-badge hidden">0</span>
+    </button>
+    <div class="dropdown-container">
+        <button id="profile-btn" class="header-icon-btn user-avatar-btn">U</button>
+        <div id="profile-menu" class="dropdown-menu hidden">
+            <a href="profile.html" class="dropdown-profile-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span data-i18n="profileMenuOption">Your Profile</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="map-destinations.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg><span data-i18n="exploreDestOption">Explore Destinations</span></a>
+            <a href="map-artists.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg><span data-i18n="exploreArtistsOption">Explore Artists</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="account.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg><span data-i18n="accountOption">Your Account</span></a>
+            <a href="visited.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-i18n="visitedOption">Visited</span></a>
+            <a href="wishlist.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6c-1.6-1.6-4.2-1.6-5.8 0L12 7.6l-3-3c-1.6-1.6-4.2-1.6-5.8 0-1.6 1.6-1.6 4.2 0 5.8l8.8 8.8 8.8-8.8c1.6-1.6 1.6-4.2 0-5.8z"></path></svg><span data-i18n="wishlistOption">My Wishlist</span></a>
+            <a href="trips.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span data-i18n="tripsOption">My Trips</span></a>
+            <a href="friends.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span data-i18n="friendsOption">Friends</span></a>
+            <a href="settings.html" class="dropdown-option"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg><span data-i18n="settingsOption">Settings</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="index.html" class="dropdown-option" id="logout-btn" style="color:#D42759; font-weight:bold;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span data-i18n="logoutOption">Logout</span></a>
+        </div>
+    </div>
 </div>
 
-<script src="locations-data.js?v=20261007"></script>
-<script type="module" src="firebase-init.js?v=20261007"></script>
-<script src="script.js?v=20261007"></script>
+<div class="sbx-layout">
+  <aside class="sbx-side">
+    <h1>Mes badges</h1>
+    <div role="tablist" aria-label="Rubriques" style="display:contents">
+      <button class="sbx-nav" role="tab" data-s="lieux" aria-selected="true">Lieux visités <span id="sbxCntL"></span></button>
+      <button class="sbx-nav" role="tab" data-s="defis" aria-selected="false">Défis <span id="sbxCntD"></span></button>
+      <button class="sbx-nav" role="tab" data-s="rank" aria-selected="false">Classement <span id="sbxCntR"></span></button>
+    </div>
+    <div class="sbx-prog"><div class="k">PROGRESSION</div><b id="sbxPct"></b><div class="sbx-bar"><i id="sbxPctBar"></i></div><small>de la carte explorée</small></div>
+  </aside>
+  <main class="sbx-main">
+    <section class="sbx-panel on" id="sbxLieux" role="tabpanel"></section>
+    <section class="sbx-panel" id="sbxDefis" role="tabpanel"></section>
+    <section class="sbx-panel" id="sbxRank" role="tabpanel"></section>
+  </main>
+</div>
+<div class="sbx-dim" id="sbxDim"></div>
+<div class="sbx-modal" id="sbxModal" role="dialog" aria-modal="true" aria-label="Détail"></div>
+<div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
+</div>
+
+<script src="locations-data.js?v=20261008"></script>
+<script type="module" src="firebase-init.js?v=20261008"></script>
+<script src="script.js?v=20261008"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -736,33 +813,37 @@ window.StbBadges=StbBadges;
     };
     window.StbBadges.setData(badgesPayload);
     window.StbBadges.open();
-    // AJOUT SITE (demande du 09/10/2026, "améliore la version ordinateur... reprend le
-    // document ci joint") : même objet déjà calculé ci-dessus, transmis en plus à la
-    // version ordinateur (SbdBadges, défini par le script juste en dessous) — pas de
-    // second appel Firestore/amis, juste le même rendu avec un autre gabarit.
-    if(window.SbdBadges){window.SbdBadges.setData(badgesPayload);window.SbdBadges.render();}
+    // AJOUT SITE (demande du 09/10/2026, puis 10/10/2026 pour la version menu latéral) :
+    // même objet déjà calculé ci-dessus, transmis en plus à la version ordinateur
+    // (SbxBadges, défini par le script juste en dessous) — pas de second appel
+    // Firestore/amis, juste le même rendu avec un autre gabarit.
+    if(window.SbxBadges){window.SbxBadges.setData(badgesPayload);window.SbxBadges.render();}
 })();
 </script>
 
 <script>
 /* =====================================================================
-   Version ordinateur (demande du 09/10/2026, "améliore la version
-   ordinateur... reprend le document ci joint et applique le") — logique du
-   fichier fourni (badges_ordinateur.html) reprise telle quelle, seulement
+   Version ordinateur (demande du 10/10/2026, "modifie la version
+   ordinateur de badge pour prendre la version ci joint html") — logique
+   adaptée du fichier fourni (badges_ordinateur_v3.html, menu latéral),
    enveloppée dans une IIFE pour ne pas entrer en collision avec les
    identifiants de même nom déjà déclarés par le script mobile juste
-   au-dessus (DATA, IC, $, placeBadge, challIcon, toast, modal... mêmes
-   noms dans les deux fichiers fournis, portées maintenant bien séparées —
-   voir la note "collision de portée" déjà appliquée ailleurs sur ce site).
-   Seuls ajouts marqués "AJOUT SITE" : coquille de données vide (remplie
-   par window.SbdBadges.setData(), appelé depuis loadRealBadgesData()
-   juste au-dessus avec les MÊMES données réelles déjà calculées pour la
-   version mobile — aucune logique dupliquée), les vrais groupes/couleurs
-   du site, et la navigation réelle du bouton "Voir sur la carte"/"Y
-   aller".
+   au-dessus (DATA, IC, $, placeBadge, challIcon, toast, modal... voir la
+   note "collision de portée" déjà appliquée ailleurs sur ce site).
+   AJOUT SITE : coquille de données vide (remplie par
+   window.SbxBadges.setData(), appelé depuis loadRealBadgesData() juste
+   au-dessus avec les MÊMES données réelles déjà calculées pour la version
+   mobile — aucune logique dupliquée), les vrais groupes/couleurs du site,
+   les mêmes médailles hexagonales (IC/medal/placeBadge/challIcon) que les
+   versions mobile et v2 précédente (identité visuelle du site conservée,
+   seule la mise en page change), et la navigation réelle des boutons
+   "Voir sur la carte"/"Y aller" — y compris pour un défi (sessionStorage
+   'pendingChallengeMap' + map.html?challenge=1, même mécanisme que la
+   version mobile ci-dessus, qui affiche vraiment les lieux du défi sur la
+   carte au lieu du simple toast de démonstration du fichier fourni).
    ===================================================================== */
 (function(){
-/* ===== 1. DONNÉES + VISUELS (identiques à la version mobile) ===== */
+/* ===== 1. DONNÉES + VISUELS (identiques aux versions mobile/v2) ===== */
 const DATA={
   me:{id:"me",name:"",initial:"?",color:"#9B3CEB"},
   totalVisited:0,
@@ -786,21 +867,9 @@ const IC={
  bag:'<rect x="5" y="8" width="14" height="12" rx="2" fill="#fff"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8" stroke="#fff" stroke-width="2" fill="none"/>',
  lock:'<rect x="6.5" y="11" width="11" height="9" rx="2" fill="#fff"/><path d="M9 11V8.5a3 3 0 0 1 6 0V11" stroke="#fff" stroke-width="2" fill="none"/>'
 };
-/* AJOUT SITE : vrais groupes/couleurs du site (mêmes valeurs que dans le script
-   mobile juste au-dessus) au lieu des 3 groupes de démo du fichier fourni. */
 const GROUP_COL={"BTS":["#8b5cf6","#8b5cf6"],"Blackpink":["#ec4899","#ec4899"],"Twice":["#f43f5e","#f43f5e"],"Seventeen":["#3b82f6","#3b82f6"],"Katseye":["#10b981","#10b981"],"TXT":["#f59e0b","#f59e0b"]};
 const DEF_COL=["#3B82F6","#9B3CEB"];
-let gid=0;
-/* Médaille hexagonale. kind: "place" (lieu) ou "challenge" (défi, avec anneau de progression si non terminé) */
-function medal({icon,colors,done=true,progress=null},size=64){
-  const id="sbdm"+(gid++), a=done?colors[0]:"#D9D4E3", z=done?colors[1]:"#C7C0D6";
-  const ring=progress!=null&&!done?`<circle cx="32" cy="32" r="30" fill="none" stroke="#EAE5F2" stroke-width="3"/><circle cx="32" cy="32" r="30" fill="none" stroke="#9B3CEB" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(progress*188.5).toFixed(1)} 188.5" transform="rotate(-90 32 32)"/>`:"";
-  return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" style="color:${z}" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${z}"/></linearGradient></defs>
-   ${ring}<path d="M32 9l20 11.5v23L32 55 12 43.5v-23z" fill="url(#${id})"/><path d="M32 9l20 11.5v23L32 55 12 43.5v-23z" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2"/>
-   <g transform="translate(20 20)">${done?IC[icon]:IC.lock}</g>${done?'<path d="M18 22 q14 -10 28 0" stroke="rgba(255,255,255,.35)" stroke-width="3" fill="none" stroke-linecap="round"/>':""}</svg>`;
-}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const short=d=>d.replace(/ 20\d\d$/,"");
 const needN=c=>Array.isArray(c.need)?c.need.length:c.need;
 const isDone=c=>c.done>=needN(c);
 const LOCK_SVG='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B4ADC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9.5" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
@@ -816,94 +885,111 @@ function challIcon(c,size=44){
   const glyph=(done?IC[c.icon]:IC.lock).replace(/#fff/g,done?k:"#B4ADC2").replace(/currentColor/g,"#fff");
   return `<svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true"><path d="${HEX}" fill="${done?k+"1F":"#F1EEF6"}" stroke="${k}" stroke-width="2.4" stroke-linejoin="round"/><g transform="translate(21 21) scale(.92)">${glyph}</g></svg>`;
 }
-/* ===== 2. RENDU ORDINATEUR ===== */
+/* ===== 2. RENDU ORDINATEUR (menu latéral) ===== */
 const $=id=>document.getElementById(id);
 let groupFilter="Tous", showAll=false;
-const PAGE=18;
-function renderSummary(){
+const PAGE=24;
+function counts(){
   const d=DATA.challenges.filter(isDone).length;
-  $("sbdSummary").innerHTML=`<b>${DATA.totalVisited}</b> lieux visités sur ${DATA.totalPlaces} · <b>${d}</b> défis relevés`;
+  const me=[...DATA.ranking].sort((a,b)=>b[4]-a[4]).findIndex(f=>f[0]==="me")+1;
+  $("sbxCntL").textContent=`${DATA.totalVisited}/${DATA.totalPlaces}`;
+  $("sbxCntD").textContent=`${d}/${DATA.challenges.length}`;
+  $("sbxCntR").textContent=me?`${me}e`:"";
+  const pct=DATA.totalPlaces?DATA.totalVisited/DATA.totalPlaces*100:0;
+  $("sbxPct").textContent=pct.toFixed(1).replace(".",",")+" %";
+  $("sbxPctBar").style.width=Math.max(2,pct)+"%";
 }
-function renderPlaces(){
+function renderLieux(){
   const groups=["Tous",...new Set(DATA.visited.concat(DATA.notVisited).map(v=>v.group))];
   const f=v=>groupFilter==="Tous"||v.group===groupFilter;
   const all=DATA.visited.filter(f).map(v=>[v,false]).concat(DATA.notVisited.filter(f).map(v=>[v,true]));
   const shown=showAll?all:all.slice(0,PAGE);
-  $("sbdPlaces").innerHTML=`<div class="sbd-sec"><h2>Lieux visités</h2><small>${DATA.totalVisited}/${DATA.totalPlaces}</small></div>
-   <div class="sbd-chips">${groups.map(g=>`<button class="sbd-chip" data-group="${esc(g)}" aria-pressed="${g===groupFilter}">${esc(g)}</button>`).join("")}</div>
-   <div class="sbd-grid">${shown.map(([v,l])=>`<button class="sbd-b${l?" locked":""}" data-place="${v.id}" data-locked="${l?1:0}" title="${esc(v.name)} · ${esc(v.city)}">${placeBadge(v,80,l)}<b>${esc(v.name)}</b><span class="c">${esc(v.city)}</span></button>`).join("")}</div>
-   ${all.length>PAGE?`<button class="sbd-more" data-act="more">${showAll?"Afficher moins":"Voir tout"}</button>`:""}`;
+  $("sbxLieux").innerHTML=`<div class="sbx-h"><h2>Lieux visités</h2><small>${DATA.totalVisited}/${DATA.totalPlaces}</small></div>
+   <div class="sbx-chips">${groups.map(g=>`<button class="sbx-chip" data-group="${esc(g)}" aria-pressed="${g===groupFilter}">${esc(g)}</button>`).join("")}</div>
+   <div class="sbx-grid">${shown.map(([v,l])=>`<button class="sbx-b${l?" locked":""}" data-place="${v.id}" data-locked="${l?1:0}" title="${esc(v.name)} · ${esc(v.city)}">${placeBadge(v,86,l)}<b>${esc(v.name)}</b><span class="c">${esc(v.city)}</span></button>`).join("")}</div>
+   ${all.length>PAGE?`<button class="sbx-more" data-act="more">${showAll?"Afficher moins":"Voir tout"}</button>`:""}`;
 }
-function chRow(c){
+function chCard(c){
   const n=needN(c), done=isDone(c);
-  return `<button class="sbd-ch" data-challenge="${c.id}">${challIcon(c,46)}<div style="flex:1;min-width:0"><div class="t">${esc(c.name)}</div><div class="d">${esc(c.desc)}</div>${done?"":`<div class="sbd-prog"><i style="width:${c.done/n*100}%"></i></div>`}</div>${done?'<span class="sbd-ok" aria-label="Relevé">✓</span>':`<span class="sbd-num">${c.done}/${n}</span>`}</button>`;
+  return `<button class="sbx-cc" data-challenge="${c.id}">${challIcon(c,66)}<b>${esc(c.name)}</b><span class="d">${esc(c.desc)}</span>${done?'<span class="sbx-ok">✓ Relevé</span>':`<div class="sbx-bar"><i style="width:${c.done/n*100}%"></i></div><span class="n">${c.done}/${n}</span>`}</button>`;
 }
-function renderChallenges(){
+function renderDefis(){
   const dn=DATA.challenges.filter(isDone), op=DATA.challenges.filter(c=>!isDone(c));
-  $("sbdChallenges").innerHTML=`<div class="sbd-sec"><h2>Défis</h2><small>${dn.length}/${DATA.challenges.length} relevés</small></div>
-   <div class="sbd-sub" style="margin-top:0">Relevés</div><div class="sbd-list">${dn.map(chRow).join("")}</div>
-   <div class="sbd-sub">En cours</div><div class="sbd-list">${op.map(chRow).join("")}</div>`;
+  $("sbxDefis").innerHTML=`<div class="sbx-h"><h2>Défis</h2><small>${dn.length}/${DATA.challenges.length} relevés</small></div>
+   ${dn.length?`<div class="sbx-sub">Relevés</div><div class="sbx-cgrid" style="margin-bottom:24px">${dn.map(chCard).join("")}</div>`:""}
+   <div class="sbx-sub">En cours</div><div class="sbx-cgrid">${op.map(chCard).join("")}</div>`;
 }
-function rankCard(title,unit,list,isD){
-  const L=[...list].sort((a,b)=>b[4]-a[4]), max=L[0][4]||1;
-  return `<div class="sbd-card"><div class="sbd-sec"><h2>${title}</h2><small>${unit}</small></div>
-   ${L.map((f,k)=>`<div class="sbd-row${f[0]==="me"?" me":""}${isD?" d":""}"><span class="r" style="${k===0?"color:#E0156B":""}">${k+1}</span><div class="sbd-av" style="background:${f[3]}">${f[2]}</div>
-    <div style="flex:1;min-width:0"><div style="font-weight:${f[0]==="me"?700:600};font-size:14.5px">${esc(f[1])}${f[0]==="me"?'<span class="sbd-you">TOI</span>':""}</div><div class="bar"><i style="width:0" data-w="${f[4]/max*100}"></i></div></div>
-    <div class="sbd-val">${f[4]}</div></div>`).join("")}</div>`;
+function rankBlock(title,unit,list,isD){
+  const L=[...list].sort((a,b)=>b[4]-a[4]), max=L[0]&&L[0][4]||1;
+  return `<div class="sbx-rank${isD?" d":""}"><h3>${title}</h3>${L.map((f,k)=>`<div class="sbx-row${f[0]==="me"?" me":""}"><span class="r" style="${k===0?"color:#E0156B":""}">${k+1}</span><span class="sbx-av" style="background:${f[3]}">${f[2]}</span>
+   <div style="flex:1;min-width:0"><b style="font-size:14px;font-weight:${f[0]==="me"?700:600}">${esc(f[1])}</b>${f[0]==="me"?'<span class="sbx-you">TOI</span>':""}<div class="sbx-rb"><i style="width:0" data-w="${f[4]/max*100}"></i></div></div><b style="min-width:30px;text-align:right">${f[4]}</b></div>`).join("")}
+   <div style="text-align:center;font-size:12px;color:var(--sbx-soft);margin-top:8px">${unit}</div></div>`;
 }
-function renderRanks(){
-  $("sbdRanks").innerHTML=rankCard("Classement des lieux","lieux visités",DATA.ranking,false)+rankCard("Classement des défis","défis relevés",DATA.rankChallenges,true);
-  requestAnimationFrame(()=>$("sbdRanks").querySelectorAll("[data-w]").forEach(b=>b.style.width=b.dataset.w+"%"));
+function renderRank(){
+  $("sbxRank").innerHTML=`<div class="sbx-h"><h2>Classement entre amis</h2></div><div class="sbx-ranks">${rankBlock("Lieux","lieux visités",DATA.ranking,false)}${rankBlock("Défis","défis relevés",DATA.rankChallenges,true)}</div>`;
+  requestAnimationFrame(()=>$("sbxRank").querySelectorAll("[data-w]").forEach(b=>b.style.width=b.dataset.w+"%"));
+}
+function select(s){
+  document.querySelectorAll(".sbx-nav").forEach(b=>b.setAttribute("aria-selected",b.dataset.s===s));
+  ["lieux","defis","rank"].forEach(k=>$({lieux:"sbxLieux",defis:"sbxDefis",rank:"sbxRank"}[k]).classList.toggle("on",k===s));
+  if(s==="rank")renderRank();
+  history.replaceState(null,"","#"+s);
 }
 /* ===== 3. FENÊTRE DE DÉTAIL ===== */
-const modal=$("sbdModal"), dim=$("sbdDim");
-const X='<button class="sbd-x" data-act="close" aria-label="Fermer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
-function openModal(h){modal.innerHTML=X+h;modal.classList.add("on");dim.classList.add("on");modal.querySelector(".sbd-x").focus();}
+const modal=$("sbxModal"), dim=$("sbxDim");
+const X='<button class="sbx-x" data-act="close" aria-label="Fermer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+function openModal(h){modal.innerHTML=X+h;modal.classList.add("on");dim.classList.add("on");modal.querySelector(".sbx-x").focus();}
 function closeModal(){modal.classList.remove("on");dim.classList.remove("on");}
 function showPlace(id,locked){
   const v=(locked?DATA.notVisited:DATA.visited).find(x=>x.id===id);
-  openModal(`${placeBadge(v,130,locked)}<div class="k">${esc(v.group)}${v.show?" · "+esc(v.show):""}</div><h3>${esc(v.name)}</h3><div style="font-size:14px;color:var(--sbd-soft)">${esc(v.city)}</div>
-   <p>${locked?"Pas encore visité : rends-toi sur place pour débloquer ce badge.":`Visité le <b style="color:var(--sbd-ink)">${esc(v.date)}</b>`}</p>
-   <button class="sbd-cta" data-act="map" data-loc-id="${esc(v.id)}">${locked?"Y aller":"Voir sur la carte"}</button>`);
+  openModal(`${placeBadge(v,130,locked)}<div class="k">${esc(v.group)}${v.show?" · "+esc(v.show):""}</div><h3>${esc(v.name)}</h3><div style="font-size:14px;color:var(--sbx-soft)">${esc(v.city)}</div>
+   <p>${locked?"Pas encore visité : rends-toi sur place pour débloquer ce badge.":`Visité le <b style="color:var(--sbx-ink)">${esc(v.date)}</b>`}</p>
+   <button class="sbx-cta" data-act="map" data-loc-id="${esc(v.id)}">${locked?"Y aller":"Voir sur la carte"}</button>`);
 }
 function showChallenge(id){
   const c=DATA.challenges.find(x=>x.id===id), n=needN(c), done=isDone(c);
-  const items=Array.isArray(c.need)?`<ul>${c.need.map((p,k)=>{const ok=k<c.done;return `<li><span class="c" style="background:${ok?"#E7F8EF":"#F1EEF6"};color:${ok?"#0E8A55":"#9C95AA"}">${ok?"✓":k+1}</span><span style="flex:1;${ok?"":"color:var(--sbd-soft)"}">${esc(p)}</span>${ok?"":'<span style="font-size:12px;color:var(--sbd-pur);font-weight:600">à visiter</span>'}</li>`;}).join("")}</ul>`:"";
   openModal(`${challIcon(c,120)}<div class="k">Défi</div><h3>${esc(c.name)}</h3>
-   <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--sbd-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
-   ${items}<button class="sbd-cta" data-act="${done?"close":"map"}">${done?"Super !":"Voir les lieux sur la carte"}</button>`);
+   <p>${esc(c.desc)}<br>${done?'<b style="color:#0E8A55">Défi relevé !</b>':`<b style="color:var(--sbx-pur)">${c.done}/${n} — encore ${n-c.done}</b>`}</p>
+   <button class="sbx-cta" data-act="${done?"close":"map"}" data-challenge-id="${esc(c.id)}">${done?"Super !":"Voir les lieux sur la carte"}</button>`);
 }
-function toast(t){const e=$("sbdToast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1900);}
+function toast(t){const e=$("sbxToast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1900);}
 /* ===== 4. ÉVÉNEMENTS ===== */
-function selectTab(t){document.querySelectorAll(".sbd-seg [role=tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
-  $("sbdTabBadges").classList.toggle("on",t==="badges");$("sbdTabRank").classList.toggle("on",t==="rank");if(t==="rank")renderRanks();
-  history.replaceState(null,"",t==="rank"?"#classement":"#badges");}
 document.addEventListener("click",e=>{
   const t=e.target;
-  const tab=t.closest(".sbd-seg [role=tab]"); if(tab){selectTab(tab.dataset.tab);return;}
-  const g=t.closest("[data-group]"); if(g){groupFilter=g.dataset.group;showAll=false;renderPlaces();return;}
+  const n=t.closest(".sbx-nav"); if(n){select(n.dataset.s);return;}
+  const g=t.closest("[data-group]"); if(g){groupFilter=g.dataset.group;showAll=false;renderLieux();return;}
   const p=t.closest("[data-place]"); if(p){showPlace(p.dataset.place,p.dataset.locked==="1");return;}
   const c=t.closest("[data-challenge]"); if(c){showChallenge(c.dataset.challenge);return;}
-  if(t.closest("#sbdDim")){closeModal();return;}
+  if(t.closest("#sbxDim")){closeModal();return;}
   const a=t.closest("[data-act]"); if(!a)return;
-  if(a.dataset.act==="more"){showAll=!showAll;renderPlaces();}
+  if(a.dataset.act==="more"){showAll=!showAll;renderLieux();}
   if(a.dataset.act==="close")closeModal();
   /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, même convention que la
+     version mobile) ou, pour un défi, affiche ses vrais lieux sur la carte (même
+     mécanisme sessionStorage 'pendingChallengeMap' + map.html?challenge=1 que la
      version mobile ci-dessus) au lieu du simple toast de démonstration du fichier
-     fourni — data-loc-id posé par showPlace() ci-dessus (absent pour un défi, qui ne
-     correspond pas à un seul lieu : on retombe alors sur le toast, exactement comme
-     côté mobile pour le même cas). */
-  if(a.dataset.act==="map"){const locId=a.dataset.locId;closeModal();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");}
+     fourni. */
+  if(a.dataset.act==="map"){
+    const challengeId=a.dataset.challengeId;
+    const c=challengeId?DATA.challenges.find(x=>x.id===challengeId):null;
+    if(c&&Array.isArray(c.places)&&c.places.length){
+      closeModal();
+      try{ sessionStorage.setItem("pendingChallengeMap",JSON.stringify({name:c.name,desc:c.desc,need:needN(c),places:c.places})); }catch(e){}
+      window.location.href="map.html?challenge=1";
+      return;
+    }
+    const locId=a.dataset.locId;closeModal();if(locId)window.location.href="map.html?loc="+encodeURIComponent(locId);else toast("Lieux affichés sur la carte");
+  }
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
-renderSummary();renderPlaces();renderChallenges();
-if(location.hash==="#classement")selectTab("rank");
+function render(){counts();renderLieux();renderDefis();const h=location.hash.slice(1);select(["lieux","defis","rank"].includes(h)?h:"lieux");}
+render();
 /* ===== 5. AJOUT SITE — pont avec les vraies données déjà chargées par
    loadRealBadgesData() (script mobile ci-dessus) : pas de 2e appel Firestore,
    on reçoit le même objet déjà calculé. ===== */
-window.SbdBadges={
+window.SbxBadges={
   setData(d){Object.assign(DATA,d);},
-  render(){renderSummary();renderPlaces();renderChallenges();if(document.getElementById("sbdTabRank").classList.contains("on"))renderRanks();}
+  render
 };
 })();
 </script>
