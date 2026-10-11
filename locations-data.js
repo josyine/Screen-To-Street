@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-11T18:20:50.671Z.
+// Généré le 2026-10-11T23:05:34.571Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -1414,7 +1414,7 @@ window.STATIC_LOCATIONS = [
     "id": 25,
     "name": "Triton Fountain",
     "group": "BTS",
-    "member": "All",
+    "member": "RM, J-Hope, Jimin, V",
     "country": "Malta",
     "city": "Valletta",
     "category": "Bon Voyage",
@@ -1425,7 +1425,7 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-25-photo.jpg",
     "fullDescription": {
       "fr": "<p>Trois tritons de bronze agenouillés autour d'un large bassin, juste devant la porte de La Valette : la fontaine de Triton sert de porte d'entrée officieuse à la capitale maltaise depuis les années 1950, et c'est la première chose que le groupe a vue en arrivant en ville pour la saison 3 de Bon Voyage.</p><p>C'est un passage bref dans l'émission, davantage une transition qu'une destination en soi, mais il marque le début de l'un des segments les plus visuellement marquants de toute la série — la pierre calcaire dorée, les églises baroques et la lumière méditerranéenne remplaçant le bois et l'eau des saisons nordiques précédentes.</p>",
-      "en": "<p>Three majestic bronze Tritons (mythological mermen) kneel around a wide travertine basin just outside Valletta's City Gate, holding up a giant bronze platter. The Triton Fountain has served as the spectacular, unofficial front door to Malta's capital since 1959. Freshly restored to its original glory just before the group's visit in 2018, the landmark perfectly captures the grandeur and welcoming spirit of this historic island nation.</p><!--stss:footsteps--><p>The fountain is the very first thing the group saw when stepping into the city for Bon Voyage Season 3. While it appears as a brief transition in the show rather than a lingering destination, it acts as a striking cinematic threshold. Walking past these bronze mermen marked the start of one of the most visually stunning legs of the entire series. It signaled a glorious shift in aesthetic—trading the cool mountains and wooden cabins of previous seasons for Malta's sun-drenched golden limestone, baroque churches, and brilliant Mediterranean light.</p>"
+      "en": "<p>Three majestic bronze Tritons (mythological mermen) kneel around a wide travertine basin just outside Valletta's City Gate, holding up a giant bronze platter. The Triton Fountain has served as the spectacular, unofficial front door to Malta's capital since 1959. Freshly restored to its original glory just before the group's visit in 2018, the landmark perfectly captures the grandeur and welcoming spirit of this historic island nation.</p><!--stss:footsteps--><p>This stunning monument served as a memorable backdrop during BTS Bon Voyage Season 3 (aired in 2018). As they spent time exploring the sun-drenched capital of Valletta, RM, J-Hope, and Jimin wandered around the freshly restored fountain towering over the plaza, taking in the magnificent entrance before crossing the bridge into the city walls.</p><p>Later in the season, the fountain became the site of a touching friendship moment. Because Taehyung arrived in Malta a few days behind the rest of the group due to personal matters, Jimin made it his mission to ensure his fellow '95-liner experienced the highlights of the capital. Jimin personally brought Taehyung back to Triton Square at night specifically to show him the spectacular illuminated fountain, sharing the magic of Valletta's nighttime atmosphere together. Retracing these steps allows ARMYs to experience the exact same welcoming Maltese breeze and sense of awe that the members felt upon their arrival.</p>"
     },
     "tipsList": [
       {
@@ -1475,9 +1475,12 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://en.wikipedia.org/wiki/Tritons%27_Fountain",
     "episodeLink": "https://weverse.io/bts/media/2-6741268",
     "pinterestUrls": [],
-    "pinterestUrl": "",
+    "pinterestUrl": "https://fr.pinterest.com/pin/211458144990308875/",
     "recreatedPhotos": [
-      "images/admin-upload-25-recreated-0.jpg"
+      {
+        "url": "images/admin-upload-25-recreated-0.jpg",
+        "official": true
+      }
     ],
     "practicalInfo": [
       {
@@ -1485,7 +1488,7 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": ""
+          "en": "The fountain is impossible to miss. It sits at the very entrance of Valletta, acting as the central hub for the main bus terminal where all public transit routes across Malta converge."
         }
       },
       {
@@ -1493,7 +1496,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Open to the public 24/7 in an open-air pedestrian plaza. Completely free of charge."
         }
       },
       {
@@ -1501,7 +1504,7 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Highly accessible. The surrounding Triton Square is a massive, flat, newly paved pedestrian zone, making it perfectly easy to navigate for wheelchairs, strollers, and all visitors."
         }
       }
     ]
