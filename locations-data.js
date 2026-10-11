@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-11T07:42:00.649Z.
+// Généré le 2026-10-11T18:20:50.671Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -1650,36 +1650,44 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 28,
-    "name": "Mdina Old City",
+    "name": "Mdina Gate",
     "group": "BTS",
-    "member": "All",
+    "member": "RM, Jin, J-Hope, Jimin, V, Jungkook",
     "country": "Malta",
     "city": "Mdina",
     "category": "Bon Voyage",
     "year": "2018",
-    "address": "Mdina",
-    "lat": 35.8872,
-    "lng": 14.4034,
-    "img": "https://images.unsplash.com/photo-1543832923-44667a44c804?w=600",
+    "address": "Mdina Gate, Il-Kunsill Lokali tal-Imdina, Mdina, Malta",
+    "lat": 35.88469,
+    "lng": 14.40344,
+    "img": "images/admin-upload-28-photo.jpg",
     "fullDescription": {
-      "en": "<p>Malta's former capital earned its nickname, the Silent City, from the near-total quiet inside its honey-coloured walls — cars are barely allowed in, and the population within the fortifications numbers only a few hundred. The group wandered its narrow, curving streets in the late afternoon light, the kind of setting that barely needs a filter.</p><p>Fans of a certain other fantasy series will recognise these same streets from screen appearances of their own, but for BTS, Mdina's medieval alleys became the backdrop for some of the quietest, most unhurried footage of the whole Malta leg — no crowds to manage, just old stone and long shadows.</p>",
-      "fr": "<p>L'ancienne capitale de Malte doit son surnom de « Cité du Silence » au calme quasi total qui règne à l'intérieur de ses remparts couleur miel — les voitures y sont presque totalement interdites, et la population à l'intérieur des fortifications ne compte que quelques centaines d'habitants. Le groupe a arpenté ses ruelles étroites et sinueuses dans la lumière de fin d'après-midi, un décor qui n'a presque pas besoin de filtre.</p><p>Les amateurs d'une certaine autre série fantastique reconnaîtront peut-être ces mêmes rues pour y avoir vu d'autres tournages, mais pour BTS, les ruelles médiévales de Mdina sont devenues le décor de certaines des images les plus calmes et les moins pressées de tout le passage à Malte — aucune foule à gérer, juste de la vieille pierre et de longues ombres.</p>"
+      "fr": "<p>L'ancienne capitale de Malte doit son surnom de « Cité du Silence » au calme quasi total qui règne à l'intérieur de ses remparts couleur miel — les voitures y sont presque totalement interdites, et la population à l'intérieur des fortifications ne compte que quelques centaines d'habitants. Le groupe a arpenté ses ruelles étroites et sinueuses dans la lumière de fin d'après-midi, un décor qui n'a presque pas besoin de filtre.</p><p>Les amateurs d'une certaine autre série fantastique reconnaîtront peut-être ces mêmes rues pour y avoir vu d'autres tournages, mais pour BTS, les ruelles médiévales de Mdina sont devenues le décor de certaines des images les plus calmes et les moins pressées de tout le passage à Malte — aucune foule à gérer, juste de la vieille pierre et de longues ombres.</p>",
+      "en": "<p>Perched on the highest point of the island, Mdina is the ancient, fortified capital of Malta, famously known as the \"Silent City.\" To enter this historic enclave, visitors must cross a stone bridge over a dry moat and pass through the magnificent Mdina Gate (also known as Vilhena Gate). Built in 1724, this towering Baroque archway made of pale yellow limestone is adorned with intricate carvings and flanked by stone lions that guard the city. Beyond its real-world history, the gate is globally recognized as the filming location for the entrance to King's Landing in the first season of Game of Thrones.</p><!--stss:footsteps--><p>During Episode 6 of BTS Bon Voyage Season 3, the members traveled away from the coastal beaches to explore Malta’s rich medieval history in Mdina. Their adventure into the \"Silent City\" began right at the iconic Mdina Gate, where the group gathered excitedly to take a commemorative group photo in front of the majestic limestone archway.</p><p>After crossing the threshold, the members fully immersed themselves in the medieval atmosphere. Rather than just walking, they booked traditional Maltese horse-drawn carriages (karozzini) right inside the gate to tour the city like ancient nobility. Later, they continued on foot, wandering through the narrow, winding, sun-drenched alleys that have been perfectly preserved since the 17th century. Tracing their steps through the gate and into the quiet streets allows ARMYs to experience the exact same blend of historical awe and relaxed vacation energy the group felt.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Visit late afternoon"
+          "en": "Recreate the Group Photo"
         },
         "text": {
-          "en": "Visit in late afternoon once the day-trip crowds thin out — Mdina genuinely earns its name after about 5pm."
+          "en": "Before you cross the bridge into the city, gather your travel companions and take a photo in front of the towering Baroque gate, just as the members did."
         }
       },
       {
         "title": {
-          "en": "Listen for the silence"
+          "en": "Ride a Karozzin"
         },
         "text": {
-          "en": "Mdina earns its nickname, the Silent City, because cars are barely allowed inside the walls — the quiet itself is part of the experience, not just the architecture."
+          "en": "Right as you pass through the Mdina Gate, you will find a lineup of traditional horse-drawn carriages. Hire one for a scenic ride to tour the fortified walls and narrow streets exactly the way BTS experienced the city."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the"
+        },
+        "text": {
+          "en": "Mdina is famously quiet and still serves as a residential area for a few hundred locals. Keep your voices down and enjoy a peaceful stroll through the limestone alleyways."
         }
       }
     ],
@@ -1690,7 +1698,54 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Visit in late afternoon once the day-trip crowds thin out — Mdina genuinely earns its name after about 5pm.",
       "fr": "Visitez en fin d'après-midi une fois les groupes de touristes de passage repartis — Mdina mérite vraiment son nom après 17h environ."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-28-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "imgCredit": "Nenea hartia / CC BY-SA 4.0",
+    "officialLink": "https://www.mdinamalta.com/city-gates/",
+    "episodeLink": "https://weverse.io/bts/media/0-6741888",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Mdina is centrally located on the island. It is easily accessible via bus from Valletta (Routes 51, 52, or 53 to the \"Rabat\" stop) or by taxi. The gate is a short pedestrian walk from the drop-off point."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The city gate and the streets of Mdina are open 24/7 as it is a public, functioning town. Completely free to enter."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The bridge and main gate are fully accessible. However, because Mdina is an ancient medieval city, the interior streets are made of original, uneven cobblestone, which may require extra care for wheelchair users or strollers."
+        }
+      }
+    ],
+    "pinterestUrl": "https://pin.it/7tjcyihbW"
   },
   {
     "id": 29,
@@ -20749,7 +20804,6 @@ window.STATIC_LOCATIONS = [
     "tiktokUrls": [],
     "instagramUrls": [],
     "facebookUrls": [],
-    "officialLink": "https://parks.seoul.go.kr/error/error.html?indexURL=",
     "youtubeUrls": [],
     "tweetUrls": [],
     "imgCredit": "Screentostreet",
@@ -20818,13 +20872,14 @@ window.STATIC_LOCATIONS = [
           "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide, paved, and flat pathways connect the station exit directly to Apple Tree Road, ensuring that Bench 1 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
         }
       }
-    ]
+    ],
+    "officialLink": "https://parks.seoul.go.kr/index.do"
   },
   {
     "id": "new-manual-1791405945065-ofbvso",
     "name": "Comino Island",
     "group": "BTS",
-    "member": "RM, Jungkook",
+    "member": "RM, Jin, J-Hope, Jimin, V, Jungkook",
     "country": "Malta",
     "category": "Bon Voyage",
     "year": "2018",
@@ -20837,10 +20892,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [],
     "facebookUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Situated between the small island of Comino and the tiny islet of Cominotto, the Blue Lagoon is the crown jewel of the Maltese archipelago. Famous for its dazzling, translucent turquoise waters and white sandy seabed, this sheltered cove looks like a slice of the Caribbean dropped into the middle of the Mediterranean Sea. Surrounded by rugged limestone cliffs and wild nature, it is Malta's ultimate destination for swimming, snorkeling, and boat charters.</p><!--stss:footsteps--><p>This breathtaking lagoon became an iconic fandom landmark when Jungkook visited the island during the filming of BTS Bon Voyage Season 3 (2018). Taking a break from the historic streets of Valletta, Jungkook boarded a private rented boat to sail out onto the crystal-clear waters of Comino.</p><p>Fans fondly remember this leg of the trip for its relaxed, joyful atmosphere. Jungkook spent his time unwinding on the boat's deck, marveling at the wild beauty of the island, and sharing funny, chaotic behind-the-scenes moments—such as the memorable sunscreen application scenes with Jimin. Showcasing Jungkook's sun-drenched adventures on the Mediterranean, the broadcast of these stunning Maltese landscapes directly sparked a spectacular explosion of South Korean tourism to the archipelago.</p>"
-    },
-    "pinterestUrl": "",
     "facebookUrl": "",
     "episodeLink": "",
     "tipsList": [
@@ -20902,15 +20953,23 @@ window.STATIC_LOCATIONS = [
     "tweetUrl": "https://x.com/bts_twt/status/1025373063762698240?s=46",
     "imgCredit": "Christian Formosa / CC BY-SA 4.0",
     "img": "images/admin-upload-new-manual-1791405945065-ofbvso-photo.jpg",
+    "tweetUrls": [
+      "https://x.com/bts_twt/status/1026427270032805888?s=46"
+    ],
+    "pinterestUrl": "https://fr.pinterest.com/pin/570409109053808175/",
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-new-manual-1791405945065-ofbvso-recreated-0.jpg",
         "official": true
+      },
+      {
+        "url": "images/admin-upload-new-manual-1791405945065-ofbvso-recreated-1.jpg",
+        "official": true
       }
     ],
-    "tweetUrls": [
-      "https://x.com/bts_twt/status/1026427270032805888?s=46"
-    ]
+    "fullDescription": {
+      "en": "<p>Situated between the small island of Comino and the tiny islet of Cominotto, the Blue Lagoon is the crown jewel of the Maltese archipelago. Famous for its dazzling, translucent turquoise waters and white sandy seabed, this sheltered cove looks like a slice of the Caribbean dropped into the middle of the Mediterranean Sea. Surrounded by rugged limestone cliffs and wild nature, it is Malta's ultimate destination for swimming, snorkeling, and boat charters.</p><!--stss:footsteps--><p>This breathtaking lagoon became an iconic fandom landmark when the group visited the island during the filming of BTS Bon Voyage Season 3 (2018). While Suga unfortunately had to return to South Korea early due to personal matters, the remaining six members (RM, Jin, J-Hope, Jimin, V, and Jungkook) took a break from the historic streets of Valletta and boarded a private rented boat to sail out onto the crystal-clear waters of Comino.</p><p>Fans fondly remember this leg of the trip for its relaxed, joyful atmosphere. The members spent their time unwinding on the boat's deck, marveling at the wild beauty of the island, and sharing funny, chaotic behind-the-scenes moments—such as the memorable sunscreen application scenes between Jungkook and Jimin. Showcasing the group's sun-drenched adventures on the Mediterranean, the broadcast of these stunning Maltese landscapes directly sparked a spectacular explosion of South Korean tourism to the archipelago.</p>"
+    }
   },
   {
     "id": "new-manual-1791647674802-mlqoco",
@@ -21001,6 +21060,272 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "instagramUrl": "",
     "pinterestUrl": "https://it.pinterest.com/pin/855050679279860349/"
+  },
+  {
+    "id": "new-manual-1791721892325-77zxe7",
+    "name": "Seoul Forest: Dedicated Benches 2",
+    "group": "BTS",
+    "member": "RM, Jin, Suga, J-Hope, Jimin, V, Jungkook",
+    "country": "France",
+    "city": "Seoul",
+    "category": "Landmark",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54337,
+    "lng": 127.04006,
+    "year": "2018",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by passionate ARMYs to celebrate the full group, this bench honors the collective journey of RM, Jin, SUGA, j-hope, Jimin, V, and Jung Kook. Located along the southern walkway connecting Apple Tree Road to the central forest paths, it features commemorative plaques engraved with inspiring group lyrics and messages reflecting the deep, enduring bond between BTS and their fans worldwide.</p><!--stss:footsteps--><p>Visiting this group bench provides a meaningful pause along the main walking route from the station. It symbolizes the unity of the seven members and their shared history with ARMY. Sitting here allows visitors to enjoy a moment of togetherness, take in the surrounding greenery, and appreciate the global impact of BTS’s music while surrounded by the tranquil atmosphere of Seoul Forest.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 2 on the southern main path is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, which places you right near the park’s southern entrance. Follow the main paved path walking past Apple Tree Road toward the central garden loop, where Bench 2 is positioned alongside Bench 3."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide, paved, and flat pathways connect the station exit directly to this bench section, ensuring that Bench 2 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "img": "images/admin-upload-new-manual-1791721892325-77zxe7-photo.jpg",
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1791721892325-77zxe7-recreated-0.jpg"
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://parks.seoul.go.kr/index.do",
+    "storyImage": "images/admin-upload-new-manual-1791721892325-77zxe7-story.jpg",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing the Commemorative Plaques"
+        },
+        "text": {
+          "en": "Take a detailed photo of the group plaque on the bench to highlight the special message dedicated to all seven members."
+        }
+      },
+      {
+        "title": {
+          "en": "Wide Landscape Shots"
+        },
+        "text": {
+          "en": "Frame a wide photo looking along the tree-lined path toward the central garden loop to capture the natural beauty surrounding this central meeting point."
+        }
+      },
+      {
+        "title": {
+          "en": "Group Anthem Soundscape"
+        },
+        "text": {
+          "en": "Listen to iconic group tracks such as \"Spring Day\", \"Mikrokosmos\", or \"Yet To Come\" to enhance your visit with emotional and uplifting music."
+        }
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1791723252556-5mit2g",
+    "name": "Seoul Forest: Dedicated Benches 3",
+    "group": "BTS",
+    "member": "V",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273 Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54341,
+    "lng": 127.04025,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "facebookUrls": [],
+    "officialLink": "https://parks.seoul.go.kr/index.do",
+    "tweetUrls": [],
+    "img": "images/admin-upload-new-manual-1791723252556-5mit2g-photo.jpg",
+    "pinterestUrl": "",
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs to celebrate Kim Taehyung (V), Bench 3 is located along the southern tree-lined avenue near the central garden loop. Marked with commemorative plaques that feature heartfelt quotes and artistic tributes, this spot reflects V’s creative spirit, gentle character, and deep appreciation for artistic expression.</p><!--stss:footsteps--><p>Stopping at V’s second dedicated bench along the main loop provides a reflective moment surrounded by lush foliage. Situated along a prominent walking path, it offers a perfect vantage point to appreciate the harmony between nature and art in Seoul Forest. Sitting here allows visitors to slow down, enjoy the passing scenery, and connect with V’s unique world through his music and aesthetic vision.</p>"
+    },
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1791723252556-5mit2g-recreated-0.jpg"
+    ],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing Plaque Inscriptions"
+        },
+        "text": {
+          "en": "Take a close-up photo of the commemorative plaque on Bench 3 to highlight the unique lyric or quote dedicated to V."
+        }
+      },
+      {
+        "title": {
+          "en": "Framing the Pathway Scene"
+        },
+        "text": {
+          "en": "Position your camera to capture the long, tree-lined avenue stretching ahead from the bench, creating a classic cinematic composition."
+        }
+      },
+      {
+        "title": {
+          "en": "V's Jazz and Soul Soundscape"
+        },
+        "text": {
+          "en": "Listen to tracks like \"Love Me Again\", \"Stigma\", or V’s favorite jazz classics to set a calm and artistic mood while sitting at this spot."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 3 on the southern main path is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, placing you near the park’s main southern entrance. Follow the main paved path past Apple Tree Road and Bench 2, walking toward the central garden loop where Bench 3 is positioned."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide, paved, and flat pathways connect the station exit directly to this bench location, ensuring that Bench 3 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "storyImage": "images/admin-upload-new-manual-1791723252556-5mit2g-story.jpg"
+  },
+  {
+    "id": "new-manual-1791739294823-dc8181",
+    "name": "Costa Coffee Marsaxlokk",
+    "group": "BTS",
+    "member": "RM, Jin, J-Hope, Jimin, V, Jungkook",
+    "country": "Malta",
+    "year": "2018",
+    "lat": 35.84107,
+    "lng": 14.54498,
+    "address": "Triq iż-Żejtun, Marsaxlokk, Malta (located directly on the main harbor promenade)",
+    "city": "Marsaxlokk",
+    "category": "Cafe",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Grab an Iced Americano"
+        },
+        "text": {
+          "en": "Combat the Maltese heat just like the members did by ordering a cold, caffeinated drink before you begin your walk along the harbor."
+        }
+      },
+      {
+        "title": {
+          "en": "Enjoy the Terrace View"
+        },
+        "text": {
+          "en": "Take your coffee up to the café's balcony or sit at the outdoor terrace. It offers an excellent, shaded vantage point to watch the traditional luzzu boats bobbing in the water."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Sunday Market"
+        },
+        "text": {
+          "en": "If you time your coffee run for a Sunday morning, you can step right outside the café and immerse yourself directly in the famous, bustling Marsaxlokk fish market that the group explored."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Marsaxlokk is easily accessible via bus from Valletta (Routes 81 or 85 will drop you right near the waterfront). The café is located along the main promenade facing the bay."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Operates daily from early morning to late afternoon/evening."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main floor and outdoor terrace are easily accessible from the flat, paved harbor promenade, though seating on upper levels may require stairs."
+        }
+      }
+    ],
+    "officialLink": "https://www.costacoffee.mt/",
+    "ytId": "jEQRdsfPpkM",
+    "fullDescription": {
+      "en": "<p>Situated right on the picturesque waterfront of Marsaxlokk—Malta’s most famous traditional fishing village—this branch of the British coffeehouse chain Costa Coffee offers a modern, air-conditioned respite amidst the historic surroundings. While Marsaxlokk is best known globally for its bustling open-air Sunday fish market and the harbor filled with brightly painted luzzu fishing boats, this familiar café provides tourists with a reliable spot to grab an iced espresso or pastry while taking in the vibrant coastal views from its outdoor terrace.</p><!--stss:footsteps--><p>Much like their famous detour to McDonald's in Sliema, this Costa Coffee location became another highly relatable, unscripted pit stop for the group during BTS Bon Voyage Season 3 (Episode 6). Fans rewatching the episode can spot this exact café break around the 16:26 mark of the broadcast.</p><p>As the members (minus Suga, who had already departed for Korea) spent their fifth day on the island exploring the colorful Marsaxlokk market and taking in the local sights, the intense Maltese summer heat and the lingering tiredness from their activities the night before quickly caught up to them. Needing a quick burst of energy and a break from the sun, the members opted for something simple and familiar: grabbing iced coffees and refreshing drinks from Costa Coffee. This brief stop perfectly showcases the charming reality of the Bon Voyage series—interspersed between grand historic tours and fine dining, the world's biggest superstars just needed a classic iced Americano from a familiar chain to keep their energy up while exploring a traditional fishing village.</p>"
+    },
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791739294823-dc8181-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "imgCredit": "AI-generated illustrative image",
+    "episodeLink": "https://weverse.io/bts/media/0-6741888",
+    "img": "images/admin-upload-new-manual-1791739294823-dc8181-photo.jpg"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
