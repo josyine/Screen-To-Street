@@ -2525,7 +2525,6 @@ const ShareStory = (() => {
         ig: `<svg viewBox="0 0 24 24"><defs><linearGradient id="sst-ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FDBA4D"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#sst-ig)"/><rect x="6.5" y="6.5" width="11" height="11" rx="5.5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg>`,
         wa: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#25D366"/><path d="M8.3 7.5c.3-.5.7-.5 1-.5l.6 1.5c.1.3 0 .5-.2.7l-.5.6c.6 1.3 1.6 2.3 2.9 2.9l.6-.6c.2-.2.5-.3.7-.2l1.5.7c0 .4 0 .8-.4 1.1-.6.6-1.6.8-2.6.4-2-.8-3.6-2.4-4.4-4.4-.3-.9-.2-1.7.8-2.2z" fill="#fff"/></svg>`,
         dl: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>`,
-        lk: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>`,
         // AJOUT SITE : cible "Ami", absente du composant fourni (qui ne savait partager
         // qu'en dehors du site).
         friend: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#E0156B"/><circle cx="9" cy="9" r="2.4" fill="#fff"/><circle cx="15.3" cy="10.3" r="1.9" fill="#fff" opacity=".85"/><path d="M4.9 18c.4-3 2.3-4.5 4.8-4.5s4.1 1.4 4.6 3.7" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M14.4 14.1c1.7.3 3 1.4 3.5 3.3" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".85"/></svg>`
@@ -2587,8 +2586,7 @@ const ShareStory = (() => {
         ['friend', IC.friend, t('shareWithFriendBtn')],
         ['story', IC.ig, 'Story'],
         ['share', IC.wa, 'WhatsApp'],
-        ['dl', IC.dl, currentLang === 'fr' ? 'Enregistrer' : 'Save'],
-        ['link', IC.lk, currentLang === 'fr' ? 'Lien' : 'Link']
+        ['dl', IC.dl, currentLang === 'fr' ? 'Enregistrer' : 'Save']
     ];
     function renderChrome() {
         root.querySelectorAll('.sst-x').forEach(b => b.innerHTML = IC.x); $('.sst-rm').innerHTML = IC.x;
@@ -2636,6 +2634,37 @@ const ShareStory = (() => {
         return new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
     }
     function download(f) { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+    // Partage direct vers la Story Instagram (demande du 12/10/2026, "comme avec Strava")
+    // — AJOUT SITE. Repose sur le schéma d'URL privé "instagram-stories://share" : Instagram
+    // (app) lit l'image déposée sur le presse-papier système quand cette URL l'ouvre. iOS
+    // Safari seulement — c'est la seule plateforme où une PAGE WEB (Screen To Street n'est
+    // pas une app native) peut écrire sur ce presse-papier ET où Instagram accepte de le
+    // relire ainsi ; sur Android, ce partage n'existe QUE via l'intent natif ADD_TO_STORY
+    // d'une app, inatteignable depuis le web, d'où aucune tentative ici. Fonctionnalité non
+    // officiellement documentée par Meta pour un site web (seules les apps natives avec leur
+    // SDK le sont) : traitée en best-effort, avec repli silencieux sur le comportement
+    // précédent si l'app Instagram ne s'ouvre pas (non installée, bloqué, desktop...) —
+    // détecté via l'évènement "blur" (la page perd le focus quand une autre app s'ouvre).
+    // INSTAGRAM_FB_APP_ID (plus bas) : laissé vide faute d'app Meta Developer enregistrée
+    // pour le site — sans lui, Instagram affiche l'image mais pas le lien "Voir le site" sur
+    // la story. Pour l'ajouter : créer une app sur developers.facebook.com, produit
+    // "Sharing to Stories", et coller son ID ici.
+    const INSTAGRAM_FB_APP_ID = '';
+    function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+    async function tryInstagramStoryShare(file) {
+        if (!isIOS() || !navigator.clipboard || !navigator.clipboard.write || typeof ClipboardItem === 'undefined') return false;
+        try {
+            await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
+        } catch (e) { return false; }
+        return new Promise(resolve => {
+            let done = false;
+            const finish = (opened) => { if (done) return; done = true; window.removeEventListener('blur', onBlur); clearTimeout(timer); resolve(opened); };
+            const onBlur = () => finish(true);
+            window.addEventListener('blur', onBlur);
+            const timer = setTimeout(() => finish(false), 1600);
+            window.location.href = `instagram-stories://share?source_application=${encodeURIComponent(INSTAGRAM_FB_APP_ID)}`;
+        });
+    }
     // Partage réel à un ami du site (AJOUT SITE) — réutilise myFriendsList/
     // shareLocationWithFriend() (voir le bouton "Partager" historique de la fiche lieu).
     function renderFriendPanel() {
@@ -2668,11 +2697,25 @@ const ShareStory = (() => {
         if (a === 'rmphoto') { user = null; renderStories(); sync(); return; }
         if (a === 'friend') return openFriendPanel();
         api.onShare && api.onShare({ format: NAMES()[tpl], action: a, type: D.type });
-        if (a === 'link') { try { await navigator.clipboard.writeText(D.url); } catch (e) { } return toast(currentLang === 'fr' ? 'Lien copié' : 'Link copied'); }
         let f; try { f = await makeFile(); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
-        if (a === 'dl') { download(f); return toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved'); }
+        if (a === 'story') {
+            if (await tryInstagramStoryShare(f)) return;
+            // Repli (Android, desktop, iOS sans Instagram installé...) : partage natif
+            // classique si possible, sinon téléchargement + indication manuelle.
+            if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: D.title, text: D.url }); } catch (e) { } return; }
+            download(f); return toast(currentLang === 'fr' ? 'Image enregistrée — ouvre Instagram › Story pour la publier' : 'Image saved — open Instagram › Story to post it');
+        }
+        if (a === 'dl') {
+            // "Enregistrer dans les Photos" (demande du 12/10/2026) : sur mobile, le partage
+            // natif propose "Enregistrer l'image"/"Save Image" (vraie galerie Photos), ce que
+            // le téléchargement classique <a download> ne fait pas (il va dans Fichiers/
+            // Téléchargements). Repli sur ce dernier là où le partage natif de fichiers
+            // n'existe pas (desktop).
+            if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); } catch (e) { } return; }
+            download(f); return toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
+        }
         if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: D.title, text: D.url }); } catch (e) { } return; }
-        download(f); toast(a === 'story' ? (currentLang === 'fr' ? 'Image enregistrée — ouvre Instagram › Story pour la publier' : 'Image saved — open Instagram › Story to post it') : (currentLang === 'fr' ? 'Image enregistrée' : 'Image saved'));
+        download(f); toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
     }
     root.addEventListener('click', e => {
         if (e.target === root) return api.close();
