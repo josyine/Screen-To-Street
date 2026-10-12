@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261019" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261020" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -255,7 +255,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261019';
+        s.src = 'page-loader.js?v=20261020';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -468,10 +468,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261019"></script>
-<script src="countries.js?v=20261019"></script>
-<script src="locations-data.js?v=20261019"></script>
-<script src="script.js?v=20261019"></script>
+<script type="module" src="firebase-init.js?v=20261020"></script>
+<script src="countries.js?v=20261020"></script>
+<script src="locations-data.js?v=20261020"></script>
+<script src="script.js?v=20261020"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -943,10 +943,27 @@ recomposée, sans texte ni légende.`;
         });
         return pinterestSdkLoading;
     }
+    // BUG corrigé (demande du 12/10/2026, "l'espace entre les 2 [épingles] est trop grand") —
+    // même correctif que renderPinterestEmbedOnDetails() dans script.js : une hauteur fixe
+    // (445px) ne collait pas au vrai format de chaque épingle, laissant du vide. Hauteur
+    // réelle récupérée via l'API oEmbed publique de Pinterest ; 445/345 (ratio d'avant) en
+    // repli si cet appel échoue.
+    async function fetchPinterestEmbedHeight(pinterestUrl) {
+        try {
+            const r = await fetch(`https://www.pinterest.com/oembed.json?url=${encodeURIComponent(pinterestUrl)}`);
+            if (!r.ok) return null;
+            const data = await r.json();
+            const h = data && Number(data.height), w = data && Number(data.width);
+            return (h > 0 && w > 0) ? Math.round(h / w * 345) : null;
+        } catch (e) {
+            return null;
+        }
+    }
     async function renderPinterestEmbed(container, pinterestUrl) {
         const pinId = extractPinterestPinId(pinterestUrl);
         if (pinId) {
-            container.innerHTML = `<iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" height="445" width="345" frameborder="0" scrolling="no" style="max-width:100%;"></iframe>`;
+            const height = (await fetchPinterestEmbedHeight(pinterestUrl)) || 445;
+            container.innerHTML = `<iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" height="${height}" width="345" frameborder="0" scrolling="no" style="max-width:100%;"></iframe>`;
             return;
         }
         container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="medium" href="${escapeHtml(pinterestUrl)}"></a>`;

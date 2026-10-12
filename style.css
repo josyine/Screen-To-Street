@@ -249,10 +249,16 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
    dans script.js) : BUG corrigé (demande du 10/10/2026, "améliore l'affichage de Pinterest
    embeded afin que ça prenne toute la section, là c'est moche") — l'iframe Pinterest était
    fixée à 345x445px (un ratio ~0.775), bien plus étroite que la section qui l'affiche,
-   laissant un grand vide autour. Même technique que .video-wrapper ci-dessus (ratio en
-   padding-bottom, iframe en position:absolute qui remplit tout) avec le même ratio 345/445
-   qu'avant (445/345 ≈ 129%, pour ne pas déformer le visuel Pinterest) : l'iframe grandit
-   maintenant jusqu'à remplir toute la largeur de la section. */
+   laissant un grand vide autour. Technique "boîte à ratio" comme .video-wrapper ci-dessus
+   (padding-bottom en %, iframe en position:absolute qui remplit tout) : l'iframe grandit
+   maintenant jusqu'à remplir toute la largeur de la section.
+   BUG corrigé (demande du 12/10/2026, lieu "Valletta Stairs (St. Mark Street)", "l'espace
+   entre les 2 [épingles] est trop grand") : 129% ÉTAIT ce ratio fixe pour TOUTE épingle, quel
+   que soit son vrai format (une épingle carrée ou large forcée dans cette boîte trop haute
+   laisse un grand vide blanc en dessous d'elle, avant la suivante). Remplacé par un
+   padding-bottom calculé PAR épingle depuis sa vraie hauteur (oEmbed Pinterest, voir
+   fetchPinterestEmbedRatio() dans script.js), posé en style inline sur chaque boîte ;
+   129% reste la valeur de repli ci-dessous si cet appel échoue. */
 .pinterest-embed-box { position: relative; width: 100%; padding-bottom: 129%; height: 0; overflow: hidden; border-radius: 12px; }
 .pinterest-embed-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
