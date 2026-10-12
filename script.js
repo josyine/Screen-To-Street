@@ -901,15 +901,25 @@ function loadPinterestSdkOnce() {
     });
     return _pinterestSdkLoadPromise;
 }
+// BUG corrigé (demande du 10/10/2026, "améliore l'affichage de Pinterest embeded afin que
+// ça prenne toute la section, là c'est moche") : la largeur FIXE de 345px (height:445, un
+// ratio ~0.775, soit 129% en padding-bottom) ne tenait aucun compte de la largeur réelle de
+// la section (.tweet-embed-wrapper, souvent nettement plus large, voir .sidebar/mobile) —
+// "max-width:100%" empêche seulement un DÉBORDEMENT, jamais un agrandissement, donc la
+// carte Pinterest flottait, minuscule, au milieu d'un grand vide. Repris en "boîte à
+// ratio" (position:relative + padding-bottom en %, iframe en position:absolute qui remplit
+// tout), même technique que .video-wrapper (YouTube) déjà utilisée ailleurs sur cette page
+// (voir style.css) — même ratio 345/445 qu'avant pour ne pas déformer le visuel, mais
+// l'iframe grandit maintenant jusqu'à remplir toute la largeur de la section.
 async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
     const pinId = extractPinterestPinId(pinterestUrl);
     if (pinId) {
-        container.innerHTML = `<iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" height="445" width="345" frameborder="0" scrolling="no" style="max-width:100%;"></iframe>`;
+        container.innerHTML = `<div class="pinterest-embed-box"><iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" frameborder="0" scrolling="no"></iframe></div>`;
         return;
     }
     // Voir la note dans renderInstagramEmbedOnDetails() plus haut sur ce drapeau.
     container.dataset.embedPending = '1';
-    container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="medium" href="${escapeHtml(pinterestUrl)}"></a>`;
+    container.innerHTML = `<a data-pin-do="embedPin" data-pin-width="large" href="${escapeHtml(pinterestUrl)}"></a>`;
     await loadPinterestSdkOnce();
     // PinUtils.build(container) est l'API officielle pour retraiter un conteneur précis après
     // le chargement initial du script (équivalent de FB.XFBML.parse(container)/

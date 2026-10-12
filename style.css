@@ -258,6 +258,17 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin-bottom: 18px; box-shadow: 0 6px 18px rgba(0,0,0,.1); }
 .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
+/* Épingle Pinterest embarquée sur la fiche d'un lieu (voir renderPinterestEmbedOnDetails()
+   dans script.js) : BUG corrigé (demande du 10/10/2026, "améliore l'affichage de Pinterest
+   embeded afin que ça prenne toute la section, là c'est moche") — l'iframe Pinterest était
+   fixée à 345x445px (un ratio ~0.775), bien plus étroite que la section qui l'affiche,
+   laissant un grand vide autour. Même technique que .video-wrapper ci-dessus (ratio en
+   padding-bottom, iframe en position:absolute qui remplit tout) avec le même ratio 345/445
+   qu'avant (445/345 ≈ 129%, pour ne pas déformer le visuel Pinterest) : l'iframe grandit
+   maintenant jusqu'à remplir toute la largeur de la section. */
+.pinterest-embed-box { position: relative; width: 100%; padding-bottom: 129%; height: 0; overflow: hidden; border-radius: 12px; }
+.pinterest-embed-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
 /* Post Twitter/X embarqué sur la fiche d'un lieu (voir renderTweetEmbedOnDetails() dans
    script.js) : conteneur DÉDIÉ, distinct de .video-wrapper ci-dessus — celui-ci impose un
    ratio 16:9 fixe pensé pour un <iframe> vidéo, ce qui écrasait/rognait le widget Twitter
