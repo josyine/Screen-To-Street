@@ -826,37 +826,35 @@ function extractTikTokVideoId(url) {
 // finissait par injecter lui-même, en interne, une fois chargé. width/height : proportions
 // portrait habituelles de la carte d'embed TikTok (vidéo + légende + bouton follow).
 // BUG corrigé (demande du 11/10/2026, "pour les posts embeded, supprime le bloc blanc du
-// fond") : même défaut que pour Twitter/X (voir ensureTweetResizeListenerOnce() et son
-// commentaire plus haut, "la zone blanche sous le contenu pour tout tweet plus court que
-// la hauteur fixe") — height="738" était une valeur FIXE choisie pour le post TikTok le
-// plus long possible (légende + infos musique + bouton follow), laissant un grand bloc
-// blanc vide en dessous pour toute vidéo plus courte (ex: pas de légende). Même principe
-// que pour Twitter : on démarre avec une hauteur de départ raisonnable, puis on l'ajuste
-// à la vraie hauteur dès que tiktok.com communique sa propre taille réelle au parent via
-// `postMessage` (mécanisme équivalent à celui de platform.twitter.com, utilisé en interne
-// par TikTok lui-même pour redimensionner ses propres iframes une fois le contenu chargé).
-function ensureTikTokResizeListenerOnce() {
-    if (window._stsTikTokResizeListenerAdded) return;
-    window._stsTikTokResizeListenerAdded = true;
-    window.addEventListener('message', (e) => {
-        if (!/\.tiktok\.com$/.test(e.origin.replace(/^https?:\/\//, ''))) return;
-        let data = e.data;
-        try { if (typeof data === 'string') data = JSON.parse(data); } catch (err) { return; }
-        // Format exact non documenté publiquement par TikTok (contrairement à Twitter ci-
-        // dessus) : lecture tolérante de quelques formes plausibles plutôt qu'une seule clé
-        // précise, pour rester robuste si TikTok ajuste la structure du message.
-        const height = data && (data.height || (data['tiktok-embed'] && data['tiktok-embed'].height));
-        if (!height || typeof height !== 'number') return;
-        document.querySelectorAll('iframe[data-sts-tiktok-embed]').forEach((ifr) => {
-            if (ifr.contentWindow === e.source) ifr.style.height = height + 'px';
-        });
-    });
+// fond") : un premier correctif (height de départ réduite + écoute d'un postMessage de
+// redimensionnement, même principe que pour Twitter/X) n'a pas suffi — le bloc blanc
+// persistait. Cause réelle trouvée en relisant wireEmbedIframeAutoResizeOnce() plus haut
+// (déjà câblée pour CETTE iframe via renderMultiEmbedsInto() ci-dessous, voir son
+// commentaire "demande du 04/10/2026") : elle écoute DÉJÀ un postMessage générique
+// {height:N} en repli pour TikTok/Facebook — si le bloc blanc persistait malgré elle,
+// c'est que tiktok.com n'envoie tout simplement AUCUN postMessage de ce type pour cette
+// iframe brute (contrairement à Twitter, confirmé fonctionnel). Plutôt que deviner un
+// énième format de message hypothétique, utilise l'API oEmbed PUBLIQUE de TikTok
+// (https://www.tiktok.com/oembed?url=...), la méthode officiellement documentée pour
+// connaître la vraie hauteur recommandée d'UNE vidéo précise avant même de poser
+// l'iframe — plus de devinette, la bonne hauteur dès le premier rendu. Repli sur 605px
+// (taille minimale documentée par TikTok) si cet appel échoue pour une raison quelconque
+// (CORS, réseau...), pour ne jamais rien casser.
+async function fetchTikTokEmbedHeight(tiktokUrl) {
+    try {
+        const r = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(tiktokUrl)}`);
+        if (!r.ok) return null;
+        const data = await r.json();
+        return (data && typeof data.height === 'number' && data.height > 0) ? Math.ceil(data.height) : null;
+    } catch (e) {
+        return null;
+    }
 }
 async function renderTikTokEmbedOnDetails(container, tiktokUrl) {
     const videoId = extractTikTokVideoId(tiktokUrl);
     if (videoId) {
-        ensureTikTokResizeListenerOnce();
-        container.innerHTML = `<iframe data-sts-tiktok-embed src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="605" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
+        const height = (await fetchTikTokEmbedHeight(tiktokUrl)) || 605;
+        container.innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="${height}" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
         return;
     }
     // Repli si jamais aucun id n'a pu être extrait (ne devrait normalement jamais arriver vu
