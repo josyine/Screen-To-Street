@@ -240,20 +240,7 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .friend-row button { background: #fff; color: #334155; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 6px 14px; font-size: 11.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap; }
 .friend-row .friend-accept-btn { background: #D42759; color: #fff; border-color: #D42759; }
 
-.share-picker-menu { top: calc(100% + 8px); right: auto; left: 0; min-width: 200px; max-width: min(260px, calc(100vw - 40px)); }
-@media (max-width: 760px) {
-    /* BUG rapporté le 11/09/2026 : "Add a friend first to share locations." coupé sur
-       le côté — #share-location-container n'est pas ancré à un bord fixe de l'écran
-       (il suit le flux normal de la fiche lieu), donc left:0 pouvait pousser ce menu
-       (200px de large minimum) hors de l'écran sur un viewport étroit, avec le
-       débordement rogné par le overflow-y:auto de #sidebar-details (qui rend aussi
-       overflow-x implicitement non "visible", donc rogné plutôt que scrollable).
-       Ancré à droite avec une largeur plafonnée à la fenêtre, ça reste toujours
-       visible entièrement quelle que soit la position du bouton. */
-    .share-picker-menu { left: auto; right: 0; min-width: 0; width: max-content; max-width: min(230px, calc(100vw - 40px)); }
-}
 .notif-badge { position: absolute; top: 2px; right: 2px; background: #D42759; color: #fff; font-size: 9.5px; font-weight: 700; line-height: 1; padding: 3px 5px; border-radius: 100px; min-width: 14px; text-align: center; }
-#share-location-btn.share-sent-flash { color: #16a34a; }
 
 .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin-bottom: 18px; box-shadow: 0 6px 18px rgba(0,0,0,.1); }
 .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
@@ -1175,4 +1162,101 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .badge-unlock-rank { position: relative; z-index: 1; font-size: 12.5px; color: #c9bfe8; margin-bottom: 22px; min-height: 1em; }
 .badge-unlock-btn { position: relative; z-index: 1; background: #fff; color: #212832; border: none; border-radius: 100px; padding: 12px 26px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; transition: 0.2s; }
 .badge-unlock-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
+
+/* ===== Screen To Street — partage en story (sst-) =====
+   Fiche de partage du bouton "Share" sur la fiche lieu (demande du 11/10/2026, "il faut
+   afficher le code HTML que je t'ai envoyé" — voir ShareStory dans script.js). */
+.sst{--sst-mag:#E0156B;--sst-vio:#9B3CEB;--sst-ink:#1F2430;--sst-mut:#8F8B99;--sst-line:#ECE8F2;--sst-G:linear-gradient(160deg,#E0156B 0%,#B42AB6 55%,#7B3CEB 100%);--s:1;
+ position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:#1f243080;font-family:Poppins,system-ui,sans-serif;color:var(--sst-ink);-webkit-text-size-adjust:100%}
+.sst.sst-on{display:flex}
+.sst *,.sst *:before,.sst *:after{box-sizing:border-box;margin:0;padding:0}
+:where(.sst) button{all:unset;cursor:pointer;box-sizing:border-box;font-family:inherit}
+.sst-panel{position:relative;width:100%;max-width:430px;height:100%;max-height:900px;background:#fff;display:flex;flex-direction:column;align-items:center;padding:max(12px,env(safe-area-inset-top)) 0 max(14px,env(safe-area-inset-bottom));overflow:hidden;animation:sst-up .3s ease}
+@media(min-width:600px){.sst-panel{height:auto;border-radius:28px;box-shadow:0 20px 50px #1f243040;padding:14px 0 22px}}
+@keyframes sst-up{from{transform:translateY(30px);opacity:0}}
+.sst-hd{width:100%;display:flex;align-items:center;justify-content:space-between;padding:4px 18px 10px}
+.sst-hd h2{font-size:17px;font-weight:700}
+.sst-x{width:36px;height:36px;border-radius:50%;display:grid!important;place-items:center;background:#F1EEF6}
+.sst-x svg{width:16px;height:16px}
+.sst-car{width:100%;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px calc(50% - 135px * var(--s)) 12px;scrollbar-width:none;scroll-behavior:smooth;flex:0 0 auto}
+.sst-car::-webkit-scrollbar{display:none}
+.sst-slide{scroll-snap-align:center;flex:0 0 auto;transition:opacity .2s}
+.sst-pv{width:calc(270px * var(--s));height:calc(480px * var(--s));border-radius:calc(18px * var(--s));overflow:hidden;position:relative;box-shadow:0 10px 26px #1f243026}
+.sst-pv>.sst-sw{width:270px;height:480px;transform:scale(var(--s));transform-origin:0 0;position:absolute;left:0;top:0}
+.sst-pv.sst-chk{background:repeating-conic-gradient(#3a3a44 0 25%,#2c2c34 0 50%) 0 0/16px 16px}
+.sst-dots{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.sst-dots b{min-width:62px;text-align:right;margin-right:4px}
+.sst-dots button{padding:4px 0!important}
+.sst-dots i{width:7px;height:7px;border-radius:50%;background:#D9D4E2;display:block;transition:.2s}
+.sst-dots button[aria-pressed=true] i{background:var(--sst-mag);width:20px;border-radius:9px}
+.sst-ph{display:flex;align-items:center;gap:8px;margin-top:12px}
+.sst-up{display:inline-flex!important;align-items:center;gap:7px;height:40px;padding:0 16px!important;border-radius:999px;box-shadow:inset 0 0 0 1.5px #D9D4E2;font-size:13.5px;font-weight:600;white-space:nowrap}
+.sst-up svg{width:18px;height:18px}
+.sst-up.sst-has{background:#FCE4EF;color:var(--sst-mag);box-shadow:inset 0 0 0 1.5px var(--sst-mag)}
+.sst-rm{width:40px;height:40px;border-radius:50%;background:#F1EEF6;display:none!important;place-items:center}
+.sst-rm.sst-show{display:grid!important}.sst-rm svg{width:14px;height:14px}
+.sst-tgs{display:flex;justify-content:space-between;width:100%;max-width:390px;padding:16px 22px 0}
+.sst-tg{display:flex!important;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:#5F5B68;width:62px}
+.sst-tg i{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#F1EEF6}
+.sst-tg i svg{width:24px;height:24px}
+.sst-toast{position:absolute;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--sst-ink);color:#fff;font-size:13px;font-weight:500;padding:10px 16px;border-radius:12px;opacity:0;transition:.25s;pointer-events:none;width:max-content;max-width:330px;text-align:center;z-index:20}
+.sst-toast.sst-on{opacity:1;transform:translate(-50%,0)}
+/* ---- 4 formats, 270x480 (export x4 = 1080x1920) ---- */
+.sst-st{position:absolute;inset:0;overflow:hidden;font-family:Poppins,system-ui,sans-serif;color:#fff;text-align:left}
+.sst-logo{display:flex;align-items:center;gap:6px;font-weight:700;font-size:11px;white-space:nowrap}
+.sst-logo svg{width:11px;height:15px}
+.sst-ttl{font-weight:800;line-height:1.12;letter-spacing:-.2px}
+.sst-s3{display:flex}.sst-s3>div{flex:1;text-align:center}.sst-s3>div+div{border-left:1px solid var(--bd,#ECE8F2)}
+.sst-s3 b{display:block;font-weight:800}.sst-s3 small{font-size:9.5px}
+.sst-map{position:relative;overflow:hidden}.sst-map svg{position:absolute;inset:0;width:100%;height:100%}
+/* Fiche */
+.sst-t1{background:var(--sst-G);padding:22px 18px;display:flex;flex-direction:column;align-items:center}
+.sst-t1 .sst-kind{margin-top:12px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:#ffffff26;padding:5px 11px;border-radius:999px}
+.sst-t1 .sst-card{margin-top:12px;background:#fff;color:var(--sst-ink);border-radius:20px;width:100%;overflow:hidden;box-shadow:0 14px 30px #3a0b4a55}
+.sst-t1 .sst-media{position:relative;height:150px;display:grid;place-items:center;background:#F6F0FB}
+.sst-t1 .sst-media>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sst-t1 .sst-md{position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);z-index:2}
+.sst-t1 .sst-bd{padding:30px 14px 13px;text-align:center}
+.sst-t1 .sst-bd .sst-ttl{font-size:18px}.sst-t1 .sst-bd p{font-size:10.5px;color:var(--sst-mut);margin-top:2px}
+.sst-t1 .sst-s3{margin-top:11px;border-top:1px solid var(--sst-line);padding-top:10px}.sst-t1 .sst-s3 b{font-size:14.5px;color:var(--sst-mag)}.sst-t1 .sst-s3 small{color:var(--sst-mut)}
+.sst-t1 .sst-url{margin-top:auto;font-size:9.5px;opacity:.85}
+/* Photo */
+.sst-t2{background:var(--sst-G)}
+.sst-t2 .sst-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sst-t2 .sst-sh{position:absolute;inset:0;background:linear-gradient(180deg,#0005 0%,#0000 28%,#0000 50%,#2a0a3acc 100%)}
+.sst-t2 .sst-logo{position:absolute;top:20px;left:18px;text-shadow:0 1px 4px #0005}
+.sst-t2 .sst-bt{position:absolute;left:14px;right:14px;bottom:16px}
+.sst-t2 .sst-kind{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-shadow:0 1px 4px #0006}
+.sst-t2 .sst-ttl{font-size:24px;text-shadow:0 2px 8px #0006;margin-top:2px}
+.sst-t2 p{font-size:11px;opacity:.9;text-shadow:0 1px 4px #0006}
+.sst-t2 .sst-bar{margin-top:11px;background:linear-gradient(90deg,#E0156Bee,#9B3CEBee);border-radius:16px;padding:10px 4px;--bd:#ffffff40}.sst-t2 .sst-bar b{font-size:15px}.sst-t2 .sst-bar small{opacity:.85}
+/* Carte */
+.sst-t3{background:#fff;color:var(--sst-ink)}
+.sst-t3 .sst-top{position:absolute;left:0;right:0;top:0;height:300px}
+.sst-t3 .sst-logo{position:absolute;top:16px;left:16px;background:#fff;color:var(--sst-ink);padding:6px 10px;border-radius:999px;box-shadow:0 2px 8px #1f24301f;z-index:3}
+.sst-t3 .sst-snap{position:absolute;right:16px;top:206px;width:78px;height:96px;background:#fff;padding:4px 4px 14px;border-radius:6px;transform:rotate(5deg);box-shadow:0 6px 14px #0003;z-index:3}
+.sst-t3 .sst-snap img{width:100%;height:100%;object-fit:cover;border-radius:3px;display:block}
+.sst-t3 .sst-pan{position:absolute;left:0;right:0;bottom:0;height:192px;background:var(--sst-G);color:#fff;border-radius:22px 22px 0 0;padding:18px 18px 14px;display:flex;flex-direction:column}
+.sst-t3 .sst-r1{display:flex;align-items:center;gap:10px}.sst-t3 .sst-r1 .sst-ttl{font-size:19px}.sst-t3 .sst-r1 p{font-size:10.5px;opacity:.85}
+.sst-t3 .sst-s3{margin-top:14px;background:#ffffff1f;border-radius:14px;padding:9px 4px;--bd:#ffffff40}.sst-t3 .sst-s3 b{font-size:15px}.sst-t3 .sst-s3 small{opacity:.85}
+.sst-t3 .sst-ft{margin-top:auto;font-size:9.5px;opacity:.8;display:flex;justify-content:space-between}
+/* Sticker */
+.sst-t4{display:flex;align-items:center;justify-content:center}
+.sst-t4 .sst-stk{width:212px;background:var(--sst-G);border-radius:24px;padding:16px 14px 14px;box-shadow:0 12px 26px #0004;display:flex;flex-direction:column;align-items:center;text-align:center}
+.sst-t4 .sst-im{width:100%;height:120px;border-radius:14px;overflow:hidden;margin-top:12px}.sst-t4 .sst-im img{width:100%;height:100%;object-fit:cover;display:block}
+.sst-t4 .sst-md{margin-top:12px}
+.sst-t4 .sst-ttl{font-size:19px;margin-top:10px}.sst-t4 p{font-size:10px;opacity:.85;margin-top:1px}
+.sst-t4 .sst-s3{width:100%;margin-top:11px;--bd:#ffffff40}.sst-t4 .sst-s3 b{font-size:14.5px}.sst-t4 .sst-s3 small{opacity:.85}
+/* Partage réel à un ami du site (AJOUT SITE — absent du composant fourni, qui ne savait
+   partager qu'en dehors du site) : panneau plein écran par-dessus le carrousel, ouvert par
+   la cible "Ami" de .sst-tgs. */
+.sst-friends{position:absolute;inset:0;background:#fff;z-index:5;display:none;flex-direction:column;border-radius:inherit}
+.sst-friends.sst-on{display:flex}
+.sst-friends-hd{width:100%;display:flex;align-items:center;justify-content:space-between;padding:max(16px,env(safe-area-inset-top)) 18px 10px}
+.sst-friends-hd h3{font-size:16px;font-weight:700}
+.sst-friends-list{flex:1;overflow-y:auto;padding:4px 14px 14px;width:100%}
+.sst-friends-opt{width:100%;display:flex!important;align-items:center;gap:10px;padding:12px 10px;border-radius:12px;font-size:14px;font-weight:600;color:var(--sst-ink);text-align:left}
+.sst-friends-opt:hover{background:#F1EEF6}
+.sst-friends-avatar{width:34px;height:34px;border-radius:50%;background:#F1EEF6;display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--sst-mag);flex:0 0 auto}
+.sst-friends-empty{padding:30px 20px;font-size:13px;color:var(--sst-mut);text-align:center}
 

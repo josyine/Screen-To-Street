@@ -2507,65 +2507,225 @@ window.shareTripFromFriendsPage = async function(tripLocalObj, friendUid, friend
     }
 };
 
-// Bouton "Partager" de la fiche lieu : liste les amis (myFriendsList, déjà chargée au
-// login, voir plus haut) plutôt qu'un aller-retour réseau à chaque ouverture du menu.
+// ===== Fiche de partage en story du bouton "Partager" de la fiche lieu (demande du
+// 11/10/2026, "il faut afficher le code HTML que je t'ai envoyé") : 4 formats exportables
+// en image (Fiche/Photo/Carte/Sticker) pour les réseaux externes, PLUS un partage réel vers
+// un ami du site (AJOUT SITE — absent du composant fourni, qui ne savait partager qu'en
+// dehors du site) via shareLocationWithFriend() (voir firebase-init.js). Composant scopé à
+// #sst (markup dans map.html) ; ne s'active que là où cet élément existe.
+const ShareStory = (() => {
+    const root = document.getElementById('sst');
+    if (!root) return { open() {}, close() {}, onClose: null, onShare: null };
+    const $ = s => root.querySelector(s);
+    const KIND = { lieu: currentLang === 'fr' ? 'Lieu' : 'Place', defi: 'Défi relevé', badge: 'Nouveau badge' };
+    let D = null, tpl = 0, user = null, UID = 0;
+    const IC = {
+        x: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+        up: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="1.8"/><path d="M21 15l-5-5-9 9"/></svg>`,
+        ig: `<svg viewBox="0 0 24 24"><defs><linearGradient id="sst-ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FDBA4D"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#sst-ig)"/><rect x="6.5" y="6.5" width="11" height="11" rx="5.5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg>`,
+        wa: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#25D366"/><path d="M8.3 7.5c.3-.5.7-.5 1-.5l.6 1.5c.1.3 0 .5-.2.7l-.5.6c.6 1.3 1.6 2.3 2.9 2.9l.6-.6c.2-.2.5-.3.7-.2l1.5.7c0 .4 0 .8-.4 1.1-.6.6-1.6.8-2.6.4-2-.8-3.6-2.4-4.4-4.4-.3-.9-.2-1.7.8-2.2z" fill="#fff"/></svg>`,
+        dl: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>`,
+        lk: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>`,
+        // AJOUT SITE : cible "Ami", absente du composant fourni (qui ne savait partager
+        // qu'en dehors du site).
+        friend: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#E0156B"/><circle cx="9" cy="9" r="2.4" fill="#fff"/><circle cx="15.3" cy="10.3" r="1.9" fill="#fff" opacity=".85"/><path d="M4.9 18c.4-3 2.3-4.5 4.8-4.5s4.1 1.4 4.6 3.7" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M14.4 14.1c1.7.3 3 1.4 3.5 3.3" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".85"/></svg>`
+    };
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const PIN = c => `<svg viewBox="0 0 24 32"><path d="M12 1C5.9 1 1 5.8 1 11.8 1 20 12 31 12 31s11-11 11-19.2C23 5.8 18.1 1 12 1z" fill="${c}"/><circle cx="12" cy="11.5" r="2.6" fill="#E0156B"/></svg>`;
+    const LOGO = (c = '#fff', a = '#fff') => `<div class="sst-logo">${PIN(c)}<span>Screen To <b style="color:${a}">Street</b></span></div>`;
+    const TOWER = '<path d="M12 3l1.5 6h-3zM10 9h4l1.2 6h-6.4zM8 15h8l2 6h-3l-1-3h-4l-1 3H6z" fill="#fff"/>';
+    const hex = s => `<svg width="${s}" height="${s}" viewBox="0 0 64 64"><path d="M32 6l22.5 13v26L32 58 9.5 45V19z" fill="#9B3CEB" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><g transform="translate(19 19) scale(1.08)">${TOWER}</g></svg>`;
+    const badgeMed = s => { const u = 'sstb' + (++UID); return `<svg width="${s}" height="${s * 1.12}" viewBox="0 0 100 112"><defs><clipPath id="${u}"><circle cx="50" cy="50" r="40"/></clipPath></defs><circle cx="50" cy="50" r="48" fill="#fff"/><circle cx="50" cy="50" r="45" fill="none" stroke="#E0156B" stroke-width="5"/><image href="${D.photo}" x="10" y="10" width="80" height="80" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u})"/><path d="M50 112c0 0-12-9-12-17a12 12 0 0 1 24 0c0 8-12 17-12 17z" fill="#E0156B"/><circle cx="50" cy="95" r="4" fill="#fff"/></svg>`; };
+    const pinMed = s => `<div style="width:${s}px;height:${s}px;border-radius:50%;background:#E0156B;border:${Math.round(s / 13)}px solid #fff;display:grid;place-items:center;flex:0 0 auto">${PIN('#fff').replace('<svg', `<svg width="${s * .34}" height="${s * .45}"`)}</div>`;
+    const medal = s => D.type === 'defi' ? hex(s) : D.type === 'badge' ? badgeMed(s) : pinMed(s);
+    // projette des [lat,lng] dans la carte 270x330 (marge 48)
+    function project(pts) {
+        if (!pts || pts.length < 2) return null;
+        const la = pts.map(p => p[0]), ln = pts.map(p => p[1]), k = Math.cos(la[0] * Math.PI / 180);
+        const x0 = Math.min(...ln), x1 = Math.max(...ln), y0 = Math.min(...la), y1 = Math.max(...la);
+        const w = (x1 - x0) * k || 1e-6, h = (y1 - y0) || 1e-6, sc = Math.min(174 / w, 200 / h);
+        const ox = (270 - w * sc) / 2, oy = (330 - h * sc) / 2 - 10;
+        return pts.map(([a, b]) => [+(ox + (b - x0) * k * sc).toFixed(1), +(oy + (y1 - a) * sc).toFixed(1)]);
+    }
+    function mapSVG() {
+        const u = 'sstm' + (++UID);
+        const base = `<rect width="270" height="330" fill="#EEF0F3"/><rect x="170" y="190" width="70" height="44" rx="6" fill="#DCEFD9"/><rect x="18" y="80" width="56" height="40" rx="6" fill="#DCEFD9"/>
+  <path d="M-10 210 C 50 190, 90 250, 150 236 S 240 180, 290 204" stroke="#CFE3F5" stroke-width="16" fill="none"/>
+  <g stroke="#fff" stroke-linecap="round" fill="none"><path d="M0 120 L270 70" stroke-width="7"/><path d="M90 0 L130 330" stroke-width="7"/><path d="M0 300 L270 250" stroke-width="5"/><path d="M200 0 L180 330" stroke-width="5"/><path d="M0 40 L270 160" stroke-width="4"/><path d="M40 330 L90 0" stroke-width="3"/><path d="M0 170 L270 140" stroke-width="3"/></g>`;
+        let fg;
+        if (D.type === 'defi') {
+            const P = project(D.places) || [[70, 250], [200, 90]];
+            fg = `<path d="M${P.map(p => p.join(' ')).join(' L')}" stroke="#9B3CEB" stroke-width="3" fill="none" stroke-dasharray="1 7" stroke-linecap="round"/>` + P.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="#9B3CEB" stroke="#fff" stroke-width="2"/><text x="${p[0]}" y="${p[1] + 3.5}" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="700" fill="#fff">${i + 1}</text>`).join('');
+        } else {
+            const P = project(D.path) || [[60, 250], [170, 120]], e = P[P.length - 1], s = P[0];
+            fg = `<path d="M${P.map(p => p.join(' ')).join(' L')}" stroke="#E0156B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${s[0]}" cy="${s[1]}" r="6" fill="#fff" stroke="#1F2430" stroke-width="3"/>
+   <g transform="translate(${e[0] - 24} ${e[1] - 62})"><path d="M24 62s-20-18-20-34a20 20 0 0 1 40 0c0 16-20 34-20 34z" fill="#E0156B"/><defs><clipPath id="${u}"><circle cx="24" cy="28" r="16"/></clipPath></defs><image href="${D.photo}" x="8" y="12" width="32" height="32" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u})"/></g>`;
+        }
+        return `<svg viewBox="0 0 270 330" preserveAspectRatio="xMidYMid slice">${base}${fg}</svg>`;
+    }
+    const STATS = () => `<div class="sst-s3">${D.stats.map(([a, b]) => `<div><b>${esc(a)}</b><small>${esc(b)}</small></div>`).join('')}</div>`;
+    const pic = () => user || D.photo, kind = () => D.kind || KIND[D.type] || '';
+    const TPL = [
+        () => `<div class="sst-st sst-t1">${LOGO()}<div class="sst-kind">${kind()}</div><div class="sst-card">
+     <div class="sst-media"><img src="${pic()}" alt=""><div class="sst-md">${medal(54)}</div></div>
+     <div class="sst-bd"><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)} · ${esc(D.date)}</p>${STATS()}</div></div>
+     <div class="sst-url">${esc(D.url.replace(/^https?:\/\//, ''))}</div></div>`,
+        () => `<div class="sst-st sst-t2"><img class="sst-bg" src="${pic()}" alt=""><div class="sst-sh"></div>${LOGO()}
+     <div class="sst-bt"><div class="sst-kind">${kind()} · ${esc(D.date)}</div><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)}</p><div class="sst-bar">${STATS()}</div></div></div>`,
+        () => `<div class="sst-st sst-t3"><div class="sst-top sst-map">${mapSVG()}</div>${LOGO('#1F2430', '#E0156B')}<div class="sst-snap"><img src="${pic()}" alt=""></div>
+     <div class="sst-pan"><div class="sst-r1">${medal(44)}<div><div class="sst-ttl">${esc(D.title)}</div><p>${kind()} · ${esc(D.date)}</p></div></div>${STATS()}
+     <div class="sst-ft"><span>${esc(D.city)}</span><span>screentostreet.com</span></div></div></div>`,
+        () => `<div class="sst-st sst-t4"><div class="sst-stk">${LOGO()}${user ? `<div class="sst-im"><img src="${user}" alt=""></div>` : `<div class="sst-md">${medal(64)}</div>`}
+     <div class="sst-ttl">${esc(D.title)}</div><p>${kind()} · ${esc(D.date)}</p>${STATS()}</div></div>`
+    ];
+    // ---- UI ----
+    const car = $('[data-car]');
+    const NAMES = () => currentLang === 'fr' ? ['Fiche', 'Photo', 'Carte', 'Sticker'] : ['Card', 'Photo', 'Map', 'Sticker'];
+    // Cible "Ami" (AJOUT SITE) en tête de liste, avant les cibles d'export externes
+    // d'origine — c'est la seule des six qui partage réellement sur le site.
+    const TGS = () => [
+        ['friend', IC.friend, t('shareWithFriendBtn')],
+        ['story', IC.ig, 'Story'],
+        ['share', IC.wa, 'WhatsApp'],
+        ['dl', IC.dl, currentLang === 'fr' ? 'Enregistrer' : 'Save'],
+        ['link', IC.lk, currentLang === 'fr' ? 'Lien' : 'Link']
+    ];
+    function renderChrome() {
+        root.querySelectorAll('.sst-x').forEach(b => b.innerHTML = IC.x); $('.sst-rm').innerHTML = IC.x;
+        $('[data-sst-title]').textContent = currentLang === 'fr' ? 'Partager' : 'Share';
+        const names = NAMES();
+        $('[data-car]').innerHTML = names.map((n, i) => `<div class="sst-slide" data-tpl="${i}"><div class="sst-pv${i === 3 ? ' sst-chk' : ''}" data-story="${i}"></div></div>`).join('');
+        $('[data-dots]').innerHTML = `<b data-name></b>` + names.map((n, i) => `<button data-tpl="${i}" aria-label="${esc(n)}"><i></i></button>`).join('');
+        $('[data-tgs]').innerHTML = TGS().map(([a, ic, l]) => `<button class="sst-tg" data-a="${a}"><i>${ic}</i>${esc(l)}</button>`).join('');
+    }
+    function fit() { const free = Math.min(innerHeight, 900) - (innerWidth >= 600 ? 360 : 330); root.style.setProperty('--s', Math.max(.62, Math.min(1, free / 480)).toFixed(3)); }
+    function renderStories() { root.querySelectorAll('[data-story]').forEach(el => el.innerHTML = `<div class="sst-sw">${TPL[+el.dataset.story]()}</div>`); }
+    function sync() {
+        const names = NAMES();
+        root.querySelectorAll('[data-tpl]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.tpl === tpl));
+        root.querySelectorAll('.sst-slide').forEach(e => e.style.opacity = +e.dataset.tpl === tpl ? 1 : .45);
+        $('[data-name]').textContent = names[tpl];
+        const up = $('.sst-up'); up.innerHTML = IC.up + (user ? (currentLang === 'fr' ? 'Changer ma photo' : 'Change my photo') : (currentLang === 'fr' ? 'Ajouter ma photo' : 'Add my photo'));
+        up.classList.toggle('sst-has', !!user); $('.sst-rm').classList.toggle('sst-show', !!user);
+    }
+    const slideW = () => car.querySelector('.sst-slide').offsetWidth + 12;
+    function go(n) { tpl = Math.max(0, Math.min(3, n)); car.scrollTo({ left: tpl * slideW(), behavior: 'smooth' }); sync(); }
+    let st; car.addEventListener('scroll', () => { clearTimeout(st); st = setTimeout(() => { const n = Math.round(car.scrollLeft / slideW()); if (n !== tpl) { tpl = n; sync(); } }, 90); });
+    function toast(msg) { const el = $('[data-toast]'); el.textContent = msg; el.classList.add('sst-on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('sst-on'), 2600); }
+    $('[data-file]').addEventListener('change', e => {
+        const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+        const r = new FileReader();
+        r.onload = () => {
+            const im = new Image();
+            im.onload = () => {
+                const m = Math.min(1, 1440 / Math.max(im.width, im.height));
+                const cv = document.createElement('canvas'); cv.width = Math.round(im.width * m); cv.height = Math.round(im.height * m);
+                cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
+                user = cv.toDataURL('image/jpeg', .88); renderStories(); sync();
+                toast(currentLang === 'fr' ? 'Ta photo est utilisée sur les 4 formats' : 'Your photo is used on all 4 formats');
+            };
+            im.src = r.result;
+        };
+        r.readAsDataURL(f);
+    });
+    async function makeFile() {
+        const node = root.querySelector(`[data-story="${tpl}"] .sst-st`);
+        if (!window.htmlToImage) throw new Error('html-to-image absent');
+        const blob = await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 });
+        const slug = (D.url.split('/').pop() || 'partage');
+        return new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
+    }
+    function download(f) { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+    // Partage réel à un ami du site (AJOUT SITE) — réutilise myFriendsList/
+    // shareLocationWithFriend() (voir le bouton "Partager" historique de la fiche lieu).
+    function renderFriendPanel() {
+        const list = $('[data-friends-list]');
+        if (!myFriendsList.length) {
+            list.innerHTML = `<div class="sst-friends-empty">${esc(t('shareNoFriends'))}</div>`;
+            return;
+        }
+        list.innerHTML = myFriendsList.map(f => `<button class="sst-friends-opt" data-friend-uid="${esc(f.uid)}"><span class="sst-friends-avatar">${esc((f.username || '?')[0].toUpperCase())}</span>${esc(f.username)}</button>`).join('');
+    }
+    function openFriendPanel() {
+        $('[data-friends-title]').textContent = t('shareWithFriendBtn');
+        renderFriendPanel();
+        $('[data-friends]').classList.add('sst-on');
+    }
+    function closeFriendPanel() { $('[data-friends]').classList.remove('sst-on'); }
+    async function shareToFriend(uid) {
+        if (typeof window.shareLocationWithFriend !== 'function' || !D.locationId) {
+            toast(currentLang === 'fr' ? 'Connexion indisponible, réessayez.' : 'Not connected, please try again.');
+            return;
+        }
+        await window.shareLocationWithFriend(uid, D.locationId, D.locationName || D.title);
+        closeFriendPanel();
+        toast(currentLang === 'fr' ? 'Partagé !' : 'Shared!');
+    }
+    async function act(a) {
+        if (a === 'close') return api.close();
+        if (a === 'friends-close') return closeFriendPanel();
+        if (a === 'upload') return $('[data-file]').click();
+        if (a === 'rmphoto') { user = null; renderStories(); sync(); return; }
+        if (a === 'friend') return openFriendPanel();
+        api.onShare && api.onShare({ format: NAMES()[tpl], action: a, type: D.type });
+        if (a === 'link') { try { await navigator.clipboard.writeText(D.url); } catch (e) { } return toast(currentLang === 'fr' ? 'Lien copié' : 'Link copied'); }
+        let f; try { f = await makeFile(); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
+        if (a === 'dl') { download(f); return toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved'); }
+        if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: D.title, text: D.url }); } catch (e) { } return; }
+        download(f); toast(a === 'story' ? (currentLang === 'fr' ? 'Image enregistrée — ouvre Instagram › Story pour la publier' : 'Image saved — open Instagram › Story to post it') : (currentLang === 'fr' ? 'Image enregistrée' : 'Image saved'));
+    }
+    root.addEventListener('click', e => {
+        if (e.target === root) return api.close();
+        const fr = e.target.closest('[data-friend-uid]'); if (fr) return shareToFriend(fr.getAttribute('data-friend-uid'));
+        const a = e.target.closest('[data-a]'); if (a) return act(a.dataset.a);
+        const tp = e.target.closest('[data-tpl]'); if (tp) return go(+tp.dataset.tpl);
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && root.classList.contains('sst-on')) api.close(); });
+    addEventListener('resize', () => root.classList.contains('sst-on') && fit());
+    const api = {
+        open(data) {
+            D = { stats: [], url: 'https://screentostreet.com', ...data };
+            user = null; tpl = 0; closeFriendPanel();
+            renderChrome();
+            root.classList.add('sst-on'); fit(); renderStories(); car.scrollLeft = 0; sync();
+        },
+        close() { root.classList.remove('sst-on'); api.onClose && api.onClose(); },
+        onClose: null, onShare: null
+    };
+    return api;
+})();
+
+// Bouton "Partager" de la fiche lieu : ouvre la fiche de partage en story ci-dessus avec
+// les vraies données du lieu (voir buildLocationStoryData()).
+function buildLocationStoryData(loc) {
+    const shareUrl = new URL(`map.html?loc=${loc.id}`, window.location.href).href;
+    const subtitleParts = [loc.group, loc.category, loc.city].filter(Boolean);
+    const dateLabel = new Date().toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+    return {
+        type: 'lieu',
+        kind: loc.category || (currentLang === 'fr' ? 'Lieu' : 'Place'),
+        title: loc.name,
+        subtitle: subtitleParts.join(' · '),
+        city: loc.city || loc.country || '',
+        date: dateLabel,
+        photo: loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg'),
+        url: shareUrl,
+        stats: [
+            [loc.group || '—', currentLang === 'fr' ? 'groupe' : 'group'],
+            [loc.category || '—', currentLang === 'fr' ? 'catégorie' : 'category'],
+            [loc.city || loc.country || '—', currentLang === 'fr' ? 'ville' : 'city']
+        ],
+        locationId: loc.id,
+        locationName: loc.name
+    };
+}
 const shareLocationBtn = document.getElementById('share-location-btn');
 if (shareLocationBtn) {
     shareLocationBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const menu = document.getElementById('share-location-menu');
-        const list = document.getElementById('share-friend-list');
-        const empty = document.getElementById('share-no-friends');
-        if (!menu || !list) return;
-        const willOpen = menu.classList.contains('hidden');
-        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
-        if (!willOpen) return;
-        list.innerHTML = myFriendsList.map(f => `<div class="dropdown-option share-friend-option" data-friend-uid="${f.uid}">${f.username}</div>`).join('');
-        if (empty) empty.classList.toggle('hidden', myFriendsList.length > 0);
-        menu.classList.remove('hidden');
-    });
-}
-// "Share via..." (demande du 11/09/2026) : ouvre la fenêtre de partage native de l'OS
-// (AirDrop, Messages, Mail, WhatsApp... sur mobile) via l'API Web Share — cette API exige
-// un contexte HTTPS et n'existe pas partout (desktop la plupart du temps), d'où le repli
-// sur une copie du lien dans le presse-papier avec confirmation par toast.
-const shareNativeOptionEl = document.getElementById('share-native-option');
-if (shareNativeOptionEl) {
-    shareNativeOptionEl.addEventListener('click', async () => {
         const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
         if (!loc) return;
-        const menu = document.getElementById('share-location-menu');
-        if (menu) menu.classList.add('hidden');
-        const shareUrl = new URL(`map.html?loc=${loc.id}`, window.location.href).href;
-        const shareData = { title: loc.name, text: currentLang === 'fr' ? `Découvre ce lieu sur Screen To Street : ${loc.name}` : `Check out this place on Screen To Street: ${loc.name}`, url: shareUrl };
-        if (navigator.share) {
-            try { await navigator.share(shareData); } catch (e) { /* annulé par la personne — rien à faire */ }
-        } else if (navigator.clipboard && navigator.clipboard.writeText) {
-            try {
-                await navigator.clipboard.writeText(shareUrl);
-                if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? 'Lien copié !' : 'Link copied!');
-            } catch (e) { /* presse-papier indisponible (permission refusée) — rien d'autre à proposer ici */ }
-        }
-    });
-}
-const shareFriendListEl = document.getElementById('share-friend-list');
-if (shareFriendListEl) {
-    shareFriendListEl.addEventListener('click', async (e) => {
-        const opt = e.target.closest('.share-friend-option');
-        if (!opt) return;
-        const loc = celebLocations.find(l => l.id === currentLocationIdForMemory);
-        if (!loc) return;
-        if (typeof window.shareLocationWithFriend !== 'function') {
-            if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "Connexion indisponible, réessayez." : 'Not connected, please try again.', { isError: true });
-            return;
-        }
-        await window.shareLocationWithFriend(opt.getAttribute('data-friend-uid'), loc.id, loc.name);
-        const menu = document.getElementById('share-location-menu');
-        if (menu) menu.classList.add('hidden');
-        if (shareLocationBtn) {
-            shareLocationBtn.classList.add('share-sent-flash');
-            setTimeout(() => shareLocationBtn.classList.remove('share-sent-flash'), 900);
-        }
+        ShareStory.open(buildLocationStoryData(loc));
     });
 }
 
