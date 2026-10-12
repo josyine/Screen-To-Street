@@ -935,12 +935,35 @@ function loadPinterestSdkOnce() {
 // carte Pinterest flottait, minuscule, au milieu d'un grand vide. Repris en "boîte à
 // ratio" (position:relative + padding-bottom en %, iframe en position:absolute qui remplit
 // tout), même technique que .video-wrapper (YouTube) déjà utilisée ailleurs sur cette page
-// (voir style.css) — même ratio 345/445 qu'avant pour ne pas déformer le visuel, mais
-// l'iframe grandit maintenant jusqu'à remplir toute la largeur de la section.
+// (voir style.css) — l'iframe grandit maintenant jusqu'à remplir toute la largeur de la
+// section.
+// BUG corrigé (demande du 12/10/2026, lieu "Valletta Stairs (St. Mark Street)", "l'espace
+// entre les 2 [épingles] est trop grand, il faut que ce soit harmonieux") : le ratio 129%
+// ci-dessus était FIXE pour TOUTE épingle, quel que soit son format réel — une épingle plus
+// carrée/large que ce ratio se retrouvait avec un grand vide blanc sous elle (l'iframe est
+// une fenêtre figée par Pinterest, pas un contenu fluide qui remplit l'espace qu'on lui
+// donne), ce qui, avec plusieurs épingles empilées (voir renderMultiEmbedsInto()), donnait
+// l'impression d'un trop grand espace ENTRE elles. Même principe que le correctif TikTok
+// (renderTikTokEmbedOnDetails plus haut) : récupère la vraie hauteur de CETTE épingle via
+// l'API oEmbed PUBLIQUE de Pinterest (pinterest.com/oembed.json), pour calculer un
+// padding-bottom qui colle à son format réel plutôt que deviner un ratio moyen — 129% reste
+// le repli si cet appel échoue (identique au rendu d'avant dans ce cas).
+async function fetchPinterestEmbedRatio(pinterestUrl) {
+    try {
+        const r = await fetch(`https://www.pinterest.com/oembed.json?url=${encodeURIComponent(pinterestUrl)}`);
+        if (!r.ok) return null;
+        const data = await r.json();
+        const h = data && Number(data.height), w = data && Number(data.width);
+        return (h > 0 && w > 0) ? +((h / w) * 100).toFixed(2) : null;
+    } catch (e) {
+        return null;
+    }
+}
 async function renderPinterestEmbedOnDetails(container, pinterestUrl) {
     const pinId = extractPinterestPinId(pinterestUrl);
     if (pinId) {
-        container.innerHTML = `<div class="pinterest-embed-box"><iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" frameborder="0" scrolling="no"></iframe></div>`;
+        const ratio = (await fetchPinterestEmbedRatio(pinterestUrl)) || 129;
+        container.innerHTML = `<div class="pinterest-embed-box" style="padding-bottom:${ratio}%"><iframe src="https://assets.pinterest.com/ext/embed.html?id=${encodeURIComponent(pinId)}" frameborder="0" scrolling="no"></iframe></div>`;
         return;
     }
     // Voir la note dans renderInstagramEmbedOnDetails() plus haut sur ce drapeau.
