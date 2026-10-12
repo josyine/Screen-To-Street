@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261016" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261018" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -255,7 +255,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261016';
+        s.src = 'page-loader.js?v=20261018';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -468,10 +468,10 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261016"></script>
-<script src="countries.js?v=20261016"></script>
-<script src="locations-data.js?v=20261016"></script>
-<script src="script.js?v=20261016"></script>
+<script type="module" src="firebase-init.js?v=20261018"></script>
+<script src="countries.js?v=20261018"></script>
+<script src="locations-data.js?v=20261018"></script>
+<script src="script.js?v=20261018"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -870,10 +870,27 @@ recomposée, sans texte ni légende.`;
     // (gardé en repli ci-dessous) dépend d'un comportement interne non documenté de façon
     // fiable — cause la plus probable d'un échec permanent. tiktok.com/embed/v2/{id} est
     // l'iframe direct que embed.js finissait par injecter lui-même en interne.
+    // BUG corrigé (demande du 11/10/2026, "supprime le bloc blanc du fond") : même correctif
+    // que renderTikTokEmbedOnDetails() dans script.js — height="738" était une valeur FIXE
+    // pensée pour le post le plus long possible, laissant un grand bloc blanc vide en dessous
+    // pour toute vidéo plus courte. L'API oEmbed publique de TikTok (sans clé API) renvoie la
+    // vraie hauteur recommandée pour CETTE vidéo précise ; 605px (taille minimale documentée
+    // par TikTok) en repli si cet appel échoue.
+    async function fetchTikTokEmbedHeight(tiktokUrl) {
+        try {
+            const r = await fetch(`https://www.tiktok.com/oembed?url=${encodeURIComponent(tiktokUrl)}`);
+            if (!r.ok) return null;
+            const data = await r.json();
+            return (data && typeof data.height === 'number' && data.height > 0) ? Math.ceil(data.height) : null;
+        } catch (e) {
+            return null;
+        }
+    }
     async function renderTikTokEmbed(container, tiktokUrl) {
         const videoId = extractTikTokVideoId(tiktokUrl);
         if (videoId) {
-            container.innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="738" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
+            const height = (await fetchTikTokEmbedHeight(tiktokUrl)) || 605;
+            container.innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="${height}" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
             return;
         }
         container.innerHTML = `<blockquote class="tiktok-embed" cite="${escapeHtml(tiktokUrl)}" data-video-id="${escapeHtml(videoId)}" style="max-width:605px;min-width:325px;"><section></section></blockquote>`;

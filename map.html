@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261016" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261018" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -749,7 +749,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261016';
+        s.src = 'page-loader.js?v=20261018';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1019,28 +1019,14 @@
                     <div style="display:flex; gap:16px; width:100%; align-items:center; flex-wrap:wrap;">
                         <label class="check-item"><input type="checkbox" id="details-visited" class="custom-checkbox"> <span data-i18n="checkVisited">I visited this place</span></label>
                         <label class="check-item"><input type="checkbox" id="details-wishlist" class="custom-checkbox" onchange="toggleWishlist()"> <span data-i18n="checkWishlist">Add to Wishlist</span></label>
-                        <!-- Partager ce lieu à un ami (voir shareLocationWithFriend() dans
-                             firebase-init.js) : masqué pour un visiteur non connecté, voir
+                        <!-- Partager ce lieu (fiche de partage en story, voir ShareStory dans
+                             script.js) : masqué pour un visiteur non connecté, voir
                              firebase-ready plus bas. -->
-                        <div class="dropdown-container hidden" id="share-location-container">
+                        <div class="hidden" id="share-location-container">
                             <button type="button" id="share-location-btn" class="check-item" style="border:none;background:none;cursor:pointer;padding:0;color:#64748b;font-family:'Poppins',sans-serif;">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                 <span data-i18n="shareWithFriendBtn">Share</span>
                             </button>
-                            <div id="share-location-menu" class="dropdown-menu share-picker-menu hidden">
-                                <!-- Partage natif OS (demande du 11/09/2026) : AirDrop/Messages/Mail/
-                                     WhatsApp etc. via navigator.share() — repli sur une copie du lien
-                                     dans le presse-papier si l'API n'est pas supportée (desktop la
-                                     plupart du temps). Toujours en premier, au-dessus de la liste
-                                     d'amis, qu'il y en ait ou non. -->
-                                <div id="share-native-option" class="dropdown-option">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-                                    <span data-i18n="shareViaOption">Share via...</span>
-                                </div>
-                                <div class="dropdown-divider"></div>
-                                <div id="share-friend-list"></div>
-                                <div id="share-no-friends" class="hidden" style="padding:10px 14px; font-size:12px; color:#94a3b8; white-space:normal;" data-i18n="shareNoFriends">Add a friend first to share locations.</div>
-                            </div>
                         </div>
                         <!-- Note du lieu : moyenne des notes que CET utilisateur a attribuées lors de
                              ses visites ("I visited this place" -> formulaire de souvenir). Le site
@@ -1955,15 +1941,40 @@
 
 </div>
 
+<!-- Fiche de partage en story du bouton "Share" de la fiche lieu (voir ShareStory dans
+     script.js) : doit précéder <script src="script.js"> ci-dessous, qui cherche #sst
+     au chargement (BUG évité : l'ancienne tentative de placer ce markup juste avant
+     </body>, APRÈS script.js, le rendait introuvable à l'exécution de ce <script>). -->
+<div class="sst" id="sst" role="dialog" aria-modal="true" aria-label="Partager">
+ <div class="sst-panel">
+  <div class="sst-hd"><button class="sst-x" data-a="close" aria-label="Fermer"></button><h2 data-sst-title></h2><span style="width:36px"></span></div>
+  <div class="sst-car" data-car></div>
+  <div class="sst-dots" data-dots></div>
+  <div class="sst-ph"><button class="sst-up" data-a="upload"></button><button class="sst-rm" data-a="rmphoto" aria-label="Retirer ma photo"></button></div>
+  <div class="sst-tgs" data-tgs></div>
+  <input type="file" accept="image/*" data-file hidden>
+  <div class="sst-toast" data-toast></div>
+  <!-- Partage réel à un ami du site (AJOUT SITE) : panneau plein écran, ouvert par la
+       cible "Ami" de .sst-tgs ci-dessus — réutilise shareLocationWithFriend() de
+       firebase-init.js, pas d'export d'image ici. -->
+  <div class="sst-friends" data-friends>
+   <div class="sst-friends-hd"><h3 data-friends-title></h3><button class="sst-x" data-a="friends-close" aria-label="Retour"></button></div>
+   <div class="sst-friends-list" data-friends-list></div>
+  </div>
+ </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="countries.js?v=20261016"></script>
-<script type="module" src="firebase-init.js?v=20261016"></script>
-<script src="locations-data.js?v=20261016"></script>
-<script src="script.js?v=20261016"></script>
+<!-- Capture la fiche de partage en story (ShareStory, voir script.js) en image PNG. -->
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script src="countries.js?v=20261018"></script>
+<script type="module" src="firebase-init.js?v=20261018"></script>
+<script src="locations-data.js?v=20261018"></script>
+<script src="script.js?v=20261018"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261016"></script>
-<script src="map-tour.js?v=20261016"></script>
+<script src="itinerary.js?v=20261018"></script>
+<script src="map-tour.js?v=20261018"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
