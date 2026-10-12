@@ -825,10 +825,38 @@ function extractTikTokVideoId(url) {
 // retraiter : tiktok.com/embed/v2/{id numérique de la vidéo} — c'est l'iframe que embed.js
 // finissait par injecter lui-même, en interne, une fois chargé. width/height : proportions
 // portrait habituelles de la carte d'embed TikTok (vidéo + légende + bouton follow).
+// BUG corrigé (demande du 11/10/2026, "pour les posts embeded, supprime le bloc blanc du
+// fond") : même défaut que pour Twitter/X (voir ensureTweetResizeListenerOnce() et son
+// commentaire plus haut, "la zone blanche sous le contenu pour tout tweet plus court que
+// la hauteur fixe") — height="738" était une valeur FIXE choisie pour le post TikTok le
+// plus long possible (légende + infos musique + bouton follow), laissant un grand bloc
+// blanc vide en dessous pour toute vidéo plus courte (ex: pas de légende). Même principe
+// que pour Twitter : on démarre avec une hauteur de départ raisonnable, puis on l'ajuste
+// à la vraie hauteur dès que tiktok.com communique sa propre taille réelle au parent via
+// `postMessage` (mécanisme équivalent à celui de platform.twitter.com, utilisé en interne
+// par TikTok lui-même pour redimensionner ses propres iframes une fois le contenu chargé).
+function ensureTikTokResizeListenerOnce() {
+    if (window._stsTikTokResizeListenerAdded) return;
+    window._stsTikTokResizeListenerAdded = true;
+    window.addEventListener('message', (e) => {
+        if (!/\.tiktok\.com$/.test(e.origin.replace(/^https?:\/\//, ''))) return;
+        let data = e.data;
+        try { if (typeof data === 'string') data = JSON.parse(data); } catch (err) { return; }
+        // Format exact non documenté publiquement par TikTok (contrairement à Twitter ci-
+        // dessus) : lecture tolérante de quelques formes plausibles plutôt qu'une seule clé
+        // précise, pour rester robuste si TikTok ajuste la structure du message.
+        const height = data && (data.height || (data['tiktok-embed'] && data['tiktok-embed'].height));
+        if (!height || typeof height !== 'number') return;
+        document.querySelectorAll('iframe[data-sts-tiktok-embed]').forEach((ifr) => {
+            if (ifr.contentWindow === e.source) ifr.style.height = height + 'px';
+        });
+    });
+}
 async function renderTikTokEmbedOnDetails(container, tiktokUrl) {
     const videoId = extractTikTokVideoId(tiktokUrl);
     if (videoId) {
-        container.innerHTML = `<iframe src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="738" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
+        ensureTikTokResizeListenerOnce();
+        container.innerHTML = `<iframe data-sts-tiktok-embed src="https://www.tiktok.com/embed/v2/${encodeURIComponent(videoId)}" width="325" height="605" frameborder="0" scrolling="no" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" style="max-width:100%;"></iframe>`;
         return;
     }
     // Repli si jamais aucun id n'a pu être extrait (ne devrait normalement jamais arriver vu
