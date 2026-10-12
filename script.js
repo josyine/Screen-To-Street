@@ -2586,18 +2586,27 @@ const ShareStory = (() => {
         return `<svg viewBox="0 0 270 330" preserveAspectRatio="xMidYMid slice">${base}${fg}</svg>`;
     }
     const STATS = () => `<div class="sst-s3">${D.stats.map(([a, b]) => `<div><b>${esc(a)}</b><small>${esc(b)}</small></div>`).join('')}</div>`;
-    const pic = () => user || D.photo, kind = () => D.kind || KIND[D.type] || '';
+    // BUG corrigé (demande du 12/10/2026, "la photo du lieu ne charge pas dans Share") :
+    // pic() posait l'URL brute (NON échappée) dans l'attribut src="..." — une URL Firebase
+    // Storage contient presque toujours un "&" (ex: "?alt=media&token=..."), invalide tel
+    // quel dans du HTML. onerror="...hide..." en plus : si la photo du lieu échoue malgré
+    // tout à charger (lien mort), l'icône d'image cassée disparaît et laisse voir le fond
+    // (dégradé/couleur) déjà prévu par chaque habillage ci-dessous, plutôt qu'un rendu cassé
+    // — et ÉVITE SURTOUT que makeFile() (capture en image, voir plus bas) échoue en silence
+    // sur une <img> cassée, ce qui rendait aussi le bouton "Enregistrer" inopérant.
+    const pic = () => esc(user || D.photo), kind = () => D.kind || KIND[D.type] || '';
+    const ONERR = `onerror="this.style.display='none'"`;
     const TPL = [
         () => `<div class="sst-st sst-t1">${LOGO()}<div class="sst-kind">${kind()}</div><div class="sst-card">
-     <div class="sst-media"><img src="${pic()}" alt=""><div class="sst-md">${medal(54)}</div></div>
+     <div class="sst-media"><img src="${pic()}" alt="" ${ONERR}><div class="sst-md">${medal(54)}</div></div>
      <div class="sst-bd"><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)} · ${esc(D.date)}</p>${STATS()}</div></div>
      <div class="sst-url">${esc(D.url.replace(/^https?:\/\//, ''))}</div></div>`,
-        () => `<div class="sst-st sst-t2"><img class="sst-bg" src="${pic()}" alt=""><div class="sst-sh"></div>${LOGO()}
+        () => `<div class="sst-st sst-t2"><img class="sst-bg" src="${pic()}" alt="" ${ONERR}><div class="sst-sh"></div>${LOGO()}
      <div class="sst-bt"><div class="sst-kind">${kind()} · ${esc(D.date)}</div><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)}</p><div class="sst-bar">${STATS()}</div></div></div>`,
-        () => `<div class="sst-st sst-t3"><div class="sst-top sst-map">${mapSVG()}</div>${LOGO('#1F2430', '#E0156B')}<div class="sst-snap"><img src="${pic()}" alt=""></div>
+        () => `<div class="sst-st sst-t3"><div class="sst-top sst-map">${mapSVG()}</div>${LOGO('#1F2430', '#E0156B')}<div class="sst-snap"><img src="${pic()}" alt="" ${ONERR}></div>
      <div class="sst-pan"><div class="sst-r1">${medal(44)}<div><div class="sst-ttl">${esc(D.title)}</div><p>${kind()} · ${esc(D.date)}</p></div></div>${STATS()}
      <div class="sst-ft"><span>${esc(D.city)}</span><span>screentostreet.com</span></div></div></div>`,
-        () => `<div class="sst-st sst-t4"><div class="sst-stk">${LOGO()}${user ? `<div class="sst-im"><img src="${user}" alt=""></div>` : `<div class="sst-md">${medal(64)}</div>`}
+        () => `<div class="sst-st sst-t4"><div class="sst-stk">${LOGO()}${user ? `<div class="sst-im"><img src="${esc(user)}" alt=""></div>` : `<div class="sst-md">${medal(64)}</div>`}
      <div class="sst-ttl">${esc(D.title)}</div><p>${kind()} · ${esc(D.date)}</p>${STATS()}</div></div>`
     ];
     // ---- UI ----
@@ -2657,37 +2666,34 @@ const ShareStory = (() => {
         return new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
     }
     function download(f) { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
-    // Partage direct vers la Story Instagram (demande du 12/10/2026, "comme avec Strava")
-    // — AJOUT SITE. Repose sur le schéma d'URL privé "instagram-stories://share" : Instagram
-    // (app) lit l'image déposée sur le presse-papier système quand cette URL l'ouvre. iOS
-    // Safari seulement — c'est la seule plateforme où une PAGE WEB (Screen To Street n'est
-    // pas une app native) peut écrire sur ce presse-papier ET où Instagram accepte de le
-    // relire ainsi ; sur Android, ce partage n'existe QUE via l'intent natif ADD_TO_STORY
-    // d'une app, inatteignable depuis le web, d'où aucune tentative ici. Fonctionnalité non
-    // officiellement documentée par Meta pour un site web (seules les apps natives avec leur
-    // SDK le sont) : traitée en best-effort, avec repli silencieux sur le comportement
-    // précédent si l'app Instagram ne s'ouvre pas (non installée, bloqué, desktop...) —
-    // détecté via l'évènement "blur" (la page perd le focus quand une autre app s'ouvre).
-    // INSTAGRAM_FB_APP_ID (plus bas) : laissé vide faute d'app Meta Developer enregistrée
-    // pour le site — sans lui, Instagram affiche l'image mais pas le lien "Voir le site" sur
-    // la story. Pour l'ajouter : créer une app sur developers.facebook.com, produit
-    // "Sharing to Stories", et coller son ID ici.
-    const INSTAGRAM_FB_APP_ID = '';
-    function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
-    async function tryInstagramStoryShare(file) {
-        if (!isIOS() || !navigator.clipboard || !navigator.clipboard.write || typeof ClipboardItem === 'undefined') return false;
-        try {
-            await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
-        } catch (e) { return false; }
-        return new Promise(resolve => {
-            let done = false;
-            const finish = (opened) => { if (done) return; done = true; window.removeEventListener('blur', onBlur); clearTimeout(timer); resolve(opened); };
-            const onBlur = () => finish(true);
-            window.addEventListener('blur', onBlur);
-            const timer = setTimeout(() => finish(false), 1600);
-            window.location.href = `instagram-stories://share?source_application=${encodeURIComponent(INSTAGRAM_FB_APP_ID)}`;
-        });
+    // Partage de fichier natif qui RETOMBE sur le téléchargement classique dès que le
+    // partage échoue pour une raison autre qu'une annulation volontaire (AbortError) —
+    // AJOUT SITE (demande du 12/10/2026, "le bouton Save ne fonctionne pas") : la version
+    // précédente avalait silencieusement toute erreur de navigator.share() (catch(e){})
+    // sans jamais se rabattre sur le téléchargement ni prévenir qui que ce soit — un clic
+    // sur "Enregistrer" qui échouait (ex: délai d'activation utilisateur dépassé pendant la
+    // capture de l'image, erreur réseau du partage...) ne faisait alors RIEN de visible.
+    // Retourne true si le partage natif a réussi (pas de toast à ajouter par l'appelant).
+    async function shareOrDownload(f, shareData) {
+        if (navigator.canShare && navigator.canShare({ files: [f] })) {
+            try { await navigator.share(Object.assign({ files: [f] }, shareData)); return true; }
+            catch (e) { if (e && e.name === 'AbortError') return true; /* annulé par la personne, pas une erreur */ }
+        }
+        download(f);
+        return false;
     }
+    // BUG corrigé (demande du 12/10/2026, "ça ne fonctionne pas sur Instagram, c'est écrit
+    // que mon application n'est actuellement pas compatible avec Instagram Stories") : la
+    // tentative précédente (schéma d'URL "instagram-stories://share" + presse-papier, comme
+    // Strava) a été testée en vrai — Instagram refuse l'ouverture et affiche cette erreur
+    // car source_application doit correspondre à une appli Meta Developer RÉELLEMENT
+    // enregistrée (voir INSTAGRAM_FB_APP_ID, resté vide faute d'app enregistrée pour ce
+    // site) ; sans elle, Instagram ne dégrade PAS gracieusement, il bloque. Retiré entièrement
+    // — ce partage ne peut pas fonctionner tant qu'une vraie app Meta Developer n'existe pas
+    // (créer une app sur developers.facebook.com, produit "Sharing to Stories", et
+    // réintroduire le schéma d'URL avec son id). "Story" repasse donc par le partage natif
+    // normal (qui propose Instagram parmi les apps, sans aller direct dans la Story) /
+    // téléchargement + indication manuelle, comme avant cette tentative.
     // Partage réel à un ami du site (AJOUT SITE) — réutilise myFriendsList/
     // shareLocationWithFriend() (voir le bouton "Partager" historique de la fiche lieu).
     function renderFriendPanel() {
@@ -2722,23 +2728,21 @@ const ShareStory = (() => {
         api.onShare && api.onShare({ format: NAMES()[tpl], action: a, type: D.type });
         let f; try { f = await makeFile(); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
         if (a === 'story') {
-            if (await tryInstagramStoryShare(f)) return;
-            // Repli (Android, desktop, iOS sans Instagram installé...) : partage natif
-            // classique si possible, sinon téléchargement + indication manuelle.
-            if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: D.title, text: D.url }); } catch (e) { } return; }
-            download(f); return toast(currentLang === 'fr' ? 'Image enregistrée — ouvre Instagram › Story pour la publier' : 'Image saved — open Instagram › Story to post it');
+            const shared = await shareOrDownload(f, { title: D.title, text: D.url });
+            if (!shared) toast(currentLang === 'fr' ? 'Image enregistrée — ouvre Instagram › Story pour la publier' : 'Image saved — open Instagram › Story to post it');
+            return;
         }
         if (a === 'dl') {
             // "Enregistrer dans les Photos" (demande du 12/10/2026) : sur mobile, le partage
             // natif propose "Enregistrer l'image"/"Save Image" (vraie galerie Photos), ce que
             // le téléchargement classique <a download> ne fait pas (il va dans Fichiers/
-            // Téléchargements). Repli sur ce dernier là où le partage natif de fichiers
-            // n'existe pas (desktop).
-            if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f] }); } catch (e) { } return; }
-            download(f); return toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
+            // Téléchargements) — shareOrDownload() n'y bascule QUE si ce partage échoue.
+            const shared = await shareOrDownload(f);
+            if (!shared) toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
+            return;
         }
-        if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: D.title, text: D.url }); } catch (e) { } return; }
-        download(f); toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
+        const shared = await shareOrDownload(f, { title: D.title, text: D.url });
+        if (!shared) toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
     }
     root.addEventListener('click', e => {
         if (e.target === root) return api.close();
