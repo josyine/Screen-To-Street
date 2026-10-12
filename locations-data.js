@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-12T07:50:25.301Z.
+// Généré le 2026-10-12T21:49:53.210Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -1805,6 +1805,7 @@ window.STATIC_LOCATIONS = [
       "en": "In the heart of Valletta, a short walk from the Triton Fountain and City Gate; modest dress covering shoulders and knees is required.",
       "fr": "En plein cœur de La Valette, à quelques pas de la fontaine de Triton et de la porte de la ville ; une tenue couvrant épaules et genoux est exigée."
     },
+    "episode": "Bon Voyage Season 3 Ep 2",
     "tip": {
       "en": "Photography is allowed but flash is strictly forbidden — bring a steady hand or a small tripod for the dim interior.",
       "fr": "La photographie est autorisée mais le flash est strictement interdit — prévoyez un pouls stable ou un petit trépied pour l'intérieur peu éclairé."
@@ -1817,10 +1818,8 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "ytId": "",
     "facebookUrl": "",
-    "episodeLink": "",
     "facebookUrls": [],
     "instagramUrl": "",
-    "officialLink": "",
     "tweetUrls": [],
     "imgCredit": "Diego Delso, delso.photo, License CC BY-SA",
     "recreatedPhotos": [
@@ -1859,7 +1858,9 @@ window.STATIC_LOCATIONS = [
           "en": "Fully accessible for wheelchair users with ramps provided, though visitors should navigate the marble floors with care as they can be slightly uneven."
         }
       }
-    ]
+    ],
+    "episodeLink": "https://weverse.io/bts/media/2-6741268",
+    "officialLink": "https://www.stjohnscocathedral.com/"
   },
   {
     "id": 30,
@@ -21329,6 +21330,288 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "episodeLink": "https://weverse.io/bts/media/0-6741888",
     "img": "images/admin-upload-new-manual-1791739294823-dc8181-photo.jpg"
+  },
+  {
+    "id": "new-manual-1791829605932-5858wi",
+    "name": "St. Paul's Cathedral Square",
+    "group": "BTS",
+    "member": "RM, Jin, J-Hope, Jungkook",
+    "country": "Malta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "lat": 35.88635,
+    "lng": 14.4042,
+    "address": "Misraħ San Pawl (St. Paul's Square), Mdina, MDN 1061, Malta",
+    "city": "Mdina",
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Mdina is fully pedestrianized (with the exception of residents' cars). St. Paul's Square is located right in the center of the walled city, just a 3-minute walk straight down Triq Villegaignon from the main Mdina Gate."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The public square is open 24/7 and is completely free to enter. If you wish to visit the interior of St. Paul's Cathedral, it is typically open Monday to Saturday from 9:30 AM to 4:45 PM (paid admission required, which includes access to the nearby Cathedral Museum)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The square is flat and paved with wide stone slabs, making it easily accessible for wheelchairs and strollers, though some of the smaller side streets leading up to it may be uneven."
+        }
+      }
+    ],
+    "pinterestUrl": "https://fr.pinterest.com/pin/576531189811304038/",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Exact Photo Spot"
+        },
+        "text": {
+          "en": "Stand in the center of the plaza facing the cathedral's grand steps to recreate the exact camera angle"
+        }
+      },
+      {
+        "title": {
+          "en": "Check the Clocks"
+        },
+        "text": {
+          "en": "Look up at the cathedral's twin bell towers. You will notice the two clocks show different times—a traditional Maltese architectural trick designed to confuse the devil and ensure he doesn't know what time religious services begin."
+        }
+      },
+      {
+        "title": {
+          "en": "Take a Carriage Ride"
+        },
+        "text": {
+          "en": "Just like the members did when entering Mdina, you can take a traditional karozzin (horse-drawn carriage) tour that frequently passes right through this iconic square."
+        }
+      }
+    ],
+    "ytId": "jEQRdsfPpkM",
+    "img": "images/admin-upload-new-manual-1791829605932-5858wi-photo.jpg",
+    "imgCredit": "hettitaya / CC BY-SA 4.0",
+    "episodeLink": "https://weverse.io/bts/media/0-6741888",
+    "officialLink": "https://en.wikipedia.org/wiki/St_Paul%27s_Cathedral,_Mdina",
+    "fullDescription": {
+      "en": "<p>Located in the heart of Mdina, the ancient \"Silent City\" of Malta, St. Paul's Square (Misraħ San Pawl) is a stunning architectural centerpiece. The square is dominated by the breathtaking St. Paul's Cathedral, a masterpiece of Baroque architecture built in the late 17th century. With its grand limestone façade, twin bell towers (each displaying a different time), and sweeping stone steps, the cathedral and its surrounding plaza serve as the historic and spiritual core of the fortified city.</p><!--stss:footsteps--><p>During Episode 6 of BTS Bon Voyage Season 3, the members traveled to Mdina to explore its perfectly preserved medieval streets. Their sightseeing naturally led them to the beautiful plaza in front of St. Paul's Cathedral.</p><p>Walking through the sunlit square, RM, Jin, J-Hope, Jimin, V, and Jungkook took in the magnificent Baroque facade of the church, complete with its twin bell towers. Holding their cameras and selfie sticks, the members filmed their own vlog-style footage as they marveled at the architecture of the ancient city. Retracing their steps into this square allows fans to experience the exact same historical awe and relaxed vacation energy the group felt during their Maltese adventure.</p>"
+    },
+    "pinterestUrls": [
+      "https://fr.pinterest.com/pin/1002543567067251446/"
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791829605932-5858wi-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-manual-1791829605932-5858wi-recreated-1.jpg",
+        "official": true
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1791834416251-ulf2a7",
+    "name": "Valletta Stairs (St. Mark Street)",
+    "group": "BTS",
+    "member": "RM, Jimin",
+    "country": "Malta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "address": "49 Triq San Mark (St. Mark Street), Il-Belt Valletta, Malta",
+    "lat": 35.89897,
+    "lng": 14.50965,
+    "city": "Valletta",
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate Jimin's Photo"
+        },
+        "text": {
+          "en": "Stand on the limestone steps near number 49 and frame your shot to include the steep incline and the traditional colorful balconies jutting out overhead."
+        }
+      },
+      {
+        "title": {
+          "en": "Wander Solo"
+        },
+        "text": {
+          "en": "Channel Jimin's relaxed vacation mindset by taking an hour to just wander without a map through Valletta's grid of side streets—the best way to discover hidden cafes and sea views."
+        }
+      },
+      {
+        "title": {
+          "en": "Wear Comfortable Shoes"
+        },
+        "text": {
+          "en": "The limestone steps can be quite smooth and slippery, especially after a Mediterranean rain shower, so sturdy walking shoes are highly recommended."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Built on a high peninsula, the UNESCO World Heritage city of Valletta is famous for its grid of steep, narrow streets that plunge dramatically down toward the Mediterranean Sea. Many of these streets are composed of wide limestone steps, framed by towering baroque buildings and Malta's iconic colorful enclosed wooden balconies (gallariji). St. Mark Street (Triq San Mark) is a perfect, picturesque example of this historic streetscape, offering a quiet, romantic atmosphere away from the bustling main squares.</p><!--stss:footsteps--><p>During BTS Bon Voyage Season 3 (2018), the members were given free time to explore the city at their own pace. Jimin chose to embark on a peaceful solo walking tour through Valletta, wandering away from the main tourist arteries to get lost in the capital's quiet, sloping side streets.</p><p>His exploration led him to the beautiful stone stairs near 49 St. Mark Street. Captivated by the city's unique aesthetic, Jimin took atmospheric, relaxed photos on these steps, perfectly capturing the romantic, old-world charm of Malta. Today, fans visiting Valletta love to track down this exact set of stairs to recreate his photos and experience the same peaceful, wandering energy Jimin embraced during his solo adventure.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located on the northern side of the Valletta peninsula. From the main thoroughfare (Republic Street), walk a few blocks north towards the Marsamxett Harbour side to find St. Mark Street plunging downwards."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "It is a public residential street, open 24/7 and completely free to visit. Keep noise to a minimum to respect the local residents."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Because this location is a steep, stepped street, it is challenging for visitors with mobility issues, wheelchairs, or strollers to navigate."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "pinterestUrls": [
+      "https://fr.pinterest.com/pin/607071224748181663/"
+    ],
+    "pinterestUrl": "https://fr.pinterest.com/pin/385057836913291384/",
+    "img": "images/admin-upload-new-manual-1791834416251-ulf2a7-photo.jpg",
+    "imgCredit": "Screentostreet",
+    "episodeLink": "https://weverse.io/bts/media/2-6741268",
+    "tweetUrl": "https://x.com/bts_twt/status/1028072114220232704?s=46",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791834416251-ulf2a7-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-manual-1791834416251-ulf2a7-recreated-1.jpg",
+        "official": true
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1791838895946-rc54ck",
+    "name": "Merchants Street (Triq il-Merkanti)",
+    "group": "BTS",
+    "member": "RM",
+    "country": "Malta",
+    "category": "Bon Voyage",
+    "address": "Triq il-Merkanti (Merchants Street), Il-Belt Valletta, Malta",
+    "lat": 35.89704,
+    "lng": 14.5126,
+    "city": "Valletta",
+    "year": "2018",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Running parallel to the bustling Republic Street, Triq il-Merkanti (Merchants Street) is one of the longest and most historically significant thoroughfares in Valletta. Once the bustling center of commerce for the Knights of St. John, it is today a vibrant, largely pedestrianized street lined with magnificent Baroque palazzos, charming local boutiques, and outdoor cafes. Looking up, visitors are treated to a stunning display of Malta's iconic gallariji—the brightly colored, enclosed wooden balconies that overhang the cobblestone street.</p><!--stss:footsteps--><p>During Episode 2 of BTS Bon Voyage Season 3, the members were given free time to explore the historic capital of Valletta at their own pace. True to his famous habit of \"Namjooning\"—taking time to peacefully wander, appreciate art, observe architecture, and soak in the local atmosphere—RM chose to take a relaxed stroll down Merchants Street.</p><p>Stepping away from the main tourist crowds, Namjoon took in the historic beauty of this stone-paved street, admiring the majestic facades and the authentic, everyday vibe of the city. For fans, wandering down Triq il-Merkanti offers the perfect opportunity to recreate RM's quiet, contemplative travel style, experiencing Valletta's old-world charm through his eyes.</p>"
+    },
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Practice"
+        },
+        "text": {
+          "en": "Take your time walking down the street. Don't forget to look up and photograph the beautiful, colorful wooden balconies and the intricate architectural details of the Baroque buildings, just as RM loves to do."
+        }
+      },
+      {
+        "title": {
+          "en": "Stop for a Coffee"
+        },
+        "text": {
+          "en": "Merchants Street is famous for its outdoor cafes. Grab a seat at a terrace, order a cold drink, and enjoy some people-watching while feeling the Mediterranean breeze."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Morning Market"
+        },
+        "text": {
+          "en": "If you visit in the morning, you might catch the daily street market where locals sell clothes, souvenirs, and antiques."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "tweetUrl": "https://x.com/bts_twt/status/1028072114220232704?s=46",
+    "imgCredit": "Screentostreet",
+    "episodeLink": "https://weverse.io/bts/media/2-6741268",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791838895946-rc54ck-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "img": "images/admin-upload-new-manual-1791838895946-rc54ck-photo.jpg",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Very easy to find. After entering Valletta through the City Gate, simply walk straight and take any of the perpendicular streets on your right (like South Street or Melita Street) to intersect with Merchants Street, which runs the entire length of the peninsula."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a public street, it is open 24/7. Completely free of charge."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Highly accessible. Unlike many of the steep, stair-stepped side streets in Valletta, Merchants Street runs longitudinally and is mostly flat and smoothly paved, making it very easy to navigate for wheelchair users and strollers."
+        }
+      }
+    ]
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
