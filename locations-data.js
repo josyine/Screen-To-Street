@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-12T21:49:53.210Z.
+// Généré le 2026-10-13T08:13:51.796Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -15146,7 +15146,7 @@ window.STATIC_LOCATIONS = [
     "city": "Valletta",
     "category": "Bon Voyage",
     "year": "2018",
-    "episode": "Bon Voyage Season 3",
+    "episode": "Bon Voyage Season 3 Ep 2",
     "address": "Lascaris Ditch, Valletta VLT 2000",
     "lat": 35.8958,
     "lng": 14.5144,
@@ -15222,7 +15222,7 @@ window.STATIC_LOCATIONS = [
     "recreatedPhoto": "",
     "ytId": "jEQRdsfPpkM",
     "imgCredit": "Frank Vincentz / CC BY-SA 3.0",
-    "episodeLink": "https://weverse.io/bts/media/0-6741590"
+    "episodeLink": "https://weverse.io/bts/media/2-6741268"
   },
   {
     "id": 260,
@@ -21610,6 +21610,73 @@ window.STATIC_LOCATIONS = [
         "text": {
           "en": "Highly accessible. Unlike many of the steep, stair-stepped side streets in Valletta, Merchants Street runs longitudinally and is mostly flat and smoothly paved, making it very easy to navigate for wheelchair users and strollers."
         }
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1791842309722-7xdi6q",
+    "name": "Mdina Dungeons Pillory (St. Publius Square)",
+    "group": "BTS",
+    "member": "RM, J-Hope",
+    "country": "Malta",
+    "category": "Bon Voyage",
+    "year": "2018",
+    "address": "St. Publius Square (Misraħ San Publiju), Mdina, Malta (adjacent to The Mdina Dungeons Museum).",
+    "lat": 35,
+    "lng": 14,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<!--stss:footsteps-->"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791842309722-7xdi6q-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-new-manual-1791842309722-7xdi6q-recreated-1.jpg",
+        "official": true
       }
     ]
   },
