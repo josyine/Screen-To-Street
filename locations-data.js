@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-13T08:13:51.796Z.
+// Généré le 2026-10-13T19:56:42.808Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -15139,7 +15139,7 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 259,
-    "name": "Lascaris War Rooms",
+    "name": "Stairs near Lascaris War Rooms",
     "group": "BTS",
     "member": "RM, J-Hope",
     "country": "Malta",
@@ -15147,12 +15147,12 @@ window.STATIC_LOCATIONS = [
     "category": "Bon Voyage",
     "year": "2018",
     "episode": "Bon Voyage Season 3 Ep 2",
-    "address": "Lascaris Ditch, Valletta VLT 2000",
-    "lat": 35.8958,
-    "lng": 14.5144,
+    "address": "Lascaris Ditch / Lascaris Battery, Il-Belt Valletta, Malta (near the entrance to the Lascaris War Rooms).",
+    "lat": 35.8951055,
+    "lng": 14.5125753,
     "img": "images/admin-upload-259-photo.jpg",
     "fullDescription": {
-      "en": "<p>Carved into the bastion ditch beneath Valletta's Upper Barrakka Gardens, the Lascaris War Rooms are a preserved underground command complex used by the Allies during the Siege of Malta in the Second World War — the war rooms from which Malta's air and sea defence, and later the Allied invasion of Sicily, were coordinated.</p><p>The complex has been restored as a museum, with original plotting tables, communication equipment and briefing rooms open to visitors, giving a rare, tangible sense of a working wartime command centre rather than a reconstruction.</p><!--stss:footsteps--><p>Namjoon and Hoseok visited the Lascaris War Rooms during Bon Voyage Season 3's Valletta leg, taking in the underground tunnels and historical displays as one of the trip's more reflective, history-focused stops.</p><p>It stood out from the episode's lighter, more playful segments as a genuine detour into Malta's wartime history — the kind of stop that let the show's history-minded members (particularly Namjoon, known for his museum visits across multiple seasons) explore at their own pace.</p>"
+      "en": "<p>Hidden just beneath the famous Upper Barrakka Gardens, the Lascaris War Rooms are a secret underground complex of tunnels and chambers that served as the ultra-classified War Headquarters for the defense of Malta during World War II. The exterior surrounding this museum is defined by Valletta's colossal limestone bastions, deep defensive ditches, and monumental stone stairways that connect the different tiered levels of the fortified city. These quiet, towering staircases offer pedestrians a dramatic glimpse into the formidable military architecture originally built by the Knights of St. John.</p><!--stss:footsteps--><p>During Episode 2 of BTS Bon Voyage Season 3, the members were given free time to explore the historic capital of Valletta. RM and J-Hope (the beloved \"94z\") teamed up to wander through the city's maze of historic streets, eventually finding themselves navigating the massive stone stairways descending near the Lascaris War Rooms.\nStepping away from the crowded main squares, Namjoon and Hoseok walked down these steps side-by-side, taking a moment to appreciate the sheer scale of the towering limestone walls and the quiet, imposing atmosphere of the fortress city. For fans, retracing their steps down this specific staircase offers a chance to experience the same peaceful, off-the-beaten-path exploration that the two friends enjoyed while soaking in Valletta's ancient beauty.</p>"
     },
     "practicalInfo": [
       {
@@ -15160,7 +15160,7 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "Located under the Upper Barrakka Gardens and the Saluting Battery near the south corner of Valletta — reachable on foot from the City Gate bus terminus in about 10-15 minutes, following signs toward Upper Barrakka Gardens."
+          "en": "The easiest way to find these stairs is to head toward the Upper Barrakka Gardens or the Castille Palace, then follow the pedestrian signs pointing downwards toward the Lascaris War Rooms museum entrance."
         }
       },
       {
@@ -15168,7 +15168,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "Open Monday to Saturday, roughly 10:00-16:30 (last entry around 16:00); check the official website before visiting as hours can change seasonally."
+          "en": "The outdoor stairs and pathways are public property, open 24/7, and completely free to walk through. (The actual museum has separate ticketing and hours)."
         }
       },
       {
@@ -15176,53 +15176,61 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": "The underground complex involves stairs and tunnel-style corridors with uneven original flooring in places — not fully wheelchair accessible; contact the site in advance if mobility assistance is needed."
+          "en": "Due to the nature of the historic, steep limestone stairs, this specific pathway is not accessible for wheelchair users or strollers. However, nearby elevators (like the Barrakka Lift) offer accessible routes to the lower ditch area."
         }
       }
     ],
     "tipsList": [
       {
         "title": {
-          "en": "Book a guided tour slot"
+          "en": "Recreate the"
         },
         "text": {
-          "en": "The war rooms are best understood with a guide or audio tour explaining what each plotting table and room was actually used for — the space alone doesn't tell the full story."
+          "en": "Walk down the limestone steps together with a travel companion, admiring the towering bastion walls that frame the pathway just as RM and J-Hope did."
         }
       },
       {
         "title": {
-          "en": "Pair it with the Saluting Battery above"
+          "en": "Visit the War Rooms"
         },
         "text": {
-          "en": "The daily midday cannon fire at the Saluting Battery happens directly above the war rooms, in Upper Barrakka Gardens — easy to combine into one visit."
+          "en": "Since you are already right at the doorstep, take the opportunity to buy a ticket and explore the underground Lascaris War Rooms to see where WWII Allied commanders directed the invasion of Sicily."
         }
       },
       {
         "title": {
-          "en": "Bring a light layer"
+          "en": "Explore the Ditch"
         },
         "text": {
-          "en": "The underground tunnels stay noticeably cooler than the streets above, even in Malta's summer heat."
+          "en": "The stairs lead down toward the Lascaris Ditch, a quieter, shaded area of Valletta that offers unique, imposing angles of the city's defenses for photography."
         }
       }
     ],
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "facebookUrls": [],
     "instagramUrl": "",
     "officialLink": "https://www.lascariswarrooms.com/",
     "tweetUrls": [],
-    "recreatedPhoto": "",
     "ytId": "jEQRdsfPpkM",
-    "imgCredit": "Frank Vincentz / CC BY-SA 3.0",
-    "episodeLink": "https://weverse.io/bts/media/2-6741268"
+    "episodeLink": "https://weverse.io/bts/media/2-6741268",
+    "pinterestUrl": "https://pin.it/6XoufQc5D",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-259-recreated-0.jpg",
+        "official": true
+      },
+      {
+        "url": "images/admin-upload-259-recreated-1.jpg",
+        "official": true
+      }
+    ]
   },
   {
     "id": 260,
@@ -21679,6 +21687,176 @@ window.STATIC_LOCATIONS = [
         "official": true
       }
     ]
+  },
+  {
+    "id": "new-manual-1791920250012-lfxeie",
+    "name": "Aerocardal Private Terminal (Santiago Airport)",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "Chile",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "FBO Aerocardal, Calle Diego Barros Ortiz 2065, Santiago Airport, Región Metropolitana, Chile",
+    "lat": -33.3884834,
+    "lng": -70.7964486,
+    "city": "Santiago",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Arturo Merino Benítez International Airport is the main gateway to Chile. However, global superstars rarely pass through the commercial passenger terminals (like Terminal 1 or Terminal 2). Instead, they utilize the exclusive general and private aviation (FBO) facilities located on the east and northeast side of the runways. During their private travels to Santiago, the group used the Aerocardal Private Terminal (FBO Aerocardal). Oriented to offer an unobstructed view of the tarmac, this side of the airport faces the open plains and the majestic ridgeline of the Pudahuel hills and the Coastal Cordillera.</p><!--stss:footsteps--><p>This specific location entered ARMY legend thanks to an intimate and highly aesthetic moment: J-Hope taking a beautiful photograph of Jimin to celebrate his birthday. The scene took place during one of their memorable visits to Chile (notably for The Wings Tour and their Arirang broadcast).</p><p>The shot was not taken inside a closed building, but entirely outdoors, taking advantage of Santiago's spectacular natural light. Jimin stood at the top of mobile boarding stairs (airstairs) placed directly against the fuselage of their private plane. The orientation of the photo is highly specific: J-Hope's camera was facing west. Looking out over the grassy strip and the taxiway, the photo captures a blazing setting sun that outlines the silhouette of the Chilean mountains (the Coastal Cordillera) closing the plain on the horizon.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The address is located within the vast Arturo Merino Benítez International Airport complex. Diego Barros Ortiz street leads directly to the private hangars and terminal."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "This is a private aviation terminal not open to general tourism. Access to the tarmac and aircraft is strictly regulated and prohibited to visitors without a ticket or official clearance."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The private facilities are accessible to their patrons, but for fans, this location remains a symbolic visual pilgrimage to be appreciated from afar or from nearby public airport zones."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "The Chilean"
+        },
+        "text": {
+          "en": "J-Hope took advantage of the golden hour to photograph Jimin. If you are flying in or out of Santiago, take a moment to admire the sunset from the airport to experience that same warm, golden light characteristic of the photo."
+        }
+      },
+      {
+        "title": {
+          "en": "Understand the Geography"
+        },
+        "text": {
+          "en": "If you look at a general map of the airport oriented north, the Aerocardal terminal is on the right flank (the eastern edge of the airport grounds), completely opposite the large regular passenger terminals located in the center."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect Security Zones"
+        },
+        "text": {
+          "en": "Because this is a high-security area restricted to private jets and general aviation, you cannot access the tarmac or climb on the mobile stairs. However, you can still soak in the atmosphere by observing the Pudahuel hills during your own takeoff or landing in Chile."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1791920250012-lfxeie-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "img": "images/admin-upload-new-manual-1791920250012-lfxeie-photo.jpg",
+    "imgCredit": "Phillip Capper / CC BY 2.0"
+  },
+  {
+    "id": "new-manual-1791920967362-j76lyk",
+    "name": "Seoul Forest: Dedicated Bench 4",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "France",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54368,
+    "lng": 127.03937,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing Plaque Details"
+        },
+        "text": {
+          "en": "Take a close-up photo of the commemorative plaque on Bench 4 to capture the special lyrics and dedication dedicated to Jungkook."
+        }
+      },
+      {
+        "title": {
+          "en": "Jungkook's Energetic Playlist"
+        },
+        "text": {
+          "en": "Listen to tracks like \"Seven\", \"Standing Next to You\", or \"Euphoria\" to bring vibrant energy to your walk around the loop."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs to celebrate BTS's youngest member, Jeon Jungkook, Bench 4 is located along the southern main walking corridor near the central lawn. Adorned with commemorative plaques featuring inspiring lyrics and loving messages, this bench stands as a tribute to Jungkook’s passion, artistic growth, and bright energy.</p><!--stss:footsteps--><p>Stopping at Jungkook’s bench along the southern loop offers a lively yet relaxing spot to take in the park's scenic atmosphere. Positioned alongside Bench 5 (V), it marks a double fan-favorite photo spot for visitors. Sitting here allows fans to pause, watch the trees sway in the wind, and connect with Jungkook’s dedication and heartfelt artistry while enjoying a peaceful moment during their walk.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 4 on the southern walkway is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, placing you near the park’s main southern entrance. Follow the main paved path past Bench 2 and Bench 3, continuing westward toward the central park loop where Bench 4 is positioned next to Bench 5."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide, paved, and flat pathways connect the station exit directly to this bench location, ensuring that Bench 4 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "img": "images/admin-upload-new-manual-1791920967362-j76lyk-photo.jpg",
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1791920967362-j76lyk-recreated-0.jpg"
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "",
+    "storyImage": "images/admin-upload-new-manual-1791920967362-j76lyk-story.jpg"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
