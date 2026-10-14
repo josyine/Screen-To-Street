@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-13T19:56:42.808Z.
+// Généré le 2026-10-14T06:34:45.891Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -110,7 +110,7 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 2,
-    "name": "Ossu Seiromushi",
+    "name": "[CLOSED] Ossu Seiromushi (오쓰 세이로무시)",
     "group": "BTS",
     "member": "Jin",
     "country": "South Korea",
@@ -118,37 +118,37 @@ window.STATIC_LOCATIONS = [
     "category": "Restaurant",
     "year": "2018",
     "ytId": "Otsu1",
-    "address": "30 Baekjegobun-ro 45-gil, Songpa-gu",
-    "lat": 37.5105,
-    "lng": 127.1085,
-    "img": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600",
+    "address": "30 Baekjegobun-ro 45-gil, Songpa 1(il)-dong, Songpa-gu, Seoul, South Korea.",
+    "lat": 37.51024,
+    "lng": 127.10849,
+    "img": "images/admin-upload-2-photo.jpg",
     "fullDescription": {
-      "en": "<p>Set on a quiet street a short walk from Seokchon Lake, Ossu Seiromushi is a steamed-dish specialty restaurant known for its clean, minimalist dining room and its signature bamboo steamer baskets piled high with pork, vegetables and rice cake.</p><p>The restaurant is closely associated with Jin, who has spoken publicly about his appreciation for its cooking style, and it has since become something of a pilgrimage stop for fans exploring the Songpa-gu area near Lotte World.</p>",
-      "fr": "<p>Installé dans une rue tranquille à quelques minutes à pied du lac Seokchon, Ossu Seiromushi est un restaurant spécialisé dans les plats vapeur, reconnaissable à sa salle épurée et minimaliste et à ses célèbres paniers en bambou débordant de porc, de légumes et de gâteau de riz.</p><p>Ce restaurant est étroitement associé à Jin, qui a publiquement exprimé son appréciation pour ce style de cuisine, et il est depuis devenu une étape incontournable pour les fans qui explorent le quartier de Songpa-gu, non loin de Lotte World.</p>"
+      "fr": "<p>Installé dans une rue tranquille à quelques minutes à pied du lac Seokchon, Ossu Seiromushi est un restaurant spécialisé dans les plats vapeur, reconnaissable à sa salle épurée et minimaliste et à ses célèbres paniers en bambou débordant de porc, de légumes et de gâteau de riz.</p><p>Ce restaurant est étroitement associé à Jin, qui a publiquement exprimé son appréciation pour ce style de cuisine, et il est depuis devenu une étape incontournable pour les fans qui explorent le quartier de Songpa-gu, non loin de Lotte World.</p>",
+      "en": "<p>Opened in 2018, Ossu Seiromushi was an elegant Japanese restaurant managed by Kim Seok-jung, Jin's older brother. Jin was personally invested in this family project, serving as a co-owner and director. The establishment specialized in seiro-mushi, a traditional cooking method where food is steam-cooked directly at the customers' table. The dishes utilized tiered wooden baskets made of cypress wood to gently cook high-quality sliced meats and fresh vegetables. The setting, decorated in bright wood and separated by partitions for maximum privacy, offered a warm, minimalist ambiance. The establishment successfully attracted both international fans and a dedicated local clientele.</p><!--stss:footsteps--><p>For several years, Ossu Seiromushi was a highly special pilgrimage destination for ARMYs visiting Seoul. Jin never hid his unconditional support for his brother's business. During an online broadcast in late 2020, he emotionally revealed that his brother had to sell his own car to keep the business afloat during severe economic hardships. This poignant statement sparked an immense wave of solidarity from fans, who flocked to the restaurant to show their support and help the business bounce back.</p><p>Unfortunately, after years of dedicated service, the restaurant officially and permanently closed its doors on March 30, 2026. Although visitors can no longer taste the famous steamed dishes, the history of this place remains a beautiful testament to the strong bond uniting Jin with his family, and the unwavering support of the fandom community.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Beat the wait"
+          "en": "Explore the Jamsil Area"
         },
         "text": {
-          "en": "Reservations aren't accepted — arrive right at opening time on weekdays to avoid the longest waits."
+          "en": "Although the restaurant is now closed, its former address was located in a vibrant and highly walkable neighborhood near the beautiful Seokchon Lake."
         }
       },
       {
         "title": {
-          "en": "Order the steamer basket"
+          "en": "Discover the Nearby Complex"
         },
         "text": {
-          "en": "The bamboo steamer piled with pork, vegetables and rice cake is the restaurant's signature dish, and the one most associated with Jin's own visits."
+          "en": "The restaurant's former location is situated in the immediate vicinity of the famous Lotte World amusement park and the towering Lotte World Tower, making the area still well worth a visit."
         }
       },
       {
         "title": {
-          "en": "Pair with Seokchon Lake"
+          "en": "Keep the Memory Alive"
         },
         "text": {
-          "en": "The restaurant sits a short walk from Seokchon Lake, an easy add-on before or after your meal."
+          "en": "For fans keeping a BTS-dedicated travel journal or map, pinning this former address remains a meaningful way to remember Jin's early, supportive venture into the restaurant business."
         }
       }
     ],
@@ -159,7 +159,53 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "Reservations aren't accepted — arrive right at opening time on weekdays to avoid the longest waits.",
       "fr": "Les réservations ne sont pas acceptées — arrivez pile à l'ouverture en semaine pour éviter les plus longues attentes."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The location was easily accessible by the Seoul Subway system via Jamsil Station (Line 2 and 8, Exit 10) or Seokchon Station (Line 8 and 9, Exit 2)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The establishment officially and permanently closed its doors on March 30, 2026."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-2-recreated-0.jpg",
+        "official": true
+      }
+    ],
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://mapstr.com/place/GltC7yKsxjg/ossu-seiromushi-seoul-restaurant-kpop-bts-ristorante-luoghi_idol"
   },
   {
     "id": 3,
@@ -7988,7 +8034,7 @@ window.STATIC_LOCATIONS = [
     "year": "2018",
     "episode": "Love Yourself World Tour",
     "episodeLink": "https://en.wikipedia.org/wiki/Love_Yourself_World_Tour",
-    "address": "",
+    "address": "8 Bd de Bercy, 75012 Paris",
     "lat": 48.8388,
     "lng": 2.3788,
     "img": "images/admin-upload-142-photo.jpg",
@@ -8026,6 +8072,7 @@ window.STATIC_LOCATIONS = [
       "en": "Check the venue's official website or a map app for the best way to reach it from where you're staying — public transit access varies a lot by city.",
       "fr": "Consultez le site officiel du lieu ou une application de cartes pour le meilleur moyen de vous y rendre depuis votre logement — l'accès en transport en commun varie beaucoup selon la ville."
     },
+    "episodeLabel": "Era",
     "tip": {
       "en": "This stop is from an earlier BTS world tour — check the venue's own website for current opening hours or public tours, as they can change independently of the concert date shown here.",
       "fr": "Cette étape provient d'une tournée mondiale précédente de BTS — vérifiez le site officiel du lieu pour les horaires d'ouverture ou visites publiques actuelles, qui peuvent avoir changé depuis la date de concert indiquée ici."
@@ -8037,7 +8084,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [],
     "youtubeUrls": [],
     "tiktokUrl": "",
-    "ytId": "",
     "facebookUrl": "",
     "tweetUrl": "",
     "facebookUrls": [],
@@ -8075,7 +8121,8 @@ window.STATIC_LOCATIONS = [
           "en": "Fully accessible. The arena is equipped with dedicated elevators, ramps, wide concourses, and specifically designated seating sections for visitors with reduced mobility."
         }
       }
-    ]
+    ],
+    "ytId": "uZ3ZM-UISsU"
   },
   {
     "id": 143,
@@ -21700,6 +21747,8 @@ window.STATIC_LOCATIONS = [
     "lat": -33.3884834,
     "lng": -70.7964486,
     "city": "Santiago",
+    "episodeLabel": "Era",
+    "episode": "Arirang World Tour",
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
@@ -21737,7 +21786,6 @@ window.STATIC_LOCATIONS = [
     "tweetUrls": [],
     "pinterestUrl": "",
     "facebookUrl": "",
-    "tweetUrl": "",
     "episodeLink": "",
     "tipsList": [
       {
@@ -21766,7 +21814,6 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "instagramUrl": "",
-    "officialLink": "",
     "tiktokUrl": "",
     "ytId": "",
     "recreatedPhotos": [
@@ -21776,7 +21823,9 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "img": "images/admin-upload-new-manual-1791920250012-lfxeie-photo.jpg",
-    "imgCredit": "Phillip Capper / CC BY 2.0"
+    "imgCredit": "Phillip Capper / CC BY 2.0",
+    "officialLink": "https://www.aeropuertosantiagodechile.cl/es",
+    "tweetUrl": "https://x.com/sunflowercharts/status/2110035531711304030?s=46"
   },
   {
     "id": "new-manual-1791920967362-j76lyk",
@@ -21844,7 +21893,6 @@ window.STATIC_LOCATIONS = [
     ],
     "tweetUrls": [],
     "img": "images/admin-upload-new-manual-1791920967362-j76lyk-photo.jpg",
-    "imgCredit": "",
     "pinterestUrl": "",
     "tiktokUrl": "",
     "ytId": "",
@@ -21855,8 +21903,273 @@ window.STATIC_LOCATIONS = [
     ],
     "episodeLink": "",
     "instagramUrl": "",
-    "officialLink": "",
-    "storyImage": "images/admin-upload-new-manual-1791920967362-j76lyk-story.jpg"
+    "storyImage": "images/admin-upload-new-manual-1791920967362-j76lyk-story.jpg",
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://parks.seoul.go.kr/index.do"
+  },
+  {
+    "id": "new-manual-1791921471760-27y6ty",
+    "name": "Seoul Forest: Dedicated Bench 5",
+    "group": "BTS",
+    "member": "V",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54379,
+    "lng": 127.03962,
+    "img": "images/admin-upload-new-manual-1791921471760-27y6ty-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1791921471760-27y6ty-recreated-0.jpg"
+    ],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs to celebrate Kim Taehyung (V), Bench 5 is situated along the main southern walking path, sitting side-by-side with Bench 6. Decorated with commemorative plaques showcasing meaningful quotes and artistic lyrics, this bench represents V’s unique aesthetic sense, deep warmth, and enduring connection with fans.</p><!--stss:footsteps--><p>Stopping at V’s bench along this central corridor offers a calm and picturesque resting spot in the heart of the park. Located right next to Bench 6 (JK), this spot is a favorite photo location for fans visiting the southern section of Seoul Forest. Sitting here allows visitors to pause under the canopy of trees, take in the scenery, and enjoy the peaceful atmosphere that reflects V’s creative and contemplative nature.</p>"
+    },
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing Plaque Engravings"
+        },
+        "text": {
+          "en": "Take a detailed close-up shot of the engraved plaque on Bench 5 to highlight the special quotes and artwork dedicated to V."
+        }
+      },
+      {
+        "title": {
+          "en": "Framing the Twin Benches View"
+        },
+        "text": {
+          "en": "Position your camera to capture both Bench 5 (V) and Bench 6 (JK) together against the lush green foliage for a balanced, iconic shot."
+        }
+      },
+      {
+        "title": {
+          "en": "V's Comforting Playlist"
+        },
+        "text": {
+          "en": "Listen to tracks like \"Rainy Days\", \"Sweet Night\", or \"4 O'CLOCK\" to immerse yourself in V’s comforting vocal melodies while taking a restful break."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 5 on the southern walkway is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, placing you near the park’s main southern entrance. Walk past Bench 2, Bench 3, and Bench 4, continuing westward along the paved tree-lined path where Bench 5 is positioned directly beside Bench 6."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide, paved, and flat pathways connect the station exit directly to this bench location, ensuring that Bench 5 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "storyImage": "images/admin-upload-new-manual-1791921471760-27y6ty-story.jpg",
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://parks.seoul.go.kr/index.do"
+  },
+  {
+    "id": "new-manual-1791922078033-8kn8wz",
+    "name": "Seoul Forest: Dedicated Bench 6",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54373,
+    "lng": 127.03979,
+    "img": "images/admin-upload-new-manual-1791922078033-8kn8wz-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1791922078033-8kn8wz-recreated-0.jpg"
+    ],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing Plaque Details"
+        },
+        "text": {
+          "en": "Take a detailed close-up shot of the engraved plaque on Bench 6 to highlight the unique lyric and special message dedicated to Jungkook."
+        }
+      },
+      {
+        "title": {
+          "en": "Framing the Side-by-Side Shot"
+        },
+        "text": {
+          "en": "Position your camera to capture both Bench 6 (JK) and Bench 5 (V) together against the lush green background to document the twin-bench layout."
+        }
+      },
+      {
+        "title": {
+          "en": "Jungkook's Solo Playlist"
+        },
+        "text": {
+          "en": "Listen to tracks like \"Still With You\", \"My You\", or \"Too Sad to Dance\" to soundtrack your peaceful pause at this iconic location."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs to celebrate BTS's main vocalist, Jeon Jungkook, Bench 6 is situated along the main southern walking path, sitting side-by-side with Bench 5. Decorated with commemorative plaques showcasing heartfelt lyrics and loving tributes, this bench stands as a celebration of Jungkook’s remarkable talent, endless enthusiasm, and deep affection for fans.</p><!--stss:footsteps--><p>Stopping at Jungkook’s second dedicated bench along this central corridor offers a vibrant yet peaceful resting spot in the park. Positioned directly next to Bench 5 (V), it creates a popular duo-bench destination for visitors strolling through the southern section of Seoul Forest. Sitting here allows fans to relax under the shade of mature trees, take in the beautiful garden surroundings, and enjoy a memorable moment connected to Jungkook’s musical journey.</p>"
+    },
+    "officialLink": "https://parks.seoul.go.kr/index.do",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 6 on the southern walkway is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, placing you near the park’s main southern entrance. Walk past Bench 2, Bench 3, and Bench 4, continuing westward along the paved tree-lined path where Bench 6 is positioned directly beside Bench 5."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide, paved, and flat pathways connect the station exit directly to this bench location, ensuring that Bench 6 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "storyImage": "images/admin-upload-new-manual-1791922078033-8kn8wz-story.jpg",
+    "ytId": ""
+  },
+  {
+    "id": "new-manual-1791922669590-1a3l0o",
+    "name": "Seoul Forest: Dedicated Bench 7",
+    "group": "BTS",
+    "member": "J-Hope",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2023",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54397,
+    "lng": 127.03863,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "officialLink": "https://parks.seoul.go.kr/index.do",
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs to celebrate BTS's main dancer and rapper, j-hope (Jung Hoseok), Bench 7 is uniquely positioned next to the iconic giant yellow \"J\" letter sculpture along the lake’s edge. Decorated with commemorative plaques showcasing uplifting lyrics and warm messages, this location honors j-hope’s vibrant personality, boundless hope, and joyful energy.</p><!--stss:footsteps--><p>Stopping at j-hope’s dedicated bench by the water offers one of the most cheerful and distinctive photo opportunities in Seoul Forest. Located beside the bold yellow \"J\" sculpture, it stands as a bright landmark reflecting j-hope’s artistic identity and signature enthusiasm. Sitting here allows fans to rest by the scenic lake, enjoy the gentle water views, and absorb the sunlit, hopeful atmosphere that defines j-hope’s music.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 7 near the lake sculpture is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, entering through the park's main southern gateway. Follow the main paved walkway westward past the central garden loop toward the central lake area, where Bench 7 and the giant yellow \"J\" sculpture are positioned right along the waterside path."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Smooth, paved, and flat pathways connect the station exit directly to the lakeside promenade, ensuring that Bench 7 and the \"J\" sculpture are easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing the Giant"
+        },
+        "text": {
+          "en": "Frame a wide photo including both the dedicated bench and the iconic yellow \"J\" sculpture against the backdrop of the lake."
+        }
+      },
+      {
+        "title": {
+          "en": "Close-up Plaque Tributes"
+        },
+        "text": {
+          "en": "Take a detailed close-up shot of the engraved plaque on Bench 7 to capture the special lyrics and bright messages dedicated to j-hope."
+        }
+      },
+      {
+        "title": {
+          "en": "j-hope's Sun-kissed Playlist"
+        },
+        "text": {
+          "en": "Listen to energizing tracks like \"Daydream\", \"Hope World\", or \"MORE\" to match the vibrant and uplifting atmosphere of this lakeside spot."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "img": "images/admin-upload-new-manual-1791922669590-1a3l0o-photo.jpg",
+    "storyImage": "images/admin-upload-new-manual-1791922669590-1a3l0o-story.jpg",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1791922669590-1a3l0o-recreated-0.jpg"
+    ]
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
