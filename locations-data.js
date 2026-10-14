@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-14T18:08:42.247Z.
+// Généré le 2026-10-14T22:31:45.503Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -8967,67 +8967,92 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 172,
-    "name": "The Troubadour",
+    "name": "Summitridge Manor (Summitridge Estate)",
     "group": "BTS",
     "member": "All",
     "country": "United States",
-    "city": "West Hollywood, CA",
-    "category": "Concert",
-    "year": "2014",
+    "city": "Los Angeles (Beverly Hills)",
+    "category": "Landmark",
+    "year": "2026",
     "ytId": "gCOw09Xy4i0",
     "episodeLink": "https://www.youtube.com/watch?v=gCOw09Xy4i0",
-    "address": "9081 Santa Monica Blvd, West Hollywood, CA 90069",
-    "lat": 34.0809,
-    "lng": -118.39,
+    "address": "1531 Summitridge Dr, Beverly Hills, CA 90210, USA.",
+    "lat": 34.0994573,
+    "lng": -118.4201573,
     "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Troubadour_01.jpg",
     "fullDescription": {
-      "en": "<p>During their American Hustle Life training, the members were tasked with handing out flyers and performing on the streets to learn how to engage a crowd from scratch. They performed at this iconic playground in Hongdae.</p><p>Watching the global superstars awkwardly try to convince passersby to watch their street performance is incredibly humbling today. The playground remains a symbol of grassroots Korean music culture.</p>",
-      "fr": "<p>Le 13 juillet 2014, pendant leur séjour à Los Angeles pour American Hustle Life, BTS a donné un showcase surprise au Troubadour, le club légendaire de West Hollywood où des artistes tels qu'Elton John ou Guns N' Roses ont fait leurs débuts.</p><p>Pour un groupe qui remplissait encore des salles de quelques milliers de places au pays, se produire sur cette scène chargée d'histoire fut un moment rare et discret dans l'histoire musicale live de LA — un contraste saisissant avec les tournées de stades qui suivraient à peine quelques années plus tard.</p>"
+      "fr": "<p>Le 13 juillet 2014, pendant leur séjour à Los Angeles pour American Hustle Life, BTS a donné un showcase surprise au Troubadour, le club légendaire de West Hollywood où des artistes tels qu'Elton John ou Guns N' Roses ont fait leurs débuts.</p><p>Pour un groupe qui remplissait encore des salles de quelques milliers de places au pays, se produire sur cette scène chargée d'histoire fut un moment rare et discret dans l'histoire musicale live de LA — un contraste saisissant avec les tournées de stades qui suivraient à peine quelques années plus tard.</p>",
+      "en": "<p>Spanning nearly an acre on the exclusive hills of Los Angeles, Summitridge Manor (also known as the Summitridge Estate) is a lavish property that effortlessly transposes the charm of the South of France to Southern California. The sprawling estate consists of three distinct buildings: a 5-bedroom main residence (featuring a library, office, and lounge), a 2-bedroom guest house, and a dedicated media building. Capable of accommodating over 16 guests with its 8 bedrooms and more than 10 bathrooms, the villa is packed with ultra-luxurious amenities. These include a full gym, a cold plunge pool, a sauna, a jacuzzi, a piano, and a unique private cinema equipped with a bar situated right by the pool. The exteriors boast lush gardens, a petanque court, and sprawling balconies offering breathtaking panoramic views of the city skyline and the ocean.</p><!--stss:footsteps--><p>This spectacular estate holds a profoundly special meaning in BTS's history. After a four-year hiatus dedicated to solo endeavors and mandatory military service, the seven members chose to reunite and isolate themselves together in this very residence to record their highly anticipated comeback album, Arirang. Opting for the intimate, open living spaces of this villa over traditional recording studios, their creative journey and reunion were intimately captured in their Netflix documentary film, BTS: The Return.\nThroughout the documentary, fans can see the members utilizing the sunlit open spaces as makeshift recording booths, lounging in the lush gardens, and sharing emotional moments in the poolside private cinema where they gathered to watch their old group videos together. The manor served not just as a workplace, but as a sanctuary for the group to reconnect.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Weekend Busking"
+          "en": "The Ultimate ARMY Retreat"
         },
         "text": {
-          "en": "Visit on a Friday or Saturday night to watch the current generation of young dancers covering BTS songs right where they once stood."
+          "en": "If you have the budget, pooling resources with a large group of fans to rent the estate could make for the ultimate luxury ARMY vacation or watch-party retreat."
         }
       },
       {
         "title": {
-          "en": "The Slide Photo"
+          "en": "Recreate the Cinema Night"
         },
         "text": {
-          "en": "Recreate the casual photos the members took near the playground equipment."
+          "en": "If you manage to stay here, utilize the poolside private cinema to host a movie night watching BTS: The Return or old Run BTS! episodes, exactly where the members reminisced about their past."
+        }
+      },
+      {
+        "title": {
+          "en": "Enjoy the Open Spaces"
+        },
+        "text": {
+          "en": "Spend time on the balconies at sunset, taking in the panoramic views of the Los Angeles skyline and the Pacific Ocean that inspired their comeback tracks."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "Free public park in the center of the bustling Hongdae university district."
-        }
-      },
-      {
-        "title": {
-          "en": "What to expect"
-        },
-        "text": {
-          "en": "A small playground surrounded by street art, often filled with indie musicians busking at night."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Hongik University Station (Line 2), exit 9. Walk about 10 minutes towards the university."
+          "en": "The villa is officially available for rent on luxury platforms. It has its own dedicated page on Airbnb managed by Elite Luxury Homes, and can also be booked via exclusive concierge services like The Nightfall Group."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Please note that a mandatory minimum stay of 30 days is required. Rates hover around $8,500 per night (bringing a full month's stay to roughly $130,000 to $160,000)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "This premium price tag comes with comprehensive luxury concierge services, including access to private chefs and personalized grocery stocking upon request."
         }
       }
-    ]
+    ],
+    "episodeLabel": "Era",
+    "episode": "BTS: The Return (Netflix Documentary)",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": 173,
