@@ -2728,18 +2728,40 @@ const ShareStory = (() => {
         download(f);
         return false;
     }
-    // BUG corrigé (demande du 12/10/2026, "ça ne fonctionne pas sur Instagram, c'est écrit
-    // que mon application n'est actuellement pas compatible avec Instagram Stories") : la
-    // tentative précédente (schéma d'URL "instagram-stories://share" + presse-papier, comme
-    // Strava) a été testée en vrai — Instagram refuse l'ouverture et affiche cette erreur
-    // car source_application doit correspondre à une appli Meta Developer RÉELLEMENT
-    // enregistrée (voir INSTAGRAM_FB_APP_ID, resté vide faute d'app enregistrée pour ce
-    // site) ; sans elle, Instagram ne dégrade PAS gracieusement, il bloque. Retiré entièrement
-    // — ce partage ne peut pas fonctionner tant qu'une vraie app Meta Developer n'existe pas
-    // (créer une app sur developers.facebook.com, produit "Sharing to Stories", et
-    // réintroduire le schéma d'URL avec son id). "Story" repasse donc par le partage natif
-    // normal (qui propose Instagram parmi les apps, sans aller direct dans la Story) /
-    // téléchargement + indication manuelle, comme avant cette tentative.
+    // Partage direct vers la Story Instagram (demande du 12-15/10/2026, "il faut que ça
+    // redirige directement dans Instagram Story" — pas seulement via le partage natif +
+    // choisir "Story" dans le menu d'Instagram, qui fonctionnait déjà mais en 2 étapes) —
+    // AJOUT SITE. Une 1ère tentative (sans INSTAGRAM_FB_APP_ID) avait été retirée : Instagram
+    // refuse ce schéma d'URL sans app Meta Developer réellement enregistrée ("votre
+    // application n'est actuellement pas compatible avec Instagram Stories"). Une app a
+    // depuis été créée côté Meta Developer (produit "Sharing to Stories") spécifiquement pour
+    // ce site, voir INSTAGRAM_FB_APP_ID ci-dessous.
+    // IMPORTANT — limite du mode développement Meta : tant que cette app n'est pas passée en
+    // revue par Meta (App Review), ce raccourci direct ne fonctionne QUE pour les comptes
+    // Instagram ajoutés comme testeurs/admins dans son tableau de bord Meta Developer — pour
+    // tout autre visiteur, Instagram affichera la même erreur qu'avant. Repli automatique
+    // dans ce cas (voir plus bas, détecté via l'évènement "blur" : si Instagram ne s'ouvre
+    // pas dans les ~1,6s, on bascule sur shareOrDownload()).
+    // iOS Safari seulement — c'est la seule plateforme où une PAGE WEB (ce site n'est pas une
+    // app native) peut écrire sur le presse-papier système ET où Instagram accepte de le
+    // relire ainsi ; sur Android, ce partage n'existe QUE via l'intent natif ADD_TO_STORY
+    // d'une app, inatteignable depuis le web, d'où aucune tentative ici (repli direct).
+    const INSTAGRAM_FB_APP_ID = '28825847960432281';
+    function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+    async function tryInstagramStoryShare(file) {
+        if (!isIOS() || !navigator.clipboard || !navigator.clipboard.write || typeof ClipboardItem === 'undefined') return false;
+        try {
+            await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
+        } catch (e) { return false; }
+        return new Promise(resolve => {
+            let done = false;
+            const finish = (opened) => { if (done) return; done = true; window.removeEventListener('blur', onBlur); clearTimeout(timer); resolve(opened); };
+            const onBlur = () => finish(true);
+            window.addEventListener('blur', onBlur);
+            const timer = setTimeout(() => finish(false), 1600);
+            window.location.href = `instagram-stories://share?source_application=${encodeURIComponent(INSTAGRAM_FB_APP_ID)}`;
+        });
+    }
     // Partage réel à un ami du site (AJOUT SITE) — réutilise myFriendsList/
     // shareLocationWithFriend() (voir le bouton "Partager" historique de la fiche lieu).
     function renderFriendPanel() {
@@ -2774,6 +2796,10 @@ const ShareStory = (() => {
         api.onShare && api.onShare({ format: NAMES()[tpl], action: a, type: D.type });
         let f; try { f = await makeFile(); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
         if (a === 'story') {
+            if (await tryInstagramStoryShare(f)) return;
+            // Repli (Android, desktop, iOS sans Instagram installé, ou app Meta pas encore
+            // passée en revue pour ce compte) : partage natif classique, où Instagram reste
+            // choisissable manuellement (puis "Story" dans son propre menu).
             const shared = await shareOrDownload(f, { title: D.title, text: D.url });
             if (!shared) toast(currentLang === 'fr' ? 'Image enregistrée — ouvre Instagram › Story pour la publier' : 'Image saved — open Instagram › Story to post it');
             return;
