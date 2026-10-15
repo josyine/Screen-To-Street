@@ -509,18 +509,20 @@ function recreatedPhotoMarkers(entry) {
         ? entry.markers.filter(m => m && typeof m.x === 'number' && typeof m.y === 'number' && m.member)
         : [];
 }
-// Marqueur "personne" positionné en % de la boîte de la photo (comme la photo elle-même
-// en object-fit:cover, une position relative reste juste quelle que soit la taille
-// d'affichage réelle) — clic affiche un popover avec le nom du membre à cet endroit précis.
+// Marqueur positionné en % de la boîte de la photo (comme la photo elle-même en
+// object-fit:cover, une position relative reste juste quelle que soit la taille
+// d'affichage réelle) — un simple bouton blanc (demande du 15/10/2026, remplace l'icône
+// "personne" : "remplace l'icone 'Personne'... par un simple bouton blanc") : le survol
+// (curseur souris, voir .recreate-member-marker:hover + .recreate-member-popover dans
+// style.css) affiche directement le nom du membre sur la photo. Le clic reste câblé en
+// plus (délégation ci-dessous) pour les écrans tactiles, qui n'ont pas de vrai survol.
 // idSuffix distingue les popovers entre eux quand plusieurs marqueurs coexistent sur la
 // même page (plusieurs photos, chacune avec plusieurs membres tagués).
 function memberMarkerButtonHtml(marker, idSuffix) {
     const member = escapeHtml(marker.member || '');
     const x = Math.min(100, Math.max(0, marker.x * 100));
     const y = Math.min(100, Math.max(0, marker.y * 100));
-    return `<button type="button" class="recreate-member-marker" style="left:${x}%; top:${y}%;" data-popover="recreate-member-popover-${idSuffix}" aria-label="${member}" title="${member}">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"></circle><path d="M12 13c-5 0-8 2.5-8 6v1h16v-1c0-3.5-3-6-8-6z"></path></svg>
-    </button>
+    return `<button type="button" class="recreate-member-marker" style="left:${x}%; top:${y}%;" data-popover="recreate-member-popover-${idSuffix}" aria-label="${member}" title="${member}"></button>
     <div id="recreate-member-popover-${idSuffix}" class="recreate-member-popover hidden" style="left:${x}%; top:${y}%;">${member}</div>`;
 }
 // Clic sur un marqueur = ouvre/ferme SON popover (et referme les autres) ; clic ailleurs =
@@ -3205,6 +3207,13 @@ window.addEventListener('firebase-ready', async (e) => {
                             anyAdded = true;
                         }
                     });
+                    // BUG corrigé (demande du 15/10/2026, "j'ai ajouté un lieu SEVENTEEN mais
+                    // SEVENTEEN n'apparait pas dans le filtre group") : un lieu fusionné ici
+                    // peut introduire un groupe inédit — initializeFilters() doit retourner
+                    // pour que l'<option> correspondante apparaisse dans le filtre Group (voir
+                    // le correctif juste au-dessus dans initializeFilters(), qui préserve
+                    // maintenant la sélection en cours au lieu de revenir sur "All").
+                    if (anyAdded && typeof initializeFilters === 'function') initializeFilters();
                     if (anyAdded && typeof renderLocations === 'function') renderLocations(true);
                 } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
             })(),
@@ -3222,6 +3231,10 @@ window.addEventListener('firebase-ready', async (e) => {
                         const o = overrides[String(loc.id)];
                         if (o) { Object.assign(loc, o); anyOverrideApplied = true; }
                     });
+                    // Même correctif que fetchNewLocations() juste au-dessus : une correction
+                    // de Group sur un lieu existant peut elle aussi introduire un groupe
+                    // inédit pour le filtre.
+                    if (anyOverrideApplied && typeof initializeFilters === 'function') initializeFilters();
                     if (anyOverrideApplied && typeof renderLocations === 'function') renderLocations(true);
                 } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
             })(),
@@ -5316,10 +5329,25 @@ function initializeFilters() {
 
     const availableGroups = [...new Set(availableLocs.map(l => l.group))].sort();
 
-    if(groupSelect.options.length === 0 || groupSelect.options[0].text !== t('allGroups')) {
+    // BUG corrigé (demande du 15/10/2026, "j'ai ajouté un lieu SEVENTEEN mais SEVENTEEN
+    // n'apparait pas dans le filtre group") : les <option> du select Group n'étaient
+    // reconstruites que si la liste était vide ou si son texte ne correspondait plus à la
+    // traduction de "All Groups" (changement de langue) — jamais si un nouveau groupe
+    // apparaissait dans celebLocations (ex. lieu publié depuis la file de soumissions
+    // admin et fusionné en direct via le listener 'firebase-ready' plus haut, APRÈS le
+    // premier appel à initializeFilters() au chargement de la page). On compare donc
+    // aussi l'ensemble réel des valeurs déjà présentes à availableGroups, et on ne
+    // reconstruit que si ça diffère — en reportant la sélection précédente (comme
+    // Member/Country juste en dessous) plutôt que de revenir sur "All" à chaque appel.
+    const previousGroupValues = getMultiValues(groupSelect);
+    const currentGroupOptionValues = Array.from(groupSelect.options).map(o => o.value).filter(v => v !== 'All').sort();
+    const groupOptionsStale = currentGroupOptionValues.length !== availableGroups.length
+        || currentGroupOptionValues.some((v, i) => v !== availableGroups[i]);
+    if(groupSelect.options.length === 0 || groupSelect.options[0].text !== t('allGroups') || groupOptionsStale) {
         groupSelect.innerHTML = `<option value="All">${t('allGroups')}</option>`;
         availableGroups.forEach(g => groupSelect.innerHTML += `<option value="${g}">${g}</option>`);
-        Array.from(groupSelect.options).forEach(o => { o.selected = (o.value === 'All'); });
+        Array.from(groupSelect.options).forEach(o => { o.selected = previousGroupValues.includes(o.value); });
+        if (!Array.from(groupSelect.options).some(o => o.selected)) groupSelect.options[0].selected = true;
     }
 
     // Plusieurs groupes peuvent désormais être sélectionnés à la fois (demande du
