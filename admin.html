@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261023" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261024" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -255,7 +255,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261023';
+        s.src = 'page-loader.js?v=20261024';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -468,10 +468,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261023"></script>
-<script src="countries.js?v=20261023"></script>
-<script src="locations-data.js?v=20261023"></script>
-<script src="script.js?v=20261023"></script>
+<script type="module" src="firebase-init.js?v=20261024"></script>
+<script src="countries.js?v=20261024"></script>
+<script src="locations-data.js?v=20261024"></script>
+<!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
+     choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
+<script src="artists-content.js?v=20261024"></script>
+<script src="script.js?v=20261024"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1061,7 +1064,7 @@ recomposée, sans texte ni légende.`;
             </div>
             <div class="sub-meta-edit">
                 <div class="sub-meta-field"><label>Group</label>${metaFieldSelectHtml('group', sub.group)}</div>
-                <div class="sub-meta-field sub-meta-field-wide"><label>Member</label>${memberMultiSelectHtml(sub.member)}</div>
+                <div class="sub-meta-field sub-meta-field-wide"><label>Member</label>${memberMultiSelectHtml(sub.member, sub.group)}</div>
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', sub.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', sub.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', sub.category)}</div>
@@ -1231,6 +1234,24 @@ recomposée, sans texte ni légende.`;
             linkInput.addEventListener('change', () => { sub.episodeLink = linkInput.value.trim(); });
         }
 
+        // Cases à cocher "Member" (demande du 13/09/2026, sélection multiple) — même
+        // convention "member" que le reste du site : plusieurs membres cochés sont joints
+        // par ", " (déjà utilisé dans les données existantes, ex: "Jimin, Jungkook, V"),
+        // aucun coché retombe sur "All". Attaché via une fonction réutilisable (demande du
+        // 15/10/2026, voir plus bas) : les cases sont RECRÉÉES quand le groupe change
+        // (memberMultiSelectHtml() ne propose que les membres de ce groupe), donc les
+        // anciens listeners (détruits avec leurs cases) doivent être reposés à chaque fois.
+        function wireMemberCheckboxes() {
+            card.querySelectorAll('.member-checkbox-input').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const checked = Array.from(card.querySelectorAll('.member-checkbox-input'))
+                        .filter(c => c.checked).map(c => c.value);
+                    sub.member = checked.length ? checked.join(', ') : 'All';
+                });
+            });
+        }
+        wireMemberCheckboxes();
+
         // Champs de squelette éditables (demande du 13/09/2026) — modifient `sub`
         // directement, comme les autres champs de cette carte : Approve publie donc bien
         // les valeurs corrigées ici (group/member/country/city/category/year sont déjà
@@ -1247,18 +1268,19 @@ recomposée, sans texte ni légende.`;
                 } else {
                     sub[field] = input.value.trim();
                 }
-            });
-        });
-
-        // Cases à cocher "Member" (demande du 13/09/2026, sélection multiple parmi les 7
-        // membres de BTS) — même convention "member" que le reste du site : plusieurs
-        // membres cochés sont joints par ", " (déjà utilisé dans les données existantes,
-        // ex: "Jimin, Jungkook, V"), aucun coché retombe sur "All".
-        card.querySelectorAll('.member-checkbox-input').forEach(cb => {
-            cb.addEventListener('change', () => {
-                const checked = BTS_MEMBER_OPTIONS.filter(m =>
-                    card.querySelector(`.member-checkbox-input[value="${m}"]`).checked);
-                sub.member = checked.length ? checked.join(', ') : 'All';
+                // BUG corrigé (demande du 15/10/2026, "ça n'affiche que les membres de
+                // BTS... quand le groupe est Blackpink affiche les membres de Blackpink") :
+                // reconstruit "Member" pour le groupe qui vient d'être choisi — la
+                // sélection précédente n'a quasiment jamais de sens pour le nouveau groupe,
+                // donc repartie à zéro plutôt que conservée.
+                if (field === 'group') {
+                    sub.member = '';
+                    const memberContainer = card.querySelector('.member-checkbox-group');
+                    if (memberContainer) {
+                        memberContainer.outerHTML = memberMultiSelectHtml('', sub.group);
+                        wireMemberCheckboxes();
+                    }
+                }
             });
         });
 
@@ -1794,7 +1816,7 @@ recomposée, sans texte ni légende.`;
             </div>
             <div class="sub-meta-edit">
                 <div class="sub-meta-field"><label>Group</label>${metaFieldSelectHtml('group', loc.group)}</div>
-                <div class="sub-meta-field sub-meta-field-wide"><label>Member</label>${memberMultiSelectHtml(loc.member)}</div>
+                <div class="sub-meta-field sub-meta-field-wide"><label>Member</label>${memberMultiSelectHtml(loc.member, loc.group)}</div>
                 <div class="sub-meta-field"><label>Country</label>${metaFieldSelectHtml('country', loc.country)}</div>
                 <div class="sub-meta-field"><label>City</label>${metaFieldSelectHtml('city', loc.city)}</div>
                 <div class="sub-meta-field"><label>Category</label>${metaFieldSelectHtml('category', loc.category)}</div>
@@ -2068,6 +2090,19 @@ recomposée, sans texte ni légende.`;
         card.addEventListener('click', (e) => {
             if (e.target.closest('.mu-add-btn, .mu-remove, .tl-add-btn, .tl-remove, .vs-add-btn, .vs-remove, .pg-upload-btn, .pg-url-toggle-btn, .pg-url-confirm-btn, .pg-remove')) cardTouched = true;
         });
+        // Reconstruit les cases "Member" pour le groupe qui vient d'être choisi (demande du
+        // 15/10/2026, "ça n'affiche que les membres de BTS... quand le groupe est
+        // Blackpink affiche les membres de Blackpink") — la sélection précédente n'a
+        // quasiment jamais de sens pour le nouveau groupe, donc repartie à zéro plutôt que
+        // conservée. Ce champ est lu directement depuis le DOM à l'enregistrement (voir
+        // plus bas), donc rien d'autre à synchroniser ici.
+        const groupSelectEl = card.querySelector('.sub-field-input[data-field="group"]');
+        if (groupSelectEl) {
+            groupSelectEl.addEventListener('change', () => {
+                const memberContainer = card.querySelector('.member-checkbox-group');
+                if (memberContainer) memberContainer.outerHTML = memberMultiSelectHtml('', groupSelectEl.value);
+            });
+        }
 
         // Pré-remplit avec les données locales (immédiat), puis avec le contenu Firestore
         // (la version réellement affichée aux visiteurs) une fois qu'il répond — même
@@ -2252,12 +2287,13 @@ recomposée, sans texte ni légende.`;
             }
             // Member (demande du 14/09/2026, "ajoute la sélection multiple pour les Member,
             // comme dans Location submissions") — même case à cocher que renderCard() plus
-            // haut, donc collecté séparément aussi ; "All" si aucun membre coché.
+            // haut, donc collecté séparément aussi ; "All" si aucun membre coché. Fonction
+            // partagée (script.js) plutôt que filtrée contre une liste fixe de membres :
+            // voir collectMemberCheckboxValue()/memberOptionsForGroup() (demande du
+            // 15/10/2026, groupe variable selon celui choisi ci-dessus).
             const memberGroupEl = card.querySelector('.member-checkbox-group');
             if (memberGroupEl) {
-                const checked = BTS_MEMBER_OPTIONS.filter(m =>
-                    memberGroupEl.querySelector(`.member-checkbox-input[value="${m}"]`).checked);
-                skeletonFields.member = checked.length ? checked.join(', ') : 'All';
+                skeletonFields.member = collectMemberCheckboxValue(memberGroupEl);
             }
             // Bouton "Closed" (demande du 19/09/2026) — même logique que le modal crayon
             // (script.js, saveLocationEdit) : préfixe/déprefixe le nom avec "[CLOSED] " selon

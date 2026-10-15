@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261023" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261024" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -178,9 +178,16 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
 .msg-delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; opacity: 0; transition: opacity .15s; padding: 3px; flex-shrink: 0; }
 .msg-bubble-wrap:hover .msg-delete-btn { opacity: .55; }
 .msg-delete-btn:hover { opacity: 1 !important; }
-.convo-input-row { padding: 14px 18px; border-top: 1px solid #EFECF6; display: flex; gap: 8px; align-items: center; }
-.convo-input-row input { flex: 1; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 10px 16px; font-size: 12.5px; font-family: 'Poppins', sans-serif; outline: none; }
-.convo-input-row > button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; }
+.convo-input-row { padding: 14px 18px; border-top: 1px solid #EFECF6; display: flex; gap: 8px; align-items: center; min-width: 0; }
+/* BUG corrigé (demande du 15/10/2026, "sur mobile, la page message est coupée" — le
+   bouton "Send" sortait du bord droit de l'écran) : un <input> flex:1 garde par défaut
+   min-width:auto, qui se résout à la largeur intrinsèque du champ (la taille "size" par
+   défaut du navigateur, ~170-200px) plutôt qu'à 0 — il refusait donc de rétrécir sous
+   cette largeur, poussant le bouton "Send" hors de l'écran sur un téléphone étroit au
+   lieu de laisser le champ se réduire. min-width:0 autorise enfin flex:1 à vraiment
+   rétrécir ce champ, comme pour .friends-main/.convo-row-info ailleurs sur cette page. */
+.convo-input-row input { flex: 1; min-width: 0; border: 1.5px solid #cbd5e1; border-radius: 100px; padding: 10px 16px; font-size: 12.5px; font-family: 'Poppins', sans-serif; outline: none; }
+.convo-input-row > button { background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 0 20px; font-size: 12.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
 .attach-btn { width: 34px; height: 34px; border-radius: 50%; background: #f1f5f9; color: #64748b; border: none; font-size: 19px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; line-height: 1; padding-bottom: 2px; }
 .attach-btn:hover { background: #FCE7F0; color: #D42759; }
 .attach-location-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; color: #212832; }
@@ -289,7 +296,7 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261023';
+        s.src = 'page-loader.js?v=20261024';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -523,9 +530,9 @@ body{background:#E7E9EC;padding:0; height:100vh; height:100dvh; overflow:hidden;
   </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261023"></script>
-<script src="locations-data.js?v=20261023"></script>
-<script src="script.js?v=20261023"></script>
+<script type="module" src="firebase-init.js?v=20261024"></script>
+<script src="locations-data.js?v=20261024"></script>
+<script src="script.js?v=20261024"></script>
 <script>
     // Voir le commentaire --vvh dans <style> plus haut : window.visualViewport.height
     // suit la zone réellement visible (rétrécit quand le clavier virtuel s'ouvre),
