@@ -1160,24 +1160,68 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .qa-sheet-option-icon { width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #D42759; flex-shrink: 0; }
 .qa-sheet-cancel { display: block; width: 100%; text-align: center; margin-top: 8px; padding: 12px; border-radius: 14px; background: #f1f5f9; border: none; font-family: 'Poppins',sans-serif; font-size: 13.5px; font-weight: 700; color: #64748b; cursor: pointer; }
 
-/* Volet "Ajouter une photo" (task #147, demande du 09/09/2026) — réutilise .qa-sheet/
-   .qa-sheet-overlay ci-dessus pour l'habillage général. */
-.add-photo-sheet { max-height: 88vh; overflow-y: auto; }
-.add-photo-field { margin-bottom: 14px; position: relative; }
-.add-photo-label { display: block; font-size: 11.5px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; }
-.add-photo-input, .add-photo-textarea { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: 'Poppins', sans-serif; color: #212832; outline: none; }
-.add-photo-input:focus, .add-photo-textarea:focus { border-color: #D42759; }
-.add-photo-textarea { resize: vertical; min-height: 54px; }
-.add-photo-suggestions { position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.12); max-height: 220px; overflow-y: auto; z-index: 10; }
-.add-photo-suggestion { padding: 10px 12px; font-size: 13px; font-weight: 600; color: #212832; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
-.add-photo-suggestion:hover { background: #FFF7F8; }
-.add-photo-suggestion-meta { font-size: 11px; font-weight: 500; color: #94a3b8; }
-.add-photo-preview { width: 100%; max-height: 180px; border-radius: 12px; overflow: hidden; margin-bottom: 8px; background: #f1f5f9; }
-.add-photo-preview img { width: 100%; max-height: 180px; object-fit: cover; display: block; }
-.add-photo-choose-btn { width: 100%; background: transparent; border: 1.5px dashed #cbd5e1; color: #64748b; font-size: 12.5px; font-weight: 700; padding: 10px; border-radius: 12px; cursor: pointer; font-family: 'Poppins', sans-serif; }
-.add-photo-error { color: #D42759; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
-.add-photo-submit-btn { display: block; width: 100%; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 13px; font-size: 13.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; margin-bottom: 8px; }
-.add-photo-submit-btn:disabled { opacity: 0.6; cursor: default; }
+/* Fenêtre unique "Add a photo"/"Add a visited place"/"Add a review" (demande du
+   15/10/2026, maquette jointe "ajout_contenu_final.html") — remplace les anciennes
+   règles .add-photo-* (formulaire simple "Ajouter une photo", seule option qui avait un
+   volet dédié jusqu'ici) ci-dessus. Voir window.openQuickAddFormSheet() dans script.js.
+   Variables préfixées --qa- pour ne jamais entrer en conflit avec les variables globales
+   du site (:root tout en haut de ce fichier) ; classes préfixées .qa- mais DISTINCTES de
+   .qa-sheet/.qa-sheet-overlay ci-dessus (le petit menu "Photo/Visited/Review" du "+",
+   inchangé) pour ne jamais se marcher dessus. */
+.qa-form-overlay{--qa-ink:#1F2430;--qa-mag:#E0156B;--qa-mut:#8F8B99;--qa-sub:#5F5B68;--qaf-line:#ECE8F2;--qa-soft:#F4F2F8;position:fixed;inset:0;z-index:9650;background:rgba(23,19,49,.45);display:none;align-items:flex-end;justify-content:center;font-family:'Poppins',sans-serif;color:var(--qa-ink);font-size:14px}
+.qa-form-overlay.open{display:flex}
+.qa-form-overlay button{all:unset;cursor:pointer;box-sizing:border-box;font-family:inherit}
+.qa-form-overlay input,.qa-form-overlay textarea{font-family:inherit;font-size:14px;color:var(--qa-ink);border:0;outline:0;background:none;width:100%;resize:none}
+.qa-form-root{width:100%;max-width:480px;position:relative}
+.qaf-sheet{background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);display:flex;flex-direction:column;max-height:88vh}
+.qaf-grab{width:40px;height:5px;border-radius:5px;background:#E2DDEA;margin:10px auto 4px;flex:0 0 auto}
+.qaf-hd{display:flex;align-items:center;gap:10px;padding:8px 20px 10px}
+.qaf-hd h2{font-size:18px;font-weight:800;flex:1}
+.qaf-x,.qaf-bk{width:34px;height:34px;border-radius:50%;background:var(--qa-soft);display:flex!important;align-items:center;justify-content:center;flex:0 0 auto}
+.qaf-x svg{width:14px;height:14px}.qaf-bk svg{width:16px;height:16px}
+.qaf-sheet-body{flex:1;overflow-y:auto;padding:0 20px 10px;scrollbar-width:none}
+.qaf-sheet-body::-webkit-scrollbar{display:none}
+.qaf-foot{padding:12px 20px calc(20px + env(safe-area-inset-bottom)) 20px;flex:0 0 auto}
+.qaf-cta{display:flex!important;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:16px;background:var(--qa-mag);color:#fff;font-weight:700;font-size:15px;width:100%;transition:.15s}
+.qaf-cta.off{background:#F3C3D6}
+.qaf-lab{font-size:12.5px;font-weight:700;color:var(--qa-sub);margin:16px 0 8px;display:flex;justify-content:space-between;align-items:center}
+.qaf-lab em{font-style:normal;font-weight:500;color:var(--qa-mut)}
+.qaf-row{display:flex!important;align-items:center;gap:12px;min-height:58px;border-bottom:1px solid var(--qaf-line);width:100%;padding:6px 0!important}
+.qaf-ri{width:34px;height:34px;border-radius:11px;background:#FCE4EF;color:var(--qa-mag);display:flex;align-items:center;justify-content:center;flex:0 0 auto}.qaf-ri svg{width:17px;height:17px}
+.qaf-rt{flex:1;min-width:0}.qaf-rt small{display:block;font-size:11.5px;color:var(--qa-mut);font-weight:600}.qaf-rt small em{font-style:normal;font-weight:500;color:#B4ADC2}
+.qaf-rt span{font-weight:600;font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qaf-ph{color:#B4ADC2;font-weight:500}
+.qaf-chev{color:#C9C2D6;display:flex}
+.qaf-avs{display:flex;align-items:center}.qaf-avs .qaf-av+.qaf-av{margin-left:-8px}
+.qaf-av{width:24px;height:24px;border-radius:50%;color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;flex:0 0 auto}
+.qaf-area{border-radius:14px;background:var(--qa-soft);padding:12px 14px;display:block}
+.qaf-area textarea{min-height:84px;display:block}
+.qaf-drop{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:18px;background:var(--qa-soft);color:var(--qa-sub);font-weight:600;font-size:13.5px;width:100%;overflow:hidden;position:relative;cursor:pointer}
+.qaf-dic{width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--qa-mag);box-shadow:0 2px 8px rgba(31,36,48,.08)}.qaf-dic svg{width:21px;height:21px}
+.qaf-drop small{font-weight:500;color:var(--qa-mut);font-size:12px}
+.qaf-drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.qaf-chg{position:absolute;right:10px;bottom:10px;background:rgba(31,36,48,.7);color:#fff;font-size:12px;padding:6px 10px;border-radius:999px}
+.qaf-chips{display:flex;gap:8px;flex-wrap:wrap}
+.qaf-chip{display:inline-flex!important;align-items:center;gap:6px;height:34px;padding:0 13px!important;border-radius:999px;background:var(--qa-soft);font-size:12.5px;font-weight:600;color:var(--qa-sub);white-space:nowrap}
+.qaf-chip[aria-pressed=true]{background:var(--qa-ink);color:#fff}
+.qaf-stars{display:flex;gap:10px;justify-content:center}.qaf-stars button svg{width:38px;height:38px}
+.qaf-stars-l{font-size:13px;color:var(--qa-mut);margin-top:6px;font-weight:600;text-align:center}
+.qaf-pick{position:absolute;left:0;right:0;bottom:0;max-height:88vh;background:#fff;border-radius:22px 22px 0 0;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);z-index:2;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+.qaf-pick.on{transform:none}
+.qaf-pick .qaf-hd h2{font-size:16.5px;text-align:center}
+.qaf-srch{display:flex;align-items:center;gap:10px;height:44px;border-radius:14px;background:var(--qa-soft);padding:0 14px;margin:0 20px 6px}.qaf-srch svg{width:18px;height:18px;color:var(--qa-mut);flex:0 0 auto}
+.qaf-pick .qaf-body{flex:1;overflow-y:auto;padding:0 20px calc(10px + env(safe-area-inset-bottom));scrollbar-width:none}
+.qaf-pick .qaf-body::-webkit-scrollbar{display:none}
+.qaf-li{display:flex!important;align-items:center;gap:12px;padding:11px 0!important;border-bottom:1px solid var(--qaf-line);width:100%}
+.qaf-lt{flex:1;min-width:0}.qaf-lt b{display:block;font-size:14px;font-weight:600}.qaf-lt small{font-size:11.5px;color:var(--qa-mut)}
+.qaf-pi{width:38px;height:38px;border-radius:12px;background:#FCE4EF;display:flex;align-items:center;justify-content:center;color:var(--qa-mag);flex:0 0 auto}.qaf-pi svg{width:17px;height:17px}
+.qaf-bigav{width:38px;height:38px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 auto}
+.qaf-ck{width:23px;height:23px;border-radius:8px;border:2px solid #D9D4E2;display:flex;align-items:center;justify-content:center;flex:0 0 auto;transition:.12s}
+.qaf-ck svg{width:13px;height:13px;opacity:0;color:#fff}
+.qaf-li[aria-pressed=true] .qaf-ck{background:var(--qa-mag);border-color:var(--qa-mag)}.qaf-li[aria-pressed=true] .qaf-ck svg{opacity:1}
+.qaf-rd{width:23px;height:23px;border-radius:50%;border:2px solid #D9D4E2;flex:0 0 auto}
+.qaf-li[aria-pressed=true] .qaf-rd{border:7px solid var(--qa-mag)}
+.qaf-sec{font-size:11px;font-weight:700;color:var(--qa-mut);letter-spacing:.07em;text-transform:uppercase;margin:14px 0 2px}
 
 /* Transition "glissement" entre pages sur mobile en tapant la nav du bas (task #132).
    IMPORTANT (bug rapporté le 08/09/2026, "la barre du bas bouge pendant la transition") :
