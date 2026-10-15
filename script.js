@@ -2830,12 +2830,45 @@ const ShareStory = (() => {
         })();
         return _htmlToImageLoadPromise;
     }
+    // BUG corrigé (demande du 16/10/2026, "Could not create the image" persiste malgré le
+    // repli à 2 CDN du 13/10/2026) : la vraie cause la plus fréquente n'était pas le
+    // chargement de html-to-image lui-même, mais la photo DANS la carte — la photo du
+    // header d'un lieu (D.photo, voir buildLocationStoryData() plus bas) est très souvent
+    // hébergée ailleurs que ce site (YouTube/Unsplash notamment : 171 des 319 lieux de
+    // locations-data.js ont une URL externe). Un <img> cross-origin sans crossorigin="..."
+    // POSÉ (ce qui serait risqué ici, voir plus bas) "tainte" le canvas dès que
+    // htmlToImage.toBlob() tente de lire ses pixels — même principe déjà documenté pour
+    // Cropper.js dans window.openImageCropModal() plus haut dans ce fichier
+    // ("SecurityError (canvas 'tainted')"). Résultat : makeFile() échouait TOUJOURS dès
+    // qu'une telle photo était affichée, pour Story ET Save (tous deux en dépendent) — ce
+    // qui explique aussi pourquoi le raccourci direct Instagram Story (tryInstagramStoryShare,
+    // voir act() plus bas) ne pouvait jamais être atteint : makeFile() échouait AVANT.
+    // Ne pose PAS crossorigin="anonymous" sur l'<img> affiché (imgTag() plus bas) : ça
+    // changerait son mode de chargement en CORS, et un hébergeur qui ne l'autorise pas
+    // ferait alors échouer l'AFFICHAGE normal de la photo (jusqu'ici correct), pas
+    // seulement sa capture — un risque de régression pire que le bug à corriger.
+    // Repli à la place : si la capture AVEC la photo échoue, nouvelle tentative SANS elle
+    // (masquée le temps de la capture) plutôt que d'abandonner tout le partage pour une
+    // seule image protégée — Story/Save fonctionnent alors quand même, juste sans cette
+    // photo précise incluse dans l'image exportée.
     async function makeFile() {
         const node = root.querySelector(`[data-story="${tpl}"] .sst-st`);
         if (!(await loadHtmlToImageOnce())) throw new Error('html-to-image absent');
-        const blob = await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 });
         const slug = (D.url.split('/').pop() || 'partage');
-        return new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
+        const toFile = (blob) => new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
+        try {
+            return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
+        } catch (e) {
+            console.warn('Capture avec photo échouée (canvas tainté ?), nouvelle tentative sans photo :', e);
+            const imgs = Array.from(node.querySelectorAll('img'));
+            const prevDisplay = imgs.map(img => img.style.display);
+            imgs.forEach(img => { img.style.display = 'none'; });
+            try {
+                return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
+            } finally {
+                imgs.forEach((img, i) => { img.style.display = prevDisplay[i]; });
+            }
+        }
     }
     function download(f) { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
     // Partage de fichier natif qui RETOMBE sur le téléchargement classique dès que le
@@ -6694,6 +6727,16 @@ function renderLocationRichContent(loc) {
             if(descBtsSection) descBtsSection.classList.add('hidden');
         }
     }
+    // BUG corrigé (demande du 16/10/2026, "remplace BTS de 'Following in BTS's footsteps'
+    // par le nom du groupe") : ce titre vient de la traduction statique lStoryBts (le mot
+    // "BTS" y est écrit en dur, dans les 9 langues — voir l'objet `translations` plus bas
+    // dans ce fichier), remise à cette valeur par défaut par le balayage i18n générique
+    // (data-i18n). "BTS" apparaît littéralement dans CHAQUE langue (jamais via un
+    // {placeholder}), donc un simple remplacement de sous-chaîne suffit pour les 9 à la
+    // fois, sans dupliquer ce titre par langue : "Sur les traces de BTS" → "... de
+    // SEVENTEEN", "BTSの足跡をたどって" → "SEVENTEENの足跡をたどって", etc.
+    const storyBtsHeadingEl = document.querySelector('#story-section-bts [data-i18n="lStoryBts"]');
+    if (storyBtsHeadingEl) storyBtsHeadingEl.textContent = t('lStoryBts').replace(/BTS/g, loc.group || 'BTS');
 
     // Image optionnelle sous "The story of this place" (demande du 07/10/2026) —
     // loc.storyImage, une simple chaîne, distincte de "Mei's Pictures" juste en dessous
