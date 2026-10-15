@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261024" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261025" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -255,7 +255,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261024';
+        s.src = 'page-loader.js?v=20261025';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -468,13 +468,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261024"></script>
-<script src="countries.js?v=20261024"></script>
-<script src="locations-data.js?v=20261024"></script>
+<script type="module" src="firebase-init.js?v=20261025"></script>
+<script src="countries.js?v=20261025"></script>
+<script src="locations-data.js?v=20261025"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
-<script src="artists-content.js?v=20261024"></script>
-<script src="script.js?v=20261024"></script>
+<script src="artists-content.js?v=20261025"></script>
+<script src="script.js?v=20261025"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1352,7 +1352,11 @@ recomposée, sans texte ni légende.`;
         let recreateGalleryWidget = null;
         if (recreateGalleryEl && typeof window.createPhotoGalleryField === 'function') {
             recreateGalleryWidget = window.createPhotoGalleryField(recreateGalleryEl, {
-                values: Array.isArray(sub.recreatedPhotos) && sub.recreatedPhotos.length ? sub.recreatedPhotos : (sub.recreatedPhoto ? [sub.recreatedPhoto] : [])
+                values: Array.isArray(sub.recreatedPhotos) && sub.recreatedPhotos.length ? sub.recreatedPhotos : (sub.recreatedPhoto ? [sub.recreatedPhoto] : []),
+                // getGroup (demande du 15/10/2026) : liste des membres proposée dans
+                // l'éditeur de marqueurs — `sub.group` reste à jour via le listener générique
+                // .sub-field-input plus bas (voir le bloc "Champs de squelette éditables").
+                getGroup: () => sub.group
             });
         }
         const meiGenerateBtn = card.querySelector('.mei-generate-btn');
@@ -2136,7 +2140,15 @@ recomposée, sans texte ni légende.`;
             officialLinkInput.value = data.officialLink || '';
             if (recreateGalleryEl && typeof window.createPhotoGalleryField === 'function') {
                 recreateGalleryWidget = window.createPhotoGalleryField(recreateGalleryEl, {
-                    values: Array.isArray(data.recreatedPhotos) && data.recreatedPhotos.length ? data.recreatedPhotos : (data.recreatedPhoto ? [data.recreatedPhoto] : [])
+                    values: Array.isArray(data.recreatedPhotos) && data.recreatedPhotos.length ? data.recreatedPhotos : (data.recreatedPhoto ? [data.recreatedPhoto] : []),
+                    // getGroup (demande du 15/10/2026) : liste des membres proposée dans
+                    // l'éditeur de marqueurs — lu directement depuis le <select> Group de
+                    // cette carte (pas de variable `loc.group` tenue à jour ici, contrairement
+                    // à sub.group côté "Location submissions").
+                    getGroup: () => {
+                        const g = card.querySelector('.sub-field-input[data-field="group"]');
+                        return g ? g.value : '';
+                    }
                 });
             }
             mergedFullDescription = data.fullDescription || {};
