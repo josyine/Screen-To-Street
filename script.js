@@ -5943,11 +5943,27 @@ function addSingleLocationMarker(loc) {
     // coloré, sans distinction visuelle sur la carte (l'info "visité" reste disponible
     // au survol/clic). Le survol et le repère de sélection (.custom-category-marker:hover,
     // highlightSelectedLocationMarker()) restent inchangés.
-    const baseColor = groupColors[loc.group] || '#334e68';
-    const inlineStyle = `background-color: ${baseColor}; --marker-color: ${baseColor};`;
-    const html = `<div style="${inlineStyle}"></div>`;
+    // Marqueur "plusieurs groupes au même lieu" (demande du 15/10/2026, "je veux que tu
+    // affiches un symbole qui correspond au nombre de groupe présents sur le lieu... il
+    // faut que le point soit de couleur blanche") : un seul point coloré (groupColors[loc.group])
+    // n'a plus de sens dès que plusieurs groupes partagent ce lieu (voir
+    // findLinkedGroupLocations()/openLocationOrPickGroup() plus haut, posés pour le choix
+    // de groupe au clic) — le point redevient blanc (même rendu que .recreate-member-marker
+    // sur Mei's Pictures, demande du même jour, pour une cohérence visuelle) et porte un
+    // badge rouge avec le nombre de groupes, plutôt que la couleur d'un seul d'entre eux.
+    const siblingGroupCount = typeof findLinkedGroupLocations === 'function' ? findLinkedGroupLocations(loc).length : 1;
+    const isMultiGroup = siblingGroupCount > 1;
+    let html, baseColor;
+    if (isMultiGroup) {
+        baseColor = '#ffffff';
+        html = `<div class="loc-multi-group-dot"></div><div class="loc-multi-group-badge">${siblingGroupCount}</div>`;
+    } else {
+        baseColor = groupColors[loc.group] || '#334e68';
+        const inlineStyle = `background-color: ${baseColor}; --marker-color: ${baseColor};`;
+        html = `<div style="${inlineStyle}"></div>`;
+    }
 
-    const customIcon = L.divIcon({ className: 'custom-category-marker location-dot-marker', html, iconSize: [12,12], iconAnchor: [6,6] });
+    const customIcon = L.divIcon({ className: 'custom-category-marker location-dot-marker' + (isMultiGroup ? ' location-dot-marker-multi' : ''), html, iconSize: [12,12], iconAnchor: [6,6] });
     const marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markerGroup);
     marker.__locId = loc.id;
     marker.__baseColor = baseColor;
