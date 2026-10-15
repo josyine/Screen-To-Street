@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261026" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261027" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -202,6 +202,12 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
 .btn-verify:hover{background:#f8fafc;}
 .btn-verify.is-verified{background:#10b981;color:#fff;border-color:#10b981;}
 .btn-closed.is-closed{background:#ef4444;color:#fff;border-color:#ef4444;}
+/* "+ Add a group" (demande du 16/10/2026) — même style que .btn-verify ci-dessus, classe
+   SÉPARÉE (pas juste .btn-verify) pour ne pas perturber le sélecteur ".btn-verify:not(
+   .btn-closed)" plus bas dans ce fichier, qui suppose qu'un seul bouton répond à ce
+   critère (le vrai bouton "Verified"). */
+.btn-addgroup{flex:1;background:#fff;color:#64748b;border:1.5px solid #e2e8f0;border-radius:100px;padding:11px;font-size:13px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-addgroup:hover{background:#FCE7F0;border-color:#D42759;color:#D42759;}
 
 /* "Generate with Mei" (demande du 16/09/2026) — génération de la photo "Recreate the
    Photo" directement depuis admin.html (bouton + image de référence uploadée une seule
@@ -255,7 +261,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261026';
+        s.src = 'page-loader.js?v=20261027';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -468,13 +474,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261026"></script>
-<script src="countries.js?v=20261026"></script>
-<script src="locations-data.js?v=20261026"></script>
+<script type="module" src="firebase-init.js?v=20261027"></script>
+<script src="countries.js?v=20261027"></script>
+<script src="locations-data.js?v=20261027"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
-<script src="artists-content.js?v=20261026"></script>
-<script src="script.js?v=20261026"></script>
+<script src="artists-content.js?v=20261027"></script>
+<script src="script.js?v=20261027"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1634,6 +1640,31 @@ recomposée, sans texte ni légende.`;
                 // prochain appel à loadAllSiteLocationsOnce() (changement d'onglet) relise
                 // newLocations et l'inclue immédiatement.
                 allSiteLocationsCache = null;
+                // Lien retour (demande du 16/10/2026, "+ Add a group" — voir
+                // window.addLinkedGroupLocation() plus bas) : sub.linkedGroupLocIds n'est
+                // posé QUE par ce bouton (jamais par une vraie soumission ni par "Add"
+                // simple) et liste les lieux déjà reliés au lieu d'origine (elle incluse).
+                // Le lien AVANT (ce nouveau lieu → eux) est déjà publié normalement, posé
+                // comme un champ squelette ordinaire par approveLocationSubmission()
+                // ci-dessus (voir skeletonFields dans firebase-init.js). Il manque le lien
+                // RETOUR : chacun d'eux doit aussi pointer vers CE nouveau lieu
+                // (res.publishedId, connu seulement maintenant), sans quoi le choix de
+                // groupe (findLinkedGroupLocations()/openLocationOrPickGroup() dans
+                // script.js) ne serait visible qu'en cliquant sur le nouveau lieu, jamais
+                // sur les lieux déjà publiés. adminUpdateLocationSkeleton() fusionne déjà
+                // (merge:true) plutôt que d'écraser, donc un lieu ayant lui-même déjà
+                // d'autres liens les garde.
+                if (Array.isArray(sub.linkedGroupLocIds) && sub.linkedGroupLocIds.length && typeof window.adminUpdateLocationSkeleton === 'function') {
+                    await Promise.all(sub.linkedGroupLocIds.map(siblingId => {
+                        const siblingLoc = (typeof celebLocations !== 'undefined' ? celebLocations : []).find(l => String(l.id) === String(siblingId));
+                        const nextIds = Array.from(new Set([
+                            ...((siblingLoc && Array.isArray(siblingLoc.linkedGroupLocIds)) ? siblingLoc.linkedGroupLocIds : []),
+                            ...sub.linkedGroupLocIds.filter(id => String(id) !== String(siblingId)),
+                            res.publishedId
+                        ]));
+                        return window.adminUpdateLocationSkeleton(siblingId, { linkedGroupLocIds: nextIds });
+                    }));
+                }
                 // Fiche créée via le bouton "Add" (voir window.addManualLocation() plus
                 // bas) : la retirer du suivi client-side maintenant qu'elle est publiée,
                 // sinon le prochain Refresh la réafficherait indéfiniment (elle n'a jamais
@@ -1940,6 +1971,23 @@ recomposée, sans texte ni légende.`;
                 <span>${(loc.name || '').startsWith('[CLOSED] ') ? 'Closed' : 'Mark as closed'}</span>
             </button>
 
+            <!-- "+ Add a group" (demande du 16/10/2026, "en mode admin, ajoute un bouton
+                 pour ajouter un nouveau groupe sur un lieu") : un autre groupe (BTS,
+                 BLACKPINK, SEVENTEEN...) a aussi visité CE MÊME lieu physique — plutôt que
+                 de ressaisir nom/adresse/coordonnées/catégorie à la main, ce bouton
+                 pré-remplit une nouvelle soumission (onglet "Location submissions", même
+                 mécanisme que window.addManualLocation()) avec ces champs partagés déjà
+                 recopiés, Groupe/Membre/Story/Mei's Pictures laissés vierges pour le
+                 nouveau groupe, et reliée à CE lieu via linkedGroupLocIds (voir
+                 findLinkedGroupLocations()/openLocationOrPickGroup() dans script.js, qui
+                 affichent un choix de groupe sur la carte quand plusieurs lieux sont ainsi
+                 reliés) — le lien inverse (loc → vers le nouveau lieu une fois publié) est
+                 posé après coup, voir addGroupBtn.onclick plus bas. -->
+            <button type="button" class="btn-addgroup" style="margin-bottom:10px;" title="Another group also visited this exact place — create their own entry, linked to this one">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"></circle><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"></path><line x1="18" y1="9" x2="18" y2="15"></line><line x1="15" y1="12" x2="21" y2="12"></line></svg>
+                <span>+ Add a group</span>
+            </button>
+
             <div class="sub-actions">
                 <button type="button" class="btn-approve loc-save-btn">Save changes</button>
                 <button type="button" class="btn-hide${isHidden ? ' is-hidden' : ''}">${isHidden ? 'Restore location' : 'Delete location'}</button>
@@ -2019,6 +2067,10 @@ recomposée, sans texte ni légende.`;
                 closedBtn.classList.toggle('is-closed', closedState);
                 closedBtn.querySelector('span').textContent = closedState ? 'Closed' : 'Mark as closed';
             };
+        }
+        const addGroupBtn = card.querySelector('.btn-addgroup');
+        if (addGroupBtn) {
+            addGroupBtn.onclick = () => window.addLinkedGroupLocation(loc);
         }
         const resultEl = card.querySelector('.sub-result');
         let mergedFullDescription = loc.fullDescription || {};
@@ -2457,6 +2509,46 @@ recomposée, sans texte ni légende.`;
         card.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const nameInput = card.querySelector('.sub-name-input');
         if (nameInput) nameInput.focus();
+    };
+
+    // "+ Add a group" (demande du 16/10/2026, voir le bouton dans renderExistingLocationCard()
+    // plus haut) — même mécanisme que window.addManualLocation() ci-dessus, mais pré-rempli
+    // avec les champs vraiment PHYSIQUES du lieu d'origine (nom, adresse, coordonnées,
+    // pays, ville : le lieu réel ne change pas d'un groupe à l'autre) — Groupe/Membre/
+    // Catégorie/Année/Story/Mei's Pictures restent vierges, chaque groupe ayant pu visiter
+    // ce même lieu pour une raison et à une date différentes (voir le choix de groupe
+    // affiché sur la carte, openGroupPickerModal() dans script.js, qui montre justement
+    // cette catégorie/année PAR groupe).
+    // linkedGroupLocIds : la liste des lieux déjà reliés à sourceLoc (elle incluse) —
+    // publiée telle quelle comme n'importe quel autre champ squelette à l'Approve (voir
+    // skeletonFields dans firebase-init.js), ET relue ici même au moment de cet Approve
+    // (voir plus haut dans renderCard()) pour poser le lien RETOUR (sourceLoc et ses
+    // éventuels autres groupes doivent aussi pointer vers ce nouveau lieu, sans quoi le
+    // choix de groupe ne serait visible qu'en cliquant sur CE nouveau lieu, jamais sur les
+    // autres).
+    window.addLinkedGroupLocation = function (sourceLoc) {
+        const manualId = 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+        const existingSiblingIds = typeof findLinkedGroupLocations === 'function'
+            ? findLinkedGroupLocations(sourceLoc).map(l => l.id)
+            : [sourceLoc.id];
+        const sub = {
+            id: manualId, submittedBy: 'Admin (manual entry)',
+            name: sourceLoc.name || '', address: sourceLoc.address || '',
+            lat: sourceLoc.lat, lng: sourceLoc.lng,
+            country: sourceLoc.country || '', city: sourceLoc.city || '',
+            linkedGroupLocIds: existingSiblingIds
+        };
+        const card = renderCard(sub);
+        window.switchAdminTab('submissions');
+        const listEl = document.getElementById('submissions-list');
+        listEl.prepend(card);
+        document.getElementById('empty-state').classList.add('hidden');
+        manualLocationEntries.push({ id: manualId, card });
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Le nom est déjà rempli (contrairement à "Add" ci-dessus) : le champ qui manque
+        // vraiment pour cette nouvelle fiche, c'est le Groupe.
+        const groupSelect = card.querySelector('.sub-field-input[data-field="group"]');
+        if (groupSelect) groupSelect.focus();
     };
 
     async function loadSubmissions() {

@@ -1313,7 +1313,13 @@ window.approveLocationSubmission = async function (submission) {
         // locationSkeletonOverrides/{id} — le même mécanisme que l'icône crayon
         // d'"Existing locations" (voir adminUpdateLocationSkeleton() plus bas), plutôt
         // que d'écraser un document qui n'est peut-être pas le sien.
-        const skeletonFields = ['name', 'group', 'member', 'country', 'city', 'category', 'year', 'episode', 'address', 'lat', 'lng', 'img'];
+        // linkedGroupLocIds (demande du 16/10/2026, "+ Add a group" dans admin.html) :
+        // ids des autres lieux représentant le MÊME endroit physique pour un autre groupe
+        // — voir findLinkedGroupLocations()/openLocationOrPickGroup() dans script.js, qui
+        // affichent un choix de groupe sur la carte quand plusieurs lieux y sont ainsi
+        // reliés. export-locations.js copie ce champ (comme tout autre) sans liste à tenir
+        // à jour là-bas (Object.assign générique, pas un filtre par nom de champ).
+        const skeletonFields = ['name', 'group', 'member', 'country', 'city', 'category', 'year', 'episode', 'address', 'lat', 'lng', 'img', 'linkedGroupLocIds'];
         if (!submission.matchedLocId) {
             const lightDoc = { id: targetId };
             skeletonFields.forEach(f => { if (submission[f] !== undefined) lightDoc[f] = submission[f]; });
