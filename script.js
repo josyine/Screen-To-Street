@@ -7258,13 +7258,28 @@ const BTS_MEMBER_OPTIONS = ['RM', 'Jin', 'Suga', 'J-Hope', 'Jimin', 'V', 'Jungko
 // frappe) pour pré-cocher correctement une valeur déjà enregistrée — n'affecte que
 // l'affichage initial, jamais ce qui est écrit à la sauvegarde.
 const BTS_MEMBER_ALIASES = { namjoon: 'RM', jhope: 'J-Hope' };
-function memberMultiSelectHtml(currentValue) {
+// BUG corrigé (demande du 15/10/2026, "ça n'affiche que les membres de BTS... quand le
+// groupe est Blackpink affiche les membres de Blackpink, pareil pour SEVENTEEN, etc.") :
+// memberMultiSelectHtml() proposait toujours la liste BTS_MEMBER_OPTIONS ci-dessus, quel
+// que soit le groupe réellement choisi pour ce lieu. window.GROUPS (artists-content.js,
+// désormais chargé par admin.html ET map.html — voir leurs <script src> respectifs) tient
+// déjà la liste des membres par groupe (page "Explore Artists") ; on la réutilise ici
+// plutôt que de la dupliquer. BTS_MEMBER_OPTIONS reste le repli pour un groupe vide, non
+// reconnu (hors window.GROUPS) ou solo — comportement historique inchangé dans ce cas.
+function memberOptionsForGroup(groupName) {
+    const key = (groupName || '').toString().trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const g = window.GROUPS && window.GROUPS.en && window.GROUPS.en[key];
+    if (g && Array.isArray(g.members) && g.members.length) return g.members.map(m => m[0]);
+    return BTS_MEMBER_OPTIONS;
+}
+function memberMultiSelectHtml(currentValue, groupName) {
+    const options = memberOptionsForGroup(groupName);
     const raw = (currentValue || '').split(',').map(s => s.trim()).filter(Boolean);
     const selected = new Set(raw.map(v => {
         const key = v.toLowerCase().replace(/[^a-z]/g, '');
         return BTS_MEMBER_ALIASES[key] || v;
     }));
-    const checkboxes = BTS_MEMBER_OPTIONS.map(m => `
+    const checkboxes = options.map(m => `
         <label class="member-checkbox">
             <input type="checkbox" class="member-checkbox-input" value="${m}"${selected.has(m) ? ' checked' : ''}>
             ${m}
@@ -7274,12 +7289,14 @@ function memberMultiSelectHtml(currentValue) {
 // Lit les cases cochées d'un conteneur donné, jointes par ", " — même convention que Year
 // ci-dessus ; "All" si aucune case cochée (convention du site pour "concerne tous les
 // membres", voir renderExistingLocationCard() dans admin.html).
+// BUG corrigé (demande du 15/10/2026, voir memberOptionsForGroup() ci-dessus) : filtrer
+// BTS_MEMBER_OPTIONS contre le DOM ne pouvait jamais retrouver un membre d'un AUTRE groupe
+// réellement coché (ex: "Jennie" pour Blackpink) — lit maintenant directement les cases
+// cochées du conteneur, quel que soit le groupe pour lequel elles ont été générées.
 function collectMemberCheckboxValue(container) {
     if (!container) return '';
-    const checked = BTS_MEMBER_OPTIONS.filter(m => {
-        const cb = container.querySelector(`.member-checkbox-input[value="${m}"]`);
-        return cb && cb.checked;
-    });
+    const checked = Array.from(container.querySelectorAll('.member-checkbox-input'))
+        .filter(cb => cb.checked).map(cb => cb.value);
     return checked.length ? checked.join(', ') : 'All';
 }
 // Catégorie en <select> plutôt qu'en texte libre (demande du 21/09/2026, "je veux
@@ -7574,6 +7591,14 @@ function ensureLocationEditModal() {
     modal.addEventListener('change', () => { locationEditTouched = true; });
     modal.addEventListener('click', (e) => {
         if (e.target.closest('.mu-add-btn, .mu-remove, .vs-add-btn, .vs-remove, .tl-add-btn, .tl-remove, .pg-upload-btn, .pg-url-toggle-btn, .pg-url-confirm-btn, .pg-remove')) locationEditTouched = true;
+    });
+    // Reconstruit les cases "Member" pour le groupe qui vient d'être tapé (demande du
+    // 15/10/2026, voir memberOptionsForGroup() plus haut) — attaché une seule fois ici
+    // (modal réutilisé à chaque ouverture, voir le early return ci-dessus). Sélection
+    // repartie à zéro plutôt que conservée : les membres cochés pour l'ancien groupe
+    // n'ont quasiment jamais de sens pour le nouveau.
+    document.getElementById('location-edit-group').addEventListener('change', (e) => {
+        document.getElementById('location-edit-member').innerHTML = memberMultiSelectHtml('', e.target.value);
     });
     return modal;
 }
@@ -7949,7 +7974,7 @@ window.openLocationEditModal = async function (locId) {
         document.getElementById('location-edit-title-error').classList.add('hidden');
         document.getElementById('location-edit-group').value = data.group || '';
         document.getElementById('location-edit-category').innerHTML = categorySelectOptionsHtml(data.category);
-        document.getElementById('location-edit-member').innerHTML = memberMultiSelectHtml(data.member);
+        document.getElementById('location-edit-member').innerHTML = memberMultiSelectHtml(data.member, data.group);
         document.getElementById('location-edit-country').value = data.country || '';
         document.getElementById('location-edit-city').value = data.city || '';
         document.getElementById('location-edit-address').value = data.address || '';
