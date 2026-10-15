@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-15T17:51:26.969Z.
+// Généré le 2026-10-15T22:36:19.923Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -319,37 +319,45 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 5,
-    "name": "Cafe Kitsuné Seoul",
-    "group": "Blackpink",
-    "member": "Jennie",
+    "name": "Café Kitsuné (Garosu-gil)",
+    "group": "SEVENTEEN",
+    "member": "Mingyu",
     "country": "South Korea",
-    "city": "Seoul",
+    "city": "Seoul (Gangnam)",
     "category": "Cafe",
-    "year": "2021",
-    "ytId": "Kitsune1",
-    "address": "23 Dosan-daero 13-gil",
-    "lat": 37.5197,
-    "lng": 127.0229,
-    "img": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600",
+    "year": "2022",
+    "ytId": "",
+    "address": "23 Garosu-gil (or 23 Dosan-daero 13-gil), Gangnam-gu, Seoul, South Korea",
+    "lat": 37.51958,
+    "lng": 127.02294,
+    "img": "images/admin-upload-5-photo.jpg",
     "fullDescription": {
-      "en": "<p>The Seoul outpost of the French fashion-and-coffee brand Maison Kitsuné sits on a stylish backstreet of Apgujeong Rodeo, blending its signature fox-logo streetwear boutique with a sleek, sun-lit café counter.</p><p>Jennie has been photographed here on several occasions, and the location quickly became a favourite stop for fans chasing both a good flat white and a slice of Blackpink-adjacent Seoul fashion culture.</p>",
-      "fr": "<p>L'antenne séoulite de la marque française de mode et de café Maison Kitsuné occupe une rue élégante d'Apgujeong Rodeo, mêlant sa boutique de streetwear au logo renard emblématique à un comptoir de café épuré et baigné de lumière.</p><p>Jennie y a été photographiée à plusieurs reprises, et le lieu est rapidement devenu un arrêt incontournable pour les fans en quête à la fois d'un bon flat white et d'un aperçu de la culture mode séoulite proche de Blackpink.</p>"
+      "fr": "<p>L'antenne séoulite de la marque française de mode et de café Maison Kitsuné occupe une rue élégante d'Apgujeong Rodeo, mêlant sa boutique de streetwear au logo renard emblématique à un comptoir de café épuré et baigné de lumière.</p><p>Jennie y a été photographiée à plusieurs reprises, et le lieu est rapidement devenu un arrêt incontournable pour les fans en quête à la fois d'un bon flat white et d'un aperçu de la culture mode séoulite proche de Blackpink.</p>",
+      "en": "<p>Located in the trendy Garosu-gil area of Sinsa-dong within the bustling Gangnam district, Café Kitsuné is a stylish coffee shop attached to the flagship store of the French-Japanese fashion brand Maison Kitsuné. The location is famous for its aesthetic entrance, featuring a charming mini bamboo forest that leads into a modern and elegant outdoor courtyard. The space perfectly blends a clean, minimalist design with a cozy, relaxed atmosphere, offering an oasis of calm right in the middle of one of Seoul's premier shopping streets.</p><!--stss:footsteps--><p>This beautiful cafe became a major pilgrimage site for CARATs (SEVENTEEN's fandom) after Mingyu shared memorable photos of himself visiting the location.</p><p>Taking a break to enjoy the cafe's aesthetic surroundings, Mingyu snapped his now-iconic pictures right in front of the large wooden entrance door, framed by the lush green bamboo. Striking a casually cool and relaxed pose, his photos instantly made this spot a must-visit destination. Today, fans regularly visit the cafe not just for the coffee, but to playfully recreate Mingyu's effortless poses by the wooden door for their own social media feeds.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Boutique first, coffee after"
+          "en": "Recreate Mingyu's Photo"
         },
         "text": {
-          "en": "The boutique and café share the same entrance — browse the clothing rack first, the coffee counter is tucked in the back."
+          "en": "Before you head inside, stop at the large wooden entrance doors surrounded by the bamboo forest and strike a casual pose to capture the exact same shot Mingyu shared with fans."
         }
       },
       {
         "title": {
-          "en": "Explore Apgujeong Rodeo"
+          "en": "Order the Signature Fox"
         },
         "text": {
-          "en": "The café sits on a stylish backstreet of Apgujeong Rodeo — worth combining with a wander through the surrounding boutique-lined streets."
+          "en": "The cafe is famous for its signature fox-shaped shortbread cookies (the emblem of Maison Kitsuné). Pair one with a classic espresso, a warm Chai Latte, or one of their specialty Matcha drinks."
+        }
+      },
+      {
+        "title": {
+          "en": "Browse the Boutique"
+        },
+        "text": {
+          "en": "After enjoying your coffee in the outdoor courtyard, step into the attached Maison Kitsuné store to check out the brand's latest apparel and accessories."
         }
       }
     ],
@@ -360,7 +368,59 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The boutique and café share the same entrance — browse the clothing rack first, the coffee counter is tucked in the back.",
       "fr": "La boutique et le café partagent la même entrée — parcourez d'abord le portant de vêtements, le comptoir à café est niché au fond."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Easily accessible via the Seoul Subway. Take Line 3 to Sinsa Station and use Exit 8. It is a short, pleasant walk down the main tree-lined Garosu-gil street before turning into the cafe's alleyway."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily from 11:00 AM to 8:00 PM. The cafe is free to enter, though purchasing a drink or pastry is expected if you are sitting at the tables."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The courtyard and ground-floor cafe areas are accessible, providing a flat and spacious environment to relax."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "instagramUrl": "https://www.instagram.com/p/CdIK9oALmMj/?cplk=bng4dzB5dHZoa2pm",
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://maisonkitsune.com/fr/storelocator-cafekitsune-garosu-gil?srsltid=AU7gw4X0N5Md5vRqm-gaRgpGFn9A1Upd-beYTsKGfM_Usp6MAeN4_vjB",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-5-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5573,
+            "y": 0.4074,
+            "member": "Mingyu"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": 6,
@@ -1868,16 +1928,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "tweetUrls": [],
     "imgCredit": "Diego Delso, delso.photo, License CC BY-SA",
-    "recreatedPhotos": [
-      {
-        "url": "images/admin-upload-29-recreated-0.jpg",
-        "official": true
-      },
-      {
-        "url": "images/admin-upload-29-recreated-1.jpg",
-        "official": true
-      }
-    ],
     "tweetUrl": "https://x.com/bts_twt/status/1027175876146810881?s=46",
     "practicalInfo": [
       {
@@ -1906,7 +1956,25 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "episodeLink": "https://weverse.io/bts/media/2-6741268",
-    "officialLink": "https://www.stjohnscocathedral.com/"
+    "officialLink": "https://www.stjohnscocathedral.com/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-29-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4036,
+            "y": 0.5191,
+            "member": "Jin"
+          },
+          {
+            "x": 0.5885,
+            "y": 0.4853,
+            "member": "RM"
+          }
+        ]
+      },
+      "images/admin-upload-29-recreated-1.jpg"
+    ]
   },
   {
     "id": 30,
@@ -14744,146 +14812,6 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
-    "id": 253,
-    "name": "Kualoa Regional Park",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kaneohe, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 7",
-    "address": "49-479 Kamehameha Hwy, Kaneohe, HI 96744",
-    "lat": 21.5219,
-    "lng": -157.8406,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kualoa Regional Park is a waterfront park on Oahu's windward (eastern) coast, directly across the water from Kualoa Ranch, with sweeping views of Kaneohe Bay and the small, distinctively shaped island of Mokoli'i just offshore. Often nicknamed \"Chinaman's Hat\" for its conical silhouette, Mokoli'i holds deep roots in Hawaiian mythology — according to tradition, it's the remnant of a giant lizard's tail, severed by the goddess Hi'iaka.</p><p>The park itself is a popular, low-key spot for picnicking, camping and simply taking in the view, with wide grassy lawns running right up to the shoreline and one of the most photographed island backdrops on Oahu's windward side.</p><!--stss:footsteps--><p>Kualoa Regional Park is where the group ate lunch during Bon Voyage Season 2, Episode 7, with Mokoli'i Island visible across the water as a dramatic natural backdrop to the meal. Their food came from Mike's Huli Chicken, a well-known local rotisserie chicken stand that's also been featured on Food Network — giving the stop a genuine local-food credential on top of the scenery.</p><p>The park's view of Mokoli'i connects directly to the episode's broader theme of hands-on, nature-focused activities on Oahu's windward side, setting up the ranch tour and cultural center visit that followed later the same episode — a quieter, scenic meal before the day's more active stops.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 49-479 Kamehameha Hwy on Oahu's windward coast, about a 45-minute drive from Waikiki via the Pali or Likelike Highway."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Open daily; camping requires a permit from the City and County of Honolulu. No admission fee for day use."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Flat, grassy park with paved parking and pathways near the entrance; wheelchair-accessible in the main park areas."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Order from Mike's Huli Chicken"
-        },
-        "text": {
-          "en": "Following the group's lead, the nearby rotisserie chicken stand is a genuinely well-regarded local food stop worth pairing with the park visit."
-        }
-      },
-      {
-        "title": {
-          "en": "Bring a picnic blanket"
-        },
-        "text": {
-          "en": "The park's open lawns facing Mokoli'i are made for exactly this kind of relaxed, scenic outdoor meal."
-        }
-      },
-      {
-        "title": {
-          "en": "Learn the Mokoli'i legend"
-        },
-        "text": {
-          "en": "Knowing the island's mythological backstory as a severed lizard's tail adds real context to what's otherwise just a striking view."
-        }
-      }
-    ]
-  },
-  {
-    "id": 254,
-    "name": "Kualoa Ranch",
-    "group": "BTS",
-    "member": "All",
-    "country": "USA",
-    "city": "Kaneohe, Hawaii",
-    "category": "Bon Voyage",
-    "year": "2017",
-    "episode": "Bon Voyage Season 2, Episode 7",
-    "address": "49-560 Kamehameha Hwy, Kaneohe, HI 96744",
-    "lat": 21.5262,
-    "lng": -157.8389,
-    "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600",
-    "fullDescription": {
-      "en": "<p>Kualoa Ranch is a 4,000-acre private nature reserve and working ranch on Oahu's windward coast, offering guided tours, horseback riding, ATV rides, zipline courses and more across its dramatic valley and mountain terrain. Beyond its activities, the ranch has become one of Hollywood's most sought-after filming locations, with its jungle valleys and distinctive mountain backdrops standing in for fictional worlds in a remarkable number of major productions.</p><p>Godzilla, both Jurassic Park films shot on Oahu, Hawaii Five-0, and Lost have all filmed scenes at Kualoa Ranch, among many other productions — guided tours often specifically highlight exact filming spots, giving visitors a chance to stand in locations they may recognize from decades of movies and television.</p><!--stss:footsteps--><p>Kualoa Ranch is one of the hands-on activity stops of Bon Voyage Season 2, Episode 7, an episode built around more active, physical experiences than some of the group's earlier, more sightseeing-focused days. The ranch's combination of dramatic natural scenery and film-history significance made it a fitting stop for an episode themed around engaging directly with Hawaii's landscape rather than just viewing it.</p><p>Following their scenic lunch at Kualoa Regional Park just across the water, the group's visit to the ranch itself continued the day's focus on Oahu's windward coast, pairing the park's quiet lunch spot with the ranch's more active, guided exploration of the same dramatic valley terrain.</p>"
-    },
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Located at 49-560 Kamehameha Hwy, directly across Kamehameha Highway from Kualoa Regional Park, about a 45-minute drive from Waikiki."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": "Tour times vary by activity and are typically scheduled throughout the day; advance booking is recommended. Admission/pricing is per activity or tour package."
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": "Varies significantly by activity — some tours (like certain bus tours) are more accessible, while horseback riding, ATV tours and ziplining have their own physical requirements; check specific tour accessibility before booking."
-        }
-      }
-    ],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Book the movie-sites tour if you're a film fan"
-        },
-        "text": {
-          "en": "Several tour options specifically highlight Jurassic Park, Godzilla and Lost filming locations, worth seeking out for any movie buff."
-        }
-      },
-      {
-        "title": {
-          "en": "Book well in advance"
-        },
-        "text": {
-          "en": "Popular tour slots, especially ziplining and ATV tours, can sell out days ahead during peak season."
-        }
-      },
-      {
-        "title": {
-          "en": "Wear real outdoor footwear"
-        },
-        "text": {
-          "en": "Most activities here involve genuine off-road, uneven terrain — leave the sandals for the beach stops."
-        }
-      }
-    ]
-  },
-  {
     "id": 255,
     "name": "Polynesian Cultural Center",
     "group": "BTS",
@@ -20789,6 +20717,9 @@ window.STATIC_LOCATIONS = [
     "address": "930 Geumbaekjo-ro, Gujwa-eup, Jeju-si, Jeju-do, Corée du Sud",
     "lat": 33.44412,
     "lng": 126.77829,
+    "linkedGroupLocIds": [
+      "new-manual-1792097352201-45828l"
+    ],
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
@@ -20863,11 +20794,23 @@ window.STATIC_LOCATIONS = [
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-new-manual-1791237155701-b29d0i-recreated-0.jpg",
-        "official": true
+        "markers": [
+          {
+            "x": 0.4115,
+            "y": 0.7691,
+            "member": "Jimin"
+          }
+        ]
       },
       {
         "url": "images/admin-upload-new-manual-1791237155701-b29d0i-recreated-1.jpg",
-        "official": true
+        "markers": [
+          {
+            "x": 0.7734,
+            "y": 0.7632,
+            "member": "Jimin"
+          }
+        ]
       }
     ]
   },
@@ -22197,29 +22140,117 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": "new-manual-1792097352201-45828l",
+    "name": "Snoopy Garden",
+    "group": "Blackpink",
+    "member": "Jisoo",
+    "country": "South Korea",
+    "city": "Jeju",
+    "category": "Landmark",
+    "address": "930 Geumbaekjo-ro, Gujwa-eup, Jeju-si, Jeju-do, Corée du Sud",
+    "lat": 33.44412,
+    "lng": 126.77829,
+    "linkedGroupLocIds": [
+      "new-manual-1791237155701-b29d0i"
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Relax at Warm Puppy Lake"
+        },
+        "text": {
+          "en": "Make sure to visit the most iconic spot in the park. You can sit on a small wooden pontoon right next to a sitting Snoopy statue, looking out over a peaceful lake surrounded by nature."
+        }
+      },
+      {
+        "title": {
+          "en": "Pose with the Characters"
+        },
+        "text": {
+          "en": "Keep an eye out for the life-size statues on the park benches and recreate Jisoo's photos by posing next to Peppermint Patty and Marcie."
+        }
+      },
+      {
+        "title": {
+          "en": "Plan a Half-Day Visit"
+        },
+        "text": {
+          "en": "Allow yourself about 3 to 4 hours to fully explore the entire site, shop for exclusive merchandise at the souvenir shops, and take a break at Café Snoopy."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "fullDescription": {
+      "en": "<p>Located in Songdang-ri, Gujwa-eup on Jeju Island, Snoopy Garden is a world-class, 20-acre garden and museum dedicated to Charles M. Schulz’s iconic Peanuts comic strip. Opened in 2020, the theme park seamlessly blends Jeju’s lush natural scenery, including hallabong trees, stone walls, and native flora, with themed indoor exhibits and outdoor walking trails. Its philosophy, \"Rest, Relax, and Recharge,\" invites visitors to slow down and experience life through the heartwarming world of Charlie Brown, Snoopy, and their friends.</p><!--stss:footsteps--><p>This charming park became one of the most sought-after attractions for K-pop fans following a visit by BLACKPINK's Jisoo. In May 2022, the singer and actress shared memorable photos from her trip, accompanied by a caption that quickly became famous among fans: \"The sun shines so brightly and Snoopy is so cute\".   Dressed in a summer dress and a straw hat, Jisoo perfectly highlighted the lush, clean aesthetic of the outdoor gardens and the fountain area. During her visit, she was immortalized posing alongside cult characters like Peppermint Patty and Marcie on the park's benches. Recreating her relaxed, joyful path through the Peanuts-themed nature reserve is now a must-do for fans visiting Jeju.</p>"
+    },
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "If you are traveling by bus from Jeju International Airport or the Jeju City Bus Terminal, take Express Bus No. 211 or 212 to Songdang-ri, then transfer to Local Bus No. 810-1 or 810-2 and get off at the Snoopy Garden stop. If you prefer to drive or take a taxi, the journey takes approximately 40 to 50 minutes from Jeju International Airport, and free on-site parking is available."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ]
+  },
+  {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
     "name": "Kualoa Ranch",
     "group": "BTS",
     "member": "All",
     "category": "Bon Voyage",
     "year": "2017",
-    "address": "49-560 Kamehameha Hwy, Kaneohe, HI 96744, USA",
-    "lat": 21.5207,
-    "lng": -157.8373,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Kualoa_Ranch_Oahu_Hawaii.jpg/1280px-Kualoa_Ranch_Oahu_Hawaii.jpg",
+    "address": "Kualoa Ranch, Kaneohe, Oahu, HI 96744, USA",
+    "lat": 21.5147243,
+    "lng": -157.8510639,
+    "img": "images/admin-upload-new-Mkhd3jsXQAZKaynitOOB-photo.jpg",
     "addedAt": 1790796833780,
+    "country": "USA",
+    "city": "Oahu, Hawaii",
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Kualoa Ranch is a 4,000-acre private nature reserve and working cattle ranch located on the windward coast of Oahu, Hawaii. Stretching from dense rainforest valleys to steep mountain cliffs and ocean shores, the ranch is internationally famous as a filming location for Hollywood blockbusters such as Jurassic Park, Lost, and Jumanji. Visitors can explore the spectacular landscape through guided movie tours, horseback riding, ziplining, and all-terrain vehicle (ATV) adventures.</p><!--stss:footsteps--><p>In 2017, BTS visited Kualoa Ranch during the production of Bon Voyage Season 2 in Hawaii. The members suited up in safety gear and embarked on a thrill-packed ATV ride across the valley, racing along dirt paths framed by dramatic green mountains. Their enthusiastic reactions, cheerful banter, and memorable group photos in front of iconic movie sets made this episode an instant favorite among fans worldwide.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.kualoa.com",
+    "tweetUrls": [],
     "tipsList": [
       {
         "title": {
@@ -22239,23 +22270,22 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "Photo opportunity"
+          "en": "Find the Framed Photo"
         },
         "text": {
-          "en": "The Jurassic Valley lookout provides spectacular panoramic views of Ka'a'awa Valley where BTS took their memorable group photo."
+          "en": "When you arrive, make sure to look for the framed photograph and signature of BTS that remain on display at the ranch to commemorate their visit."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.kualoa.com",
+    "ytId": "",
+    "imgCredit": "Steven Pavlov / CC BY-SA 4.0",
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Drive approximately 45 minutes north from Waikiki via Kahekili Highway (HI-83) or take the local TheBus route 60."
+          "en": "Located on the windward coast of Oahu, about a 45-minute drive from Honolulu and Waikiki. You can reach the ranch via rental car, public bus (Route 60), or by booking round-trip transportation directly through Kualoa Ranch when buying your tour tickets."
         }
       },
       {
@@ -22263,7 +22293,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "The ranch is typically open daily from 7:30 AM to 4:30 PM. The Movie Sites & Ranch Tour lasts about 1.5 hours and costs $59.95 for adults and $39.95 for children (ages 3–12, plus a 4.712% tax). There are also half-day packages starting at $124.95, as well as full-day options (like the Best of Kualoa package) for up to $164.95, which combine movie tours, ranch house buffets, and jungle or ocean excursions. Advance bookings are strongly recommended as tours fill up quickly."
         }
       },
       {
@@ -22271,12 +22301,57 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "The main visitor center, restrooms, and gift shop are wheelchair accessible. Several of the tours (including the Movie Sites Tour) offer accessible vehicles with wheelchair lifts, but these must be requested and arranged in advance when booking."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-Mkhd3jsXQAZKaynitOOB-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.151,
+            "y": 0.3779,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.2526,
+            "y": 0.4529,
+            "member": "V"
+          },
+          {
+            "x": 0.2057,
+            "y": 0.675,
+            "member": "Suga"
+          },
+          {
+            "x": 0.3229,
+            "y": 0.6265,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.4401,
+            "y": 0.6729,
+            "member": "RM"
+          },
+          {
+            "x": 0.5495,
+            "y": 0.6818,
+            "member": "Jin"
+          },
+          {
+            "x": 0.8177,
+            "y": 0.6965,
+            "member": "J-Hope"
+          }
+        ]
+      }
+    ],
+    "pinterestUrl": "https://fr.pinterest.com/pin/854346991782538764/",
+    "episodeLink": "https://shop.weverse.io/en/shop/USD/artists/2/sales/7603",
+    "fullDescription": {
+      "en": "<p>Kualoa Ranch is a 4,000-acre private nature reserve and working cattle ranch located on the windward coast of Oahu, Hawaii. Stretching from dense rainforest valleys to steep mountain cliffs and ocean shores, the ranch is internationally famous as a filming location for Hollywood blockbusters such as Jurassic Park, Lost, and Jumanji. Visitors can explore the spectacular landscape through guided movie tours, horseback riding, ziplining, and all-terrain vehicle (ATV) adventures.</p><!--stss:footsteps--><p>The group visited this famous nature reserve during the filming of BTS Bon Voyage Season 2, Episode 7. During this episode, the members explored the area right off the coast of the ranch, taking in the scenic views looking out toward Mokoliʻi Island, which is also commonly known as Chinaman's Hat. To commemorate their time at the reserve, a framed photograph and signature of BTS remain permanently on display at the ranch. During their visit to the area, the group also stopped to enjoy delicious lunch plates from Mike's Kiawe Broiled Huli Huli Chicken.</p>"
+    }
   },
   {
     "group": "BTS",
