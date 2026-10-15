@@ -5716,6 +5716,97 @@ function positionMapHoverTip(marker) {
     tip.style.left = (mapRect.left + point.x) + 'px';
     tip.style.top = Math.max(minAnchorTop, anchorTop) + 'px';
 }
+// Lieux reliés au MÊME endroit physique pour d'autres groupes (demande du 16/10/2026, "si
+// BTS, Blackpink et SEVENTEEN sont allés au même endroit... avant d'ouvrir la page de
+// détail du lieu") — reliés EXPLICITEMENT via loc.linkedGroupLocIds (posé par l'admin via
+// "+ Add a group", voir admin.html), jamais par simple proximité de coordonnées (analyse
+// de locations-data.js : aucun repère fiable existant, les quelques lieux proches en
+// pratique sont sans rapport). Toujours AU MOINS [loc] en retour (loc elle-même incluse),
+// jamais vide ; inclut aussi tout lieu qui référence loc.id en retour même si loc ne le
+// référence pas elle-même (lien pas forcément symétrique si modifié à la main côté
+// Firestore) — adminUpdateLocationSkeleton() côté admin.html pose normalement les deux
+// sens à la création d'un nouveau groupe.
+function findLinkedGroupLocations(loc) {
+    const ids = new Set([loc.id]);
+    (loc.linkedGroupLocIds || []).forEach(id => ids.add(id));
+    celebLocations.forEach(l => {
+        if (Array.isArray(l.linkedGroupLocIds) && l.linkedGroupLocIds.some(id => String(id) === String(loc.id))) ids.add(l.id);
+    });
+    return Array.from(ids).map(id => celebLocations.find(l => String(l.id) === String(id))).filter(Boolean);
+}
+// Couleur de groupe insensible à la casse (demande du 16/10/2026) — groupColors (plus haut
+// dans ce fichier) est indexé par un nom précis ("Blackpink", "Seventeen"...) alors que
+// loc.group peut être saisi différemment selon l'admin qui l'a tapé (ex: "BLACKPINK").
+function groupColorFor(groupName) {
+    const key = Object.keys(groupColors).find(k => k.toLowerCase() === (groupName || '').toLowerCase());
+    return key ? groupColors[key] : '#334e68';
+}
+// Choix du groupe avant d'ouvrir une fiche lieu — ouvert depuis un clic sur un marqueur
+// (addSingleLocationMarker) ou le bouton "Voir" de sa bulle (showMapHoverTip) : si CE lieu
+// est relié à d'autres pour un autre groupe, affiche d'abord ce choix (maquette fournie
+// pour cette fonctionnalité précise) ; sinon ouvre directement comme avant.
+function openLocationOrPickGroup(loc) {
+    const siblings = findLinkedGroupLocations(loc);
+    if (siblings.length > 1) {
+        openGroupPickerModal(siblings);
+    } else {
+        window.openDetailsPanel(loc.id);
+    }
+}
+// Modale de choix, même gabarit visuel que window.openImageCropModal()/
+// openPhotoMemberMarkersModal() plus haut dans ce fichier (overlay plein écran, carte
+// blanche centrée, Poppins, accent #D42759).
+function openGroupPickerModal(siblings) {
+    const first = siblings[0];
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed; inset:0; z-index:11200; background:rgba(20,16,30,0.55); display:flex; align-items:center; justify-content:center; padding:20px;';
+    const cardHtml = siblings.map(s => {
+        const color = groupColorFor(s.group);
+        const meta = [s.category, s.year].filter(Boolean).join(' · ');
+        const fontSize = Math.max(13, Math.min(22, 140 / Math.max(1, (s.group || '?').length)));
+        return `<button type="button" class="gpk-card" data-id="${escapeHtml(String(s.id))}" style="border:1.5px solid #ECEAF1; border-radius:18px; overflow:hidden; display:flex; flex-direction:column; text-align:left; background:#fff; cursor:pointer; padding:0;">
+            <div style="height:88px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-size:${fontSize}px; letter-spacing:.3px; background:linear-gradient(135deg, ${color}, ${color}bb);">${escapeHtml(s.group || '?')}</div>
+            <div style="padding:10px 12px 12px;">
+                <div style="font-weight:800; font-size:14px; color:#1F2430;">${escapeHtml(s.group || 'Unknown')}</div>
+                <div style="font-size:12px; color:#6B7280; margin-top:2px;">${escapeHtml(meta || '—')}</div>
+                <div style="font-size:12px; font-weight:700; color:#D42759; margin-top:8px;">View place →</div>
+            </div>
+        </button>`;
+    }).join('');
+    overlay.innerHTML = `
+        <div style="background:#fff; border-radius:24px; padding:24px; max-width:640px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(31,36,48,.25); font-family:'Poppins',sans-serif;">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+                <div style="width:38px; height:38px; border-radius:50%; background:#2B3A55; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 9h1.5a2.5 2.5 0 0 1 0 5H16M8 3v2M11 3v2"/></svg>
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <div style="font-size:10.5px; font-weight:800; letter-spacing:.6px; color:#D42759; text-transform:uppercase;">${siblings.length} groups visited</div>
+                    <h3 style="font-size:18px; font-weight:800; color:#1F2430; margin-top:2px;">${escapeHtml(first.name || '')}</h3>
+                    <div style="font-size:12px; color:#6B7280; margin-top:3px;">${escapeHtml([first.category, [first.city, first.country].filter(Boolean).join(', ')].filter(Boolean).join(' · '))}</div>
+                </div>
+                <button type="button" class="gpk-close" aria-label="Close" style="width:30px; height:30px; border-radius:50%; background:#F1EEF6; display:flex; align-items:center; justify-content:center; flex:0 0 auto; border:none; cursor:pointer; padding:0;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                </button>
+            </div>
+            <div style="font-size:13px; color:#6B7280; margin-top:16px; font-weight:600;">Whose visit do you want to see?</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px; margin-top:10px;">${cardHtml}</div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    const cleanup = () => { overlay.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = (e) => { if (e.key === 'Escape') cleanup(); };
+    document.addEventListener('keydown', onKey);
+    overlay.querySelector('.gpk-close').addEventListener('click', cleanup);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) cleanup(); });
+    overlay.querySelectorAll('.gpk-card').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            cleanup();
+            const picked = siblings.find(s => String(s.id) === id);
+            if (picked) window.openDetailsPanel(picked.id);
+        });
+    });
+}
 function showMapHoverTip(loc, marker) {
     const tip = document.getElementById('map-hover-tip');
     const iconEl = document.getElementById('map-hover-tip-icon');
@@ -5740,7 +5831,7 @@ function showMapHoverTip(loc, marker) {
         detailBtn.onclick = (e) => {
             e.stopPropagation();
             hideMapHoverTip();
-            window.openDetailsPanel(loc.id);
+            openLocationOrPickGroup(loc);
         };
     }
     // Bouton "Itinéraire" (demande du 05/10/2026) : ouvre le panneau d'itinéraire à pied/
@@ -5813,14 +5904,14 @@ function addSingleLocationMarker(loc) {
         if (isMobileMapViewport()) {
             if (mobileTapArmedLocId === loc.id) {
                 hideMapHoverTip();
-                window.openDetailsPanel(loc.id);
+                openLocationOrPickGroup(loc);
             } else {
                 mobileTapArmedLocId = loc.id;
                 showMapHoverTip(loc, marker);
             }
             return;
         }
-        window.openDetailsPanel(loc.id);
+        openLocationOrPickGroup(loc);
     });
     // BUG corrigé (demande du 04/10/2026, toujours signalé après le correctif
     // stopPropagation ci-dessus — "le bouton view ne fonctionne toujours pas") : ces deux
@@ -10941,7 +11032,7 @@ function ensureNearbyBannerWired() {
         const loc = nearbyBannerLoc;
         nearbyNotifiedIds.add(String(loc.id));
         hideNearbyPlaceBanner();
-        window.openDetailsPanel(loc.id);
+        openLocationOrPickGroup(loc);
     });
     if (goBtn) goBtn.addEventListener('click', () => {
         if (!nearbyBannerLoc) return;
