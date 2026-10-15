@@ -240,15 +240,26 @@ window.createFixedPracticalInfoField = function (container, opts) {
 // par un input manuel.
 window.createPhotoGalleryField = function (container, opts) {
     opts = opts || {};
-    // Chaque entrée est normalisée en {url, official} dès l'entrée (demande du 03/10/2026,
-    // "je veux pouvoir préciser si Mei reprend la pose officielle de la célébrité") — accepte
-    // en entrée soit l'ancien format (un tableau de simples chaînes), soit déjà des objets
-    // {url, official} (ce que collect() ci-dessous produit maintenant), pour rester compatible
-    // avec les lieux jamais retouchés depuis ce changement.
+    // Chaque entrée est normalisée en {url, markers} dès l'entrée. markers (demande du
+    // 15/10/2026, remplace l'ancien "official" — voir memberMarkerButtonHtml() plus bas
+    // dans ce fichier pour le rendu public) : un tableau de {x, y, member}, x/y en fraction
+    // 0-1 de la photo (comme pour la photo elle-même en object-fit:cover, une position
+    // relative reste juste quelle que soit la taille d'affichage réelle). Accepte en entrée
+    // l'ancien format (un tableau de simples chaînes), un ancien objet {url, official} (plus
+    // jamais écrit mais encore présent sur des lieux jamais retouchés depuis le 03/10/2026 —
+    // son "official" est simplement ignoré ici, pas migré), ou déjà {url, markers}.
     let photos = (Array.isArray(opts.values) ? opts.values : [])
         .filter(Boolean)
-        .map(entry => typeof entry === 'string' ? { url: entry, official: false } : { url: entry.url || '', official: !!entry.official })
+        .map(entry => typeof entry === 'string'
+            ? { url: entry, markers: [] }
+            : { url: entry.url || '', markers: Array.isArray(entry.markers) ? entry.markers.filter(m => m && typeof m.x === 'number' && typeof m.y === 'number') : [] })
         .filter(p => p.url);
+    // groupName (demande du 15/10/2026) : le réalisateur du marqueur a besoin de savoir quel
+    // groupe proposer dans le <select> "qui est-ce ?" (memberOptionsForGroup()) — lu via un
+    // getter plutôt qu'une simple valeur, pour toujours refléter le Group actuellement choisi
+    // au moment où l'admin ouvre l'éditeur de marqueurs, même s'il a changé depuis la création
+    // de ce widget (voir les 3 points d'appel : admin.html x2, script.js openLocationEditModal).
+    const getGroupName = typeof opts.getGroup === 'function' ? opts.getGroup : () => '';
 
     function render() {
         container.innerHTML = `
@@ -264,17 +275,17 @@ window.createPhotoGalleryField = function (container, opts) {
             </div>
         `;
         const grid = container.querySelector('.pg-grid');
-        // Étoile à droite (demande du 03/10/2026) : marque CETTE photo précise comme la
-        // reproduction officielle de la pose de la célébrité — plusieurs photos de Mei
-        // peuvent exister pour un même lieu (parfois une seule l'est, parfois aucune), donc
-        // le réglage est par photo plutôt que par lieu. Pleine/dorée quand active, pour
-        // rester lisible même en petite vignette 84×84.
-        const starSvg = (filled) => `<svg width="13" height="13" viewBox="0 0 24 24" fill="${filled ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`;
+        // Bouton "personne" en bas à droite (demande du 15/10/2026, remplace l'étoile
+        // "pose officielle") : ouvre l'éditeur de marqueurs pour CETTE photo précise —
+        // plusieurs photos de Mei peuvent exister pour un même lieu, chacune avec ses
+        // propres membres tagués à des endroits différents, donc par photo plutôt que par
+        // lieu. Le petit badge numérique indique combien de membres sont déjà tagués.
+        const personSvg = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"></circle><path d="M12 13c-5 0-8 2.5-8 6v1h16v-1c0-3.5-3-6-8-6z"></path></svg>`;
         grid.innerHTML = photos.map((p, i) => `
             <div class="pg-thumb" style="position:relative; width:84px; height:84px;">
                 <img class="pg-thumb-img" data-index="${i}" src="${escapeHtml(p.url)}" alt="" title="Click to crop this photo" style="width:100%; height:100%; object-fit:cover; border-radius:10px; display:block; cursor:pointer;">
                 <button type="button" class="pg-remove" data-index="${i}" title="Remove this photo" style="position:absolute; top:-6px; right:-6px; width:22px; height:22px; border-radius:50%; border:1.5px solid #e2e8f0; background:#fff; color:#64748b; font-size:14px; line-height:1; cursor:pointer;">&times;</button>
-                <button type="button" class="pg-official-toggle" data-index="${i}" title="${p.official ? 'Marked as the official celebrity pose — click to unmark' : 'Mark as the official celebrity pose'}" style="position:absolute; bottom:-6px; right:-6px; width:24px; height:24px; border-radius:50%; border:1.5px solid ${p.official ? '#f59e0b' : '#e2e8f0'}; background:${p.official ? '#fffbeb' : '#fff'}; color:${p.official ? '#f59e0b' : '#cbd5e1'}; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;">${starSvg(p.official)}</button>
+                <button type="button" class="pg-member-tag-btn" data-index="${i}" title="${p.markers.length ? `Tag who's in this photo (${p.markers.length} tagged)` : "Tag who's in this photo"}" style="position:absolute; bottom:-6px; right:-6px; width:24px; height:24px; border-radius:50%; border:1.5px solid ${p.markers.length ? '#D42759' : '#e2e8f0'}; background:${p.markers.length ? '#FCE7F0' : '#fff'}; color:${p.markers.length ? '#D42759' : '#cbd5e1'}; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;">${personSvg}${p.markers.length ? `<span style="position:absolute; top:-5px; right:-5px; min-width:14px; height:14px; padding:0 2px; border-radius:100px; background:#D42759; color:#fff; font-size:9px; font-weight:700; line-height:14px; text-align:center;">${p.markers.length}</span>` : ''}</button>
             </div>
         `).join('');
         grid.querySelectorAll('.pg-remove').forEach((btn) => {
@@ -283,11 +294,9 @@ window.createPhotoGalleryField = function (container, opts) {
                 render();
             });
         });
-        grid.querySelectorAll('.pg-official-toggle').forEach((btn) => {
+        grid.querySelectorAll('.pg-member-tag-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
-                const p = photos[Number(btn.dataset.index)];
-                p.official = !p.official;
-                render();
+                openPhotoMemberMarkersModal(photos[Number(btn.dataset.index)], getGroupName(), render);
             });
         });
         // Recadrer une photo DÉJÀ ajoutée (demande du 03/10/2026, "je peux recadrer une
@@ -316,7 +325,7 @@ window.createPhotoGalleryField = function (container, opts) {
         container.querySelector('.pg-url-confirm-btn').addEventListener('click', () => {
             const val = urlInput.value.trim();
             if (!val) return;
-            photos.push({ url: val, official: false });
+            photos.push({ url: val, markers: [] });
             render();
         });
 
@@ -349,11 +358,11 @@ window.createPhotoGalleryField = function (container, opts) {
                 if (typeof window.openImageCropModal === 'function') {
                     window.openImageCropModal(resized, (cropped) => {
                         if (cropped === null) return; // cropping cancelled — don't add this photo
-                        photos.push({ url: cropped, official: false });
+                        photos.push({ url: cropped, markers: [] });
                         render();
                     });
                 } else {
-                    photos.push({ url: resized, official: false });
+                    photos.push({ url: resized, markers: [] });
                     render();
                 }
             } catch (err) {
@@ -366,15 +375,117 @@ window.createPhotoGalleryField = function (container, opts) {
     render();
 
     return {
-        // Format allégé (demande du 03/10/2026) : une photo NON marquée officielle reste une
-        // simple chaîne, comme avant ce changement (aucune migration nécessaire pour les
-        // lieux existants) — seules les photos marquées deviennent un objet {url, official}.
-        collect: () => photos.map(p => p.official ? { url: p.url, official: true } : p.url),
+        // Format allégé (demande du 03/10/2026, conservé pour les marqueurs) : une photo
+        // sans aucun membre tagué reste une simple chaîne, comme avant ce changement (aucune
+        // migration nécessaire pour les lieux existants) — seules les photos avec au moins
+        // un marqueur deviennent un objet {url, markers}.
+        collect: () => photos.map(p => p.markers.length ? { url: p.url, markers: p.markers } : p.url),
         // Utilisé par le bouton "Generate with Mei" (admin.html) pour ajouter directement
         // une image générée, sans passer par le champ URL/upload manuel ci-dessus.
-        addPhoto: (url) => { photos.push({ url, official: false }); render(); }
+        addPhoto: (url) => { photos.push({ url, markers: [] }); render(); }
     };
 };
+
+// Éditeur de marqueurs "qui est où sur cette photo" (demande du 15/10/2026, "je puisse
+// ajouter un bouton sur chaque emplacement d'une personne sur la photo, et que je puisse
+// rédiger qui est présent... pour ajouter un nouveau bouton 'personne' il faut que je
+// clique sur 'Add a member'. C'est moi qui choisit la position de ces boutons sur la
+// photo") — ouvert depuis le bouton "personne" de window.createPhotoGalleryField()
+// ci-dessus, un éditeur dédié en grand plutôt que de placer des marqueurs sur la vignette
+// 84×84 (bien trop petite pour cliquer précisément). Même gabarit visuel que
+// window.openImageCropModal() plus bas dans ce fichier (overlay plein écran, carte blanche
+// centrée) pour rester cohérent.
+// IMPORTANT pour la précision du placement : la photo est affichée ici exactement comme
+// sur la fiche lieu publique (width:100%; height:340px; object-fit:cover — voir
+// .recreate-photo-gallery .recreate-photo-item img dans style.css) afin que la position
+// cliquée ici (en % de CETTE boîte) tombe exactement au même endroit une fois publiée, et
+// pas décalée par un recadrage object-fit différent entre les deux vues.
+// `photo` est l'objet {url, markers} lui-même (pas une copie) : les mutations ci-dessous
+// modifient donc directement l'entrée de window.createPhotoGalleryField(), onClose()
+// (appelé seulement à la fermeture) ne sert qu'à rafraîchir la vignette/le badge compteur.
+function openPhotoMemberMarkersModal(photo, groupName, onClose) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed; inset:0; z-index:11100; background:rgba(20,16,30,0.55); display:flex; align-items:center; justify-content:center; padding:20px;';
+    overlay.innerHTML = `
+        <div style="background:#fff; border-radius:16px; padding:18px; max-width:420px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,.3);">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                <div style="font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; color:#1e293b;">Tag who's in this photo</div>
+                <button type="button" class="pmm-close" style="background:none; border:none; font-size:20px; line-height:1; color:#94a3b8; cursor:pointer;">&times;</button>
+            </div>
+            <div class="pmm-hint" style="font-size:11px; color:#94a3b8; margin-bottom:10px; font-family:'Poppins',sans-serif;">Click "Add a member" below, then click the exact spot on the photo.</div>
+            <div class="pmm-photo-wrap" style="position:relative; width:100%; height:340px; border-radius:12px; overflow:hidden; background:#111;">
+                <img class="pmm-photo-img" src="${escapeHtml(photo.url)}" alt="" style="width:100%; height:100%; object-fit:cover; display:block; -webkit-user-select:none; user-select:none; pointer-events:none;">
+            </div>
+            <button type="button" class="pmm-add-btn" style="margin-top:12px; background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">+ Add a member</button>
+            <div class="pmm-list" style="margin-top:10px; display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const photoWrap = overlay.querySelector('.pmm-photo-wrap');
+    const listEl = overlay.querySelector('.pmm-list');
+    const addBtn = overlay.querySelector('.pmm-add-btn');
+    let armed = false;
+
+    function memberOptionsHtml(selected) {
+        return `<option value="">— choose —</option>` + memberOptionsForGroup(groupName)
+            .map(m => `<option value="${escapeHtml(m)}"${m === selected ? ' selected' : ''}>${escapeHtml(m)}</option>`).join('');
+    }
+
+    function renderMarkers() {
+        photoWrap.querySelectorAll('.pmm-dot').forEach(d => d.remove());
+        photo.markers.forEach((mk, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'pmm-dot';
+            dot.style.cssText = `position:absolute; left:${mk.x * 100}%; top:${mk.y * 100}%; transform:translate(-50%,-50%); width:22px; height:22px; border-radius:50%; background:${mk.member ? '#D42759' : '#94a3b8'}; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:700; font-family:'Poppins',sans-serif; pointer-events:none;`;
+            dot.textContent = String(i + 1);
+            photoWrap.appendChild(dot);
+        });
+        listEl.innerHTML = photo.markers.map((mk, i) => `
+            <div class="pmm-row" style="display:flex; align-items:center; gap:8px;">
+                <span style="width:20px; height:20px; border-radius:50%; background:${mk.member ? '#D42759' : '#94a3b8'}; color:#fff; font-size:10px; font-weight:700; font-family:'Poppins',sans-serif; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${i + 1}</span>
+                <select class="pmm-member-select" data-index="${i}" style="flex:1; border:1.5px solid #e2e8f0; border-radius:8px; padding:6px 8px; font-size:12px; font-family:'Poppins',sans-serif;">${memberOptionsHtml(mk.member)}</select>
+                <button type="button" class="pmm-remove" data-index="${i}" title="Remove this marker" style="background:none; border:none; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer; padding:2px 4px;">&times;</button>
+            </div>
+        `).join('');
+        listEl.querySelectorAll('.pmm-member-select').forEach(sel => {
+            sel.addEventListener('change', () => {
+                photo.markers[Number(sel.dataset.index)].member = sel.value;
+                renderMarkers();
+            });
+        });
+        listEl.querySelectorAll('.pmm-remove').forEach(btn => {
+            btn.addEventListener('click', () => {
+                photo.markers.splice(Number(btn.dataset.index), 1);
+                renderMarkers();
+            });
+        });
+    }
+    renderMarkers();
+
+    addBtn.addEventListener('click', () => {
+        armed = true;
+        photoWrap.style.cursor = 'crosshair';
+        addBtn.textContent = 'Click on the photo…';
+        addBtn.disabled = true;
+    });
+    photoWrap.addEventListener('click', (e) => {
+        if (!armed) return;
+        const rect = photoWrap.getBoundingClientRect();
+        const x = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+        const y = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+        photo.markers.push({ x: +x.toFixed(4), y: +y.toFixed(4), member: '' });
+        armed = false;
+        photoWrap.style.cursor = 'default';
+        addBtn.textContent = '+ Add a member';
+        addBtn.disabled = false;
+        renderMarkers();
+    });
+
+    const cleanup = () => { overlay.remove(); onClose(); };
+    overlay.querySelector('.pmm-close').addEventListener('click', cleanup);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) cleanup(); });
+}
 
 // Lecture d'une entrée loc.recreatedPhotos (voir window.createPhotoGalleryField() ci-dessus) :
 // soit une simple chaîne (ancienne photo, ou photo jamais marquée officielle), soit un objet
@@ -383,30 +494,45 @@ window.createPhotoGalleryField = function (container, opts) {
 function recreatedPhotoUrl(entry) {
     return typeof entry === 'string' ? entry : ((entry && entry.url) || '');
 }
-function recreatedPhotoIsOfficial(entry) {
-    return !!(entry && typeof entry === 'object' && entry.official);
+// BUG corrigé / fonctionnalité remplacée (demande du 15/10/2026, "à la place, met un
+// symbole de personne, et quand on clique dessus ça affiche le membre présent sur la
+// photo, exactement au bon endroit sur la photo") : le badge "pose officielle"
+// (recreatedPhotoIsOfficial()/officialPoseBadgeHtml(), un seul badge par photo, position
+// fixe en bas à droite) est entièrement remplacé par des marqueurs "personne", un par
+// membre visible sur la photo, chacun positionné à SA position exacte (voir
+// window.createPhotoGalleryField() pour l'éditeur admin correspondant). Une ancienne photo
+// {url, official:true} reste lisible (recreatedPhotoUrl() continue de fonctionner dessus)
+// mais ne montre plus aucun badge — son attribut "official" n'est simplement plus lu nulle
+// part, sans migration nécessaire.
+function recreatedPhotoMarkers(entry) {
+    return (entry && typeof entry === 'object' && Array.isArray(entry.markers))
+        ? entry.markers.filter(m => m && typeof m.x === 'number' && typeof m.y === 'number' && m.member)
+        : [];
 }
-// Badge "pose officielle" (demande du 03/10/2026) — même principe que le bouton copyright
-// de la photo hero (.detail-hero-copyright-btn/-popover, voir renderLocationHeroBg()), mais
-// un badge/popover indépendant PAR PHOTO plutôt qu'un seul pour toute la fiche. idSuffix
-// distingue les popovers entre eux quand plusieurs badges coexistent sur la même page (la
-// galerie de la fiche lieu ET le carrousel de la modale feed.html peuvent chacun en avoir
-// plusieurs en même temps).
-function officialPoseBadgeHtml(idSuffix) {
-    return `<button type="button" class="recreate-official-badge" data-popover="recreate-official-popover-${idSuffix}" aria-label="${escapeHtml(t('officialPoseLabel'))}" title="${escapeHtml(t('officialPoseLabel'))}">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+// Marqueur "personne" positionné en % de la boîte de la photo (comme la photo elle-même
+// en object-fit:cover, une position relative reste juste quelle que soit la taille
+// d'affichage réelle) — clic affiche un popover avec le nom du membre à cet endroit précis.
+// idSuffix distingue les popovers entre eux quand plusieurs marqueurs coexistent sur la
+// même page (plusieurs photos, chacune avec plusieurs membres tagués).
+function memberMarkerButtonHtml(marker, idSuffix) {
+    const member = escapeHtml(marker.member || '');
+    const x = Math.min(100, Math.max(0, marker.x * 100));
+    const y = Math.min(100, Math.max(0, marker.y * 100));
+    return `<button type="button" class="recreate-member-marker" style="left:${x}%; top:${y}%;" data-popover="recreate-member-popover-${idSuffix}" aria-label="${member}" title="${member}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="4"></circle><path d="M12 13c-5 0-8 2.5-8 6v1h16v-1c0-3.5-3-6-8-6z"></path></svg>
     </button>
-    <div id="recreate-official-popover-${idSuffix}" class="recreate-official-popover hidden">${escapeHtml(t('officialPoseLabel'))}</div>`;
+    <div id="recreate-member-popover-${idSuffix}" class="recreate-member-popover hidden" style="left:${x}%; top:${y}%;">${member}</div>`;
 }
-// Clic sur un badge = ouvre/ferme SON popover (et referme les autres) ; clic ailleurs =
-// referme tout. Posé une seule fois par délégation sur document (les badges sont recréés à
-// chaque rendu de galerie, un addEventListener individuel redondant à chaque fois serait
-// sans risque de fuite ici mais ce délégué évite d'avoir à re-brancher quoi que ce soit).
-if (!window.__officialPoseBadgeDelegationWired) {
-    window.__officialPoseBadgeDelegationWired = true;
+// Clic sur un marqueur = ouvre/ferme SON popover (et referme les autres) ; clic ailleurs =
+// referme tout. Posé une seule fois par délégation sur document (les marqueurs sont
+// recréés à chaque rendu de galerie, un addEventListener individuel redondant à chaque
+// fois serait sans risque de fuite ici mais ce délégué évite d'avoir à re-brancher quoi
+// que ce soit).
+if (!window.__memberMarkerDelegationWired) {
+    window.__memberMarkerDelegationWired = true;
     document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.recreate-official-badge');
-        document.querySelectorAll('.recreate-official-popover').forEach(pop => {
+        const btn = e.target.closest('.recreate-member-marker');
+        document.querySelectorAll('.recreate-member-popover').forEach(pop => {
             if (btn && pop.id === btn.dataset.popover) {
                 pop.classList.toggle('hidden');
             } else if (!pop.contains(e.target)) {
@@ -6597,16 +6723,16 @@ function renderLocationRichContent(loc) {
             ? loc.recreatedPhotos
             : (loc.recreatedPhoto ? [loc.recreatedPhoto] : []);
         if (recreatePhotos.length) {
-            // Badge "pose officielle" (demande du 03/10/2026) — voir officialPoseBadgeHtml()
+            // Marqueurs "personne" (demande du 15/10/2026) — voir memberMarkerButtonHtml()
             // plus haut dans ce fichier : chaque photo est enveloppée dans .recreate-photo-item
-            // (ancre position:relative pour le badge/popover, voir style.css) et n'affiche le
-            // badge que si CETTE photo précise a été marquée officielle côté admin.
+            // (ancre position:relative pour les marqueurs/popovers, voir style.css) et affiche
+            // un marqueur par membre tagué côté admin pour CETTE photo précise.
             recreateGallery.innerHTML = recreatePhotos.map((entry, i) => {
                 const url = recreatedPhotoUrl(entry);
-                const isOfficial = recreatedPhotoIsOfficial(entry);
+                const markers = recreatedPhotoMarkers(entry);
                 return `<div class="recreate-photo-item">
                     <img src="${escapeHtml(url)}" alt="">
-                    ${isOfficial ? officialPoseBadgeHtml('detail-' + i) : ''}
+                    ${markers.map((mk, mi) => memberMarkerButtonHtml(mk, 'detail-' + i + '-' + mi)).join('')}
                 </div>`;
             }).join('');
             recreateGallery.classList.toggle('single', recreatePhotos.length === 1);
@@ -8089,7 +8215,12 @@ window.openLocationEditModal = async function (locId) {
         // recreatedPhoto (chaîne unique) pour les lieux jamais migrés en tableau.
         locationEditRecreateGalleryWidget = window.createPhotoGalleryField(
             document.getElementById('location-edit-recreate-photo-gallery'),
-            { values: Array.isArray(data.recreatedPhotos) && data.recreatedPhotos.length ? data.recreatedPhotos : (data.recreatedPhoto ? [data.recreatedPhoto] : []) }
+            {
+                values: Array.isArray(data.recreatedPhotos) && data.recreatedPhotos.length ? data.recreatedPhotos : (data.recreatedPhoto ? [data.recreatedPhoto] : []),
+                // getGroup (demande du 15/10/2026) : liste des membres proposée dans
+                // l'éditeur de marqueurs — lu directement depuis le champ Group du modal.
+                getGroup: () => document.getElementById('location-edit-group').value
+            }
         );
         // Liens supplémentaires par réseau (demande du 11/09/2026, "+") — voir la même
         // logique côté admin.html (fiches de review/édition).
@@ -9570,11 +9701,13 @@ window.openLocModal = function(id, postContext) {
         if (photos.length > 1) {
             modalHero.classList.add('modal-hero-gallery-active');
             galleryEl.classList.remove('hidden');
-            // Badge "pose officielle" par slide (demande du 03/10/2026) — voir
-            // officialPoseBadgeHtml()/recreatedPhotoUrl()/recreatedPhotoIsOfficial() plus haut
-            // dans ce fichier : chaque entrée peut être une simple chaîne (pas officielle) ou
-            // un objet {url, official:true}.
-            galleryEl.innerHTML = photos.map((p, i) => `<div class="modal-hero-slide" style="background-image:url('${recreatedPhotoUrl(p)}')">${recreatedPhotoIsOfficial(p) ? officialPoseBadgeHtml('modal-slide-' + i) : ''}</div>`).join('');
+            // Pas de marqueurs "personne" ici (demande du 15/10/2026) : ce carrousel affiche
+            // chaque photo en arrière-plan CSS (background-image), pas en <img> — positionner
+            // des marqueurs cliquables dessus demanderait de recalculer leur % par rapport à un
+            // box-sizing bien plus variable (background-size/position) qu'une simple balise
+            // <img> en object-fit:cover. Les marqueurs restent donc réservés à la fiche lieu
+            // (voir renderLocationRichContent() plus haut), seule vue utilisant de vraies <img>.
+            galleryEl.innerHTML = photos.map((p) => `<div class="modal-hero-slide" style="background-image:url('${recreatedPhotoUrl(p)}')"></div>`).join('');
             galleryEl.scrollLeft = 0;
             dotsEl.classList.remove('hidden');
             dotsEl.innerHTML = photos.map((p, i) => `<span class="modal-hero-dot${i === 0 ? ' active' : ''}"></span>`).join('');
@@ -9592,15 +9725,11 @@ window.openLocModal = function(id, postContext) {
             galleryEl.onscroll = null;
             dotsEl.classList.add('hidden');
             dotsEl.innerHTML = '';
-            // Une seule photo (pas de carrousel) : le badge s'affiche directement sur le hero
-            // si CETTE photo (postContext.photo) est marquée officielle.
-            if (postContext && recreatedPhotoIsOfficial(postContext.photo)) {
-                singleBadgeEl.classList.remove('hidden');
-                singleBadgeEl.innerHTML = officialPoseBadgeHtml('modal-single');
-            } else {
-                singleBadgeEl.classList.add('hidden');
-                singleBadgeEl.innerHTML = '';
-            }
+            // Plus de badge ici depuis le retrait de la pose "officielle" (demande du
+            // 15/10/2026, voir plus haut) — .modal-hero-single-badge reste dans le DOM
+            // (map.html) mais n'est plus jamais rempli ; gardé vide/masqué.
+            singleBadgeEl.classList.add('hidden');
+            singleBadgeEl.innerHTML = '';
         }
     }
 
