@@ -2714,8 +2714,15 @@ const ShareStory = (() => {
         x: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
         up: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="1.8"/><path d="M21 15l-5-5-9 9"/></svg>`,
         ig: `<svg viewBox="0 0 24 24"><defs><linearGradient id="sst-ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FDBA4D"/><stop offset=".5" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#sst-ig)"/><rect x="6.5" y="6.5" width="11" height="11" rx="5.5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg>`,
-        wa: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#25D366"/><path d="M8.3 7.5c.3-.5.7-.5 1-.5l.6 1.5c.1.3 0 .5-.2.7l-.5.6c.6 1.3 1.6 2.3 2.9 2.9l.6-.6c.2-.2.5-.3.7-.2l1.5.7c0 .4 0 .8-.4 1.1-.6.6-1.6.8-2.6.4-2-.8-3.6-2.4-4.4-4.4-.3-.9-.2-1.7.8-2.2z" fill="#fff"/></svg>`,
+        // Demande du 15/10/2026, "remplace le bouton 'Whatsapp' par un bouton 'Copier le
+        // lien' avec un icone de lien" — IC.wa (icône WhatsApp) remplacée par IC.link ;
+        // voir TGS() plus bas pour le bouton lui-même et act() pour son comportement
+        // (copie directe, sans passer par makeFile()/l'image générée).
+        link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.5-2.5a5 5 0 0 0-7.07-7.07L11 5"/><path d="M14 11a5 5 0 0 0-7.07 0l-2.5 2.5a5 5 0 0 0 7.07 7.07L13 19"/></svg>`,
         dl: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>`,
+        // Demande du 15/10/2026, "ajoute aussi un bouton 'Copier' qui permet de copier
+        // l'image et de le coller" — nouvelle cible dédiée, voir TGS()/act() plus bas.
+        copy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
         // AJOUT SITE : cible "Ami", absente du composant fourni (qui ne savait partager
         // qu'en dehors du site).
         friend: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#E0156B"/><circle cx="9" cy="9" r="2.4" fill="#fff"/><circle cx="15.3" cy="10.3" r="1.9" fill="#fff" opacity=".85"/><path d="M4.9 18c.4-3 2.3-4.5 4.8-4.5s4.1 1.4 4.6 3.7" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M14.4 14.1c1.7.3 3 1.4 3.5 3.3" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".85"/></svg>`
@@ -2779,15 +2786,19 @@ const ShareStory = (() => {
     const ONERR = `onerror="this.style.display='none'"`;
     const imgTag = (cls) => { const src = pic(); return src ? `<img${cls ? ` class="${cls}"` : ''} src="${esc(src)}" alt="" ${ONERR}>` : ''; };
     const TPL = [
+        // Demande du 15/10/2026, "je veux que tu supprimes de l'image le texte
+        // 'josyine.github.io/Screen-To-Street/map.html?loc=...'" — .sst-url affichait D.url
+        // en clair sous la carte ; retiré entièrement (le lien copiable existe désormais
+        // via le bouton "Copier le lien", voir TGS() plus bas, pas besoin de le répéter
+        // visuellement sur l'image elle-même).
         () => `<div class="sst-st sst-t1">${LOGO()}<div class="sst-kind">${kind()}</div><div class="sst-card">
      <div class="sst-media">${imgTag()}<div class="sst-md">${medal(54)}</div></div>
-     <div class="sst-bd"><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)} · ${esc(D.date)}</p>${STATS()}</div></div>
-     <div class="sst-url">${esc(D.url.replace(/^https?:\/\//, ''))}</div></div>`,
+     <div class="sst-bd"><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)} · ${esc(D.date)}</p>${STATS()}</div></div></div>`,
         () => `<div class="sst-st sst-t2">${imgTag('sst-bg')}<div class="sst-sh"></div>${LOGO()}
      <div class="sst-bt"><div class="sst-kind">${kind()} · ${esc(D.date)}</div><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)}</p><div class="sst-bar">${STATS()}</div></div></div>`,
         () => `<div class="sst-st sst-t3"><div class="sst-top sst-map">${mapSVG()}</div>${LOGO('#1F2430', '#E0156B')}<div class="sst-snap">${imgTag()}</div>
      <div class="sst-pan"><div class="sst-r1">${medal(44)}<div><div class="sst-ttl">${esc(D.title)}</div><p>${kind()} · ${esc(D.date)}</p></div></div>${STATS()}
-     <div class="sst-ft"><span>${esc(D.city)}</span><span>screentostreet.com</span></div></div></div>`,
+     <div class="sst-ft"><span>${esc(D.city)}</span></div></div></div>`,
         () => `<div class="sst-st sst-t4"><div class="sst-stk">${LOGO()}${user ? `<div class="sst-im"><img src="${esc(user)}" alt=""></div>` : `<div class="sst-md">${medal(64)}</div>`}
      <div class="sst-ttl">${esc(D.title)}</div><p>${kind()} · ${esc(D.date)}</p>${STATS()}</div></div>`
     ];
@@ -2796,10 +2807,14 @@ const ShareStory = (() => {
     const NAMES = () => currentLang === 'fr' ? ['Fiche', 'Photo', 'Carte', 'Sticker'] : ['Card', 'Photo', 'Map', 'Sticker'];
     // Cible "Ami" (AJOUT SITE) en tête de liste, avant les cibles d'export externes
     // d'origine — c'est la seule des six qui partage réellement sur le site.
+    // Demande du 15/10/2026 : "share"/WhatsApp → "copylink"/Copier le lien, + nouvelle
+    // cible "copyimg"/Copier (l'image, pour la coller directement ailleurs sans la
+    // télécharger). Voir act() plus bas pour leur comportement respectif.
     const TGS = () => [
         ['friend', IC.friend, t('shareWithFriendBtn')],
         ['story', IC.ig, 'Story'],
-        ['share', IC.wa, 'WhatsApp'],
+        ['copylink', IC.link, currentLang === 'fr' ? 'Copier le lien' : 'Copy link'],
+        ['copyimg', IC.copy, currentLang === 'fr' ? 'Copier' : 'Copy'],
         ['dl', IC.dl, currentLang === 'fr' ? 'Enregistrer' : 'Save']
     ];
     function renderChrome() {
@@ -2893,23 +2908,57 @@ const ShareStory = (() => {
     // (masquée le temps de la capture) plutôt que d'abandonner tout le partage pour une
     // seule image protégée — Story/Save fonctionnent alors quand même, juste sans cette
     // photo précise incluse dans l'image exportée.
+    // Convertit une URL cross-origin en data: URI (demande du 15/10/2026, "il y a encore le
+    // problème d'affichage de la photo... il faut afficher à défaut la photo de Header
+    // photo") : un <img> cross-origin (photo hébergée sur YouTube/Unsplash/etc., 171/319
+    // lieux) teinte le canvas de html-to-image, qui échouait alors silencieusement et
+    // retombait sur AUCUNE photo du tout (voir le repli "sans photo" juste en dessous,
+    // conservé comme DERNIER recours seulement). Un data: URI n'est jamais cross-origin,
+    // donc ne teinte jamais le canvas — convertir la source AVANT de capturer évite
+    // l'échec dans la plupart des cas (tout hôte qui autorise la lecture CORS en fetch, ex.
+    // Unsplash), sans jamais changer ce qui s'affiche dans la modale (restaurée juste après
+    // la capture, succès ou échec). Délai plafonné à 4s par image : un hôte qui ne répond
+    // jamais ne doit pas bloquer indéfiniment tout le flux de partage — se contente alors
+    // du comportement d'avant (repli "sans photo" si la capture échoue réellement).
+    async function toDataUriIfPossible(url) {
+        if (!url || url.startsWith('data:')) return null;
+        try {
+            const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000));
+            const res = await Promise.race([fetch(url, { mode: 'cors' }), timeout]);
+            if (!res.ok) return null;
+            const blob = await res.blob();
+            return await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('FileReader failed'));
+                reader.readAsDataURL(blob);
+            });
+        } catch (e) { return null; }
+    }
     async function makeFile() {
         const node = root.querySelector(`[data-story="${tpl}"] .sst-st`);
         if (!(await loadHtmlToImageOnce())) throw new Error('html-to-image absent');
         const slug = (D.url.split('/').pop() || 'partage');
         const toFile = (blob) => new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
+        const imgs = Array.from(node.querySelectorAll('img'));
+        const originalSrcs = imgs.map(img => img.src);
+        const dataUris = await Promise.all(imgs.map(img => toDataUriIfPossible(img.src)));
+        dataUris.forEach((uri, i) => { if (uri) imgs[i].src = uri; });
         try {
-            return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
-        } catch (e) {
-            console.warn('Capture avec photo échouée (canvas tainté ?), nouvelle tentative sans photo :', e);
-            const imgs = Array.from(node.querySelectorAll('img'));
-            const prevDisplay = imgs.map(img => img.style.display);
-            imgs.forEach(img => { img.style.display = 'none'; });
             try {
                 return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
-            } finally {
-                imgs.forEach((img, i) => { img.style.display = prevDisplay[i]; });
+            } catch (e) {
+                console.warn('Capture avec photo échouée (canvas tainté ?), nouvelle tentative sans photo :', e);
+                const prevDisplay = imgs.map(img => img.style.display);
+                imgs.forEach(img => { img.style.display = 'none'; });
+                try {
+                    return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
+                } finally {
+                    imgs.forEach((img, i) => { img.style.display = prevDisplay[i]; });
+                }
             }
+        } finally {
+            imgs.forEach((img, i) => { img.src = originalSrcs[i]; });
         }
     }
     function download(f) { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
@@ -2994,6 +3043,18 @@ const ShareStory = (() => {
         if (a === 'upload') return $('[data-file]').click();
         if (a === 'rmphoto') { user = null; renderStories(); sync(); return; }
         if (a === 'friend') return openFriendPanel();
+        // "Copier le lien" (demande du 15/10/2026, remplace WhatsApp) — pas besoin de
+        // makeFile()/l'image générée, retourne donc AVANT cet appel (contrairement à
+        // story/dl/copyimg juste en dessous, qui en ont tous besoin).
+        if (a === 'copylink') {
+            try {
+                await navigator.clipboard.writeText(D.url);
+                toast(currentLang === 'fr' ? 'Lien copié' : 'Link copied');
+            } catch (e) {
+                toast(currentLang === 'fr' ? 'Impossible de copier le lien' : 'Could not copy the link');
+            }
+            return;
+        }
         api.onShare && api.onShare({ format: NAMES()[tpl], action: a, type: D.type });
         let f; try { f = await makeFile(); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
         if (a === 'story') {
@@ -3010,6 +3071,26 @@ const ShareStory = (() => {
             // natif propose "Enregistrer l'image"/"Save Image" (vraie galerie Photos), ce que
             // le téléchargement classique <a download> ne fait pas (il va dans Fichiers/
             // Téléchargements) — shareOrDownload() n'y bascule QUE si ce partage échoue.
+            const shared = await shareOrDownload(f);
+            if (!shared) toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
+            return;
+        }
+        // "Copier" l'image (demande du 15/10/2026, "ajoute aussi un bouton 'Copier' qui
+        // permet de copier l'image et de le coller... utile si on veut la coller sur une
+        // story Instagram sans devoir télécharger la photo") — même API que
+        // tryInstagramStoryShare() plus bas (navigator.clipboard.write + ClipboardItem),
+        // réutilisée ici indépendamment de ce flux Instagram précis : colle ensuite où
+        // l'utilisateur veut (Story Instagram, Messages, un email...), pas seulement
+        // Instagram. Repli sur le partage/téléchargement classique si l'appareil ne
+        // supporte pas la copie d'image (ex: pas de ClipboardItem).
+        if (a === 'copyimg') {
+            if (navigator.clipboard && navigator.clipboard.write && typeof ClipboardItem !== 'undefined') {
+                try {
+                    await navigator.clipboard.write([new ClipboardItem({ [f.type]: f })]);
+                    toast(currentLang === 'fr' ? 'Image copiée — colle-la où tu veux' : 'Image copied — paste it anywhere');
+                    return;
+                } catch (e) { /* repli ci-dessous */ }
+            }
             const shared = await shareOrDownload(f);
             if (!shared) toast(currentLang === 'fr' ? 'Image enregistrée' : 'Image saved');
             return;
@@ -3219,7 +3300,15 @@ window.addEventListener('firebase-ready', async (e) => {
     // modale de détail, mais feed.html n'a pas de #map : ces 3 fusions n'y tournaient donc
     // jamais, laissant les corrections d'admin (renommage inclus) invisibles sur cette page
     // précise tant que le prochain export statique planifié ne les avait pas gravées en dur.
-    if (document.getElementById('map') || document.getElementById('feed-grid')) {
+    // BUG corrigé (demande du 15/10/2026, "fais en sorte de bien mettre à jour la photo du
+    // lieu par la Header photo du lieu... mets à jour cette page à chaque fois que le
+    // header photo d'un lieu est mis à jour") — même famille que le correctif du
+    // 27/09/2026 juste au-dessus pour feed.html : wishlist.html (#wish-container) lit lui
+    // aussi loc.img en direct depuis ce même celebLocations partagé (voir renderWishlist()
+    // dans wishlist.html) mais n'avait pas #map/#feed-grid, donc cette fusion n'y tournait
+    // jamais — une photo d'en-tête corrigée côté admin (locationSkeletonOverrides) restait
+    // invisible sur "My wishlist" jusqu'au prochain export statique planifié.
+    if (document.getElementById('map') || document.getElementById('feed-grid') || document.getElementById('wish-container')) {
         await Promise.all([
             // BUG corrigé (demande du 19/09/2026, "Dans Location submissions, lorsque je
             // publie un lieu il ne se publie plus dans map") — même famille de bug que les
@@ -3276,6 +3365,12 @@ window.addEventListener('firebase-ready', async (e) => {
                     // inédit pour le filtre.
                     if (anyOverrideApplied && typeof initializeFilters === 'function') initializeFilters();
                     if (anyOverrideApplied && typeof renderLocations === 'function') renderLocations(true);
+                    // wishlist.html (demande du 15/10/2026, voir la note sur le garde
+                    // #wish-container plus haut) : window.refreshWishlistFromCloud est déjà
+                    // l'alias que cette page expose pour "redessine avec les données
+                    // fraîches" (voir le listener cloudData.wishlistLocs plus bas, même
+                    // convention) — réutilisé ici tel quel plutôt qu'un nouveau hook.
+                    if (anyOverrideApplied && typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
                 } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
             })(),
             // BUG corrigé (demande du 19/09/2026, "le bouton delete location ne fonctionne
@@ -3315,6 +3410,20 @@ window.addEventListener('firebase-ready', async (e) => {
                 } catch (err) { /* tant pis, le filtre "vérifié uniquement" reste inactif */ }
             })(),
         ]);
+        // hydrateGroupVariantLocations() (voir plus bas dans ce fichier) : un nouveau
+        // variant de groupe a pu arriver via fetchNewLocations() ci-dessus, ou le lieu de
+        // référence d'un variant déjà présent a pu être corrigé via
+        // fetchLocationSkeletonOverrides() — dans les deux cas, les champs partagés
+        // affichés doivent être relus. Appelée APRÈS les 4 fusions ci-dessus (plutôt que
+        // dans chacune séparément) : elles tournent en parallèle, un variant et sa
+        // référence peuvent arriver par deux fusions différentes. Un re-rendu peut déjà
+        // avoir eu lieu plus haut (anyAdded/anyOverrideApplied) AVANT que cette hydratation
+        // ne tourne — on redessine donc une dernière fois ici pour refléter les champs
+        // fraîchement copiés (ex: photo d'en-tête d'un variant tout juste arrivé).
+        if (typeof hydrateGroupVariantLocations === 'function') {
+            hydrateGroupVariantLocations();
+            if (document.getElementById('map') && typeof renderLocations === 'function') renderLocations(true);
+        }
     }
 
     if (!user) return; // visiteur non connecté : le reste (wishlist, trips...) ne s'applique pas
@@ -4431,6 +4540,10 @@ const filterData = {
 // admin-scripts/ pour lancer un export à la demande). .slice() pour ne jamais partager la
 // même référence de tableau que window.STATIC_LOCATIONS.
 let celebLocations = (window.STATIC_LOCATIONS || []).slice();
+// hydrateGroupVariantLocations() (voir plus bas dans ce fichier) : copie en mémoire les
+// champs partagés d'un variant de groupe depuis son lieu de référence (demande du
+// 15/10/2026, "Add a group") — un variant peut déjà exister dans le squelette statique.
+if (typeof hydrateGroupVariantLocations === 'function') hydrateGroupVariantLocations();
 
 // Normalise les catégories au singulier (demande du 23/09/2026, "je ne veux garder que
 // Landmark, regroupe les 2 catégories") : certains lieux publiés viennent encore de
@@ -5784,6 +5897,33 @@ function positionMapHoverTip(marker) {
     tip.style.left = (mapRect.left + point.x) + 'px';
     tip.style.top = Math.max(minAnchorTop, anchorTop) + 'px';
 }
+// "Add a group" (demande du 15/10/2026, "il faut que la première page créée soit la page
+// de référence... Puis quand je clique sur 'add a group', ça ne me permet de modifier que
+// la partie Group, members, Date, link, Mei's Pictures, et toute la section Story... ça
+// permet de ne pas rédiger 2 fois la même chose et d'optimiser le stockage") — remplace la
+// copie intégrale faite précédemment (demande du 16/10/2026, PR mergée) : un "variant de
+// groupe" (loc.referenceLocId posé, voir window.openAddGroupModal() plus bas) ne stocke en
+// base QUE ses champs propres (group/member/year/episodeLink/recreatedPhoto(s)/
+// fullDescription, voir approveLocationSubmission() dans firebase-init.js) — tout le reste
+// (nom, adresse, pays, ville, catégorie, photo d'en-tête, infos pratiques, tips, liens...)
+// est copié ICI, EN MÉMOIRE SEULEMENT, depuis le lieu de référence, à chaque chargement/
+// fusion Firestore de celebLocations — jamais persisté deux fois. Idempotent : peut être
+// rappelée autant de fois que nécessaire (ex. après chaque fusion Firestore), les champs
+// propres du variant (GROUP_VARIANT_OWN_FIELDS) sont toujours relus/réappliqués par-dessus
+// la copie de la référence.
+const GROUP_VARIANT_OWN_FIELDS = ['id', 'group', 'member', 'year', 'episodeLink', 'recreatedPhotos', 'recreatedPhoto', 'fullDescription', 'referenceLocId', 'linkedGroupLocIds'];
+function hydrateGroupVariantLocation(loc) {
+    if (!loc || !loc.referenceLocId) return;
+    const ref = celebLocations.find(l => String(l.id) === String(loc.referenceLocId));
+    if (!ref) return;
+    const ownValues = {};
+    GROUP_VARIANT_OWN_FIELDS.forEach(f => { if (loc[f] !== undefined) ownValues[f] = loc[f]; });
+    Object.assign(loc, ref, ownValues);
+}
+function hydrateGroupVariantLocations() {
+    celebLocations.forEach(hydrateGroupVariantLocation);
+}
+
 // Lieux reliés au MÊME endroit physique pour d'autres groupes (demande du 16/10/2026, "si
 // BTS, Blackpink et SEVENTEEN sont allés au même endroit... avant d'ouvrir la page de
 // détail du lieu") — reliés EXPLICITEMENT via loc.linkedGroupLocIds (posé par l'admin via
@@ -5875,6 +6015,149 @@ function openGroupPickerModal(siblings) {
         });
     });
 }
+// "+ Add a group" (demande du 15/10/2026) — modale autonome, partagée entre admin.html
+// ("Existing locations") et le modal crayon de la fiche lieu (openLocationEditModal() plus
+// bas dans ce fichier, demande du même jour : "ajoute le bouton 'add a group' lorsque je
+// modifie un lieu directement depuis le detail du lieu"). Remplace l'ancien flux qui
+// recopiait sourceLoc dans une carte "Location submissions" à valider (file de
+// soumissions) : publie DIRECTEMENT (admin déjà connu des deux points d'entrée) avec
+// seulement les champs propres au nouveau groupe (group/member/year/link/Mei's Pictures/
+// Story) — tout le reste est lu en direct depuis le lieu de référence (voir
+// hydrateGroupVariantLocations() et GROUP_VARIANT_OWN_FIELDS plus haut, et
+// approveLocationSubmission() dans firebase-init.js qui n'écrit plus que ces champs-là
+// quand referenceLocId est posé).
+function openAddGroupModal(sourceLoc, onDone) {
+    const referenceId = sourceLoc.referenceLocId || sourceLoc.id;
+    const referenceLoc = celebLocations.find(l => String(l.id) === String(referenceId)) || sourceLoc;
+    const existingSiblingIds = typeof findLinkedGroupLocations === 'function'
+        ? findLinkedGroupLocations(sourceLoc).map(l => l.id)
+        : [sourceLoc.id];
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed; inset:0; z-index:11300; background:rgba(20,16,30,0.55); display:flex; align-items:center; justify-content:center; padding:20px;';
+    const groupOptionsHtml = Object.keys(groupColors).map(g => `<option value="${escapeHtml(g)}">${escapeHtml(g)}</option>`).join('');
+    overlay.innerHTML = `
+        <div style="background:#fff; border-radius:20px; padding:22px; max-width:460px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 60px rgba(31,36,48,.25); font-family:'Poppins',sans-serif;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+                <div>
+                    <div style="font-size:10.5px; font-weight:800; letter-spacing:.6px; color:#D42759; text-transform:uppercase;">Add a group</div>
+                    <h3 style="font-size:17px; font-weight:800; color:#1F2430; margin-top:2px;">${escapeHtml(referenceLoc.name || '')}</h3>
+                    <div style="font-size:12px; color:#6B7280; margin-top:3px;">${escapeHtml([referenceLoc.category, [referenceLoc.city, referenceLoc.country].filter(Boolean).join(', ')].filter(Boolean).join(' · '))}</div>
+                </div>
+                <button type="button" class="agm-close" aria-label="Close" style="width:30px; height:30px; border-radius:50%; background:#F1EEF6; display:flex; align-items:center; justify-content:center; flex:0 0 auto; border:none; cursor:pointer; padding:0;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1F2430" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                </button>
+            </div>
+            <div style="font-size:11.5px; color:#94a3b8; margin-top:10px; margin-bottom:14px;">Same place, same page otherwise — name, address, photo, practical info, tips and links all stay shared with the page above. Only what's below is specific to this group.</div>
+
+            <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">Group</label>
+            <select class="agm-group-select" style="width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 10px; font-size:13px; font-family:'Poppins',sans-serif; margin-bottom:12px;">
+                <option value="">— choose —</option>
+                ${groupOptionsHtml}
+            </select>
+
+            <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">Member(s)</label>
+            <div class="agm-member-container" style="margin-bottom:12px;">${memberMultiSelectHtml('', '')}</div>
+
+            <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">Year(s)</label>
+            <div class="agm-year-container" style="margin-bottom:12px;">${yearCheckboxGroupHtml('')}</div>
+
+            <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">Link (optional)</label>
+            <input type="url" class="agm-link-input" placeholder="https://... — episode, article, official post" style="width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 10px; font-size:13px; font-family:'Poppins',sans-serif; margin-bottom:14px;">
+
+            <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">Mei's Pictures (optional)</label>
+            <div class="agm-gallery"></div>
+            <div style="margin-bottom:14px;"></div>
+
+            <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">The story of this place</label>
+            <textarea class="agm-story-place" rows="3" placeholder="Describe the place itself — what it is, where it is." style="width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 10px; font-size:13px; font-family:'Poppins',sans-serif; margin-bottom:10px; resize:vertical;"></textarea>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">Following in this group's footsteps</label>
+            <div class="agm-story-bts" style="margin-bottom:16px;"></div>
+
+            <button type="button" class="agm-publish" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:12px; font-size:13.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Publish this group's page</button>
+            <div class="agm-result" style="font-size:12px; margin-top:10px; text-align:center;"></div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const groupSelect = overlay.querySelector('.agm-group-select');
+    const memberContainer = overlay.querySelector('.agm-member-container');
+    const galleryEl = overlay.querySelector('.agm-gallery');
+    const storyBtsEl = overlay.querySelector('.agm-story-bts');
+    const resultEl = overlay.querySelector('.agm-result');
+    const publishBtn = overlay.querySelector('.agm-publish');
+
+    let galleryWidget = window.createPhotoGalleryField ? window.createPhotoGalleryField(galleryEl, { getGroup: () => groupSelect.value }) : null;
+    let footstepsWidget = window.createVisitSectionsField ? window.createVisitSectionsField(storyBtsEl, { sections: [] }) : null;
+
+    groupSelect.addEventListener('change', () => {
+        memberContainer.outerHTML = `<div class="agm-member-container" style="margin-bottom:12px;">${memberMultiSelectHtml('', groupSelect.value)}</div>`;
+    });
+
+    const cleanup = () => { overlay.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = (e) => { if (e.key === 'Escape') cleanup(); };
+    document.addEventListener('keydown', onKey);
+    overlay.querySelector('.agm-close').addEventListener('click', cleanup);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) cleanup(); });
+
+    publishBtn.addEventListener('click', async () => {
+        if (!groupSelect.value) {
+            resultEl.style.color = '#D42759';
+            resultEl.textContent = 'Pick a group first.';
+            return;
+        }
+        publishBtn.disabled = true;
+        resultEl.style.color = '#6B7280';
+        resultEl.textContent = 'Publishing…';
+        const manualId = 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+        const currentMemberContainer = overlay.querySelector('.agm-member-container');
+        const btsText = footstepsWidget ? buildFootstepsPlainText(footstepsWidget.collect()) : '';
+        const storyPlaceEl = overlay.querySelector('.agm-story-place');
+        const recreatedPhotos = galleryWidget ? galleryWidget.collect() : [];
+        const sub = {
+            id: manualId, submittedBy: 'Admin (manual entry)',
+            referenceLocId: referenceId,
+            linkedGroupLocIds: existingSiblingIds,
+            group: groupSelect.value,
+            member: collectMemberCheckboxValue(currentMemberContainer),
+            year: collectYearCheckboxValue(overlay.querySelector('.agm-year-container')),
+            episodeLink: overlay.querySelector('.agm-link-input').value.trim(),
+            recreatedPhotos: recreatedPhotos,
+            fullDescription: { en: combineStoryAndFootsteps(storyPlaceEl.value, btsText) },
+        };
+        try {
+            const res = await window.approveLocationSubmission(sub);
+            if (!res || !res.success) {
+                resultEl.style.color = '#D42759';
+                resultEl.textContent = 'Failed: ' + ((res && res.code) || 'unknown error');
+                publishBtn.disabled = false;
+                return;
+            }
+            // Lien retour (même logique que l'ancien flux "Existing locations" — voir
+            // renderCard() dans admin.html) : chaque lieu déjà relié doit aussi pointer
+            // vers ce nouveau lieu, sans quoi le choix de groupe ne serait visible qu'en
+            // cliquant sur CE nouveau lieu.
+            if (existingSiblingIds.length && typeof window.adminUpdateLocationSkeleton === 'function') {
+                await Promise.all(existingSiblingIds.map(siblingId => {
+                    const siblingLoc = celebLocations.find(l => String(l.id) === String(siblingId));
+                    const nextIds = Array.from(new Set([
+                        ...((siblingLoc && Array.isArray(siblingLoc.linkedGroupLocIds)) ? siblingLoc.linkedGroupLocIds : []),
+                        ...existingSiblingIds.filter(id => String(id) !== String(siblingId)),
+                        res.publishedId
+                    ]));
+                    return window.adminUpdateLocationSkeleton(siblingId, { linkedGroupLocIds: nextIds });
+                }));
+            }
+            cleanup();
+            if (typeof onDone === 'function') onDone(res);
+        } catch (err) {
+            resultEl.style.color = '#D42759';
+            resultEl.textContent = 'Failed: ' + (err && err.message ? err.message : 'unknown error');
+            publishBtn.disabled = false;
+        }
+    });
+}
+window.openAddGroupModal = openAddGroupModal;
 function showMapHoverTip(loc, marker) {
     const tip = document.getElementById('map-hover-tip');
     const iconEl = document.getElementById('map-hover-tip-icon');
@@ -7259,6 +7542,9 @@ window.openPhotoLightbox = function (url) {
     if (!lb || !img || !url) return;
     img.src = url;
     lb.classList.remove('zoomed');
+    // Pincement (demande du 15/10/2026) : remet le zoom tactile à 1x à chaque nouvelle
+    // photo ouverte — voir wirePinchZoom() plus bas, qui pose img.style.transform.
+    img.style.transform = '';
     lb.classList.add('open');
 };
 window.closePhotoLightbox = function () {
@@ -7285,8 +7571,54 @@ window.closePhotoLightbox = function () {
     // style.css) pour aussi activer le défilement du fond — une image zoomée qui dépasse
     // l'écran doit pouvoir être parcourue, pas seulement agrandie sur place.
     const lbImg = document.getElementById('photo-lightbox-img');
-    if (lbImg) lbImg.addEventListener('click', () => lb.classList.toggle('zoomed'));
+    if (lbImg) lbImg.addEventListener('click', (e) => { if (!lbImg.__pinchJustHappened) lb.classList.toggle('zoomed'); });
     addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closePhotoLightbox(); });
+
+    // Pincement à deux doigts (demande du 15/10/2026, "je veux pouvoir zoomer en pinçant à
+    // l'aide de mes doigts, et non devoir cliquer dessus pour que ça zoom") : le viewport du
+    // site désactive le pincement natif du navigateur partout (user-scalable=no, voir
+    // <meta name="viewport"> de map.html — nécessaire ailleurs sur le site pour éviter un
+    // zoom accidentel pendant un tap), donc un vrai geste de pincement est recréé ici à la
+    // main, scopé à cette seule image (aucune librairie tierce sur ce site pour ça).
+    // Indépendant du zoom "un clic = 220%" existant juste au-dessus (gardé pour la souris/
+    // desktop, qui n'a pas de pincement) : les deux coexistent sans se gêner, seul un
+    // pincement réel (2 doigts) déclenche ce code — un simple tap continue de passer par le
+    // clic ci-dessus. __pinchJustHappened évite qu'un pincement qui se termine avec encore
+    // un doigt posé ne déclenche EN PLUS le toggle .zoomed au clic qui suit immédiatement.
+    if (lbImg) {
+        let startDist = 0, startScale = 1, currentScale = 1;
+        let startMidX = 0, startMidY = 0, startTx = 0, startTy = 0, currentTx = 0, currentTy = 0;
+        const dist = (t0, t1) => Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+        const mid = (t0, t1) => ({ x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 });
+        const applyTransform = () => { lbImg.style.transform = `translate(${currentTx}px, ${currentTy}px) scale(${currentScale})`; };
+        lbImg.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 2) return;
+            e.preventDefault();
+            startDist = dist(e.touches[0], e.touches[1]);
+            startScale = currentScale;
+            const m = mid(e.touches[0], e.touches[1]);
+            startMidX = m.x; startMidY = m.y;
+            startTx = currentTx; startTy = currentTy;
+        }, { passive: false });
+        lbImg.addEventListener('touchmove', (e) => {
+            if (e.touches.length !== 2 || !startDist) return;
+            e.preventDefault();
+            const newDist = dist(e.touches[0], e.touches[1]);
+            currentScale = Math.min(4, Math.max(1, startScale * (newDist / startDist)));
+            const m = mid(e.touches[0], e.touches[1]);
+            currentTx = startTx + (m.x - startMidX);
+            currentTy = startTy + (m.y - startMidY);
+            if (currentScale <= 1.02) { currentScale = 1; currentTx = 0; currentTy = 0; }
+            applyTransform();
+            lbImg.__pinchJustHappened = true;
+        }, { passive: false });
+        const endPinch = () => {
+            startDist = 0;
+            if (lbImg.__pinchJustHappened) setTimeout(() => { lbImg.__pinchJustHappened = false; }, 50);
+        };
+        lbImg.addEventListener('touchend', endPinch);
+        lbImg.addEventListener('touchcancel', endPinch);
+    }
 })();
 
 
@@ -7899,6 +8231,15 @@ function ensureLocationEditModal() {
                 <span>Mark as closed</span>
             </button>
 
+            <!-- "+ Add a group" (demande du 15/10/2026, "ajoute le bouton 'add a group'
+                 lorsque je modifie un lieu directement depuis le detail du lieu") — même
+                 modale que le bouton équivalent d'admin.html ("Existing locations"), voir
+                 window.openAddGroupModal() plus haut dans ce fichier. -->
+            <button type="button" id="location-edit-addgroup-btn" title="Another group also visited this exact place — create their own entry, linked to this one" style="width:100%; background:none; border:1.5px solid #e2e8f0; color:#64748b; border-radius:100px; padding:10px; font-size:12.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"></circle><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"></path><line x1="18" y1="9" x2="18" y2="15"></line><line x1="15" y1="12" x2="21" y2="12"></line></svg>
+                <span>+ Add a group</span>
+            </button>
+
             <button id="location-edit-save-btn" style="width:100%; background:#D42759; color:#fff; border:none; border-radius:100px; padding:11px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Save changes</button>
             <div id="location-edit-result" class="hidden" style="font-size:12px; font-weight:600; margin-top:10px; text-align:center;"></div>
 
@@ -8477,6 +8818,19 @@ window.openLocationEditModal = async function (locId) {
 
     const closedBtn = document.getElementById('location-edit-closed-btn');
     if (closedBtn) closedBtn.onclick = () => { locationEditClosedState = !locationEditClosedState; updateLocationEditClosedBtn(); };
+
+    const addGroupBtn = document.getElementById('location-edit-addgroup-btn');
+    if (addGroupBtn) {
+        addGroupBtn.onclick = () => {
+            if (typeof window.openAddGroupModal !== 'function') return;
+            // Referme la modale crayon le temps de celle d'"Add a group" (même z-index que
+            // le reste des modales admin, inutile de les empiler) — le nouveau variant de
+            // groupe sera visible au prochain clic sur ce marqueur (findLinkedGroupLocations()
+            // le découvre à la volée, rien d'autre à rafraîchir ici).
+            modal.classList.add('hidden');
+            window.openAddGroupModal(loc, () => { /* publié — rien de plus à faire ici */ });
+        };
+    }
 };
 
 // Bouton "Closed" du modal crayon (demande du 19/09/2026) — même principe visuel que

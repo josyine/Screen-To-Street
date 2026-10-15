@@ -184,6 +184,21 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 
 .detail-hero { position: relative; height: 220px; flex-shrink: 0; background-size: cover; background-position: center; }
 .detail-back-link { position: absolute; top: 16px; left: 18px; color: #fff; background: rgba(20,16,30,.4); backdrop-filter: blur(6px); padding: 7px 14px; border-radius: 100px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+/* Sur mobile (demande du 15/10/2026, "je préfère ce bouton croix car elle est plus
+   petite") : remplace la pastille "← Back to list" par un petit rond blanc, exactement
+   comme .sst-x (bouton de fermeture de la fenêtre "Share", voir IC.x dans script.js pour
+   le même tracé de croix — réutilisé ici en masque CSS plutôt qu'en <svg> inline, le texte
+   du lien restant utile aux lecteurs d'écran via text-indent plutôt que d'être retiré du
+   DOM). Desktop inchangé (pastille texte d'origine). */
+@media (max-width: 760px) {
+    .detail-back-link { width: 36px; height: 36px; padding: 0; border-radius: 50%; background: #F1EEF6; backdrop-filter: none; text-indent: -9999px; overflow: hidden; position: absolute; }
+    .detail-back-link::after {
+        content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: 16px; height: 16px; background-color: #1F2430;
+        -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>") no-repeat center / contain;
+        mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>") no-repeat center / contain;
+    }
+}
 /* Icône crayon "modifier ce lieu" (admins uniquement, voir #details-admin-edit-btn dans
    map.html) — même traitement visuel que .detail-back-link, en miroir à droite. */
 .detail-admin-edit-btn { position: absolute; top: 16px; right: 18px; background: rgba(20,16,30,.4); backdrop-filter: blur(6px); border: none; border-radius: 100px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
@@ -356,7 +371,11 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
    (centrer + overflow:auto recadre mal la zone atteignable au défilement, problème CSS
    connu), pour pouvoir vraiment parcourir toute la photo agrandie au doigt/à la molette. */
 .photo-lightbox.zoomed { align-items: flex-start; justify-content: flex-start; padding: 0; }
-.photo-lightbox-img { max-width: 100%; max-height: 100%; border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.4); cursor: zoom-in; }
+/* touch-action:none (demande du 15/10/2026, pincement à deux doigts) : empêche le
+   navigateur d'interpréter le 2e doigt comme un geste de scroll/pan de PAGE pendant le
+   pincement — voir wirePinchZoom (initPhotoLightbox()) dans script.js, qui gère alors
+   lui-même le geste entièrement via touchmove. */
+.photo-lightbox-img { max-width: 100%; max-height: 100%; border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.4); cursor: zoom-in; touch-action: none; }
 .photo-lightbox.zoomed .photo-lightbox-img { max-width: none; max-height: none; width: 220%; border-radius: 0; cursor: zoom-out; }
 @media (prefers-reduced-motion: reduce) { .photo-lightbox { transition: none; } }
 
@@ -1257,7 +1276,6 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .sst-t1 .sst-bd{padding:30px 14px 13px;text-align:center}
 .sst-t1 .sst-bd .sst-ttl{font-size:18px}.sst-t1 .sst-bd p{font-size:10.5px;color:var(--sst-mut);margin-top:2px}
 .sst-t1 .sst-s3{margin-top:11px;border-top:1px solid var(--sst-line);padding-top:10px}.sst-t1 .sst-s3 b{font-size:14.5px;color:var(--sst-mag)}.sst-t1 .sst-s3 small{color:var(--sst-mut)}
-.sst-t1 .sst-url{margin-top:auto;font-size:9.5px;opacity:.85}
 /* Photo */
 .sst-t2{background:var(--sst-G)}
 .sst-t2 .sst-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
