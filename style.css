@@ -614,6 +614,24 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    s'applique sans changement. */
 .location-dot-marker div { width: 10px; height: 10px; border: none; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
 
+/* Marqueur "plusieurs groupes au même lieu" (demande du 15/10/2026, "je veux que tu
+   affiches un symbole qui correspond au nombre de groupe présents sur le lieu... il faut
+   que le point soit de couleur blanche") — voir addSingleLocationMarker() dans script.js
+   (siblingGroupCount/isMultiGroup). Un point blanc plutôt que la couleur d'UN groupe (qui
+   n'a plus de sens dès que plusieurs groupes partagent le lieu), même rendu que
+   .recreate-member-marker (Mei's Pictures, posé le même jour) pour une cohérence visuelle,
+   plus un badge rouge au nombre de groupes en haut à droite. Sélecteurs à 2 classes
+   (spécificité (0,2,0)) nécessaires pour l'emporter sur ".custom-category-marker div"
+   ci-dessus (spécificité (0,1,1), qui s'appliquerait sinon aussi à ces deux nouveaux divs,
+   simples enfants directs de ce même conteneur) ; le survol a besoin du même traitement en
+   plus d'!important, voir juste en dessous — ".custom-category-marker:hover div" pose déjà
+   "background-color/color ... !important", qui casserait sinon le blanc/rouge au survol. */
+.location-dot-marker-multi { position: relative; }
+.location-dot-marker-multi .loc-multi-group-dot { position: absolute; top: 0; left: 0; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(20,16,30,.15), 0 1px 4px rgba(0,0,0,.35); }
+.location-dot-marker-multi .loc-multi-group-badge { position: absolute; top: -6px; left: 5px; min-width: 13px; height: 13px; padding: 0 2px; border-radius: 100px; background: #D42759; color: #fff; font-size: 9px; font-weight: 800; line-height: 13px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.4); font-family: 'Poppins', sans-serif; }
+.location-dot-marker-multi:hover .loc-multi-group-dot { background-color: #fff !important; color: #fff !important; }
+.location-dot-marker-multi:hover .loc-multi-group-badge { background-color: #D42759 !important; color: #fff !important; }
+
 /* Point bleu "vous êtes ici" + cône de cap (demande du 05/10/2026, "je veux pouvoir voir
    dans quelle direction de marche via mon point de géolocalisation") — voir
    updateMyLocationMarker()/handleMyLocationDeviceOrientation() dans script.js. Le cône
