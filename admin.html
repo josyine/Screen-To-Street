@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261029" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261030" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -261,7 +261,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261029';
+        s.src = 'page-loader.js?v=20261030';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -474,13 +474,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261029"></script>
-<script src="countries.js?v=20261029"></script>
-<script src="locations-data.js?v=20261029"></script>
+<script type="module" src="firebase-init.js?v=20261030"></script>
+<script src="countries.js?v=20261030"></script>
+<script src="locations-data.js?v=20261030"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
-<script src="artists-content.js?v=20261029"></script>
-<script src="script.js?v=20261029"></script>
+<script src="artists-content.js?v=20261030"></script>
+<script src="script.js?v=20261030"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -2070,7 +2070,18 @@ recomposée, sans texte ni légende.`;
         }
         const addGroupBtn = card.querySelector('.btn-addgroup');
         if (addGroupBtn) {
-            addGroupBtn.onclick = () => window.addLinkedGroupLocation(loc);
+            addGroupBtn.onclick = async () => {
+                addGroupBtn.disabled = true;
+                const addGroupLabel = addGroupBtn.querySelector('span');
+                const originalLabel = addGroupLabel ? addGroupLabel.textContent : '';
+                if (addGroupLabel) addGroupLabel.textContent = 'Loading…';
+                try {
+                    await window.addLinkedGroupLocation(loc);
+                } finally {
+                    addGroupBtn.disabled = false;
+                    if (addGroupLabel) addGroupLabel.textContent = originalLabel;
+                }
+            };
         }
         const resultEl = card.querySelector('.sub-result');
         let mergedFullDescription = loc.fullDescription || {};
@@ -2512,13 +2523,16 @@ recomposée, sans texte ni légende.`;
     };
 
     // "+ Add a group" (demande du 16/10/2026, voir le bouton dans renderExistingLocationCard()
-    // plus haut) — même mécanisme que window.addManualLocation() ci-dessus, mais pré-rempli
-    // avec les champs vraiment PHYSIQUES du lieu d'origine (nom, adresse, coordonnées,
-    // pays, ville : le lieu réel ne change pas d'un groupe à l'autre) — Groupe/Membre/
-    // Catégorie/Année/Story/Mei's Pictures restent vierges, chaque groupe ayant pu visiter
-    // ce même lieu pour une raison et à une date différentes (voir le choix de groupe
-    // affiché sur la carte, openGroupPickerModal() dans script.js, qui montre justement
-    // cette catégorie/année PAR groupe).
+    // plus haut) — même mécanisme que window.addManualLocation() ci-dessus. BUG corrigé
+    // (demande du 15/10/2026, "il faut afficher exactement les mêmes infos que dans la page
+    // déjà créée. Il faut seulement changer la partie Story, et la description") : ne
+    // copiait au départ que les champs PHYSIQUES (nom/adresse/coordonnées/pays/ville),
+    // laissant Groupe/Membre/Catégorie/Année/Mei's Pictures/liens vierges. Reprend
+    // maintenant TOUT le contenu de sourceLoc tel qu'affiché publiquement — squelette
+    // (loc) + contenu riche Firestore (window.fetchLocationContent(), même source que
+    // fillFields() dans renderExistingLocationCard() ci-dessus) — à l'identique, à
+    // l'exception de fullDescription (Story + description) qui reste vide : c'est la seule
+    // partie que l'admin doit réécrire pour ce nouveau groupe.
     // linkedGroupLocIds : la liste des lieux déjà reliés à sourceLoc (elle incluse) —
     // publiée telle quelle comme n'importe quel autre champ squelette à l'Approve (voir
     // skeletonFields dans firebase-init.js), ET relue ici même au moment de cet Approve
@@ -2526,18 +2540,25 @@ recomposée, sans texte ni légende.`;
     // éventuels autres groupes doivent aussi pointer vers ce nouveau lieu, sans quoi le
     // choix de groupe ne serait visible qu'en cliquant sur CE nouveau lieu, jamais sur les
     // autres).
-    window.addLinkedGroupLocation = function (sourceLoc) {
+    window.addLinkedGroupLocation = async function (sourceLoc) {
         const manualId = 'manual-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
         const existingSiblingIds = typeof findLinkedGroupLocations === 'function'
             ? findLinkedGroupLocations(sourceLoc).map(l => l.id)
             : [sourceLoc.id];
-        const sub = {
+        let remoteContent = {};
+        if (typeof window.fetchLocationContent === 'function') {
+            try { remoteContent = await window.fetchLocationContent(sourceLoc.id) || {}; }
+            catch (err) { /* tant pis, on publie quand même avec les champs locaux déjà connus */ }
+        }
+        const merged = Object.assign({}, sourceLoc, remoteContent);
+        const sub = Object.assign({}, merged, {
             id: manualId, submittedBy: 'Admin (manual entry)',
-            name: sourceLoc.name || '', address: sourceLoc.address || '',
-            lat: sourceLoc.lat, lng: sourceLoc.lng,
-            country: sourceLoc.country || '', city: sourceLoc.city || '',
-            linkedGroupLocIds: existingSiblingIds
-        };
+            linkedGroupLocIds: existingSiblingIds,
+            // Story + description (demande du 15/10/2026) : seule partie volontairement
+            // laissée vide — tout le reste ci-dessus vient de sourceLoc à l'identique.
+            fullDescription: {},
+        });
+        delete sub.matchedLocId; // champ réservé aux corrections (voir isEdit dans renderCard()), sourceLoc n'en a pas
         const card = renderCard(sub);
         window.switchAdminTab('submissions');
         const listEl = document.getElementById('submissions-list');
@@ -2545,8 +2566,8 @@ recomposée, sans texte ni légende.`;
         document.getElementById('empty-state').classList.add('hidden');
         manualLocationEntries.push({ id: manualId, card });
         card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Le nom est déjà rempli (contrairement à "Add" ci-dessus) : le champ qui manque
-        // vraiment pour cette nouvelle fiche, c'est le Groupe.
+        // Tout est déjà rempli (contrairement à "Add" ci-dessus) : le champ qui a vraiment
+        // besoin d'être revu en premier pour cette nouvelle fiche, c'est le Groupe.
         const groupSelect = card.querySelector('.sub-field-input[data-field="group"]');
         if (groupSelect) groupSelect.focus();
     };

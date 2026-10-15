@@ -412,7 +412,7 @@ function openPhotoMemberMarkersModal(photo, groupName, onClose) {
                 <div style="font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; color:#1e293b;">Tag who's in this photo</div>
                 <button type="button" class="pmm-close" style="background:none; border:none; font-size:20px; line-height:1; color:#94a3b8; cursor:pointer;">&times;</button>
             </div>
-            <div class="pmm-hint" style="font-size:11px; color:#94a3b8; margin-bottom:10px; font-family:'Poppins',sans-serif;">Click "Add a member" below, then click the exact spot on the photo.</div>
+            <div class="pmm-hint" style="font-size:11px; color:#94a3b8; margin-bottom:10px; font-family:'Poppins',sans-serif;">Click "Add a member" below, then click the exact spot on the photo. Drag a marker to move it.</div>
             <div class="pmm-photo-wrap" style="position:relative; width:100%; height:340px; border-radius:12px; overflow:hidden; background:#111;">
                 <img class="pmm-photo-img" src="${escapeHtml(photo.url)}" alt="" style="width:100%; height:100%; object-fit:cover; display:block; -webkit-user-select:none; user-select:none; pointer-events:none;">
             </div>
@@ -432,15 +432,55 @@ function openPhotoMemberMarkersModal(photo, groupName, onClose) {
             .map(m => `<option value="${escapeHtml(m)}"${m === selected ? ' selected' : ''}>${escapeHtml(m)}</option>`).join('');
     }
 
+    // Marqueurs déplaçables à la souris/au doigt (demande du 15/10/2026, "fais en sorte
+    // qu'on puisse glisser le point de l'image pour le changer de place") — jusqu'ici la
+    // seule façon de repositionner un marqueur mal placé était de le supprimer puis de
+    // recliquer avec "+ Add a member" au bon endroit. pointer-events était explicitement à
+    // none pour laisser les clics "ajouter" traverser jusqu'à photoWrap ci-dessous ; chaque
+    // point reçoit maintenant ses propres événements pointer pour le glisser-déposer, et
+    // coupe la propagation (pointerdown ET click, voir wireDotDragging()) pour que
+    // déplacer un point n'en place jamais un second par-dessus le listener "click" de
+    // photoWrap.
+    function wireDotDragging() {
+        photoWrap.querySelectorAll('.pmm-dot').forEach(dot => {
+            const index = Number(dot.dataset.index);
+            dot.addEventListener('click', (e) => e.stopPropagation());
+            dot.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dot.setPointerCapture(e.pointerId);
+                dot.style.cursor = 'grabbing';
+                const move = (ev) => {
+                    const rect = photoWrap.getBoundingClientRect();
+                    const x = Math.min(1, Math.max(0, (ev.clientX - rect.left) / rect.width));
+                    const y = Math.min(1, Math.max(0, (ev.clientY - rect.top) / rect.height));
+                    photo.markers[index].x = +x.toFixed(4);
+                    photo.markers[index].y = +y.toFixed(4);
+                    dot.style.left = (x * 100) + '%';
+                    dot.style.top = (y * 100) + '%';
+                };
+                const up = () => {
+                    dot.releasePointerCapture(e.pointerId);
+                    document.removeEventListener('pointermove', move);
+                    document.removeEventListener('pointerup', up);
+                    dot.style.cursor = 'grab';
+                };
+                document.addEventListener('pointermove', move);
+                document.addEventListener('pointerup', up);
+            });
+        });
+    }
     function renderMarkers() {
         photoWrap.querySelectorAll('.pmm-dot').forEach(d => d.remove());
         photo.markers.forEach((mk, i) => {
             const dot = document.createElement('div');
             dot.className = 'pmm-dot';
-            dot.style.cssText = `position:absolute; left:${mk.x * 100}%; top:${mk.y * 100}%; transform:translate(-50%,-50%); width:22px; height:22px; border-radius:50%; background:${mk.member ? '#D42759' : '#94a3b8'}; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:700; font-family:'Poppins',sans-serif; pointer-events:none;`;
+            dot.dataset.index = i;
+            dot.style.cssText = `position:absolute; left:${mk.x * 100}%; top:${mk.y * 100}%; transform:translate(-50%,-50%); width:22px; height:22px; border-radius:50%; background:${mk.member ? '#D42759' : '#94a3b8'}; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:700; font-family:'Poppins',sans-serif; cursor:grab; touch-action:none;`;
             dot.textContent = String(i + 1);
             photoWrap.appendChild(dot);
         });
+        wireDotDragging();
         listEl.innerHTML = photo.markers.map((mk, i) => `
             <div class="pmm-row" style="display:flex; align-items:center; gap:8px;">
                 <span style="width:20px; height:20px; border-radius:50%; background:${mk.member ? '#D42759' : '#94a3b8'}; color:#fff; font-size:10px; font-weight:700; font-family:'Poppins',sans-serif; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${i + 1}</span>
