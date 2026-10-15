@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261031" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261032" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none; cursor:pointer;}
@@ -225,6 +225,9 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 .map-stat .l { font-size: 10px; color: #94a3b8; margin-top: 2px; }
 
 @media (max-width: 760px) {
+  /* Demande du 15/10/2026 : même correctif que wishlist.html — voir ce fichier pour la
+     note complète. */
+  .back-link { display: none; }
   .universal-logo { top: 14px; left: 14px; gap: 8px; }
   .universal-logo svg { width: 32px; height: 32px; }
   .universal-logo .tagline { display: none; }
@@ -298,7 +301,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261031';
+        s.src = 'page-loader.js?v=20261032';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -505,17 +508,23 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      le nombre de lieux/pays par groupe ci-dessous, au lieu des chiffres figés à la création
      de cette page (voir correctGroupNumbers() plus bas) — le reste du contenu (bios,
      sections narratives) reste écrit à la main, seuls les CHIFFRES sont automatiques. -->
-<script src="locations-data.js?v=20261031"></script>
+<script src="locations-data.js?v=20261032"></script>
 <!-- Firebase (demande du 13/09/2026, "je veux également pouvoir modifier les pages
      Explore Destinations et Explore Artists") — même besoin/mêmes notes que
      map-destinations.html : cette page était jusqu'ici 100% statique. -->
-<script type="module" src="firebase-init.js?v=20261031"></script>
+<script type="module" src="firebase-init.js?v=20261032"></script>
 <!-- Contenu partagé "Explore Artists" (demande du 12/09/2026, "le contenu de
      map-artists.html et artists.html doit être le même") : GROUPS, GROUP_DETAILS et le
      rendu de la fiche détaillée viennent maintenant tous les deux de
      artists-content.js, chargé à l'identique par artists.html — voir ce fichier pour la
      donnée et la logique partagées. -->
-<script src="artists-content.js?v=20261031"></script>
+<script src="artists-content.js?v=20261032"></script>
+<!-- script.js (demande du 15/10/2026) — même ajout et même raison que
+     map-destinations.html : donne à cette page le duo Message/Engrenage mobile en haut à
+     droite (injectMobileTopIcons()), absent jusqu'ici car cette page ne chargeait pas
+     script.js. -->
+<script src="countries.js?v=20261032"></script>
+<script src="script.js?v=20261032"></script>
 <script>
     function toggleMenu(menuId, evt) {
         document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== menuId) m.classList.add('hidden'); });
@@ -534,7 +543,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         else { btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'; }
     });
 
-    let currentLang = localStorage.getItem('lang') || 'en';
+    // BUG corrigé (demande du 15/10/2026) : même correctif que map-destinations.html — voir
+    // ce fichier pour la note complète (collision avec le `let currentLang` global de
+    // script.js, ajouté ci-dessus sur cette page).
+    currentLang = localStorage.getItem('lang') || 'en';
     const t_artists = {
       en: {
         title: "Explore Artists", statsGroups: "Groups", statsMembers: "Members", statsLocs: "Locations mapped",

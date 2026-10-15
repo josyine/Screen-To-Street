@@ -1294,7 +1294,23 @@ window.approveLocationSubmission = async function (submission) {
         // une épingle Pinterest saisie sur une NOUVELLE soumission (pas une correction d'un
         // lieu déjà publié, qui passe par adminUpdateLocationContent() sans cette liste
         // fixe) était donc silencieusement ignorée à l'Approve, jamais republiée.
-        const contentFields = ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'pinterestUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'pinterestUrls', 'youtubeUrls'];
+        // "Add a group" (demande du 15/10/2026, "il faut que la première page créée soit
+        // la page de référence : on garde exactement les mêmes informations... Puis quand
+        // je clique sur 'add a group', ça ne me permet de modifier que la partie Group,
+        // members, Date, link, Mei's Pictures, et toute la section Story. Ca permet de ne
+        // pas rédiger 2 fois la même chose et d'optimiser le stockage") — remplace le
+        // comportement précédent (tout copier depuis sourceLoc dans le nouveau document,
+        // demande du 16/10/2026) : submission.referenceLocId (posé par
+        // window.openAddGroupModal() dans script.js) marque ce lieu comme un "variant de
+        // groupe" plutôt qu'un lieu physique indépendant — SEULS les champs qu'on garde
+        // réellement propres à CE groupe sont écrits ici ; tout le reste (nom, adresse,
+        // pays, ville, catégorie, photo d'en-tête, infos pratiques, tips, liens...) est lu
+        // en direct depuis le lieu de référence à l'affichage (voir
+        // hydrateGroupVariantLocations() dans script.js), jamais dupliqué en base.
+        const isGroupVariant = !!submission.referenceLocId;
+        const contentFields = isGroupVariant
+            ? ['fullDescription', 'episodeLink', 'recreatedPhoto', 'recreatedPhotos']
+            : ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'pinterestUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'pinterestUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), resolveDeleteMarkers(stripUndefinedDeep(contentDoc)), { merge: true });
@@ -1319,7 +1335,12 @@ window.approveLocationSubmission = async function (submission) {
         // affichent un choix de groupe sur la carte quand plusieurs lieux y sont ainsi
         // reliés. export-locations.js copie ce champ (comme tout autre) sans liste à tenir
         // à jour là-bas (Object.assign générique, pas un filtre par nom de champ).
-        const skeletonFields = ['name', 'group', 'member', 'country', 'city', 'category', 'year', 'episode', 'address', 'lat', 'lng', 'img', 'linkedGroupLocIds'];
+        // skeletonFields : même restriction que contentFields juste au-dessus pour un
+        // variant de groupe — referenceLocId est la seule nouveauté, lue par
+        // hydrateGroupVariantLocations() (script.js) pour retrouver le lieu de référence.
+        const skeletonFields = isGroupVariant
+            ? ['group', 'member', 'year', 'referenceLocId', 'linkedGroupLocIds']
+            : ['name', 'group', 'member', 'country', 'city', 'category', 'year', 'episode', 'address', 'lat', 'lng', 'img', 'linkedGroupLocIds'];
         if (!submission.matchedLocId) {
             const lightDoc = { id: targetId };
             skeletonFields.forEach(f => { if (submission[f] !== undefined) lightDoc[f] = submission[f]; });

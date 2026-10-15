@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261031" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261032" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -360,10 +360,12 @@
   .mobile-logo-text { font-size: 14px; font-weight: 700; color: #2E3644; }
 
   @media (max-width: 800px) {
-      /* Logo "Screen To Street" retiré sur mobile (demande du 12/09/2026) — même
-         traitement que les autres pages (feed.html/profile.html...), où ce doublon
-         hors-sidebar n'existe pas non plus sur mobile : display:flex ci-dessous a été
-         retiré, .mobile-logo reste donc masqué (display:none, règle de base plus haut). */
+      /* Logo "Screen To Street" remis sur mobile (demande du 15/10/2026, "il faut que le
+         header soit exactement le même que dans la page 'message', avec le logo, icone
+         message, engrenage") — remplace le retrait du 12/09/2026 (voir l'historique de ce
+         fichier) : le site affiche maintenant le même trio logo/message/engrenage que
+         friends.html sur toutes les pages "app" en mobile, cette page y compris. */
+      .mobile-logo { display: flex; }
 
       /* Pleine largeur, sans marge (demande du 12/09/2026, "je veux que le trip prenne
          toute la largeur de l'écran, sans marge") : .trips-main et .trip-detail-wrapper
@@ -463,7 +465,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261031';
+        s.src = 'page-loader.js?v=20261032';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -991,9 +993,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261031"></script>
-<script src="locations-data.js?v=20261031"></script>
-<script src="script.js?v=20261031"></script>
+<script type="module" src="firebase-init.js?v=20261032"></script>
+<script src="locations-data.js?v=20261032"></script>
+<script src="script.js?v=20261032"></script>
 
 </body>
 </html>
