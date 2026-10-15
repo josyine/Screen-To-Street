@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261021" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261022" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -749,7 +749,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261021';
+        s.src = 'page-loader.js?v=20261022';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1966,15 +1966,18 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<!-- Capture la fiche de partage en story (ShareStory, voir script.js) en image PNG. -->
-<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
-<script src="countries.js?v=20261021"></script>
-<script type="module" src="firebase-init.js?v=20261021"></script>
-<script src="locations-data.js?v=20261021"></script>
-<script src="script.js?v=20261021"></script>
+<!-- html-to-image (capture de la fiche de partage en story en PNG, voir ShareStory dans
+     script.js) n'est plus chargé ici en balise statique (demande du 13/10/2026, "Could not
+     create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
+     d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
+     un second CDN. -->
+<script src="countries.js?v=20261022"></script>
+<script type="module" src="firebase-init.js?v=20261022"></script>
+<script src="locations-data.js?v=20261022"></script>
+<script src="script.js?v=20261022"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261021"></script>
-<script src="map-tour.js?v=20261021"></script>
+<script src="itinerary.js?v=20261022"></script>
+<script src="map-tour.js?v=20261022"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE

@@ -2580,8 +2580,12 @@ const ShareStory = (() => {
             fg = `<path d="M${P.map(p => p.join(' ')).join(' L')}" stroke="#9B3CEB" stroke-width="3" fill="none" stroke-dasharray="1 7" stroke-linecap="round"/>` + P.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="#9B3CEB" stroke="#fff" stroke-width="2"/><text x="${p[0]}" y="${p[1] + 3.5}" text-anchor="middle" font-family="Poppins,sans-serif" font-size="9" font-weight="700" fill="#fff">${i + 1}</text>`).join('');
         } else {
             const P = project(D.path) || [[60, 250], [170, 120]], e = P[P.length - 1], s = P[0];
+            // pic() (comme les <img> ci-dessous), pas D.photo brut : même échappement HTML
+            // nécessaire ici (URL Firebase Storage avec "&"), et reflète aussi la photo
+            // perso si la personne en a choisi une, comme les 3 autres formats.
+            const pinPic = pic();
             fg = `<path d="M${P.map(p => p.join(' ')).join(' L')}" stroke="#E0156B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${s[0]}" cy="${s[1]}" r="6" fill="#fff" stroke="#1F2430" stroke-width="3"/>
-   <g transform="translate(${e[0] - 24} ${e[1] - 62})"><path d="M24 62s-20-18-20-34a20 20 0 0 1 40 0c0 16-20 34-20 34z" fill="#E0156B"/><defs><clipPath id="${u}"><circle cx="24" cy="28" r="16"/></clipPath></defs><image href="${D.photo}" x="8" y="12" width="32" height="32" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u})"/></g>`;
+   <g transform="translate(${e[0] - 24} ${e[1] - 62})"><path d="M24 62s-20-18-20-34a20 20 0 0 1 40 0c0 16-20 34-20 34z" fill="#E0156B"/>${pinPic ? `<defs><clipPath id="${u}"><circle cx="24" cy="28" r="16"/></clipPath></defs><image href="${esc(pinPic)}" x="8" y="12" width="32" height="32" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u})"/>` : ''}</g>`;
         }
         return `<svg viewBox="0 0 270 330" preserveAspectRatio="xMidYMid slice">${base}${fg}</svg>`;
     }
@@ -2589,21 +2593,31 @@ const ShareStory = (() => {
     // BUG corrigé (demande du 12/10/2026, "la photo du lieu ne charge pas dans Share") :
     // pic() posait l'URL brute (NON échappée) dans l'attribut src="..." — une URL Firebase
     // Storage contient presque toujours un "&" (ex: "?alt=media&token=..."), invalide tel
-    // quel dans du HTML. onerror="...hide..." en plus : si la photo du lieu échoue malgré
-    // tout à charger (lien mort), l'icône d'image cassée disparaît et laisse voir le fond
-    // (dégradé/couleur) déjà prévu par chaque habillage ci-dessous, plutôt qu'un rendu cassé
-    // — et ÉVITE SURTOUT que makeFile() (capture en image, voir plus bas) échoue en silence
-    // sur une <img> cassée, ce qui rendait aussi le bouton "Enregistrer" inopérant.
-    const pic = () => esc(user || D.photo), kind = () => D.kind || KIND[D.type] || '';
+    // quel dans du HTML.
+    // BUG corrigé (demande du 13/10/2026, persiste après le correctif ci-dessus) : pour un
+    // lieu SANS loc.img (assez courant — lieux ajoutés par photo plutôt que par vidéo),
+    // buildLocationStoryData() retombait sur une URL YouTube bâtie avec loc.ytId même
+    // lorsque ce dernier est vide — "https://img.youtube.com/vi/undefined/hqdefault.jpg",
+    // que YouTube sert avec une vraie image (un minuscule pavé gris "indisponible", PAS une
+    // erreur 404) : l'<img> "chargeait" donc techniquement, mais semblait vide/cassée, et
+    // onerror ne pouvait jamais se déclencher pour la rattraper (aucune erreur réseau).
+    // imgTag() ci-dessous n'écrit désormais l'<img> QUE si pic() a une vraie valeur ;
+    // buildLocationStoryData() ne construit plus l'URL YouTube sans ytId (voir plus bas).
+    // Dans les deux cas, l'absence d'<img> laisse voir le fond (dégradé/couleur) déjà prévu
+    // par chaque habillage ci-dessous plutôt qu'un rendu cassé ou vide — et ÉVITE SURTOUT
+    // que makeFile() (capture en image, voir plus bas) échoue en silence sur une <img>
+    // cassée, ce qui rendait aussi le bouton "Enregistrer" inopérant.
+    const pic = () => user || D.photo, kind = () => D.kind || KIND[D.type] || '';
     const ONERR = `onerror="this.style.display='none'"`;
+    const imgTag = (cls) => { const src = pic(); return src ? `<img${cls ? ` class="${cls}"` : ''} src="${esc(src)}" alt="" ${ONERR}>` : ''; };
     const TPL = [
         () => `<div class="sst-st sst-t1">${LOGO()}<div class="sst-kind">${kind()}</div><div class="sst-card">
-     <div class="sst-media"><img src="${pic()}" alt="" ${ONERR}><div class="sst-md">${medal(54)}</div></div>
+     <div class="sst-media">${imgTag()}<div class="sst-md">${medal(54)}</div></div>
      <div class="sst-bd"><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)} · ${esc(D.date)}</p>${STATS()}</div></div>
      <div class="sst-url">${esc(D.url.replace(/^https?:\/\//, ''))}</div></div>`,
-        () => `<div class="sst-st sst-t2"><img class="sst-bg" src="${pic()}" alt="" ${ONERR}><div class="sst-sh"></div>${LOGO()}
+        () => `<div class="sst-st sst-t2">${imgTag('sst-bg')}<div class="sst-sh"></div>${LOGO()}
      <div class="sst-bt"><div class="sst-kind">${kind()} · ${esc(D.date)}</div><div class="sst-ttl">${esc(D.title)}</div><p>${esc(D.subtitle)}</p><div class="sst-bar">${STATS()}</div></div></div>`,
-        () => `<div class="sst-st sst-t3"><div class="sst-top sst-map">${mapSVG()}</div>${LOGO('#1F2430', '#E0156B')}<div class="sst-snap"><img src="${pic()}" alt="" ${ONERR}></div>
+        () => `<div class="sst-st sst-t3"><div class="sst-top sst-map">${mapSVG()}</div>${LOGO('#1F2430', '#E0156B')}<div class="sst-snap">${imgTag()}</div>
      <div class="sst-pan"><div class="sst-r1">${medal(44)}<div><div class="sst-ttl">${esc(D.title)}</div><p>${kind()} · ${esc(D.date)}</p></div></div>${STATS()}
      <div class="sst-ft"><span>${esc(D.city)}</span><span>screentostreet.com</span></div></div></div>`,
         () => `<div class="sst-st sst-t4"><div class="sst-stk">${LOGO()}${user ? `<div class="sst-im"><img src="${esc(user)}" alt=""></div>` : `<div class="sst-md">${medal(64)}</div>`}
@@ -2658,9 +2672,41 @@ const ShareStory = (() => {
         };
         r.readAsDataURL(f);
     });
+    // BUG corrigé (demande du 13/10/2026, "Could not create the image" / "le bouton Save
+    // ne fonctionne pas") : html-to-image était chargé via une unique balise <script> dans
+    // map.html (CDN jsdelivr) — si CE téléchargement échoue pour n'importe quelle raison
+    // (bloqueur de pub, CDN temporairement indisponible pour la personne...), window.
+    // htmlToImage reste indéfiniment absent et plus rien ne peut jamais créer d'image, sans
+    // la moindre nouvelle tentative possible. Chargement paresseux (au premier besoin réel,
+    // comme pour Pinterest/TikTok/Instagram ailleurs dans ce fichier) AVEC repli sur un
+    // second CDN (unpkg, déjà utilisé avec succès pour Leaflet sur cette page) si le
+    // premier échoue — met fin au point de défaillance unique.
+    let _htmlToImageLoadPromise = null;
+    function loadHtmlToImageOnce() {
+        if (window.htmlToImage) return Promise.resolve(true);
+        if (_htmlToImageLoadPromise) return _htmlToImageLoadPromise;
+        const urls = [
+            'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js',
+            'https://unpkg.com/html-to-image@1.11.11/dist/html-to-image.js'
+        ];
+        _htmlToImageLoadPromise = (async () => {
+            for (const url of urls) {
+                if (window.htmlToImage) break;
+                await new Promise(resolve => {
+                    const s = document.createElement('script');
+                    s.src = url;
+                    s.onload = resolve;
+                    s.onerror = resolve;
+                    document.body.appendChild(s);
+                });
+            }
+            return !!window.htmlToImage;
+        })();
+        return _htmlToImageLoadPromise;
+    }
     async function makeFile() {
         const node = root.querySelector(`[data-story="${tpl}"] .sst-st`);
-        if (!window.htmlToImage) throw new Error('html-to-image absent');
+        if (!(await loadHtmlToImageOnce())) throw new Error('html-to-image absent');
         const blob = await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 });
         const slug = (D.url.split('/').pop() || 'partage');
         return new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
@@ -2778,7 +2824,12 @@ function buildLocationStoryData(loc) {
         subtitle: subtitleParts.join(' · '),
         city: loc.city || loc.country || '',
         date: dateLabel,
-        photo: loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg'),
+        // BUG corrigé (demande du 13/10/2026, "la photo du lieu ne charge pas dans Share") :
+        // sans loc.img (lieux ajoutés par photo plutôt que par vidéo), ceci construisait
+        // "https://img.youtube.com/vi/undefined/hqdefault.jpg" quand loc.ytId est vide —
+        // une URL que YouTube sert quand même (image grise "indisponible", pas d'erreur),
+        // donc rien ne détectait l'échec : l'emplacement photo restait vide en pratique.
+        photo: loc.img || (loc.ytId ? ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg') : ''),
         url: shareUrl,
         stats: [
             [loc.group || '—', currentLang === 'fr' ? 'groupe' : 'group'],
