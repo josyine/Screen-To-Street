@@ -744,7 +744,11 @@ window.listFollowers = async function (targetUid) {
 // dans publicProfiles/{uid}.photos.{id} (même document que .reviews, déjà en écriture
 // libre pour son propriétaire — pas de règle Firestore dédiée nécessaire), lue à la fois
 // par l'onglet Photos de profile.html et par fetchGlobalPhotoFeed() ci-dessous.
-window.addProfilePhoto = async function ({ locationId, locationName, photo, date, caption }) {
+// taggedFriends (demande du 15/10/2026, nouvelle fenêtre "Add a photo" — voir
+// window.openQuickAddFormSheet() dans script.js) : tableau d'uids identifiés sur cette
+// photo, stocké tel quel — rien ne l'affiche encore nulle part, posé en prévision d'un
+// futur usage (ex: notifier les amis tagués) plutôt que perdu silencieusement.
+window.addProfilePhoto = async function ({ locationId, locationName, photo, date, caption, taggedFriends }) {
     const user = auth.currentUser;
     if (!user) return { success: false, code: 'not-authenticated' };
     try {
@@ -754,6 +758,7 @@ window.addProfilePhoto = async function ({ locationId, locationName, photo, date
                 [photoId]: {
                     locationId, locationName: locationName || null, photo,
                     date: date || null, caption: (caption || '').slice(0, 280),
+                    taggedFriends: Array.isArray(taggedFriends) && taggedFriends.length ? taggedFriends : [],
                     updatedAt: serverTimestamp()
                 }
             }

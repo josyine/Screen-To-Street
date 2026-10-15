@@ -3836,15 +3836,12 @@ window.openQuickAddSheet = function () {
             opt.addEventListener('click', () => {
                 const kind = opt.dataset.qa;
                 window.closeQuickAddSheet();
-                // "Ajouter une photo" (demande du 09/09/2026) a maintenant son propre volet
-                // (choix du lieu/date/légende, voir window.openAddPhotoModal() ci-dessous) —
-                // "visited"/"review" continuent de renvoyer vers map.html (pas de flux dédié
-                // multi-page pour ceux-ci, le site n'ayant pas de backend/Cloud Functions).
-                if (kind === 'photo' && typeof window.openAddPhotoModal === 'function') {
-                    window.openAddPhotoModal();
-                } else {
-                    window.location.href = 'map.html?quickadd=' + kind;
-                }
+                // Demande du 15/10/2026 (maquette jointe) : les 3 options ouvrent maintenant
+                // toutes la même fenêtre dédiée (recherche de lieu, date, groupes/amis tagués,
+                // photo, étoiles, tags...) — voir window.openQuickAddFormSheet() plus bas, qui
+                // remplace l'ancien window.openAddPhotoModal() (photo) et la redirection vers
+                // map.html?quickadd=... (visited/review, qui n'avaient pas de volet dédié).
+                if (typeof window.openQuickAddFormSheet === 'function') window.openQuickAddFormSheet(kind);
             });
         });
     }
@@ -3855,137 +3852,320 @@ window.closeQuickAddSheet = function () {
     if (overlay) overlay.classList.remove('open');
 };
 
-// Volet "Ajouter une photo" (demande du 09/09/2026) : contrairement à "I visited this
-// place"/"Add a review" (qui restent liés à une fiche lieu précise dans map.html), ceci
-// publie une photo autonome sur le profil — choix du lieu par recherche, date, légende
-// facultative. Stockée dans publicProfiles/{uid}.photos.{id} (voir addProfilePhoto() dans
-// firebase-init.js), lue à la fois par l'onglet Photos de profile.html et par feed.html.
-window.openAddPhotoModal = function () {
-    let overlay = document.getElementById('add-photo-overlay');
+// ==========================================
+// Fenêtre unique "Add a photo" / "Add a visited place" / "Add a review" (demande du
+// 15/10/2026, maquette jointe "ajout_contenu_final.html") — remplace l'ancien
+// window.openAddPhotoModal() (formulaire simple, "Ajouter une photo", demande du
+// 09/09/2026) et la redirection map.html?quickadd=visited/review qui n'avait encore
+// aucun volet dédié. Moteur (état/rendu/sélecteurs) porté quasiment tel quel depuis la
+// maquette fournie ; données de démonstration remplacées par les vraies : celebLocations
+// (lieux, un seul par endroit PHYSIQUE — voir qaBuildPlaceList(), qui réutilise
+// findLinkedGroupLocations()/groupColorFor(), posées le 15/10/2026 pour "+ Add a group",
+// pour résoudre les groupes "qui était là"), window.listMyFriends()/
+// avatarColorForUsername() (amis).
+// ==========================================
+const QA_TAGS = ["Photo spot","Fan-friendly","Worth it","Easy to find","Great food","Friendly staff","Quiet","Crowded","Long wait","Pricey","Good value","Bring cash","Accessible","Open late","Merch / goodies","Fan messages on site"];
+const QA_IC = {
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>',
+    img: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>',
+    grp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>',
+    fr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 19c.6-3 3-5 6-5s5.4 2 6 5"/><path d="M17 8v6M14 11h6"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    ch: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+    bk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+    ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>'
+};
+function qaT(fr, en) { return currentLang === 'fr' ? fr : en; }
+const QA_FORMS = {
+    photo: { title: () => qaT('Ajouter une photo', 'Add a photo'), cta: () => qaT('Publier', 'Publish') },
+    place: { title: () => qaT('Ajouter un lieu visité', 'Add a visited place'), cta: () => qaT('Marquer comme visité', 'Mark as visited') },
+    review: { title: () => qaT('Ajouter un avis', 'Add a review'), cta: () => qaT("Publier l'avis", 'Publish review') }
+};
+const QA_RATE_LABELS = () => qaT(
+    ['Appuyez pour noter', 'Décevant', 'Correct', 'Bien', 'Très bien', 'Incontournable pour les fans !'],
+    ['Tap to rate', 'Disappointing', 'Okay', 'Good', 'Great', 'A must for fans!']
+);
+let qaFriendsCache = null; // window.listMyFriends() mis en cache le temps qu'une fenêtre reste ouverte
+let qaPlacesCache = null; // qaBuildPlaceList() idem — celebLocations ne change pas pendant que la fenêtre est ouverte
+let qaState = null; // une seule fenêtre "+" ouverte à la fois
+let qaCurrentKind = null;
+
+const qaIni = name => (name || '?').trim().charAt(0).toUpperCase();
+const qaAvStack = list => `<span class="qaf-avs">${list.slice(0, 4).map(f => `<span class="qaf-av" style="background:${f.c}">${escapeHtml(qaIni(f.n))}</span>`).join('')}</span>`;
+const qaRowHtml = (ic, lab, val, pick, right) => `<button type="button" class="qaf-row" data-qapick="${pick}"><span class="qaf-ri">${ic}</span><span class="qaf-rt"><small>${lab}</small>${val}</span>${right || ''}<span class="qaf-chev">${QA_IC.ch}</span></button>`;
+const qaPh = txt => `<span class="qaf-ph">${escapeHtml(txt)}</span>`;
+// Un seul lieu PHYSIQUE par ligne (demande du 15/10/2026, cohérent avec "+ Add a group"
+// posé le même jour) : celebLocations peut contenir plusieurs entrées pour le même
+// endroit (une par groupe, reliées via referenceLocId/linkedGroupLocIds) — dédupliquées
+// ici par lieu de référence, avec la liste des groupes qui y sont vraiment allés.
+function qaBuildPlaceList() {
+    if (qaPlacesCache) return qaPlacesCache;
+    const seen = new Set();
+    const list = [];
+    (typeof celebLocations !== 'undefined' ? celebLocations : []).forEach(loc => {
+        const refId = loc.referenceLocId || loc.id;
+        const key = String(refId);
+        if (seen.has(key)) return;
+        seen.add(key);
+        const ref = loc.referenceLocId ? ((celebLocations.find(l => String(l.id) === key)) || loc) : loc;
+        const siblings = typeof findLinkedGroupLocations === 'function' ? findLinkedGroupLocations(ref) : [ref];
+        const groups = Array.from(new Set(siblings.map(s => s.group).filter(Boolean)));
+        list.push({ id: ref.id, name: ref.name || '', sub: [ref.city, ref.country].filter(Boolean).join(', '), groups });
+    });
+    qaPlacesCache = list;
+    return list;
+}
+function qaRows(st, which) {
+    const out = [];
+    for (const w of which) {
+        if (w === 'loc') out.push(qaRowHtml(QA_IC.pin, qaT('Lieu', 'Location'), st.place ? `<span>${escapeHtml(st.place.name)}</span>` : qaPh(qaT('Où était-ce ?', 'Where was it?')), 'loc'));
+        if (w === 'date') out.push(qaRowHtml(QA_IC.cal, qaT('Date de visite', 'Visit date'), `<span>${escapeHtml(st.dateLabel)}</span>`, 'date'));
+        if (w === 'grp') {
+            const gs = st.groups;
+            out.push(qaRowHtml(QA_IC.grp, `${qaT('Qui était là ?', 'Who was there?')} <em>· ${qaT('facultatif', 'optional')}</em>`, gs.length ? `<span>${escapeHtml(gs.join(', '))}</span>` : qaPh(qaT('Choisissez les groupes', 'Choose the groups')), 'grp', gs.length ? qaAvStack(gs.map(g => ({ n: g, c: groupColorFor(g) }))) : ''));
+        }
+        if (w === 'fr') {
+            const fs = (qaFriendsCache || []).filter(f => st.friends.includes(f.uid));
+            out.push(qaRowHtml(QA_IC.fr, `${qaT('Identifier des amis', 'Tag friends')} <em>· ${qaT('facultatif', 'optional')}</em>`, fs.length ? `<span>${escapeHtml(fs.map(f => f.n).join(', '))}</span>` : qaPh(qaT('Qui était avec vous ?', 'Who was with you?')), 'fr', fs.length ? qaAvStack(fs) : ''));
+        }
+    }
+    return out.join('');
+}
+function qaDrop(st, h, txt, sub) {
+    return `<label class="qaf-drop" style="height:${h}px"><input type="file" accept="image/*,.heic,.heif" data-qain="photo" hidden>${st.photo ? `<img src="${st.photo}" alt=""><span class="qaf-chg">${qaT('Changer', 'Change')}</span>` : `<span class="qaf-dic">${QA_IC.img}</span>${txt}<small>${sub}</small>`}</label>`;
+}
+function qaArea(st, placeholder) {
+    return `<label class="qaf-area"><textarea data-qain="caption" placeholder="${escapeHtml(placeholder)}" rows="4" maxlength="500">${escapeHtml(st.caption)}</textarea></label>`;
+}
+function qaStars(st) {
+    const labels = QA_RATE_LABELS();
+    const starBtn = n => `<button type="button" data-qarate="${n}" aria-label="${n} stars" style="color:${n <= st.rating ? '#F5B301' : '#D9D4E2'}">${QA_IC.star.replace('fill="none"', n <= st.rating ? 'fill="#F5B301"' : 'fill="none"')}</button>`;
+    return `<div class="qaf-stars">${[1, 2, 3, 4, 5].map(starBtn).join('')}</div><div class="qaf-stars-l">${escapeHtml(labels[st.rating])}</div>`;
+}
+function qaReady(kind, st) {
+    if (kind === 'photo') return !!(st.place && st.photo);
+    if (kind === 'place') return !!st.place;
+    if (kind === 'review') return !!(st.place && st.rating);
+    return false;
+}
+function qaBody(kind, st) {
+    if (kind === 'photo') return qaDrop(st, 190, qaT('Choisir une photo', 'Choose a photo'), qaT('depuis votre galerie', 'from your gallery')) + qaRows(st, ['loc', 'date', 'fr']) + `<div class="qaf-lab">${qaT('Légende', 'Caption')} <em>${qaT('facultatif', 'optional')}</em></div>` + qaArea(st, qaT('Dites-en un peu plus sur cette photo…', 'Say something about this photo…'));
+    if (kind === 'place') return qaRows(st, ['loc', 'date', 'grp', 'fr']) + `<div class="qaf-lab">${qaT('Photo', 'Photo')} <em>${qaT('facultatif', 'optional')}</em></div>` + qaDrop(st, 120, qaT('Ajouter une photo', 'Add a photo'), qaT('depuis votre galerie', 'from your gallery'));
+    if (kind === 'review') return qaRows(st, ['loc']) + `<div style="padding:18px 0 4px">${qaStars(st)}</div><div class="qaf-lab">${qaT("Qu'est-ce qui vous a marqué ?", 'What stood out?')} <em>${qaT('facultatif', 'optional')}</em></div><div class="qaf-chips">${QA_TAGS.map(tg => `<button type="button" class="qaf-chip" data-qatag="${escapeHtml(tg)}" aria-pressed="${st.tags.includes(tg)}">${escapeHtml(tg)}</button>`).join('')}</div><div class="qaf-lab">${qaT('Votre avis', 'Your review')}</div>` + qaArea(st, qaT('Dites aux autres fans à quoi ça ressemble…', "Tell other fans what it's like…"));
+    return '';
+}
+function qaPicker(st) {
+    if (!st.pick) return '';
+    const p = st.pick;
+    let title = '', body = '', multi = false, searchPh = '';
+    if (p === 'loc') {
+        title = qaT('Lieu', 'Location');
+        searchPh = qaT('Rechercher un lieu…', 'Search a location…');
+        const q = st.q.toLowerCase();
+        const matches = qaBuildPlaceList().filter(x => x.name.toLowerCase().includes(q)).slice(0, 40);
+        body = `<div class="qaf-sec">${q ? qaT('Résultats', 'Results') : qaT('Lieux', 'Places')}</div>` + matches.map(x => `<button type="button" class="qaf-li" data-qasetplace="${escapeHtml(String(x.id))}" aria-pressed="${!!(st.place && st.place.id === x.id)}"><span class="qaf-pi">${QA_IC.pin}</span><span class="qaf-lt"><b>${escapeHtml(x.name)}</b><small>${escapeHtml(x.sub)}</small></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    if (p === 'date') {
+        title = qaT('Date de visite', 'Visit date');
+        const quick = [qaT("Aujourd'hui", 'Today'), qaT('Hier', 'Yesterday'), qaT('Il y a 2 jours', '2 days ago')];
+        body = quick.map((d, i) => `<button type="button" class="qaf-li" data-qasetdate="${i}" aria-pressed="${st.dateLabel === d}"><span class="qaf-pi">${QA_IC.cal}</span><span class="qaf-lt"><b>${escapeHtml(d)}</b></span><span class="qaf-rd"></span></button>`).join('')
+            + `<label class="qaf-li" style="cursor:pointer"><span class="qaf-pi">${QA_IC.cal}</span><span class="qaf-lt"><b>${qaT('Choisir une date…', 'Pick a date…')}</b><small>${qaT('Ouvrir le calendrier', 'Open the calendar')}</small></span><input type="date" data-qain="datepick" style="width:130px;font-size:13px;color:var(--qa-sub)"></label>`;
+    }
+    if (p === 'grp') {
+        title = qaT('Qui était là ?', 'Who was there?');
+        multi = true;
+        const gs = st.place && st.place.groups.length ? st.place.groups : Object.keys(groupColors);
+        body = `<div class="qaf-sec">${st.place ? qaT('Groupes liés à ', 'Groups linked to ') + escapeHtml(st.place.name) : qaT('Groupes', 'Groups')}</div>` + gs.map(g => `<button type="button" class="qaf-li" data-qatoggrp="${escapeHtml(g)}" aria-pressed="${st.groups.includes(g)}"><span class="qaf-bigav" style="background:${groupColorFor(g)}">${escapeHtml(g.slice(0, 2))}</span><span class="qaf-lt"><b>${escapeHtml(g)}</b><small>${qaT('Vu à ce lieu', 'Seen at this place')}</small></span><span class="qaf-ck">${QA_IC.ok}</span></button>`).join('');
+    }
+    if (p === 'fr') {
+        title = qaT('Identifier des amis', 'Tag friends');
+        multi = true;
+        searchPh = qaT('Rechercher parmi vos amis…', 'Search your friends…');
+        const q = st.q.toLowerCase();
+        const fs = (qaFriendsCache || []).filter(f => (f.n + f.h).toLowerCase().includes(q));
+        body = `<div class="qaf-sec">${qaT('Vos amis', 'Your friends')}</div>` + (fs.length ? fs.map(f => `<button type="button" class="qaf-li" data-qatogfr="${escapeHtml(f.uid)}" aria-pressed="${st.friends.includes(f.uid)}"><span class="qaf-bigav" style="background:${f.c}">${escapeHtml(qaIni(f.n))}</span><span class="qaf-lt"><b>${escapeHtml(f.n)}</b><small>${escapeHtml(f.h)}</small></span><span class="qaf-ck">${QA_IC.ok}</span></button>`).join('') : `<div style="padding:20px 0;color:var(--qa-mut);font-size:13px;text-align:center;">${qaT('Aucun ami pour le moment.', 'No friends yet.')}</div>`);
+    }
+    const n = p === 'grp' ? st.groups.length : p === 'fr' ? st.friends.length : 0;
+    return `<div class="qaf-pick on"><div class="qaf-grab"></div><div class="qaf-hd"><button type="button" class="qaf-bk" data-qaact="back">${QA_IC.bk}</button><h2>${escapeHtml(title)}</h2><span style="width:34px"></span></div>
+        ${searchPh ? `<label class="qaf-srch">${QA_IC.search}<input data-qain="q" placeholder="${escapeHtml(searchPh)}" value="${escapeHtml(st.q)}"></label>` : ''}<div class="qaf-body">${body}</div>
+        ${multi ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-qaact="back">${n ? qaT(`Terminé · ${n} sélectionné${n > 1 ? 's' : ''}`, `Done · ${n} selected`) : qaT('Terminé', 'Done')}</button></div>` : ''}</div>`;
+}
+function qaRender(overlay, keepFocus) {
+    const kind = qaCurrentKind, st = qaState;
+    const sheetScroll = overlay.querySelector('.qaf-sheet-body')?.scrollTop || 0;
+    const pickScroll = overlay.querySelector('.qaf-pick .qaf-body')?.scrollTop || 0;
+    const ready = qaReady(kind, st);
+    overlay.querySelector('.qa-form-root').innerHTML = `
+        <div class="qaf-sheet"><div class="qaf-grab"></div><div class="qaf-hd"><h2>${escapeHtml(QA_FORMS[kind].title())}</h2><button type="button" class="qaf-x" data-qaact="close">${QA_IC.x}</button></div><div class="qaf-sheet-body">${qaBody(kind, st)}</div>
+        <div class="qaf-foot"><button type="button" class="qaf-cta${ready ? '' : ' off'}" data-qaact="submit">${escapeHtml(QA_FORMS[kind].cta())}</button></div></div>${qaPicker(st)}`;
+    const sb = overlay.querySelector('.qaf-sheet-body'); if (sb) sb.scrollTop = sheetScroll;
+    const pb = overlay.querySelector('.qaf-pick .qaf-body'); if (pb) pb.scrollTop = pickScroll;
+    if (keepFocus) {
+        const inp = overlay.querySelector('.qaf-pick [data-qain="q"]');
+        if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+    }
+}
+// Sauvegarde une visite (demande du 15/10/2026, "Add a visited place"/"Add a review") —
+// même principe que saveMemoryBtn (la fiche "mémoire" par lieu, dans le détail d'un
+// lieu), volontairement réécrit ici en fonction autonome plutôt que partagé : celui-là
+// lit plusieurs champs DOM/variables globales propres à SA modale
+// (currentLocationIdForMemory, editingVisitIndex, pendingMemoryPhoto...), couplage qu'on
+// évite ici pour ne rien risquer de casser sur le flux déjà en place. rating=0 (cas
+// "Add a visited place", qui ne recueille aucune note) : jamais compté dans la moyenne
+// communautaire, volontairement — voir buildRatingDeltas() plus haut, qui compterait
+// sinon une "note" de 0 étoile jamais vraiment donnée par la personne.
+async function qaSaveVisit({ locationId, date, rating, notes, photo, isPublic, groups, friends, tags }) {
+    let list = getVisitedLocs();
+    let idx = list.findIndex(v => (typeof v === 'object' && v ? v.id : v) === locationId);
+    if (idx === -1) { list.push({ id: locationId, visits: [] }); idx = list.length - 1; }
+    list[idx] = normalizeVisitEntry(list[idx]);
+    const visitData = { date, rating, notes, photo: photo || null, isPublic };
+    if (groups && groups.length) visitData.groups = groups;
+    if (friends && friends.length) visitData.taggedFriends = friends;
+    if (tags && tags.length) visitData.tags = tags;
+    list[idx].visits.push(visitData);
+    if (rating > 0 && typeof buildRatingDeltas === 'function' && typeof applyCommunityRatingDelta === 'function') {
+        applyCommunityRatingDelta(locationId, buildRatingDeltas(visitData, true));
+    }
+    localStorage.setItem('visitedLocs', JSON.stringify(list));
+    if (typeof syncVisited === 'function') syncVisited(list);
+    if (isPublic && typeof window.setLocationReview === 'function') {
+        const loc = (typeof celebLocations !== 'undefined' ? celebLocations : []).find(l => String(l.id) === String(locationId));
+        const res = await window.setLocationReview(String(locationId), {
+            rating, notes, photo: photo || null, tags: tags || [],
+            userName: (localStorage.getItem('userFirstName') || localStorage.getItem('userName') || 'ARMY').trim(),
+            userPhoto: localStorage.getItem('userPhoto') || null,
+            locationName: loc ? loc.name : null, category: loc ? loc.category : null
+        });
+        if (res && !res.success) {
+            throw Object.assign(new Error('review-publish-failed'), { visitSaved: true });
+        }
+    }
+    if (typeof window.refreshLocationRating === 'function') window.refreshLocationRating(locationId);
+}
+async function qaSubmit(overlay) {
+    const kind = qaCurrentKind, st = qaState;
+    if (!qaReady(kind, st)) return;
+    const btn = overlay.querySelector('[data-qaact="submit"]');
+    if (btn) btn.disabled = true;
+    try {
+        if (kind === 'photo') {
+            if (typeof window.addProfilePhoto !== 'function') throw new Error('unavailable');
+            const res = await window.addProfilePhoto({
+                locationId: st.place.id, locationName: st.place.name, photo: st.photo,
+                date: st.dateISO, caption: st.caption.trim(), taggedFriends: st.friends.slice()
+            });
+            if (!res || !res.success) throw new Error((res && res.code) || 'failed');
+        } else if (kind === 'place') {
+            await qaSaveVisit({ locationId: st.place.id, date: st.dateISO, rating: 0, notes: '', photo: st.photo, isPublic: false, groups: st.groups.slice(), friends: st.friends.slice() });
+        } else if (kind === 'review') {
+            await qaSaveVisit({ locationId: st.place.id, date: st.dateISO, rating: st.rating, notes: st.caption.trim(), photo: null, isPublic: true, tags: st.tags.slice() });
+        }
+        if (typeof window.showSimpleToast === 'function') {
+            window.showSimpleToast(qaT(
+                { photo: 'Photo publiée', place: 'Lieu marqué comme visité', review: 'Avis publié' }[kind],
+                { photo: 'Photo published', place: 'Place marked as visited', review: 'Review published' }[kind]
+            ));
+        }
+        window.closeQuickAddFormSheet();
+    } catch (e) {
+        if (typeof window.showSimpleToast === 'function') {
+            window.showSimpleToast(e && e.visitSaved
+                ? qaT('Visite enregistrée, mais la publication publique a échoué — réessayez plus tard.', 'Visit saved, but publishing publicly failed — try again later.')
+                : qaT('Une erreur est survenue, réessayez.', 'Something went wrong, try again.'));
+        }
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+window.openQuickAddFormSheet = async function (kind) {
+    if (!QA_FORMS[kind]) return;
+    qaCurrentKind = kind;
+    qaState = { place: null, dateLabel: qaT("Aujourd'hui", 'Today'), dateISO: new Date().toISOString().split('T')[0], photo: null, caption: '', groups: [], friends: [], rating: 0, tags: [], pick: null, q: '' };
+    let overlay = document.getElementById('qa-form-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
-        overlay.id = 'add-photo-overlay';
-        overlay.className = 'qa-sheet-overlay';
-        overlay.innerHTML = `
-            <div class="qa-sheet add-photo-sheet">
-                <div class="qa-sheet-handle"></div>
-                <div class="qa-sheet-title">${t('addPhotoTitle')}</div>
-                <div class="add-photo-field">
-                    <label class="add-photo-label">${t('addPhotoLocationLabel')}</label>
-                    <input type="text" id="add-photo-location-input" class="add-photo-input" placeholder="${t('addPhotoLocationPlaceholder')}" autocomplete="off">
-                    <div id="add-photo-location-suggestions" class="add-photo-suggestions hidden"></div>
-                </div>
-                <div class="add-photo-field">
-                    <label class="add-photo-label">${t('addPhotoDateLabel')}</label>
-                    <input type="date" id="add-photo-date-input" class="add-photo-input">
-                </div>
-                <div class="add-photo-field">
-                    <label class="add-photo-label">${t('addPhotoPhotoLabel')}</label>
-                    <input type="file" id="add-photo-file-input" accept="image/*,.heic,.heif" class="hidden">
-                    <div id="add-photo-preview" class="add-photo-preview hidden"><img id="add-photo-preview-img"></div>
-                    <button type="button" id="add-photo-choose-btn" class="add-photo-choose-btn">${t('addPhotoChooseBtn')}</button>
-                </div>
-                <div class="add-photo-field">
-                    <label class="add-photo-label">${t('addPhotoCaptionLabel')}</label>
-                    <textarea id="add-photo-caption-input" class="add-photo-textarea" maxlength="280" placeholder="${t('addPhotoCaptionPlaceholder')}"></textarea>
-                </div>
-                <div id="add-photo-error" class="add-photo-error hidden"></div>
-                <button type="button" id="add-photo-submit-btn" class="add-photo-submit-btn">${t('addPhotoSubmitBtn')}</button>
-                <button type="button" class="qa-sheet-cancel">${t('quickAddCancel')}</button>
-            </div>
-        `;
+        overlay.id = 'qa-form-overlay';
+        overlay.className = 'qa-form-overlay';
+        overlay.innerHTML = `<div class="qa-form-root"></div>`;
         document.body.appendChild(overlay);
-        overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeAddPhotoModal(); });
-        overlay.querySelector('.qa-sheet-cancel').addEventListener('click', window.closeAddPhotoModal);
-
-        const dateInput = overlay.querySelector('#add-photo-date-input');
-        const locInput = overlay.querySelector('#add-photo-location-input');
-        const suggestionsEl = overlay.querySelector('#add-photo-location-suggestions');
-        const fileInput = overlay.querySelector('#add-photo-file-input');
-        const chooseBtn = overlay.querySelector('#add-photo-choose-btn');
-        const errorEl = overlay.querySelector('#add-photo-error');
-        let selectedLocation = null;
-        let pendingPhoto = null;
-
-        locInput.addEventListener('input', () => {
-            selectedLocation = null;
-            const q = locInput.value.trim().toLowerCase();
-            if (!q || typeof celebLocations === 'undefined') { suggestionsEl.classList.add('hidden'); suggestionsEl.innerHTML = ''; return; }
-            const matches = celebLocations.filter(l => l.name.toLowerCase().includes(q)).slice(0, 8);
-            if (!matches.length) { suggestionsEl.classList.add('hidden'); suggestionsEl.innerHTML = ''; return; }
-            suggestionsEl.innerHTML = matches.map(l =>
-                `<div class="add-photo-suggestion" data-id="${l.id}">${escapeHtml(l.name)}<span class="add-photo-suggestion-meta">${escapeHtml([l.city, l.country].filter(Boolean).join(', '))}</span></div>`
-            ).join('');
-            suggestionsEl.classList.remove('hidden');
-            suggestionsEl.querySelectorAll('.add-photo-suggestion').forEach(row => {
-                row.addEventListener('click', () => {
-                    const loc = celebLocations.find(l => l.id === Number(row.dataset.id));
-                    if (loc) { selectedLocation = loc; locInput.value = loc.name; }
-                    suggestionsEl.classList.add('hidden');
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeQuickAddFormSheet(); });
+        overlay.addEventListener('click', (e) => {
+            const d = e.target.closest('[data-qapick],[data-qaact],[data-qasetplace],[data-qasetdate],[data-qatoggrp],[data-qatogfr],[data-qatag],[data-qarate]');
+            if (!d) return;
+            const st = qaState, ds = d.dataset;
+            if (ds.qapick) { st.pick = ds.qapick; st.q = ''; }
+            else if (ds.qasetplace) {
+                const place = qaBuildPlaceList().find(p => String(p.id) === ds.qasetplace);
+                if (place && (!st.place || st.place.id !== place.id)) st.groups = [];
+                st.place = place || null;
+                st.pick = null;
+            } else if (ds.qasetdate !== undefined) {
+                const i = Number(ds.qasetdate);
+                const d2 = new Date(); d2.setDate(d2.getDate() - i);
+                st.dateLabel = [qaT("Aujourd'hui", 'Today'), qaT('Hier', 'Yesterday'), qaT('Il y a 2 jours', '2 days ago')][i];
+                st.dateISO = d2.toISOString().split('T')[0];
+                st.pick = null;
+            } else if (ds.qatoggrp) {
+                const g = ds.qatoggrp;
+                st.groups = st.groups.includes(g) ? st.groups.filter(x => x !== g) : [...st.groups, g];
+            } else if (ds.qatogfr) {
+                const f = ds.qatogfr;
+                st.friends = st.friends.includes(f) ? st.friends.filter(x => x !== f) : [...st.friends, f];
+            } else if (ds.qatag) {
+                const tg = ds.qatag;
+                st.tags = st.tags.includes(tg) ? st.tags.filter(x => x !== tg) : [...st.tags, tg];
+            } else if (ds.qarate) {
+                st.rating = Number(ds.qarate);
+            } else if (ds.qaact === 'back') { st.pick = null; }
+            else if (ds.qaact === 'close') { window.closeQuickAddFormSheet(); return; }
+            else if (ds.qaact === 'submit') { qaSubmit(overlay); return; }
+            qaRender(overlay);
+        });
+        overlay.addEventListener('input', (e) => {
+            const k = e.target.dataset.qain;
+            if (!k) return;
+            const st = qaState;
+            if (k === 'caption') st.caption = e.target.value;
+            if (k === 'q') { st.q = e.target.value; qaRender(overlay, true); }
+        });
+        overlay.addEventListener('change', (e) => {
+            const k = e.target.dataset.qain;
+            if (!k) return;
+            const st = qaState;
+            if (k === 'datepick' && e.target.value) {
+                st.dateISO = e.target.value;
+                st.dateLabel = new Date(e.target.value).toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                st.pick = null;
+                qaRender(overlay);
+            }
+            if (k === 'photo' && e.target.files[0]) {
+                const file = e.target.files[0];
+                fileToResizedDataUrl(file, 900).then(dataUrl => { st.photo = dataUrl; qaRender(overlay); }).catch(err => {
+                    console.warn('Import de la photo échoué :', err);
+                    if (typeof window.showSimpleToast === 'function') window.showSimpleToast(qaT("Impossible d'importer cette photo.", "Couldn't import this photo."));
                 });
-            });
-        });
-
-        chooseBtn.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            errorEl.classList.add('hidden');
-            try {
-                pendingPhoto = await fileToResizedDataUrl(file, 900);
-                const preview = overlay.querySelector('#add-photo-preview');
-                preview.querySelector('img').src = pendingPhoto;
-                preview.classList.remove('hidden');
-                chooseBtn.textContent = t('addPhotoChangeBtn');
-            } catch (err) {
-                console.warn('Import de la photo échoué :', err);
-                errorEl.textContent = currentLang === 'fr' ? "Impossible d'importer cette photo. Essayez un autre fichier (format JPEG/PNG)." : "Couldn't import this photo. Try a different file (JPEG/PNG format).";
-                errorEl.classList.remove('hidden');
-            }
-            e.target.value = '';
-        });
-
-        overlay.querySelector('#add-photo-submit-btn').addEventListener('click', async () => {
-            errorEl.classList.add('hidden');
-            if (!selectedLocation) { errorEl.textContent = t('addPhotoErrorLocation'); errorEl.classList.remove('hidden'); return; }
-            if (!pendingPhoto) { errorEl.textContent = t('addPhotoErrorPhoto'); errorEl.classList.remove('hidden'); return; }
-            if (typeof window.addProfilePhoto !== 'function') {
-                errorEl.textContent = t('addPhotoErrorGeneric');
-                errorEl.classList.remove('hidden');
-                return;
-            }
-            const submitBtn = overlay.querySelector('#add-photo-submit-btn');
-            submitBtn.disabled = true;
-            const result = await window.addProfilePhoto({
-                locationId: selectedLocation.id,
-                locationName: selectedLocation.name,
-                photo: pendingPhoto,
-                date: dateInput.value,
-                caption: overlay.querySelector('#add-photo-caption-input').value.trim()
-            });
-            submitBtn.disabled = false;
-            if (result && result.success) {
-                window.closeAddPhotoModal();
-                if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('addPhotoSuccess'));
-                selectedLocation = null; pendingPhoto = null;
-                locInput.value = '';
-                dateInput.value = new Date().toISOString().split('T')[0];
-                overlay.querySelector('#add-photo-caption-input').value = '';
-                overlay.querySelector('#add-photo-preview').classList.add('hidden');
-                chooseBtn.textContent = t('addPhotoChooseBtn');
-            } else {
-                errorEl.textContent = t('addPhotoErrorGeneric');
-                errorEl.classList.remove('hidden');
+                e.target.value = '';
             }
         });
-
-        dateInput.value = new Date().toISOString().split('T')[0];
     }
+    if (!qaFriendsCache && typeof window.listMyFriends === 'function') {
+        try {
+            const raw = await window.listMyFriends();
+            qaFriendsCache = raw.map(f => ({ uid: f.uid, n: f.username || f.uid, h: '@' + (f.username || ''), c: (typeof avatarColorForUsername === 'function' ? avatarColorForUsername(f.username || f.uid) : '#D42759') }));
+        } catch (e) { qaFriendsCache = []; }
+    }
+    qaRender(overlay);
     overlay.classList.add('open');
 };
-window.closeAddPhotoModal = function () {
-    const overlay = document.getElementById('add-photo-overlay');
+window.closeQuickAddFormSheet = function () {
+    const overlay = document.getElementById('qa-form-overlay');
     if (overlay) overlay.classList.remove('open');
+    qaState = null;
+    qaCurrentKind = null;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
