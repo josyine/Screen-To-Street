@@ -2760,7 +2760,7 @@ const ShareStory = (() => {
             // perso si la personne en a choisi une, comme les 3 autres formats.
             const pinPic = pic();
             fg = `<path d="M${P.map(p => p.join(' ')).join(' L')}" stroke="#E0156B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${s[0]}" cy="${s[1]}" r="6" fill="#fff" stroke="#1F2430" stroke-width="3"/>
-   <g transform="translate(${e[0] - 24} ${e[1] - 62})"><path d="M24 62s-20-18-20-34a20 20 0 0 1 40 0c0 16-20 34-20 34z" fill="#E0156B"/>${pinPic ? `<defs><clipPath id="${u}"><circle cx="24" cy="28" r="16"/></clipPath></defs><image href="${esc(pinPic)}" x="8" y="12" width="32" height="32" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u})"/>` : ''}</g>`;
+   <g transform="translate(${e[0] - 24} ${e[1] - 62})"><path d="M24 62s-20-18-20-34a20 20 0 0 1 40 0c0 16-20 34-20 34z" fill="#E0156B"/>${pinPic ? `<defs><clipPath id="${u}"><circle cx="24" cy="28" r="16"/></clipPath></defs><image href="${esc(pinPic)}" data-pi="0" x="8" y="12" width="32" height="32" preserveAspectRatio="xMidYMid slice" clip-path="url(#${u})"/>` : ''}</g>`;
         }
         return `<svg viewBox="0 0 270 330" preserveAspectRatio="xMidYMid slice">${base}${fg}</svg>`;
     }
@@ -2782,9 +2782,42 @@ const ShareStory = (() => {
     // par chaque habillage ci-dessous plutôt qu'un rendu cassé ou vide — et ÉVITE SURTOUT
     // que makeFile() (capture en image, voir plus bas) échoue en silence sur une <img>
     // cassée, ce qui rendait aussi le bouton "Enregistrer" inopérant.
-    const pic = () => user || D.photo, kind = () => D.kind || KIND[D.type] || '';
-    const ONERR = `onerror="this.style.display='none'"`;
-    const imgTag = (cls) => { const src = pic(); return src ? `<img${cls ? ` class="${cls}"` : ''} src="${esc(src)}" alt="" ${ONERR}>` : ''; };
+    // BUG corrigé (demande du 16/10/2026, répétée — "actuellement ça n'affiche rien dans la
+    // zone de photo alors qu'il faut afficher à défaut la photo de Header photo") : pic()
+    // ne donnait qu'UNE SEULE url, sans aucun repli si jamais ELLE échouait au chargement
+    // (onerror la cachait alors définitivement, même quand loc.img — la Header photo —
+    // était pourtant correcte et qu'une autre source aurait pu marcher). photoCandidates()
+    // donne la chaîne complète dans l'ordre de priorité (photo perso choisie dans ce
+    // partage > Header photo du lieu > vignette YouTube si le lieu en a une) ; onPhotoErr()
+    // plus bas avance au prochain candidat au lieu d'abandonner au premier échec réseau.
+    const photoCandidates = () => {
+        const list = [];
+        if (user) list.push(user);
+        (D.photoCandidates && D.photoCandidates.length ? D.photoCandidates : (D.photo ? [D.photo] : [])).forEach(p => { if (p && !list.includes(p)) list.push(p); });
+        return list;
+    };
+    const pic = () => photoCandidates()[0] || '', kind = () => D.kind || KIND[D.type] || '';
+    // referrerpolicy="no-referrer" : certains hébergeurs (réseaux sociaux notamment)
+    // bloquent le hotlinking selon l'en-tête Referer envoyé par le navigateur — ne pas
+    // l'envoyer du tout évite ce refus pour les hôtes qui filtrent seulement sur sa
+    // présence/son domaine, sans jamais pouvoir aggraver un cas qui marchait déjà.
+    const imgTag = (cls) => { const src = pic(); return src ? `<img${cls ? ` class="${cls}"` : ''} src="${esc(src)}" data-pi="0" referrerpolicy="no-referrer" alt="">` : ''; };
+    // Écouteur délégué unique (capture, car "error" ne remonte pas) : au lieu d'un seul
+    // onerror inline qui cache définitivement l'image au premier échec, avance au candidat
+    // suivant de photoCandidates() (via l'attribut data-pi posé par imgTag()/mapSVG()) et ne
+    // cache l'élément qu'une fois tous les candidats épuisés.
+    root.addEventListener('error', (e) => {
+        const el = e.target;
+        if (!el || (el.tagName !== 'IMG' && el.tagName !== 'image') || el.dataset.pi === undefined) return;
+        const list = photoCandidates();
+        const next = (+el.dataset.pi || 0) + 1;
+        if (next < list.length) {
+            el.dataset.pi = next;
+            if (el.tagName === 'IMG') el.src = list[next]; else el.setAttribute('href', list[next]);
+        } else {
+            el.style.display = 'none';
+        }
+    }, true);
     const TPL = [
         // Demande du 15/10/2026, "je veux que tu supprimes de l'image le texte
         // 'josyine.github.io/Screen-To-Street/map.html?loc=...'" — .sst-url affichait D.url
@@ -2953,8 +2986,8 @@ const ShareStory = (() => {
         const slug = (D.url.split('/').pop() || 'partage');
         const toFile = (blob) => new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
         const pics = [
-            ...Array.from(node.querySelectorAll('img')).map(el => ({ el, get: () => el.src, set: v => { el.src = v; } })),
-            ...Array.from(node.querySelectorAll('image')).map(el => ({ el, get: () => el.getAttribute('href'), set: v => { el.setAttribute('href', v); } }))
+            ...Array.from(node.querySelectorAll('img')).map(el => ({ el, get: () => el.src, set: v => { el.src = v; }, clear: () => el.removeAttribute('src') })),
+            ...Array.from(node.querySelectorAll('image')).map(el => ({ el, get: () => el.getAttribute('href'), set: v => { el.setAttribute('href', v); }, clear: () => el.removeAttribute('href') }))
         ];
         const originalSrcs = pics.map(p => p.get());
         const dataUris = await Promise.all(pics.map(p => toDataUriIfPossible(p.get())));
@@ -2963,14 +2996,20 @@ const ShareStory = (() => {
             try {
                 return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
             } catch (e) {
+                // BUG corrigé (demande du 16/10/2026, "Could not create the image" persiste
+                // pour Fiche/Photo/Carte malgré ce repli, alors que Sticker — le seul format
+                // SANS la photo du lieu dans son habillage — fonctionne toujours) : masquer
+                // la photo via display:none ne l'exclut PAS de la capture. html-to-image
+                // clone tout le sous-arbre DOM (y compris les éléments display:none) dans un
+                // <foreignObject> SVG puis tente d'intégrer chaque <img>/<image> rencontré —
+                // ce clonage/cette intégration se fait AVANT le rendu visuel, donc une source
+                // cross-origin toujours présente en attribut src/href continue de tainter le
+                // canvas (ou de faire échouer l'intégration) même invisible. Il faut RETIRER
+                // l'attribut, pas seulement cacher l'élément, pour qu'il n'y ait plus rien à
+                // charger lors de cette seconde tentative.
                 console.warn('Capture avec photo échouée (canvas tainté ?), nouvelle tentative sans photo :', e);
-                const prevDisplay = pics.map(p => p.el.style.display);
-                pics.forEach(p => { p.el.style.display = 'none'; });
-                try {
-                    return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
-                } finally {
-                    pics.forEach((p, i) => { p.el.style.display = prevDisplay[i]; });
-                }
+                pics.forEach(p => { p.clear(); });
+                return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
             }
         } finally {
             pics.forEach((p, i) => { if (originalSrcs[i] != null) p.set(originalSrcs[i]); });
@@ -3153,6 +3192,15 @@ function buildLocationStoryData(loc) {
         // une URL que YouTube sert quand même (image grise "indisponible", pas d'erreur),
         // donc rien ne détectait l'échec : l'emplacement photo restait vide en pratique.
         photo: loc.img || (loc.ytId ? ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg') : ''),
+        // BUG corrigé (demande du 16/10/2026, "affiche à défaut la photo de Header photo") :
+        // avant, "photo" ci-dessus ne donnait qu'UNE url (loc.img PRIORITAIRE, vignette
+        // YouTube seulement si loc.img est vide) — si celle retenue échouait au CHARGEMENT
+        // (hôte qui bloque le hotlinking, lien Firebase Storage expiré...), il n'y avait
+        // plus aucun repli. photoCandidates liste les DEUX dans l'ordre (Header photo du
+        // lieu d'abord, vignette YouTube ensuite) ; photoCandidates() dans ShareStory
+        // (voir plus haut, onPhotoErr) les essaie l'une après l'autre au lieu de
+        // s'arrêter au premier échec.
+        photoCandidates: [loc.img || '', loc.ytId ? ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg') : ''].filter(Boolean),
         url: shareUrl,
         stats: [
             [loc.group || '—', currentLang === 'fr' ? 'groupe' : 'group'],
@@ -3986,7 +4034,10 @@ function qaReady(kind, st) {
 }
 function qaBody(kind, st) {
     if (kind === 'photo') return qaDrop(st, 190, qaT('Choisir une photo', 'Choose a photo'), qaT('depuis votre galerie', 'from your gallery')) + qaRows(st, ['loc', 'date', 'fr']) + `<div class="qaf-lab">${qaT('Légende', 'Caption')} <em>${qaT('facultatif', 'optional')}</em></div>` + qaArea(st, qaT('Dites-en un peu plus sur cette photo…', 'Say something about this photo…'));
-    if (kind === 'place') return qaRows(st, ['loc', 'date', 'grp', 'fr']) + `<div class="qaf-lab">${qaT('Photo', 'Photo')} <em>${qaT('facultatif', 'optional')}</em></div>` + qaDrop(st, 120, qaT('Ajouter une photo', 'Add a photo'), qaT('depuis votre galerie', 'from your gallery'));
+    // Photo retirée (demande du 16/10/2026, "Dans 'Add a visited place', supprime l'option
+    // de mettre une photo") : "Add a photo" (ci-dessus) couvre déjà ce cas — ce formulaire-ci
+    // reste pour marquer un lieu comme visité sans forcément y attacher une photo.
+    if (kind === 'place') return qaRows(st, ['loc', 'date', 'grp', 'fr']);
     if (kind === 'review') return qaRows(st, ['loc']) + `<div style="padding:18px 0 4px">${qaStars(st)}</div><div class="qaf-lab">${qaT("Qu'est-ce qui vous a marqué ?", 'What stood out?')} <em>${qaT('facultatif', 'optional')}</em></div><div class="qaf-chips">${QA_TAGS.map(tg => `<button type="button" class="qaf-chip" data-qatag="${escapeHtml(tg)}" aria-pressed="${st.tags.includes(tg)}">${escapeHtml(tg)}</button>`).join('')}</div><div class="qaf-lab">${qaT('Votre avis', 'Your review')}</div>` + qaArea(st, qaT('Dites aux autres fans à quoi ça ressemble…', "Tell other fans what it's like…"));
     return '';
 }
@@ -4102,15 +4153,42 @@ async function qaSubmit(overlay) {
                 date: st.dateISO, caption: st.caption.trim(), taggedFriends: st.friends.slice()
             });
             if (!res || !res.success) throw new Error((res && res.code) || 'failed');
+            // BUG corrigé (demande du 16/10/2026, "quand je clique sur 'Add a photo', il
+            // faut que le lieu soit pris en compte dans 'Visited place'") : addProfilePhoto()
+            // ci-dessus publie seulement la photo (publicProfiles + fil global) — elle
+            // n'écrivait jamais dans visitedLocs (localStorage, voir getVisitedLocs()), donc
+            // le lieu photographié n'apparaissait ni dans la page "Visited", ni dans ses
+            // stats, ni ne comptait de visite. Même appel que le flux "place" ci-dessous
+            // (isPublic:false, pas de note — une photo seule n'est pas un avis), avec la
+            // photo déjà choisie pour cette publication plutôt que d'en redemander une.
+            await qaSaveVisit({ locationId: st.place.id, date: st.dateISO, rating: 0, notes: '', photo: st.photo, isPublic: false, groups: [], friends: st.friends.slice() });
         } else if (kind === 'place') {
             await qaSaveVisit({ locationId: st.place.id, date: st.dateISO, rating: 0, notes: '', photo: st.photo, isPublic: false, groups: st.groups.slice(), friends: st.friends.slice() });
         } else if (kind === 'review') {
             await qaSaveVisit({ locationId: st.place.id, date: st.dateISO, rating: st.rating, notes: st.caption.trim(), photo: null, isPublic: true, tags: st.tags.slice() });
         }
+        // BUG corrigé (demande du 16/10/2026, chevron de la carte mobile n'affiche pas le
+        // contenu qu'on vient de publier) : voir invalidateLocPostsIndex() plus bas — sans
+        // ça, le chevron continuait de lire l'instantané Firestore mis en cache avant cette
+        // publication.
+        invalidateLocPostsIndex();
+        // BUG corrigé (demande du 16/10/2026, "Add a review... quand je clique sur Publish,
+        // affiche un pop up qui précise que la review a bien été publiée") : le toast
+        // showSimpleToast() ci-dessous affichait déjà bien "Review published"/"Avis
+        // publié" — mais la fiche se refermait AU MÊME INSTANT (window.closeQuickAddFormSheet()
+        // juste en dessous), ramenant la personne directement sur la carte pendant que ce
+        // petit toast (discret, 3s, en haut de l'écran) apparaissait — facile à manquer dans
+        // ce changement de contexte. Pour "review" spécifiquement (seul cas cité), affiche
+        // d'abord une confirmation explicite DANS la fiche elle-même (grosse coche + message)
+        // avant de la refermer, impossible à manquer contrairement au toast seul.
+        if (kind === 'review') {
+            qaShowPublishedConfirmation(overlay, qaT('Avis publié !', 'Review published!'));
+            return;
+        }
         if (typeof window.showSimpleToast === 'function') {
             window.showSimpleToast(qaT(
-                { photo: 'Photo publiée', place: 'Lieu marqué comme visité', review: 'Avis publié' }[kind],
-                { photo: 'Photo published', place: 'Place marked as visited', review: 'Review published' }[kind]
+                { photo: 'Photo publiée', place: 'Lieu marqué comme visité' }[kind],
+                { photo: 'Photo published', place: 'Place marked as visited' }[kind]
             ));
         }
         window.closeQuickAddFormSheet();
@@ -4208,6 +4286,17 @@ window.openQuickAddFormSheet = async function (kind) {
     qaRender(overlay);
     overlay.classList.add('open');
 };
+// Confirmation explicite "dans la fiche" avant fermeture (demande du 16/10/2026, "Add a
+// review... affiche un pop up qui précise que la review a bien été publiée") — voir le
+// commentaire sur son unique appelant (qaSubmit(), cas "review") pour le détail du bug.
+function qaShowPublishedConfirmation(overlay, message) {
+    overlay.querySelector('.qa-form-root').innerHTML = `
+        <div class="qaf-sheet qaf-success">
+            <div class="qaf-success-check">${QA_IC.ok}</div>
+            <div class="qaf-success-msg">${escapeHtml(message)}</div>
+        </div>`;
+    setTimeout(() => { window.closeQuickAddFormSheet(); }, 1400);
+}
 window.closeQuickAddFormSheet = function () {
     const overlay = document.getElementById('qa-form-overlay');
     if (overlay) overlay.classList.remove('open');
@@ -4673,8 +4762,17 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileSearchResults.addEventListener('click', (e) => {
             const row = e.target.closest('.mobile-map-search-result');
             if (!row) return;
-            const locId = Number(row.getAttribute('data-loc-id'));
-            flyToMobileSearchResult(celebLocations.find(l => l.id === locId));
+            // BUG corrigé (demande du 16/10/2026, "quand je clique sur un lieu [de la
+            // recherche mobile], il faut nous rediriger sur le lieu... ça ne fonctionne plus
+            // actuellement") : Number(data-loc-id) supposait un id TOUJOURS numérique, mais
+            // tout lieu ajouté depuis la file d'approbation a un id "new-xxxxx" (voir déjà le
+            // même correctif pour le tri du 13/09/2026, locationSortKey() plus bas) —
+            // Number("new-xxxxx") vaut NaN, et NaN === NaN (ou quoi que ce soit) est toujours
+            // faux, donc find() ne trouvait plus jamais le lieu pour toute entrée récente,
+            // laissant le clic silencieusement sans effet. Comparaison en chaîne, comme
+            // partout ailleurs dans ce fichier où un id peut être numérique ou "new-xxxxx".
+            const locId = row.getAttribute('data-loc-id');
+            flyToMobileSearchResult(celebLocations.find(l => String(l.id) === locId));
         });
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#mobile-map-search')) mobileSearchResults.classList.add('hidden');
@@ -4813,6 +4911,21 @@ const filterData = {
 // admin-scripts/ pour lancer un export à la demande). .slice() pour ne jamais partager la
 // même référence de tableau que window.STATIC_LOCATIONS.
 let celebLocations = (window.STATIC_LOCATIONS || []).slice();
+// BUG CRITIQUE corrigé (demande du 16/10/2026, "tous les lieux ont disparu") :
+// GROUP_VARIANT_OWN_FIELDS était déclarée en `const` PLUS BAS dans ce fichier (près de
+// hydrateGroupVariantLocation(s), voir plus bas) alors que hydrateGroupVariantLocations()
+// est appelée ICI, juste en dessous, dès l'assignation initiale de celebLocations — un
+// `const` reste en zone morte temporelle tant que sa ligne de déclaration n'a pas été
+// exécutée : cet appel levait donc "Cannot access 'GROUP_VARIANT_OWN_FIELDS' before
+// initialization", une ReferenceError NON INTERCEPTÉE qui interrompait l'exécution de TOUT
+// le reste de ce script (un seul <script src="script.js"> classique, pas de try/catch
+// englobant) — carte, filtres, recherche, soumissions admin... strictement plus rien après
+// ce point ne s'exécutait, d'où la disparition totale des lieux et la cascade de
+// fonctionnalités cassées rapportées ce jour-là. La déclaration est donc remontée ICI,
+// avant son premier usage, au lieu de rester près des fonctions qui l'utilisent (elles
+// restent, elles, où elles sont : une function declaration est hissée entièrement, seule
+// une const/let reste soumise à la zone morte temporelle).
+const GROUP_VARIANT_OWN_FIELDS = ['id', 'group', 'member', 'year', 'episodeLink', 'recreatedPhotos', 'recreatedPhoto', 'fullDescription', 'referenceLocId', 'linkedGroupLocIds'];
 // hydrateGroupVariantLocations() (voir plus bas dans ce fichier) : copie en mémoire les
 // champs partagés d'un variant de groupe depuis son lieu de référence (demande du
 // 15/10/2026, "Add a group") — un variant peut déjà exister dans le squelette statique.
@@ -6191,9 +6304,9 @@ function positionMapHoverTip(marker) {
 // est copié ICI, EN MÉMOIRE SEULEMENT, depuis le lieu de référence, à chaque chargement/
 // fusion Firestore de celebLocations — jamais persisté deux fois. Idempotent : peut être
 // rappelée autant de fois que nécessaire (ex. après chaque fusion Firestore), les champs
-// propres du variant (GROUP_VARIANT_OWN_FIELDS) sont toujours relus/réappliqués par-dessus
-// la copie de la référence.
-const GROUP_VARIANT_OWN_FIELDS = ['id', 'group', 'member', 'year', 'episodeLink', 'recreatedPhotos', 'recreatedPhoto', 'fullDescription', 'referenceLocId', 'linkedGroupLocIds'];
+// propres du variant (GROUP_VARIANT_OWN_FIELDS, déclaré plus haut avec celebLocations —
+// voir le commentaire à cet endroit) sont toujours relus/réappliqués par-dessus la copie
+// de la référence.
 function hydrateGroupVariantLocation(loc) {
     if (!loc || !loc.referenceLocId) return;
     const ref = celebLocations.find(l => String(l.id) === String(loc.referenceLocId));
@@ -7259,6 +7372,19 @@ window.getLocPosts = function (locId) {
     if (!locPostsIndexSync) return [];
     return locPostsIndexSync.get(Number(locId)) || [];
 };
+// BUG corrigé (demande du 16/10/2026, "la flèche chevron... ne se met pas à jour. Je viens
+// de publier 2 lieux à Paris et ils n'apparaissent pas") : locPostsIndexPromise est mis en
+// cache une seule fois pour toute la durée de la page (voir ensureLocPostsIndex() ci-dessus)
+// — publier une nouvelle photo/avis/lieu visité via la fiche "+" (qaSubmit()) n'invalidait
+// jamais ce cache, donc le tiroir du chevron continuait d'afficher l'ancien instantané
+// Firestore pris au tout premier appel, sans jamais revoir le contenu publié depuis dans la
+// MÊME session de page. Appelée après chaque publication réussie (qaSubmit()) pour forcer
+// un nouveau fetch au prochain clic sur le chevron.
+function invalidateLocPostsIndex() {
+    locPostsIndexPromise = null;
+    locPostsIndexSync = null;
+}
+window.invalidateLocPostsIndex = invalidateLocPostsIndex;
 
 // Chevron PERMANENT intégré à la nav du bas (demande du 11/09/2026, redemandé le
 // 12/09/2026 : "tu n'as pas ajouté le chevron sur mobile... j'avais même envoyé une

@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261036" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261038" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -261,7 +261,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261036';
+        s.src = 'page-loader.js?v=20261038';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -474,13 +474,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261036"></script>
-<script src="countries.js?v=20261036"></script>
-<script src="locations-data.js?v=20261036"></script>
+<script type="module" src="firebase-init.js?v=20261038"></script>
+<script src="countries.js?v=20261038"></script>
+<script src="locations-data.js?v=20261038"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
-<script src="artists-content.js?v=20261036"></script>
-<script src="script.js?v=20261036"></script>
+<script src="artists-content.js?v=20261038"></script>
+<script src="script.js?v=20261038"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -2519,6 +2519,20 @@ recomposée, sans texte ni légende.`;
     // choix de groupe ne serait visible qu'en cliquant sur CE nouveau lieu, jamais sur les
     // autres).
     async function loadSubmissions() {
+        // BUG corrigé (demande du 16/10/2026, "Location submissions ne fonctionne pas...
+        // Could not check for new locations") : window.listPendingSubmissions() (ci-dessous)
+        // intercepte déjà ses propres erreurs Firestore et ne lève donc jamais — la SEULE
+        // façon dont cette fonction pouvait lever était une soumission dont la FORME ne
+        // correspondait pas à ce que renderCard() attend (ex. un champ manquant/d'un type
+        // inattendu sur une proposition déposée par l'agent IA) : UNE SEULE carte malformée
+        // faisait alors planter tout le forEach non protégé ci-dessous, abandonnant la
+        // liste ENTIÈRE avec le message générique "check your connection" — trompeur, le
+        // problème n'avait rien à voir avec le réseau. Chaque carte est maintenant rendue
+        // dans son propre try/catch : une soumission cassée est sautée (consignée en
+        // console) au lieu de bloquer toutes les autres.
+        if (typeof window.listPendingSubmissions !== 'function') {
+            throw new Error('listPendingSubmissions unavailable — Firebase bridge not loaded yet');
+        }
         const listEl = document.getElementById('submissions-list');
         // Pas de limite ici : window.listPendingSubmissions() (firebase-init.js) interroge
         // Firestore sans `limit()`, donc TOUTES les soumissions en attente sont déjà
@@ -2531,12 +2545,21 @@ recomposée, sans texte ni légende.`;
             countEl.textContent = submissions.length > 0 ? `(${submissions.length})` : '';
             countEl.classList.toggle('hidden', submissions.length === 0);
         }
-        submissions.forEach(sub => listEl.appendChild(renderCard(sub)));
+        let skipped = 0;
+        submissions.forEach(sub => {
+            try {
+                listEl.appendChild(renderCard(sub));
+            } catch (e) {
+                skipped++;
+                console.warn('Carte de soumission ignorée (rendu échoué) :', sub && sub.id, e);
+            }
+        });
         // Réinsère les cartes "Add" pas encore publiées (voir window.addManualLocation()
         // ci-dessus) : mêmes nœuds DOM, pas un nouveau rendu, pour garder ce que l'admin a
         // déjà saisi. Toujours en tête de liste, dans leur ordre d'ajout.
         manualLocationEntries.forEach(entry => listEl.prepend(entry.card));
         knownSubmissionIds = new Set(submissions.map(s => s.id));
+        if (skipped > 0) console.warn(`${skipped} submission card(s) failed to render and were skipped.`);
         return submissions;
     }
 
@@ -2574,7 +2597,13 @@ recomposée, sans texte ni légende.`;
             }
         } catch (e) {
             console.warn('Rafraîchissement des soumissions échoué :', e);
-            statusEl.textContent = 'Could not check for new locations — check your connection and try again.';
+            // Distingue le cas "le pont Firebase (firebase-init.js) n'est pas chargé" — un
+            // rechargement de la page est le seul recours réel — du reste (vraie panne
+            // réseau transitoire lors de l'appel Firestore lui-même, le seul cas où
+            // "check your connection" est une indication honnête).
+            statusEl.textContent = (e && e.message && e.message.indexOf('listPendingSubmissions unavailable') !== -1)
+                ? 'Could not reach Firebase — try reloading the page.'
+                : 'Could not check for new locations — check your connection and try again.';
             statusEl.classList.add('err');
         }
         btn.disabled = false;
