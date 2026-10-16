@@ -2291,6 +2291,12 @@ window.initLiveBadge = function() {
 let map = null;
 let markerGroup = null;
 let currentFilteredLocations = [];
+// Bouton "Show visited" (demande du 16/10/2026, "ajoute en bas à gauche un bouton qui
+// permet de voir tous les lieux que j'ai visité... colorie tout le pays visité et
+// n'affiche que les lieux visités") — voir renderLocations()/renderVisitedCountryOverlays()
+// plus bas et toggleVisitedOnlyMap() tout en bas de ce fichier.
+let visitedOnlyMapMode = false;
+let visitedCountryLayerGroup = null;
 let currentLocationIdForMemory = null;
 // Dernier objet lieu effectivement passé à renderLocationRichContent() (demande du
 // 19/09/2026, voir reprocessStoryEmbedsIfNeeded() plus bas) — peut différer de
@@ -2978,19 +2984,44 @@ const ShareStory = (() => {
     // la capture, succès ou échec). Délai plafonné à 4s par image : un hôte qui ne répond
     // jamais ne doit pas bloquer indéfiniment tout le flux de partage — se contente alors
     // du comportement d'avant (repli "sans photo" si la capture échoue réellement).
+    async function blobToDataUri(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('FileReader failed'));
+            reader.readAsDataURL(blob);
+        });
+    }
+    async function fetchWithTimeout(url, ms) {
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
+        return Promise.race([fetch(url, { mode: 'cors' }), timeout]);
+    }
+    // BUG corrigé (demande du 16/10/2026, répétée — "Copy ne prend pas en compte la photo
+    // du lieu par défaut", "l'image ne s'affiche pas [en Story], c'est tout gris") : le
+    // fetch CORS direct ci-dessous échoue pour tout hébergeur qui ne renvoie pas
+    // d'en-tête Access-Control-Allow-Origin (ex: un bucket Firebase Storage dont le CORS
+    // n'a jamais été configuré via gsutil — très probable pour loc.img, voir
+    // buildLocationStoryData()) — makeFile() RETIRAIT alors la photo de la capture
+    // (voir plus bas) plutôt que de risquer un canvas "tainted", ce qui explique que la
+    // photo par défaut du lieu manque aussi bien pour Copy que pour Story (les deux
+    // partagent le même makeFile()). Avant d'abandonner, on retente via un relais public
+    // conçu pour ça (images.weserv.nl, sans backend à nous : il récupère l'image
+    // server-side et la ressert avec des en-têtes CORS permissifs) — ne change rien pour
+    // les hôtes qui acceptaient déjà le fetch direct (Unsplash, miniatures YouTube...),
+    // mais récupère la photo pour les hôtes qui le refusaient, au lieu de renoncer.
+    function corsProxyUrl(url) {
+        return 'https://images.weserv.nl/?url=' + encodeURIComponent(url.replace(/^https?:\/\//, ''));
+    }
     async function toDataUriIfPossible(url) {
         if (!url || url.startsWith('data:')) return null;
         try {
-            const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000));
-            const res = await Promise.race([fetch(url, { mode: 'cors' }), timeout]);
+            const res = await fetchWithTimeout(url, 4000);
+            if (res.ok) return await blobToDataUri(await res.blob());
+        } catch (e) { /* repli ci-dessous */ }
+        try {
+            const res = await fetchWithTimeout(corsProxyUrl(url), 4000);
             if (!res.ok) return null;
-            const blob = await res.blob();
-            return await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = () => reject(new Error('FileReader failed'));
-                reader.readAsDataURL(blob);
-            });
+            return await blobToDataUri(await res.blob());
         } catch (e) { return null; }
     }
     // BUG corrigé (demande du 15/10/2026, répétée — "Could not create the image" persiste,
@@ -4243,6 +4274,15 @@ async function qaSubmit(overlay) {
         // ça, le chevron continuait de lire l'instantané Firestore mis en cache avant cette
         // publication.
         invalidateLocPostsIndex();
+        // BUG corrigé (demande du 16/10/2026, "fait en sorte que la partie Map [de
+        // profile.html] se mette automatiquement à jour quand un utilisateur publie un
+        // nouveau lieu visité") : évènement générique plutôt qu'un appel direct à une
+        // fonction de profile.html — qaSubmit() est partagé par toutes les pages (map.html,
+        // profile.html...) et ne doit rien savoir d'une page en particulier. Les 3 types de
+        // publication (photo/place/review) passent tous par qaSaveVisit() ci-dessus, qui
+        // marque toujours le lieu visité (syncVisited()) — déclenché pour les 3 sans
+        // distinction.
+        window.dispatchEvent(new CustomEvent('stt-visited-published'));
         // BUG corrigé (demande du 16/10/2026, "Add a review... quand je clique sur Publish,
         // affiche un pop up qui précise que la review a bien été publiée") : le toast
         // showSimpleToast() ci-dessous affichait déjà bien "Review published"/"Avis
@@ -4984,6 +5024,43 @@ function visitedWorldMapProject(lat, lng) {
     const x = (lng + 180) / 360 * w;
     const y = -1.3752861195646076 * lat + 190.19961441762126;
     return [x, y];
+}
+// Projection inverse (demande du 16/10/2026, bouton "Show visited" de map.html qui
+// "colorie tout le pays visité") : visitedWorldMapProject() ci-dessus étant purement
+// linéaire dans les deux axes, l'inverser est une simple algèbre — récupère des lat/lng
+// RÉELS (approximatifs mais fidèles, résidu < 3px déjà vérifié à l'extraction, voir
+// visited-map-data.js) à partir des contours SVG déjà présents dans ce fichier, sans
+// avoir besoin de télécharger un jeu de données de frontières dédié (impossible ici, les
+// CDN usuels sont bloqués par le proxy sortant de ce bac à sable) ni de le committer en
+// plus de celui déjà extrait pour la mini-carte de visited.html.
+function visitedWorldMapUnproject(x, y) {
+    const m = window.VISITED_WORLD_MAP;
+    const w = (m && m.w) || 390;
+    const lng = x / w * 360 - 180;
+    const lat = (190.19961441762126 - y) / 1.3752861195646076;
+    return [lat, lng];
+}
+// Parseur minimal du format SVG produit par l'extraction (voir visited-map-data.js) :
+// uniquement des commandes M (déplacement initial), L (segment de droite) et Z (fermeture)
+// avec des coordonnées "x,y" séparées par une virgule — jamais de courbes (C/Q/A), un
+// contour de pays à cette échelle compacte n'en a jamais eu besoin.
+// BUG évité : plusieurs pays de ce jeu de données sont des archipels/territoires
+// discontinus (ex: Japon, Indonésie, Philippines, Royaume-Uni, Nouvelle-Zélande, États-
+// Unis — vérifié, chacun a plusieurs commandes M dans son tracé) — un seul tableau plat de
+// points aurait relié ces morceaux par une ligne parasite traversant l'océan. Renvoie donc
+// un tableau d'ANNEAUX (un sous-tableau de [lat,lng] par commande M), convention attendue
+// par L.polygon() pour un polygone à plusieurs parties disjointes.
+function parseCountrySvgPathToLatLngs(d) {
+    if (!d) return [];
+    return d.split('M').slice(1).map(sub => {
+        const pts = [];
+        const re = /(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g;
+        let match;
+        while ((match = re.exec(sub)) !== null) {
+            pts.push(visitedWorldMapUnproject(parseFloat(match[1]), parseFloat(match[2])));
+        }
+        return pts;
+    }).filter(ring => ring.length >= 3);
 }
 
 const filterData = {
@@ -6864,7 +6941,16 @@ window.switchMainTab = function(tabName) {
         panel.classList.add('hidden');
         panel.classList.remove('active');
     });
-    
+    // Teinte des pays visités (demande du 16/10/2026, voir renderVisitedCountryOverlays()
+    // plus bas) : n'a de sens que sur l'onglet Visited lui-même — effacée dès qu'on le
+    // quitte, par N'IMPORTE quel chemin (bouton flottant mobile ci-dessous OU l'onglet
+    // "Visited" historique de ce menu), pour ne jamais la laisser traîner sur Explore/My
+    // Itinerary.
+    if (tabName !== 'visited') clearVisitedCountryOverlays();
+    visitedOnlyMapMode = (tabName === 'visited');
+    const visitedToggleBtn = document.getElementById('visited-only-toggle-btn');
+    if (visitedToggleBtn) visitedToggleBtn.classList.toggle('active', visitedOnlyMapMode);
+
     if (tabName === 'explore') {
         document.getElementById('tab-explore-btn').classList.add('active');
         const p = document.getElementById('sidebar-explore');
@@ -6885,7 +6971,55 @@ window.switchMainTab = function(tabName) {
         if(p) { p.classList.remove('hidden'); p.classList.add('active'); }
         clearTripFromMainMap();
         renderVisitedTabList();
+        // Teinte des pays visités (demande du 16/10/2026, "ça colorie tout le pays
+        // visité") : ajoutée ici plutôt que dans renderVisitedTabList() lui-même pour
+        // qu'elle s'applique aussi bien en arrivant depuis l'onglet historique de ce menu
+        // qu'en arrivant depuis le bouton flottant mobile ci-dessous (tous deux passent
+        // par ce même switchMainTab('visited')).
+        renderVisitedCountryOverlays();
     }
+}
+
+// Bouton flottant "Show visited" (demande du 16/10/2026, "ajoute en bas à gauche un
+// bouton qui de voir tous les lieux que j'ai visité") — raccourci mobile direct vers
+// l'onglet "Visited" existant ci-dessus (switchMainTab('visited')/'explore'), sans devoir
+// d'abord ouvrir le menu hamburger pour l'atteindre comme c'était jusqu'ici le seul moyen.
+// Bascule : un second clic revient à la vue Explore normale (tous les filtres actifs).
+window.toggleVisitedOnlyMap = function () {
+    window.switchMainTab(visitedOnlyMapMode ? 'explore' : 'visited');
+};
+
+// Teinte de chaque pays où au moins un lieu est marqué visité — voir
+// visitedWorldMapUnproject()/parseCountrySvgPathToLatLngs() plus haut (réutilisent les
+// contours déjà extraits pour la mini-carte de visited.html, aucune nouvelle donnée à
+// charger). Les très petits territoires absents de ce jeu de données compact (Malte,
+// Singapour, Hong Kong, Macau — voir la note sur COUNTRY_ISO_NUMERIC) restent sans teinte
+// faute de contour disponible ; leurs lieux n'en continuent pas moins à apparaître comme
+// marqueurs (renderVisitedTabList() s'en charge, indépendamment de cette fonction).
+function renderVisitedCountryOverlays() {
+    if (!map || typeof L === 'undefined' || !window.VISITED_WORLD_MAP) return;
+    if (!visitedCountryLayerGroup) {
+        visitedCountryLayerGroup = L.layerGroup().addTo(map);
+    } else {
+        visitedCountryLayerGroup.clearLayers();
+    }
+    const visitedData = getVisitedLocs();
+    const visitedIds = new Set(visitedData.map(v => String((v && typeof v === 'object' && v) ? v.id : v)));
+    const visitedCountries = new Set(
+        celebLocations.filter(loc => loc.country && visitedIds.has(String(loc.id))).map(loc => loc.country)
+    );
+    visitedCountries.forEach(country => {
+        const iso = COUNTRY_ISO_NUMERIC[country];
+        const d = iso && window.VISITED_WORLD_MAP.paths[iso];
+        if (!d) return;
+        const rings = parseCountrySvgPathToLatLngs(d);
+        if (!rings.length) return;
+        L.polygon(rings, { color: '#D42759', weight: 1.5, fillColor: '#D42759', fillOpacity: 0.22, interactive: false })
+            .addTo(visitedCountryLayerGroup);
+    });
+}
+function clearVisitedCountryOverlays() {
+    if (visitedCountryLayerGroup) visitedCountryLayerGroup.clearLayers();
 }
 
 // Liste + filtrage carte de l'onglet "Visited" (demande du 10/09/2026) : même
@@ -7454,8 +7588,14 @@ function ensureLocPostsIndex() {
         try { photos = await window.fetchGlobalPhotoFeed(); } catch (e) { photos = []; }
         photos.forEach(p => {
             if (p.locationId == null) return;
-            const key = Number(p.locationId);
-            if (Number.isNaN(key)) return;
+            // BUG corrigé (demande du 16/10/2026, "il n'y a qu'un post qui apparait alors
+            // qu'il devrait y en avoir 2... il y a un post à Malte qui n'apparait pas") :
+            // Number(p.locationId) vaut NaN pour l'id string d'un lieu admin ("new-xxxxx",
+            // voir qaSubmit()/_upsertFeedPost() qui stockent toujours String(locationId)) —
+            // Number.isNaN(key) écartait alors SILENCIEUSEMENT la publication entière de
+            // l'index, pour tout lieu jamais migré en id numérique. String(...) partout
+            // (comme window.getLocPosts() juste en dessous) évite cette perte.
+            const key = String(p.locationId);
             if (!map.has(key)) map.set(key, []);
             map.get(key).push(p);
         });
@@ -7466,7 +7606,7 @@ function ensureLocPostsIndex() {
 }
 window.getLocPosts = function (locId) {
     if (!locPostsIndexSync) return [];
-    return locPostsIndexSync.get(Number(locId)) || [];
+    return locPostsIndexSync.get(String(locId)) || [];
 };
 // BUG corrigé (demande du 16/10/2026, "la flèche chevron... ne se met pas à jour. Je viens
 // de publier 2 lieux à Paris et ils n'apparaissent pas") : locPostsIndexPromise est mis en
@@ -7650,6 +7790,13 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
     grid.querySelectorAll('.loc-visitors-tile').forEach(tile => {
         tile.addEventListener('click', () => {
             const { post: p, locId } = postsWithLoc[Number(tile.dataset.i)];
+            // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
+            // exactement où on était précédemment, toujours avec la flèche chevron
+            // d'ouverte comme avant") : on mémorise CE tiroir précis (titre + liste) avant
+            // de le fermer pour ouvrir la publication — window.closeLocModal() (plus bas)
+            // le rouvre tel quel si cette mémoire est encore présente à la fermeture de la
+            // publication, au lieu de retomber simplement sur la carte en dessous.
+            pendingLocVisitorsDrawerReturn = { title, postsWithLoc };
             window.closeLocVisitorsDrawer();
             window.openLocModal(locId, {
                 username: p.username,
@@ -7657,6 +7804,8 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
                 avatarColor: window.avatarColorForUsername(p.username),
                 photo: p.photo,
                 caption: p.caption,
+                date: p.date,
+                taggedFriends: p.taggedFriends,
                 photoKey: p.uid + '_' + p.id,
                 photoId: p.standalone ? p.id : null
             });
@@ -7664,6 +7813,11 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
     });
     overlay.classList.add('open');
 }
+// Voir le commentaire dans le listener de clic ci-dessus : état du tiroir à rouvrir après
+// fermeture de la publication qu'il vient d'ouvrir, ou null si la publication en cours
+// n'a pas été ouverte depuis ce tiroir (ex: marqueur de la carte, autre page) — dans ce
+// cas window.closeLocModal() garde son comportement normal (simple fermeture).
+let pendingLocVisitorsDrawerReturn = null;
 
 function openLocVisitorsDrawer(loc) {
     const posts = window.getLocPosts(loc.id);
@@ -11136,6 +11290,16 @@ window.openLocModal = function(id, postContext) {
 window.closeLocModal = function() {
     const modalOverlay = document.getElementById('loc-modal');
     if(modalOverlay) modalOverlay.classList.add('hidden');
+    // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
+    // exactement où on était précédemment, toujours avec la flèche chevron d'ouverte
+    // comme avant") : si cette publication a été ouverte depuis le tiroir chevron (voir
+    // renderVisitorsDrawerContent() plus haut), on le rouvre tel qu'il était plutôt que de
+    // simplement retomber sur la carte en dessous.
+    if (pendingLocVisitorsDrawerReturn) {
+        const r = pendingLocVisitorsDrawerReturn;
+        pendingLocVisitorsDrawerReturn = null;
+        renderVisitorsDrawerContent(r.title, r.postsWithLoc);
+    }
 };
 
 // ==========================================

@@ -507,6 +507,10 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    sur mobile, qui n'a pas cette rangée d'icônes de header (masquée sous 760px, voir
    .top-nav/.universal-icons ci-dessous). */
 @media (min-width: 761px) { .badges-fab-btn { display: none; } }
+/* Bouton "Show visited" (demande du 16/10/2026) : mobile uniquement — desktop a déjà
+   l'onglet "Visited" du menu latéral, toujours visible là-bas, pas besoin d'un raccourci
+   flottant en plus. */
+.visited-only-toggle-btn { display: none; }
 @media (max-width: 760px) {
     /* Descendu (demande du 11/09/2026) : le zoom Leaflet +/- est maintenant masqué sur
        mobile (voir .leaflet-control-zoom plus bas — pincer pour zoomer reste possible),
@@ -518,6 +522,19 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        (pinch-to-zoom) reste le geste naturel sur tactile, ces boutons ne faisaient que
        prendre de la place et chevaucher d'autres contrôles en bas à droite. */
     .leaflet-control-zoom { display: none !important; }
+    /* "en bas à gauche", symétrique aux FAB ci-dessus (tous les deux à droite) pour ne
+       jamais s'en approcher, même marge basse (80px) qu'eux pour dégager la nav. */
+    .visited-only-toggle-btn {
+        display: flex; align-items: center; justify-content: center;
+        position: absolute; bottom: 80px; left: 14px; z-index: 2000;
+        width: 38px; height: 38px; border-radius: 50%;
+        background: #fff; color: var(--text-main); border: 1.5px solid #e2e8f0;
+        cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.2s;
+    }
+    .visited-only-toggle-btn.active {
+        background: linear-gradient(135deg, #9B3CEB, #E0156B); border-color: transparent;
+        color: #fff; box-shadow: 0 8px 18px rgba(224, 21, 107, .35);
+    }
 }
 
 /* Messages éphémères "nouveau lieu ajouté" — voir showNewLocationToasts() dans script.js.
@@ -987,6 +1004,23 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        pendant que ce panneau précis est ouvert (.live-panel.open), sans toucher à son
        z-index le reste du temps ni sur les autres panneaux/fiches du site. */
     .live-panel.open ~ #mobile-bottom-nav { z-index: 9600; }
+
+    /* BUG corrigé (demande du 16/10/2026, "quand on ouvre un post [Community/Mei's
+       Pictures]... il faut toujours afficher la barre de navigation du bas") : la
+       publication plein écran (#loc-modal.post-modal, voir le <style> local de chaque
+       page qui l'utilise + openLocModal() dans script.js) hérite du z-index 9999 de
+       .modal ci-dessus — plus haut que cette nav (3500), qui se retrouvait donc
+       entièrement invisible, recouverte par la publication, malgré la demande explicite
+       que la nav du bas reste TOUJOURS visible sur mobile. Même mécanisme de voisin
+       général que .live-panel.open ci-dessus (#mobile-bottom-nav toujours injecté APRÈS
+       #loc-modal dans le DOM, qu'il soit statique dans le HTML de la page ou — map.html —
+       ajouté juste avant les autres modales). */
+    #loc-modal.post-modal ~ #mobile-bottom-nav { z-index: 10000; }
+    /* La nav passant maintenant PAR-DESSUS la publication plutôt que dessous, son propre
+       contenu (bouton "Open in Google Maps" tout en bas) doit comme les autres pages être
+       dégagé de la zone qu'elle occupe — même marge que .tab-panel/les autres pages pour
+       ce même problème. */
+    #loc-modal.post-modal .modal-body { padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
 
     /* Pastille rose pâle glissante sous l'onglet actif (demande du 08/10/2026, "une
        pastille rose pâle glisse derrière l'icône choisie, avec un léger rebond") — reprend

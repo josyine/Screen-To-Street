@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261039" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261040" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -356,8 +356,16 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
   .universal-logo { display: none !important; }
   .header-icon-btn { width: 36px; height: 36px; }
   /* Espace du bas porté à 90px (demande du 08/09/2026) pour laisser la place à la nav du
-     bas partagée (.mobile-bottom-nav, injectée par script.js) — voir style.css. */
-  .page { padding: 60px 16px 90px 16px; }
+     bas partagée (.mobile-bottom-nav, injectée par script.js) — voir style.css.
+     BUG corrigé (demande du 16/10/2026, "vérifie que [la marge du bas] soit bonne pour
+     toutes les pages sur mobile") : 90px n'incluait jamais env(safe-area-inset-bottom)
+     (contrairement à account.html/visited.html/...), donc moins de marge réelle sur un
+     iPhone à encoche ; porté à la même valeur que .tab-panel/les autres pages (130px, voir
+     style.css) + la zone de sécurité. .page ici est en display:block (pas flex comme sur
+     visited.html), donc grandit normalement avec son contenu — pas besoin du contournement
+     posé sur .card dans les pages account/visited/wishlist/map-artists/map-destinations/
+     settings (voir leur commentaire associé). */
+  .page { padding: 60px 16px calc(130px + env(safe-area-inset-bottom)) 16px; }
   /* Bannière dégradée retirée sur mobile (capture d'écran du 09/09/2026 : juste
      avatar + pseudo/stats, pas de bannière) — on revient à une ligne simple. */
   .profile-cover-header { margin: 0 0 26px 0; }
@@ -457,7 +465,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261039';
+        s.src = 'page-loader.js?v=20261040';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -744,9 +752,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261039"></script>
-<script src="locations-data.js?v=20261039"></script>
-<script src="script.js?v=20261039"></script>
+<script type="module" src="firebase-init.js?v=20261040"></script>
+<script src="locations-data.js?v=20261040"></script>
+<script src="script.js?v=20261040"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
@@ -755,6 +763,13 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     let profileCurrentUid = null;
     let profileVisitedIdsForMap = [];
     let profileMapPoints = [];
+    // Voir le listener "stt-visited-published" plus bas : vrai quand la carte affichée
+    // (si l'onglet Map a déjà été ouvert une fois) ne reflète plus les derniers lieux
+    // visités publiés pendant cette même visite de page, pour forcer une reconstruction
+    // au prochain affichage de l'onglet plutôt que de la reconstruire pendant qu'elle est
+    // masquée (display:none, voir le commentaire de renderProfileMap() plus bas sur les
+    // tailles nulles).
+    let profileMapNeedsRefresh = false;
 
     // Couleur d'avatar déterministe à partir du pseudo (même principe que la palette de
     // renderTripBuddiesAvatars()/friend-visit-avatar dans script.js, mais indexée par le
@@ -852,7 +867,13 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             // resizeProfileMiniMap() D'ABORD, pour que le conteneur ait déjà sa hauteur
             // finale avant que L.map() ne la mesure.
             resizeProfileMiniMap();
-            if (!profileMiniMap) {
+            // profileMapNeedsRefresh (demande du 16/10/2026, voir le listener
+            // "stt-visited-published" plus bas) : une nouvelle publication est arrivée
+            // pendant que cet onglet était masqué — reconstruit la carte depuis les
+            // derniers ids plutôt que de ré-ajuster les bornes sur les anciens marqueurs.
+            if (!profileMiniMap || profileMapNeedsRefresh) {
+                profileMapNeedsRefresh = false;
+                if (profileMiniMap) { profileMiniMap.remove(); profileMiniMap = null; }
                 renderProfileMap(profileVisitedIdsForMap);
             } else {
                 setTimeout(() => {
@@ -862,6 +883,30 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             }
         }
     };
+
+    // BUG corrigé (demande du 16/10/2026, "j'ai posté 3 photos avec mon compte mais pour
+    // le moment ça ne les prend pas en compte... fait en sorte que la partie Map se mette
+    // automatiquement à jour quand un utilisateur publie un nouveau lieu visité") :
+    // qaSubmit() (script.js, partagé par toutes les pages) diffuse maintenant cet
+    // évènement générique après chaque publication qui marque un lieu visité (photo/
+    // lieu/avis). Seulement pertinent sur SON PROPRE profil (on ne peut publier que pour
+    // soi-même) ; si l'onglet Map est déjà affiché, reconstruit tout de suite — sinon
+    // juste profileMapNeedsRefresh pour la prochaine fois qu'il est ouvert (voir
+    // switchProfileTab() plus haut).
+    window.addEventListener('stt-visited-published', async () => {
+        if (!profileCurrentUid || !profileUid || profileCurrentUid !== profileUid) return;
+        if (typeof window.fetchUserVisitedIds !== 'function') return;
+        try {
+            profileVisitedIdsForMap = (await window.fetchUserVisitedIds(profileUid)) || [];
+        } catch (e) { return; }
+        const panel = document.getElementById('profile-panel-map');
+        if (panel && !panel.classList.contains('hidden')) {
+            if (profileMiniMap) { profileMiniMap.remove(); profileMiniMap = null; }
+            renderProfileMap(profileVisitedIdsForMap);
+        } else {
+            profileMapNeedsRefresh = true;
+        }
+    });
 
     // Onglet Photos : avis publics AVEC photo (comme avant) + photos publiées de façon
     // autonome via "+" -> "Add a photo" (demande du 09/09/2026, voir addProfilePhoto()
@@ -969,8 +1014,15 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             const countries = new Set();
             const continents = new Set();
             profileMapPoints = [];
+            // BUG corrigé (demande du 16/10/2026, "ça ne prend pas en compte les lieux
+            // visités... j'ai posté 3 photos avec mon compte") : l.id === Number(id) vaut
+            // false pour l'id string d'un lieu admin ("new-xxxxx", voir qaSaveVisit() dans
+            // script.js) — Number("new-xxxxx") est NaN, qui n'égale jamais rien, pas même
+            // l.id === id si l'un des deux a subi une conversion de type en chemin (même
+            // classe de bug que celle déjà corrigée dans visited.html : comparaison par
+            // String(...) des deux côtés plutôt qu'un repli Number() fragile).
             (visitedIds || []).forEach(id => {
-                const loc = celebLocations.find(l => l.id === id || l.id === Number(id));
+                const loc = celebLocations.find(l => String(l.id) === String(id));
                 if (!loc) return;
                 const color = groupColors[loc.group] || '#334e68';
                 L.circleMarker([loc.lat, loc.lng], { radius: 7, color: '#fff', weight: 2, fillColor: color, fillOpacity: 1 })

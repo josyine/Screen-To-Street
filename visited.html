@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261039" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261040" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -207,9 +207,23 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
   /* Plein-bleed sur mobile : le bloc blanc de la page touche les bords de l'écran
      (pas de marge latérale sur .page, pas d'arrondi sur .card) pour qu'on ne voie
      jamais le fond dégradé sur les côtés et que le contenu utilise toute la largeur. */
-  /* BUG rapporté le 12/09/2026 ("la barre du bas chevauche les pages") : 50px de marge basse ne suffisait pas à dégager .mobile-bottom-nav (position:fixed, ~54px de haut + jusqu'à env(safe-area-inset-bottom) de plus sur un iPhone à encoche) — la fin du contenu se retrouvait cachée derrière elle. Portée à la même marge que les autres pages (feed.html/profile.html...), qui tient compte explicitement de cette zone. */
-  .page { padding: 92px 0 calc(90px + env(safe-area-inset-bottom)) 0; }
-  .card { padding: 26px 16px; border-radius: 0; }
+  /* BUG rapporté le 12/09/2026 ("la barre du bas chevauche les pages") : 50px de marge basse ne suffisait pas à dégager .mobile-bottom-nav (position:fixed, ~54px de haut + jusqu'à env(safe-area-inset-bottom) de plus sur un iPhone à encoche) — la fin du contenu se retrouvait cachée derrière elle. Portée à la même marge que les autres pages (feed.html/profile.html...), qui tient compte explicitement de cette zone.
+     BUG corrigé (demande du 16/10/2026, répétée — "le bas est masqué" — capture d'écran
+     vérifiée via Playwright : la dernière carte de lieu visité touchait encore le bas de
+     l'écran, partiellement derrière la nav) : 90px restait trop juste une fois la carte
+     remplie de plusieurs lieux (même constat déjà fait pour .tab-panel dans style.css, le
+     09/10/2026, "90px restait trop juste en pratique... marge augmentée" — jamais reporté
+     ici). Même valeur que .tab-panel (130px), vérifiée visuellement cette fois plutôt que
+     redevinée au pif.
+     BUG corrigé (la marge ci-dessus seule ne suffisait PAS, vérifié par capture d'écran) :
+     .page a min-height:100vh mais PAS de height explicite — avec un seul enfant (.card)
+     dont le contenu dépasse 100vh, .page reste pourtant bloquée EXACTEMENT à 100vh
+     (overflow:visible laisse .card déborder visuellement en dessous plutôt que d'agrandir
+     .page) : son padding-bottom ne protège donc que le cas où le contenu tient dans un
+     seul écran (état vide), jamais le cas réel ici (plusieurs lieux). La marge doit donc
+     être posée sur .card lui-même, la vraie boîte dont le bord bas est visible/scrollable. */
+  .page { padding: 92px 0 calc(130px + env(safe-area-inset-bottom)) 0; }
+  .card { padding: 26px 16px calc(130px + env(safe-area-inset-bottom)) 16px; border-radius: 0; }
   h1.pg-title { font-size: 22px; }
   .visit-thumb { width: 46px; height: 46px; }
   .visit-stars svg { width: 12px; height: 12px; }
@@ -258,7 +272,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261039';
+        s.src = 'page-loader.js?v=20261040';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -450,10 +464,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261039"></script>
-<script src="locations-data.js?v=20261039"></script>
-<script src="visited-map-data.js?v=20261039"></script>
-<script src="script.js?v=20261039"></script>
+<script type="module" src="firebase-init.js?v=20261040"></script>
+<script src="locations-data.js?v=20261040"></script>
+<script src="visited-map-data.js?v=20261040"></script>
+<script src="script.js?v=20261040"></script>
 <script>
     // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
     // updateCartPrice / soumission de #cart-form), pour être identique à map.html.

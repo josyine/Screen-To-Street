@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261039" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261040" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -176,11 +176,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
 .feed-tile-likes { position: absolute; top: 6px; right: 6px; display: flex; align-items: center; gap: 3px; background: rgba(20,16,30,.5); color: #fff; font-size: 10.5px; font-weight: 700; padding: 3px 7px 3px 6px; border-radius: 100px; z-index: 2; cursor: pointer; }
 .feed-tile-likes svg { width: 11px; height: 11px; flex-shrink: 0; }
 .feed-tile-likes.liked svg { fill: #D42759; stroke: #D42759; }
-/* Onglet "Sacred Places" (demande du 14/09/2026) : tuiles de lieux officiels du site, pas
-   des publications d'utilisateurs — ni avatar ni compteur de likes (voir renderSacredGrid()
-   plus bas), remplacés par ce seul badge "Official". */
-.feed-tile-official-badge { position: absolute; left: 6px; bottom: 6px; display: flex; align-items: center; gap: 4px; background: rgba(20,16,30,.55); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; padding: 4px 8px; border-radius: 100px; z-index: 2; }
-.feed-tile-official-badge svg { width: 10px; height: 10px; flex-shrink: 0; }
+/* Onglet "Sacred Places"/"Mei's Pictures" (demande du 14/09/2026) : tuiles de lieux
+   officiels du site, pas des publications d'utilisateurs — ni avatar ni compteur de likes
+   (voir renderSacredGrid() plus bas), remplacés par ce seul badge. Affichait un simple
+   icone appareil photo jusqu'au 16/10/2026 ("affiche à la place de l'icone appareil photo
+   le nom du groupe présent sur la photo") — le badge affiche maintenant loc.group en
+   texte, voir renderSacredGridFromData() plus bas. */
+.feed-tile-official-badge { position: absolute; left: 6px; bottom: 6px; display: flex; align-items: center; gap: 4px; background: rgba(20,16,30,.55); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; padding: 4px 8px; border-radius: 100px; z-index: 2; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .feed-empty, .feed-loading { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
 
 /* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
@@ -271,7 +273,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
      rangée de la grille sur un appareil avec encoche/barre de gestes, où la nav du bas
      elle-même remonte d'autant (voir .mobile-bottom-nav bottom:calc(14px+safe-bottom)
      dans style.css) — même oubli corrigé ici, avec un peu de marge en plus. */
-  .feed-page { padding: 60px 12px calc(100px + env(safe-area-inset-bottom,0px)) 12px; }
+  .feed-page { padding: 60px 12px calc(130px + env(safe-area-inset-bottom,0px)) 12px; }
   .feed-grid { gap: 2px; }
   /* Titre "Explore" retiré sur mobile (demande du 12/09/2026, "supprime le titre Explore
      pour gagner de la place") — l'onglet "Explore" juste en dessous (.feed-tabs) indique
@@ -350,7 +352,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261039';
+        s.src = 'page-loader.js?v=20261040';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -470,6 +472,12 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search a place, a group, a user...">
         <div id="feed-user-suggestions" class="feed-user-suggestions hidden"></div>
     </div>
+    <!-- Filtre groupe de l'onglet "Mei's Pictures" (demande du 16/10/2026, "ajoute un
+         filtre de sélection de groupe afin qu'on puisse filtrer les photos de Mei") —
+         masqué par défaut/sur les autres onglets (voir switchFeedTab()), rempli avec les
+         groupes réellement présents dans cet onglet par renderSacredGroupFilterOptions()
+         (plus bas), jamais avec la liste fixe de tous les groupes du site. -->
+    <select id="sacred-group-filter" class="filter-select hidden" style="max-width:220px;margin:0 auto 18px auto;" onchange="window.filterSacredByGroup(this.value)"></select>
     <div class="feed-loading" id="feed-loading">Loading…</div>
     <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
     <div class="feed-grid" id="feed-grid"></div>
@@ -516,9 +524,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261039"></script>
-<script src="locations-data.js?v=20261039"></script>
-<script src="script.js?v=20261039"></script>
+<script type="module" src="firebase-init.js?v=20261040"></script>
+<script src="locations-data.js?v=20261040"></script>
+<script src="script.js?v=20261040"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -638,6 +646,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
         currentFeedTab = tab;
         document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
         document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred');
+        // Filtre groupe (demande du 16/10/2026) : visible uniquement sur "Mei's Pictures",
+        // même logique inversée que la recherche ci-dessus. renderSacredGroupFilterOptions()
+        // (appelée par renderSacredGrid() plus bas) le re-confirme une fois les options
+        // reconstruites, mais le bascule aussi immédiatement ici pour ne pas attendre la
+        // fin du fetch avant de (dé)masquer.
+        const groupFilterEl = document.getElementById('sacred-group-filter');
+        if (groupFilterEl) groupFilterEl.classList.toggle('hidden', tab !== 'sacred');
         if (tab === 'saved') {
             loadSavedFeed();
         } else if (tab === 'sacred') {
@@ -712,7 +727,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     // Précédent à gérer, la page ne quitte plus jamais l'onglet. Noms de variables/fonctions
     // laissés en "sacred" en interne (jamais visibles) pour limiter le diff — seuls le
     // libellé de l'onglet et le contenu affiché changent.
-    const cameraBadgeSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>';
+    // Badge d'identification de chaque tuile (demande du 16/10/2026, "affiche à la place
+    // de l'icone appareil photo le nom du groupe présent sur la photo") — remplace
+    // l'ancien badge SVG appareil photo (.feed-tile-official-badge, retiré) par le nom du
+    // groupe du lieu (loc.group), bien plus utile pour s'y retrouver dans cette grille que
+    // la grille Community n'identifie jamais par icône.
+    // Groupe actuellement filtré (voir le <select id="sacred-group-filter"> plus bas) —
+    // 'All' = aucun filtre, tous les lieux avec au moins une photo Mei.
+    let sacredActiveGroup = 'All';
     // Première photo de loc.recreatedPhotos (tableau, format courant depuis le 18/09/2026),
     // ou repli sur l'ancien loc.recreatedPhoto (chaîne unique) pour les lieux jamais migrés.
     // recreatedPhotoUrl() (script.js) : une entrée peut être une simple chaîne ou, depuis le
@@ -840,19 +862,57 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
             return photos.length ? Object.assign({}, loc, { recreatedPhotos: photos }) : null;
         }).filter(Boolean);
         if (!sacredLocs.length) { grid.innerHTML = ''; emptyEl.textContent = 'No recreated photos yet.'; emptyEl.classList.remove('hidden'); return; }
+        renderSacredGroupFilterOptions();
+        renderSacredGridFromData();
+        sacredGridRendered = true;
+    }
+
+    // Options du filtre groupe (demande du 16/10/2026, "ajoute un filtre de sélection de
+    // groupe afin qu'on puisse filtrer les photos de Mei") — reconstruites à chaque fetch
+    // (sacredLocs peut changer d'une lecture à l'autre), en ne listant que les groupes
+    // RÉELLEMENT présents dans cet onglet (pas tous les groupes du site, qui n'auraient
+    // pas forcément de photo Mei) ; conserve la sélection en cours si le groupe choisi a
+    // toujours au moins un lieu, sinon retombe sur "All" plutôt que de filtrer vers une
+    // liste vide sans que la personne comprenne pourquoi.
+    function renderSacredGroupFilterOptions() {
+        const sel = document.getElementById('sacred-group-filter');
+        if (!sel) return;
+        const groups = Array.from(new Set(sacredLocs.map(l => l.group).filter(Boolean))).sort();
+        if (sacredActiveGroup !== 'All' && !groups.includes(sacredActiveGroup)) sacredActiveGroup = 'All';
+        sel.innerHTML = `<option value="All">${currentLang === 'fr' ? 'Tous les groupes' : 'All groups'}</option>`
+            + groups.map(g => `<option value="${escapeHtml(g)}"${g === sacredActiveGroup ? ' selected' : ''}>${escapeHtml(g)}</option>`).join('');
+        sel.classList.toggle('hidden', currentFeedTab !== 'sacred');
+    }
+
+    // Grille elle-même, séparée du fetch ci-dessus (demande du 16/10/2026) : reconstruite
+    // SEULEMENT à partir de sacredLocs déjà en mémoire à chaque changement de filtre, sans
+    // relire Firestore.
+    function renderSacredGridFromData() {
+        const grid = document.getElementById('feed-grid');
+        const emptyEl = document.getElementById('feed-empty');
+        const filtered = sacredActiveGroup === 'All' ? sacredLocs : sacredLocs.filter(l => l.group === sacredActiveGroup);
+        if (!filtered.length) {
+            grid.innerHTML = '';
+            emptyEl.textContent = currentLang === 'fr' ? 'Aucune photo pour ce groupe.' : 'No photos for this group.';
+            emptyEl.classList.remove('hidden');
+            return;
+        }
         emptyEl.classList.add('hidden');
         grid.innerHTML = '';
-        sacredLocs.forEach(loc => {
+        filtered.forEach(loc => {
             const tile = document.createElement('div');
             tile.className = 'feed-tile';
             tile.style.backgroundImage = `url('${firstRecreatedPhoto(loc)}')`;
             tile.title = loc.name || '';
-            tile.innerHTML = `<div class="feed-tile-official-badge">${cameraBadgeSvg}</div>`;
+            tile.innerHTML = loc.group ? `<div class="feed-tile-official-badge">${escapeHtml(loc.group)}</div>` : '';
             tile.onclick = () => openSacredPlace(loc.id);
             grid.appendChild(tile);
         });
-        sacredGridRendered = true;
     }
+    window.filterSacredByGroup = function (value) {
+        sacredActiveGroup = value || 'All';
+        renderSacredGridFromData();
+    };
 
     // Ouvre la modale "publication" partagée (voir #loc-modal et window.openLocModal() dans
     // script.js), avec la photo recréée comme visuel principal — pas de postContext.username

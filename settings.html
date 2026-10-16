@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261039" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261040" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -171,9 +171,16 @@ select{border:1px solid #cbd5e1;border-radius:8px;padding:10px 16px;font-size:13
   /* Plein-bleed sur mobile : le bloc blanc de la page touche les bords de l'écran
      (pas de marge latérale sur .page, pas d'arrondi sur .card) pour qu'on ne voie
      jamais le fond dégradé sur les côtés et que le contenu utilise toute la largeur. */
-  /* BUG rapporté le 12/09/2026 ("la barre du bas chevauche les pages") : 50px de marge basse ne suffisait pas à dégager .mobile-bottom-nav (position:fixed, ~54px de haut + jusqu'à env(safe-area-inset-bottom) de plus sur un iPhone à encoche) — la fin du contenu se retrouvait cachée derrière elle. Portée à la même marge que les autres pages (feed.html/profile.html...), qui tient compte explicitement de cette zone. */
+  /* BUG rapporté le 12/09/2026 ("la barre du bas chevauche les pages") : 50px de marge basse ne suffisait pas à dégager .mobile-bottom-nav (position:fixed, ~54px de haut + jusqu'à env(safe-area-inset-bottom) de plus sur un iPhone à encoche) — la fin du contenu se retrouvait cachée derrière elle. Portée à la même marge que les autres pages (feed.html/profile.html...), qui tient compte explicitement de cette zone.
+     BUG corrigé (demande du 16/10/2026, vérifié par capture d'écran Playwright sur
+     visited.html, même structure .page/.card partagée par ces 6 pages) : .page a
+     min-height:100vh mais pas de height explicite — avec un enfant (.card) dont le
+     contenu dépasse 100vh, .page reste bloquée à 100vh pile (overflow:visible laisse
+     .card déborder EN DESSOUS plutôt que d'agrandir .page), donc son padding-bottom ne
+     protège que l'état où le contenu tient dans un seul écran. La marge doit aussi être
+     posée sur .card, la vraie boîte dont le bord bas est visible/scrollable. */
   .page { padding: 92px 0 calc(90px + env(safe-area-inset-bottom)) 0; }
-  .card { padding: 26px 16px; border-radius: 0; }
+  .card { padding: 26px 16px calc(130px + env(safe-area-inset-bottom)) 16px; border-radius: 0; }
   h1.pg-title { font-size: 22px; margin-bottom: 20px; }
   .box-container { padding: 6px 14px; }
   .row { flex-wrap: wrap; gap: 8px; }
@@ -219,7 +226,7 @@ select{border:1px solid #cbd5e1;border-radius:8px;padding:10px 16px;font-size:13
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261039';
+        s.src = 'page-loader.js?v=20261040';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -514,10 +521,10 @@ select{border:1px solid #cbd5e1;border-radius:8px;padding:10px 16px;font-size:13
     </div>
 </div>
 
-<script src="countries.js?v=20261039"></script>
-<script type="module" src="firebase-init.js?v=20261039"></script>
-<script src="locations-data.js?v=20261039"></script>
-<script src="script.js?v=20261039"></script>
+<script src="countries.js?v=20261040"></script>
+<script type="module" src="firebase-init.js?v=20261040"></script>
+<script src="locations-data.js?v=20261040"></script>
+<script src="script.js?v=20261040"></script>
 <script>
     // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
     // updateCartPrice / soumission de #cart-form), pour être identique à map.html.
