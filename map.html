@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261033" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261034" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -477,6 +477,20 @@
          chacune des 3 zones défilantes laisse le plein écran intact tout en rendant le
          dernier élément réellement atteignable. */
       .live-panel-timeline, .live-panel-calendar, .tour-mode-rail-list { padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important; }
+      /* BUG corrigé (demande du 15/10/2026, répétée — "on ne voit pas le texte 'double
+         check official sources'... et dans la partie map on ne voit pas les boutons
+         Previous et Next") : le correctif ci-dessus ne couvrait que les 3 zones
+         DÉFILANTES (leur dernier élément redevient atteignable en scrollant) — mais
+         .live-panel-footer et .tour-mode-nav (Previous/Next) ne sont PAS dans une zone
+         défilante, ce sont les tout derniers éléments fixes de la mise en page en
+         colonne : aucun scroll ne peut jamais les faire apparaître sous la pastille de
+         nav flottante qui les recouvre en permanence. Leur réserver le même espace (ici
+         en les remontant eux-mêmes, puisqu'ils sont de taille fixe plutôt que défilante)
+         plutôt qu'un padding interne inutile sur un contenu non scrollable. Limité à
+         #live-panel (la page Agenda) : .tour-mode-nav est aussi utilisée par le panneau
+         Mode Tournée, qui n'a pas ce problème (sa nav du bas n'est pas flottée par-dessus).*/
+      #live-panel .live-panel-footer { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+      #live-panel .tour-mode-nav { margin-bottom: calc(90px + env(safe-area-inset-bottom)); }
   }
 
   /* BUG corrigé (demande du 09/10/2026, "agrandis la section Agenda, car l'affichage de
@@ -759,7 +773,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261033';
+        s.src = 'page-loader.js?v=20261034';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1981,17 +1995,17 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261033"></script>
-<script type="module" src="firebase-init.js?v=20261033"></script>
-<script src="locations-data.js?v=20261033"></script>
+<script src="countries.js?v=20261034"></script>
+<script type="module" src="firebase-init.js?v=20261034"></script>
+<script src="locations-data.js?v=20261034"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261033"></script>
-<script src="script.js?v=20261033"></script>
+<script src="artists-content.js?v=20261034"></script>
+<script src="script.js?v=20261034"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261033"></script>
-<script src="map-tour.js?v=20261033"></script>
+<script src="itinerary.js?v=20261034"></script>
+<script src="map-tour.js?v=20261034"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE

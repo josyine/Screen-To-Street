@@ -184,21 +184,13 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 
 .detail-hero { position: relative; height: 220px; flex-shrink: 0; background-size: cover; background-position: center; }
 .detail-back-link { position: absolute; top: 16px; left: 18px; color: #fff; background: rgba(20,16,30,.4); backdrop-filter: blur(6px); padding: 7px 14px; border-radius: 100px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-/* Sur mobile (demande du 15/10/2026, "je préfère ce bouton croix car elle est plus
-   petite") : remplace la pastille "← Back to list" par un petit rond blanc, exactement
-   comme .sst-x (bouton de fermeture de la fenêtre "Share", voir IC.x dans script.js pour
-   le même tracé de croix — réutilisé ici en masque CSS plutôt qu'en <svg> inline, le texte
-   du lien restant utile aux lecteurs d'écran via text-indent plutôt que d'être retiré du
-   DOM). Desktop inchangé (pastille texte d'origine). */
-@media (max-width: 760px) {
-    .detail-back-link { width: 36px; height: 36px; padding: 0; border-radius: 50%; background: #F1EEF6; backdrop-filter: none; text-indent: -9999px; overflow: hidden; position: absolute; }
-    .detail-back-link::after {
-        content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        width: 16px; height: 16px; background-color: #1F2430;
-        -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>") no-repeat center / contain;
-        mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>") no-repeat center / contain;
-    }
-}
+/* La croix mobile posée ici le 15/10/2026 (en remplacement de la pastille texte
+   "← Back to list") faisait doublon avec la croix du bouton hamburger (voir
+   .hamburger-icon-close/#app-sidebar.open dans map.html), déjà affichée au même endroit
+   dès l'ouverture de la fiche lieu (openDetailsPanel() ouvre #app-sidebar) — 2 croix
+   superposées pour fermer la même fenêtre (demande du 15/10/2026, "supprime la croix
+   que tu viens d'ajouter"). Retrait : la pastille texte d'origine redevient commune au
+   desktop et au mobile, la croix du hamburger restant le seul bouton de fermeture. */
 /* Icône crayon "modifier ce lieu" (admins uniquement, voir #details-admin-edit-btn dans
    map.html) — même traitement visuel que .detail-back-link, en miroir à droite. */
 .detail-admin-edit-btn { position: absolute; top: 16px; right: 18px; background: rgba(20,16,30,.4); backdrop-filter: blur(6px); border: none; border-radius: 100px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
@@ -1170,7 +1162,20 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    inchangé) pour ne jamais se marcher dessus. */
 .qa-form-overlay{--qa-ink:#1F2430;--qa-mag:#E0156B;--qa-mut:#8F8B99;--qa-sub:#5F5B68;--qaf-line:#ECE8F2;--qa-soft:#F4F2F8;position:fixed;inset:0;z-index:9650;background:rgba(23,19,49,.45);display:none;align-items:flex-end;justify-content:center;font-family:'Poppins',sans-serif;color:var(--qa-ink);font-size:14px}
 .qa-form-overlay.open{display:flex}
-.qa-form-overlay button{all:unset;cursor:pointer;box-sizing:border-box;font-family:inherit}
+/* BUG corrigé (demande du 16/10/2026, "reprend le fichier... car là ça ne va pas" — la mise
+   en forme entière de la fenêtre, boutons compris, était cassée) : cette remise à zéro
+   ("all:unset") doit avoir une spécificité CSS plus FAIBLE que chaque classe .qaf-* qui
+   stylise ensuite un bouton précis (.qaf-cta, .qaf-x, .qaf-bk, .qaf-chip, .qaf-row...) —
+   exactement comme dans la maquette fournie, qui écrit `:where(.adx) button{all:unset;...}`
+   précisément pour ça (:where() a TOUJOURS une spécificité nulle, quoi qu'il contienne).
+   Porté ici sans ce :where() par erreur, ce sélecteur devenait "1 classe + 1 type" — PLUS
+   spécifique que ".qaf-cta" seul ("1 classe") — et l'emportait donc sur elle pour TOUTE
+   propriété non marquée !important (la hauteur 52px du bouton "Publier", le padding des
+   puces de tags, etc.), écrasés par ce reset et retombant sur leur valeur initiale (ex:
+   height:auto) : d'où un bouton "Publier" réduit à du texte brut sans aucun fond ni
+   hauteur, des puces de tags sans air, et plus généralement une mise en forme méconnaissable
+   malgré un CSS par ailleurs correct pour chaque classe. */
+:where(.qa-form-overlay) button{all:unset;cursor:pointer;box-sizing:border-box;font-family:inherit}
 .qa-form-overlay input,.qa-form-overlay textarea{font-family:inherit;font-size:14px;color:var(--qa-ink);border:0;outline:0;background:none;width:100%;resize:none}
 .qa-form-root{width:100%;max-width:480px;position:relative}
 .qaf-sheet{background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);display:flex;flex-direction:column;max-height:88vh}
