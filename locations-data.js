@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-15T22:36:19.923Z.
+// Généré le 2026-10-16T06:13:18.418Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -22796,7 +22796,13 @@ window.STATIC_LOCATIONS = [
       "images/admin-upload-new-Sx0T27Qui1mvuWLDLHSh-recreated-0.jpg",
       {
         "url": "images/admin-upload-new-Sx0T27Qui1mvuWLDLHSh-recreated-1.jpg",
-        "official": true
+        "markers": [
+          {
+            "x": 0.7189,
+            "y": 0.4979,
+            "member": "RM"
+          }
+        ]
       }
     ]
   },
