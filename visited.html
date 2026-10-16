@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261038" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261039" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -133,7 +133,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 .vst-pill { font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 999px; white-space: nowrap; }
 .vst-pill.ctry { background: #FCE4EF; color: #D42759; }
 .vst-pill.cont { background: #EFE6FB; color: #8E52D6; }
-.vst-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #ECE8F2; }
+.vst-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #ECE8F2; width: 100%; background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; font: inherit; color: inherit; cursor: default; }
 .vst-row:last-child { border-bottom: 0; padding-bottom: 0; }
 .vst-row:first-child { padding-top: 0; }
 .vst-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 10px; flex: 0 0 auto; }
@@ -145,6 +145,26 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 .vst-bar { height: 7px; border-radius: 7px; background: #ECE8F2; overflow: hidden; margin-top: 6px; }
 .vst-bar i { display: block; height: 100%; border-radius: 7px; }
 .vst-bar i.on { min-width: 5px; }
+/* Carte du monde interactive + menu groupe (demande du 16/10/2026, maquette
+   mes_visites_finale.html) : remplace le simple empilement de cartes statiques par une
+   mini carte du monde (voir visited-map-data.js/visitedWorldMapProject() dans script.js)
+   avec un sélecteur de groupe superposé — choisir un groupe ici (ou dans une ligne "Par
+   groupe" ci-dessous, même état partagé) filtre l'anneau/les listes à ce seul groupe,
+   exactement comme la maquette. */
+.vst-mapbox { position: relative; overflow: hidden; border-radius: 18px; background: #F5F3F9; height: 190px; margin-bottom: 14px; }
+.vst-mapbox svg { display: block; width: 100%; height: 100%; }
+.vst-dd { position: absolute; left: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 999px; background: #fff; box-shadow: 0 2px 10px rgba(31,36,48,.13); font-size: 13px; font-weight: 700; border: 0; cursor: pointer; color: #212832; font-family: inherit; }
+.vst-dd i { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+.vst-dd svg { width: 14px; height: 14px; flex: 0 0 auto; }
+.vst-ddm { position: absolute; left: 12px; bottom: 54px; background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(31,36,48,.2); padding: 6px; z-index: 5; min-width: 200px; }
+.vst-ddm button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 11px; font-size: 13.5px; font-weight: 600; background: none; border: 0; cursor: pointer; font-family: inherit; color: #212832; text-align: left; }
+.vst-ddm button:hover { background: #F4F2F8; }
+.vst-ddm i { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+.vst-ddm small { margin-left: auto; color: #8F8B99; font-size: 12px; font-weight: 600; }
+.vst-ddm .ck { color: #D42759; font-weight: 800; width: 14px; flex: 0 0 auto; }
+.vst-row.sel { background: #FFF5F9; border-radius: 14px; padding: 10px 8px; margin: 0 -8px; width: calc(100% + 16px); cursor: pointer; }
+.vst-row[data-group] { cursor: pointer; }
+.vst-card h4 .vst-showall { font-size: 12px; font-weight: 700; color: #D42759; background: none; border: 0; cursor: pointer; font-family: inherit; padding: 0; }
 
 .visit-list { display: flex; flex-direction: column; gap: 10px; }
 .visit-row { display: flex; gap: 14px; align-items: center; background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 16px; cursor: pointer; transition: 0.2s; }
@@ -238,7 +258,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261038';
+        s.src = 'page-loader.js?v=20261039';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -430,9 +450,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261038"></script>
-<script src="locations-data.js?v=20261038"></script>
-<script src="script.js?v=20261038"></script>
+<script type="module" src="firebase-init.js?v=20261039"></script>
+<script src="locations-data.js?v=20261039"></script>
+<script src="visited-map-data.js?v=20261039"></script>
+<script src="script.js?v=20261039"></script>
 <script>
     // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
     // updateCartPrice / soumission de #cart-form), pour être identique à map.html.
@@ -479,9 +500,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         const w = t > 0 ? (v / t * 100) : 0;
         return `<div class="vst-bar"><i class="${v > 0 ? 'on' : ''}" style="width:${w}%;background:${color}"></i></div>`;
     }
-    function vstRow(badge, badgeBg, badgeColor, name, v, t, barColor) {
-        return `<div class="vst-row"><span class="vst-badge" style="background:${badgeBg};color:${badgeColor}">${escapeHtml(badge)}</span>
-            <div class="vst-tx"><div class="vst-tx-top"><b>${escapeHtml(name)}</b><small><b>${v}</b> / ${t}</small></div>${vstBar(v, t, barColor)}</div></div>`;
+    // `groupKey` présent => ligne cliquable (<button data-group>, filtre partagé avec le
+    // menu déroulant de la carte, voir plus bas) — absent => simple ligne statique (liste
+    // "Par pays", jamais cliquable).
+    function vstRow(badge, badgeBg, badgeColor, name, v, t, barColor, groupKey, selected) {
+        const tag = groupKey !== undefined ? 'button' : 'div';
+        const attrs = groupKey !== undefined
+            ? ` type="button" class="vst-row${selected ? ' sel' : ''}" data-group="${escapeHtml(groupKey)}"`
+            : ' class="vst-row"';
+        return `<${tag}${attrs}><span class="vst-badge" style="background:${badgeBg};color:${badgeColor}">${escapeHtml(badge)}</span>
+            <div class="vst-tx"><div class="vst-tx-top"><b>${escapeHtml(name)}</b><small><b>${v}</b> / ${t}</small></div>${vstBar(v, t, barColor)}</div></${tag}>`;
     }
     // Abréviation à 2 lettres façon code pays (demande du 16/10/2026, voir crow() dans la
     // maquette) — table des pays effectivement présents dans locations-data.js (voir
@@ -495,6 +523,34 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         'Japan': 'JP', 'Macau': 'MO', 'Philippines': 'PH', 'Saudi Arabia': 'SA', 'Singapore': 'SG',
         'South Korea': 'KR', 'Taiwan': 'TW', 'Thailand': 'TH', 'United Arab Emirates': 'AE'
     };
+    const vstGroupIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>`;
+    const vstChevDown = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>`;
+    const vstCheck = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+    // Groupe actuellement sélectionné (menu déroulant de la carte OU ligne "Par groupe"
+    // cliquée, état partagé — demande du 16/10/2026, maquette mes_visites_finale.html) :
+    // "All" affiche tout, un nom de groupe filtre l'anneau + la carte + "Par pays" à ce
+    // seul groupe (comme data(st) dans la maquette). Persiste tant que la page reste
+    // ouverte (changement de langue, sync cloud...), remis à "All" seulement si ce groupe
+    // n'est plus débloqué (perte d'un pass, déconnexion...).
+    let vstActiveGroup = 'All';
+    let vstDdOpen = false;
+
+    // Carte du monde (voir visited-map-data.js/visitedWorldMapProject() dans script.js) :
+    // teinte chaque pays contenant au moins un lieu VISITÉ du groupe filtré (locs déjà
+    // scopé par l'appelant), avec un point par lieu visité à ses coordonnées réelles.
+    function vstWorldMapSvg(locs, color) {
+        const m = window.VISITED_WORLD_MAP;
+        if (!m || !m.paths) return '';
+        const codes = new Set(locs.map(l => COUNTRY_ISO_NUMERIC[l.country]).filter(Boolean));
+        const paths = Object.entries(m.paths).map(([code, d]) =>
+            `<path d="${d}" fill="${codes.has(code) ? color : '#E4E1EA'}" fill-opacity="${codes.has(code) ? '.9' : '1'}" stroke="#fff" stroke-width=".35"/>`
+        ).join('');
+        const pins = locs.filter(l => l.lat != null && l.lng != null).map(l => {
+            const [x, y] = visitedWorldMapProject(l.lat, l.lng);
+            return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="${groupColors[l.group] || color}" stroke="#fff" stroke-width="1.2"/>`;
+        }).join('');
+        return `<svg viewBox="0 0 ${m.w} ${m.h}" preserveAspectRatio="xMidYMid meet">${paths}${pins}</svg>`;
+    }
 
     function renderProgressBars(visitedIds) {
         const isFr = currentLang === 'fr';
@@ -506,33 +562,52 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         container.innerHTML = '';
         if (baseLocs.length === 0) return;
 
-        const groupStats = [...new Set(baseLocs.map(l => l.group))].map(g => {
+        const allGroupNames = [...new Set(baseLocs.map(l => l.group))];
+        if (vstActiveGroup !== 'All' && !allGroupNames.includes(vstActiveGroup)) vstActiveGroup = 'All';
+        const activeColor = vstActiveGroup === 'All' ? '#E0156B' : (groupColors[vstActiveGroup] || '#D42759');
+
+        // Portée du groupe actif (demande du 16/10/2026) : "All" garde tout le catalogue
+        // débloqué comme avant ; un groupe précis réduit TOUT (anneau, carte, "Par pays")
+        // à ce seul groupe — même principe que data(st) dans la maquette.
+        const scopedLocs = vstActiveGroup === 'All' ? baseLocs : baseLocs.filter(l => l.group === vstActiveGroup);
+
+        const groupStats = allGroupNames.map(g => {
             const locs = baseLocs.filter(l => l.group === g);
-            return { name: g, v: locs.filter(l => visitedIds.includes(l.id)).length, t: locs.length, color: groupColors[g] || '#D42759' };
+            return { name: g, v: locs.filter(l => visitedIds.includes(String(l.id))).length, t: locs.length, color: groupColors[g] || '#D42759' };
         });
 
         // Triés par nombre de lieux visités décroissant (demande implicite du mockup, où
         // le pays le plus visité apparaît en tête) — à défaut, par taille de catalogue,
         // puis alphabétique pour un ordre stable.
-        const countryStats = [...new Set(baseLocs.map(l => l.country).filter(Boolean))].map(c => {
-            const locs = baseLocs.filter(l => l.country === c);
-            return { name: c, v: locs.filter(l => visitedIds.includes(l.id)).length, t: locs.length };
+        const countryStats = [...new Set(scopedLocs.map(l => l.country).filter(Boolean))].map(c => {
+            const locs = scopedLocs.filter(l => l.country === c);
+            return { name: c, v: locs.filter(l => visitedIds.includes(String(l.id))).length, t: locs.length };
         }).sort((a, b) => b.v - a.v || b.t - a.t || a.name.localeCompare(b.name));
 
         const continentsTotal = new Set(countryStats.map(c => COUNTRY_CONTINENT[c.name]).filter(Boolean)).size;
         const continentsVisited = new Set(countryStats.filter(c => c.v > 0).map(c => COUNTRY_CONTINENT[c.name]).filter(Boolean)).size;
         const countriesVisitedCount = countryStats.filter(c => c.v > 0).length;
-        const totalVisited = visitedIds.filter(id => baseLocs.some(l => l.id === id)).length;
-        const totalPlaces = baseLocs.length;
+        const totalVisited = visitedIds.filter(id => scopedLocs.some(l => String(l.id) === id)).length;
+        const totalPlaces = scopedLocs.length;
         const P = vstPct(totalVisited, totalPlaces);
+        const visitedScopedLocs = scopedLocs.filter(l => visitedIds.includes(String(l.id)));
+
+        const ddLabel = vstActiveGroup === 'All' ? (isFr ? 'Tous les groupes' : 'All groups') : vstActiveGroup;
+        const ddOptions = [{ k: 'All', n: isFr ? 'Tous les groupes' : 'All groups', c: '#E0156B', cnt: baseLocs.filter(l => visitedIds.includes(String(l.id))).length }]
+            .concat(groupStats.map(g => ({ k: g.name, n: g.name, c: g.color, cnt: g.v })));
 
         container.innerHTML = `
+            <div class="vst-mapbox" id="vst-mapbox">
+                ${vstWorldMapSvg(visitedScopedLocs, activeColor)}
+                <button type="button" class="vst-dd" id="vst-dd-btn"><i style="background:${activeColor}"></i>${escapeHtml(ddLabel)} ${vstChevDown}</button>
+                ${vstDdOpen ? `<div class="vst-ddm" id="vst-ddm">${ddOptions.map(o => `<button type="button" data-group="${escapeHtml(o.k)}"><span class="ck">${vstActiveGroup === o.k ? vstCheck : ''}</span><i style="background:${o.c}"></i>${escapeHtml(o.n)}<small>${o.cnt}</small></button>`).join('')}</div>` : ''}
+            </div>
             <div class="vst-card">
                 <h4>${isFr ? 'Au total' : 'In total'}</h4>
                 <div class="vst-ring-row">
                     ${vstRingSvg(P, 92, 13, 'exploré', 'explored')}
                     <div>
-                        <div class="vst-ring-count">${totalVisited}<small> / ${totalPlaces} ${isFr ? 'lieux' : 'places'}</small></div>
+                        <div class="vst-ring-count">${totalVisited}<small> / ${totalPlaces} ${vstActiveGroup === 'All' ? (isFr ? 'lieux' : 'places') : (isFr ? vstActiveGroup + ' lieux' : vstActiveGroup + ' places')}</small></div>
                         <div class="vst-pills">
                             <span class="vst-pill ctry">${countriesVisitedCount} / ${countryStats.length} ${isFr ? 'pays' : 'countries'}</span>
                             <span class="vst-pill cont">${continentsVisited} / ${continentsTotal} continents</span>
@@ -541,20 +616,41 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
                 </div>
             </div>
             <div class="vst-card">
-                <h4>${isFr ? 'Par groupe' : 'By group'}</h4>
-                ${groupStats.map(g => vstRow(g.name.slice(0, 3).toUpperCase(), g.color, '#fff', g.name, g.v, g.t, g.color)).join('')}
+                <h4>${isFr ? 'Par groupe' : 'By group'}${vstActiveGroup !== 'All' ? `<button type="button" class="vst-showall" data-group="All">${isFr ? 'Tout afficher' : 'Show all'}</button>` : ''}</h4>
+                ${groupStats.map(g => vstRow(g.name.slice(0, 3).toUpperCase(), g.color, '#fff', g.name, g.v, g.t, g.color, g.name, vstActiveGroup === g.name)).join('')}
             </div>
             <div class="vst-card">
-                <h4>${isFr ? 'Par pays' : 'By country'}</h4>
-                ${countryStats.map(c => vstRow(VST_COUNTRY_CODE[c.name] || c.name.slice(0, 2).toUpperCase(), '#F1EEF6', '#1F2430', c.name, c.v, c.t, 'linear-gradient(90deg,#8E52D6,#E0156B)')).join('')}
+                <h4>${isFr ? 'Par pays' : 'By country'} <small>${countryStats.length}</small></h4>
+                ${countryStats.length ? countryStats.map(c => vstRow(VST_COUNTRY_CODE[c.name] || c.name.slice(0, 2).toUpperCase(), '#F1EEF6', '#1F2430', c.name, c.v, c.t, vstActiveGroup === 'All' ? 'linear-gradient(90deg,#8E52D6,#E0156B)' : activeColor)).join('') : `<div style="font-size:12.5px;color:#8F8B99;padding:6px 0">${isFr ? 'Aucun pays pour ce groupe pour le moment.' : 'No country yet for this group.'}</div>`}
             </div>
         `;
     }
+    // Clic sur le menu déroulant de la carte / une ligne "Par groupe" / "Tout afficher" :
+    // tous mettent à jour le même état (vstActiveGroup) et redessinent — délégué sur le
+    // conteneur plutôt que posé à chaque re-rendu (le contenu est entièrement régénéré à
+    // chaque renderProgressBars()).
+    document.getElementById('visited-progress-container').addEventListener('click', (e) => {
+        if (e.target.closest('#vst-dd-btn')) { vstDdOpen = !vstDdOpen; renderVisited(); return; }
+        const opt = e.target.closest('[data-group]');
+        if (opt) { vstActiveGroup = opt.dataset.group; vstDdOpen = false; renderVisited(); return; }
+        if (vstDdOpen && !e.target.closest('#vst-ddm')) { vstDdOpen = false; renderVisited(); }
+    });
+    // Ferme le menu déroulant sur un tap N'IMPORTE OÙ ailleurs sur la page (liste "Par
+    // pays" plus bas comprise) — l'écouteur ci-dessus est scopé à #visited-progress-container,
+    // donc insuffisant à lui seul pour ce cas.
+    document.addEventListener('click', (e) => {
+        if (vstDdOpen && !e.target.closest('#vst-mapbox')) { vstDdOpen = false; renderVisited(); }
+    });
 
     function renderVisited() {
         const vList = JSON.parse(localStorage.getItem('visitedLocs') || '[]');
         const normalized = vList.map(v => window.normalizeVisitEntry ? window.normalizeVisitEntry(v) : (typeof v === 'object' ? v : { id: v, visits: [] }));
-        const visitedIds = normalized.map(v => Number(v.id));
+        // BUG corrigé (demande du 16/10/2026, répétée pour d'autres pages ce même jour) :
+        // Number(v.id) vaut NaN pour tout lieu ajouté depuis la file d'approbation (id
+        // "new-xxxxx") — NaN n'égale jamais rien, donc un tel lieu visité n'était jamais
+        // compté ni retrouvé (ni ici, ni dans la liste de cartes plus bas, ni dans
+        // renderProgressBars()). Comparaison en chaîne partout désormais.
+        const visitedIds = normalized.map(v => String(v.id));
 
         renderProgressBars(visitedIds);
 
@@ -573,7 +669,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         emptyEl.classList.add('hidden');
 
         normalized.forEach(v => {
-            const loc = celebLocations.find(l => l.id === Number(v.id));
+            const loc = celebLocations.find(l => String(l.id) === String(v.id));
             if (!loc) return;
 
             const visits = (v.visits || []).slice().sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));

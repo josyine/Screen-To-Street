@@ -2710,6 +2710,26 @@ const ShareStory = (() => {
     const $ = s => root.querySelector(s);
     const KIND = { lieu: currentLang === 'fr' ? 'Lieu' : 'Place', defi: 'Défi relevé', badge: 'Nouveau badge' };
     let D = null, tpl = 0, user = null, UID = 0;
+    // BUG corrigé (demande du 16/10/2026, "le bouton Save ne fonctionne pas", répété pour
+    // Story/Copy) : makeFile() ne démarrait qu'AU CLIC sur Story/Copier/Enregistrer — entre
+    // ce clic et le moment où navigator.share()/le téléchargement s'exécutait réellement,
+    // il fallait d'abord attendre la capture ENTIÈRE (conversions CORS en data: URI +
+    // htmlToImage.toBlob(), potentiellement plusieurs secondes sur un hôte lent ou un
+    // rendu pixelRatio:4 lourd sur mobile). Les navigateurs n'autorisent les API
+    // "privilégiées" (partage natif, téléchargement programmatique) que pendant une courte
+    // fenêtre d'activation utilisateur suivant un VRAI clic — dépasser cette fenêtre les
+    // fait échouer SILENCIEUSEMENT, exactement le symptôme rapporté ("Save ne fonctionne
+    // pas"). fileCache démarre la capture dès qu'un format devient affiché (voir sync()
+    // plus bas), PENDANT que la personne regarde encore l'aperçu — au moment du clic,
+    // prewarm() renvoie généralement un fichier déjà prêt, sans aucun délai.
+    let fileCache = new Map();
+    function clearFileCache() { fileCache.clear(); }
+    function prewarm(t) {
+        if (fileCache.has(t)) return fileCache.get(t);
+        const p = makeFile(t).catch(e => { fileCache.delete(t); throw e; });
+        fileCache.set(t, p);
+        return p;
+    }
     const IC = {
         x: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
         up: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="1.8"/><path d="M21 15l-5-5-9 9"/></svg>`,
@@ -2867,6 +2887,11 @@ const ShareStory = (() => {
         $('[data-name]').textContent = names[tpl];
         const up = $('.sst-up'); up.innerHTML = IC.up + (user ? (currentLang === 'fr' ? 'Changer ma photo' : 'Change my photo') : (currentLang === 'fr' ? 'Ajouter ma photo' : 'Add my photo'));
         up.classList.toggle('sst-has', !!user); $('.sst-rm').classList.toggle('sst-show', !!user);
+        // Démarre la capture de ce format EN ARRIÈRE-PLAN dès qu'il devient affiché (voir
+        // prewarm()/fileCache plus bas) plutôt que d'attendre un clic sur Story/Copier/
+        // Enregistrer — appel sans attente (fire-and-forget), ses propres erreurs sont
+        // gérées par prewarm() lui-même.
+        prewarm(tpl);
     }
     const slideW = () => car.querySelector('.sst-slide').offsetWidth + 12;
     function go(n) { tpl = Math.max(0, Math.min(3, n)); car.scrollTo({ left: tpl * slideW(), behavior: 'smooth' }); sync(); }
@@ -2881,7 +2906,7 @@ const ShareStory = (() => {
                 const m = Math.min(1, 1440 / Math.max(im.width, im.height));
                 const cv = document.createElement('canvas'); cv.width = Math.round(im.width * m); cv.height = Math.round(im.height * m);
                 cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height);
-                user = cv.toDataURL('image/jpeg', .88); renderStories(); sync();
+                user = cv.toDataURL('image/jpeg', .88); clearFileCache(); renderStories(); sync();
                 toast(currentLang === 'fr' ? 'Ta photo est utilisée sur les 4 formats' : 'Your photo is used on all 4 formats');
             };
             im.src = r.result;
@@ -2980,36 +3005,55 @@ const ShareStory = (() => {
     // ou aucune image cross-origin). getSrc/setSrc/hide ci-dessous traitent les deux types
     // d'éléments de façon uniforme (<img>.src vs <image>[href], tous deux stylables via
     // display:none) plutôt que de dupliquer toute la logique pour l'un puis l'autre.
-    async function makeFile() {
-        const node = root.querySelector(`[data-story="${tpl}"] .sst-st`);
+    // BUG corrigé (demande du 16/10/2026, "l'image ne s'affiche pas, c'est tout gris" sur
+    // Story — persiste malgré le repli catch/retry du 16/10/2026 précédent) : ce repli ne
+    // se déclenchait QUE si htmlToImage.toBlob() LEVAIT une erreur pour un canvas tainté —
+    // mais un canvas tainté ne lève pas toujours proprement une SecurityError selon le
+    // navigateur/la version de la librairie : certains le laissent résoudre avec un canevas
+    // partiellement ou totalement VIDE (gris/transparent) à la place, sans jamais passer par
+    // le catch. Plutôt que de dépendre d'une erreur pour détecter ce cas, on sait DÉJÀ au
+    // moment de convertir chaque photo en data: URI (toDataUriIfPossible ci-dessus) si
+    // l'hôte autorise la lecture CORS ou non — une conversion échouée retire maintenant
+    // directement la source cross-origin AVANT même la première tentative de capture, au
+    // lieu d'espérer qu'une capture ratée lève une erreur exploitable.
+    //
+    // BUG corrigé (demande du 16/10/2026, "pour Copy [sticker] il ne faut pas que ça copie
+    // le fond blanc, juste le sticker") : le Sticker (tpl=3) capturait tout le cadre
+    // 270x480 (comme les 3 autres formats) alors que sa propre carte (.sst-stk) ne fait que
+    // 212px de large, centrée — d'où la bordure blanche (posée le 16/10/2026 précédent pour
+    // éviter un artefact de transparence) qui se retrouvait dans l'image copiée/enregistrée.
+    // Capture directement .sst-stk pour ce format, sans largeur/hauteur imposées (laisse
+    // html-to-image mesurer son propre gabarit réel) — l'image exportée correspond alors
+    // exactement aux bords de la carte, sans cadre superflu autour.
+    async function makeFile(forTpl) {
+        const t = forTpl !== undefined ? forTpl : tpl;
+        const node = root.querySelector(`[data-story="${t}"] .sst-st`);
+        const captureNode = t === 3 ? (node.querySelector('.sst-stk') || node) : node;
         if (!(await loadHtmlToImageOnce())) throw new Error('html-to-image absent');
         const slug = (D.url.split('/').pop() || 'partage');
-        const toFile = (blob) => new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
+        const toFile = (blob) => new File([blob], `screen-to-street-${slug}-${NAMES()[t].toLowerCase()}.png`, { type: 'image/png' });
         const pics = [
             ...Array.from(node.querySelectorAll('img')).map(el => ({ el, get: () => el.src, set: v => { el.src = v; }, clear: () => el.removeAttribute('src') })),
             ...Array.from(node.querySelectorAll('image')).map(el => ({ el, get: () => el.getAttribute('href'), set: v => { el.setAttribute('href', v); }, clear: () => el.removeAttribute('href') }))
         ];
         const originalSrcs = pics.map(p => p.get());
         const dataUris = await Promise.all(pics.map(p => toDataUriIfPossible(p.get())));
-        dataUris.forEach((uri, i) => { if (uri) pics[i].set(uri); });
+        pics.forEach((p, i) => {
+            if (dataUris[i]) p.set(dataUris[i]);
+            else if (originalSrcs[i] && !String(originalSrcs[i]).startsWith('data:')) p.clear();
+        });
+        const captureOpts = t === 3 ? { pixelRatio: 4 } : { pixelRatio: 4, width: 270, height: 480 };
         try {
             try {
-                return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
+                return toFile(await htmlToImage.toBlob(captureNode, captureOpts));
             } catch (e) {
-                // BUG corrigé (demande du 16/10/2026, "Could not create the image" persiste
-                // pour Fiche/Photo/Carte malgré ce repli, alors que Sticker — le seul format
-                // SANS la photo du lieu dans son habillage — fonctionne toujours) : masquer
-                // la photo via display:none ne l'exclut PAS de la capture. html-to-image
-                // clone tout le sous-arbre DOM (y compris les éléments display:none) dans un
-                // <foreignObject> SVG puis tente d'intégrer chaque <img>/<image> rencontré —
-                // ce clonage/cette intégration se fait AVANT le rendu visuel, donc une source
-                // cross-origin toujours présente en attribut src/href continue de tainter le
-                // canvas (ou de faire échouer l'intégration) même invisible. Il faut RETIRER
-                // l'attribut, pas seulement cacher l'élément, pour qu'il n'y ait plus rien à
-                // charger lors de cette seconde tentative.
-                console.warn('Capture avec photo échouée (canvas tainté ?), nouvelle tentative sans photo :', e);
+                // Filet de sécurité pour tout AUTRE échec (police web pas encore chargée,
+                // erreur mémoire...) — la photo est déjà retirée ci-dessus dans le cas le
+                // plus courant, donc cette tentative ne change en général plus rien pour
+                // elle, mais reste utile pour les autres causes possibles.
+                console.warn('Capture échouée, nouvelle tentative sans photo :', e);
                 pics.forEach(p => { p.clear(); });
-                return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
+                return toFile(await htmlToImage.toBlob(captureNode, captureOpts));
             }
         } finally {
             pics.forEach((p, i) => { if (originalSrcs[i] != null) p.set(originalSrcs[i]); });
@@ -3057,11 +3101,27 @@ const ShareStory = (() => {
         try {
             await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
         } catch (e) { return false; }
+        // BUG corrigé (demande du 16/10/2026, "ça ne renvoie pas directement dans la story
+        // Instagram, et l'image ne s'affiche pas, c'est tout gris") : "blur" (utilisé
+        // jusqu'ici pour détecter qu'Instagram s'est bien ouvert) se déclenche aussi pour la
+        // boîte de dialogue native iOS "Autoriser le collage ?" déclenchée par
+        // navigator.clipboard.write() juste au-dessus — un FAUX positif qui faisait croire
+        // qu'Instagram s'était ouvert (finish(true), aucun repli déclenché) alors que la
+        // personne restait en fait coincée sur cette boîte de dialogue/un écran gris, sans
+        // qu'aucun repli (partage natif classique) ne prenne jamais le relais. document.
+        // hidden/"visibilitychange" est un signal plus fiable : il ne passe à true que
+        // lorsque l'onglet est RÉELLEMENT mis en arrière-plan (vraie bascule d'app), pas
+        // pour une simple boîte de dialogue au-dessus de la page.
         return new Promise(resolve => {
             let done = false;
-            const finish = (opened) => { if (done) return; done = true; window.removeEventListener('blur', onBlur); clearTimeout(timer); resolve(opened); };
-            const onBlur = () => finish(true);
-            window.addEventListener('blur', onBlur);
+            const finish = (opened) => {
+                if (done) return; done = true;
+                document.removeEventListener('visibilitychange', onVisible);
+                clearTimeout(timer);
+                resolve(opened);
+            };
+            const onVisible = () => { if (document.hidden) finish(true); };
+            document.addEventListener('visibilitychange', onVisible);
             const timer = setTimeout(() => finish(false), 1600);
             window.location.href = `instagram-stories://share?source_application=${encodeURIComponent(INSTAGRAM_FB_APP_ID)}`;
         });
@@ -3095,7 +3155,7 @@ const ShareStory = (() => {
         if (a === 'close') return api.close();
         if (a === 'friends-close') return closeFriendPanel();
         if (a === 'upload') return $('[data-file]').click();
-        if (a === 'rmphoto') { user = null; renderStories(); sync(); return; }
+        if (a === 'rmphoto') { user = null; clearFileCache(); renderStories(); sync(); return; }
         if (a === 'friend') return openFriendPanel();
         // "Copier le lien" (demande du 15/10/2026, remplace WhatsApp) — pas besoin de
         // makeFile()/l'image générée, retourne donc AVANT cet appel (contrairement à
@@ -3110,7 +3170,7 @@ const ShareStory = (() => {
             return;
         }
         api.onShare && api.onShare({ format: NAMES()[tpl], action: a, type: D.type });
-        let f; try { f = await makeFile(); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
+        let f; try { f = await prewarm(tpl); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
         if (a === 'story') {
             if (await tryInstagramStoryShare(f)) return;
             // Repli (Android, desktop, iOS sans Instagram installé, ou app Meta pas encore
@@ -3163,7 +3223,7 @@ const ShareStory = (() => {
     const api = {
         open(data) {
             D = { stats: [], url: 'https://screentostreet.com', ...data };
-            user = null; tpl = 0; closeFriendPanel();
+            user = null; tpl = 0; closeFriendPanel(); clearFileCache();
             renderChrome();
             root.classList.add('sst-on'); fit(); renderStories(); car.scrollLeft = 0; sync();
         },
@@ -4129,7 +4189,7 @@ async function qaSaveVisit({ locationId, date, rating, notes, photo, isPublic, g
     if (isPublic && typeof window.setLocationReview === 'function') {
         const loc = (typeof celebLocations !== 'undefined' ? celebLocations : []).find(l => String(l.id) === String(locationId));
         const res = await window.setLocationReview(String(locationId), {
-            rating, notes, photo: photo || null, tags: tags || [],
+            rating, notes, photo: photo || null, tags: tags || [], date: date || null,
             userName: (localStorage.getItem('userFirstName') || localStorage.getItem('userName') || 'ARMY').trim(),
             userPhoto: localStorage.getItem('userPhoto') || null,
             locationName: loc ? loc.name : null, category: loc ? loc.category : null
@@ -4148,9 +4208,20 @@ async function qaSubmit(overlay) {
     try {
         if (kind === 'photo') {
             if (typeof window.addProfilePhoto !== 'function') throw new Error('unavailable');
+            // {uid, username} plutôt qu'un simple uid (demande du 16/10/2026, "dans les
+            // posts publiés... s'il a identifié des personnes il faut les ajouter") : le
+            // pseudo n'est résolvable qu'ICI, depuis la liste d'amis de la PERSONNE QUI
+            // PUBLIE (qaFriendsCache) — un autre visiteur consultant cette publication plus
+            // tard n'a aucune raison d'avoir ces mêmes amis dans sa propre liste, donc
+            // aucun moyen de résoudre un simple uid après coup. Dénormalisé au moment de la
+            // publication, comme username/locationName ailleurs dans ce fichier.
+            const taggedFriendsResolved = st.friends.map(uid => {
+                const f = (qaFriendsCache || []).find(x => x.uid === uid);
+                return { uid, username: f ? f.n : '' };
+            });
             const res = await window.addProfilePhoto({
                 locationId: st.place.id, locationName: st.place.name, photo: st.photo,
-                date: st.dateISO, caption: st.caption.trim(), taggedFriends: st.friends.slice()
+                date: st.dateISO, caption: st.caption.trim(), taggedFriends: taggedFriendsResolved
             });
             if (!res || !res.success) throw new Error((res && res.code) || 'failed');
             // BUG corrigé (demande du 16/10/2026, "quand je clique sur 'Add a photo', il
@@ -4889,6 +4960,31 @@ const COUNTRY_CONTINENT = {
     'Philippines': 'Asia', 'Saudi Arabia': 'Asia', 'Singapore': 'Asia', 'South Korea': 'Asia',
     'Taiwan': 'Asia', 'Thailand': 'Asia', 'United Arab Emirates': 'Asia'
 };
+
+// Code numérique ISO 3166-1 de chaque pays présent dans locations-data.js — clés des
+// contours de visited-map-data.js (demande du 16/10/2026, carte du monde interactive de la
+// page Visited, maquette mes_visites_finale.html). Hong Kong/Macau/Malte/Singapour n'ont
+// aucun contour disponible à cette échelle dans ce jeu de données (territoires trop petits
+// pour être représentés distinctement sur une carte du monde compacte) — absence volontaire
+// plutôt qu'un oubli ; ces pays restent comptés normalement partout ailleurs (listes "Par
+// pays", pastilles pays/continents), seule la teinte sur LA CARTE elle-même leur manque.
+const COUNTRY_ISO_NUMERIC = {
+    'Australia': '036', 'Brazil': '076', 'Canada': '124', 'Chile': '152', 'Finland': '246',
+    'France': '250', 'Germany': '276', 'Hungary': '348', 'Indonesia': '360', 'Japan': '392',
+    'Netherlands': '528', 'New Zealand': '554', 'Norway': '578', 'Philippines': '608',
+    'Portugal': '620', 'Saudi Arabia': '682', 'South Korea': '410', 'Spain': '724',
+    'Sweden': '752', 'Taiwan': '158', 'Thailand': '764', 'UK': '826', 'USA': '840',
+    'United Arab Emirates': '784', 'United States': '840'
+};
+// Projection lat/lon -> pixel de visited-map-data.js (voir ce fichier pour comment ces
+// constantes ont été établies) — viewBox 0 0 390 260.
+function visitedWorldMapProject(lat, lng) {
+    const m = window.VISITED_WORLD_MAP;
+    const w = (m && m.w) || 390;
+    const x = (lng + 180) / 360 * w;
+    const y = -1.3752861195646076 * lat + 190.19961441762126;
+    return [x, y];
+}
 
 const filterData = {
     // "In The Soop" (demande du 27/09/2026), "Winter Package"/"Summer Package"/"Festa"
@@ -10956,17 +11052,45 @@ window.openLocModal = function(id, postContext) {
         modalDesc.innerHTML = desc;
     }
 
-    // Fiche d'informations, identique à celle de map.html (Group / Members / Country / City / Address / Date)
-    if(modalMetaBox) {
-        modalMetaBox.innerHTML = `
-            <b>${currentLang === 'fr' ? 'Groupe' : 'Group'}:</b> ${loc.group}<br>
-            <b>${currentLang === 'fr' ? 'Membre(s)' : 'Members'}:</b> ${loc.member === "All" ? "All" : loc.member}<br>
-            <b>${currentLang === 'fr' ? 'Pays' : 'Country'}:</b> ${loc.country}<br>
-            <b>${currentLang === 'fr' ? 'Ville' : 'City'}:</b> ${loc.city}<br>
-            <b>${currentLang === 'fr' ? 'Adresse' : 'Address'}:</b> ${loc.address || '—'}<br>
-            <b>${currentLang === 'fr' ? 'Date' : 'Date'}:</b> ${loc.year || '—'}
-        `;
+    // BUG corrigé (demande du 16/10/2026, "dans les posts publiés, supprime la partie
+    // DETAILS pour ne laisser que About this place. Ajoute aussi la date de visite... et
+    // s'il a identifié des personnes il faut les ajouter") : la fiche Group/Members/
+    // Country/City/Address/Date ci-dessous a du sens pour une fiche LIEU classique, mais
+    // pas pour une PUBLICATION (postContext présent, voir .post-modal/les en-têtes
+    // avatar/pseudo juste au-dessus) — ces infos ne concernent pas la publication elle-
+    // même. Remplace cette fiche par la date de visite/les amis identifiés (uniquement
+    // quand la publication en transporte, voir openFeedPost() dans feed.html et
+    // renderProfilePhotos()/renderProfileReviews() dans profile.html) pour une publication,
+    // garde l'ancien contenu inchangé pour une fiche lieu classique (postContext absent).
+    if (modalMetaBox) {
+        if (postContext) {
+            const visitLines = [];
+            if (postContext.date) {
+                const d = new Date(postContext.date + 'T00:00:00');
+                const dateLabel = isNaN(d) ? postContext.date : d.toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+                visitLines.push(`<b>${currentLang === 'fr' ? 'Visité le' : 'Visited on'}:</b> ${escapeHtml(dateLabel)}`);
+            }
+            const names = (Array.isArray(postContext.taggedFriends) ? postContext.taggedFriends : [])
+                .map(f => (f && typeof f === 'object') ? f.username : '').filter(Boolean);
+            if (names.length) {
+                visitLines.push(`<b>${currentLang === 'fr' ? 'Avec' : 'With'}:</b> ${names.map(escapeHtml).join(', ')}`);
+            }
+            modalMetaBox.innerHTML = visitLines.join('<br>');
+            modalMetaBox.classList.toggle('hidden', visitLines.length === 0);
+        } else {
+            modalMetaBox.classList.remove('hidden');
+            modalMetaBox.innerHTML = `
+                <b>${currentLang === 'fr' ? 'Groupe' : 'Group'}:</b> ${loc.group}<br>
+                <b>${currentLang === 'fr' ? 'Membre(s)' : 'Members'}:</b> ${loc.member === "All" ? "All" : loc.member}<br>
+                <b>${currentLang === 'fr' ? 'Pays' : 'Country'}:</b> ${loc.country}<br>
+                <b>${currentLang === 'fr' ? 'Ville' : 'City'}:</b> ${loc.city}<br>
+                <b>${currentLang === 'fr' ? 'Adresse' : 'Address'}:</b> ${loc.address || '—'}<br>
+                <b>${currentLang === 'fr' ? 'Date' : 'Date'}:</b> ${loc.year || '—'}
+            `;
+        }
     }
+    const modalDetailsLabelEl = document.getElementById('modal-details-label');
+    if (modalDetailsLabelEl) modalDetailsLabelEl.classList.toggle('hidden', !!postContext);
 
     if(modalMapLink) modalMapLink.href = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
 
@@ -10978,8 +11102,7 @@ window.openLocModal = function(id, postContext) {
     }
 
     // Traduction des petits libellés statiques de la modale (si présents sur la page)
-    const modalDetailsLabel = document.getElementById('modal-details-label');
-    if(modalDetailsLabel) modalDetailsLabel.textContent = t('detailsLabel');
+    if (modalDetailsLabelEl) modalDetailsLabelEl.textContent = t('detailsLabel');
     const modalAboutLabel = document.getElementById('modal-about-label');
     if(modalAboutLabel) modalAboutLabel.textContent = t('aboutPlaceLabel');
     const modalMapLinkText = document.getElementById('modal-map-link-text');
