@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-16T12:40:05.521Z.
+// Généré le 2026-10-16T17:38:51.842Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -9813,66 +9813,110 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 189,
-    "name": "BTS POP-UP: SPACE OF BTS (Lotte Department Store)",
+    "name": "Jardin du Luxembourg",
     "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "Pop-up Store",
-    "year": "2021",
-    "episodeLink": "https://hybecorp.com/eng/news/news/573?companyCode=&page=23",
-    "address": "Lotte Department Store Main Branch, 81 Namdaemun-ro, Jung-gu, Seoul",
-    "lat": 37.5647,
-    "lng": 126.9812,
-    "img": "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2022",
+    "episodeLink": "",
+    "address": "Jardin du Luxembourg, 75006 Paris, France",
+    "lat": 48.84699,
+    "lng": 2.33775,
+    "img": "images/admin-upload-189-photo.jpg",
     "fullDescription": {
-      "en": "<p>\"BTS POP-UP: SPACE OF BTS\" was Big Hit IP's partnership with Lotte Department Store, bringing BT21/TinyTAN-adjacent lifestyle merchandise into a mainstream department store setting rather than a standalone fan pop-up.</p><p>The Lotte partnership marked one of the clearest crossovers between BTS's merchandising universe and a major Korean retail conglomerate, alongside Lotte World and Lotte Duty Free's own BTS-branded spaces.</p>",
-      "fr": "<p>« BTS POP-UP: SPACE OF BTS » était le partenariat de Big Hit IP avec le grand magasin Lotte, amenant des produits lifestyle proches de BT21/TinyTAN dans un grand magasin généraliste plutôt que dans un pop-up dédié aux fans.</p><p>Ce partenariat avec Lotte a marqué l'un des croisements les plus nets entre l'univers merchandising de BTS et un grand conglomérat coréen de la distribution, aux côtés des espaces BTS propres à Lotte World et Lotte Duty Free.</p>"
+      "fr": "<p>« BTS POP-UP: SPACE OF BTS » était le partenariat de Big Hit IP avec le grand magasin Lotte, amenant des produits lifestyle proches de BT21/TinyTAN dans un grand magasin généraliste plutôt que dans un pop-up dédié aux fans.</p><p>Ce partenariat avec Lotte a marqué l'un des croisements les plus nets entre l'univers merchandising de BTS et un grand conglomérat coréen de la distribution, aux côtés des espaces BTS propres à Lotte World et Lotte Duty Free.</p>",
+      "en": "<p>Located in the 6th arrondissement, the Jardin du Luxembourg is one of the most beautiful and beloved parks in Paris. Created in 1612 by Queen Marie de' Medici to accompany the magnificent Palais du Luxembourg, the gardens are famous for their tree-lined promenades, colorful flowerbeds, and the iconic, movable green metal chairs that invite visitors to sit and relax. It serves as a peaceful, picturesque oasis in the heart of the Left Bank.</p><!--stss:footsteps--><p>Kim Taehyung (V of BTS) visited the Jardin du Luxembourg in Paris in June 2022, on the occasion of his trip for the Celine fashion show during Fashion Week. The iconic photos he took there have transformed the park into a veritable pilgrimage site for ARMY (BTS fans), who regularly go there to reproduce his exact shots.   To capture these memorable images, V photographed himself dressed in an elegant suit, sitting on one of the famous green metal garden chairs, leaning near a corner of the balustrade. The background of his photos offers an unobstructed view of the Palais du Luxembourg as well as the large central basin of the park.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Shop smart"
+          "en": "Locate the"
         },
         "text": {
-          "en": "Items were basic fashion and household goods, priced closer to retail than limited-run concert merch."
+          "en": "To find the exact location, walk toward the large central basin and look for the balustrade corner that aligns perfectly with the Palais du Luxembourg in the background."
         }
       },
       {
         "title": {
-          "en": "Combine with"
+          "en": "Adjust Your Seat"
         },
         "text": {
-          "en": "The Lotte Duty Free \"Star Avenue\" BTS space, also in Jung-gu."
+          "en": "As many fans amusingly share their adventures on social networks (notably TikTok and Instagram), you may need to search for the precise nook or physically move one of the green chairs to perfectly recreate the perspective of his photo."
+        }
+      },
+      {
+        "title": {
+          "en": "Dress the Part"
+        },
+        "text": {
+          "en": "Channel Taehyung's Parisian Fashion Week energy by wearing an elegant suit or a chic, tailored outfit for your own photo session."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Access"
+          "en": "How to get there"
         },
         "text": {
-          "en": "Ran domestically until February 28, 2021, inside regular Lotte Department Store operating hours."
+          "en": "The park is highly accessible via public transit. You can take the RER B (Luxembourg station drops you right at the gates) or Metro lines 4 or 10 (Odéon station)."
         }
       },
       {
         "title": {
-          "en": "What it was"
+          "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "A retail pop-up centered on everyday goods and basic fashion rather than concert merch: household items, stationery, and casualwear carrying BTS branding."
+          "en": "The garden is open daily and is completely free to enter. However, opening and closing hours change depending on the season and daylight (generally opening between 7:30 AM and 8:15 AM, and closing between 4:30 PM and 9:30 PM)."
         }
       },
       {
         "title": {
-          "en": "Where else"
+          "en": "Accessibility"
         },
         "text": {
-          "en": "The same concept also ran in Lotte stores in Busan, Daegu and Gwangju."
+          "en": "The park is highly accessible, featuring flat, wide gravel paths and ramps that make navigating with wheelchairs or strollers very manageable."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-189-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5443,
+            "y": 0.6794,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-189-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.5651,
+            "y": 0.6324,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/CfRd5x3DaNP/?rpxt=cmN4a2F5MHJqMGY0",
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://jardin.senat.fr/"
   },
   {
     "id": 190,
