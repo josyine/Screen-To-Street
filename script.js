@@ -4034,7 +4034,10 @@ function qaReady(kind, st) {
 }
 function qaBody(kind, st) {
     if (kind === 'photo') return qaDrop(st, 190, qaT('Choisir une photo', 'Choose a photo'), qaT('depuis votre galerie', 'from your gallery')) + qaRows(st, ['loc', 'date', 'fr']) + `<div class="qaf-lab">${qaT('Légende', 'Caption')} <em>${qaT('facultatif', 'optional')}</em></div>` + qaArea(st, qaT('Dites-en un peu plus sur cette photo…', 'Say something about this photo…'));
-    if (kind === 'place') return qaRows(st, ['loc', 'date', 'grp', 'fr']) + `<div class="qaf-lab">${qaT('Photo', 'Photo')} <em>${qaT('facultatif', 'optional')}</em></div>` + qaDrop(st, 120, qaT('Ajouter une photo', 'Add a photo'), qaT('depuis votre galerie', 'from your gallery'));
+    // Photo retirée (demande du 16/10/2026, "Dans 'Add a visited place', supprime l'option
+    // de mettre une photo") : "Add a photo" (ci-dessus) couvre déjà ce cas — ce formulaire-ci
+    // reste pour marquer un lieu comme visité sans forcément y attacher une photo.
+    if (kind === 'place') return qaRows(st, ['loc', 'date', 'grp', 'fr']);
     if (kind === 'review') return qaRows(st, ['loc']) + `<div style="padding:18px 0 4px">${qaStars(st)}</div><div class="qaf-lab">${qaT("Qu'est-ce qui vous a marqué ?", 'What stood out?')} <em>${qaT('facultatif', 'optional')}</em></div><div class="qaf-chips">${QA_TAGS.map(tg => `<button type="button" class="qaf-chip" data-qatag="${escapeHtml(tg)}" aria-pressed="${st.tags.includes(tg)}">${escapeHtml(tg)}</button>`).join('')}</div><div class="qaf-lab">${qaT('Votre avis', 'Your review')}</div>` + qaArea(st, qaT('Dites aux autres fans à quoi ça ressemble…', "Tell other fans what it's like…"));
     return '';
 }
@@ -4150,6 +4153,15 @@ async function qaSubmit(overlay) {
                 date: st.dateISO, caption: st.caption.trim(), taggedFriends: st.friends.slice()
             });
             if (!res || !res.success) throw new Error((res && res.code) || 'failed');
+            // BUG corrigé (demande du 16/10/2026, "quand je clique sur 'Add a photo', il
+            // faut que le lieu soit pris en compte dans 'Visited place'") : addProfilePhoto()
+            // ci-dessus publie seulement la photo (publicProfiles + fil global) — elle
+            // n'écrivait jamais dans visitedLocs (localStorage, voir getVisitedLocs()), donc
+            // le lieu photographié n'apparaissait ni dans la page "Visited", ni dans ses
+            // stats, ni ne comptait de visite. Même appel que le flux "place" ci-dessous
+            // (isPublic:false, pas de note — une photo seule n'est pas un avis), avec la
+            // photo déjà choisie pour cette publication plutôt que d'en redemander une.
+            await qaSaveVisit({ locationId: st.place.id, date: st.dateISO, rating: 0, notes: '', photo: st.photo, isPublic: false, groups: [], friends: st.friends.slice() });
         } else if (kind === 'place') {
             await qaSaveVisit({ locationId: st.place.id, date: st.dateISO, rating: 0, notes: '', photo: st.photo, isPublic: false, groups: st.groups.slice(), friends: st.friends.slice() });
         } else if (kind === 'review') {
@@ -4160,10 +4172,23 @@ async function qaSubmit(overlay) {
         // ça, le chevron continuait de lire l'instantané Firestore mis en cache avant cette
         // publication.
         invalidateLocPostsIndex();
+        // BUG corrigé (demande du 16/10/2026, "Add a review... quand je clique sur Publish,
+        // affiche un pop up qui précise que la review a bien été publiée") : le toast
+        // showSimpleToast() ci-dessous affichait déjà bien "Review published"/"Avis
+        // publié" — mais la fiche se refermait AU MÊME INSTANT (window.closeQuickAddFormSheet()
+        // juste en dessous), ramenant la personne directement sur la carte pendant que ce
+        // petit toast (discret, 3s, en haut de l'écran) apparaissait — facile à manquer dans
+        // ce changement de contexte. Pour "review" spécifiquement (seul cas cité), affiche
+        // d'abord une confirmation explicite DANS la fiche elle-même (grosse coche + message)
+        // avant de la refermer, impossible à manquer contrairement au toast seul.
+        if (kind === 'review') {
+            qaShowPublishedConfirmation(overlay, qaT('Avis publié !', 'Review published!'));
+            return;
+        }
         if (typeof window.showSimpleToast === 'function') {
             window.showSimpleToast(qaT(
-                { photo: 'Photo publiée', place: 'Lieu marqué comme visité', review: 'Avis publié' }[kind],
-                { photo: 'Photo published', place: 'Place marked as visited', review: 'Review published' }[kind]
+                { photo: 'Photo publiée', place: 'Lieu marqué comme visité' }[kind],
+                { photo: 'Photo published', place: 'Place marked as visited' }[kind]
             ));
         }
         window.closeQuickAddFormSheet();
@@ -4261,6 +4286,17 @@ window.openQuickAddFormSheet = async function (kind) {
     qaRender(overlay);
     overlay.classList.add('open');
 };
+// Confirmation explicite "dans la fiche" avant fermeture (demande du 16/10/2026, "Add a
+// review... affiche un pop up qui précise que la review a bien été publiée") — voir le
+// commentaire sur son unique appelant (qaSubmit(), cas "review") pour le détail du bug.
+function qaShowPublishedConfirmation(overlay, message) {
+    overlay.querySelector('.qa-form-root').innerHTML = `
+        <div class="qaf-sheet qaf-success">
+            <div class="qaf-success-check">${QA_IC.ok}</div>
+            <div class="qaf-success-msg">${escapeHtml(message)}</div>
+        </div>`;
+    setTimeout(() => { window.closeQuickAddFormSheet(); }, 1400);
+}
 window.closeQuickAddFormSheet = function () {
     const overlay = document.getElementById('qa-form-overlay');
     if (overlay) overlay.classList.remove('open');
@@ -4726,8 +4762,17 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileSearchResults.addEventListener('click', (e) => {
             const row = e.target.closest('.mobile-map-search-result');
             if (!row) return;
-            const locId = Number(row.getAttribute('data-loc-id'));
-            flyToMobileSearchResult(celebLocations.find(l => l.id === locId));
+            // BUG corrigé (demande du 16/10/2026, "quand je clique sur un lieu [de la
+            // recherche mobile], il faut nous rediriger sur le lieu... ça ne fonctionne plus
+            // actuellement") : Number(data-loc-id) supposait un id TOUJOURS numérique, mais
+            // tout lieu ajouté depuis la file d'approbation a un id "new-xxxxx" (voir déjà le
+            // même correctif pour le tri du 13/09/2026, locationSortKey() plus bas) —
+            // Number("new-xxxxx") vaut NaN, et NaN === NaN (ou quoi que ce soit) est toujours
+            // faux, donc find() ne trouvait plus jamais le lieu pour toute entrée récente,
+            // laissant le clic silencieusement sans effet. Comparaison en chaîne, comme
+            // partout ailleurs dans ce fichier où un id peut être numérique ou "new-xxxxx".
+            const locId = row.getAttribute('data-loc-id');
+            flyToMobileSearchResult(celebLocations.find(l => String(l.id) === locId));
         });
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#mobile-map-search')) mobileSearchResults.classList.add('hidden');
@@ -4866,6 +4911,21 @@ const filterData = {
 // admin-scripts/ pour lancer un export à la demande). .slice() pour ne jamais partager la
 // même référence de tableau que window.STATIC_LOCATIONS.
 let celebLocations = (window.STATIC_LOCATIONS || []).slice();
+// BUG CRITIQUE corrigé (demande du 16/10/2026, "tous les lieux ont disparu") :
+// GROUP_VARIANT_OWN_FIELDS était déclarée en `const` PLUS BAS dans ce fichier (près de
+// hydrateGroupVariantLocation(s), voir plus bas) alors que hydrateGroupVariantLocations()
+// est appelée ICI, juste en dessous, dès l'assignation initiale de celebLocations — un
+// `const` reste en zone morte temporelle tant que sa ligne de déclaration n'a pas été
+// exécutée : cet appel levait donc "Cannot access 'GROUP_VARIANT_OWN_FIELDS' before
+// initialization", une ReferenceError NON INTERCEPTÉE qui interrompait l'exécution de TOUT
+// le reste de ce script (un seul <script src="script.js"> classique, pas de try/catch
+// englobant) — carte, filtres, recherche, soumissions admin... strictement plus rien après
+// ce point ne s'exécutait, d'où la disparition totale des lieux et la cascade de
+// fonctionnalités cassées rapportées ce jour-là. La déclaration est donc remontée ICI,
+// avant son premier usage, au lieu de rester près des fonctions qui l'utilisent (elles
+// restent, elles, où elles sont : une function declaration est hissée entièrement, seule
+// une const/let reste soumise à la zone morte temporelle).
+const GROUP_VARIANT_OWN_FIELDS = ['id', 'group', 'member', 'year', 'episodeLink', 'recreatedPhotos', 'recreatedPhoto', 'fullDescription', 'referenceLocId', 'linkedGroupLocIds'];
 // hydrateGroupVariantLocations() (voir plus bas dans ce fichier) : copie en mémoire les
 // champs partagés d'un variant de groupe depuis son lieu de référence (demande du
 // 15/10/2026, "Add a group") — un variant peut déjà exister dans le squelette statique.
@@ -6244,9 +6304,9 @@ function positionMapHoverTip(marker) {
 // est copié ICI, EN MÉMOIRE SEULEMENT, depuis le lieu de référence, à chaque chargement/
 // fusion Firestore de celebLocations — jamais persisté deux fois. Idempotent : peut être
 // rappelée autant de fois que nécessaire (ex. après chaque fusion Firestore), les champs
-// propres du variant (GROUP_VARIANT_OWN_FIELDS) sont toujours relus/réappliqués par-dessus
-// la copie de la référence.
-const GROUP_VARIANT_OWN_FIELDS = ['id', 'group', 'member', 'year', 'episodeLink', 'recreatedPhotos', 'recreatedPhoto', 'fullDescription', 'referenceLocId', 'linkedGroupLocIds'];
+// propres du variant (GROUP_VARIANT_OWN_FIELDS, déclaré plus haut avec celebLocations —
+// voir le commentaire à cet endroit) sont toujours relus/réappliqués par-dessus la copie
+// de la référence.
 function hydrateGroupVariantLocation(loc) {
     if (!loc || !loc.referenceLocId) return;
     const ref = celebLocations.find(l => String(l.id) === String(loc.referenceLocId));

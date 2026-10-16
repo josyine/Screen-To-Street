@@ -1179,6 +1179,16 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .qa-form-overlay input,.qa-form-overlay textarea{font-family:inherit;font-size:14px;color:var(--qa-ink);border:0;outline:0;background:none;width:100%;resize:none}
 .qa-form-root{width:100%;max-width:480px;position:relative}
 .qaf-sheet{background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);display:flex;flex-direction:column;max-height:88vh}
+/* Confirmation "dans la fiche" avant fermeture (demande du 16/10/2026, voir
+   qaShowPublishedConfirmation() dans script.js) — remplace brièvement le contenu normal de
+   .qaf-sheet par une grosse coche + message, impossible à manquer contrairement au seul
+   toast (discret, affiché pendant que la fiche se referme déjà). */
+.qaf-success{align-items:center;justify-content:center;gap:16px;padding:48px 24px calc(48px + env(safe-area-inset-bottom));animation:qaf-success-in .25s ease}
+.qaf-success-check{width:64px;height:64px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;animation:qaf-success-pop .35s cubic-bezier(.2,1.4,.4,1)}
+.qaf-success-check svg{width:30px;height:30px;color:#fff}
+.qaf-success-msg{font-size:17px;font-weight:800;color:var(--qa-ink);text-align:center}
+@keyframes qaf-success-in{from{opacity:0}to{opacity:1}}
+@keyframes qaf-success-pop{0%{transform:scale(0)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
 .qaf-grab{width:40px;height:5px;border-radius:5px;background:#E2DDEA;margin:10px auto 4px;flex:0 0 auto}
 .qaf-hd{display:flex;align-items:center;gap:10px;padding:8px 20px 10px}
 .qaf-hd h2{font-size:18px;font-weight:800;flex:1}
