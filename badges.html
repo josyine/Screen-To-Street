@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261039" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261040" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -178,7 +178,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
    dégager une fois le contenu scrollé tout en bas. Même valeur que .tab-panel ailleurs
    sur le site pour ce même problème (voir le commentaire associé dans style.css) : 90px
    + la zone de sécurité iOS, plutôt qu'une redevinette au pif. */
-@media (max-width:760px){.stb-body{padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
+@media (max-width:760px){.stb-body{padding-bottom:calc(130px + env(safe-area-inset-bottom,0px))}}
 /* BUG corrigé (demande du 09/10/2026, "quand je clique sur un badge ou un défis...
    l'affichage est coupé par la barre de navigation du bas") : .stb-det (z-index 2101) a
    bottom:0 — son bord bas touche donc le même endroit que .mobile-bottom-nav
@@ -364,7 +364,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261039';
+        s.src = 'page-loader.js?v=20261040';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -507,9 +507,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
 </div>
 
-<script src="locations-data.js?v=20261039"></script>
-<script type="module" src="firebase-init.js?v=20261039"></script>
-<script src="script.js?v=20261039"></script>
+<script src="locations-data.js?v=20261040"></script>
+<script type="module" src="firebase-init.js?v=20261040"></script>
+<script src="script.js?v=20261040"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
