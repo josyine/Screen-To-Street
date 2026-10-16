@@ -2935,30 +2935,45 @@ const ShareStory = (() => {
             });
         } catch (e) { return null; }
     }
+    // BUG corrigé (demande du 15/10/2026, répétée — "Could not create the image" persiste,
+    // et "Copy" échoue encore pour Map/Photo/Fiche") : la conversion/le repli ci-dessus ne
+    // couvraient que les <img> HTML (node.querySelectorAll('img')) — le format "Carte"
+    // (TPL[2], tpl=2) affiche la photo du lieu via mapSVG() dans une <image> SVG (voir
+    // plus haut, href="..."), un élément DIFFÉRENT que querySelectorAll('img') ne capture
+    // jamais (balise distincte, pas une simple variante de casse). Cette photo restait
+    // donc systématiquement cross-origin lors de la capture ET du repli "sans photo" (qui
+    // ne la masquait pas non plus) : les DEUX tentatives échouaient pour ce format,
+    // contrairement aux 3 autres (Fiche/Photo/Sticker, qui n'utilisent que de vrais <img>
+    // ou aucune image cross-origin). getSrc/setSrc/hide ci-dessous traitent les deux types
+    // d'éléments de façon uniforme (<img>.src vs <image>[href], tous deux stylables via
+    // display:none) plutôt que de dupliquer toute la logique pour l'un puis l'autre.
     async function makeFile() {
         const node = root.querySelector(`[data-story="${tpl}"] .sst-st`);
         if (!(await loadHtmlToImageOnce())) throw new Error('html-to-image absent');
         const slug = (D.url.split('/').pop() || 'partage');
         const toFile = (blob) => new File([blob], `screen-to-street-${slug}-${NAMES()[tpl].toLowerCase()}.png`, { type: 'image/png' });
-        const imgs = Array.from(node.querySelectorAll('img'));
-        const originalSrcs = imgs.map(img => img.src);
-        const dataUris = await Promise.all(imgs.map(img => toDataUriIfPossible(img.src)));
-        dataUris.forEach((uri, i) => { if (uri) imgs[i].src = uri; });
+        const pics = [
+            ...Array.from(node.querySelectorAll('img')).map(el => ({ el, get: () => el.src, set: v => { el.src = v; } })),
+            ...Array.from(node.querySelectorAll('image')).map(el => ({ el, get: () => el.getAttribute('href'), set: v => { el.setAttribute('href', v); } }))
+        ];
+        const originalSrcs = pics.map(p => p.get());
+        const dataUris = await Promise.all(pics.map(p => toDataUriIfPossible(p.get())));
+        dataUris.forEach((uri, i) => { if (uri) pics[i].set(uri); });
         try {
             try {
                 return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
             } catch (e) {
                 console.warn('Capture avec photo échouée (canvas tainté ?), nouvelle tentative sans photo :', e);
-                const prevDisplay = imgs.map(img => img.style.display);
-                imgs.forEach(img => { img.style.display = 'none'; });
+                const prevDisplay = pics.map(p => p.el.style.display);
+                pics.forEach(p => { p.el.style.display = 'none'; });
                 try {
                     return toFile(await htmlToImage.toBlob(node, { pixelRatio: 4, width: 270, height: 480 }));
                 } finally {
-                    imgs.forEach((img, i) => { img.style.display = prevDisplay[i]; });
+                    pics.forEach((p, i) => { p.el.style.display = prevDisplay[i]; });
                 }
             }
         } finally {
-            imgs.forEach((img, i) => { img.src = originalSrcs[i]; });
+            pics.forEach((p, i) => { if (originalSrcs[i] != null) p.set(originalSrcs[i]); });
         }
     }
     function download(f) { const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
@@ -3344,6 +3359,12 @@ window.addEventListener('firebase-ready', async (e) => {
                     // maintenant la sélection en cours au lieu de revenir sur "All").
                     if (anyAdded && typeof initializeFilters === 'function') initializeFilters();
                     if (anyAdded && typeof renderLocations === 'function') renderLocations(true);
+                    // wishlist.html (demande du 15/10/2026, répétée — ce hook n'avait été
+                    // branché que sur fetchLocationSkeletonOverrides() plus bas, pas ici) :
+                    // un lieu tout juste publié peut déjà être dans la wishlist d'un compte
+                    // (ex: ajouté en navigation invitée avant publication admin), sa photo
+                    // d'en-tête n'y était alors mise à jour qu'au prochain chargement de page.
+                    if (anyAdded && typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
                 } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
             })(),
             // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
@@ -3423,6 +3444,12 @@ window.addEventListener('firebase-ready', async (e) => {
         if (typeof hydrateGroupVariantLocations === 'function') {
             hydrateGroupVariantLocations();
             if (document.getElementById('map') && typeof renderLocations === 'function') renderLocations(true);
+            // wishlist.html (demande du 15/10/2026, répétée) : c'est justement CETTE
+            // hydratation qui recopie la photo d'en-tête d'un variant depuis son lieu de
+            // référence (voir le commentaire ci-dessus, "ex: photo d'en-tête d'un variant
+            // tout juste arrivé") — manquait encore à la liste des hooks de rafraîchissement
+            // wishlist, contrairement à fetchLocationSkeletonOverrides() plus haut.
+            if (typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
         }
     }
 
@@ -3818,7 +3845,13 @@ window.openQuickAddSheet = function () {
                     <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg></span>
                     <span>${t('quickAddPhoto')}</span>
                 </div>
-                <div class="qa-sheet-option" data-qa="visited">
+                <!-- BUG corrigé (demande du 16/10/2026, "le bouton add a visited place ne
+                     fonctionne pas, ça redirige vers rien") : data-qa valait "visited" ici,
+                     mais QA_FORMS/qaReady()/qaBody()/qaSubmit() (plus bas) attendent tous la
+                     clé "place" — window.openQuickAddFormSheet('visited') ne correspondait à
+                     aucune entrée de QA_FORMS et ressortait aussitôt (if (!QA_FORMS[kind])
+                     return;), sans la moindre erreur visible. -->
+                <div class="qa-sheet-option" data-qa="place">
                     <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><path d="m9 11 2 2 4-4"></path></svg></span>
                     <span>${t('quickAddVisited')}</span>
                 </div>
@@ -3972,7 +4005,17 @@ function qaPicker(st) {
         title = qaT('Date de visite', 'Visit date');
         const quick = [qaT("Aujourd'hui", 'Today'), qaT('Hier', 'Yesterday'), qaT('Il y a 2 jours', '2 days ago')];
         body = quick.map((d, i) => `<button type="button" class="qaf-li" data-qasetdate="${i}" aria-pressed="${st.dateLabel === d}"><span class="qaf-pi">${QA_IC.cal}</span><span class="qaf-lt"><b>${escapeHtml(d)}</b></span><span class="qaf-rd"></span></button>`).join('')
-            + `<label class="qaf-li" style="cursor:pointer"><span class="qaf-pi">${QA_IC.cal}</span><span class="qaf-lt"><b>${qaT('Choisir une date…', 'Pick a date…')}</b><small>${qaT('Ouvrir le calendrier', 'Open the calendar')}</small></span><input type="date" data-qain="datepick" style="width:130px;font-size:13px;color:var(--qa-sub)"></label>`;
+            // BUG corrigé (demande du 16/10/2026, "le filtre 'Pick a date'... ça se ferme au
+            // bout d'1 seconde sans que je puisse choisir la date") : ce champ natif n'avait
+            // pas d'attribut value, donc s'ouvrait toujours vide — connu pour faire déclencher
+            // certains navigateurs mobiles (Safari iOS notamment) un évènement "change"
+            // immédiat avec la date du jour dès l'ouverture (la roue se cale sur "aujourd'hui"
+            // par défaut), AVANT même que la personne n'ait pu faire défiler quoi que ce soit.
+            // L'écouteur "change" plus bas (st.pick = null dès qu'une valeur arrive) refermait
+            // alors aussitôt ce sous-écran, donnant l'impression qu'il "se ferme tout seul".
+            // Poser value="${st.dateISO}" évite ce déclenchement parasite : le champ s'ouvre
+            // déjà sur la date actuellement retenue plutôt que sur un état vide.
+            + `<label class="qaf-li" style="cursor:pointer"><span class="qaf-pi">${QA_IC.cal}</span><span class="qaf-lt"><b>${qaT('Choisir une date…', 'Pick a date…')}</b><small>${qaT('Ouvrir le calendrier', 'Open the calendar')}</small></span><input type="date" data-qain="datepick" value="${escapeHtml(st.dateISO)}" style="width:130px;font-size:13px;color:var(--qa-sub)"></label>`;
     }
     if (p === 'grp') {
         title = qaT('Qui était là ?', 'Who was there?');
@@ -4136,7 +4179,11 @@ window.openQuickAddFormSheet = async function (kind) {
             const k = e.target.dataset.qain;
             if (!k) return;
             const st = qaState;
-            if (k === 'datepick' && e.target.value) {
+            // Garde-fou supplémentaire pour le même bug (voir le commentaire sur value="..."
+            // plus haut dans qaPicker()) : même avec le champ déjà pré-rempli, ne referme ce
+            // sous-écran que si la date a RÉELLEMENT changé — un "change" parasite avec la
+            // même valeur ne doit jamais couper court à la sélection.
+            if (k === 'datepick' && e.target.value && e.target.value !== st.dateISO) {
                 st.dateISO = e.target.value;
                 st.dateLabel = new Date(e.target.value).toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
                 st.pick = null;
@@ -6489,7 +6536,22 @@ function addSingleLocationMarker(loc) {
 function renderMapMarkers(locations, opts) {
     if (!map || !markerGroup) return;
     markerGroup.clearLayers();
-    locations.forEach(loc => addSingleLocationMarker(loc));
+    // BUG corrigé (demande du 15/10/2026, suite directe du badge "plusieurs groupes" ajouté
+    // plus haut dans addSingleLocationMarker()) : un même lieu PHYSIQUE visité par plusieurs
+    // groupes a une entrée par groupe dans celebLocations (mêmes lat/lng) — cette boucle en
+    // faisait donc un marqueur PAR GROUPE, chacun affichant déjà le badge du nombre total de
+    // groupes, d'où plusieurs points superposés portant chacun le même "2" au lieu d'un seul.
+    // On ne garde que le premier marqueur rencontré par lieu physique ; ses "frères" (même
+    // notion de findLinkedGroupLocations() que pour ce badge et le sélecteur de groupe au
+    // clic, openLocationOrPickGroup()) sont ensuite ignorés. Ne concerne pas la déduplication
+    // "lieux proches mais différents" du commentaire ci-dessus, volontairement conservée.
+    const renderedSiblingIds = new Set();
+    locations.forEach(loc => {
+        if (renderedSiblingIds.has(loc.id)) return;
+        const siblings = typeof findLinkedGroupLocations === 'function' ? findLinkedGroupLocations(loc) : [loc];
+        siblings.forEach(s => renderedSiblingIds.add(s.id));
+        addSingleLocationMarker(loc);
+    });
 
     // Préchauffe l'index photos/lieu (demande du 13/09/2026 : ne plus afficher le nombre
     // de publications sur la carte, cette info reste seulement dans le tiroir/chevron —
