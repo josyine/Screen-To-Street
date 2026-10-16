@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261034" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261035" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -244,6 +244,20 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 .profile-map-stat { font-size: 12.5px; font-weight: 700; color: #212832; }
 .profile-map-stat b { color: #D42759; font-weight: 800; margin-right: 5px; }
 
+/* "My map" / cadre dégradé / grille de 3 stats / message vide (demande du 16/10/2026,
+   maquette jointe carte_profil_finale.html — variante "Carte compacte + chiffres", la
+   seule réellement dessinée dans le fichier fourni) : réservé au MOBILE (voir
+   @media plus bas) — desktop garde sa ligne de 2 stats + carte pleine largeur d'origine,
+   inchangée, ces nouveaux éléments y restent cachés (display:none). */
+.profile-map-header { display: none; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 800; color: #1F2430; margin-bottom: 10px; }
+.profile-map-fullscreen-link { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #D42759; text-decoration: none; }
+.profile-mini-map-frame { display: none; }
+.profile-map-stats-grid { display: none; }
+.profile-map-stat-tile { background: #fff; border-radius: 16px; padding: 12px 6px; text-align: center; box-shadow: 0 2px 10px rgba(31,36,48,.08); }
+.profile-map-stat-tile b { display: block; font-size: 20px; line-height: 1.3; color: #D42759; font-weight: 800; }
+.profile-map-stat-tile small { display: block; font-size: 11px; color: #8F8B99; font-weight: 600; letter-spacing: .3px; text-transform: uppercase; }
+.profile-map-empty-hint { display: none; }
+
 /* Bouton "+" desktop (demande du 09/09/2026) — équivalent du "+" de la nav du bas mobile,
    masqué en dessous de 760px (déjà couvert par cette dernière, voir plus bas). */
 .profile-desktop-add-btn { position: fixed; right: 32px; bottom: 32px; width: 54px; height: 54px; border-radius: 50%; background: #D42759; color: #fff; border: none; box-shadow: 0 10px 24px rgba(212,39,89,.35); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2500; transition: 0.2s; }
@@ -371,18 +385,25 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
      couleurs de boutons en version ordinateur"), seule la taille change ici. */
   .profile-follow-btn { padding: 6px 14px; font-size: 11px; }
   .profile-photo-grid { grid-template-columns: repeat(3, 1fr); }
-  /* Pleine largeur + océan couleur du fond de page (demande du 11/09/2026) : la carte
-     vivait jusqu'ici dans .page (padding horizontal 16px, voir plus haut), d'où les
-     marges visibles de chaque côté — une marge négative égale à ce padding l'étend
-     jusqu'aux bords de l'écran, comme la bannière plein-largeur de la page. Espace sous
-     la carte porté à 28px (au-dessus des 90px déjà réservés par .page pour la nav du
-     bas) pour qu'elle s'arrête visiblement avant les icônes, pas collée dessus.
+  /* Carte compacte encadrée (demande du 16/10/2026, remplace le traitement plein-bleed
+     précédent — voir la maquette jointe) : la ligne de 2 stats d'origine (.profile-map-stats)
+     cède la place à la grille de 3 (.profile-map-stats-grid, Locations/Countries/
+     Continents), et la carte elle-même quitte le plein écran "jusqu'en bas de la nav"
+     pour une hauteur fixe dans un cadre arrondi à bordure dégradée, cohérent avec le
+     reste de la page (qui reprend déjà ses marges .page de 16px, contrairement à
+     l'ancien traitement plein-bleed qui les annulait).
      #profile-mini-map .leaflet-tile-pane::after : même mécanisme de teinte que TOUT le
      site (voir .leaflet-tile-pane::after dans style.css, mix-blend-mode:"color"), mais
      ciblé UNIQUEMENT à cette carte pour remplacer le violet pâle habituel par la couleur
      de fond de CETTE page (#E7E9EC, voir body ci-dessus) — sans toucher à map.html ni aux
      autres cartes du site. */
-  .profile-mini-map { height: 320px; width: calc(100% + 32px); margin: 0 -16px 28px -16px; border-radius: 0; }
+  .profile-map-stats { display: none; }
+  .profile-map-header { display: flex; }
+  .profile-mini-map-frame { display: block; padding: 3px; border-radius: 24px; background: linear-gradient(135deg, #8E52D6, #E0156B); margin-bottom: 16px; }
+  .profile-mini-map { height: 260px; width: 100%; margin: 0; border-radius: 21px; }
+  .profile-map-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .profile-map-empty-hint.show { display: block; text-align: center; font-size: 12px; color: #8F8B99; }
+  .profile-map-empty-hint.show b { color: #D42759; }
   #profile-mini-map .leaflet-tile-pane::after { background: #E7E9EC; }
 }
 /* PWA installée (mode standalone) — même correctif que .tab-panel dans style.css (voir son
@@ -436,7 +457,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261034';
+        s.src = 'page-loader.js?v=20261035';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -622,7 +643,26 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                     <div class="profile-map-stat"><b id="profile-map-stat-locations">0</b><span data-i18n="locationsCount">LOCATIONS</span></div>
                     <div class="profile-map-stat"><b id="profile-map-stat-countries">0</b><span data-i18n="statsCountries">COUNTRIES</span></div>
                 </div>
-                <div class="profile-mini-map" id="profile-mini-map"></div>
+                <!-- "My map" / "Full screen" (demande du 16/10/2026, maquette jointe
+                     carte_profil_finale.html) : visible uniquement sur mobile (voir le
+                     @media ci-dessus) — même carte Leaflet (#profile-mini-map), juste un
+                     habillage différent. -->
+                <div class="profile-map-header">
+                    <span id="profile-map-title">My map</span>
+                    <a href="map.html" class="profile-map-fullscreen-link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"></path></svg>
+                        <span id="profile-map-fullscreen-label">Full screen</span>
+                    </a>
+                </div>
+                <div class="profile-mini-map-frame">
+                    <div class="profile-mini-map" id="profile-mini-map"></div>
+                </div>
+                <div class="profile-map-stats-grid">
+                    <div class="profile-map-stat-tile"><b id="profile-map-stat-locations-grid">0</b><small id="profile-map-stat-locations-label">Locations</small></div>
+                    <div class="profile-map-stat-tile"><b id="profile-map-stat-countries-grid">0</b><small id="profile-map-stat-countries-label">Countries</small></div>
+                    <div class="profile-map-stat-tile"><b id="profile-map-stat-continents-grid">0</b><small id="profile-map-stat-continents-label">Continents</small></div>
+                </div>
+                <div class="profile-map-empty-hint" id="profile-map-empty-hint">Mark your first place with the <b>+</b> button</div>
             </div>
         </div>
 </div>
@@ -704,9 +744,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261034"></script>
-<script src="locations-data.js?v=20261034"></script>
-<script src="script.js?v=20261034"></script>
+<script type="module" src="firebase-init.js?v=20261035"></script>
+<script src="locations-data.js?v=20261035"></script>
+<script src="script.js?v=20261035"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
@@ -782,23 +822,17 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
         el.classList.remove('hidden');
     }
 
-    // Hauteur de la mini-carte sur mobile (demande du 13/09/2026 : "que la carte prenne la
-    // longueur de l'écran jusqu'à la barre des icônes, avec une petite marge") — la hauteur
-    // fixe (320px, voir style.css) ne s'adaptait pas à l'espace réellement disponible sous
-    // les stats/onglets. Mesurée en JS (même principe que positionLocVisitorsChevron() dans
-    // script.js) car la position de départ de la carte dépend du contenu au-dessus, variable
-    // — impossible à deviner en CSS seul. Ne s'applique qu'en mobile : le bureau garde sa
-    // hauteur fixe (420px), sans nav du bas à éviter.
+    // Hauteur de la mini-carte sur mobile : fixe désormais (260px, voir le cadre dégradé
+    // .profile-mini-map-frame dans le @media de style.css), plus besoin de la calculer en
+    // JS depuis la position de la nav du bas (demande du 16/10/2026, remplace le
+    // traitement plein-bleed du 13/09/2026 par la carte compacte encadrée de la maquette
+    // jointe). Ne reste ici que le invalidateSize() : Leaflet doit recalculer ses tuiles
+    // à chaque fois que le conteneur change de taille (bascule d'onglet, resize/rotation),
+    // sinon la carte affichée reste celle mesurée au tout premier rendu, potentiellement
+    // nulle (onglet encore caché, display:none, voir switchProfileTab() plus bas).
     function resizeProfileMiniMap() {
         const panel = document.getElementById('profile-panel-map');
-        const mapEl = document.getElementById('profile-mini-map');
-        if (!panel || !mapEl || panel.classList.contains('hidden')) return;
-        if (!(window.matchMedia && window.matchMedia('(max-width: 760px)').matches)) return;
-        const nav = document.getElementById('mobile-bottom-nav');
-        const GAP = 12;
-        const top = mapEl.getBoundingClientRect().top;
-        const navTop = nav ? nav.getBoundingClientRect().top : window.innerHeight;
-        mapEl.style.height = Math.max(200, Math.round(navTop - top - GAP)) + 'px';
+        if (!panel || panel.classList.contains('hidden')) return;
         if (profileMiniMap) profileMiniMap.invalidateSize();
     }
     window.addEventListener('resize', resizeProfileMiniMap);
@@ -907,6 +941,22 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
         return reviews;
     }
 
+    // Continents (demande du 16/10/2026, maquette jointe carte_profil_finale.html, 3e
+    // tuile "Continents" de la grille mobile) : aucune table pays->continent n'existait
+    // encore sur le site — construite ici à partir des 29 pays distincts présents dans
+    // locations-data.js au moment de l'écriture (un pays absent de cette table est
+    // simplement ignoré du comptage plutôt que de faire planter la page).
+    const COUNTRY_CONTINENT = {
+        'Australia': 'Oceania', 'New Zealand': 'Oceania',
+        'Brazil': 'South America', 'Chile': 'South America',
+        'Canada': 'North America', 'USA': 'North America', 'United States': 'North America',
+        'Finland': 'Europe', 'France': 'Europe', 'Germany': 'Europe', 'Hungary': 'Europe',
+        'Malta': 'Europe', 'Netherlands': 'Europe', 'Norway': 'Europe', 'Portugal': 'Europe',
+        'Spain': 'Europe', 'Sweden': 'Europe', 'UK': 'Europe',
+        'Hong Kong': 'Asia', 'Indonesia': 'Asia', 'Japan': 'Asia', 'Macau': 'Asia',
+        'Philippines': 'Asia', 'Saudi Arabia': 'Asia', 'Singapore': 'Asia', 'South Korea': 'Asia',
+        'Taiwan': 'Asia', 'Thailand': 'Asia', 'United Arab Emirates': 'Asia'
+    };
     function renderProfileMap(visitedIds) {
         // Enveloppé de try/catch (demande du 08/09/2026, bug "profile ne fonctionne pas,
         // reste sur Loading profile...") : Leaflet ou les tuiles OSM indisponibles sur une
@@ -921,6 +971,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             profileMiniMap = L.map(mapEl, { attributionControl: false, zoomControl: false }).setView([20, 0], 2);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(profileMiniMap);
             const countries = new Set();
+            const continents = new Set();
             profileMapPoints = [];
             (visitedIds || []).forEach(id => {
                 const loc = celebLocations.find(l => l.id === id || l.id === Number(id));
@@ -930,11 +981,42 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                     .bindTooltip(escapeHtml(loc.name))
                     .addTo(profileMiniMap);
                 profileMapPoints.push([loc.lat, loc.lng]);
-                if (loc.country) countries.add(loc.country);
+                if (loc.country) {
+                    countries.add(loc.country);
+                    if (COUNTRY_CONTINENT[loc.country]) continents.add(COUNTRY_CONTINENT[loc.country]);
+                }
             });
             if (profileMapPoints.length > 0) profileMiniMap.fitBounds(profileMapPoints, { padding: [30, 30], maxZoom: 10 });
             document.getElementById('profile-map-stat-locations').textContent = profileMapPoints.length;
             document.getElementById('profile-map-stat-countries').textContent = countries.size;
+            // Grille mobile (voir le HTML ci-dessus) + message vide "Mark your first place
+            // with the + button", affiché seulement sans aucun lieu marqué — même
+            // convention bilingue FR/EN que le reste des nouveaux textes ajoutés cette
+            // session (pas de nouvelle clé data-i18n pour les 9 langues du site).
+            const gridLoc = document.getElementById('profile-map-stat-locations-grid');
+            const gridCtry = document.getElementById('profile-map-stat-countries-grid');
+            const gridCont = document.getElementById('profile-map-stat-continents-grid');
+            if (gridLoc) gridLoc.textContent = profileMapPoints.length;
+            if (gridCtry) gridCtry.textContent = countries.size;
+            if (gridCont) gridCont.textContent = continents.size;
+            const isFr = currentLang === 'fr';
+            const titleEl = document.getElementById('profile-map-title');
+            if (titleEl) titleEl.textContent = isFr ? 'Ma carte' : 'My map';
+            const fsEl = document.getElementById('profile-map-fullscreen-label');
+            if (fsEl) fsEl.textContent = isFr ? 'Plein écran' : 'Full screen';
+            const locLabel = document.getElementById('profile-map-stat-locations-label');
+            if (locLabel) locLabel.textContent = isFr ? 'Lieux' : 'Locations';
+            const ctryLabel = document.getElementById('profile-map-stat-countries-label');
+            if (ctryLabel) ctryLabel.textContent = isFr ? 'Pays' : 'Countries';
+            const contLabel = document.getElementById('profile-map-stat-continents-label');
+            if (contLabel) contLabel.textContent = isFr ? 'Continents' : 'Continents';
+            const hintEl = document.getElementById('profile-map-empty-hint');
+            if (hintEl) {
+                hintEl.classList.toggle('show', profileMapPoints.length === 0);
+                hintEl.innerHTML = isFr
+                    ? 'Marquez votre premier lieu avec le bouton <b>+</b>'
+                    : 'Mark your first place with the <b>+</b> button';
+            }
         } catch (e) {
             console.warn('Affichage de la mini-carte du profil échoué :', e);
         }

@@ -663,6 +663,36 @@ window.deleteLocationReview = async function (locationId) {
     }
 };
 
+// Modération admin (demande du 16/10/2026, "en mode admin il y a un post que je n'arrive
+// pas à supprimer... fais en sorte que les admins puissent supprimer tous les posts") —
+// même principe que adminDeleteProfilePhoto() ci-dessus, mais pour un AVIS plutôt qu'une
+// photo autonome : la modale de publication (openLocModal(), script.js) affiche les deux
+// types indifféremment dans le même fil (voir fetchGlobalPhotoFeed()), mais un avis n'a
+// pas de photoId (standalone=false) — le bouton corbeille existant, limité à
+// postContext.photoId, ne s'affichait donc JAMAIS sur un avis, quel que soit le compte
+// qui l'avait publié. Nécessite une règle Firestore dédiée (voir locationReviews dans
+// firestore.rules, qui n'autorisait jusqu'ici QUE l'auteur à supprimer son propre avis —
+// aucune autre règle ici ne pouvait donc jamais réussir, admin ou non) et une extension de
+// la règle publicProfiles existante (déjà admin-éditable pour "photos" uniquement, "reviews"
+// ajouté au même titre).
+window.adminDeleteLocationReview = async function (locationId, ownerUid) {
+    const user = auth.currentUser;
+    if (!user || !locationId || !ownerUid) return { success: false, code: 'not-authenticated' };
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    try {
+        await deleteDoc(doc(db, 'locationReviews', String(locationId), 'items', ownerUid));
+        await setDoc(doc(db, 'publicProfiles', ownerUid), {
+            reviews: { [String(locationId)]: deleteField() }
+        }, { merge: true });
+        await _deleteFeedPost(ownerUid, String(locationId));
+        return { success: true };
+    } catch (e) {
+        console.warn('Suppression admin de l\'avis échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Page de profil public (profile.html) : miroir des avis d'un compte, voir
 // setLocationReview()/deleteLocationReview() ci-dessus.
 window.fetchPublicProfile = async function (uid) {

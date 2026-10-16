@@ -147,9 +147,20 @@ service cloud.firestore {
     // Avis publics ("Reviews") sur un lieu : un avis par personne et par lieu, stocké
     // dans une sous-collection pour pouvoir lire tous les avis d'UN lieu sans lire
     // toute la collection.
+    // Modération admin (demande du 16/10/2026, "en mode admin il y a un post que je
+    // n'arrive pas à supprimer... fais en sorte que les admins puissent supprimer tous
+    // les posts, même ceux postés par d'autres admins") — même principe que feedPosts/
+    // publicProfiles plus bas (delete séparé du create/update, admin ou propriétaire) :
+    // écrire/modifier le CONTENU d'un avis reste réservé à son auteur (jamais un admin),
+    // seule la SUPPRESSION s'ouvre à la modération. Voir adminDeleteLocationReview() dans
+    // firebase-init.js.
     match /locationReviews/{locationId}/items/{uid} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid;
+      allow delete: if request.auth != null && (
+        request.auth.uid == uid
+        || exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
     }
 
     // File de relecture des propositions de nouveaux lieux/corrections (par un agent IA
@@ -447,11 +458,13 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['friendCount']);
       // Admin : supprimer une publication (feed.html, demande du 11/09/2026 "en mode admin,
       // je veux avoir la possibilité de supprimer des publications qui me déplaisent") —
-      // limité à la clé "photos" (jamais bio/reviews/autre champ d'un profil qui n'est pas
-      // le sien). Voir window.adminDeleteProfilePhoto() dans firebase-init.js.
+      // limité aux clés "photos"/"reviews" (jamais bio/autre champ d'un profil qui n'est
+      // pas le sien). "reviews" ajouté le 16/10/2026 pour que la modération couvre aussi
+      // les avis, pas seulement les photos autonomes — voir
+      // window.adminDeleteProfilePhoto()/adminDeleteLocationReview() dans firebase-init.js.
       allow update: if request.auth != null
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photos']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photos', 'reviews']);
     }
 
     // Abonnement à sens unique façon Instagram (bouton "Follow" du profil public,

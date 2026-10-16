@@ -4619,19 +4619,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             mobileSearchResults.classList.remove('hidden');
         };
-        mobileSearchInput.addEventListener('input', renderMobileSearchResults);
-        mobileSearchInput.addEventListener('focus', () => { if (mobileSearchInput.value.trim()) renderMobileSearchResults(); });
-        mobileSearchResults.addEventListener('click', (e) => {
-            const row = e.target.closest('.mobile-map-search-result');
-            if (!row) return;
-            const locId = Number(row.getAttribute('data-loc-id'));
-            const loc = celebLocations.find(l => l.id === locId);
+        // Juste un raccourci pour retrouver un lieu sur la carte (demande du 11/09/2026),
+        // pas une manière d'ouvrir sa fiche — même choix que la recherche de la sidebar
+        // (#search-input) juste au-dessus dans ce fichier. Factorisé hors du clic sur un
+        // résultat (demande du 16/10/2026, "quand je clique sur entrée, renvoie-moi sur le
+        // lieu, même si je n'ai pas cliqué sur le lieu dans la liste proposée") pour être
+        // réutilisé aussi par la touche Entrée ci-dessous, sans dupliquer ce délai/
+        // invalidateSize().
+        const flyToMobileSearchResult = (loc) => {
             mobileSearchResults.classList.add('hidden');
             mobileSearchInput.value = '';
             mobileSearchInput.blur();
-            // Juste un raccourci pour retrouver un lieu sur la carte (demande du
-            // 11/09/2026), pas une manière d'ouvrir sa fiche — même choix que la
-            // recherche de la sidebar (#search-input) juste au-dessus dans ce fichier.
             if (loc && map) {
                 map.flyTo([loc.lat, loc.lng], 16, { duration: 0.6 });
                 // BUG corrigé (demande du 21/09/2026, "il faut que ça me redirige sur le
@@ -4648,6 +4646,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     map.flyTo([loc.lat, loc.lng], 16, { duration: 0.3 });
                 }, 450);
             }
+        };
+        mobileSearchInput.addEventListener('input', renderMobileSearchResults);
+        mobileSearchInput.addEventListener('focus', () => { if (mobileSearchInput.value.trim()) renderMobileSearchResults(); });
+        // BUG corrigé (demande du 16/10/2026, "sur mobile, dans map, quand je rédige un
+        // lieu dans la barre de recherche et que je clique sur entrée, renvoie moi sur le
+        // lieu... par exemple, si j'écris Malta, renvoie moi à Malte") : jusqu'ici, Entrée
+        // ne faisait rien (aucun écouteur keydown) — il fallait toujours taper le texte PUIS
+        // taper un des résultats affichés. Reproduit le même classement par pertinence que
+        // renderMobileSearchResults() ci-dessus (celebLocations.filter(...).slice(0, 8)) et
+        // navigue vers le premier résultat, sans exiger ce 2e geste.
+        mobileSearchInput.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            const q = mobileSearchInput.value.trim().toLowerCase();
+            if (!q) return;
+            const best = (typeof celebLocations !== 'undefined' ? celebLocations : []).find(l =>
+                (l.name || '').toLowerCase().includes(q) ||
+                (l.city || '').toLowerCase().includes(q) ||
+                (l.country || '').toLowerCase().includes(q) ||
+                (l.group || '').toLowerCase().includes(q) ||
+                (l.member || '').toLowerCase().includes(q)
+            );
+            if (best) flyToMobileSearchResult(best);
+        });
+        mobileSearchResults.addEventListener('click', (e) => {
+            const row = e.target.closest('.mobile-map-search-result');
+            if (!row) return;
+            const locId = Number(row.getAttribute('data-loc-id'));
+            flyToMobileSearchResult(celebLocations.find(l => l.id === locId));
         });
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#mobile-map-search')) mobileSearchResults.classList.add('hidden');
@@ -5697,6 +5724,14 @@ function wireMultiSelectOnce(selectId) {
 }
 
 let activeCategories = ["All"];
+// Filtre Group actif (demande du 16/10/2026, "n'affiche pas les autres groupes pour
+// n'afficher que BTS... il ne faut donc pas afficher le point en blanc") : posé par
+// renderLocations() juste avant renderMapMarkers() plus bas, lu par
+// addSingleLocationMarker() pour scoper son badge "plusieurs groupes" aux SEULS groupes
+// actuellement sélectionnés plutôt qu'au nombre total de groupes ayant jamais visité ce
+// lieu — sinon le badge blanc "2" continuait d'apparaître pour un lieu filtré sur un seul
+// groupe, alors que son seul marqueur visible était déjà celui de ce groupe.
+let activeGroupFilterValues = ["All"];
 function initializeFilters() {
     const groupSelect = document.getElementById('group-select');
     const memberSelect = document.getElementById('member-select');
@@ -5960,6 +5995,7 @@ function renderLocations(skipFitBounds) {
     const fGroups = getMultiValues(groupSelect), fMembers = getMultiValues(memberSelect),
           fYears = getMultiValues(yearSelect), fCountries = getMultiValues(countrySelect),
           searchTerm = searchInput.value.toLowerCase();
+    activeGroupFilterValues = fGroups;
 
     const filteredLocations = availableLocs.filter(loc => {
         // loc.year peut contenir plusieurs années séparées par une virgule (demande du
@@ -6259,6 +6295,16 @@ function openAddGroupModal(sourceLoc, onDone) {
     const existingSiblingIds = typeof findLinkedGroupLocations === 'function'
         ? findLinkedGroupLocations(sourceLoc).map(l => l.id)
         : [sourceLoc.id];
+    // BUG corrigé (demande du 16/10/2026, "il faut laisser la partie 'The story of this
+    // place' du premier lieu créé") : ce champ décrit le lieu PHYSIQUE (partagé entre tous
+    // les groupes qui y sont allés, contrairement à "Following in this group's footsteps",
+    // propre à CE groupe) — mais la zone de texte s'ouvrait toujours vide, obligeant
+    // l'admin à retaper la description déjà existante du lieu de référence à chaque
+    // nouveau groupe ajouté, sous peine de la perdre pour ce nouveau variant (chaque
+    // variant a son propre fullDescription stocké, voir combineStoryAndFootsteps() plus
+    // bas). Pré-rempli ici avec la partie "story" déjà écrite sur le lieu de référence,
+    // via la même découpe que l'édition d'un lieu existant (splitFullDescriptionForEdit()).
+    const referenceStoryText = splitFullDescriptionForEdit(referenceLoc.fullDescription && referenceLoc.fullDescription.en).placeText;
 
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed; inset:0; z-index:11300; background:rgba(20,16,30,0.55); display:flex; align-items:center; justify-content:center; padding:20px;';
@@ -6297,7 +6343,7 @@ function openAddGroupModal(sourceLoc, onDone) {
             <div style="margin-bottom:14px;"></div>
 
             <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">The story of this place</label>
-            <textarea class="agm-story-place" rows="3" placeholder="Describe the place itself — what it is, where it is." style="width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 10px; font-size:13px; font-family:'Poppins',sans-serif; margin-bottom:10px; resize:vertical;"></textarea>
+            <textarea class="agm-story-place" rows="3" placeholder="Describe the place itself — what it is, where it is." style="width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:9px 10px; font-size:13px; font-family:'Poppins',sans-serif; margin-bottom:10px; resize:vertical;">${escapeHtml(referenceStoryText)}</textarea>
             <label style="display:block; font-size:11.5px; font-weight:700; color:#64748b; margin-bottom:4px;">Following in this group's footsteps</label>
             <div class="agm-story-bts" style="margin-bottom:16px;"></div>
 
@@ -6461,7 +6507,21 @@ function addSingleLocationMarker(loc) {
     // de groupe au clic) — le point redevient blanc (même rendu que .recreate-member-marker
     // sur Mei's Pictures, demande du même jour, pour une cohérence visuelle) et porte un
     // badge rouge avec le nombre de groupes, plutôt que la couleur d'un seul d'entre eux.
-    const siblingGroupCount = typeof findLinkedGroupLocations === 'function' ? findLinkedGroupLocations(loc).length : 1;
+    // BUG corrigé (demande du 16/10/2026, "n'affiche pas les autres groupes pour n'afficher
+    // que BTS... il ne faut pas afficher le point en blanc") : le compte de "frères" ci-
+    // dessus portait jusqu'ici sur le lieu physique entier (tous les groupes qui y sont
+    // jamais allés), quel que soit le filtre Group actuellement choisi — un lieu filtré sur
+    // BTS seul affichait donc encore le point blanc + badge "2" (Blackpink y est aussi
+    // allé), alors qu'un seul marqueur (BTS) est réellement visible sous ce filtre. Scopé
+    // ici aux seuls groupes actuellement sélectionnés (activeGroupFilterValues, posé par
+    // renderLocations()/renderVisitedTabList() plus haut) : sous "All" (ou l'onglet
+    // "Visited", qui n'a pas ce filtre), rien ne change ; sous un filtre restreint, seuls
+    // les frères EUX-MÊMES visibles sous ce filtre comptent pour le badge.
+    const allSiblings = typeof findLinkedGroupLocations === 'function' ? findLinkedGroupLocations(loc) : [loc];
+    const visibleSiblings = activeGroupFilterValues.includes('All')
+        ? allSiblings
+        : allSiblings.filter(s => activeGroupFilterValues.includes(s.group));
+    const siblingGroupCount = visibleSiblings.length;
     const isMultiGroup = siblingGroupCount > 1;
     let html, baseColor;
     if (isMultiGroup) {
@@ -6666,6 +6726,11 @@ function renderVisitedTabList() {
         listEl.appendChild(card);
     });
 
+    // Onglet "Visited" indépendant du filtre Group principal (visitedLocations ci-dessus
+    // ne dépend que des lieux marqués visités, pas de group-select) — le badge
+    // "plusieurs groupes" doit donc y rester NON restreint, quel que soit le dernier
+    // filtre Group choisi dans l'autre onglet (voir activeGroupFilterValues plus haut).
+    activeGroupFilterValues = ["All"];
     renderMapMarkers(visitedLocations, { fitBounds: true });
 }
 window.renderVisitedTabList = renderVisitedTabList;
@@ -9293,10 +9358,26 @@ async function saveLocationEdit(locId, modal) {
     // si ni l'un ni l'autre n'a jamais été renseigné ET qu'une vidéo YouTube est indiquée,
     // repli automatique sur sa vignette (même convention que admin.html à la création
     // d'une nouvelle fiche) ; sinon, on ne touche pas au champ existant.
+    // BUG corrigé (demande du 16/10/2026, "la page My wishlist... ça affiche une ancienne
+    // photo") : ce champ était écrit dans locationContent (via fields/
+    // adminUpdateLocationContent ci-dessous), lue seulement UNE FOIS PAR LIEU, en PARESSEUX,
+    // quand quelqu'un ouvre la fiche COMPLÈTE de ce lieu précis (fetchLocationContent(),
+    // voir openDetailsPanel()) — et même alors, ce correctif du 07/09/2026 ne met à jour que
+    // l'AFFICHAGE de cette fiche (un objet fusionné localement, "merged" dans
+    // fetchLocationContent(id).then(...)), jamais le celebLocations PARTAGÉ : aucune AUTRE
+    // page (wishlist, carte, feed...) n'en bénéficiait donc jamais, même après avoir
+    // consulté le lieu, jusqu'au prochain export statique planifié (jusqu'à 6h). Écrit
+    // maintenant dans skeletonFields plutôt que fields — même catégorie que group/city/
+    // année etc., LUE EN BLOC pour TOUS les lieux au chargement de CHAQUE page (voir
+    // fetchLocationSkeletonOverrides() plus haut, déjà fusionnée dans celebLocations et
+    // câblée sur window.refreshWishlistFromCloud()) — simple chaîne de caractères (une URL),
+    // pas le genre de contenu volumineux (description, recreatedPhotos en base64...) qui
+    // justifiait à l'origine de garder locationContent séparé et paresseux.
+    let headerImgFieldValue;
     if (locationEditImgTouched) {
-        fields.img = locationEditPendingImg || '';
+        headerImgFieldValue = locationEditPendingImg || '';
     } else if (!locationEditExistingImg && ytId) {
-        fields.img = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+        headerImgFieldValue = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
     }
     // Image sous "The story of this place" (demande du 07/10/2026) — même convention que
     // "Header photo" ci-dessus : n'écrit ce champ que si l'admin l'a réellement touché
@@ -9338,6 +9419,7 @@ async function saveLocationEdit(locId, modal) {
     // champ resté intact — vide au chargement, vide au clic sur Save — n'est donc toujours
     // pas ré-écrit inutilement, mais un champ explicitement vidé l'est bien, vide y compris.
     const skeletonFields = {};
+    if (headerImgFieldValue !== undefined) skeletonFields.img = headerImgFieldValue;
     if (groupVal !== (locationEditOriginalSkeletonValues.group || '')) skeletonFields.group = groupVal;
     if (categoryVal !== (locationEditOriginalSkeletonValues.category || '')) skeletonFields.category = categoryVal;
     if (memberVal) skeletonFields.member = memberVal;
@@ -10666,13 +10748,20 @@ window.openLocModal = function(id, postContext) {
     // possibilité de supprimer des publications qui me déplaisent") : bouton "corbeille"
     // injecté en JS (pas de HTML dédié par page, contrairement à modal-back-btn/
     // modal-post-edit-btn ci-dessus) pour fonctionner sur toute page partageant #loc-modal
-    // sans avoir à dupliquer son balisage partout — même look que ces deux boutons. Réservé
-    // aux publications autonomes identifiables (postContext.photoId, même périmètre que
-    // deleteProfilePhoto/openPostEditSheet) et jamais affiché sur ses PROPRES publications
-    // (déjà couvertes par le volet crayon -> Supprimer existant, voir openPostEditSheet).
+    // sans avoir à dupliquer son balisage partout — même look que ces deux boutons. Jamais
+    // affiché sur ses PROPRES publications (déjà couvertes par le volet crayon ->
+    // Supprimer existant, voir openPostEditSheet).
+    // BUG corrigé (demande du 16/10/2026, "il y a un post que je n'arrive pas à
+    // supprimer... fais en sorte que les admins puissent supprimer tous les posts") : ce
+    // bouton exigeait jusqu'ici postContext.photoId — vrai pour une photo autonome, mais
+    // TOUJOURS null pour un avis avec photo (voir "photoId: p.standalone ? p.id : null"
+    // côté feed.html/openLocVisitorsDrawer), le fil global mélangeant pourtant les deux
+    // types indifféremment. Un avis n'avait donc jamais ce bouton, quel que soit
+    // l'auteur. postContext.uid seul suffit à identifier une vraie publication ; le choix
+    // entre les deux fonctions de suppression se fait au clic, voir plus bas.
     (function () {
         let btn = document.getElementById('modal-post-admin-delete-btn');
-        if (postContext && postContext.uid && postContext.photoId && !postContext.editable && modalOverlayEl) {
+        if (postContext && postContext.uid && !postContext.editable && modalOverlayEl) {
             if (typeof window.isCurrentUserAdmin !== 'function') return;
             window.isCurrentUserAdmin().then(isAdmin => {
                 // Le clic sur un autre lieu / la fermeture de la modale pendant l'attente
@@ -10701,7 +10790,9 @@ window.openLocModal = function(id, postContext) {
                 btn.onclick = async () => {
                     const msg = currentLang === 'fr' ? 'Supprimer définitivement cette publication ?' : 'Permanently delete this post?';
                     if (!confirm(msg)) return;
-                    const result = await window.adminDeleteProfilePhoto(postContext.uid, postContext.photoId);
+                    const result = postContext.photoId
+                        ? await window.adminDeleteProfilePhoto(postContext.uid, postContext.photoId)
+                        : await window.adminDeleteLocationReview(loc.id, postContext.uid);
                     if (result && result.success) {
                         window.closeLocModal();
                         window.location.reload();
