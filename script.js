@@ -4773,6 +4773,25 @@ const iconsSVG = {
 
 const groupColors = { "BTS": "#8b5cf6", "Blackpink": "#ec4899", "Twice": "#f43f5e", "Seventeen": "#3b82f6", "Katseye": "#10b981", "TXT": "#f59e0b" };
 
+// Continents (demande du 16/10/2026, maquette carte_profil_finale.html, 3e tuile
+// "Continents" de la grille mobile du profil — réutilisée telle quelle le même jour pour
+// la page Visited, voir visited_finale.html) : aucune table pays->continent n'existait
+// encore sur le site — construite à partir des 29 pays distincts présents dans
+// locations-data.js au moment de l'écriture (un pays absent de cette table est
+// simplement ignoré du comptage plutôt que de faire planter la page). Posée ici plutôt
+// que dupliquée dans chaque page qui en a besoin (profile.html, visited.html).
+const COUNTRY_CONTINENT = {
+    'Australia': 'Oceania', 'New Zealand': 'Oceania',
+    'Brazil': 'South America', 'Chile': 'South America',
+    'Canada': 'North America', 'USA': 'North America', 'United States': 'North America',
+    'Finland': 'Europe', 'France': 'Europe', 'Germany': 'Europe', 'Hungary': 'Europe',
+    'Malta': 'Europe', 'Netherlands': 'Europe', 'Norway': 'Europe', 'Portugal': 'Europe',
+    'Spain': 'Europe', 'Sweden': 'Europe', 'UK': 'Europe',
+    'Hong Kong': 'Asia', 'Indonesia': 'Asia', 'Japan': 'Asia', 'Macau': 'Asia',
+    'Philippines': 'Asia', 'Saudi Arabia': 'Asia', 'Singapore': 'Asia', 'South Korea': 'Asia',
+    'Taiwan': 'Asia', 'Thailand': 'Asia', 'United Arab Emirates': 'Asia'
+};
+
 const filterData = {
     // "In The Soop" (demande du 27/09/2026), "Winter Package"/"Summer Package"/"Festa"
     // (demande du 30/09/2026) : ajoutées aux côtés de "Run BTS"/"Bon Voyage" — même famille

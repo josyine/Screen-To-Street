@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261035" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261036" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -457,7 +457,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261035';
+        s.src = 'page-loader.js?v=20261036';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -744,9 +744,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261035"></script>
-<script src="locations-data.js?v=20261035"></script>
-<script src="script.js?v=20261035"></script>
+<script type="module" src="firebase-init.js?v=20261036"></script>
+<script src="locations-data.js?v=20261036"></script>
+<script src="script.js?v=20261036"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
@@ -941,22 +941,8 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
         return reviews;
     }
 
-    // Continents (demande du 16/10/2026, maquette jointe carte_profil_finale.html, 3e
-    // tuile "Continents" de la grille mobile) : aucune table pays->continent n'existait
-    // encore sur le site — construite ici à partir des 29 pays distincts présents dans
-    // locations-data.js au moment de l'écriture (un pays absent de cette table est
-    // simplement ignoré du comptage plutôt que de faire planter la page).
-    const COUNTRY_CONTINENT = {
-        'Australia': 'Oceania', 'New Zealand': 'Oceania',
-        'Brazil': 'South America', 'Chile': 'South America',
-        'Canada': 'North America', 'USA': 'North America', 'United States': 'North America',
-        'Finland': 'Europe', 'France': 'Europe', 'Germany': 'Europe', 'Hungary': 'Europe',
-        'Malta': 'Europe', 'Netherlands': 'Europe', 'Norway': 'Europe', 'Portugal': 'Europe',
-        'Spain': 'Europe', 'Sweden': 'Europe', 'UK': 'Europe',
-        'Hong Kong': 'Asia', 'Indonesia': 'Asia', 'Japan': 'Asia', 'Macau': 'Asia',
-        'Philippines': 'Asia', 'Saudi Arabia': 'Asia', 'Singapore': 'Asia', 'South Korea': 'Asia',
-        'Taiwan': 'Asia', 'Thailand': 'Asia', 'United Arab Emirates': 'Asia'
-    };
+    // COUNTRY_CONTINENT : déplacée dans script.js (16/10/2026, même jour que son ajout ici)
+    // pour être partagée avec visited.html plutôt que dupliquée — voir ce fichier.
     function renderProfileMap(visitedIds) {
         // Enveloppé de try/catch (demande du 08/09/2026, bug "profile ne fonctionne pas,
         // reste sur Loading profile...") : Leaflet ou les tuiles OSM indisponibles sur une
