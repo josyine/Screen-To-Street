@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-16T17:38:51.842Z.
+// Généré le 2026-10-16T22:10:34.716Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -22127,6 +22127,293 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<!--stss:footsteps-->"
     }
+  },
+  {
+    "id": "new-manual-1792176617487-kgs4rl",
+    "name": "Église Saint-Étienne-du-Mont",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2019",
+    "lat": 48.8467,
+    "lng": 2.3478,
+    "img": "images/admin-upload-new-manual-1792176617487-kgs4rl-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Right Steps"
+        },
+        "text": {
+          "en": "Don't pose at the church's main front entrance! The famous steps are located on the side of the building, specifically at the corner where Rue Saint-Étienne-du-Mont meets Rue de la Montagne Sainte-Geneviève."
+        }
+      },
+      {
+        "title": {
+          "en": "Go at Night"
+        },
+        "text": {
+          "en": "To truly recreate Taehyung's photo and capture the magical vibe of the movie, visit after the sun goes down when the vintage streetlamps cast a warm, yellow glow over the cobblestones."
+        }
+      },
+      {
+        "title": {
+          "en": "Sit and Wait"
+        },
+        "text": {
+          "en": "Mirror V's relaxed pose by sitting directly on the stone steps, leaning slightly forward, and taking a moment to just soak in the quiet Parisian atmosphere."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "fullDescription": {
+      "en": "<p>Tucked away just behind the monumental Panthéon in the historic Latin Quarter (5th arrondissement), the Église Saint-Étienne-du-Mont is a striking church featuring a unique blend of Gothic and Renaissance architecture. While the church itself is a masterpiece, the unassuming stone steps on its northern side (facing Rue de la Montagne Sainte-Geneviève) have gained immense international pop-culture fame. These are the exact steps where Gil Pender, the protagonist of Woody Allen's hit 2011 film Midnight in Paris, sits at the stroke of midnight before being magically whisked away into the 1920s by a vintage car.</p><!--stss:footsteps--><p>In early June 2019, BTS completely took over the French capital to headline two massive, sold-out concerts at the Stade de France as part of their Love Yourself: Speak Yourself stadium tour. The city was practically buzzing with ARMY energy all weekend. But even in the middle of a chaotic global tour schedule, Taehyung always finds a way to feed his artistic soul.</p><p>Known for his deep love of classic cinema, photography, and vintage aesthetics, Taehyung slipped away during some downtime to explore the quieter, more romantic side of the Left Bank. He intentionally sought out this specific corner of the 5th arrondissement not for a typical tourist photo, but to find the Midnight in Paris steps. Waiting until evening to perfectly match the mood of the film, V sat on the exact same stone steps where the movie's character waits for his time-traveling ride. When he shared the atmospheric, dimly lit photos with fans, it felt like a quintessential \"Vante\" moment—a quiet, artistic nod to a film he loves, proving that he knows exactly how to capture the true romance of Paris.</p>"
+    },
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located in the 5th arrondissement (Latin Quarter). Take Metro Line 10 to Cardinal Lemoine, or the RER B to Luxembourg. From either station, it’s a short, scenic walk up the hill to the square directly behind the Panthéon."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor steps are part of the public sidewalk and are accessible 24/7. It is completely free to visit and take photos."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The street level next to the steps is accessible, though actually sitting on the stairs or navigating the surrounding historic cobblestone streets can be slightly uneven for wheelchair users or strollers."
+        }
+      }
+    ],
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792176617487-kgs4rl-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6406,
+            "y": 0.5441,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "officialLink": "http://www.saintetiennedumont.fr/",
+    "tweetUrl": "https://x.com/BTS_twt/status/1054673075042746368"
+  },
+  {
+    "id": "new-manual-1792178131087-g10502",
+    "name": "Rue de la Montagne Sainte-Geneviève",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "Intersection of Rue de la Montagne Sainte-Geneviève and Rue Saint-Étienne-du-Mont, 75005 Paris, France (Right next to the church steps).",
+    "lat": 48.84679,
+    "lng": 2.34791,
+    "img": "images/admin-upload-new-manual-1792178131087-g10502-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate the Owen Wilson Pose"
+        },
+        "text": {
+          "en": "Stand on the sidewalk curb looking down Rue de la Montagne Sainte-Geneviève. Put your hands in your pockets, look slightly expectant, and capture the exact stance Taehyung mirrored from the film."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit in the Evening"
+        },
+        "text": {
+          "en": "To get the authentic Midnight in Paris atmosphere, visit this spot at twilight or later. The vintage streetlamps create a warm, cinematic glow over the cobblestones that is impossible to capture in the bright afternoon sun."
+        }
+      },
+      {
+        "title": {
+          "en": "Wander the Latin Quarter"
+        },
+        "text": {
+          "en": "After getting your photos, channel Taehyung's love for art and history by taking a quiet stroll through the surrounding narrow streets, which are filled with old bookshops, cafes, and historic architecture."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>The winding, cobblestone streets surrounding the Église Saint-Étienne-du-Mont perfectly encapsulate the timeless, bohemian charm of the Latin Quarter. Specifically, the intersection where Rue de la Montagne Sainte-Geneviève meets the side of the church became a piece of modern cinematic history thanks to Woody Allen’s 2011 film, Midnight in Paris. This quiet corner is the exact filming location where the protagonist, Gil Pender (played by Owen Wilson), stands on the curb waiting for the yellow vintage 1920s Peugeot to pull up and whisk him away into the past.</p><!--stss:footsteps--><p>In October 2018, BTS arrived in the French capital to perform two highly anticipated, sold-out shows at the AccorHotels Arena as part of their massive Love Yourself world tour. During his free time in the city, Taehyung—a well-known cinephile with a deep appreciation for jazz, vintage aesthetics, and romantic films—made a deliberate pilgrimage to this specific corner in the 5th arrondissement.</p><p>Taehyung didn't just snap a quick tourist selfie next to the church; he fully immersed himself in the cinematic magic of the location. He shared a delightful series of photos with fans where he faithfully and playfully recreated Owen Wilson's exact poses from the movie. Standing right on the edge of the cobblestone street, V posed as if he, too, were patiently waiting for the time-traveling car to arrive. This charming moment perfectly highlighted his artistic soul and his love for storytelling, turning a simple Paris street corner into an iconic piece of ARMY history.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located just behind the Panthéon. The easiest way to get there is by taking Metro Line 10 to Cardinal Lemoine, or the RER B to Luxembourg, and enjoying a short walk up the hill."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "It is a public street and sidewalk, open 24/7 and completely free to visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The sidewalk and street corner are fully accessible, though navigating the historic, uneven cobblestones of the Latin Quarter can be slightly bumpy for wheelchair users or strollers."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792178131087-g10502-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6536,
+            "y": 0.6059,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "officialLink": "https://fr.wikipedia.org/wiki/Rue_de_la_Montagne-Sainte-Genevi%C3%A8ve",
+    "tweetUrl": "https://x.com/BTS_twt/status/1054673075042746368?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1054673075042746368%7Ctwgr%5E%7Ctwcon%5Es1_&ref_url="
+  },
+  {
+    "id": "new-manual-1792184942308-mp9xl1",
+    "name": "Pont Alexandre III",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "Pont Alexandre III, 75008 Paris, France",
+    "lat": 48.8639,
+    "lng": 2.3136,
+    "img": "images/admin-upload-new-manual-1792184942308-mp9xl1-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visit at Night"
+        },
+        "text": {
+          "en": "To capture the exact same mood as Taehyung's iconic photos, you must visit the bridge after dark. The Art Nouveau streetlamps cast a warm, vintage glow over the bridge that is incredibly cinematic."
+        }
+      },
+      {
+        "title": {
+          "en": "Dress the Part"
+        },
+        "text": {
+          "en": "Channel Taehyung's romantic, vintage aesthetic by wearing a long trench coat or oversized outerwear for your own photoshoot."
+        }
+      },
+      {
+        "title": {
+          "en": "Embrace the Rain"
+        },
+        "text": {
+          "en": "If you happen to visit Paris on a rainy evening, don't stay indoors! Both the film Midnight in Paris and Taehyung's aesthetic thrive in the moody, romantic atmosphere of a wet Parisian night."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Widely considered the most ornate and extravagant bridge in the city, the Pont Alexandre III is a true masterpiece of Parisian architecture. Built for the 1900 Exposition Universelle, the bridge is famous for its elegant, single-span steel arch and its lavish decorations, which include golden winged horses (Pegasus), cherubs, and beautiful Art Nouveau lamps. Spanning the Seine River to connect the Champs-Élysées quarter with the Invalides, it offers breathtaking views of the Eiffel Tower. Unsurprisingly, this romantic setting has been a favorite for filmmakers, most notably serving as the backdrop for the final, rain-soaked scene in Woody Allen’s film Midnight in Paris.</p><!--stss:footsteps--><p>In October 2018, during BTS's visit to Paris for their Love Yourself world tour, Kim Taehyung (V) captured the imagination of millions of fans by recreating his favorite scenes from the movie Midnight in Paris. As a huge fan of cinema and romantic, retro aesthetics, Taehyung took a nighttime stroll through the streets of the capital, eventually finding himself on the iconic Pont Alexandre III.   Fully immersing himself in the atmosphere, he wore a long, vintage-style buttoned brown coat, a dark scarf, and wide pants, looking exactly like a poet or a time traveler straight out of Woody Allen's film. The photos, published directly by Taehyung on the group's official Twitter account (@BTS_twt), immediately became legendary. He accompanied these atmospheric shots with a poetic and playful caption: \"When is the Midnight in Paris car coming? I want to do some time traveling too... I really want to meet people [from the past]\".</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The bridge is highly central and easy to reach. You can take the Metro to Invalides (Lines 8 and 13, or RER C) on the Left Bank, or Champs-Élysées - Clemenceau (Lines 1 and 13) on the Right Bank."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a public bridge, it is open to pedestrians and vehicles 24/7 and is completely free to visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The wide sidewalks of the bridge are flat and fully accessible for wheelchair users and strollers, offering an easy and spectacular viewing point of the Seine."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Eric Pouhier / CC BY-SA 4.0",
+    "officialLink": "https://parisjetaime.com/transport/pont-alexandre-iii-p1875",
+    "tweetUrl": "https://x.com/BTS_twt/status/1054673075042746368?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1054673075042746368%7Ctwgr%5E%7Ctwcon%5Es1_&ref_url=",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792184942308-mp9xl1-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.8294,
+            "y": 0.6205,
+            "member": "V"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
