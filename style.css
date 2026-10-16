@@ -1289,7 +1289,19 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .sst-slide{scroll-snap-align:center;flex:0 0 auto;transition:opacity .2s}
 .sst-pv{width:calc(270px * var(--s));height:calc(480px * var(--s));border-radius:calc(18px * var(--s));overflow:hidden;position:relative;box-shadow:0 10px 26px #1f243026}
 .sst-pv>.sst-sw{width:270px;height:480px;transform:scale(var(--s));transform-origin:0 0;position:absolute;left:0;top:0}
-.sst-pv.sst-chk{background:repeating-conic-gradient(#3a3a44 0 25%,#2c2c34 0 50%) 0 0/16px 16px}
+/* BUG corrigé (demande du 16/10/2026, "pour Copy supprime le dégradé noir à droite du
+   sticker") : .sst-t4 (Sticker, voir plus bas) n'a jamais eu de fond propre — seule sa
+   carte centrée de 212px (.sst-stk) a un fond, le reste du canevas 270x480 restait
+   transparent. Ce damier sombre (#3a3a44/#2c2c34) était l'indicateur habituel de
+   "transparence" façon Photoshop pour la PRÉVISUALISATION seule, mais l'image COPIÉE/
+   ENREGISTRÉE (voir makeFile() dans script.js) héritait de cette même transparence — un
+   PNG avec zones transparentes que certaines destinations de collage ne compositent pas
+   correctement affiche alors un aplat/dégradé noir au lieu du blanc attendu. .sst-t4
+   a maintenant un fond blanc opaque explicite (ci-dessous) : l'image exportée n'est plus
+   jamais transparente, donc plus aucun artefact possible quelle que soit l'appli de
+   destination. Le damier n'a donc plus lieu d'exister (il n'y a plus de transparence à
+   signaler) — remplacé par un fond clair uni, cohérent avec le blanc de .sst-t4.*/
+.sst-pv.sst-chk{background:#F6F0FB}
 .sst-dots{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
 .sst-dots b{min-width:62px;text-align:right;margin-right:4px}
 .sst-dots button{padding:4px 0!important}
@@ -1346,7 +1358,7 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .sst-t3 .sst-s3{margin-top:14px;background:#ffffff1f;border-radius:14px;padding:9px 4px;--bd:#ffffff40}.sst-t3 .sst-s3 b{font-size:15px}.sst-t3 .sst-s3 small{opacity:.85}
 .sst-t3 .sst-ft{margin-top:auto;font-size:9.5px;opacity:.8;display:flex;justify-content:space-between}
 /* Sticker */
-.sst-t4{display:flex;align-items:center;justify-content:center}
+.sst-t4{display:flex;align-items:center;justify-content:center;background:#fff}
 .sst-t4 .sst-stk{width:212px;background:var(--sst-G);border-radius:24px;padding:16px 14px 14px;box-shadow:0 12px 26px #0004;display:flex;flex-direction:column;align-items:center;text-align:center}
 .sst-t4 .sst-im{width:100%;height:120px;border-radius:14px;overflow:hidden;margin-top:12px}.sst-t4 .sst-im img{width:100%;height:100%;object-fit:cover;display:block}
 .sst-t4 .sst-md{margin-top:12px}
