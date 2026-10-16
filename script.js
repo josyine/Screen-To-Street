@@ -7779,7 +7779,22 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
         `;
         document.body.appendChild(overlay);
         overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeLocVisitorsDrawer(); });
+        // BUG corrigé (demande du 16/10/2026, "s'il y a beaucoup de lieu, il faut agrandir
+        // la section au fur et à mesure qu'on défile") : .loc-visitors-sheet démarre
+        // compact (voir .loc-visitors-sheet dans style.css) — avec peu de publications, un
+        // gros tiroir à moitié vide ne sert à rien. Dès qu'on défile dedans (donc qu'il y a
+        // assez de contenu pour que ça dépasse), .expanded le fait grandir jusqu'à son
+        // ancien plafond (78vh) pour laisser voir plus de tuiles à la fois plutôt que de
+        // scroller indéfiniment dans une fenêtre minuscule.
+        const sheetEl = overlay.querySelector('.loc-visitors-sheet');
+        sheetEl.addEventListener('scroll', () => {
+            sheetEl.classList.toggle('expanded', sheetEl.scrollTop > 4);
+        });
     }
+    // Repart compact à chaque nouvelle ouverture (un lieu avec peu de publications
+    // juste après un pays qui en avait beaucoup ne doit pas hériter de .expanded).
+    overlay.querySelector('.loc-visitors-sheet').classList.remove('expanded');
+    overlay.querySelector('.loc-visitors-sheet').scrollTop = 0;
     document.getElementById('loc-visitors-sheet-title').textContent = title;
     const grid = document.getElementById('loc-visitors-grid');
     grid.innerHTML = postsWithLoc.map(({ post: p }, i) => `
@@ -7812,6 +7827,12 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
         });
     });
     overlay.classList.add('open');
+    // Voir le commentaire dans style.css (#mobile-bottom-nav.above-fullscreen-overlay) :
+    // #loc-visitors-overlay est créé/ajouté au DOM APRÈS #mobile-bottom-nav, donc un
+    // sélecteur de voisin général (comme pour .live-panel/#loc-modal.post-modal) ne peut
+    // jamais le cibler — bascule directement en JS plutôt.
+    const navEl = document.getElementById('mobile-bottom-nav');
+    if (navEl) navEl.classList.add('above-fullscreen-overlay');
 }
 // Voir le commentaire dans le listener de clic ci-dessus : état du tiroir à rouvrir après
 // fermeture de la publication qu'il vient d'ouvrir, ou null si la publication en cours
@@ -7841,6 +7862,8 @@ function openAreaVisitorsDrawer(countryName, locs) {
 window.closeLocVisitorsDrawer = function () {
     const overlay = document.getElementById('loc-visitors-overlay');
     if (overlay) overlay.classList.remove('open');
+    const navEl = document.getElementById('mobile-bottom-nav');
+    if (navEl) navEl.classList.remove('above-fullscreen-overlay');
 };
 
 // Story, infos pratiques, vidéo et conseils d'un lieu — regroupés ici pour pouvoir être

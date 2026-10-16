@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261040" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261041" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -250,8 +250,15 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
    @media plus bas) — desktop garde sa ligne de 2 stats + carte pleine largeur d'origine,
    inchangée, ces nouveaux éléments y restent cachés (display:none). */
 .profile-map-header { display: none; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 800; color: #1F2430; margin-bottom: 10px; }
-.profile-map-fullscreen-link { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #D42759; text-decoration: none; }
+/* Bouton "Full screen" (demande du 16/10/2026) : était un <a>, maintenant un <button>
+   (agrandit la mini-carte en place plutôt que de quitter la page, voir
+   window.toggleProfileMapFullscreen()) — règles de reset nécessaires qu'un <a> n'avait
+   pas besoin. */
+.profile-map-fullscreen-link { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #D42759; text-decoration: none; background: none; border: none; padding: 0; font-family: inherit; cursor: pointer; }
 .profile-mini-map-frame { display: none; }
+/* Bouton "réduire" (demande du 16/10/2026) — masqué hors plein écran (voir
+   .profile-mini-map-frame.fullscreen plus bas), toujours présent dans le DOM. */
+.profile-map-shrink-btn { display: none; }
 .profile-map-stats-grid { display: none; }
 .profile-map-stat-tile { background: #fff; border-radius: 16px; padding: 12px 6px; text-align: center; box-shadow: 0 2px 10px rgba(31,36,48,.08); }
 .profile-map-stat-tile b { display: block; font-size: 20px; line-height: 1.3; color: #D42759; font-weight: 800; }
@@ -413,6 +420,25 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
   .profile-map-empty-hint.show { display: block; text-align: center; font-size: 12px; color: #8F8B99; }
   .profile-map-empty-hint.show b { color: #D42759; }
   #profile-mini-map .leaflet-tile-pane::after { background: #E7E9EC; }
+  /* BUG corrigé (demande du 16/10/2026, "quand je clique sur 'full screen', grandis
+     juste la carte pour qu'elle prenne tout l'écran avec les lieux visités") : la carte
+     passe en position:fixed plein écran — voir window.toggleProfileMapFullscreen() plus
+     bas, qui pose cette classe + remonte #mobile-bottom-nav au-dessus (même mécanisme que
+     #loc-visitors-overlay, voir style.css) pour qu'elle reste toujours visible (demande
+     site-wide établie), et appelle profileMiniMap.invalidateSize()/fitBounds() ensuite —
+     Leaflet ne recalcule jamais tout seul la taille de ses tuiles après un changement de
+     taille du conteneur en CSS pur. */
+  .profile-mini-map-frame.fullscreen {
+      position: fixed; inset: 0; z-index: 9000; margin: 0; padding: 0; border-radius: 0;
+  }
+  .profile-mini-map-frame.fullscreen .profile-mini-map { height: 100%; width: 100%; border-radius: 0; }
+  .profile-map-shrink-btn {
+      position: absolute; top: calc(14px + env(safe-area-inset-top)); right: 14px; z-index: 10;
+      width: 38px; height: 38px; border-radius: 50%; border: none;
+      background: rgba(255,255,255,.92); color: #1F2430; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,.18);
+  }
+  .profile-mini-map-frame.fullscreen .profile-map-shrink-btn { display: flex; }
 }
 /* PWA installée (mode standalone) — même correctif que .tab-panel dans style.css (voir son
    commentaire) : .mobile-bottom-nav remonte de 12px de plus dans ce mode (barre de gestes
@@ -465,7 +491,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261040';
+        s.src = 'page-loader.js?v=20261041';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -657,12 +683,25 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                      habillage différent. -->
                 <div class="profile-map-header">
                     <span id="profile-map-title">My map</span>
-                    <a href="map.html" class="profile-map-fullscreen-link">
+                    <!-- BUG corrigé (demande du 16/10/2026, "quand je clique sur 'full
+                         screen', grandis juste la carte pour qu'elle prenne tout l'écran
+                         avec les lieux visités") : était un lien <a href="map.html">, qui
+                         quittait la page pour la carte GÉNÉRALE du site (tous les lieux,
+                         pas seulement les visités) — un bouton qui agrandit EN PLACE cette
+                         même mini-carte (#profile-mini-map, déjà filtrée aux lieux visités)
+                         à la place, voir window.toggleProfileMapFullscreen() plus bas. -->
+                    <button type="button" id="profile-map-fullscreen-btn" class="profile-map-fullscreen-link" onclick="window.toggleProfileMapFullscreen(true)">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-7 7M10 20H4v-6M4 20l7-7"></path></svg>
                         <span id="profile-map-fullscreen-label">Full screen</span>
-                    </a>
+                    </button>
                 </div>
-                <div class="profile-mini-map-frame">
+                <div class="profile-mini-map-frame" id="profile-mini-map-frame">
+                    <!-- Bouton "réduire" (demande du 16/10/2026, "ajoute un bouton réduire
+                         la carte pour revenir en arrière") — masqué hors plein écran, voir
+                         style.css. -->
+                    <button type="button" id="profile-map-shrink-btn" class="profile-map-shrink-btn" onclick="window.toggleProfileMapFullscreen(false)" title="Shrink map">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    </button>
                     <div class="profile-mini-map" id="profile-mini-map"></div>
                 </div>
                 <div class="profile-map-stats-grid">
@@ -752,9 +791,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261040"></script>
-<script src="locations-data.js?v=20261040"></script>
-<script src="script.js?v=20261040"></script>
+<script type="module" src="firebase-init.js?v=20261041"></script>
+<script src="locations-data.js?v=20261041"></script>
+<script src="script.js?v=20261041"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
@@ -853,6 +892,53 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     window.addEventListener('resize', resizeProfileMiniMap);
     window.addEventListener('orientationchange', () => setTimeout(resizeProfileMiniMap, 300));
 
+    // Voir le repère laissé dans le DOM par toggleProfileMapFullscreen() ci-dessous :
+    // permet de replacer #profile-mini-map-frame EXACTEMENT où il était après un
+    // plein écran (voir ce même commentaire pour pourquoi ce déplacement est nécessaire).
+    const profileMapFullscreenPlaceholder = document.createComment('profile-mini-map-frame-placeholder');
+
+    // Plein écran de la mini-carte (demande du 16/10/2026, "quand je clique sur 'full
+    // screen', grandis juste la carte pour qu'elle prenne tout l'écran avec les lieux
+    // visités. ajoute un bouton réduire la carte pour revenir en arrière") — bascule une
+    // classe CSS (voir .profile-mini-map-frame.fullscreen dans le <style> plus haut) +
+    // remonte #mobile-bottom-nav au-dessus (même mécanisme que pour le tiroir "photos des
+    // visiteurs" de map.html, voir style.css/above-fullscreen-overlay) pour qu'elle reste
+    // toujours visible comme demandé site-wide, plutôt que de recouvrir toute la page.
+    // BUG corrigé (vérifié par capture d'écran Playwright : le bouton "réduire" restait
+    // invisible, recouvert par #mobile-top-icons) : #profile-mini-map-frame vit sous
+    // .page, qui pose elle-même position:relative + z-index:2000 — ÇA crée un contexte
+    // d'empilement propre à .page, qui PIÈGE tout z-index posé sur un descendant (même
+    // position:fixed, qui ne s'extrait QUE du flux de mise en page normal, jamais d'un
+    // contexte d'empilement) à l'intérieur de ce même contexte. #mobile-top-icons, lui,
+    // vit directement sous <body> (hors de ce contexte) à z-index 3600 — toujours
+    // au-dessus du contexte de .page tout entier (2000), quel que soit le z-index réglé
+    // sur un de ses descendants (9000 ici, totalement sans effet dans ce cas). Seule
+    // solution fiable : déplacer RÉELLEMENT le cadre sous <body> (comme #mobile-bottom-nav/
+    // #loc-visitors-overlay) pendant le plein écran, pas juste changer son z-index — un
+    // commentaire-repère (placeholder) marque sa place d'origine pour l'y remettre
+    // EXACTEMENT au même endroit en sortant du plein écran.
+    window.toggleProfileMapFullscreen = function (expand) {
+        const frame = document.getElementById('profile-mini-map-frame');
+        if (!frame) return;
+        if (expand) {
+            frame.before(profileMapFullscreenPlaceholder);
+            document.body.appendChild(frame);
+        } else if (profileMapFullscreenPlaceholder.parentNode) {
+            profileMapFullscreenPlaceholder.replaceWith(frame);
+        }
+        frame.classList.toggle('fullscreen', !!expand);
+        const navEl = document.getElementById('mobile-bottom-nav');
+        if (navEl) navEl.classList.toggle('above-fullscreen-overlay', !!expand);
+        // Leaflet ne redétecte jamais tout seul un changement de taille posé en CSS pur
+        // (même remarque que resizeProfileMiniMap() ci-dessus) — laisse le temps au
+        // reflow (position:fixed, inset:0) de s'appliquer avant de mesurer.
+        setTimeout(() => {
+            if (!profileMiniMap) return;
+            profileMiniMap.invalidateSize();
+            if (profileMapPoints.length > 0) profileMiniMap.fitBounds(profileMapPoints, { padding: [30, 30], maxZoom: 10 });
+        }, 50);
+    };
+
     window.switchProfileTab = function(tabName) {
         document.querySelectorAll('.profile-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
         document.querySelectorAll('.profile-tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== 'profile-panel-' + tabName));
@@ -893,12 +979,16 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     // soi-même) ; si l'onglet Map est déjà affiché, reconstruit tout de suite — sinon
     // juste profileMapNeedsRefresh pour la prochaine fois qu'il est ouvert (voir
     // switchProfileTab() plus haut).
-    window.addEventListener('stt-visited-published', async () => {
+    window.addEventListener('stt-visited-published', () => {
         if (!profileCurrentUid || !profileUid || profileCurrentUid !== profileUid) return;
-        if (typeof window.fetchUserVisitedIds !== 'function') return;
-        try {
-            profileVisitedIdsForMap = (await window.fetchUserVisitedIds(profileUid)) || [];
-        } catch (e) { return; }
+        // BUG corrigé (demande répétée du 16/10/2026) : lisait window.fetchUserVisitedIds()
+        // (friendVisits/{uid}, un miroir Firestore écrit en fire-and-forget par
+        // syncFriendVisits() — voir syncVisited() dans script.js, jamais attendu), qui
+        // pouvait encore être en vol au moment où cet évènement se déclenche juste après
+        // la publication. getVisitedLocs() (localStorage) est la même source déjà à jour
+        // que lit visited.html, immédiate et sans ce risque de course — voir le
+        // commentaire jumeau sur profileVisitedIdsForMap dans loadProfilePage() plus haut.
+        profileVisitedIdsForMap = getVisitedLocs().map(v => (v && typeof v === 'object') ? v.id : v);
         const panel = document.getElementById('profile-panel-map');
         if (panel && !panel.classList.contains('hidden')) {
             if (profileMiniMap) { profileMiniMap.remove(); profileMiniMap = null; }
@@ -1399,7 +1489,22 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             }
             // La mini-carte est construite en paresseux (voir switchProfileTab) : on garde
             // juste les ids ici pour ce moment-là.
-            profileVisitedIdsForMap = visitedIds || [];
+            // BUG corrigé (demande répétée du 16/10/2026, "il faut afficher mes lieux
+            // visités... ça ne s'est pas mis à jour") : window.fetchUserVisitedIds()
+            // lit friendVisits/{uid}, un MIROIR Firestore best-effort écrit en
+            // fire-and-forget par syncFriendVisits() (voir syncVisited() dans script.js,
+            // jamais attendu) — sur SON PROPRE profil, visited.html affiche toujours la
+            // bonne liste car il lit directement getVisitedLocs() (localStorage), la
+            // source de vérité locale, qui ne peut jamais être en retard sur elle-même.
+            // Pour son propre profil, on fait pareil ici plutôt que de dépendre d'un
+            // miroir réseau qui peut être en retard (ou, pour un compte déjà ancien,
+            // n'avoir jamais été rempli avant que syncFriendVisits() existe) — repli sur
+            // visitedIds (Firestore) uniquement pour le profil de QUELQU'UN D'AUTRE, où
+            // aucune donnée locale n'existe.
+            const isOwnProfileForMap = !!(profileCurrentUid && profileCurrentUid === profileUid);
+            profileVisitedIdsForMap = isOwnProfileForMap
+                ? getVisitedLocs().map(v => (v && typeof v === 'object') ? v.id : v)
+                : (visitedIds || []);
             if (!gated && !document.getElementById('profile-panel-map').classList.contains('hidden')) {
                 renderProfileMap(profileVisitedIdsForMap);
             }
