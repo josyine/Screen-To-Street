@@ -1022,6 +1022,24 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        ce même problème. */
     #loc-modal.post-modal .modal-body { padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
 
+    /* BUG corrigé (demande du 16/10/2026, "quand j'ouvre la flèche chevron... il faut
+       ouvrir la flèche mais ne pas toucher à la barre de navigation du bas. Actuellement
+       la barre ne s'affiche pas quand j'ouvre la flèche") : le tiroir "photos des
+       visiteurs" (#loc-visitors-overlay, voir renderVisitorsDrawerContent() dans
+       script.js) réutilise .qa-sheet-overlay, à z-index 9600 — EXACTEMENT le même palier
+       que .live-panel.open ci-dessus. Contrairement à .live-panel/#loc-modal (déjà
+       présents dans le HTML statique de la page, donc AVANT #mobile-bottom-nav injecté
+       au chargement — le sélecteur de voisin général ~ marche pour eux), ce tiroir est
+       créé par JS au premier clic sur le chevron, donc toujours ajouté APRÈS la nav dans
+       le DOM : `#loc-visitors-overlay ~ #mobile-bottom-nav` ne peut matcher dans AUCUN
+       sens (~ ne cible que ce qui suit). D'où ce bouton qui "disparaissait" (en réalité
+       recouvert par le tiroir, pas retiré du DOM) — classe posée/retirée directement en
+       JS plutôt qu'un sélecteur CSS, seule option fiable ici. Classe générique (pas
+       "above-loc-visitors-drawer") : réutilisée telle quelle par
+       window.toggleProfileMapFullscreen() (profile.html) pour le même besoin exact quand
+       la mini-carte du profil passe plein écran. */
+    #mobile-bottom-nav.above-fullscreen-overlay { z-index: 10001; }
+
     /* Pastille rose pâle glissante sous l'onglet actif (demande du 08/10/2026, "une
        pastille rose pâle glisse derrière l'icône choisie, avec un léger rebond") — reprend
        le mécanisme de la maquette fournie (.stn-pill : translateX calculé en JS depuis
@@ -1091,6 +1109,12 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 @media (max-width: 760px) and (display-mode: standalone) {
     .mobile-bottom-nav { bottom: calc(26px + env(safe-area-inset-bottom)); }
     .locate-country-btn { bottom: 92px; }
+    /* BUG corrigé (demande du 16/10/2026, "aligne le bouton 'Show visited' à
+       l'horizontale avec le bouton géolocalisation") : ce bouton gardait son bottom:80px
+       du mobile "navigateur classique" même ici, alors que .locate-country-btn (sur la
+       colonne opposée) remonte à 92px en mode PWA installée (voir le commentaire plus
+       haut) — même désalignement vertical déjà corrigé une fois pour .badges-fab-btn. */
+    .visited-only-toggle-btn { bottom: 92px; }
     .badges-fab-btn { bottom: 140px; }
     .tab-panel { padding-bottom: calc(102px + env(safe-area-inset-bottom)); }
     .loc-visitors-chevron-tab { bottom: calc(86px + env(safe-area-inset-bottom)); }
@@ -1099,7 +1123,12 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 /* Tiroir "photos des visiteurs" (demande du 11/09/2026) — réutilise .qa-sheet-overlay/
    .qa-sheet (voir plus bas) pour l'habillage général, ouvert par le bandeau ci-dessus.
    Voir openLocVisitorsDrawer() dans script.js. */
-.loc-visitors-sheet { max-height: 78vh; overflow-y: auto; }
+/* BUG corrigé (demande du 16/10/2026, "s'il y a beaucoup de lieu, il faut agrandir la
+   section au fur et à mesure qu'on défile") : démarre compact (46vh) plutôt que toujours
+   78vh même pour 1-2 publications — grandit jusqu'à l'ancien plafond via .expanded, posée
+   par un listener de scroll (voir renderVisitorsDrawerContent() dans script.js). */
+.loc-visitors-sheet { max-height: 46vh; overflow-y: auto; transition: max-height .25s ease; }
+.loc-visitors-sheet.expanded { max-height: 78vh; }
 .loc-visitors-sheet-title { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 14px; padding: 0 8px; }
 .loc-visitors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
 /* padding-bottom en % plutôt qu'aspect-ratio (demande du 20/09/2026, même correctif que
