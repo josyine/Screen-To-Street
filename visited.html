@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261035" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261036" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -116,14 +116,35 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: center; margin: 0 0 8px 0; }
 .pg-sub { text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 26px; }
 
-/* Barre de progression par groupe */
-#visited-progress-container { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
-.progress-row { background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; }
-.progress-row-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-.progress-group-name { font-size: 13px; font-weight: 700; color: #212832; }
-.progress-count { font-size: 11.5px; font-weight: 700; color: #D42759; }
-.progress-bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 100px; overflow: hidden; }
-.progress-bar-fill { height: 100%; border-radius: 100px; transition: width 0.4s ease; }
+/* Statistiques "Visited" (demande du 16/10/2026, maquette jointe visited_finale.html,
+   variante "Anneau + listes" — seule réellement dessinée dans le fichier, voir son
+   draw()) : remplace l'ancienne simple barre de progression par groupe ci-dessus par un
+   anneau "In total" (% exploré + lieux + pays/continents) suivi de 2 listes (par groupe,
+   par pays). Classes préfixées vst- (Vérifié : .card/.badge/.bar/.pill/.tabs sont déjà
+   pris par cette page ou style.css — un nom générique aurait silencieusement déteint
+   dessus, même leçon que .qa-sheet plus tôt sur ce site, voir script.js). */
+#visited-progress-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }
+.vst-card { background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; }
+.vst-card h4 { font-size: 13.5px; font-weight: 800; color: #212832; margin-bottom: 12px; }
+.vst-ring-row { display: flex; align-items: center; gap: 16px; }
+.vst-ring-count { font-size: 22px; font-weight: 800; color: #212832; line-height: 1.2; }
+.vst-ring-count small { font-size: 12.5px; color: #94a3b8; font-weight: 600; }
+.vst-pills { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.vst-pill { font-size: 11px; font-weight: 700; padding: 5px 11px; border-radius: 999px; white-space: nowrap; }
+.vst-pill.ctry { background: #FCE4EF; color: #D42759; }
+.vst-pill.cont { background: #EFE6FB; color: #8E52D6; }
+.vst-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #ECE8F2; }
+.vst-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.vst-row:first-child { padding-top: 0; }
+.vst-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 10px; flex: 0 0 auto; }
+.vst-tx { flex: 1; min-width: 0; }
+.vst-tx-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.vst-tx-top b { font-size: 13px; font-weight: 700; color: #212832; }
+.vst-tx-top small { font-size: 11px; color: #8F8B99; font-weight: 700; flex: 0 0 auto; }
+.vst-tx-top small b { color: #D42759; font-size: 12.5px; font-weight: 800; }
+.vst-bar { height: 7px; border-radius: 7px; background: #ECE8F2; overflow: hidden; margin-top: 6px; }
+.vst-bar i { display: block; height: 100%; border-radius: 7px; }
+.vst-bar i.on { min-width: 5px; }
 
 .visit-list { display: flex; flex-direction: column; gap: 10px; }
 .visit-row { display: flex; gap: 14px; align-items: center; background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 16px; cursor: pointer; transition: 0.2s; }
@@ -217,7 +238,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261035';
+        s.src = 'page-loader.js?v=20261036';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -409,9 +430,9 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261035"></script>
-<script src="locations-data.js?v=20261035"></script>
-<script src="script.js?v=20261035"></script>
+<script type="module" src="firebase-init.js?v=20261036"></script>
+<script src="locations-data.js?v=20261036"></script>
+<script src="script.js?v=20261036"></script>
 <script>
     // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
     // updateCartPrice / soumission de #cart-form), pour être identique à map.html.
@@ -429,31 +450,105 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     const starFullSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#D42759" stroke="#D42759"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
     const starEmptySvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#e2e8f0" stroke="#e2e8f0"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
 
+    // Pourcentage "comme le mockup" (demande du 16/10/2026) : affiche une décimale en
+    // dessous de 10% (ex: "0.6%" pour 2/320) plutôt que d'arrondir à "1%" ou "0%", pour
+    // qu'un tout petit nombre de lieux visités reste visible sur l'anneau au lieu de
+    // sembler vide.
+    function vstPct(v, t) {
+        if (!t) return 0;
+        const p = v / t * 100;
+        return p < 10 ? Math.round(p * 10) / 10 : Math.round(p);
+    }
+    // Anneau dégradé violet->magenta (voir ring() dans la maquette) — id de dégradé
+    // randomisé à chaque appel : plusieurs anneaux sur la même page partageraient sinon
+    // le même <linearGradient id="g">, un SVG en réutiliserait la définition de l'AUTRE
+    // au lieu de la sienne (id doit être unique dans tout le document, pas juste dans
+    // son propre <svg>).
+    function vstRingSvg(p, size, width, labelFr, labelEn) {
+        const r = (size - width) / 2, c = 2 * Math.PI * r, uid = 'vstRing' + Math.random().toString(36).slice(2, 8);
+        const label = currentLang === 'fr' ? labelFr : labelEn;
+        return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex:0 0 auto">
+            <defs><linearGradient id="${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8E52D6"/><stop offset="1" stop-color="#E0156B"/></linearGradient></defs>
+            <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="#ECE8F2" stroke-width="${width}"/>
+            ${p > 0 ? `<circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="url(#${uid})" stroke-width="${width}" stroke-linecap="round" stroke-dasharray="${Math.max(c * p / 100, 1)} ${c}" transform="rotate(-90 ${size / 2} ${size / 2})"/>` : ''}
+            <text x="${size / 2}" y="${size / 2 + size * 0.07}" text-anchor="middle" font-family="Poppins" font-weight="800" font-size="${size * 0.22}" fill="#E0156B">${p}%</text>
+            <text x="${size / 2}" y="${size / 2 + size * 0.25}" text-anchor="middle" font-family="Poppins" font-weight="600" font-size="${size * 0.085}" fill="#8F8B99">${escapeHtml(label)}</text>
+        </svg>`;
+    }
+    function vstBar(v, t, color) {
+        const w = t > 0 ? (v / t * 100) : 0;
+        return `<div class="vst-bar"><i class="${v > 0 ? 'on' : ''}" style="width:${w}%;background:${color}"></i></div>`;
+    }
+    function vstRow(badge, badgeBg, badgeColor, name, v, t, barColor) {
+        return `<div class="vst-row"><span class="vst-badge" style="background:${badgeBg};color:${badgeColor}">${escapeHtml(badge)}</span>
+            <div class="vst-tx"><div class="vst-tx-top"><b>${escapeHtml(name)}</b><small><b>${v}</b> / ${t}</small></div>${vstBar(v, t, barColor)}</div></div>`;
+    }
+    // Abréviation à 2 lettres façon code pays (demande du 16/10/2026, voir crow() dans la
+    // maquette) — table des pays effectivement présents dans locations-data.js (voir
+    // COUNTRY_CONTINENT dans script.js, même liste) ; un pays absent retombe sur ses 2
+    // premières lettres, jamais bloquant.
+    const VST_COUNTRY_CODE = {
+        'Australia': 'AU', 'New Zealand': 'NZ', 'Brazil': 'BR', 'Chile': 'CL', 'Canada': 'CA',
+        'USA': 'US', 'United States': 'US', 'Finland': 'FI', 'France': 'FR', 'Germany': 'DE',
+        'Hungary': 'HU', 'Malta': 'MT', 'Netherlands': 'NL', 'Norway': 'NO', 'Portugal': 'PT',
+        'Spain': 'ES', 'Sweden': 'SE', 'UK': 'UK', 'Hong Kong': 'HK', 'Indonesia': 'ID',
+        'Japan': 'JP', 'Macau': 'MO', 'Philippines': 'PH', 'Saudi Arabia': 'SA', 'Singapore': 'SG',
+        'South Korea': 'KR', 'Taiwan': 'TW', 'Thailand': 'TH', 'United Arab Emirates': 'AE'
+    };
+
     function renderProgressBars(visitedIds) {
+        const isFr = currentLang === 'fr';
         const unlockedGroups = JSON.parse(localStorage.getItem('unlockedGroups') || '[]');
         let baseLocs = celebLocations.filter(loc => unlockedGroups.includes(loc.group));
         if (unlockedGroups.length === 0) baseLocs = celebLocations;
 
-        const groups = [...new Set(baseLocs.map(l => l.group))];
         const container = document.getElementById('visited-progress-container');
         container.innerHTML = '';
+        if (baseLocs.length === 0) return;
 
-        groups.forEach(g => {
-            const groupLocs = baseLocs.filter(l => l.group === g);
-            const visitedCount = groupLocs.filter(l => visitedIds.includes(l.id)).length;
-            const pct = groupLocs.length > 0 ? Math.round((visitedCount / groupLocs.length) * 100) : 0;
-            const color = groupColors[g] || '#D42759';
-
-            container.innerHTML += `
-                <div class="progress-row">
-                    <div class="progress-row-top">
-                        <span class="progress-group-name">${g}</span>
-                        <span class="progress-count">${visitedCount} / ${groupLocs.length}</span>
-                    </div>
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%; background:${color};"></div></div>
-                </div>
-            `;
+        const groupStats = [...new Set(baseLocs.map(l => l.group))].map(g => {
+            const locs = baseLocs.filter(l => l.group === g);
+            return { name: g, v: locs.filter(l => visitedIds.includes(l.id)).length, t: locs.length, color: groupColors[g] || '#D42759' };
         });
+
+        // Triés par nombre de lieux visités décroissant (demande implicite du mockup, où
+        // le pays le plus visité apparaît en tête) — à défaut, par taille de catalogue,
+        // puis alphabétique pour un ordre stable.
+        const countryStats = [...new Set(baseLocs.map(l => l.country).filter(Boolean))].map(c => {
+            const locs = baseLocs.filter(l => l.country === c);
+            return { name: c, v: locs.filter(l => visitedIds.includes(l.id)).length, t: locs.length };
+        }).sort((a, b) => b.v - a.v || b.t - a.t || a.name.localeCompare(b.name));
+
+        const continentsTotal = new Set(countryStats.map(c => COUNTRY_CONTINENT[c.name]).filter(Boolean)).size;
+        const continentsVisited = new Set(countryStats.filter(c => c.v > 0).map(c => COUNTRY_CONTINENT[c.name]).filter(Boolean)).size;
+        const countriesVisitedCount = countryStats.filter(c => c.v > 0).length;
+        const totalVisited = visitedIds.filter(id => baseLocs.some(l => l.id === id)).length;
+        const totalPlaces = baseLocs.length;
+        const P = vstPct(totalVisited, totalPlaces);
+
+        container.innerHTML = `
+            <div class="vst-card">
+                <h4>${isFr ? 'Au total' : 'In total'}</h4>
+                <div class="vst-ring-row">
+                    ${vstRingSvg(P, 92, 13, 'exploré', 'explored')}
+                    <div>
+                        <div class="vst-ring-count">${totalVisited}<small> / ${totalPlaces} ${isFr ? 'lieux' : 'places'}</small></div>
+                        <div class="vst-pills">
+                            <span class="vst-pill ctry">${countriesVisitedCount} / ${countryStats.length} ${isFr ? 'pays' : 'countries'}</span>
+                            <span class="vst-pill cont">${continentsVisited} / ${continentsTotal} continents</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="vst-card">
+                <h4>${isFr ? 'Par groupe' : 'By group'}</h4>
+                ${groupStats.map(g => vstRow(g.name.slice(0, 3).toUpperCase(), g.color, '#fff', g.name, g.v, g.t, g.color)).join('')}
+            </div>
+            <div class="vst-card">
+                <h4>${isFr ? 'Par pays' : 'By country'}</h4>
+                ${countryStats.map(c => vstRow(VST_COUNTRY_CODE[c.name] || c.name.slice(0, 2).toUpperCase(), '#F1EEF6', '#1F2430', c.name, c.v, c.t, 'linear-gradient(90deg,#8E52D6,#E0156B)')).join('')}
+            </div>
+        `;
     }
 
     function renderVisited() {
