@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-16T06:13:18.418Z.
+// Généré le 2026-10-16T12:40:05.521Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -16770,90 +16770,6 @@ window.STATIC_LOCATIONS = [
     }
   },
   {
-    "id": "new-1YHG2wTbociBwV3LULdQ",
-    "name": "Sunshine Studio",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Nonsan",
-    "category": "Landmark",
-    "year": "2018",
-    "address": "1021-10 Bonghwang-ro, Yeonmu-eup, Nonsan-si, Chungcheongnam-do, South Korea",
-    "lat": 36.1281,
-    "lng": 127.1065,
-    "img": "",
-    "addedAt": 1790157830843,
-    "pinterestUrls": [],
-    "tiktokUrls": [],
-    "instagramUrls": [],
-    "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Sunshine Studio is an open film set complex located in Nonsan, Chungcheongnam-do. Jointly constructed by the city of Nonsan and major Korean media producers, it recreates Hanseong (early 20th-century Seoul) during the Korean Empire era, featuring classic electric streetcars, Western-style hotels, traditional hanok, and brick buildings from the early 1900s.</p><p>BTS shot visual media content and photo promotions on the historic streetcar tracks and retro building facades inside Sunshine Studio. The set's early 20th-century aesthetic provided a distinctive historic backdrop, drawing K-drama and K-pop fans to explore the vintage streetscapes of old Seoul.</p>"
-    },
-    "tiktokUrl": "",
-    "facebookUrl": "",
-    "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Rent vintage period attire"
-        },
-        "text": {
-          "en": "Experience rental shops inside the studio offer early 20th-century dresses and traditional suits to wear while walking the streets."
-        }
-      },
-      {
-        "title": {
-          "en": "Streetcar photo spot"
-        },
-        "text": {
-          "en": "Take photos on board the stationary vintage electric streetcar located on the central paved street."
-        }
-      },
-      {
-        "title": {
-          "en": "Glory Hotel cafe"
-        },
-        "text": {
-          "en": "Visit the replica Glory Hotel building on site for coffee and second-floor balcony views across the entire filming set."
-        }
-      }
-    ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "http://www.sunshinestudio.co.kr",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "Take KTX train to Nonsan Station, then take local Bus 201 or 216 to the Sunshine Studio / Yeonmu-eup stop."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": ""
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": ""
-        }
-      }
-    ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
-  },
-  {
     "id": "new-2LGcTZJG0izlFK23EBq2",
     "name": "Jardin des Tuileries",
     "group": "BTS",
@@ -17043,66 +16959,64 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-39ajySYbZ90ZfHYLzvEB",
-    "name": "Le Carreau du Temple",
+    "name": "Place du Trocadéro",
     "group": "BTS",
-    "member": "J-Hope",
+    "member": "V",
     "country": "France",
     "city": "Paris",
-    "category": "Fashion",
+    "category": "Landmark",
     "year": "2023",
-    "address": "4 Rue Eugène Spuller, 75003 Paris, France",
-    "lat": 48.8647,
-    "lng": 2.3631,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Carreau_du_Temple_Paris.jpg/1280px-Carreau_du_Temple_Paris.jpg",
+    "address": "Place du Trocadéro et du 11 Novembre, 75016 Paris, France",
+    "lat": 48.86236,
+    "lng": 2.2882,
+    "img": "images/admin-upload-new-39ajySYbZ90ZfHYLzvEB-photo.jpg",
     "addedAt": 1789991088996,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Le Carreau du Temple is a historic covered market hall built in the 19th century in the Haut-Marais district of Paris. Restored into a vibrant cultural and sports center in 2014, the building features striking glass-and-iron architecture designed in the classic industrial style of Paris's Baltard era. Today, it hosts major contemporary art exhibitions, trade fairs, design markets, and high-fashion runway shows during Paris Fashion Week.</p><p>In January 2023, J-Hope attended the Louis Vuitton Men's Fall-Winter 2023 show held at Le Carreau du Temple. Arriving as a newly appointed brand ambassador, J-Hope drew massive crowds of fans and global media who lined up along Rue Eugène Spuller to witness his red-carpet entry. His presence at this venue highlighted his status as a global fashion icon and created an unforgettable moment for Parisian ARMYs.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
     "tipsList": [
       {
         "title": {
-          "en": "Best time to visit"
+          "en": "Recreate the Instagram Post"
         },
         "text": {
-          "en": "Explore the surrounding Marais district on a weekday afternoon to combine your visit with local art galleries and vintage boutiques."
+          "en": "Stand on the main esplanade between the two wings of the Palais de Chaillot and frame your shot to include the Eiffel Tower directly behind you, just as Taehyung did for his social media update."
         }
       },
       {
         "title": {
-          "en": "Avoid the crowds"
+          "en": "Channel the Celine Aesthetic"
         },
         "text": {
-          "en": "Check the venue's public schedule in advance, as interior access is restricted during private fashion events or corporate filming."
+          "en": "Embrace V's Parisian fashion sense by wearing a leather jacket, tailored outerwear, or minimalist, edgy accessories for your photo shoot."
         }
       },
       {
         "title": {
-          "en": "Photo opportunities"
+          "en": "Arrive at Sunrise"
         },
         "text": {
-          "en": "Capture the stunning iron arches from the main entrance along Rue Eugène Spuller or from the square outside."
+          "en": "The Trocadéro is one of the busiest spots in Paris. To capture a clean photo without thousands of tourists in the background, set your alarm and arrive right as the sun comes up over the city."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.carreaudutemple.eu/",
+    "fullDescription": {
+      "en": "<p>Situated in the 16th arrondissement across the Seine from the Eiffel Tower, the Place du Trocadéro and its sweeping Esplanade des Droits de l'Homme offer arguably the most iconic, unobstructed, and majestic views of the Iron Lady in all of Paris. Flanked by the monumental wings of the Palais de Chaillot, this vast marble plaza is a world-famous tourist destination, a gathering place for locals, and a dramatic, highly coveted backdrop for the world's most prestigious high-fashion events and cinematic shoots.</p><!--stss:footsteps--><p>Taehyung (V) made a triumphant return to Paris in his role as a global brand ambassador for the French luxury house Celine. His visit was highly anticipated, as he attended the brand's first major runway show since 2023, an event that also marked the highly publicized debut of Celine's new creative director, Michael Rider.</p><p>Capturing his time in the French capital, Taehyung shared a series of stunning photos on his Instagram from the Trocadéro. Exuding his signature effortless, rock-chic elegance that perfectly aligns with the Celine aesthetic, he posed on the famous esplanade with the glittering Eiffel Tower standing proudly in the background. For fans, this spot represents the perfect intersection of Parisian romance and Taehyung's status as a global fashion icon.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Metro Line 3 to Temple station or Lines 3, 5, 8, 9, 11 to République station, both just a short walk from the venue."
+          "en": "The location is exceptionally easy to reach via the Paris Métro. Take Line 6 or Line 9 and get off directly at the \"Trocadéro\" station. The esplanade is right outside the station exits."
         }
       },
       {
@@ -17110,7 +17024,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "The plaza is a public, open-air square accessible 24/7. It is completely free of charge."
         }
       },
       {
@@ -17118,12 +17032,27 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "The main esplanade is flat, paved, and fully accessible to wheelchair users and strollers, offering great views without the need to navigate stairs."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-39ajySYbZ90ZfHYLzvEB-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6016,
+            "y": 0.6118,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "officialLink": "https://www.place-du-trocadero.fr/",
+    "pinterestUrl": "https://fr.pinterest.com/pin/827536500325051147/sent/?invite_code=6ac8415847ea4cfa8f584ca5f0a3a47b&sender=646407490174733556&sfo=1",
+    "imgCredit": "Screentostreet",
+    "episodeLink": "https://www.koreaboo.com/news/bts-v-celine-paris-fashion-show-appearance/"
   },
   {
     "id": "new-3aw4trkkmhUkSTSWanVG",
@@ -20718,7 +20647,8 @@ window.STATIC_LOCATIONS = [
     "lat": 33.44412,
     "lng": 126.77829,
     "linkedGroupLocIds": [
-      "new-manual-1792097352201-45828l"
+      "new-manual-1792097352201-45828l",
+      "new-manual-1792141462581-efb9mu"
     ],
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -22140,91 +22070,19 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
-    "id": "new-manual-1792097352201-45828l",
-    "name": "Snoopy Garden",
+    "id": "new-manual-1792141462581-efb9mu",
     "group": "Blackpink",
     "member": "Jisoo",
-    "country": "South Korea",
-    "city": "Jeju",
-    "category": "Landmark",
-    "address": "930 Geumbaekjo-ro, Gujwa-eup, Jeju-si, Jeju-do, Corée du Sud",
-    "lat": 33.44412,
-    "lng": 126.77829,
+    "year": "2022",
+    "referenceLocId": "new-manual-1791237155701-b29d0i",
     "linkedGroupLocIds": [
       "new-manual-1791237155701-b29d0i"
     ],
-    "pinterestUrls": [],
-    "tiktokUrls": [],
     "recreatedPhotos": [],
-    "instagramUrls": [],
-    "tipsList": [
-      {
-        "title": {
-          "en": "Relax at Warm Puppy Lake"
-        },
-        "text": {
-          "en": "Make sure to visit the most iconic spot in the park. You can sit on a small wooden pontoon right next to a sitting Snoopy statue, looking out over a peaceful lake surrounded by nature."
-        }
-      },
-      {
-        "title": {
-          "en": "Pose with the Characters"
-        },
-        "text": {
-          "en": "Keep an eye out for the life-size statues on the park benches and recreate Jisoo's photos by posing next to Peppermint Patty and Marcie."
-        }
-      },
-      {
-        "title": {
-          "en": "Plan a Half-Day Visit"
-        },
-        "text": {
-          "en": "Allow yourself about 3 to 4 hours to fully explore the entire site, shop for exclusive merchandise at the souvenir shops, and take a break at Café Snoopy."
-        }
-      }
-    ],
-    "facebookUrls": [],
-    "youtubeUrls": [],
-    "tweetUrls": [],
-    "recreatedPhoto": "",
-    "imgCredit": "",
-    "pinterestUrl": "",
-    "facebookUrl": "",
-    "tweetUrl": "",
     "episodeLink": "",
-    "instagramUrl": "",
     "fullDescription": {
-      "en": "<p>Located in Songdang-ri, Gujwa-eup on Jeju Island, Snoopy Garden is a world-class, 20-acre garden and museum dedicated to Charles M. Schulz’s iconic Peanuts comic strip. Opened in 2020, the theme park seamlessly blends Jeju’s lush natural scenery, including hallabong trees, stone walls, and native flora, with themed indoor exhibits and outdoor walking trails. Its philosophy, \"Rest, Relax, and Recharge,\" invites visitors to slow down and experience life through the heartwarming world of Charlie Brown, Snoopy, and their friends.</p><!--stss:footsteps--><p>This charming park became one of the most sought-after attractions for K-pop fans following a visit by BLACKPINK's Jisoo. In May 2022, the singer and actress shared memorable photos from her trip, accompanied by a caption that quickly became famous among fans: \"The sun shines so brightly and Snoopy is so cute\".   Dressed in a summer dress and a straw hat, Jisoo perfectly highlighted the lush, clean aesthetic of the outdoor gardens and the fountain area. During her visit, she was immortalized posing alongside cult characters like Peppermint Patty and Marcie on the park's benches. Recreating her relaxed, joyful path through the Peanuts-themed nature reserve is now a must-do for fans visiting Jeju.</p>"
-    },
-    "officialLink": "",
-    "tiktokUrl": "",
-    "ytId": "",
-    "practicalInfo": [
-      {
-        "title": {
-          "en": "How to get there"
-        },
-        "text": {
-          "en": "If you are traveling by bus from Jeju International Airport or the Jeju City Bus Terminal, take Express Bus No. 211 or 212 to Songdang-ri, then transfer to Local Bus No. 810-1 or 810-2 and get off at the Snoopy Garden stop. If you prefer to drive or take a taxi, the journey takes approximately 40 to 50 minutes from Jeju International Airport, and free on-site parking is available."
-        }
-      },
-      {
-        "title": {
-          "en": "Operating Hours & Admission"
-        },
-        "text": {
-          "en": ""
-        }
-      },
-      {
-        "title": {
-          "en": "Accessibility"
-        },
-        "text": {
-          "en": ""
-        }
-      }
-    ]
+      "en": "<!--stss:footsteps-->"
+    }
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
