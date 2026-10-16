@@ -593,9 +593,24 @@ async function _getMyUsernameCached(uid) {
         return '';
     }
 }
+// BUG corrigé (demande du 16/10/2026, répétée — "je viens de publier 2 lieux à Paris et
+// ils n'apparaissent pas" dans le tiroir du chevron) : invalidateLocPostsIndex() (script.js,
+// posé la dernière fois) ne remettait à zéro QUE le cache d'ensurelocPostsIndex() côté
+// script.js — mais fetchGlobalPhotoFeed() plus bas dans ce fichier a son PROPRE cache
+// indépendant (_globalPhotoFeedCache), déjà rempli dès le premier appel et jamais invalidé
+// par aucun appelant de _upsertFeedPost() (addProfilePhoto/setLocationReview, ni le flux
+// "+" ni aucun autre) — seul un outil de reconstruction en masse de l'index (plus bas dans
+// ce fichier) pensait à le faire. Résultat : même après le correctif précédent, le tout
+// premier appel de fetchGlobalPhotoFeed() de la session restait indéfiniment en cache,
+// masquant TOUTE publication faite après lui pour le reste de la session. Invalider ici,
+// au point d'écriture UNIQUE que partagent tous les appelants (voir aussi _deleteFeedPost
+// ci-dessous pour la suppression), couvre tous les cas à la fois plutôt que de devoir
+// ajouter cet appel dans chaque fonction qui publie du contenu.
+function _invalidateGlobalPhotoFeedCache() { _globalPhotoFeedCache = null; }
 async function _upsertFeedPost(uid, itemId, fields) {
     try {
         await setDoc(doc(db, 'feedPosts', feedPostKey(uid, itemId)), Object.assign({ uid, itemId }, fields), { merge: true });
+        _invalidateGlobalPhotoFeedCache();
     } catch (e) {
         // Ne bloque jamais l'action principale (publier une photo/un avis) : au pire, la
         // publication n'apparaît pas tout de suite dans le fil global, mais reste visible
@@ -606,6 +621,7 @@ async function _upsertFeedPost(uid, itemId, fields) {
 async function _deleteFeedPost(uid, itemId) {
     try {
         await deleteDoc(doc(db, 'feedPosts', feedPostKey(uid, itemId)));
+        _invalidateGlobalPhotoFeedCache();
     } catch (e) {
         console.warn('Suppression de l\'index du fil échouée :', e);
     }
@@ -636,7 +652,8 @@ window.setLocationReview = async function (locationId, reviewData) {
             const username = await _getMyUsernameCached(user.uid);
             await _upsertFeedPost(user.uid, String(locationId), {
                 username, locationId: String(locationId), locationName: reviewData.locationName || '',
-                photo: reviewData.photo, caption: reviewData.notes || '', updatedAt: serverTimestamp(), standalone: false
+                photo: reviewData.photo, caption: reviewData.notes || '', date: reviewData.date || null,
+                updatedAt: serverTimestamp(), standalone: false
             });
         } else {
             // Avis republié sans photo (photo retirée) : ne doit plus apparaître dans le fil.
@@ -793,11 +810,18 @@ window.addProfilePhoto = async function ({ locationId, locationName, photo, date
                 }
             }
         }, { merge: true });
-        // Index du fil global (voir la note au-dessus de setLocationReview()).
+        // Index du fil global (voir la note au-dessus de setLocationReview()). date/
+        // taggedFriends ajoutés (demande du 16/10/2026, "dans les posts publiés... ajoute
+        // aussi la date de visite... et s'il a identifié des personnes il faut les
+        // ajouter") : déjà écrits juste au-dessus dans publicProfiles/{uid}.photos, mais
+        // jamais recopiés ici — openLocModal() (script.js) ne lit QUE cet index pour
+        // afficher une publication, ces deux champs y étaient donc invisibles jusqu'ici.
         const username = await _getMyUsernameCached(user.uid);
         await _upsertFeedPost(user.uid, photoId, {
             username, locationId: locationId || null, locationName: locationName || '',
-            photo, caption: (caption || '').slice(0, 280), updatedAt: serverTimestamp(), standalone: true
+            photo, caption: (caption || '').slice(0, 280), date: date || null,
+            taggedFriends: Array.isArray(taggedFriends) && taggedFriends.length ? taggedFriends : [],
+            updatedAt: serverTimestamp(), standalone: true
         });
         return { success: true };
     } catch (e) {
@@ -986,6 +1010,8 @@ window.fetchGlobalPhotoFeed = async function () {
                     locationName: p.locationName || '',
                     photo: p.photo,
                     caption: p.caption || '',
+                    date: p.date || null,
+                    taggedFriends: Array.isArray(p.taggedFriends) ? p.taggedFriends : [],
                     updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0,
                     standalone: !!p.standalone,
                     likeCount: p.likeCount || 0
