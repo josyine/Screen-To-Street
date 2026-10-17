@@ -11588,6 +11588,63 @@ function computeDayTimeline(dayLocs, homeBase) {
 // vraiment l'accueillir (voir computeDayTimeline). Si tous les lieux ne tiennent pas dans
 // le nombre de jours choisi, le surplus est retourné dans `unplaced` plutôt que forcé —
 // ce générateur reste un exemple d'itinéraire, pas une promesse de tout faire tenir.
+// Routage "plus proche voisin" + amélioration 2-opt (demande du 17/10/2026, "un vrai
+// itinéraire optimisé, en prenant en compte le temps de trajet") : l'ancien tri ne
+// comparait que la distance brute en degrés lat/lng (Math.hypot), qui déforme les
+// distances réelles (un degré de longitude ne vaut pas la même distance réelle qu'un
+// degré de latitude, sauf à l'équateur) — remplacé par la vraie distance (haversineKm,
+// déjà utilisée par estimateTransitLeg() pour le temps de trajet entre deux arrêts, afin
+// que le TRI des lieux et le TEMPS DE TRAJET AFFICHÉ reposent sur la même mesure). Le
+// plus proche voisin seul produit parfois un trajet qui se croise lui-même (limite connue
+// d'un simple glouton, jamais garanti optimal) — une passe d'amélioration 2-opt (échange
+// de deux segments quand ça raccourcit le trajet total) corrige ces croisements évidents,
+// sans tenter une vraie résolution exacte du voyageur de commerce (NP-difficile, inutile
+// ici vu le nombre de lieux en jeu — un itinéraire reste un exemple, pas une promesse
+// d'optimalité mathématique).
+function routePathDistanceKm(route) {
+    let total = 0;
+    for (let i = 0; i < route.length - 1; i++) total += haversineKm(route[i].lat, route[i].lng, route[i + 1].lat, route[i + 1].lng);
+    return total;
+}
+function buildOptimizedRoute(locs) {
+    if (locs.length <= 2) return locs.slice();
+    const pool = locs.slice();
+    const route = [pool.shift()];
+    while (pool.length > 0) {
+        const last = route[route.length - 1];
+        let nearestIdx = 0, minDist = Infinity;
+        for (let i = 0; i < pool.length; i++) {
+            const d = haversineKm(last.lat, last.lng, pool[i].lat, pool[i].lng);
+            if (d < minDist) { minDist = d; nearestIdx = i; }
+        }
+        route.push(pool.splice(nearestIdx, 1)[0]);
+    }
+    // Plafonné (voir MAX_2OPT_N) pour rester instantané même avec beaucoup de lieux — le
+    // plus proche voisin seul reste alors le résultat, déjà une vraie amélioration par
+    // rapport à l'ancien tri en degrés bruts.
+    const MAX_2OPT_N = 60;
+    const MAX_2OPT_PASSES = 200; // garde-fou défensif, jamais vraiment atteint en pratique
+    if (route.length > 3 && route.length <= MAX_2OPT_N) {
+        let improved = true, passes = 0;
+        while (improved && passes < MAX_2OPT_PASSES) {
+            improved = false;
+            passes++;
+            for (let i = 1; i < route.length - 1; i++) {
+                for (let j = i; j < route.length - 1; j++) {
+                    const a = route[i - 1], b = route[i], c = route[j], d = route[j + 1];
+                    const before = haversineKm(a.lat, a.lng, b.lat, b.lng) + haversineKm(c.lat, c.lng, d.lat, d.lng);
+                    const after = haversineKm(a.lat, a.lng, c.lat, c.lng) + haversineKm(b.lat, b.lng, d.lat, d.lng);
+                    if (after + 1e-9 < before) {
+                        let lo = i, hi = j;
+                        while (lo < hi) { const tmp = route[lo]; route[lo] = route[hi]; route[hi] = tmp; lo++; hi--; }
+                        improved = true;
+                    }
+                }
+            }
+        }
+    }
+    return route;
+}
 function buildDayPlans(orderedLocs, days, homeBase) {
     let pool = orderedLocs.slice();
     const dayPlans = [];
@@ -11632,15 +11689,9 @@ window.generateItinerary = function() {
 
     if(validLocs.length === 0) { alert('No locations found for this selection.'); return; }
 
-    let route = [validLocs.shift()];
-    while(validLocs.length > 0) {
-        let lastLoc = route[route.length - 1], nearestIdx = 0, minDist = Infinity;
-        for(let i=0; i<validLocs.length; i++) {
-            let d = Math.hypot(lastLoc.lat - validLocs[i].lat, lastLoc.lng - validLocs[i].lng);
-            if(d < minDist) { minDist = d; nearestIdx = i; }
-        }
-        route.push(validLocs.splice(nearestIdx, 1)[0]);
-    }
+    // Trajet optimisé (voir buildOptimizedRoute() plus haut : plus proche voisin sur la
+    // vraie distance + amélioration 2-opt), pas un simple tri par distance brute en degrés.
+    let route = buildOptimizedRoute(validLocs);
 
     // Répartition réaliste des lieux sur les jours demandés (voir buildDayPlans /
     // computeDayTimeline ci-dessus, partagées avec My Trips).
@@ -13469,6 +13520,26 @@ window.applyChangeCover = function() {
     if (typeof window.saveTrip === 'function') window.saveTrip();
     const modal = document.getElementById('change-cover-modal');
     if (modal) modal.classList.add('hidden');
+};
+
+// Onglets Plan/Map/Ideas de la mise en page mobile "Cartes légères" (demande du
+// 17/10/2026, "remplace la page par trip_finale_legere.html") — bascule laquelle des 3
+// .trip-tab-panel est affichée (voir le CSS de trips.html, data-active-tab sur
+// #trip-detail-content) et marque le bon bouton .active. Rien ici ne touche au desktop :
+// ces boutons/panneaux n'existent visuellement que dans le @media mobile de trips.html.
+// Au passage sur "map", la vraie carte Leaflet (#trip-map-container, déjà dessinée par
+// renderTrip()/saveTrip() plus bas) doit recalculer sa taille via invalidateSize() —
+// Leaflet ne le fait jamais tout seul pour un conteneur qui était display:none jusque-là.
+window.switchTripMobileTab = function(tab) {
+    const wrapper = document.getElementById('trip-detail-content');
+    if (!wrapper) return;
+    wrapper.dataset.activeTab = tab;
+    document.querySelectorAll('.trip-mobile-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
+    if (tab === 'map' && tripPageMap) {
+        setTimeout(() => { tripPageMap.invalidateSize(); }, 50);
+    }
 };
 
 window.renderTrip = function() {
