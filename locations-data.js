@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-17T11:43:33.170Z.
+// Généré le 2026-10-17T16:36:08.920Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -16655,23 +16655,25 @@ window.STATIC_LOCATIONS = [
     "city": "Washington, D.C.",
     "category": "Museum",
     "year": "2022",
-    "address": "Constitution Ave. NW, Washington, DC 20565, United States",
+    "address": "Constitution Ave. NW, Washington, DC 20565, USA",
     "lat": 38.8913,
     "lng": -77.0199,
-    "img": "",
+    "img": "images/admin-upload-new-1hatgSs2LMoliC4fFyPm-photo.jpg",
     "addedAt": 1789987187546,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located on the National Mall in Washington, D.C., the National Gallery of Art is one of the world's premier art museums. Its collections span from the Middle Ages to modern masterworks across its West and East Buildings connected by a light-sculpted underground walkway.</p><p>When BTS visited Washington, D.C. in May 2022 to meet US President Joe Biden at the White House, RM spent his free time visiting the National Gallery of Art, sharing photos of works by Mark Rothko and Alexander Calder.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
+    "facebookUrls": [],
+    "officialLink": "https://www.nga.gov",
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "instagramUrl": "https://www.instagram.com/p/CXWNjKQBhiX/",
+    "ytId": "",
+    "episodeLink": "https://washingtonian.com/2022/06/30/bts-fans-are-recreating-rms-instagram-posts-at-dcs-national-gallery-of-art/",
     "tipsList": [
       {
         "title": {
@@ -16688,18 +16690,26 @@ window.STATIC_LOCATIONS = [
         "text": {
           "en": "Walk through Leo Villareal's *Multiverse* light installation in the underground tunnel connecting the East and West buildings."
         }
+      },
+      {
+        "title": {
+          "en": "Recreate the Bench Photos"
+        },
+        "text": {
+          "en": "To capture the true essence of RM's visit, find the viewing benches located directly in front of these famous paintings and take a contemplative photo sitting exactly where he did."
+        }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.nga.gov",
+    "fullDescription": {
+      "en": "<p>Located on the National Mall, the National Gallery of Art (NGA) is one of the premier art museums in the world. Its vast campus consists of the neoclassical West Building, which houses European masterpieces from the Middle Ages through the late 19th century, and the modern East Building, dedicated to contemporary art. The museum's extensive collection draws millions of visitors annually, offering a comprehensive look at the history of Western art.</p><!--stss:footsteps--><p>In December 2021, during a stay in the United States, RM shared several photos of his visit to the National Gallery of Art in Washington on his Instagram account. True to his well-known love for \"Namjooning\"—spending quiet time appreciating art and nature—the BTS leader took a deep dive into the museum's European collections.   The museum officially listed the artists and works that the rapper particularly appreciated and shared during his visit: Claude Monet (notably his famous Impressionist landscapes), Amedeo Modigliani (his elongated portraits), Giorgio Morandi (his minimalist still lifes), Chaim Soutine, Paul Cézanne, and Georges Seurat.   RM's influence was immediately felt on a massive scale. The museum's social media publication welcoming the star generated the highest engagement in the entire history of the gallery's Twitter account. Since this visit, many fans regularly go to the museum to faithfully recreate RM's photos, notably by sitting quietly on the exact same benches facing the paintings he admired.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take the Washington Metro (Green or Yellow Line) to Archives-Navy Memorial-Penn Quarter Station, then walk 3 blocks south."
+          "en": "The museum is prominently located on the National Mall. The easiest way to arrive is via the DC Metro; take the Green or Yellow line to the Archives-Navy Memorial-Penn Quarter station, which is a short walk away."
         }
       },
       {
@@ -16707,7 +16717,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Open daily from 10:00 AM to 5:00 PM. Admission to both buildings and the adjoining Sculpture Garden is completely free to the public."
         }
       },
       {
@@ -16715,12 +16725,23 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "The museum is fully accessible, featuring ramps, elevators, and wide galleries. Wheelchairs are also available for visitors free of charge on a first-come, first-served basis."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "imgCredit": "AgnosticPreachersKid / CC BY-SA 3.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-1hatgSs2LMoliC4fFyPm-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6458,
+            "y": 0.6147,
+            "member": "RM"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "new-1u0UUNL2BCscYEhr07gw",
@@ -17050,9 +17071,6 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "fullDescription": {
-      "en": "<p>Situated in the 16th arrondissement across the Seine from the Eiffel Tower, the Place du Trocadéro and its sweeping Esplanade des Droits de l'Homme offer arguably the most iconic, unobstructed, and majestic views of the Iron Lady in all of Paris. Flanked by the monumental wings of the Palais de Chaillot, this vast marble plaza is a world-famous tourist destination, a gathering place for locals, and a dramatic, highly coveted backdrop for the world's most prestigious high-fashion events and cinematic shoots.</p><!--stss:footsteps--><p>Taehyung (V) made a triumphant return to Paris in his role as a global brand ambassador for the French luxury house Celine. His visit was highly anticipated, as he attended the brand's first major runway show since 2023, an event that also marked the highly publicized debut of Celine's new creative director, Michael Rider.</p><p>Capturing his time in the French capital, Taehyung shared a series of stunning photos on his Instagram from the Trocadéro. Exuding his signature effortless, rock-chic elegance that perfectly aligns with the Celine aesthetic, he posed on the famous esplanade with the glittering Eiffel Tower standing proudly in the background. For fans, this spot represents the perfect intersection of Parisian romance and Taehyung's status as a global fashion icon.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -17096,7 +17114,10 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "https://fr.pinterest.com/pin/827536500325051147/sent/?invite_code=6ac8415847ea4cfa8f584ca5f0a3a47b&sender=646407490174733556&sfo=1",
     "imgCredit": "Screentostreet",
     "episodeLink": "https://www.koreaboo.com/news/bts-v-celine-paris-fashion-show-appearance/",
-    "tweetUrl": "https://x.com/BTS_twt/status/1054673075042746368?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1054673075042746368%7Ctwgr%5E%7Ctwcon%5Es1_&ref_url="
+    "tweetUrl": "https://x.com/BTS_twt/status/1054673075042746368?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1054673075042746368%7Ctwgr%5E%7Ctwcon%5Es1_&ref_url=",
+    "fullDescription": {
+      "en": "<p>Situated in the 16th arrondissement across the Seine from the Eiffel Tower, the Place du Trocadéro and its sweeping Esplanade des Droits de l'Homme offer arguably the most iconic, unobstructed, and majestic views of the Iron Lady in all of Paris. Flanked by the monumental wings of the Palais de Chaillot, this vast marble plaza is a world-famous tourist destination, a gathering place for locals, and a dramatic, highly coveted backdrop for the world's most prestigious high-fashion events and cinematic shoots.</p><!--stss:footsteps--><p>This iconic square holds a special double significance for Taehyung, representing two distinct eras of his relationship with the French capital.</p><p>2018, V: His first memorable visit to this specific spot occurred during BTS's Love Yourself world tour in October 2018. Taking time to explore the city's classic sights, Taehyung visited the Trocadéro to marvel at the glittering Eiffel Tower, sharing his personal, romantic perspective of the illuminated monument with ARMYs and showcasing his enduring love for Parisian aesthetics.</p><p>2023, V: Years later, Taehyung made a triumphant return to this exact location in his role as a global brand ambassador for the French luxury house Celine. His visit was highly anticipated, as he attended the brand's first major runway show since 2023, an event that also marked the highly publicized debut of Celine's new creative director, Michael Rider. Capturing his time in the French capital, Taehyung shared a series of stunning photos on his Instagram from the Trocadéro. Exuding his signature effortless, rock-chic elegance that perfectly aligns with the Celine aesthetic, he posed on the famous esplanade with the glittering Eiffel Tower standing proudly in the background. For fans, this spot represents the perfect intersection of his early, romantic sightseeing days and his current status as a global fashion icon.</p>"
+    }
   },
   {
     "id": "new-3aw4trkkmhUkSTSWanVG",
