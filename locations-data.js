@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-17T05:58:22.734Z.
+// Généré le 2026-10-17T11:43:33.170Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -17021,7 +17021,6 @@ window.STATIC_LOCATIONS = [
     "youtubeUrls": [],
     "tiktokUrl": "",
     "facebookUrl": "",
-    "tweetUrl": "",
     "facebookUrls": [],
     "instagramUrl": "",
     "tweetUrls": [],
@@ -17096,7 +17095,8 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://www.place-du-trocadero.fr/",
     "pinterestUrl": "https://fr.pinterest.com/pin/827536500325051147/sent/?invite_code=6ac8415847ea4cfa8f584ca5f0a3a47b&sender=646407490174733556&sfo=1",
     "imgCredit": "Screentostreet",
-    "episodeLink": "https://www.koreaboo.com/news/bts-v-celine-paris-fashion-show-appearance/"
+    "episodeLink": "https://www.koreaboo.com/news/bts-v-celine-paris-fashion-show-appearance/",
+    "tweetUrl": "https://x.com/BTS_twt/status/1054673075042746368?ref_src=twsrc%5Etfw%7Ctwcamp%5Etweetembed%7Ctwterm%5E1054673075042746368%7Ctwgr%5E%7Ctwcon%5Es1_&ref_url="
   },
   {
     "id": "new-3aw4trkkmhUkSTSWanVG",
