@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261043" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261044" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -374,6 +374,11 @@
   .mobile-logo { display: none; align-items: center; gap: 8px; position: absolute; top: 14px; left: 14px; z-index: 1500; text-decoration: none; }
   .mobile-logo-text { font-size: 14px; font-weight: 700; color: #2E3644; }
 
+  /* Onglets Plan/Map/Ideas (demande du 17/10/2026) : masqués par défaut (desktop, où tout
+     reste empilé) — voir leur style complet dans le @media (max-width:800px) plus bas,
+     seul endroit où ce bouton redevient visible. */
+  .trip-mobile-tabs { display: none; }
+
   @media (max-width: 800px) {
       /* Logo "Screen To Street" remis sur mobile (demande du 15/10/2026, "il faut que le
          header soit exactement le même que dans la page 'message', avec le logo, icone
@@ -443,6 +448,32 @@
          réel estimé + durée, voir estimateTransitLeg()), juste présentée comme une
          pastille grise discrète façon mockup (.trl) plutôt qu'une simple ligne de texte. */
       .day-loc-travel { background: #F4F2F8; border-radius: 100px; padding: 4px 10px; width: max-content; margin: 2px 0 2px 30px; }
+
+      /* Onglets Plan/Map/Ideas (demande du 17/10/2026, "remplace la page par
+         trip_finale_legere.html") — même pastille blanche à 3 boutons que le mockup
+         (.tabs), posée directement sous la carte flottante de la bannière. Masqué sur
+         desktop (règle de base plus haut dans <style>), où tout reste empilé comme avant :
+         ce bloc ne s'affiche QUE dans ce @media. */
+      .trip-mobile-tabs { display: flex; gap: 4px; background: #fff; border-radius: 16px; padding: 4px; box-shadow: 0 2px 12px rgba(74,45,138,.07); margin: 0 14px 18px; }
+      .trip-mobile-tab-btn { flex: 1; text-align: center; height: 40px; border: none; background: none; border-radius: 12px; font-size: 13.5px; font-weight: 700; color: #94a3b8; font-family: 'Poppins', sans-serif; cursor: pointer; transition: .15s; }
+      .trip-mobile-tab-btn.active { background: #212832; color: #fff; }
+
+      /* Panneaux associés (.trip-tab-panel) : un seul affiché à la fois, celui dont
+         data-panel correspond à data-active-tab posé sur #trip-detail-content par
+         window.switchTripMobileTab() (script.js) — "plan" par défaut au chargement (voir
+         l'attribut initial dans le HTML), pour ouvrir directement sur l'itinéraire comme
+         le mockup. */
+      .trip-tab-panel { display: none; }
+      #trip-detail-content[data-active-tab="plan"] .trip-tab-panel[data-panel="plan"],
+      #trip-detail-content[data-active-tab="map"] .trip-tab-panel[data-panel="map"],
+      #trip-detail-content[data-active-tab="ideas"] .trip-tab-panel[data-panel="ideas"] { display: block; }
+
+      /* Carte en plein écran façon mockup pendant que l'onglet Map est actif (au lieu des
+         280px/220px habituels, pensés pour une carte qui ne fait que défiler parmi
+         d'autres sections) — invalidateSize() rappelé par switchTripMobileTab() au
+         changement d'onglet, seul moment où Leaflet a besoin de recalculer sa taille
+         réelle (son conteneur était display:none jusque-là). */
+      .trip-tab-panel[data-panel="map"] #trip-map-container { height: calc(100vh - 230px); border-radius: 16px; margin-bottom: 0; }
 
       /* Jour vide : placeholder discret plutôt qu'un bloc qui paraît juste cassé/manquant
          (même texte que le mockup, "Drop a place here" / son équivalent FR). Le texte
@@ -534,7 +565,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261043';
+        s.src = 'page-loader.js?v=20261044';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -680,7 +711,7 @@
         <div class="trips-main">
             <div class="empty-state" id="empty-state">Loading your trips...</div>
 
-            <div id="trip-detail-content" class="trip-detail-wrapper">
+            <div id="trip-detail-content" class="trip-detail-wrapper" data-active-tab="plan">
                 <div class="trip-hero" id="trip-hero">
                     <div id="trip-hero-banner" class="trip-hero-banner">
                         <div class="trip-hero-overlay">
@@ -709,8 +740,24 @@
                     </div>
                 </div>
 
-                <div id="trip-map-container"></div>
+                <!-- Onglets Plan/Map/Ideas (demande du 17/10/2026, "remplace la page par
+                     trip_finale_legere.html") — mobile uniquement (voir style.css ci-dessous
+                     et le @media (max-width:800px) existant) : regroupe les sections déjà
+                     existantes ci-dessous (.trip-tab-panel) sous le même système d'onglets
+                     que le mockup, sur les vraies données/fonctions du site (aucune nouvelle
+                     section, aucune donnée de démo) — le desktop continue d'afficher tout
+                     empilé comme avant, ces boutons y restent masqués. -->
+                <div class="trip-mobile-tabs" id="trip-mobile-tabs">
+                    <button type="button" class="trip-mobile-tab-btn active" data-tab="plan" onclick="window.switchTripMobileTab('plan')">Plan</button>
+                    <button type="button" class="trip-mobile-tab-btn" data-tab="map" onclick="window.switchTripMobileTab('map')">Map</button>
+                    <button type="button" class="trip-mobile-tab-btn" data-tab="ideas" onclick="window.switchTripMobileTab('ideas')">Ideas</button>
+                </div>
 
+                <div class="trip-tab-panel" data-panel="map">
+                    <div id="trip-map-container"></div>
+                </div>
+
+                <div class="trip-tab-panel" data-panel="plan">
                 <div class="edit-banner" style="margin-bottom:30px;">
                     <div class="section-label" style="margin-top:0;">Trip Duration & Dates</div>
                     <div class="date-tabs">
@@ -778,7 +825,9 @@
                         <span id="i18n-add-day">+ Add an empty day</span>
                     </button>
                 </div>
+                </div>
 
+                <div class="trip-tab-panel" data-panel="ideas">
                 <div class="section-label" id="saved-locs-label" style="margin-top: 40px;">UNASSIGNED LOCATIONS (0)</div>
                 <div id="loc-list" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" style="min-height: 50px; padding: 10px; border: 1px dashed #cbd5e1; background: #fff; border-radius: 12px;"></div>
 
@@ -790,6 +839,7 @@
                 <div id="reco-section" style="display: none; margin-top: 30px;">
                     <div class="section-label" style="color:#D42759;" id="i18n-reco">RECOMMENDED FOR THIS TRIP (SAME COUNTRY)</div>
                     <div id="reco-list"></div>
+                </div>
                 </div>
             </div>
         </div>
@@ -1062,9 +1112,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261043"></script>
-<script src="locations-data.js?v=20261043"></script>
-<script src="script.js?v=20261043"></script>
+<script type="module" src="firebase-init.js?v=20261044"></script>
+<script src="locations-data.js?v=20261044"></script>
+<script src="script.js?v=20261044"></script>
 
 </body>
 </html>
