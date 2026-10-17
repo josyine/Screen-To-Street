@@ -1325,6 +1325,19 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .nt-form-overlay.open{display:flex}
 :where(.nt-form-overlay) button{all:unset;cursor:pointer;box-sizing:border-box;font-family:inherit}
 .nt-form-overlay input{font-family:inherit;font-size:14px;color:var(--qa-ink);border:0;outline:0;background:none;width:100%}
+/* BUG corrigé (demande du 17/10/2026, répétée — "il y a encore l'ancienne version... il
+   faut que l'affichage prenne tout l'écran, car actuellement ça ne prend qu'une partie de
+   l'écran") : contrairement à .qa-form-root (voir plus haut, width:100%;max-width:480px),
+   .nt-form-root n'avait ICI aucune largeur posée — dans .nt-form-overlay (display:flex,
+   justify-content:center, PAS de width/flex sur l'enfant), un enfant flex sans largeur
+   explicite se réduit à la largeur intrinsèque de son contenu plutôt que de remplir le
+   conteneur. Résultat vérifié (Playwright) : la fiche ne mesurait que 293×513px sur un
+   écran de 390×844, centrée au milieu d'un fond assombri bien plus grand qu'elle — jamais
+   "tout l'écran", quelle que soit la demande précédente de "sheet plein écran" déjà faite
+   le 17/10/2026 plus tôt dans la même journée (ce correctif ciblait alors le CONTENEUR
+   #nt-form-overlay, bien plein écran lui-même en tant que fond fixe, mais jamais la fiche
+   visible elle-même, dont la largeur ET la hauteur n'avaient simplement jamais été posées). */
+.nt-form-overlay .nt-form-root{width:100%;max-width:480px;position:relative}
 .nt-seg{display:flex;background:var(--qa-soft);border-radius:13px;padding:4px;margin-top:8px}
 .nt-seg button{flex:1;text-align:center;height:36px;line-height:36px;border-radius:10px;font-size:13px;font-weight:700;color:var(--qa-mut)}
 .nt-seg button[aria-pressed=true]{background:#fff;color:var(--qa-mag);box-shadow:0 1px 6px rgba(31,36,48,.1)}
@@ -1333,6 +1346,23 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .nt-dt small{display:block;font-size:10.5px;font-weight:700;color:var(--qa-mut);letter-spacing:.6px}
 .nt-dt b{font-size:14px}.nt-dt b.nt-dt-ph{font-weight:600;color:#B4ADC2}
 .nt-dt input{position:absolute;inset:0;opacity:0;cursor:pointer}
+/* Plein écran sur mobile (demande du 17/10/2026, répétée — "il faut que l'affichage
+   prenne tout l'écran") : au-delà du correctif de largeur ci-dessus (.nt-form-root sans
+   lequel la fiche ne remplissait ni la largeur ni la hauteur de l'écran), .qaf-sheet
+   partagé garde par défaut l'esthétique "bottom sheet" (max-height:88vh, coins arrondis,
+   fond assombri visible tout autour) — volontairement conservée pour les AUTRES fiches
+   "ajout rapide" (photo/visited/review) qui réutilisent la même classe ailleurs sur le
+   site. Ciblé ici via #nt-form-overlay (sélecteur d'ID, jamais .qaf-sheet seul) pour
+   n'affecter QUE la fiche "Nouveau voyage". */
+@media (max-width: 800px) {
+  #nt-form-overlay{align-items:stretch;padding:0;background:#fff}
+  #nt-form-overlay .nt-form-root{max-width:none}
+  #nt-form-overlay .qaf-sheet,#nt-form-overlay .qaf-pick{max-height:none;height:100%;border-radius:0;box-shadow:none}
+  /* La poignée "glisser pour fermer" n'a plus de sens plein écran (rien à révéler en
+     dessous) — seul le bouton X ferme désormais la fiche, comme les autres vues plein
+     écran du site (#loc-modal.post-modal...). */
+  #nt-form-overlay .qaf-grab{display:none}
+}
 
 /* Transition "glissement" entre pages sur mobile en tapant la nav du bas (task #132).
    IMPORTANT (bug rapporté le 08/09/2026, "la barre du bas bouge pendant la transition") :
