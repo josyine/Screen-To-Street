@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261048" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261049" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -197,6 +197,42 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .feed-tile-official-badge { position: absolute; left: 6px; bottom: 6px; display: flex; align-items: center; gap: 4px; background: rgba(20,16,30,.55); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; padding: 4px 8px; border-radius: 100px; z-index: 2; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .feed-empty, .feed-loading { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
 
+/* Fil "Community"/"Saved" façon Instagram (demande du 17/10/2026, "il faut qu'on puisse
+   défiler les posts postés comme sur Instagram") : remplace la grille 3 colonnes de
+   vignettes carrées (.feed-tile/.feed-grid, toujours utilisée telle quelle par "Mei's
+   Pictures" — voir switchFeedTab() plus bas, qui bascule cette classe) par une VRAIE
+   liste défilante verticale d'une seule colonne, une publication pleine largeur après
+   l'autre — exactement le défilement attendu, plutôt qu'une grille de miniatures à
+   ouvrir une par une. Chaque carte reste un simple AVANT-GOÛT (image, auteur, légende
+   tronquée à 3 lignes, nom du lieu + groupe) : le contenu complet (description "Following
+   in [groupe]'s footsteps", bouton Google Maps, bouton More details — voir le commentaire
+   sur #loc-modal/openLocModal() dans script.js) vit dans la même modale partagée
+   qu'avant, au clic sur la carte — pas dupliqué ici, pour ne jamais risquer de diverger
+   de cette logique déjà éprouvée (likes, suppression admin, modification...). */
+.feed-grid.feed-grid--list { display: flex; flex-direction: column; gap: 14px; max-width: 480px; }
+.feed-post-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(20,16,30,.08); cursor: pointer; transition: .15s; }
+.feed-post-card:hover { box-shadow: 0 4px 16px rgba(20,16,30,.12); }
+/* Image SANS dégradé noir ni nom du lieu en incrustation (demande du 17/10/2026,
+   "n'affiche pas de dégradé noir sur l'image et le nom du lieu sur l'image") — juste la
+   photo, le nom du lieu vit désormais dans .feed-post-locmeta sous la légende. */
+.feed-post-media { width: 100%; padding-bottom: 100%; background-size: cover; background-position: center; }
+.feed-post-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px 8px; }
+.feed-post-avatar { width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.feed-post-username { font-size: 13px; font-weight: 700; color: #1F2430; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.feed-post-likes { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #8F8B99; flex-shrink: 0; }
+.feed-post-likes svg { width: 17px; height: 17px; }
+.feed-post-likes.liked { color: #D42759; }
+.feed-post-likes.liked svg { fill: #D42759; stroke: #D42759; }
+.feed-post-body { padding: 0 14px 14px; }
+/* Légende tronquée façon Instagram (demande du 17/10/2026, "n'affiche par défaut que la
+   description du lieu publié par l'utilisateur et le nom du lieu + le groupe concerné") :
+   -webkit-line-clamp, seule façon de tronquer du texte multi-ligne en CSS pur (pas de
+   mesure JS nécessaire) — assez largement supporté sur mobile (Safari/Chrome) pour ce
+   simple avant-goût ; la version complète (non tronquée) vit dans la modale au clic. */
+.feed-post-caption { font-size: 13px; line-height: 1.5; color: #1F2430; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.feed-post-locmeta { font-size: 12px; font-weight: 600; color: #8F8B99; margin-top: 8px; }
+.feed-post-locmeta b { color: #1F2430; font-weight: 700; }
+
 /* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
    "publication" que profile.html — voir #loc-modal plus bas — plutôt que l'ancien
    #feed-post-overlay propre à cette page. SANS la mini-carte Leaflet ("supprime la map
@@ -256,6 +292,12 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .modal-post-save-btn svg { transition: transform 0.15s; }
 .modal-post-save-btn.saved svg { transform: scale(1.1); fill: #D42759; }
 .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
+/* bouton "plus"/"moins" (demande du 17/10/2026, posts Community de feed.html) : replie
+   #modal-expand-section par défaut pour un post communautaire, voir openLocModal()
+   dans script.js et window.toggleLocModalMore() ci-dessous dans ce fichier. */
+.modal-more-toggle { display: block; background: none; border: none; padding: 0; margin: 0 0 16px 0; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; }
+.modal-more-toggle:hover { color: #D42759; }
+#modal-expand-section.modal-expand-collapsed { display: none; }
 @media (max-width: 760px) {
   .modal-content { width: 97%; border-radius: 12px; }
   .modal-body { padding: 18px 18px 22px 18px; }
@@ -370,7 +412,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261048';
+        s.src = 'page-loader.js?v=20261049';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -498,7 +540,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     <select id="sacred-group-filter" class="filter-select hidden" style="max-width:220px;margin:0 auto 18px auto;" onchange="window.filterSacredByGroup(this.value)"></select>
     <div class="feed-loading" id="feed-loading">Loading…</div>
     <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
-    <div class="feed-grid" id="feed-grid"></div>
+    <div class="feed-grid feed-grid--list" id="feed-grid"></div>
 </div>
 
 <!-- MODAL PUBLICATION (rempli par window.openLocModal(id, postContext) du script.js
@@ -524,27 +566,33 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
             </div>
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
             <div id="modal-meta"></div>
-            <span class="modal-sub-label" id="modal-details-label">Details</span>
-            <div id="modal-meta-box"></div>
-            <span class="modal-sub-label" id="modal-about-label">About this place</span>
-            <div id="modal-desc"></div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <span id="modal-map-link-text">Open in Google Maps</span>
-                </a>
-                <a id="modal-more-details" href="map.html" class="modal-map-link" style="border-color:#D42759; color:#D42759;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                    More details
-                </a>
+            <!-- bouton "plus" (demande du 17/10/2026, posts Community de feed.html : "pour
+                 voir la suite, ajoute 'plus'") — masqué par défaut/non-communautaire, affiché
+                 et basculé par openLocModal()/window.toggleLocModalMore() dans script.js. -->
+            <button type="button" class="modal-more-toggle hidden" id="modal-more-toggle" onclick="window.toggleLocModalMore()"></button>
+            <div id="modal-expand-section">
+                <span class="modal-sub-label" id="modal-details-label">Details</span>
+                <div id="modal-meta-box"></div>
+                <span class="modal-sub-label" id="modal-about-label">About this place</span>
+                <div id="modal-desc"></div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span id="modal-map-link-text">Open in Google Maps</span>
+                    </a>
+                    <a id="modal-more-details" href="map.html" class="modal-map-link" style="border-color:#D42759; color:#D42759;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        More details
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261048"></script>
-<script src="locations-data.js?v=20261048"></script>
-<script src="script.js?v=20261048"></script>
+<script type="module" src="firebase-init.js?v=20261049"></script>
+<script src="locations-data.js?v=20261049"></script>
+<script src="script.js?v=20261049"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -578,25 +626,31 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         emptyEl.classList.add('hidden');
         const heartSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>';
         photos.forEach(p => {
-            const tile = document.createElement('div');
-            tile.className = 'feed-tile';
-            tile.style.backgroundImage = `url('${p.photo}')`;
-            tile.title = p.locationName || '';
-            tile.onclick = () => openFeedPost(feedPhotos.indexOf(p));
-            tile.innerHTML = `
-                <div class="feed-tile-avatar" style="background:${feedAvatarColor(p.username)};" title="${escapeHtml(p.username || '')}">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
-                <div class="feed-tile-likes" data-photo-key="${p.uid}_${p.id}">${heartSvg}<span>${p.likeCount != null ? p.likeCount : '·'}</span></div>
+            const card = document.createElement('div');
+            card.className = 'feed-post-card';
+            card.onclick = () => openFeedPost(feedPhotos.indexOf(p));
+            card.innerHTML = `
+                <div class="feed-post-media" style="background-image:url('${p.photo}')"></div>
+                <div class="feed-post-header">
+                    <div class="feed-post-avatar" style="background:${feedAvatarColor(p.username)};">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
+                    <div class="feed-post-username">${escapeHtml(p.username || '')}</div>
+                    <div class="feed-post-likes" data-photo-key="${p.uid}_${p.id}">${heartSvg}<span>${p.likeCount != null ? p.likeCount : '·'}</span></div>
+                </div>
+                <div class="feed-post-body">
+                    ${p.caption ? `<div class="feed-post-caption">${escapeHtml(p.caption)}</div>` : ''}
+                    <div class="feed-post-locmeta"><b>${escapeHtml(p.locationName || '')}</b>${p.group ? ' · ' + escapeHtml(p.group) : ''}</div>
+                </div>
             `;
-            tile.querySelector('.feed-tile-avatar').onclick = (e) => {
+            card.querySelector('.feed-post-avatar').onclick = (e) => {
                 e.stopPropagation();
                 if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username);
             };
-            // Liker directement depuis la grille en cliquant le cœur (demande du 12/09/2026,
+            // Liker directement depuis la carte en cliquant le cœur (demande du 12/09/2026,
             // jusqu'ici il fallait ouvrir la publication en entier) — stopPropagation pour ne
-            // pas aussi déclencher tile.onclick (qui ouvrirait la modale par-dessus). Même
+            // pas aussi déclencher card.onclick (qui ouvrirait la modale par-dessus). Même
             // logique optimiste que #modal-post-like-btn dans script.js : le badge change
             // immédiatement, togglePhotoLike() part en tâche de fond.
-            const likesBadge = tile.querySelector('.feed-tile-likes');
+            const likesBadge = card.querySelector('.feed-post-likes');
             likesBadge.onclick = async (e) => {
                 e.stopPropagation();
                 const nowLiked = !likesBadge.classList.contains('liked');
@@ -608,7 +662,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
                 p.likedByMe = nowLiked;
                 if (typeof window.togglePhotoLike === 'function') await window.togglePhotoLike(p.uid + '_' + p.id, nowLiked);
             };
-            grid.appendChild(tile);
+            grid.appendChild(card);
         });
         loadFeedTileLikes(photos);
     }
@@ -627,7 +681,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         photos.forEach(p => {
             const photoKey = p.uid + '_' + p.id;
             if (p.likedByMe == null) p.likedByMe = _myLikedKeysCache.has(photoKey);
-            const badge = document.querySelector(`.feed-tile-likes[data-photo-key="${CSS.escape(photoKey)}"]`);
+            const badge = document.querySelector(`.feed-tile-likes[data-photo-key="${CSS.escape(photoKey)}"], .feed-post-likes[data-photo-key="${CSS.escape(photoKey)}"]`);
             if (!badge) return;
             badge.querySelector('span').textContent = p.likeCount != null ? p.likeCount : 0;
             badge.classList.toggle('liked', !!p.likedByMe);
@@ -664,6 +718,11 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         currentFeedTab = tab;
         document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
         document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred');
+        // Fil vertical façon Instagram pour Community/Saved (demande du 17/10/2026, voir
+        // .feed-grid--list plus haut) — "Mei's Pictures" garde sa grille 3 colonnes
+        // existante (renderSacredGridFromData() plus bas, jamais concernée par cette
+        // demande, voir son propre commentaire).
+        document.getElementById('feed-grid').classList.toggle('feed-grid--list', tab !== 'sacred');
         // Filtre groupe (demande du 16/10/2026) : visible uniquement sur "Mei's Pictures",
         // même logique inversée que la recherche ci-dessus. renderSacredGroupFilterOptions()
         // (appelée par renderSacredGrid() plus bas) le re-confirme une fois les options
@@ -1112,7 +1171,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
             photoKey: p.uid + '_' + p.id,
             photoId: p.standalone ? p.id : null,
             date: p.date,
-            taggedFriends: p.taggedFriends
+            taggedFriends: p.taggedFriends,
+            // Habillage "Community"/"Saved" (demande du 17/10/2026, voir le commentaire sur
+            // postContext.communityStyle dans openLocModal(), script.js) : pas de dégradé/nom
+            // sur l'image, nom du lieu + groupe à la place de ville/pays, contenu replié par
+            // défaut derrière "···more" — scopé à CETTE page via ce drapeau explicite plutôt
+            // que la simple présence de postContext.username, pour ne jamais changer le
+            // rendu de ce même #loc-modal partagé sur profile.html.
+            communityStyle: true
         });
     }
 

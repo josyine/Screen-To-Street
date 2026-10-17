@@ -11087,6 +11087,15 @@ window.openLocModal = function(id, postContext) {
     const loc = celebLocations.find(l => l.id == id);
     if(!loc) return;
 
+    // postContext.communityStyle (demande du 17/10/2026, onglet Community de feed.html,
+    // "scroll comme Instagram ... n'affiche par défaut que la description ... pour voir la
+    // suite, ajoute 'plus'") : drapeau explicite posé UNIQUEMENT par openFeedPost() dans
+    // feed.html, plutôt que de réutiliser postContext.username (que Mei's Pictures NE pose
+    // PAS, mais que profile.html pose probablement aussi sur sa propre copie non vérifiée de
+    // cette modale) — pour ne changer l'affichage que là où c'est demandé, sans régression
+    // visuelle ailleurs.
+    const isCommunityPost = !!(postContext && postContext.communityStyle);
+
     const modalTitle = document.getElementById('modal-title');
     const modalMeta = document.getElementById('modal-meta');
     const modalHero = document.getElementById('modal-hero');
@@ -11094,8 +11103,14 @@ window.openLocModal = function(id, postContext) {
     const modalMapLink = document.getElementById('modal-map-link');
     const modalMetaBox = document.getElementById('modal-meta-box');
 
-    if(modalTitle) modalTitle.textContent = loc.name;
-    if(modalMeta) modalMeta.textContent = `${loc.city}, ${loc.country} • ${getCatName(loc.category)}`;
+    // Pas de titre superposé sur la photo, et nom du lieu + groupe à la place de
+    // ville/pays/catégorie (demande du 17/10/2026, posts Community de feed.html : "ajoute le
+    // nom du lieu là où il y a actuellement écrit la ville et le pays, et supprime la ville,
+    // le pays et la catégorie du lieu").
+    if(modalTitle) modalTitle.textContent = isCommunityPost ? '' : loc.name;
+    if(modalMeta) modalMeta.textContent = isCommunityPost
+        ? `${loc.name}${loc.group ? ' · ' + loc.group : ''}`
+        : `${loc.city}, ${loc.country} • ${getCatName(loc.category)}`;
     // La photo de la publication (si on vient d'une tuile de profile.html) prime sur
     // l'image générique du lieu, pour que le hero montre bien LA photo cliquée.
     // recreatedPhotoUrl() : no-op pour une simple chaîne (publication utilisateur classique,
@@ -11103,7 +11118,12 @@ window.openLocModal = function(id, postContext) {
     // Mei quand postContext vient d'openSacredPlace(), qui peut désormais être un objet
     // {url, official} (demande du 03/10/2026, voir window.createPhotoGalleryField()).
     const heroImgUrl = (postContext && recreatedPhotoUrl(postContext.photo)) || loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg');
-    if(modalHero) modalHero.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
+    // Pas de dégradé noir sur les posts Community (demande du 17/10/2026 : "n'affiche pas de
+    // dégradé noir sur l'image et le nom du lieu sur l'image") — le nom du lieu est de toute
+    // façon déplacé dans #modal-meta juste au-dessus pour ce cas, modal-title restant vide.
+    if(modalHero) modalHero.style.backgroundImage = isCommunityPost
+        ? `url('${heroImgUrl}')`
+        : `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
 
     // Galerie horizontale "Mei's Pictures" (demande du 19/09/2026, "parfois pour un lieu il
     // y a plusieurs photos de Mei... je veux que tu affiches la première photo du lieu dans
@@ -11392,6 +11412,19 @@ window.openLocModal = function(id, postContext) {
     const modalDetailsLabelEl = document.getElementById('modal-details-label');
     if (modalDetailsLabelEl) modalDetailsLabelEl.classList.toggle('hidden', !!postContext);
 
+    // Repli "plus"/"moins" (demande du 17/10/2026, posts Community de feed.html) : par
+    // défaut, seules la légende utilisateur (#modal-post-caption, déjà affichée plus haut) et
+    // #modal-meta (nom du lieu + groupe) restent visibles — le reste (Details/About this
+    // place ou "Following in X's footsteps"/boutons Maps+More details, tous dans
+    // #modal-expand-section) ne s'affiche qu'au clic sur "plus". Masqué/toujours déplié pour
+    // tout autre usage de cette modale partagée (fiche lieu classique, Mei's Pictures,
+    // profile.html...), comme avant ce changement.
+    const modalMoreToggle = document.getElementById('modal-more-toggle');
+    const modalExpandSection = document.getElementById('modal-expand-section');
+    if (modalMoreToggle) modalMoreToggle.classList.toggle('hidden', !isCommunityPost);
+    if (modalExpandSection) modalExpandSection.classList.toggle('modal-expand-collapsed', isCommunityPost);
+    if (modalMoreToggle) modalMoreToggle.textContent = currentLang === 'fr' ? '··· plus' : '··· more';
+
     if(modalMapLink) modalMapLink.href = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
 
     // Bouton "Plus de détails" -> renvoie vers la fiche complète du lieu sur map.html
@@ -11403,8 +11436,13 @@ window.openLocModal = function(id, postContext) {
 
     // Traduction des petits libellés statiques de la modale (si présents sur la page)
     if (modalDetailsLabelEl) modalDetailsLabelEl.textContent = t('detailsLabel');
+    // "Following in X's footsteps" à la place de "About this place" pour un post Community
+    // (demande du 17/10/2026) — même substitution dynamique du nom de groupe que
+    // t('lStoryBts') ailleurs sur le site (voir map.html/renderLocationRichContent()).
     const modalAboutLabel = document.getElementById('modal-about-label');
-    if(modalAboutLabel) modalAboutLabel.textContent = t('aboutPlaceLabel');
+    if(modalAboutLabel) modalAboutLabel.textContent = isCommunityPost
+        ? t('lStoryBts').replace(/BTS/g, loc.group || 'BTS')
+        : t('aboutPlaceLabel');
     const modalMapLinkText = document.getElementById('modal-map-link-text');
     if(modalMapLinkText) modalMapLinkText.textContent = t('openInMaps');
 
@@ -11431,6 +11469,19 @@ window.openLocModal = function(id, postContext) {
             popupMap.invalidateSize();
         }
     }, 150);
+};
+
+// Bouton "··· plus"/"··· moins" (demande du 17/10/2026, posts Community de feed.html) :
+// bascule le repli de #modal-expand-section posé par openLocModal() ci-dessus.
+window.toggleLocModalMore = function() {
+    const section = document.getElementById('modal-expand-section');
+    const btn = document.getElementById('modal-more-toggle');
+    if (!section || !btn) return;
+    const nowCollapsed = !section.classList.contains('modal-expand-collapsed');
+    section.classList.toggle('modal-expand-collapsed', nowCollapsed);
+    btn.textContent = nowCollapsed
+        ? (currentLang === 'fr' ? '··· plus' : '··· more')
+        : (currentLang === 'fr' ? '··· moins' : '··· less');
 };
 
 window.closeLocModal = function() {
@@ -11691,18 +11742,25 @@ function routePathDistanceKm(route) {
     for (let i = 0; i < route.length - 1; i++) total += haversineKm(route[i].lat, route[i].lng, route[i + 1].lat, route[i + 1].lng);
     return total;
 }
-function buildOptimizedRoute(locs) {
-    if (locs.length <= 2) return locs.slice();
+// anchor (demande du 17/10/2026, "génère bien le trip le plus optimisé possible") :
+// point de départ optionnel (l'hôtel géocodé de createNewTripAdvanced(), voir plus bas)
+// — n'est jamais ajouté lui-même au trajet renvoyé (ce n'est pas un vrai lieu), mais
+// influence quel lieu démarre réellement l'itinéraire. Sans anchor, comportement
+// inchangé : part du premier lieu de la liste, comme avant.
+function buildOptimizedRoute(locs, anchor) {
+    if (locs.length === 0) return [];
     const pool = locs.slice();
-    const route = [pool.shift()];
+    const route = [];
+    let current = anchor;
+    if (!current) { current = pool.shift(); route.push(current); }
     while (pool.length > 0) {
-        const last = route[route.length - 1];
         let nearestIdx = 0, minDist = Infinity;
         for (let i = 0; i < pool.length; i++) {
-            const d = haversineKm(last.lat, last.lng, pool[i].lat, pool[i].lng);
+            const d = haversineKm(current.lat, current.lng, pool[i].lat, pool[i].lng);
             if (d < minDist) { minDist = d; nearestIdx = i; }
         }
-        route.push(pool.splice(nearestIdx, 1)[0]);
+        current = pool.splice(nearestIdx, 1)[0];
+        route.push(current);
     }
     // Plafonné (voir MAX_2OPT_N) pour rester instantané même avec beaucoup de lieux — le
     // plus proche voisin seul reste alors le résultat, déjà une vraie amélioration par
@@ -15120,26 +15178,17 @@ window.createNewTripAdvanced = async function() {
     for(let i=0; i<numDays; i++) daysArray.push([]);
 
     if (validLocs.length > 0) {
-        // Itinéraire du plus proche voisin, en partant de l'hôtel s'il a pu être
-        // géocodé (sinon du premier lieu, comme pour l'Auto-Itinerary Generator) —
-        // ne force jamais tous les lieux dans le nombre de jours choisi (voir
-        // buildDayPlans) : le surplus reste simplement non assigné, à ajouter
-        // manuellement ensuite si la personne le souhaite.
-        let pool = validLocs.slice();
-        let route = [];
-        let anchor = homeBase;
-        if (!anchor) { anchor = pool.shift(); route.push(anchor); }
-        while (pool.length > 0) {
-            let nearestIdx = 0, minDist = Infinity;
-            for (let i = 0; i < pool.length; i++) {
-                const d = Math.hypot(anchor.lat - pool[i].lat, anchor.lng - pool[i].lng);
-                if (d < minDist) { minDist = d; nearestIdx = i; }
-            }
-            const next = pool.splice(nearestIdx, 1)[0];
-            route.push(next);
-            anchor = next;
-        }
-
+        // BUG corrigé (demande du 17/10/2026, "génère bien le trip le plus optimisé
+        // possible, avec un vrai itinéraire") : ce bloc dupliquait sa PROPRE version,
+        // plus faible, du plus proche voisin (Math.hypot sur des degrés lat/lng bruts,
+        // sans passe d'amélioration) au lieu de réutiliser buildOptimizedRoute() —
+        // partagée avec l'Auto-Itinerary Generator (vraie distance haversine + 2-opt,
+        // voir son commentaire plus haut) depuis sa création plus tôt aujourd'hui mais
+        // jamais branchée ici. En partant de l'hôtel géocodé quand il existe (sinon du
+        // premier lieu, comme avant) — ne force toujours pas tous les lieux dans le
+        // nombre de jours choisi (voir buildDayPlans) : le surplus reste simplement non
+        // assigné, à ajouter manuellement ensuite si la personne le souhaite.
+        const route = buildOptimizedRoute(validLocs, homeBase);
         const { dayPlans } = buildDayPlans(route, numDays, homeBase);
         dayPlans.forEach((dayLocs, i) => { if (i < daysArray.length) daysArray[i] = dayLocs.map(l => l.id); });
     }

@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261048" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261049" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -567,6 +567,26 @@
          appareil sans encoche, donc aucun changement visuel là où ça marchait déjà) le
          remonte au-dessus de cette zone. */
       .new-trip-pill { margin-bottom: max(14px, env(safe-area-inset-bottom)); }
+
+      /* "Il y a encore l'ancienne version" (demande du 17/10/2026, redemandée) : les 4
+         <select> natifs de LOCATION FILTERS (#edit-trip-group/member/country/city) étaient
+         le seul coin de la fiche voyage mobile resté dans le style brut par défaut du
+         navigateur (bordure grise plate, aucune cohérence avec le reste de la page déjà
+         redessinée — hero, onglets Plan/Map/Ideas, cases de dates). Reskinnés ici en pilules
+         arrondies sur le même fond doux (#F4F2F8) que .qaf-row/.qaf-li (voir la fiche "New
+         trip", même langage visuel) — toujours de VRAIS <select>, le picker natif du
+         téléphone à l'ouverture reste le bon choix pour une liste aussi courte (pas besoin
+         d'une feuille personnalisée comme pour "New trip", qui doit en plus chercher parmi
+         des dizaines de pays). */
+      #edit-trip-group, #edit-trip-member, #edit-trip-country, #edit-trip-city {
+          appearance: none; -webkit-appearance: none;
+          background-color: #F4F2F8 !important;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8B99' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+          background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
+          border: none !important; border-radius: 12px !important;
+          padding: 12px 36px 12px 14px !important;
+          font-weight: 600; color: #1F2430;
+      }
   }
 </style>
 <script>
@@ -610,7 +630,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261048';
+        s.src = 'page-loader.js?v=20261049';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1189,9 +1209,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261048"></script>
-<script src="locations-data.js?v=20261048"></script>
-<script src="script.js?v=20261048"></script>
+<script type="module" src="firebase-init.js?v=20261049"></script>
+<script src="locations-data.js?v=20261049"></script>
+<script src="script.js?v=20261049"></script>
 
 </body>
 </html>
