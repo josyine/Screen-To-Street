@@ -8497,6 +8497,24 @@ function parseFootstepsSections(plainText) {
         return { year: '', member: '', text: p };
     });
 }
+// BUG corrigé (demande du 17/10/2026, capture d'écran fournie : "quand je modifie le
+// lieu, que je rédige un paragraphe et que je reviens à la ligne, ça créé une nouvelle
+// section... je veux juste que ça revienne à la ligne sans que ça créé forcément une
+// nouvelle section") : parseFootstepsSections() (plus haut) découpe TOUT le texte
+// enregistré en sections à chaque ligne vide (`\n\s*\n`), sans distinguer "ligne vide
+// séparant deux VRAIES visites différentes" de "ligne vide tapée par l'admin DANS un
+// même paragraphe, juste pour aérer un texte un peu long" (ex: Entrée pressée deux fois
+// de suite dans un seul textarea .vs-text) — au ré-ouverture de la fiche, cette dernière
+// se retrouvait donc, à tort, éclatée en plusieurs sections distinctes (capture d'écran :
+// 2 sections sans année/membre, qui n'étaient en réalité qu'un seul texte continu).
+// Normalise ici, AVANT stockage, toute ligne vide interne au texte d'UNE section en un
+// simple retour à la ligne — la seule vraie ligne vide qui subsiste dans le texte combiné
+// est donc désormais celle posée explicitement par ce join('\n\n') ci-dessous, entre deux
+// sections réellement distinctes (créées via "+ Add a section") : plus aucune ambiguïté
+// possible pour parseFootstepsSections() au prochain chargement.
+function sanitizeFootstepsSectionText(text) {
+    return (text || '').trim().replace(/\n\s*\n+/g, '\n');
+}
 function buildFootstepsPlainText(sections) {
     const real = (sections || []).filter(s => s && s.text && s.text.trim());
     if (real.length === 0) return '';
@@ -8504,10 +8522,10 @@ function buildFootstepsPlainText(sections) {
     // remplis pendant qu'il y avait plusieurs sections puis que les autres ont été
     // supprimées — voir la consigne "s'il n'y a qu'une seule visite... il ne faut pas
     // afficher l'année" ci-dessus.
-    if (real.length === 1) return real[0].text.trim();
+    if (real.length === 1) return sanitizeFootstepsSectionText(real[0].text);
     return real.map(s => {
         const label = [s.year, s.member].filter(Boolean).join(', ');
-        return (label ? `${label}: ` : '') + s.text.trim();
+        return (label ? `${label}: ` : '') + sanitizeFootstepsSectionText(s.text);
     }).join('\n\n');
 }
 window.createVisitSectionsField = function (container, opts) {
@@ -8549,7 +8567,7 @@ window.createVisitSectionsField = function (container, opts) {
                     <input type="text" class="vs-year" value="${escapeHtml(sec.year || '')}" placeholder="Year" style="${fieldStyle} width:90px; flex-shrink:0; margin-bottom:0;">
                     <div class="vs-member" style="flex:1;">${memberMultiSelectHtml(sec.member || '')}</div>
                 </div>` : ''}
-                <textarea class="vs-text" rows="2" placeholder="${escapeHtml(textPlaceholder)}" style="${fieldStyle} margin-bottom:0; resize:vertical;">${escapeHtml(sec.text || '')}</textarea>
+                <textarea class="vs-text" rows="6" placeholder="${escapeHtml(textPlaceholder)}" style="${fieldStyle} margin-bottom:0; resize:vertical; min-height:110px;">${escapeHtml(sec.text || '')}</textarea>
                 ${multi ? `<button type="button" class="vs-remove" title="Remove this visit" style="position:absolute; top:6px; right:6px; width:24px; height:24px; border:none; background:none; color:#94a3b8; font-size:16px; line-height:1; cursor:pointer;">&times;</button>` : ''}
             </div>`).join('') +
             `<button type="button" class="vs-add-btn" style="background:none; border:none; color:#D42759; font-size:11.5px; font-weight:700; cursor:pointer; padding:2px 0 8px 0; font-family:'Poppins',sans-serif;">+ Add a section</button>`;
@@ -8567,6 +8585,18 @@ window.createVisitSectionsField = function (container, opts) {
                 current.splice(idx, 1);
                 render(current.length > 0 ? current : [{ year: '', member: '', text: '' }]);
             });
+        });
+
+        // Auto-agrandissement du textarea à la hauteur de son contenu (demande du
+        // 17/10/2026, "agrandit la section en mode édition afin que je puisse lire tout
+        // le texte") — un nombre de lignes fixe (rows="6" ci-dessus) ne suffit jamais pour
+        // TOUT paragraphe possible ; recalculé à l'ouverture ET à chaque frappe
+        // (scrollHeight), min-height CSS ci-dessus servant de plancher pour un texte vide
+        // ou court. resize:vertical reste disponible si l'admin veut l'agrandir encore.
+        container.querySelectorAll('.vs-text').forEach(ta => {
+            const grow = () => { ta.style.height = 'auto'; ta.style.height = (ta.scrollHeight + 2) + 'px'; };
+            grow();
+            ta.addEventListener('input', grow);
         });
     }
 
