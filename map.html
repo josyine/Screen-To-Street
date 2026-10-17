@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261047" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261048" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -490,7 +490,35 @@
          #live-panel (la page Agenda) : .tour-mode-nav est aussi utilisée par le panneau
          Mode Tournée, qui n'a pas ce problème (sa nav du bas n'est pas flottée par-dessus).*/
       #live-panel .live-panel-footer { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
-      #live-panel .tour-mode-nav { margin-bottom: calc(90px + env(safe-area-inset-bottom)); }
+
+      /* 3 ajustements demandés le 17/10/2026 pour l'onglet Map de l'Agenda (#live-panel)
+         uniquement — ciblés via #live-panel/#live-map-* plutôt que les classes .tour-mode-*
+         partagées, pour ne rien changer au panneau Mode Tournée qui réutilise ces mêmes
+         classes avec sa propre mise en page. */
+
+      /* 1) Légère marge entre les boutons "List, Calendar, Map" et la carte : .live-panel-mapview
+         enchaînait directement après .live-panel-view-tabs, sans le moindre espace (contrairement
+         à .live-panel-timeline/.live-panel-calendar, qui ont déjà un padding-top via leur propre
+         règle plus haut). */
+      #live-panel .live-panel-mapview { margin-top: 10px; }
+
+      /* 2) Bulle "Step X of Y" (#live-map-pill, voir renderLiveMapView() dans script.js)
+         alignée horizontalement avec le bouton "List" : .tour-mode-map-pill (plus haut)
+         pose left:60px, pensé pour la mise en page du panneau Mode Tournée — décalée ici
+         sur la même valeur que le padding gauche de .live-panel-view-tabs (18px), pour
+         tomber exactement sous le bord gauche du bouton "List". */
+      #live-map-pill { left: 18px; }
+
+      /* 3) Zone de liste des dates agrandie : .tour-mode-rail-list (flex:1) grandit tout
+         seul si on réduit ses deux voisins de taille fixe (.tour-mode-stop-info/.tour-mode-nav,
+         flex-shrink:0) — padding resserré sans descendre sous une zone de appui confortable.
+         .tour-mode-nav garde sa marge de dégagement de la nav du bas flottante (voir le
+         commentaire juste en dessous, inchangé). */
+      #live-panel .tour-mode-stop-info { padding: 8px 14px 2px; }
+      /* padding resserré ET marge de dégagement de la nav du bas flottante (voir le
+         commentaire sur .live-panel-footer juste au-dessus) réunis sur la même règle. */
+      #live-panel .tour-mode-nav { padding: 8px 14px; margin-bottom: calc(90px + env(safe-area-inset-bottom)); }
+      #live-panel .tour-mode-nav-btn { padding: 9px 12px; }
   }
 
   /* BUG corrigé (demande du 09/10/2026, "agrandis la section Agenda, car l'affichage de
@@ -834,7 +862,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261047';
+        s.src = 'page-loader.js?v=20261048';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -2108,27 +2136,27 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261047"></script>
-<script type="module" src="firebase-init.js?v=20261047"></script>
-<script src="locations-data.js?v=20261047"></script>
+<script src="countries.js?v=20261048"></script>
+<script type="module" src="firebase-init.js?v=20261048"></script>
+<script src="locations-data.js?v=20261048"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261047"></script>
+<script src="artists-content.js?v=20261048"></script>
 <!-- Contours de pays pour la teinte "Show visited" sur la mini-carte de visited.html
      (window.VISITED_WORLD_MAP/visitedWorldMapProject() dans script.js) — gardé ici
      uniquement parce que script.js référence encore ces fonctions ; la carte Leaflet de
      CETTE page n'utilise plus ce fichier pour son propre overlay de pays visités, voir
      country-borders.js ci-dessous (demande du 17/10/2026, "frontières correctes"). -->
-<script src="visited-map-data.js?v=20261047"></script>
+<script src="visited-map-data.js?v=20261048"></script>
 <!-- Vraies frontières de pays (Natural Earth, lat/lng Leaflet) pour l'overlay "Show
      visited" de CETTE carte — remplace l'approximation SVG ci-dessus pour ce usage
      (demande du 17/10/2026). Doit précéder script.js. -->
-<script src="country-borders.js?v=20261047"></script>
-<script src="script.js?v=20261047"></script>
+<script src="country-borders.js?v=20261048"></script>
+<script src="script.js?v=20261048"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261047"></script>
-<script src="map-tour.js?v=20261047"></script>
+<script src="itinerary.js?v=20261048"></script>
+<script src="map-tour.js?v=20261048"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE

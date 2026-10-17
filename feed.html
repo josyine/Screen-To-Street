@@ -58,11 +58,23 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261047" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261048" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
-body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow-y:auto;}
+/* BUG corrigé (demande du 17/10/2026, "les posts ne [doivent] pas être masqués par la
+   barre de navigation du bas") : style.css (règle globale body{display:flex;height:100vh},
+   pensée pour les pages .app-container comme map.html/trips.html, voir plus haut dans ce
+   fichier le <link> qui le charge) n'était jamais réinitialisée ici — body restait donc un
+   conteneur flex-row de 100vh de haut, et .feed-page (son unique enfant, display:block)
+   était automatiquement ÉTIRÉ (align-items:stretch, le défaut flex) à EXACTEMENT cette
+   hauteur, quel que soit son contenu réel. Résultat : les 130px de padding-bottom réservés
+   par .feed-page sur mobile (voir plus bas) restaient PIÉGÉS À L'INTÉRIEUR de cette boîte
+   étirée, et la grille de tuiles (bien plus haute que 100vh une fois pleine) débordait
+   simplement PAR-DESSUS cette limite sans aucune marge réelle en bas — jusque sous la nav
+   du bas, fixe, qui masquait donc la dernière rangée. display:block (au lieu du flex hérité)
+   laisse enfin .feed-page grandir avec son contenu réel, padding-bottom compris. */
+body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block; overflow-x:hidden; overflow-y:auto;}
 .hidden { display: none !important; }
 
 /* FOND ANIMÉ (identique à profile.html/friends.html) */
@@ -273,7 +285,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
      rangée de la grille sur un appareil avec encoche/barre de gestes, où la nav du bas
      elle-même remonte d'autant (voir .mobile-bottom-nav bottom:calc(14px+safe-bottom)
      dans style.css) — même oubli corrigé ici, avec un peu de marge en plus. */
-  .feed-page { padding: 60px 12px calc(130px + env(safe-area-inset-bottom,0px)) 12px; }
+  .feed-page { padding: 54px 12px calc(130px + env(safe-area-inset-bottom,0px)) 12px; }
   .feed-grid { gap: 2px; }
   /* Titre "Explore" retiré sur mobile (demande du 12/09/2026, "supprime le titre Explore
      pour gagner de la place") — l'onglet "Explore" juste en dessous (.feed-tabs) indique
@@ -309,7 +321,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
      marge négative égale au padding horizontal de .feed-page (12px) pour déborder
      jusqu'aux bords réels, même mécanisme de bleed que .profile-mini-map sur
      profile.html. */
-  .feed-tabs { max-width: none; width: calc(100% + 24px); margin: 0 -12px 18px -12px; }
+  .feed-tabs { max-width: none; width: calc(100% + 24px); margin: 0 -12px 12px -12px; }
+
+  /* "Monte légèrement l'affichage de Mei's Pictures" (demande du 17/10/2026) : resserre
+     l'espace entre le filtre groupe (#sacred-group-filter, seul élément visible juste
+     au-dessus de la grille sur cet onglet) et la grille elle-même — !important nécessaire
+     pour l'emporter sur le style inline posé directement sur l'élément (voir plus bas). */
+  #sacred-group-filter { margin-bottom: 10px !important; }
 }
 </style>
 <script>
@@ -352,7 +370,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261047';
+        s.src = 'page-loader.js?v=20261048';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -524,9 +542,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; overflow-x:hidden; overflow
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261047"></script>
-<script src="locations-data.js?v=20261047"></script>
-<script src="script.js?v=20261047"></script>
+<script type="module" src="firebase-init.js?v=20261048"></script>
+<script src="locations-data.js?v=20261048"></script>
+<script src="script.js?v=20261048"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {

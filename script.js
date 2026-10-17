@@ -12754,7 +12754,7 @@ window.openSharedTrip = function(sharedTripId) {
     // Voir la même note dans le onclick des voyages possédés plus haut : sans ça, le
     // voyage partagé qu'on vient d'ouvrir reste caché derrière le tiroir mobile resté ouvert.
     const sidebarElShared = document.getElementById('app-sidebar');
-    if (sidebarElShared && sidebarElShared.classList.contains('open') && typeof window.toggleMobileMenu === 'function') window.toggleMobileMenu();
+    if (sidebarElShared && sidebarElShared.classList.contains('open') && typeof window.toggleTripsListDrawer === 'function') window.toggleTripsListDrawer();
     if(document.getElementById('trip-map-container') && !tripPageMap) {
         tripPageMap = L.map('trip-map-container', { zoomControl: false }).setView([37.541, 127.025], 6);
         createOSMTileLayer(tripPageMap).addTo(tripPageMap);
@@ -13004,21 +13004,38 @@ window.renderShareTripBuddies = async function(tripId) {
     });
 };
 
+// Bascule #app-sidebar SANS l'effet de bord "masquer le header/la nav du bas" de
+// window.toggleMobileMenu() (demande du 17/10/2026, "avec le fond violet du site, le bon
+// header et la page de navigation en bas" — redemandée plusieurs fois faute de l'avoir
+// corrigé la première fois). Sur map.html, #app-sidebar est un MENU temporaire par-dessus
+// la carte : l'ouvrir doit bien masquer le reste du chrome (setMobileChromeHidden), c'est
+// le comportement voulu là-bas et toggleMobileMenu() reste inchangé pour cette page. Mais
+// sur trips.html, la liste des voyages EST la vue mobile par défaut de la page elle-même
+// (voir tripsInitialMobileViewDone plus bas) : le header partagé (#mobile-top-icons,
+// .mobile-logo) et la barre de navigation du bas doivent y rester visibles en permanence,
+// jamais disparaître comme pour un menu temporaire qu'on ouvre/ferme. Remplace
+// window.toggleMobileMenu() à CHAQUE appel propre à trips.html (ce fichier n'a plus
+// d'autre utilisateur de toggleMobileMenu() que map.html après ce correctif).
+window.toggleTripsListDrawer = function() {
+    const sidebarEl = document.getElementById('app-sidebar');
+    if (!sidebarEl) return;
+    sidebarEl.classList.toggle('open');
+    if (!sidebarEl.classList.contains('open')) sidebarEl.classList.remove('expanded');
+};
+
 // Bascule la vue mobile de trips.html entre la LISTE des voyages (#app-sidebar, réutilisée
 // telle quelle plutôt que dupliquée — demande du 17/10/2026, "affiche-les en liste") et le
 // DÉTAIL du voyage ouvert (#trip-detail-content, la mise en page Plan/Map/Ideas) — simple
-// enveloppe autour de window.toggleMobileMenu() (déjà ce qui ouvre/ferme #app-sidebar sur
-// mobile, déjà utilisé par les clics sur un .trip-pill pour refermer le tiroir une fois un
-// voyage choisi), pour avoir un seul point d'appel explicite ("montre la liste"/"montre le
-// détail") plutôt que de vérifier/inverser sa classe .open à chaque appelant. Sans effet
-// sur desktop : .sidebar.open n'y change rien visuellement (la media query mobile est seule
-// à définir left:0), #app-sidebar y reste affiché en permanence à côté du détail comme
-// avant.
+// enveloppe autour de window.toggleTripsListDrawer() ci-dessus, pour avoir un seul point
+// d'appel explicite ("montre la liste"/"montre le détail") plutôt que de vérifier/inverser
+// sa classe .open à chaque appelant. Sans effet sur desktop : .sidebar.open n'y change rien
+// visuellement (la media query mobile est seule à définir left:0), #app-sidebar y reste
+// affiché en permanence à côté du détail comme avant.
 window.setTripMobileView = function(view) {
     const sidebarEl = document.getElementById('app-sidebar');
-    if (!sidebarEl || typeof window.toggleMobileMenu !== 'function') return;
+    if (!sidebarEl) return;
     const wantOpen = (view === 'list');
-    if (sidebarEl.classList.contains('open') !== wantOpen) window.toggleMobileMenu();
+    if (sidebarEl.classList.contains('open') !== wantOpen) window.toggleTripsListDrawer();
 };
 
 // tripsInitialMobileViewDone : la bascule liste/détail ci-dessus ne doit décider toute
@@ -13116,11 +13133,11 @@ window.renderTripsSidebar = function() {
             localStorage.setItem('activeTripId', t.id);
             window.initTrips();
             // Sur mobile, la liste des voyages vit dans le tiroir #app-sidebar (voir
-            // toggleMobileMenu()) : sans ça, le voyage qu'on vient de sélectionner reste
-            // caché derrière le tiroir resté ouvert, il faut alors une action en plus
-            // rien que pour le voir.
+            // toggleTripsListDrawer()) : sans ça, le voyage qu'on vient de sélectionner
+            // reste caché derrière le tiroir resté ouvert, il faut alors une action en
+            // plus rien que pour le voir.
             const sidebarEl = document.getElementById('app-sidebar');
-            if (sidebarEl && sidebarEl.classList.contains('open')) window.toggleMobileMenu();
+            if (sidebarEl && sidebarEl.classList.contains('open') && typeof window.toggleTripsListDrawer === 'function') window.toggleTripsListDrawer();
         };
 
         pill.innerHTML = `
