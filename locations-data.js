@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-17T16:36:08.920Z.
+// Généré le 2026-10-17T21:38:40.337Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -2782,50 +2782,6 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
-    "id": 47,
-    "name": "The Min's",
-    "group": "BTS",
-    "member": "All",
-    "country": "South Korea",
-    "city": "Seoul",
-    "category": "Cafe",
-    "year": "2014",
-    "address": "14 Dosan-daero 28-gil, Gangnam-gu",
-    "lat": 37.523,
-    "lng": 127.035,
-    "img": "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=600",
-    "fullDescription": {
-      "en": "<p>Tucked into the Apgujeong-dong side streets, The Min's is run by Lee Chang-min — a member of the K-pop duo Homme and former 2AM member — and has quietly built up a wall of BTS photos, autographs and handwritten notes from years of visits by the group.</p><p>The café's signature drinks, fresh-squeezed lemonade and cherryade, are what members are usually pictured enjoying, and the small, homey space still feels more like a friend's living room than a fan attraction, which is exactly its charm.</p>",
-      "fr": "<p>Niché dans les petites rues d'Apgujeong-dong, The Min's est tenu par Lee Chang-min — membre du duo K-pop Homme et ancien membre de 2AM — et a discrètement accumulé au fil des années un mur de photos, d'autographes et de mots manuscrits laissés par le groupe lors de ses visites.</p><p>Les boissons signature du café, citronnade et cherryade fraîchement pressées, sont ce que les membres sont généralement photographiés en train de savourer, et ce petit espace chaleureux ressemble encore davantage au salon d'un ami qu'à une attraction pour fans — ce qui fait justement tout son charme.</p>"
-    },
-    "tipsList": [
-      {
-        "title": {
-          "en": "Order the cherryade"
-        },
-        "text": {
-          "en": "Order the fresh cherryade — it's the drink most often seen in the members' own photos from their visits here."
-        }
-      },
-      {
-        "title": {
-          "en": "Look at the walls"
-        },
-        "text": {
-          "en": "Years of visits by the group have built up a wall of photos, autographs and handwritten notes — worth a slow look around rather than just ordering and leaving."
-        }
-      }
-    ],
-    "directions": {
-      "en": "Take the Suin-Bundang Line to Apgujeong Rodeo Station and walk about 8 minutes through the Dosan-daero side streets.",
-      "fr": "Prenez la ligne Suin-Bundang jusqu'à la station Apgujeong Rodeo et marchez environ 8 minutes dans les petites rues de Dosan-daero."
-    },
-    "tip": {
-      "en": "Order the fresh cherryade — it's the drink most often seen in the members' own photos from their visits here.",
-      "fr": "Commandez le cherryade frais — c'est la boisson que l'on voit le plus souvent sur les photos des membres prises lors de leurs visites ici."
-    }
-  },
-  {
     "id": 48,
     "name": "Giani's Napoli",
     "group": "BTS",
@@ -5103,58 +5059,81 @@ window.STATIC_LOCATIONS = [
     "year": "2014",
     "ytId": "q6qO8L13fSc",
     "episodeLink": "https://www.youtube.com/watch?v=q6qO8L13fSc",
-    "address": "294 Itaewon-ro, Yongsan-gu",
+    "address": "294 Itaewon-ro, Yongsan-gu, Seoul, South Korea",
     "lat": 37.5335,
     "lng": 126.9995,
     "img": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Blue_Square_Seoul.jpg",
     "fullDescription": {
-      "en": "<p>In August 2014, BTS held their official showcase for their first full-length album, Dark & Wild, at the Blue Square Samsung Card Hall. This marked a significant step up from their smaller debut venues.</p><p>Walking into the Blue Square complex today, fans can appreciate how much the group grew in just one year. The venue is also famous for its stunning Book Park, which is a great place to relax.</p>",
-      "fr": "<p>En août 2014, BTS a donné son showcase officiel pour son premier album complet, Dark & Wild, au Blue Square Samsung Card Hall — un vrai pas en avant par rapport aux salles plus modestes de leurs débuts.</p><p>Entrer aujourd'hui dans le complexe Blue Square permet de mesurer à quel point le groupe a grandi en seulement un an ; le lieu est aussi connu pour son somptueux Book Park sur plusieurs étages, parfait pour se détendre.</p>"
+      "fr": "<p>En août 2014, BTS a donné son showcase officiel pour son premier album complet, Dark & Wild, au Blue Square Samsung Card Hall — un vrai pas en avant par rapport aux salles plus modestes de leurs débuts.</p><p>Entrer aujourd'hui dans le complexe Blue Square permet de mesurer à quel point le groupe a grandi en seulement un an ; le lieu est aussi connu pour son somptueux Book Park sur plusieurs étages, parfait pour se détendre.</p>",
+      "en": "<p>Located in the vibrant Hannam-dong neighborhood of Yongsan, Blue Square is one of Seoul's premier performing arts complexes. Since opening, it has served as a cultural hub for major theatrical musicals, indie gigs, and K-pop events. Because the venue regularly updates its corporate sponsorships, you may see its primary concert hall referred to in older videos as the Samsung Card Hall, later as the iMarket Hall, and currently as the Mastercard Hall. Today, it stands as a legendary stepping stone for many artists.</p><!--stss:footsteps--><p>While BTS now sells out massive global stadiums, Blue Square holds a deeply nostalgic place in ARMY history, having hosted several pivotal, intimate events during the group's early career.</p><p>2014: On August 19, 2014, the septet took the stage at Blue Square to officially present their very first full-length studio album, Dark &amp; Wild, to fans and the media during a highly anticipated showcase.</p><p>2016: Two years later, on June 13, 2016, they returned to the venue (then the Samsung Card Hall) to celebrate their 3rd anniversary with a memorable Festa concert. This specific show is legendary within the fandom for its unique, reversed-role setlist, featuring V's wildly enthusiastic cover of the rap line's \"Cypher Pt.3: Killer,\" and Suga and J-Hope teaming up for an unforgettable vocal performance of \"I Was Able to Eat Well.\"</p><p>2026: The venue remains relevant to the members' lives today. In 2026, RM and J-Hope were spotted returning to Blue Square, this time standing in the audience rather than on stage, casually hanging out and showing their support at a concert for the musical collective Balming Tiger.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Visit the Book Park"
+          "en": "Catch a Live Show"
         },
         "text": {
-          "en": "Don't miss the massive, multi-story bookstore inside the complex for incredible architectural photos."
+          "en": "The best way to experience the hall is to buy a ticket for a current concert or musical. Experiencing the venue's acoustics will give you a true sense of the intimate scale of BTS's early 2014 and 2016 performances."
         }
       },
       {
         "title": {
-          "en": "Explore Itaewon"
+          "en": "Explore Book Park"
         },
         "text": {
-          "en": "Hangangjin is right next to the trendy Hannam-dong and Itaewon districts."
+          "en": "Even if you don't have a concert ticket, visit Blue Square to explore \"Book Park\" on the upper floors. It is a massive, multi-story bookstore with a highly aesthetic, Instagram-famous wall of books and a cozy cafe."
+        }
+      },
+      {
+        "title": {
+          "en": "Relive the 2016 Festa"
+        },
+        "text": {
+          "en": "Before you visit the venue, rewatch the classic 2016 Festa performances. Standing outside the hall where V performed his iconic Cypher cover is a fun milestone for any dedicated ARMY."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Venue Info"
-        },
-        "text": {
-          "en": "A major cultural complex in Itaewon featuring concert halls and a massive book park."
-        }
-      },
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "The Book Park lounge and cafes are free to enter."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Hangangjin Station (Line 6), exit 2 is directly connected to the venue."
+          "en": "The venue is incredibly easy to access via public transit. Take Seoul Subway Line 6 to Hangangjin Station. Use Exit 2, and you will find a direct underground connection right into the Blue Square complex."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The public spaces, cafes, and Book Park are generally open daily from 11:00 AM to 10:00 PM and are free to enter. Access to the Mastercard Hall requires a purchased ticket for a specific scheduled event."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a major modern cultural complex, Blue Square is fully wheelchair accessible, featuring elevators to all floors, accessible restrooms, and designated seating areas within the concert and musical halls."
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": 90,
@@ -8971,67 +8950,153 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 161,
-    "name": "The Min's Cafe",
+    "name": "[CLOSED] The Min's (더 민스)",
     "group": "BTS",
     "member": "All",
     "country": "South Korea",
     "city": "Seoul",
     "category": "Cafe",
-    "year": "2014-2015",
-    "ytId": "VLFgr5fOqJs",
-    "episodeLink": "https://www.youtube.com/watch?v=VLFgr5fOqJs",
-    "address": "330 Apgujeong-ro, Gangnam-gu",
-    "lat": 37.5273,
-    "lng": 127.0287,
-    "img": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600",
+    "year": "2014",
+    "ytId": "",
+    "episodeLink": "",
+    "address": "330 Apgujeong-ro, Gangnam-gu, Seoul, South Korea (Former Location)",
+    "lat": 37.52827,
+    "lng": 127.0378,
+    "img": "images/admin-upload-161-photo.jpg",
     "fullDescription": {
-      "en": "<p>During their rookie days, BTS were frequently spotted grabbing berry ades at The Min's. It was a safe space for them, owned by a trusted senior artist.</p><p>The members posted dozens of selfies from this cafe's terrace in 2014, making it one of the first true \"ARMY pilgrimage\" spots in Seoul.</p>",
-      "fr": "<p>Pendant leurs débuts, BTS venait souvent boire des berry ades chez The Min's. Un endroit sûr pour eux, tenu par un artiste senior de confiance.</p><p>Les membres ont posté des dizaines de selfies depuis la terrasse de ce café en 2014, en faisant l'un des tout premiers vrais lieux de « pèlerinage ARMY » à Séoul.</p>"
+      "fr": "<p>Pendant leurs débuts, BTS venait souvent boire des berry ades chez The Min's. Un endroit sûr pour eux, tenu par un artiste senior de confiance.</p><p>Les membres ont posté des dizaines de selfies depuis la terrasse de ce café en 2014, en faisant l'un des tout premiers vrais lieux de « pèlerinage ARMY » à Séoul.</p>",
+      "en": "<p>Located in the Apgujeong neighborhood of Seoul, The Min's was a cozy cafe owned by Lee Chang-min, a member of the K-pop groups 2AM and Homme. The establishment was primarily managed by his parents, who became beloved within the fandom community for their incredibly warm welcome and their willingness to share fond anecdotes about BTS with visiting fans. Before its eventual closure, the interior served as a veritable museum of K-pop history, overflowing with cherished memories: autographed albums, exclusive photos of the group sitting at the cafe tables, and handwritten letters and notes left by the members themselves. Although the establishment has permanently closed its doors, it remains deeply engraved in the memories of the ARMY as an absolute must-know landmark of the group's beginnings.</p><!--stss:footsteps--><p>During the crucial early years following their debut in 2013, The Min's served as a regular hangout spot for the seven members to relax between their demanding schedules. The group shared countless off-duty moments here, many of which were immortalized in photos that fans still cherish today.\nWhen visiting, the members had very specific go-to orders. The cafe was highly renowned for its refreshing, sparkling fruit ades, and BTS particularly loved ordering the Five Berry Ade and the Pineapple Lemonade. For years, ordering these exact drinks while sitting surrounded by the group's handwritten letters made The Min's one of the ultimate pilgrimage destinations for fans visiting Seoul.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "Nostalgia walk"
+          "en": "Taste the Memories"
         },
         "text": {
-          "en": "Even though it's closed, the street itself is part of their rookie memories."
+          "en": "While you can no longer visit The Min's, you can still channel the members' early debut era by ordering a Five Berry Ade or a Pineapple Lemonade at other local Korean cafes to recreate their favorite orders."
         }
       },
       {
         "title": {
-          "en": "Check out nearby shops"
+          "en": "Explore Apgujeong"
         },
         "text": {
-          "en": "Apgujeong is full of early BTS era lore."
+          "en": "The former location of the cafe sits in the heart of Apgujeong and the broader Gangnam district, an area rich with early BTS history, near the former locations of their first dorms and practice rooms."
+        }
+      },
+      {
+        "title": {
+          "en": "Map the Legacy"
+        },
+        "text": {
+          "en": "For fans maintaining a digital \"pilgrimage map,\" dropping a pin on this historic location remains a meaningful way to track the group's journey from their humble beginnings to global stardom."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Status"
-        },
-        "text": {
-          "en": "Currently permanently closed, but the storefront location is a nostalgic stop."
-        }
-      },
-      {
-        "title": {
-          "en": "History"
-        },
-        "text": {
-          "en": "It was run by Changmin of 2AM, Big Hit's senior labelmate at the time."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Apgujeong Rodeo area."
+          "en": "The cafe was located in the Apgujeong Rodeo area, accessible via the Suin-Bundang Subway Line."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The cafe is permanently closed. Fans cannot visit the establishment, but the surrounding streets remain a bustling hub of Seoul's fashion and cafe culture."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
         }
       }
-    ]
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-161-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.0859,
+            "y": 0.5206,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.5156,
+            "y": 0.4721,
+            "member": "Jin"
+          },
+          {
+            "x": 0.9219,
+            "y": 0.6147,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-161-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0,
+            "y": 0.75,
+            "member": "V"
+          },
+          {
+            "x": 0.0443,
+            "y": 0.4779,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.2604,
+            "y": 0.4971,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.5391,
+            "y": 0.4162,
+            "member": "Suga"
+          },
+          {
+            "x": 0.7266,
+            "y": 0.4965,
+            "member": "RM"
+          },
+          {
+            "x": 0.901,
+            "y": 0.1994,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.9896,
+            "y": 0.6759,
+            "member": "Jin"
+          }
+        ]
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.trazy.com/spot/2312/the-mins-%EB%8D%94%EB%AF%BC%EC%8A%A4-restaurant-cafe",
+    "tweetUrl": "https://x.com/BTS_twt/status/530358490603073536",
+    "tweetUrls": [
+      "https://x.com/BTS_twt/status/512933414857486336",
+      "https://x.com/BTS_twt/status/512920790526734337"
+    ],
+    "imgCredit": "AI-generated illustrative image"
   },
   {
     "id": 172,
@@ -16295,66 +16360,66 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-0xNmn1cTlhh8zdRTkbj8",
-    "name": "Souk Madinat Jumeirah",
+    "name": "Palazzo Versace Dubai",
     "group": "BTS",
     "member": "All",
     "country": "United Arab Emirates",
     "city": "Dubai",
-    "category": "Landmark",
+    "category": "Summer Package",
     "year": "2016",
-    "address": "King Salman Bin Abdulaziz Al Saud St, Dubai, United Arab Emirates",
-    "lat": 25.1328,
-    "lng": 55.1862,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Souk_Madinat_Jumeirah_Dubai.jpg/1200px-Souk_Madinat_Jumeirah_Dubai.jpg",
+    "address": "Jaddaf Waterfront, Dubai, United Arab Emirates",
+    "lat": 25.2265,
+    "lng": 55.337,
+    "img": "images/admin-upload-new-0xNmn1cTlhh8zdRTkbj8-photo.jpg",
     "addedAt": 1789987128335,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Souk Madinat Jumeirah is an ornate Middle Eastern bazaar integrated into a luxury resort complex along the coastline of Dubai, United Arab Emirates. Designed with traditional wind towers, carved wooden archways, and vibrant indoor market stalls, the souk offers everything from spices and textiles to handmade handicrafts. Intricate water canals meander through the complex, allowing visitors to travel between shops and restaurants on traditional wooden abra boats against views of the iconic Burj Al Arab.</p><p>BTS visited Souk Madinat Jumeirah during the filming of their BTS Summer Package 2016 in Dubai, exploring the traditional market lanes and riding abra boats along the canals. The members bought local souvenirs, posed against the Arabian architecture, and enjoyed the exotic cultural setting together. Fans visiting Dubai often head to Souk Madinat Jumeirah to walk through the marketplace alleys seen in the package and capture photos with the Burj Al Arab in the background.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
-    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "ytId": "aYUfoYcqWgE",
     "tipsList": [
       {
         "title": {
-          "en": "Abra boat ride"
+          "en": "Relax by the Pool"
         },
         "text": {
-          "en": "Book a short abra boat ride along the resort canals for the best outdoor views of the resort architecture."
+          "en": "Head to the hotel's stunning outdoor lagoon pools to recreate the laid-back, sun-drenched aesthetic of the members' iconic Summer Package photo shoots."
         }
       },
       {
         "title": {
-          "en": "Burj Al Arab photos"
+          "en": "Admire the Architecture"
         },
         "text": {
-          "en": "Head to the outdoor restaurant terrace area for an unobstructed photo backdrop with the Burj Al Arab."
+          "en": "Take a walk through the lobby and public spaces to appreciate the intricate Medusa mosaics and bespoke Italian furnishings that the members marveled at during their stay."
         }
       },
       {
         "title": {
-          "en": "Indoor comfort"
+          "en": "Book a Stay or a Meal"
         },
         "text": {
-          "en": "The souk is fully air-conditioned indoors, making it an ideal daytime stop during hot summer months in Dubai."
+          "en": "While booking a suite offers the ultimate BTS experience, you can also simply reserve a table at one of the hotel's highly-rated restaurants or enjoy a luxurious afternoon tea to experience the venue without committing to an overnight stay."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://www.jumeirah.com/en/recreation-professionals/events-and-meetings/dubai/madinat-jumeirah/souk-madinat-jumeirah",
+    "fullDescription": {
+      "en": "<p>Reminiscent of a 16th-century Italian palace, the Palazzo Versace Dubai is a neoclassical masterpiece with subtle traces of Arabian architecture. Located in the Jaddaf Waterfront along the shores of the Dubai Creek, this 5-star luxury hotel is completely furnished and tailored by the House of Versace. Featuring striking landscaped gardens, lagoon pools, and intricately designed mosaic tiles, it stands as a testament to unparalleled opulence and high-fashion living in the heart of the Middle East.</p><!--stss:footsteps--><p>The BTS 2016 Summer Package in Dubai is an essential collector's edition for fans, beautifully capturing the septet's vacations and photo shoots amidst the contrasting landscapes of the United Arab Emirates. Filmed from March 26 to 28, 2016, directly following the group's performance at KCON Abu Dhabi, the backbone of their luxurious stay was the 5-star Palazzo Versace Dubai.\nBecause the hotel had just recently opened its doors at the time, the members were among the early waves of elite guests to experience its grandeur. Fans watching the package can see the members utilizing the stunning resort to its fullest—this is where the group posed for their now-iconic poolside photos, played games in their lavishly decorated suites, and relaxed in the sun between their grueling desert and city filming sessions.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take the Dubai Metro Red Line to Mall of the Emirates Station, then take a 10-minute taxi ride directly to the resort entrance."
+          "en": "The hotel is located less than 15 minutes away from Dubai International Airport (DXB). It is easily accessible by taxi or ride-hailing apps, and is a short drive from major attractions like the Burj Khalifa and Dubai Mall."
         }
       },
       {
@@ -16362,7 +16427,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "The hotel is open 24/7 for booked guests. Non-guests can visit the lobby, restaurants, and lounges by making dining or spa reservations."
         }
       },
       {
@@ -16370,12 +16435,55 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "The hotel is a modern 5-star facility, offering complete accessibility for wheelchair users, including flat entryways, spacious elevators, and accessible rooms upon request."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "imgCredit": "Screentostreet",
+    "episodeLink": "https://www.bilibili.tv/video/4787829781042688",
+    "officialLink": "https://www.palazzoversace.ae/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-0xNmn1cTlhh8zdRTkbj8-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.1146,
+            "y": 0.5235,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.3203,
+            "y": 0.5456,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.5182,
+            "y": 0.5529,
+            "member": "RM"
+          },
+          {
+            "x": 0.6615,
+            "y": 0.5485,
+            "member": "Jin"
+          },
+          {
+            "x": 0.8464,
+            "y": 0.517,
+            "member": "V"
+          },
+          {
+            "x": 0,
+            "y": 0.5141,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.9948,
+            "y": 0.5729,
+            "member": "Suga"
+          }
+        ]
+      }
+    ]
   },
   {
     "country": "South Korea",
@@ -16636,15 +16744,21 @@ window.STATIC_LOCATIONS = [
     ],
     "officialLink": "https://www.grandpalais.fr/fr",
     "imgCredit": "AI-generated illustrative image",
+    "fullDescription": {
+      "en": "<p>The Grand Palais is one of Paris’s most magnificent and historic architectural masterpieces, easily recognized by its iconic glass-and-iron nave. Located right next to the Champs-Élysées and adjacent to the Petit Palais, it serves as a premier cultural venue and a world-stage for elite global fashion shows, major art exhibitions, and high-profile luxury events during Paris Fashion Week.</p><!--stss:footsteps--><p>This historic district became a major hotspot for the fandom when V (Kim Taehyung) arrived in Paris for Fashion Week activities. Most notably, in July 2025, Taehyung attended an exclusive, high-profile Celine pre-show private dinner party hosted at the neighboring historic palace landmark. Dressed impeccably as a global ambassador for the luxury fashion house, his presence drew massive crowds of enthusiastic international fans and media outlets lining the surrounding Parisian streets, generating viral moments across social media platforms. This location highlights BTS's monumental influence in the global luxury fashion sector and their special connection to the city of Paris.</p>"
+    },
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-new-1FSUUwl5amFCMieDwHDA-recreated-0.jpg",
-        "official": true
+        "markers": [
+          {
+            "x": 0.487,
+            "y": 0.4176,
+            "member": "V"
+          }
+        ]
       }
-    ],
-    "fullDescription": {
-      "en": "<p>The Grand Palais is one of Paris’s most magnificent and historic architectural masterpieces, easily recognized by its iconic glass-and-iron nave. Located right next to the Champs-Élysées and adjacent to the Petit Palais, it serves as a premier cultural venue and a world-stage for elite global fashion shows, major art exhibitions, and high-profile luxury events during Paris Fashion Week.</p><!--stss:footsteps--><p>This historic district became a major hotspot for the fandom when V (Kim Taehyung) arrived in Paris for Fashion Week activities. Most notably, in July 2025, Taehyung attended an exclusive, high-profile Celine pre-show private dinner party hosted at the neighboring historic palace landmark. Dressed impeccably as a global ambassador for the luxury fashion house, his presence drew massive crowds of enthusiastic international fans and media outlets lining the surrounding Parisian streets, generating viral moments across social media platforms. This location highlights BTS's monumental influence in the global luxury fashion sector and their special connection to the city of Paris.</p>"
-    }
+    ]
   },
   {
     "id": "new-1hatgSs2LMoliC4fFyPm",
