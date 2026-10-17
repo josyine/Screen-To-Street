@@ -1127,7 +1127,21 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
    section au fur et à mesure qu'on défile") : démarre compact (46vh) plutôt que toujours
    78vh même pour 1-2 publications — grandit jusqu'à l'ancien plafond via .expanded, posée
    par un listener de scroll (voir renderVisitorsDrawerContent() dans script.js). */
-.loc-visitors-sheet { max-height: 46vh; overflow-y: auto; transition: max-height .25s ease; }
+/* BUG corrigé (demande du 17/10/2026, capture d'écran fournie : "quand j'ouvre la flèche,
+   l'affichage est masquée par la barre de navigation") : le correctif précédent a remonté
+   #mobile-bottom-nav AU-DESSUS de ce tiroir pour qu'elle reste toujours visible (demande
+   site-wide établie) — mais .qa-sheet (classe partagée, voir plus bas) ne réserve que 24px
+   de marge basse, pensée pour un petit menu "+" qui ne s'approche jamais du bas de l'écran,
+   pas pour une grille de tuiles qui peut facilement la remplir jusqu'en bas. La nav,
+   maintenant PAR-DESSUS plutôt que dessous, recouvrait donc la dernière rangée visible.
+   Même marge que le reste du site pour ce problème (130px + zone de sécurité).
+   BUG évité : .qa-sheet (classe partagée, même spécificité qu'un simple .loc-visitors-sheet)
+   pose SA PROPRE propriété raccourcie `padding` (voir plus bas) qui RÉÉCRIT les 4 côtés y
+   compris bottom — à spécificité égale, la règle la plus BASSE dans le fichier gagne, et
+   .qa-sheet est plus bas que cette règle-ci, qui perdait donc silencieusement (padding-bottom
+   retombait à 24px malgré cette règle, vérifié via getComputedStyle). Sélecteur à deux
+   classes pour une spécificité strictement supérieure, qui gagne quel que soit l'ordre. */
+.qa-sheet.loc-visitors-sheet { max-height: 46vh; overflow-y: auto; transition: max-height .25s ease; padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
 .loc-visitors-sheet.expanded { max-height: 78vh; }
 .loc-visitors-sheet-title { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 14px; padding: 0 8px; }
 .loc-visitors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }

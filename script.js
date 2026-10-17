@@ -6985,19 +6985,28 @@ window.switchMainTab = function(tabName) {
 // l'onglet "Visited" existant ci-dessus (switchMainTab('visited')/'explore'), sans devoir
 // d'abord ouvrir le menu hamburger pour l'atteindre comme c'était jusqu'ici le seul moyen.
 // Bascule : un second clic revient à la vue Explore normale (tous les filtres actifs).
+// (demande du 17/10/2026, "n'affiche que les lieux visités sans zoomer la map, affiche
+// la map du monde entière, vue de large") : switchMainTab('visited') réutilise le même
+// renderVisitedTabList() que l'onglet "Visited" historique de la sidebar, qui zoome
+// toujours sur les lieux visités (fitBounds: true, voir plus bas) — volontairement laissé
+// tel quel pour ce dernier (comportement desktop existant, pas concerné par la demande).
+// Seul CE bouton flottant doit à la place montrer le monde entier dézoomé ; on force donc
+// la vue APRÈS coup, en écrasant le fitBounds qui vient de s'exécuter.
 window.toggleVisitedOnlyMap = function () {
-    window.switchMainTab(visitedOnlyMapMode ? 'explore' : 'visited');
+    const turningOn = !visitedOnlyMapMode;
+    window.switchMainTab(turningOn ? 'visited' : 'explore');
+    if (turningOn && map && typeof L !== 'undefined') {
+        map.setView([20, 0], 2);
+    }
 };
 
-// Teinte de chaque pays où au moins un lieu est marqué visité — voir
-// visitedWorldMapUnproject()/parseCountrySvgPathToLatLngs() plus haut (réutilisent les
-// contours déjà extraits pour la mini-carte de visited.html, aucune nouvelle donnée à
-// charger). Les très petits territoires absents de ce jeu de données compact (Malte,
-// Singapour, Hong Kong, Macau — voir la note sur COUNTRY_ISO_NUMERIC) restent sans teinte
-// faute de contour disponible ; leurs lieux n'en continuent pas moins à apparaître comme
-// marqueurs (renderVisitedTabList() s'en charge, indépendamment de cette fonction).
+// Teinte de chaque pays où au moins un lieu est marqué visité — voir country-borders.js
+// (demande du 17/10/2026, "fait attention de bien colorié les pays visités, que les
+// frontières soient correctes") : contours RÉELS (Natural Earth, lat/lng Leaflet), pas
+// l'ancienne approximation SVG (visitedWorldMapUnproject()/parseCountrySvgPathToLatLngs(),
+// toujours utilisées par la mini-carte de visited.html, inchangée).
 function renderVisitedCountryOverlays() {
-    if (!map || typeof L === 'undefined' || !window.VISITED_WORLD_MAP) return;
+    if (!map || typeof L === 'undefined' || !window.COUNTRY_BORDERS) return;
     if (!visitedCountryLayerGroup) {
         visitedCountryLayerGroup = L.layerGroup().addTo(map);
     } else {
@@ -7009,13 +7018,12 @@ function renderVisitedCountryOverlays() {
         celebLocations.filter(loc => loc.country && visitedIds.has(String(loc.id))).map(loc => loc.country)
     );
     visitedCountries.forEach(country => {
-        const iso = COUNTRY_ISO_NUMERIC[country];
-        const d = iso && window.VISITED_WORLD_MAP.paths[iso];
-        if (!d) return;
-        const rings = parseCountrySvgPathToLatLngs(d);
-        if (!rings.length) return;
-        L.polygon(rings, { color: '#D42759', weight: 1.5, fillColor: '#D42759', fillOpacity: 0.22, interactive: false })
-            .addTo(visitedCountryLayerGroup);
+        const rings = window.COUNTRY_BORDERS[country];
+        if (!rings || !rings.length) return;
+        rings.forEach(ring => {
+            L.polygon(ring, { color: '#D42759', weight: 1.5, fillColor: '#D42759', fillOpacity: 0.22, interactive: false })
+                .addTo(visitedCountryLayerGroup);
+        });
     });
 }
 function clearVisitedCountryOverlays() {
@@ -13080,7 +13088,10 @@ function renderDayTimelineHTML(it, isFirstOfDay, dayColor) {
     let html = '';
     if (it.leg) {
         const legLabel = `${it.leg.mode} · ~${it.leg.minMinutes}-${it.leg.maxMinutes} min`;
-        html += `<div style="font-size:10.5px; font-weight:600; color:#64748b; padding:3px 0 3px 4px;">${isFirstOfDay ? '📍 ' + txt.fromHotel + ' · ' : ''}${legLabel}</div>`;
+        // Icône épingle SVG plutôt qu'un emoji (demande site-wide, voir CLAUDE.md) pour
+        // repérer le tout premier trajet de la journée (départ de l'hôtel).
+        const pinIcon = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.2"/></svg>';
+        html += `<div class="day-loc-travel"><span class="day-loc-travel-icon">${isFirstOfDay ? pinIcon : ''}</span>${isFirstOfDay ? txt.fromHotel + ' · ' : ''}${legLabel}</div>`;
     }
     if (it.lunchBefore) {
         html += `<div style="font-size:10.5px; font-weight:600; color:${color}; padding:3px 0 3px 4px;">${txt.lunchBreak}</div>`;
@@ -13097,6 +13108,12 @@ window.refreshDayTimelines = function() {
     if (!currentTrip) return;
     document.querySelectorAll('.day-card').forEach((card, cardIdx) => {
         const rows = Array.from(card.querySelectorAll('.day-loc'));
+        // Compteur "N lieux" dans l'en-tête (demande du 17/10/2026, mise en page
+        // "Cartes légères") : recalculé ici à chaque passage plutôt qu'une seule fois à la
+        // création de la carte, pour rester juste après qu'un lieu change de jour par
+        // glisser-déposer (saveTrip() appelle cette fonction après chaque déplacement).
+        const metaEl = card.querySelector('.day-meta');
+        if (metaEl) metaEl.textContent = `${rows.length} ${rows.length === 1 ? (currentLang==='fr'?'lieu':'place') : (currentLang==='fr'?'lieux':'places')}`;
         if (rows.length === 0) return;
         const dayColor = TRIP_DAY_COLORS[cardIdx % TRIP_DAY_COLORS.length];
         const locs = rows.map(el => celebLocations.find(l => l.id === parseInt(el.dataset.id))).filter(Boolean);
@@ -13528,12 +13545,16 @@ window.renderTrip = function() {
         });
 
         const dayColor = TRIP_DAY_COLORS[index % TRIP_DAY_COLORS.length];
+        card.style.setProperty('--day-color', dayColor);
         card.innerHTML = `
             <div class="day-header">
-                <div class="day-title" style="color:${dayColor};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}</div>
-                <div class="x-btn edit-only" style="display:block;" onclick="removeDay(this)">✕</div>
+                <div class="day-title" style="color:${dayColor};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}</div>
+                <div class="day-header-right">
+                    <span class="day-meta">${dayIds.length} ${dayIds.length===1 ? (currentLang==='fr'?'lieu':'place') : (currentLang==='fr'?'lieux':'places')}</span>
+                    <div class="x-btn edit-only" style="display:block;" onclick="removeDay(this)">✕</div>
+                </div>
             </div>
-            <div class="day-items">${itemsHtml}</div>
+            <div class="day-items" data-empty-label="${currentLang==='fr'?'Glisse un lieu ici':'Drop a place here'}">${itemsHtml}</div>
             ${dayIds.length > 0 ? `<div class="day-mini-map" id="day-map-${index}"></div>` : ''}
         `;
         box.appendChild(card);
@@ -13822,6 +13843,7 @@ window.createLocRow = function(loc) {
     div.setAttribute('onclick', `openTripLocDetail(event, ${loc.id})`);
     div.innerHTML = `
         <span class="drag-handle edit-only" style="display:inline;">⠿</span>
+        <span class="day-loc-dot"></span>
         ${loc.name}
         <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${loc.id})">✕</span>
     `;
@@ -13838,6 +13860,7 @@ window.createLocRowHtml = function(loc) {
     return `
         <div class="day-loc" data-id="${loc.id}" draggable="true" ondragstart="dragStart(event, 'loc')" ondragend="dragEnd(event)" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" onclick="openTripLocDetail(event, ${loc.id})">
             <span class="drag-handle edit-only" style="display:inline;">⠿</span>
+            <span class="day-loc-dot"></span>
             ${loc.name}
             <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${loc.id})">✕</span>
         </div>
@@ -14043,12 +14066,17 @@ function buildDayCardElement(dayNum) {
     card.setAttribute('ondragover', 'allowDrop(event)');
     card.setAttribute('ondrop', 'drop(event)');
     card.setAttribute('ondragleave', 'dragLeave(event)');
+    const dayColor = TRIP_DAY_COLORS[(dayNum - 1) % TRIP_DAY_COLORS.length];
+    card.style.setProperty('--day-color', dayColor);
     card.innerHTML = `
         <div class="day-header">
-            <div class="day-title" style="color:${TRIP_DAY_COLORS[(dayNum - 1) % TRIP_DAY_COLORS.length]};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span>${currentLang==='fr'?'Jour':'Day'} ${dayNum}</div>
-            <div class="x-btn edit-only" style="display:flex;" onclick="removeDay(this)">✕</div>
+            <div class="day-title" style="color:${dayColor};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${dayNum}</div>
+            <div class="day-header-right">
+                <span class="day-meta">0 ${currentLang==='fr'?'lieux':'places'}</span>
+                <div class="x-btn edit-only" style="display:flex;" onclick="removeDay(this)">✕</div>
+            </div>
         </div>
-        <div class="day-items"></div>
+        <div class="day-items" data-empty-label="${currentLang==='fr'?'Glisse un lieu ici':'Drop a place here'}"></div>
     `;
     return card;
 }
