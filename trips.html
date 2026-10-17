@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261047" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261048" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -367,11 +367,14 @@
   .empty-state { text-align: center; color: #94a3b8; padding: 80px 0; font-size: 15px; width: 100%; }
   .empty-state-new-trip-btn { margin-top: 20px; }
 
-  /* Logo toujours visible sur mobile : sur le reste du site, le logo vit dans la
-     sidebar (tiroir fermé par défaut sur mobile, donc invisible tant qu'on n'ouvre pas
-     le menu hamburger). Ce doublon compact, en dehors de la sidebar, reste affiché même
-     tiroir fermé. */
-  .mobile-logo { display: none; align-items: center; gap: 8px; position: absolute; top: 14px; left: 14px; z-index: 1500; text-decoration: none; }
+  /* Logo toujours visible sur mobile, header partagé avec le reste du site (voir plus
+     bas, demande du 17/10/2026 : "le bon header"). Son z-index est volontairement
+     au-dessus de .sidebar (z-index 3000, voir le @media plus bas) : depuis que la liste
+     des voyages est devenue la vue mobile par défaut (plus seulement un tiroir masqué
+     derrière un hamburger), elle reste ouverte EN PERMANENCE sur mobile tant qu'aucun
+     voyage n'est sélectionné — ce logo doit donc rester visible PAR-DESSUS elle, pas
+     seulement "quand le tiroir est fermé" comme le commentaire d'origine le supposait. */
+  .mobile-logo { display: none; align-items: center; gap: 8px; position: absolute; top: 14px; left: 14px; z-index: 3100; text-decoration: none; }
   .mobile-logo-text { font-size: 14px; font-weight: 700; color: #2E3644; }
 
   /* Onglets Plan/Map/Ideas (demande du 17/10/2026) : masqués par défaut (desktop, où tout
@@ -391,6 +394,27 @@
          fichier) : le site affiche maintenant le même trio logo/message/engrenage que
          friends.html sur toutes les pages "app" en mobile, cette page y compris. */
       .mobile-logo { display: flex; }
+
+      /* Fond violet du site + en-tête correct sur la liste des voyages mobile (demande
+         du 17/10/2026, redemandée plusieurs fois) : .sidebar porte normalement un verre
+         dépoli blanc à 85% d'opacité (règle desktop juste au-dessus, avec !important)
+         pensé pour laisser transparaître .hero-background (les "blobs" violets) DERRIÈRE
+         un panneau étroit — sur mobile, où .sidebar devient un panneau PLEIN ÉCRAN
+         (position:absolute, voir plus bas), ce même verre dépoli écrase presque entièrement
+         .hero-background et rend un gris-blanc plat au lieu du violet attendu. Remplacé
+         ici par le même dégradé que --sidebar-bg (style.css), cohérent avec le reste du
+         site, sans effet de flou qui n'a plus de sens plein écran.
+         Le logo/bandeau INTERNE à .sidebar (.brand-row) est masqué : .mobile-logo
+         ci-dessus (vrai header partagé, visible par-dessus grâce à son z-index relevé)
+         fait désormais ce rôle, pour ne pas avoir deux logos empilés. */
+      .sidebar { background: linear-gradient(160deg, #F5F3FC, #E9DFF6) !important; backdrop-filter: none; padding-top: 90px; }
+      #app-sidebar .brand-row { display: none; }
+      /* Le bouton "+ New trip" (dernier élément de .sidebar-scroll-area) se retrouvait
+         partiellement caché DERRIÈRE #mobile-bottom-nav (position:fixed, z-index 3500 >
+         3000 de .sidebar) une fois la nav du bas laissée visible ci-dessus — même
+         réserve d'espace déjà utilisée ailleurs sur le site pour ce même cas (voir
+         .tab-panel/.qa-sheet dans style.css). */
+      #app-sidebar .sidebar-scroll-area { padding-bottom: calc(130px + env(safe-area-inset-bottom)); }
 
       /* Pleine largeur, sans marge (demande du 12/09/2026, "je veux que le trip prenne
          toute la largeur de l'écran, sans marge") : .trips-main et .trip-detail-wrapper
@@ -586,7 +610,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261047';
+        s.src = 'page-loader.js?v=20261048';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -740,12 +764,14 @@
                                  réelles (openChangeCoverModal/openShareTripModal/openDeleteModal/
                                  leaveSharedTrip, inchangées), juste reposées dans un menu "..." compact
                                  au lieu de boutons toujours visibles, pour alléger l'en-tête comme le
-                                 mockup. "Back" ouvre le tiroir latéral (toggleMobileMenu(), déjà
-                                 utilisé par le hamburger du header) : cette page n'a pas de pile de
-                                 navigation à dépiler, mais c'est le seul vrai "retour" possible ici
-                                 (changer de voyage/en créer un autre). -->
+                                 mockup. "Back" ouvre le tiroir latéral (toggleTripsListDrawer(), demande
+                                 du 17/10/2026 : contrairement à toggleMobileMenu(), ne masque pas le
+                                 header/la nav du bas — ce tiroir EST la vue mobile par défaut de cette
+                                 page, pas un menu temporaire) : cette page n'a pas de pile de navigation
+                                 à dépiler, mais c'est le seul vrai "retour" possible ici (changer de
+                                 voyage/en créer un autre). -->
                             <div class="trip-mobile-icon-row">
-                                <button type="button" class="trip-mobile-icon-btn" onclick="toggleMobileMenu()" title="Back to trips" aria-label="Back to trips">
+                                <button type="button" class="trip-mobile-icon-btn" onclick="toggleTripsListDrawer()" title="Back to trips" aria-label="Back to trips">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
                                 </button>
                                 <span style="flex:1"></span>
@@ -1163,9 +1189,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261047"></script>
-<script src="locations-data.js?v=20261047"></script>
-<script src="script.js?v=20261047"></script>
+<script type="module" src="firebase-init.js?v=20261048"></script>
+<script src="locations-data.js?v=20261048"></script>
+<script src="script.js?v=20261048"></script>
 
 </body>
 </html>
