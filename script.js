@@ -2503,6 +2503,9 @@ let dayToRemoveBtn = null;
 let tripPageMap = null;
 let tripPageLayer = null;
 let tripMainLayerGroup = null;
+// Pastille sélectionnée dans "ITINERARY BY DAY" (demande du 17/10/2026, voir
+// window.renderTripDayPills()/window.selectTripMapDay() plus bas) : -1 = "All".
+let tripMapSelectedDay = -1;
 let dayMiniMaps = []; // instances Leaflet des mini-cartes par jour (une par .day-card), à détruire avant chaque re-render puisque box.innerHTML='' supprime leur conteneur DOM sans les libérer
 let itiSelectedCategories = []; // catégories cochées dans le multi-select de l'Auto-Itinerary Generator ; tableau vide = toutes les catégories
 let createTripSelectedCategories = []; // même principe pour la modale "Create New Trip" (My Trips)
@@ -7404,7 +7407,11 @@ window.deselectItineraryTrip = function() {
 
 const TRIP_DAY_COLORS = ['#D42759', '#8b5cf6', '#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#14b8a6', '#f43f5e', '#6366f1', '#84cc16'];
 
-function drawTripOnMap(trip, targetMap, targetLayerGroup) {
+// onlyDayIndex (demande du 17/10/2026, "ITINERARY BY DAY" : les pastilles de jour du Map
+// tab, voir window.renderTripDayPills() plus bas) : optionnel, n'affiche que ce jour-là
+// quand fourni (0-based) — comportement inchangé (tous les jours) quand omis, comme avant
+// cette demande.
+function drawTripOnMap(trip, targetMap, targetLayerGroup, onlyDayIndex) {
     if(!targetLayerGroup) return;
     targetLayerGroup.clearLayers();
     if(!trip || !trip.days || trip.days.length === 0) return;
@@ -7412,6 +7419,7 @@ function drawTripOnMap(trip, targetMap, targetLayerGroup) {
     let allPoints = [];
 
     trip.days.forEach((dayIds, idx) => {
+        if (onlyDayIndex != null && onlyDayIndex >= 0 && idx !== onlyDayIndex) return;
         const color = TRIP_DAY_COLORS[idx % TRIP_DAY_COLORS.length];
         let coords = [];
         dayIds.forEach((id, locIdx) => {
@@ -7440,6 +7448,54 @@ function drawTripOnMap(trip, targetMap, targetLayerGroup) {
         targetMap.fitBounds(L.polyline(allPoints).getBounds(), { padding: [40, 40], maxZoom: 16 });
     }
 }
+
+// "ITINERARY BY DAY" (demande du 17/10/2026, trip_finale_legere.html : mapTab(), "dans
+// l'onglet map, ajoute ITINERARY BY DAY") — pastille "All" + une par jour au-dessus de la
+// carte du voyage ; un tap filtre drawTripOnMap() (voir onlyDayIndex ci-dessus) et la
+// liste résumée sous la carte (window.renderTripDaySummary()) sur ce seul jour. Appelées
+// par window.renderTrip()/window.saveTrip() (inchangés par ailleurs) — aucun effet si ces
+// éléments n'existent pas sur la page (desktop les affiche aussi, pas de garde spécifique
+// mobile nécessaire ici).
+window.renderTripDayPills = function() {
+    const wrap = document.getElementById('trip-day-pills');
+    if (!wrap || !currentTrip) return;
+    const dayCount = currentTrip.days.length;
+    if (tripMapSelectedDay >= dayCount) tripMapSelectedDay = -1;
+    const allLabel = currentLang === 'fr' ? 'Tous' : 'All';
+    const dayLabel = currentLang === 'fr' ? 'Jour' : 'Day';
+    let html = `<button type="button" class="trip-day-pill" aria-pressed="${tripMapSelectedDay < 0}" onclick="window.selectTripMapDay(-1)">${allLabel}<b>${dayCount}</b></button>`;
+    for (let i = 0; i < dayCount; i++) {
+        const color = TRIP_DAY_COLORS[i % TRIP_DAY_COLORS.length];
+        html += `<button type="button" class="trip-day-pill" aria-pressed="${tripMapSelectedDay === i}" onclick="window.selectTripMapDay(${i})">${dayLabel}<b>${i + 1}</b><i style="background:${color}"></i></button>`;
+    }
+    wrap.innerHTML = html;
+};
+
+window.renderTripDaySummary = function() {
+    const wrap = document.getElementById('trip-day-summary');
+    if (!wrap || !currentTrip) return;
+    const dayLabel = currentLang === 'fr' ? 'Jour' : 'Day';
+    const noPlacesLabel = currentLang === 'fr' ? 'Aucun lieu pour le moment' : 'No places yet';
+    let rows = '';
+    currentTrip.days.forEach((dayIds, i) => {
+        if (tripMapSelectedDay >= 0 && tripMapSelectedDay !== i) return;
+        const color = TRIP_DAY_COLORS[i % TRIP_DAY_COLORS.length];
+        const names = dayIds.map(id => {
+            const loc = celebLocations.find(l => Number(l.id) === Number(id));
+            return loc ? loc.name.split(' ')[0] : null;
+        }).filter(Boolean);
+        const route = names.length ? names.join(' → ') : noPlacesLabel;
+        rows += `<div class="trip-day-summary-row"><span class="trip-day-summary-dot" style="background:${color}"></span><span class="trip-day-summary-label">${dayLabel} ${i + 1}</span><span class="trip-day-summary-route">${escapeHtml(route)}</span></div>`;
+    });
+    wrap.innerHTML = rows || `<div class="trip-day-summary-row"><span class="trip-day-summary-route">${currentLang === 'fr' ? 'Aucun jour pour le moment.' : 'No days yet.'}</span></div>`;
+};
+
+window.selectTripMapDay = function(idx) {
+    tripMapSelectedDay = idx;
+    window.renderTripDayPills();
+    window.renderTripDaySummary();
+    if (tripPageMap) drawTripOnMap(currentTrip, tripPageMap, tripPageLayer, idx);
+};
 
 // Recrée les mini-cartes par jour affichées dans chaque .day-card. Appelée après chaque
 // re-render de l'itinéraire : les anciennes instances Leaflet sont détruites au préalable
@@ -11094,15 +11150,6 @@ window.openLocModal = function(id, postContext) {
     const loc = celebLocations.find(l => l.id == id);
     if(!loc) return;
 
-    // postContext.communityStyle (demande du 17/10/2026, onglet Community de feed.html,
-    // "scroll comme Instagram ... n'affiche par défaut que la description ... pour voir la
-    // suite, ajoute 'plus'") : drapeau explicite posé UNIQUEMENT par openFeedPost() dans
-    // feed.html, plutôt que de réutiliser postContext.username (que Mei's Pictures NE pose
-    // PAS, mais que profile.html pose probablement aussi sur sa propre copie non vérifiée de
-    // cette modale) — pour ne changer l'affichage que là où c'est demandé, sans régression
-    // visuelle ailleurs.
-    const isCommunityPost = !!(postContext && postContext.communityStyle);
-
     const modalTitle = document.getElementById('modal-title');
     const modalMeta = document.getElementById('modal-meta');
     const modalHero = document.getElementById('modal-hero');
@@ -11110,27 +11157,16 @@ window.openLocModal = function(id, postContext) {
     const modalMapLink = document.getElementById('modal-map-link');
     const modalMetaBox = document.getElementById('modal-meta-box');
 
-    // Pas de titre superposé sur la photo, et nom du lieu + groupe à la place de
-    // ville/pays/catégorie (demande du 17/10/2026, posts Community de feed.html : "ajoute le
-    // nom du lieu là où il y a actuellement écrit la ville et le pays, et supprime la ville,
-    // le pays et la catégorie du lieu").
-    if(modalTitle) modalTitle.textContent = isCommunityPost ? '' : loc.name;
-    if(modalMeta) modalMeta.textContent = isCommunityPost
-        ? `${loc.name}${loc.group ? ' · ' + loc.group : ''}`
-        : `${loc.city}, ${loc.country} • ${getCatName(loc.category)}`;
+    if(modalTitle) modalTitle.textContent = loc.name;
+    if(modalMeta) modalMeta.textContent = `${loc.city}, ${loc.country} • ${getCatName(loc.category)}`;
     // La photo de la publication (si on vient d'une tuile de profile.html) prime sur
     // l'image générique du lieu, pour que le hero montre bien LA photo cliquée.
-    // recreatedPhotoUrl() : no-op pour une simple chaîne (publication utilisateur classique,
-    // voir openFeedPost() dans feed.html) — ne s'applique en pratique qu'à la 1ère photo de
-    // Mei quand postContext vient d'openSacredPlace(), qui peut désormais être un objet
-    // {url, official} (demande du 03/10/2026, voir window.createPhotoGalleryField()).
+    // recreatedPhotoUrl() : no-op pour une simple chaîne (publication utilisateur classique)
+    // — ne s'applique en pratique qu'à la 1ère photo de Mei quand postContext vient
+    // d'openSacredPlace(), qui peut désormais être un objet {url, official} (demande du
+    // 03/10/2026, voir window.createPhotoGalleryField()).
     const heroImgUrl = (postContext && recreatedPhotoUrl(postContext.photo)) || loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg');
-    // Pas de dégradé noir sur les posts Community (demande du 17/10/2026 : "n'affiche pas de
-    // dégradé noir sur l'image et le nom du lieu sur l'image") — le nom du lieu est de toute
-    // façon déplacé dans #modal-meta juste au-dessus pour ce cas, modal-title restant vide.
-    if(modalHero) modalHero.style.backgroundImage = isCommunityPost
-        ? `url('${heroImgUrl}')`
-        : `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
+    if(modalHero) modalHero.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
 
     // Galerie horizontale "Mei's Pictures" (demande du 19/09/2026, "parfois pour un lieu il
     // y a plusieurs photos de Mei... je veux que tu affiches la première photo du lieu dans
@@ -11419,19 +11455,6 @@ window.openLocModal = function(id, postContext) {
     const modalDetailsLabelEl = document.getElementById('modal-details-label');
     if (modalDetailsLabelEl) modalDetailsLabelEl.classList.toggle('hidden', !!postContext);
 
-    // Repli "plus"/"moins" (demande du 17/10/2026, posts Community de feed.html) : par
-    // défaut, seules la légende utilisateur (#modal-post-caption, déjà affichée plus haut) et
-    // #modal-meta (nom du lieu + groupe) restent visibles — le reste (Details/About this
-    // place ou "Following in X's footsteps"/boutons Maps+More details, tous dans
-    // #modal-expand-section) ne s'affiche qu'au clic sur "plus". Masqué/toujours déplié pour
-    // tout autre usage de cette modale partagée (fiche lieu classique, Mei's Pictures,
-    // profile.html...), comme avant ce changement.
-    const modalMoreToggle = document.getElementById('modal-more-toggle');
-    const modalExpandSection = document.getElementById('modal-expand-section');
-    if (modalMoreToggle) modalMoreToggle.classList.toggle('hidden', !isCommunityPost);
-    if (modalExpandSection) modalExpandSection.classList.toggle('modal-expand-collapsed', isCommunityPost);
-    if (modalMoreToggle) modalMoreToggle.textContent = currentLang === 'fr' ? '··· plus' : '··· more';
-
     if(modalMapLink) modalMapLink.href = `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}`;
 
     // Bouton "Plus de détails" -> renvoie vers la fiche complète du lieu sur map.html
@@ -11443,13 +11466,8 @@ window.openLocModal = function(id, postContext) {
 
     // Traduction des petits libellés statiques de la modale (si présents sur la page)
     if (modalDetailsLabelEl) modalDetailsLabelEl.textContent = t('detailsLabel');
-    // "Following in X's footsteps" à la place de "About this place" pour un post Community
-    // (demande du 17/10/2026) — même substitution dynamique du nom de groupe que
-    // t('lStoryBts') ailleurs sur le site (voir map.html/renderLocationRichContent()).
     const modalAboutLabel = document.getElementById('modal-about-label');
-    if(modalAboutLabel) modalAboutLabel.textContent = isCommunityPost
-        ? t('lStoryBts').replace(/BTS/g, loc.group || 'BTS')
-        : t('aboutPlaceLabel');
+    if(modalAboutLabel) modalAboutLabel.textContent = t('aboutPlaceLabel');
     const modalMapLinkText = document.getElementById('modal-map-link-text');
     if(modalMapLinkText) modalMapLinkText.textContent = t('openInMaps');
 
@@ -11476,19 +11494,6 @@ window.openLocModal = function(id, postContext) {
             popupMap.invalidateSize();
         }
     }, 150);
-};
-
-// Bouton "··· plus"/"··· moins" (demande du 17/10/2026, posts Community de feed.html) :
-// bascule le repli de #modal-expand-section posé par openLocModal() ci-dessus.
-window.toggleLocModalMore = function() {
-    const section = document.getElementById('modal-expand-section');
-    const btn = document.getElementById('modal-more-toggle');
-    if (!section || !btn) return;
-    const nowCollapsed = !section.classList.contains('modal-expand-collapsed');
-    section.classList.toggle('modal-expand-collapsed', nowCollapsed);
-    btn.textContent = nowCollapsed
-        ? (currentLang === 'fr' ? '··· plus' : '··· more')
-        : (currentLang === 'fr' ? '··· moins' : '··· less');
 };
 
 window.closeLocModal = function() {
@@ -13973,6 +13978,12 @@ window.renderTrip = function() {
     document.getElementById('reco-section').style.display = recoCount > 0 ? 'block' : 'none';
     document.querySelectorAll('.day-loc').forEach(el => el.setAttribute('draggable', 'true'));
     
+    // Revient sur "All" à chaque (re)chargement complet du voyage (changement de voyage,
+    // navigation...) — contrairement à saveTrip() plus bas, qui garde la sélection en
+    // cours pendant une simple modification.
+    tripMapSelectedDay = -1;
+    window.renderTripDayPills();
+    window.renderTripDaySummary();
     if(tripPageMap) {
         setTimeout(() => { tripPageMap.invalidateSize(); drawTripOnMap(currentTrip, tripPageMap, tripPageLayer); }, 200);
     }
@@ -14083,6 +14094,20 @@ window.toggleDateCalendar = function(prefix) {
     if (opening) renderDateRangeCalendar(prefix);
 };
 
+// Pastilles Departure/Return dans l'en-tête (demande du 17/10/2026, répétée — "ajoute
+// Departure et return dans le header... enlève Trip duration & dates de plan") :
+// #edit-cal-popup n'a plus son propre repli (voir trips.html, class="hidden" retirée de
+// son HTML) — il reste désormais toujours "ouvert" à l'intérieur de ce wrapper englobant
+// #trip-dates-popup, qui porte seul le repli par défaut. applyDateCalendar('edit')
+// ci-dessous referme ce wrapper plutôt que l'ancien #edit-cal-popup.
+window.toggleTripDatesPopup = function() {
+    const wrap = document.getElementById('trip-dates-popup');
+    if (!wrap) return;
+    const opening = wrap.classList.contains('hidden');
+    wrap.classList.toggle('hidden');
+    if (opening) renderDateRangeCalendar('edit');
+};
+
 // Redistribue automatiquement TOUS les lieux déjà associés à ce voyage (assignés à un jour
 // OU seulement dans la liste "non assignés") sur le nombre de jours actuel — demande du
 // 07/09/2026 : "quand je change les dates et que je clique sur apply, il faut que ça génère
@@ -14123,8 +14148,13 @@ window.regenerateTripItinerary = function() {
 };
 
 window.applyDateCalendar = function(prefix) {
-    const popup = document.getElementById(prefix + '-cal-popup');
-    if (popup) popup.classList.add('hidden');
+    if (prefix === 'edit') {
+        const wrap = document.getElementById('trip-dates-popup');
+        if (wrap) wrap.classList.add('hidden');
+    } else {
+        const popup = document.getElementById(prefix + '-cal-popup');
+        if (popup) popup.classList.add('hidden');
+    }
     updateDateBoxes(prefix);
     if (prefix === 'edit') {
         syncItineraryDaysToDates();
@@ -14645,8 +14675,13 @@ window.saveTrip = function() {
 
     window.renderTripsSidebar();
 
+    // Garde la pastille de jour sélectionnée (contrairement à renderTrip(), qui revient
+    // sur "All" — ici, une simple modification en cours ne doit pas réinitialiser le
+    // filtre choisi).
+    window.renderTripDayPills();
+    window.renderTripDaySummary();
     if(tripPageMap) {
-        drawTripOnMap(currentTrip, tripPageMap, tripPageLayer);
+        drawTripOnMap(currentTrip, tripPageMap, tripPageLayer, tripMapSelectedDay);
     }
 
     // saveTrip() ne reconstruit pas le HTML des .day-card (pour ne pas perturber le drag & drop

@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261050" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261051" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -197,6 +197,52 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .feed-tile-official-badge { position: absolute; left: 6px; bottom: 6px; display: flex; align-items: center; gap: 4px; background: rgba(20,16,30,.55); color: #fff; font-size: 10px; font-weight: 800; letter-spacing: .02em; text-transform: uppercase; padding: 4px 8px; border-radius: 100px; z-index: 2; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .feed-empty, .feed-loading { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
 
+/* Fil de publications plein écran (demande du 17/10/2026, Community/Saved : "garde
+   l'affichage en quadrillage actuel, mais lorsqu'on clique sur un post, ça affiche les
+   autres posts à la suite et qu'on puisse scroller pour voir les posts") — la grille
+   (.feed-grid/.feed-tile ci-dessus) reste INCHANGÉE ; un clic sur une tuile ouvre ce
+   nouveau composant séparé plutôt que la modale #loc-modal partagée (ré-utilisée par
+   profile.html/visited.html/map.html pour une fiche UNE SEULE publication/lieu à la
+   fois — la détourner pour empiler plusieurs publications défilables aurait risqué de
+   régresser ces autres pages pour un besoin propre à cette seule page). Un clic ouvre la
+   liste positionnée directement sur la publication cliquée (scrollIntoView sans
+   animation, voir openFeedPost() plus bas), puis on peut défiler verticalement pour voir
+   les suivantes/précédentes — comme le fil "post" d'Instagram. */
+.feed-post-feed { position: fixed; inset: 0; z-index: 9700; background: #fff; display: none; flex-direction: column; }
+.feed-post-feed.open { display: flex; }
+.feed-post-feed-close { position: absolute; top: calc(14px + env(safe-area-inset-top)); right: 14px; z-index: 10; width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(20,16,30,.45); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.feed-post-feed-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+.fpf-card { border-bottom: 8px solid #F4F2F8; }
+.fpf-media { position: relative; width: 100%; padding-bottom: 100%; background-size: cover; background-position: center; }
+/* Lieu + groupe, petit, en bas à gauche DE LA PHOTO (demande du 17/10/2026, reformulant
+   le "pas de dégradé/nom sur l'image" du 17/10/2026 plus tôt dans la journée — remplacé
+   par cette version plus discrète, explicitement demandée) — plus dans la zone
+   description/légende en dessous (voir .fpf-caption plus bas, qui ne montre plus QUE le
+   texte de l'utilisateur). */
+.fpf-media-tag { position: absolute; left: 10px; bottom: 8px; background: rgba(20,16,30,.55); color: #fff; font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 100px; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fpf-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px 8px; }
+.fpf-avatar { width: 32px; height: 32px; border-radius: 50%; color: #fff; font-size: 12.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+.fpf-username { font-size: 13.5px; font-weight: 700; color: #1F2430; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.fpf-like-btn, .fpf-save-btn { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; color: #212832; }
+.fpf-like-btn.liked { color: #D42759; }
+.fpf-like-btn.liked svg { fill: #D42759; stroke: #D42759; }
+.fpf-like-count { font-size: 12.5px; font-weight: 700; color: #212832; margin: 0 2px 0 -4px; }
+.fpf-save-btn.saved { color: #D42759; }
+.fpf-save-btn.saved svg { fill: #D42759; stroke: #D42759; }
+.fpf-body { padding: 0 14px 16px; }
+.fpf-caption { font-size: 13px; color: #1F2430; line-height: 1.5; margin-bottom: 8px; }
+.fpf-more-toggle { display: block; background: none; border: none; padding: 0; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; }
+.fpf-more-toggle:hover { color: #D42759; }
+.fpf-expand { margin-top: 10px; }
+.fpf-expand.hidden { display: none; }
+.fpf-about-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+.fpf-desc { font-size: 13px; line-height: 1.8; color: #3f495c; margin-bottom: 14px; }
+.fpf-links { display: flex; gap: 10px; flex-wrap: wrap; }
+.fpf-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #2E3644; font-size: 12.5px; font-weight: 600; transition: .2s; }
+.fpf-link:hover { border-color: #D42759; color: #D42759; }
+.fpf-link.danger { border-color: #D42759; color: #D42759; }
+.fpf-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 20px; }
+
 /* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
    "publication" que profile.html — voir #loc-modal plus bas — plutôt que l'ancien
    #feed-post-overlay propre à cette page. SANS la mini-carte Leaflet ("supprime la map
@@ -256,12 +302,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .modal-post-save-btn svg { transition: transform 0.15s; }
 .modal-post-save-btn.saved svg { transform: scale(1.1); fill: #D42759; }
 .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
-/* bouton "plus"/"moins" (demande du 17/10/2026, posts Community de feed.html) : replie
-   #modal-expand-section par défaut pour un post communautaire, voir openLocModal()
-   dans script.js et window.toggleLocModalMore() ci-dessous dans ce fichier. */
-.modal-more-toggle { display: block; background: none; border: none; padding: 0; margin: 0 0 16px 0; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; }
-.modal-more-toggle:hover { color: #D42759; }
-#modal-expand-section.modal-expand-collapsed { display: none; }
 @media (max-width: 760px) {
   .modal-content { width: 97%; border-radius: 12px; }
   .modal-body { padding: 18px 18px 22px 18px; }
@@ -376,7 +416,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261050';
+        s.src = 'page-loader.js?v=20261051';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -507,9 +547,20 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     <div class="feed-grid" id="feed-grid"></div>
 </div>
 
+<!-- Fil de publications plein écran, Community/Saved uniquement (demande du 17/10/2026)
+     — voir window.openFeedPost()/window.closeFeedPostFeed() plus bas. -->
+<div id="feed-post-feed" class="feed-post-feed">
+    <button type="button" class="feed-post-feed-close" onclick="window.closeFeedPostFeed()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="feed-post-feed-scroll" id="feed-post-feed-scroll"></div>
+</div>
+
 <!-- MODAL PUBLICATION (rempli par window.openLocModal(id, postContext) du script.js
      partagé) — même structure que profile.html, SANS mini-carte (demande du 10/09/2026,
-     capture d'écran fournie : "supprime la map de cette fenêtre"). -->
+     capture d'écran fournie : "supprime la map de cette fenêtre"). Utilisée par Mei's
+     Pictures (openSacredPlace()) sur cette page, et par les autres pages du site — plus
+     par Community/Saved, voir window.openFeedPost() plus bas. -->
 <div id="loc-modal" class="modal hidden">
     <div class="modal-content">
         <span class="close-btn" onclick="closeLocModal()">&times;</span>
@@ -530,33 +581,27 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
             </div>
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
             <div id="modal-meta"></div>
-            <!-- bouton "plus" (demande du 17/10/2026, posts Community de feed.html : "pour
-                 voir la suite, ajoute 'plus'") — masqué par défaut/non-communautaire, affiché
-                 et basculé par openLocModal()/window.toggleLocModalMore() dans script.js. -->
-            <button type="button" class="modal-more-toggle hidden" id="modal-more-toggle" onclick="window.toggleLocModalMore()"></button>
-            <div id="modal-expand-section">
-                <span class="modal-sub-label" id="modal-details-label">Details</span>
-                <div id="modal-meta-box"></div>
-                <span class="modal-sub-label" id="modal-about-label">About this place</span>
-                <div id="modal-desc"></div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span id="modal-map-link-text">Open in Google Maps</span>
-                    </a>
-                    <a id="modal-more-details" href="map.html" class="modal-map-link" style="border-color:#D42759; color:#D42759;">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                        More details
-                    </a>
-                </div>
+            <span class="modal-sub-label" id="modal-details-label">Details</span>
+            <div id="modal-meta-box"></div>
+            <span class="modal-sub-label" id="modal-about-label">About this place</span>
+            <div id="modal-desc"></div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span id="modal-map-link-text">Open in Google Maps</span>
+                </a>
+                <a id="modal-more-details" href="map.html" class="modal-map-link" style="border-color:#D42759; color:#D42759;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D42759" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    More details
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261050"></script>
-<script src="locations-data.js?v=20261050"></script>
-<script src="script.js?v=20261050"></script>
+<script type="module" src="firebase-init.js?v=20261051"></script>
+<script src="locations-data.js?v=20261051"></script>
+<script src="script.js?v=20261051"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -1107,31 +1152,132 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         }
     }
 
-    // Ouvre la modale "publication" partagée (voir #loc-modal ci-dessus et
-    // window.openLocModal() dans script.js) — demande du 10/09/2026 : remplace l'ancien
-    // #feed-post-overlay propre à cette page par la même popup que profile.html. Ne fait
-    // rien si p.locationId ne correspond à aucun lieu connu (même garde qu'ailleurs sur
-    // le site, voir openLocModal()).
+    // Ouvre le fil plein écran (demande du 17/10/2026, voir #feed-post-feed plus haut et
+    // son commentaire : "lorsqu'on clique sur un post, ça affiche les autres posts à la
+    // suite et qu'on puisse scroller pour voir les posts") — remplace l'ancien usage de
+    // #loc-modal pour CETTE page uniquement (Mei's Pictures/openSacredPlace() continue de
+    // l'utiliser, inchangé). currentFeedPhotosList : la liste actuellement affichée par la
+    // grille (feedPhotos filtré ou non, selon l'onglet/la recherche) — capturée ici plutôt
+    // que relue depuis le DOM, pour que le fil défilant montre exactement ce que la
+    // personne voyait dans la grille au moment du clic.
     function openFeedPost(index) {
-        const p = feedPhotos[index];
-        if (!p || typeof window.openLocModal !== 'function') return;
-        window.openLocModal(p.locationId, {
-            username: p.username,
-            uid: p.uid,
-            avatarColor: feedAvatarColor(p.username),
-            photo: p.photo,
-            caption: p.caption,
-            photoKey: p.uid + '_' + p.id,
-            photoId: p.standalone ? p.id : null,
-            date: p.date,
-            taggedFriends: p.taggedFriends,
-            // Habillage "Community"/"Saved" (demande du 17/10/2026, voir le commentaire sur
-            // postContext.communityStyle dans openLocModal(), script.js) : pas de dégradé/nom
-            // sur l'image, nom du lieu + groupe à la place de ville/pays, contenu replié par
-            // défaut derrière "···more" — scopé à CETTE page via ce drapeau explicite plutôt
-            // que la simple présence de postContext.username, pour ne jamais changer le
-            // rendu de ce même #loc-modal partagé sur profile.html.
-            communityStyle: true
+        const list = feedPhotos;
+        const p = list[index];
+        if (!p) return;
+        renderFeedPostFeed(list, p);
+        const overlay = document.getElementById('feed-post-feed');
+        overlay.classList.add('open');
+        const card = document.getElementById('feed-post-feed-scroll').querySelector(`[data-feed-index="${index}"]`);
+        if (card) card.scrollIntoView({ block: 'start' });
+    }
+
+    window.closeFeedPostFeed = function () {
+        document.getElementById('feed-post-feed').classList.remove('open');
+        document.getElementById('feed-post-feed-scroll').innerHTML = '';
+    };
+
+    // Construit une carte par publication (photo, auteur, légende, contenu replié derrière
+    // "···more") — voir .fpf-* dans le <style> plus haut pour la mise en forme. Le lieu
+    // associé (nom/groupe sur la photo, description/liens dans la partie repliée) est
+    // retrouvé via p.locationId ; une publication dont le lieu a disparu entre-temps garde
+    // quand même sa carte (photo/légende/likes), simplement sans la partie repliée.
+    function renderFeedPostFeed(list) {
+        const scroll = document.getElementById('feed-post-feed-scroll');
+        if (!list.length) { scroll.innerHTML = '<div class="fpf-empty">No public photos yet.</div>'; return; }
+        const heartSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>';
+        const saveSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21 12 16.5 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"></path></svg>';
+        scroll.innerHTML = list.map((p, i) => {
+            const loc = (typeof celebLocations !== 'undefined') ? celebLocations.find(l => l.id === p.locationId || l.id === Number(p.locationId)) : null;
+            const locLabel = loc ? `${loc.name}${loc.group ? ' · ' + loc.group : ''}` : (p.locationName ? `${p.locationName}${p.group ? ' · ' + p.group : ''}` : '');
+            const photoKey = p.uid + '_' + p.id;
+            return `<div class="fpf-card" data-feed-index="${i}" data-photo-key="${escapeHtml(photoKey)}">
+                <div class="fpf-media" style="background-image:url('${p.photo}')">
+                    ${locLabel ? `<div class="fpf-media-tag">${escapeHtml(locLabel)}</div>` : ''}
+                </div>
+                <div class="fpf-header">
+                    <div class="fpf-avatar" data-fpf-avatar style="background:${feedAvatarColor(p.username)}">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
+                    <div class="fpf-username" data-fpf-username>${escapeHtml(p.username || '')}</div>
+                    <button type="button" class="fpf-like-btn" data-fpf-like>${heartSvg}</button>
+                    <span class="fpf-like-count" data-fpf-like-count>${p.likeCount != null ? p.likeCount : '·'}</span>
+                    <button type="button" class="fpf-save-btn" data-fpf-save>${saveSvg}</button>
+                </div>
+                <div class="fpf-body">
+                    ${p.caption ? `<div class="fpf-caption">"${escapeHtml(p.caption)}"</div>` : ''}
+                    ${loc ? `<button type="button" class="fpf-more-toggle" data-fpf-more>··· more</button>
+                    <div class="fpf-expand hidden" data-fpf-expand>
+                        <span class="fpf-about-label">${escapeHtml(t('lStoryBts').replace(/BTS/g, loc.group || 'BTS'))}</span>
+                        <div class="fpf-desc">${getLocText(loc.fullDescription) || 'No description available.'}</div>
+                        <div class="fpf-links">
+                            <a class="fpf-link" href="https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}" target="_blank">${t('openInMaps')}</a>
+                            <a class="fpf-link" href="map.html?loc=${loc.id}">${t('moreDetails')}</a>
+                        </div>
+                    </div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+
+        scroll.querySelectorAll('.fpf-card').forEach((card, i) => {
+            const p = list[i];
+            const photoKey = p.uid + '_' + p.id;
+            card.querySelector('[data-fpf-avatar]').onclick = () => { if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username); };
+            card.querySelector('[data-fpf-username]').onclick = () => { if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username); };
+            const moreBtn = card.querySelector('[data-fpf-more]');
+            if (moreBtn) moreBtn.onclick = () => {
+                const expand = card.querySelector('[data-fpf-expand]');
+                const collapsed = expand.classList.toggle('hidden');
+                moreBtn.textContent = collapsed ? '··· more' : '··· less';
+            };
+            const likeBtn = card.querySelector('[data-fpf-like]');
+            const likeCountEl = card.querySelector('[data-fpf-like-count]');
+            likeBtn.onclick = async () => {
+                const nowLiked = !likeBtn.classList.contains('liked');
+                likeBtn.classList.toggle('liked', nowLiked);
+                likeCountEl.textContent = Math.max(0, (parseInt(likeCountEl.textContent, 10) || 0) + (nowLiked ? 1 : -1));
+                p.likeCount = Math.max(0, (parseInt(likeCountEl.textContent, 10) || 0));
+                p.likedByMe = nowLiked;
+                if (typeof window.togglePhotoLike === 'function') await window.togglePhotoLike(photoKey, nowLiked);
+            };
+            if (typeof window.getPhotoLikeState === 'function') {
+                window.getPhotoLikeState(photoKey).then(state => {
+                    if (!card.isConnected) return;
+                    likeCountEl.textContent = state.count;
+                    likeBtn.classList.toggle('liked', state.likedByMe);
+                });
+            }
+            const saveBtn = card.querySelector('[data-fpf-save]');
+            saveBtn.onclick = async () => {
+                const nowSaved = !saveBtn.classList.contains('saved');
+                saveBtn.classList.toggle('saved', nowSaved);
+                if (typeof window.togglePhotoSave === 'function') await window.togglePhotoSave(photoKey, nowSaved);
+                if (typeof window.onPhotoSaveToggled === 'function') window.onPhotoSaveToggled(photoKey, nowSaved);
+            };
+            if (typeof window.isPhotoSaved === 'function') {
+                window.isPhotoSaved(photoKey).then(saved => { if (card.isConnected) saveBtn.classList.toggle('saved', saved); });
+            }
+            // Suppression admin (même logique que #modal-post-admin-delete-btn dans
+            // openLocModal(), script.js) — un avis (photoId absent, standalone falsy) et
+            // une photo autonome n'utilisent pas la même fonction de suppression.
+            if (p.uid && typeof window.isCurrentUserAdmin === 'function') {
+                window.isCurrentUserAdmin().then(isAdmin => {
+                    if (!isAdmin || !card.isConnected) return;
+                    const body = card.querySelector('.fpf-body');
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'fpf-link danger';
+                    btn.style.marginTop = '10px';
+                    btn.textContent = currentLang === 'fr' ? 'Supprimer (admin)' : 'Delete (admin)';
+                    btn.onclick = async () => {
+                        const msg = currentLang === 'fr' ? 'Supprimer définitivement cette publication ?' : 'Permanently delete this post?';
+                        if (!confirm(msg)) return;
+                        const result = p.standalone
+                            ? await window.adminDeleteProfilePhoto(p.uid, p.id)
+                            : await window.adminDeleteLocationReview(p.locationId, p.uid);
+                        if (result && result.success) { window.closeFeedPostFeed(); loadFeed(); }
+                        else alert(currentLang === 'fr' ? 'Suppression impossible.' : 'Could not delete this post.');
+                    };
+                    body.appendChild(btn);
+                });
+            }
         });
     }
 
