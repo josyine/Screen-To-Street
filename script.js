@@ -1219,9 +1219,18 @@ window.showSimpleToast = function (message, opts) {
 // localStorage. Pour un voyage seulement PARTAGÉ avec ce compte (pas dans myTrips), voir
 // le traitement complémentaire dans refreshSharedTrips() plus bas, qui a accès à
 // sharedTripsCache une fois celui-ci chargé depuis Firestore.
+// tripMobileShowDetailOnLoad (demande du 17/10/2026, "affiche la page trips comme dans la
+// capture d'écran 1... lorsqu'il y a des trips de créés, il faut les afficher en liste...
+// une fois qu'on clique sur un trip, ça ouvre la page [détail]") : sur mobile, la toute
+// PREMIÈRE fois que initTrips() tourne après le chargement de la page (voir le garde
+// tripsInitialMobileViewDone juste avant window.initTrips plus bas), la liste des voyages
+// doit être la vue par défaut plutôt que de rouvrir directement le dernier voyage actif —
+// SAUF ici, le cas d'un lien direct ?openTrip=<id> (depuis une conversation de groupe),
+// qui doit continuer à ouvrir ce voyage précis immédiatement, comme avant.
+let tripMobileShowDetailOnLoad = false;
 (function () {
     const openTripParam = new URLSearchParams(location.search).get('openTrip');
-    if (openTripParam) localStorage.setItem('activeTripId', openTripParam);
+    if (openTripParam) { localStorage.setItem('activeTripId', openTripParam); tripMobileShowDetailOnLoad = true; }
 })();
 
 // Bascule silencieusement une couche de tuiles vers le repli OSM standard si trop de
@@ -2296,6 +2305,14 @@ let currentFilteredLocations = [];
 // n'affiche que les lieux visités") — voir renderLocations()/renderVisitedCountryOverlays()
 // plus bas et toggleVisitedOnlyMap() tout en bas de ce fichier.
 let visitedOnlyMapMode = false;
+// Vue monde fixe (sans zoom) demandée pour l'onglet Visited (demande du 17/10/2026, voir
+// toggleVisitedOnlyMap() tout en bas) — un flag PARTAGÉ plutôt qu'un simple paramètre de
+// fonction, car switchMainTab('visited', ...) déclenche indirectement un second rendu via
+// clearTripFromMainMap() -> renderLocations(true) -> son propre garde-fou "onglet Visited
+// actif" (voir renderLocations() plus bas), qui appelait jusqu'ici renderVisitedTabList()
+// SANS argument, donc toujours avec fitBounds:true, avant même que le rendu explicite
+// ci-dessous ne s'exécute — deux rendus concurrents, dont le 1er zoomait quand même.
+let visitedWorldViewMode = false;
 let visitedCountryLayerGroup = null;
 let currentLocationIdForMemory = null;
 // Dernier objet lieu effectivement passé à renderLocationRichContent() (demande du
@@ -3462,7 +3479,13 @@ window.addEventListener('firebase-ready', async (e) => {
     // dans wishlist.html) mais n'avait pas #map/#feed-grid, donc cette fusion n'y tournait
     // jamais — une photo d'en-tête corrigée côté admin (locationSkeletonOverrides) restait
     // invisible sur "My wishlist" jusqu'au prochain export statique planifié.
-    if (document.getElementById('map') || document.getElementById('feed-grid') || document.getElementById('wish-container')) {
+    // BUG corrigé (demande du 17/10/2026, "dans la page visited, fais en sorte que la photo
+    // des lieux soient correctes... actuellement ce n'est pas mis à jour") — exactement la
+    // même cause que le correctif wishlist.html juste au-dessus, jamais étendue à
+    // visited.html (#visit-container) : renderVisited() (voir plus bas, à chaque appel via
+    // les hooks jumeaux de refreshWishlistFromCloud() ci-dessous) lit lui aussi loc.img
+    // depuis ce même celebLocations partagé.
+    if (document.getElementById('map') || document.getElementById('feed-grid') || document.getElementById('wish-container') || document.getElementById('visit-container')) {
         await Promise.all([
             // BUG corrigé (demande du 19/09/2026, "Dans Location submissions, lorsque je
             // publie un lieu il ne se publie plus dans map") — même famille de bug que les
@@ -3504,6 +3527,10 @@ window.addEventListener('firebase-ready', async (e) => {
                     // (ex: ajouté en navigation invitée avant publication admin), sa photo
                     // d'en-tête n'y était alors mise à jour qu'au prochain chargement de page.
                     if (anyAdded && typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
+                    // visited.html (demande du 17/10/2026, voir la note sur le garde
+                    // #visit-container plus haut) : même hook jumeau que refreshWishlistFromCloud
+                    // ci-dessus (window.refreshVisitedFromCloud = renderVisited, voir visited.html).
+                    if (anyAdded && typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
                 } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
             })(),
             // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
@@ -3531,6 +3558,12 @@ window.addEventListener('firebase-ready', async (e) => {
                     // fraîches" (voir le listener cloudData.wishlistLocs plus bas, même
                     // convention) — réutilisé ici tel quel plutôt qu'un nouveau hook.
                     if (anyOverrideApplied && typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
+                    // visited.html (demande du 17/10/2026) : c'est CETTE branche qui applique
+                    // locationSkeletonOverrides, donc skeletonFields.img — la correction de
+                    // photo d'en-tête elle-même (voir saveLocationEdit() plus bas). Sans ce
+                    // hook, "Visited" restait sur l'ancienne photo jusqu'au prochain export
+                    // statique, exactement le bug signalé.
+                    if (anyOverrideApplied && typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
                 } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
             })(),
             // BUG corrigé (demande du 19/09/2026, "le bouton delete location ne fonctionne
@@ -3589,6 +3622,7 @@ window.addEventListener('firebase-ready', async (e) => {
             // tout juste arrivé") — manquait encore à la liste des hooks de rafraîchissement
             // wishlist, contrairement à fetchLocationSkeletonOverrides() plus haut.
             if (typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
+            if (typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
         }
     }
 
@@ -6275,7 +6309,12 @@ function renderLocations(skipFitBounds) {
     // jusqu'au prochain clic manuel sur l'onglet (demande du 13/09/2026).
     const visitedTabBtn = document.getElementById('tab-visited-btn');
     if (visitedTabBtn && visitedTabBtn.classList.contains('active') && typeof renderVisitedTabList === 'function') {
-        renderVisitedTabList();
+        // visitedWorldViewMode (demande du 17/10/2026, voir sa déclaration plus haut) :
+        // un rendu déclenché indirectement ici (ex: via clearTripFromMainMap() juste
+        // avant le rendu explicite de switchMainTab('visited', ...)) doit rester cohérent
+        // avec la vue monde sans zoom demandée pour ce passage, pas retomber sur le
+        // fitBounds par défaut.
+        renderVisitedTabList({ worldView: visitedWorldViewMode });
         return;
     }
 
@@ -6936,7 +6975,8 @@ function renderMapMarkers(locations, opts) {
 // ==========================================
 // 5. ONGLETS EXPLORE / MY ITINERARY (MAP.HTML)
 // ==========================================
-window.switchMainTab = function(tabName) {
+window.switchMainTab = function(tabName, opts) {
+    opts = opts || {};
     document.querySelectorAll('.top-tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.sidebar-main-panel').forEach(panel => {
         panel.classList.add('hidden');
@@ -6970,8 +7010,18 @@ window.switchMainTab = function(tabName) {
         document.getElementById('tab-visited-btn').classList.add('active');
         const p = document.getElementById('sidebar-visited');
         if(p) { p.classList.remove('hidden'); p.classList.add('active'); }
+        // worldView (demande du 17/10/2026, "ça zoom sur les lieux visités, je ne veux pas
+        // qu'il y ait un zoom quand on clique sur le bouton") : transmis par
+        // toggleVisitedOnlyMap() ci-dessous pour CE seul chemin d'entrée. Posé AVANT
+        // clearTripFromMainMap() (qui peut redéclencher un rendu "Visited" indirect via le
+        // garde-fou de renderLocations(), voir plus haut) pour que CE rendu-là reste lui
+        // aussi en vue monde sans zoom, au lieu de retomber sur fitBounds par défaut.
+        visitedWorldViewMode = !!opts.worldView;
         clearTripFromMainMap();
-        renderVisitedTabList();
+        // renderVisitedTabList() n'appelle alors jamais fitBounds pour ce chemin (plus de
+        // zoom à écraser après coup, voir le commentaire qui expliquait l'ancienne approche
+        // juste en dessous).
+        renderVisitedTabList({ worldView: visitedWorldViewMode });
         // Teinte des pays visités (demande du 16/10/2026, "ça colorie tout le pays
         // visité") : ajoutée ici plutôt que dans renderVisitedTabList() lui-même pour
         // qu'elle s'applique aussi bien en arrivant depuis l'onglet historique de ce menu
@@ -6987,18 +7037,22 @@ window.switchMainTab = function(tabName) {
 // d'abord ouvrir le menu hamburger pour l'atteindre comme c'était jusqu'ici le seul moyen.
 // Bascule : un second clic revient à la vue Explore normale (tous les filtres actifs).
 // (demande du 17/10/2026, "n'affiche que les lieux visités sans zoomer la map, affiche
-// la map du monde entière, vue de large") : switchMainTab('visited') réutilise le même
-// renderVisitedTabList() que l'onglet "Visited" historique de la sidebar, qui zoome
-// toujours sur les lieux visités (fitBounds: true, voir plus bas) — volontairement laissé
-// tel quel pour ce dernier (comportement desktop existant, pas concerné par la demande).
-// Seul CE bouton flottant doit à la place montrer le monde entier dézoomé ; on force donc
-// la vue APRÈS coup, en écrasant le fitBounds qui vient de s'exécuter.
+// la map du monde entière, vue de large") : l'onglet "Visited" historique de la sidebar
+// garde son fitBounds habituel (comportement desktop existant, pas concerné par la
+// demande) — seul ce bouton flottant passe worldView:true à switchMainTab(), qui le
+// transmet à renderVisitedTabList() pour qu'elle n'appelle JAMAIS fitBounds et pose
+// directement la vue monde à la place.
+// BUG corrigé (demande du 17/10/2026, "ça zoom sur les lieux visités, je ne veux pas qu'il
+// y ait un zoom") : la 1ère version appelait fitBounds (dans renderVisitedTabList) PUIS
+// setView() ici juste après, en comptant sur le fait que setView s'exécute "après" pour
+// écraser le zoom — sur un vrai Leaflet (contrairement au bouchon de test), fitBounds()
+// anime son propre déplacement de façon asynchrone, et cette animation pouvait se
+// terminer APRÈS ce setView() synchrone, ramenant visuellement la carte sur les lieux
+// visités malgré tout. En ne déclenchant plus jamais fitBounds pour ce chemin (worldView
+// ci-dessus), il n'y a plus de course à gagner : setView() est le seul changement de vue.
 window.toggleVisitedOnlyMap = function () {
     const turningOn = !visitedOnlyMapMode;
-    window.switchMainTab(turningOn ? 'visited' : 'explore');
-    if (turningOn && map && typeof L !== 'undefined') {
-        map.setView([20, 0], 2);
-    }
+    window.switchMainTab(turningOn ? 'visited' : 'explore', { worldView: turningOn });
 };
 
 // Teinte de chaque pays où au moins un lieu est marqué visité — voir country-borders.js
@@ -7036,7 +7090,8 @@ function clearVisitedCountryOverlays() {
 // Year) — juste les lieux déjà marqués visités (getVisitedLocs(), voir plus haut),
 // affichés à la fois dans le menu et comme SEULS marqueurs sur la carte tant que cet
 // onglet reste actif (renderMapMarkers() remplace entièrement les marqueurs précédents).
-function renderVisitedTabList() {
+function renderVisitedTabList(opts) {
+    opts = opts || {};
     const listEl = document.getElementById('visited-tab-list');
     const emptyEl = document.getElementById('visited-tab-empty');
     const countEl = document.getElementById('visited-tab-count');
@@ -7069,6 +7124,14 @@ function renderVisitedTabList() {
     if (sLocationsVisited) sLocationsVisited.textContent = visitedLocations.length;
     const sCountriesVisited = document.getElementById('stat-countries');
     if (sCountriesVisited) sCountriesVisited.textContent = new Set(visitedLocations.map(l => l.country)).size;
+
+    // Vue monde fixe, sans zoom (voir le commentaire de toggleVisitedOnlyMap() plus haut) :
+    // posée ici, AVANT tout fitBounds potentiel plus bas (jamais déclenché quand worldView
+    // est vrai), pour qu'il n'y ait jamais deux changements de vue en course l'un contre
+    // l'autre sur un vrai Leaflet.
+    if (opts.worldView && map && typeof L !== 'undefined') {
+        map.setView([20, 0], 2, { animate: false });
+    }
 
     listEl.innerHTML = '';
     if (visitedLocations.length === 0) {
@@ -7123,7 +7186,7 @@ function renderVisitedTabList() {
     // "plusieurs groupes" doit donc y rester NON restreint, quel que soit le dernier
     // filtre Group choisi dans l'autre onglet (voir activeGroupFilterValues plus haut).
     activeGroupFilterValues = ["All"];
-    renderMapMarkers(visitedLocations, { fitBounds: true });
+    renderMapMarkers(visitedLocations, { fitBounds: !opts.worldView });
 }
 window.renderVisitedTabList = renderVisitedTabList;
 
@@ -12941,6 +13004,29 @@ window.renderShareTripBuddies = async function(tripId) {
     });
 };
 
+// Bascule la vue mobile de trips.html entre la LISTE des voyages (#app-sidebar, réutilisée
+// telle quelle plutôt que dupliquée — demande du 17/10/2026, "affiche-les en liste") et le
+// DÉTAIL du voyage ouvert (#trip-detail-content, la mise en page Plan/Map/Ideas) — simple
+// enveloppe autour de window.toggleMobileMenu() (déjà ce qui ouvre/ferme #app-sidebar sur
+// mobile, déjà utilisé par les clics sur un .trip-pill pour refermer le tiroir une fois un
+// voyage choisi), pour avoir un seul point d'appel explicite ("montre la liste"/"montre le
+// détail") plutôt que de vérifier/inverser sa classe .open à chaque appelant. Sans effet
+// sur desktop : .sidebar.open n'y change rien visuellement (la media query mobile est seule
+// à définir left:0), #app-sidebar y reste affiché en permanence à côté du détail comme
+// avant.
+window.setTripMobileView = function(view) {
+    const sidebarEl = document.getElementById('app-sidebar');
+    if (!sidebarEl || typeof window.toggleMobileMenu !== 'function') return;
+    const wantOpen = (view === 'list');
+    if (sidebarEl.classList.contains('open') !== wantOpen) window.toggleMobileMenu();
+};
+
+// tripsInitialMobileViewDone : la bascule liste/détail ci-dessus ne doit décider toute
+// seule qu'UNE fois, à la toute première exécution de initTrips() après le chargement de
+// la page — cette fonction est aussi rappelée à chaque sauvegarde/changement de langue/etc.
+// (bien après ce premier chargement), où elle ne doit JAMAIS reposer la vue sur "liste" et
+// arracher l'utilisateur du détail qu'il est en train de consulter.
+let tripsInitialMobileViewDone = false;
 window.initTrips = function() {
     let trips = getMyTripsList();
 
@@ -12979,6 +13065,18 @@ window.initTrips = function() {
 
     window.renderTripsSidebar();
     window.renderTrip();
+
+    // Sur mobile, au premier chargement de la page (pas à chaque appel d'initTrips,
+    // qui tourne aussi après chaque sauvegarde/changement de langue) : si on arrive
+    // via un lien direct (?openTrip=, friends.html), on ouvre directement le détail du
+    // voyage ; sinon on affiche la liste des voyages par défaut (tiroir ouvert), demande
+    // du 17/10/2026, au lieu de sauter tout de suite dans le détail du dernier voyage.
+    if (!tripsInitialMobileViewDone) {
+        tripsInitialMobileViewDone = true;
+        if (window.matchMedia('(max-width: 800px)').matches) {
+            window.setTripMobileView(tripMobileShowDetailOnLoad ? 'detail' : 'list');
+        }
+    }
 }
 
 window.renderTripsSidebar = function() {
@@ -14798,6 +14896,15 @@ window.createNewTripAdvanced = async function() {
 
     if(typeof window.initTrips === 'function') window.initTrips();
     else if(document.getElementById('tab-itinerary-btn')) loadItineraryTabOptions();
+
+    // initTrips() ne décide la vue mobile par défaut (liste vs détail) qu'une seule
+    // fois par chargement de page (tripsInitialMobileViewDone) : ce voyage qu'on vient
+    // de créer ne passe donc jamais par cette branche-là. Sans cet appel explicite, le
+    // tiroir resterait ouvert sur la liste après la création, cachant le nouveau voyage
+    // derrière lui au lieu d'en montrer directement le détail.
+    if (typeof window.setTripMobileView === 'function' && window.matchMedia('(max-width: 800px)').matches) {
+        window.setTripMobileView('detail');
+    }
 }
 
 window.openDeleteModal = function(id = null, event = null) {

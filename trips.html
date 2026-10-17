@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261045" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261046" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -586,7 +586,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261045';
+        s.src = 'page-loader.js?v=20261046';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -651,13 +651,10 @@
         </div>
     </aside>
 
-        <!-- Bouton hamburger : HORS de .top-nav (demande du 08/09/2026 : .top-nav devient la
-             barre d'icônes du bas façon Instagram sur mobile, voir style.css — le hamburger,
-             lui, reste en haut à droite). -->
-        <button id="mobile-menu-btn" class="header-icon-btn hamburger-btn" style="display: none;" onclick="toggleMobileMenu()">
-            <svg class="hamburger-icon-bars" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            <svg class="hamburger-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
+        <!-- Bouton hamburger retiré sur cette page (demande du 17/10/2026) : la liste des
+             voyages (#app-sidebar) est désormais la vue mobile par défaut elle-même (voir
+             setTripMobileView/initTrips dans script.js), le hamburger n'a donc plus d'usage
+             ici — le header garde néanmoins ses autres icônes (badges, chat...) à droite. -->
         <div class="top-nav">
             <!-- Icône langue masquée sur mobile (demande du 08/09/2026, voir style.css) :
                  laissée intacte ici pour le desktop, où elle reste affichée normalement. -->
@@ -1166,9 +1163,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261045"></script>
-<script src="locations-data.js?v=20261045"></script>
-<script src="script.js?v=20261045"></script>
+<script type="module" src="firebase-init.js?v=20261046"></script>
+<script src="locations-data.js?v=20261046"></script>
+<script src="script.js?v=20261046"></script>
 
 </body>
 </html>
