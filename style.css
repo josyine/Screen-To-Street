@@ -1039,6 +1039,14 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        window.toggleProfileMapFullscreen() (profile.html) pour le même besoin exact quand
        la mini-carte du profil passe plein écran. */
     #mobile-bottom-nav.above-fullscreen-overlay { z-index: 10001; }
+    /* BUG corrigé (demande du 17/10/2026, plein écran de la mini-carte de profile.html :
+       "il faut que la map prenne tout l'écran hors header et barre de navigation du bas") :
+       #mobile-bottom-nav est déjà remonté au-dessus via la même classe (juste au-dessus),
+       mais #mobile-top-icons (le header mobile partagé — chat + réglages) ne l'était pas,
+       donc entièrement enterré sous le plein écran de la carte (z-index 9000 vs 3600) au
+       lieu de rester visible comme demandé. Même mécanisme, voir
+       window.toggleProfileMapFullscreen() dans profile.html. */
+    #mobile-top-icons.above-fullscreen-overlay { z-index: 10001; }
 
     /* Pastille rose pâle glissante sous l'onglet actif (demande du 08/10/2026, "une
        pastille rose pâle glisse derrière l'icône choisie, avec un léger rebond") — reprend

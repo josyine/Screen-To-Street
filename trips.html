@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261050" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261051" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -202,6 +202,22 @@
   .trip-name-input::placeholder { color: rgba(255,255,255,.75); }
   .trip-cover-change-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.92); color: #212832; border: none; border-radius: 100px; padding: 8px 14px; font-size: 11.5px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: .15s; }
   .trip-cover-change-btn:hover { background: #fff; }
+  /* Departure/Return dans l'en-tête (demande du 17/10/2026, répétée — "ajoute Departure et
+     return dans le header, comme dans trip_finale_legere.html") : reprend EXACTEMENT les
+     mêmes éléments (#edit-date-box-start/#edit-date-box-end, mêmes ids) que l'ancienne
+     carte "Trip Duration & Dates" du Plan tab (retirée, voir plus bas), déplacés ici et
+     reskinnés — window.renderTrip()/updateDateBoxes() (script.js) continuent de les
+     remplir sans aucun changement JS. Un tap ouvre #trip-dates-popup juste en dessous
+     (voir window.toggleTripDatesPopup()), qui regroupe l'éditeur complet (dates
+     précises/flexibles) qui vivait jusqu'ici dans cette carte — rien n'est perdu, juste
+     replié par défaut comme le reste de cette page mobile. */
+  .hdates-row { display: flex; gap: 10px; }
+  .hdates-row .stp-date-box { flex: 1; background: rgba(255,255,255,.18); border: none; border-radius: 14px; padding: 10px 12px; cursor: pointer; text-align: left; font-family: 'Poppins', sans-serif; }
+  .hdates-row .stp-date-box-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.8); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+  .hdates-row .stp-date-box-value { font-size: 13.5px; font-weight: 700; color: #fff; }
+  .trip-dates-popup { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin: 0 0 18px; box-shadow: 0 8px 24px rgba(80,60,120,.1); }
+  .trip-dates-popup.hidden { display: none; }
+  .trip-dates-popup-close { display: block; margin: 0 0 14px auto; background: none; border: none; color: #94a3b8; font-size: 13px; font-weight: 700; cursor: pointer; padding: 0; }
   /* Demande du 07/09/2026 : la pilule de méta-infos semblait "perdue" collée au bord
      gauche, juste sous la bannière — agrandie et davantage détachée du bord plutôt que
      de rester une petite étiquette flottante. */
@@ -374,6 +390,25 @@
   /* Carte globale du trip (tracé de tous les jours, une couleur par jour) */
   #trip-map-container { width: 100%; height: 280px; border-radius: 16px; margin-bottom: 30px; border: 1px solid #e2e8f0; background: #e2e8f0; }
 
+  /* "ITINERARY BY DAY" (demande du 17/10/2026, répétée — "dans l'onglet map, ajoute
+     ITINERARY BY DAY, comme dans trip_finale_legere.html") : pastilles "All"/jour par
+     jour au-dessus de la carte (voir window.renderTripDayPills() dans script.js — un tap
+     filtre drawTripOnMap() sur ce seul jour), liste résumée jour par jour en dessous
+     (voir window.renderTripDaySummary()). */
+  .trip-day-pills { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 2px 0 14px; }
+  .trip-day-pills::-webkit-scrollbar { display: none; }
+  .trip-day-pill { flex: 0 0 56px; height: 58px; border-radius: 14px; background: #fff; border: 1.5px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 10.5px; font-weight: 600; color: #94a3b8; font-family: 'Poppins', sans-serif; cursor: pointer; flex-shrink: 0; position: relative; }
+  .trip-day-pill b { font-size: 15px; color: #212832; font-weight: 800; }
+  .trip-day-pill[aria-pressed="true"] { background: #1F2430; border-color: #1F2430; color: rgba(255,255,255,.7); }
+  .trip-day-pill[aria-pressed="true"] b { color: #fff; }
+  .trip-day-pill i { position: absolute; bottom: 6px; width: 14px; height: 3px; border-radius: 3px; }
+  .trip-day-summary { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 4px 16px; }
+  .trip-day-summary-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+  .trip-day-summary-row + .trip-day-summary-row { border-top: 1px solid #f1f5f9; }
+  .trip-day-summary-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+  .trip-day-summary-label { font-size: 13px; font-weight: 700; color: #212832; flex-shrink: 0; }
+  .trip-day-summary-route { font-size: 12px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
   /* Mini-carte par jour, à l'intérieur de chaque bloc .day-card */
   .day-mini-map { width: 100%; height: 150px; border-radius: 10px; margin-top: 14px; border: 1px solid #e2e8f0; background: #f1f5f9; }
 
@@ -531,12 +566,15 @@
       #trip-detail-content[data-active-tab="map"] .trip-tab-panel[data-panel="map"],
       #trip-detail-content[data-active-tab="ideas"] .trip-tab-panel[data-panel="ideas"] { display: block; }
 
-      /* Carte en plein écran façon mockup pendant que l'onglet Map est actif (au lieu des
-         280px/220px habituels, pensés pour une carte qui ne fait que défiler parmi
-         d'autres sections) — invalidateSize() rappelé par switchTripMobileTab() au
-         changement d'onglet, seul moment où Leaflet a besoin de recalculer sa taille
-         réelle (son conteneur était display:none jusque-là). */
-      .trip-tab-panel[data-panel="map"] #trip-map-container { height: calc(100vh - 230px); border-radius: 16px; margin-bottom: 0; }
+      /* BUG corrigé (demande du 17/10/2026, répétée — "dans l'onglet map, ajoute ITINERARY
+         BY DAY, comme dans trip_finale_legere.html") : la carte plein écran (calc(100vh -
+         230px), posée le même jour un peu plus tôt) ne laissait justement AUCUNE place
+         pour cette nouvelle section — ni pastilles de jour au-dessus, ni résumé en
+         dessous. Revenue à une hauteur modeste comme le reste de la page (le mockup
+         lui-même n'a jamais eu de carte plein écran, voir .mapc dans trip_finale_legere.
+         html) — invalidateSize() reste rappelé par switchTripMobileTab() au changement
+         d'onglet, toujours nécessaire après un conteneur display:none. */
+      .trip-tab-panel[data-panel="map"] #trip-map-container { height: 240px; border-radius: 16px; margin-bottom: 18px; }
 
       /* Jour vide : placeholder discret plutôt qu'un bloc qui paraît juste cassé/manquant
          (même texte que le mockup, "Drop a place here" / son équivalent FR). Le texte
@@ -648,7 +686,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261050';
+        s.src = 'page-loader.js?v=20261051';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -841,6 +879,16 @@
                                 <div id="trip-buddies-avatars" class="trip-buddies-avatars"></div>
                                 <button type="button" class="trip-share-pill owner-only" onclick="if(currentTrip) openShareTripModal(currentTrip.id, event)" data-i18n="tripShareThis">+ Share this trip</button>
                             </div>
+                            <div class="hdates-row">
+                                <button type="button" class="stp-date-box" onclick="window.toggleTripDatesPopup()">
+                                    <div class="stp-date-box-label" data-i18n="tripDepartureLabel">Departure</div>
+                                    <div class="stp-date-box-value" id="edit-date-box-start">Select date</div>
+                                </button>
+                                <button type="button" class="stp-date-box" onclick="window.toggleTripDatesPopup()">
+                                    <div class="stp-date-box-label" data-i18n="tripReturnLabel">Return</div>
+                                    <div class="stp-date-box-value" id="edit-date-box-end">Select date</div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="trip-hero-meta-row">
@@ -869,12 +917,24 @@
                 </div>
 
                 <div class="trip-tab-panel" data-panel="map">
+                    <!-- "ITINERARY BY DAY" (demande du 17/10/2026, trip_finale_legere.html :
+                         mapTab()) — voir window.renderTripDayPills()/
+                         window.renderTripDaySummary() dans script.js, appelées par
+                         renderTrip() et par le clic sur une pastille. -->
+                    <div class="section-label" style="margin-top:0;" id="i18n-iti-by-day">ITINERARY BY DAY</div>
+                    <div class="trip-day-pills" id="trip-day-pills"></div>
                     <div id="trip-map-container"></div>
+                    <div class="trip-day-summary" id="trip-day-summary"></div>
                 </div>
 
                 <div class="trip-tab-panel" data-panel="plan">
-                <div class="edit-banner" style="margin-bottom:30px;">
-                    <div class="section-label" style="margin-top:0;">Trip Duration & Dates</div>
+                <!-- Éditeur de dates replié par défaut (demande du 17/10/2026, répétée —
+                     "enlève Trip duration & dates de plan") : même contenu qu'avant (dates
+                     précises/flexibles, inchangé), juste cachée tant qu'on ne tape pas une
+                     des deux pastilles Departure/Return de l'en-tête (voir plus haut) —
+                     voir window.toggleTripDatesPopup()/applyDateCalendar() dans script.js. -->
+                <div class="trip-dates-popup hidden" id="trip-dates-popup">
+                    <button type="button" class="trip-dates-popup-close" onclick="window.toggleTripDatesPopup()">✕</button>
                     <div class="date-tabs">
                         <div class="date-tab active" data-tab="edit-specific" onclick="switchEditDateTab('specific')">Specific dates</div>
                         <div class="date-tab" data-tab="edit-flexible" onclick="switchEditDateTab('flexible')">Flexible dates</div>
@@ -883,17 +943,7 @@
                     <div id="edit-date-specific-panel">
                         <input type="date" id="date-start" class="hidden" onchange="syncItineraryDaysToDates(); saveTrip();">
                         <input type="date" id="date-end" class="hidden" onchange="syncItineraryDaysToDates(); saveTrip();">
-                        <div class="stp-date-boxes">
-                            <div class="stp-date-box" onclick="toggleDateCalendar('edit')">
-                                <div class="stp-date-box-label" data-i18n="tripDepartureLabel">Departure</div>
-                                <div class="stp-date-box-value" id="edit-date-box-start">Select date</div>
-                            </div>
-                            <div class="stp-date-box" onclick="toggleDateCalendar('edit')">
-                                <div class="stp-date-box-label" data-i18n="tripReturnLabel">Return</div>
-                                <div class="stp-date-box-value" id="edit-date-box-end">Select date</div>
-                            </div>
-                        </div>
-                        <div class="stp-cal-popup hidden" id="edit-cal-popup">
+                        <div class="stp-cal-popup" id="edit-cal-popup">
                             <div class="stp-cal-nav">
                                 <div class="stp-cal-arrow" onclick="navCalendar('edit',-1)">&lsaquo;</div>
                                 <div class="stp-cal-arrow" onclick="navCalendar('edit',1)">&rsaquo;</div>
@@ -912,14 +962,6 @@
                         </div>
                         <div class="stp-month-grid" id="edit-month-grid" style="margin-top:12px;"></div>
                     </div>
-                </div>
-
-                <!-- Bouton pour le Générateur d'itinéraire (demande du 12/09/2026 : repositionné
-                     juste après les filtres, au lieu de tout en bas de page où il fallait
-                     scroller past l'itinéraire + les lieux non-assignés pour le trouver). -->
-                <div style="text-align:center; margin-top:20px; margin-bottom:30px;">
-                    <p style="font-size:12px; color:#64748b; margin-bottom:10px;" id="i18n-need-magic">Need some magic?</p>
-                    <button class="gen-btn ghost" onclick="openItineraryModal()" id="i18n-open-iti">Open Auto-Itinerary Generator</button>
                 </div>
 
                 <!-- "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) —
@@ -944,6 +986,15 @@
                 </div>
 
                 <div class="trip-tab-panel" data-panel="ideas">
+                <!-- Générateur d'itinéraire (demande du 17/10/2026, répétée — "met le bouton
+                     auto itinerary dans l'onglet Ideas, comme dans trip_finale_legere.html")
+                     — déplacé depuis l'onglet Plan, même fonction (openItineraryModal(),
+                     inchangée) que juste une pastille dégradée en haut de cet onglet, comme
+                     magicBtn dans le mockup. -->
+                <div style="text-align:center; margin-bottom:20px;">
+                    <p style="font-size:12px; color:#64748b; margin-bottom:10px;" id="i18n-need-magic">Need some magic?</p>
+                    <button class="gen-btn ghost" onclick="openItineraryModal()" id="i18n-open-iti">Open Auto-Itinerary Generator</button>
+                </div>
                 <!-- Filtres de lieux (demande du 17/10/2026, "remplace la page par
                      trip_finale_legere.html") — déplacés ici depuis l'onglet Plan (où ils
                      n'ont pas d'équivalent dans le mockup) : leur rôle est de filtrer QUELS
@@ -1245,9 +1296,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261050"></script>
-<script src="locations-data.js?v=20261050"></script>
-<script src="script.js?v=20261050"></script>
+<script type="module" src="firebase-init.js?v=20261051"></script>
+<script src="locations-data.js?v=20261051"></script>
+<script src="script.js?v=20261051"></script>
 
 </body>
 </html>
