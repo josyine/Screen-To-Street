@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261044" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261045" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -379,6 +379,11 @@
      seul endroit où ce bouton redevient visible. */
   .trip-mobile-tabs { display: none; }
 
+  /* Rangée d'icônes back/share/... et sous-titre du mockup (demande du 17/10/2026) :
+     masqués par défaut (desktop, qui garde "Change cover"/"+Share this trip"/"Delete"
+     tels quels) — voir le @media plus bas pour leur apparence réelle. */
+  .trip-mobile-icon-row, .trip-hero-meta-mobile { display: none; }
+
   @media (max-width: 800px) {
       /* Logo "Screen To Street" remis sur mobile (demande du 15/10/2026, "il faut que le
          header soit exactement le même que dans la page 'message', avec le logo, icone
@@ -398,7 +403,6 @@
       .trip-detail-wrapper { padding: 22px 0; border-radius: 0; border: none; box-shadow: none; }
       .trip-hero { margin: -22px 0 24px; border-radius: 0; }
       .trip-hero-top { flex-direction: column; padding-left: 16px; padding-right: 16px; }
-      .trip-cover-change-btn { align-self: flex-end; }
       .trip-name-input { font-size: 24px; }
       .edit-banner { padding: 16px; }
       .itinerary-box { padding: 16px; }
@@ -416,14 +420,31 @@
          dégradé fixe pour tous les voyages, ce que cette fonctionnalité existante visait
          justement à éviter. Seule la forme de la bannière change ici. */
       .trip-hero-banner { border-radius: 0 0 28px 28px; }
-      .trip-hero-overlay { padding-bottom: 26px; }
+      .trip-hero-overlay { padding-bottom: 20px; padding-top: 4px; }
 
-      /* Pilule de dates (#dates-display) + bouton Delete/Leave, décollés de la bannière et
-         remontés en carte flottante par-dessus son bord bas (même principe que les cartes
-         statistiques "flottantes" déjà utilisées ailleurs sur le site pour un en-tête
-         illustré) plutôt qu'alignés à plat dessous comme sur desktop. */
-      .trip-hero-meta-row { background: #fff; margin: -20px 14px 20px; padding: 14px 16px; border-radius: 16px; box-shadow: 0 8px 20px rgba(80,60,120,.12); border-bottom: none; position: relative; z-index: 2; }
-      .trip-dates { padding: 7px 14px; }
+      /* Rangée d'icônes back/share/"..." façon mockup (voir le HTML plus haut et
+         window.switchTripMobileTab()... non, pas lié aux onglets — juste le menu "..."
+         câblé en inline onclick directement dans le HTML, pas besoin de JS dédié). Le
+         bouton "Change cover" ligne au-dessus (.trip-cover-change-btn, toujours dans le
+         DOM pour le desktop) est caché ici : sa seule porte d'entrée mobile devient ce
+         menu "...". */
+      .trip-mobile-icon-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+      .trip-mobile-icon-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,.22); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+      .trip-mobile-icon-btn:active { background: rgba(255,255,255,.35); }
+      #trip-mobile-dots-menu { color: #212832; top: 40px; }
+      .trip-cover-change-btn { display: none; }
+
+      /* Sous-titre "{Pays} · {N} jours" façon mockup, juste sous le nom du voyage — voir
+         window.renderTrip() dans script.js pour son contenu réel (currentTrip.country/
+         days.length, jamais de valeur de démonstration). */
+      .trip-hero-meta-mobile { display: block; color: rgba(255,255,255,.92); font-size: 13px; font-weight: 600; margin-top: 3px; text-shadow: 0 1px 4px rgba(0,0,0,.25); }
+
+      /* L'ancienne carte flottante (dates/Delete/Leave) n'a plus rien d'exclusif à montrer
+         sur mobile : ses dates venaient d'un simple texte "{group} • {pays} • N lieux"
+         (remplacé juste au-dessus par un sous-titre plus proche du mockup) et son bouton
+         Delete/Leave vit désormais dans le menu "..." ci-dessus — masquée ici plutôt que
+         laissée vide/redondante. Le desktop la garde intégralement. */
+      .trip-hero-meta-row { display: none; }
 
       /* Bouton "Auto-itinerary" façon pastille dégradée du mockup (.magic) — remplace le
          style "ghost" discret du desktop par un vrai appel à l'action sur mobile, sans
@@ -565,7 +586,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261044';
+        s.src = 'page-loader.js?v=20261045';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -715,6 +736,36 @@
                 <div class="trip-hero" id="trip-hero">
                     <div id="trip-hero-banner" class="trip-hero-banner">
                         <div class="trip-hero-overlay">
+                            <!-- Rangée d'icônes façon mockup trip_finale_legere.html (back/share/...),
+                                 mobile uniquement (voir CSS plus haut/plus bas) — remplace visuellement
+                                 le bouton "Change cover" + la pilule "+Share this trip" ci-dessous sur
+                                 mobile (restent en place, cachés, pour le desktop) : mêmes actions
+                                 réelles (openChangeCoverModal/openShareTripModal/openDeleteModal/
+                                 leaveSharedTrip, inchangées), juste reposées dans un menu "..." compact
+                                 au lieu de boutons toujours visibles, pour alléger l'en-tête comme le
+                                 mockup. "Back" ouvre le tiroir latéral (toggleMobileMenu(), déjà
+                                 utilisé par le hamburger du header) : cette page n'a pas de pile de
+                                 navigation à dépiler, mais c'est le seul vrai "retour" possible ici
+                                 (changer de voyage/en créer un autre). -->
+                            <div class="trip-mobile-icon-row">
+                                <button type="button" class="trip-mobile-icon-btn" onclick="toggleMobileMenu()" title="Back to trips" aria-label="Back to trips">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+                                </button>
+                                <span style="flex:1"></span>
+                                <button type="button" class="trip-mobile-icon-btn owner-only" onclick="if(currentTrip) openShareTripModal(currentTrip.id, event)" title="Share this trip" aria-label="Share this trip">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M8 8l4-4 4 4M6 12v7h12v-7"/></svg>
+                                </button>
+                                <div class="dropdown-container" style="position:relative;">
+                                    <button type="button" class="trip-mobile-icon-btn" id="trip-mobile-dots-btn" onclick="event.stopPropagation(); document.getElementById('trip-mobile-dots-menu').classList.toggle('hidden');" title="More options" aria-label="More options">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+                                    </button>
+                                    <div class="dropdown-menu hidden" id="trip-mobile-dots-menu" style="right:0; left:auto;">
+                                        <a href="#" class="dropdown-option owner-only" onclick="event.preventDefault(); this.closest('.dropdown-menu').classList.add('hidden'); openChangeCoverModal();" data-i18n="tripChangeCoverBtn">Change cover</a>
+                                        <a href="#" class="dropdown-option owner-only" onclick="event.preventDefault(); this.closest('.dropdown-menu').classList.add('hidden'); openDeleteModal();" style="color:#ef4444;" id="i18n-delete-trip-mobile">Delete trip</a>
+                                        <a href="#" class="dropdown-option non-owner-only" onclick="event.preventDefault(); this.closest('.dropdown-menu').classList.add('hidden'); if(currentTrip) leaveSharedTrip(currentTrip.id, event);" style="color:#ef4444;" data-i18n="tripLeaveBtn">Leave trip</a>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="trip-hero-top">
                                 <input type="text" id="edit-trip-name" class="trip-name-input" placeholder="Trip Name" onchange="saveTrip()">
                                 <button type="button" class="trip-cover-change-btn owner-only" onclick="openChangeCoverModal()">
@@ -722,6 +773,9 @@
                                     <span data-i18n="tripChangeCoverBtn">Change cover</span>
                                 </button>
                             </div>
+                            <!-- Sous-titre façon mockup ("South Korea · 4 days"), mobile uniquement —
+                                 rempli par renderTrip() dans script.js (#trip-hero-meta-mobile). -->
+                            <div class="trip-hero-meta-mobile" id="trip-hero-meta-mobile"></div>
                             <div class="trip-access-row">
                                 <div id="trip-buddies-avatars" class="trip-buddies-avatars"></div>
                                 <button type="button" class="trip-share-pill owner-only" onclick="if(currentTrip) openShareTripModal(currentTrip.id, event)" data-i18n="tripShareThis">+ Share this trip</button>
@@ -1112,9 +1166,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261044"></script>
-<script src="locations-data.js?v=20261044"></script>
-<script src="script.js?v=20261044"></script>
+<script type="module" src="firebase-init.js?v=20261045"></script>
+<script src="locations-data.js?v=20261045"></script>
+<script src="script.js?v=20261045"></script>
 
 </body>
 </html>
