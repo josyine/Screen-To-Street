@@ -5780,6 +5780,7 @@ function updateUI() {
         const eModAdd = document.getElementById('i18n-modal-add'); if(eModAdd) eModAdd.textContent = isFr ? "Ajouter au voyage" : "Add to this Trip";
         const eCreateTitle = document.getElementById('i18n-create-title'); if(eCreateTitle) eCreateTitle.textContent = isFr ? "Créer un nouveau voyage" : "Create a new trip";
         const eBtnCreate = document.getElementById('i18n-btn-create'); if(eBtnCreate) eBtnCreate.textContent = isFr ? "Créer" : "Create";
+        const eDelTripMobile = document.getElementById('i18n-delete-trip-mobile'); if(eDelTripMobile) eDelTripMobile.textContent = isFr ? "Supprimer le voyage" : "Delete trip";
         const eDelTitle = document.getElementById('i18n-del-title'); if(eDelTitle) eDelTitle.textContent = isFr ? "Supprimer ce voyage ?" : "Delete this trip?";
         const eDelDesc = document.getElementById('i18n-del-desc'); if(eDelDesc) eDelDesc.textContent = isFr ? "Êtes-vous sûr de vouloir supprimer ce voyage ? Cette action est irréversible." : "Are you sure you want to delete this trip? This cannot be undone.";
         const eDelCancel = document.getElementById('i18n-del-cancel'); if(eDelCancel) eDelCancel.textContent = isFr ? "Annuler" : "Cancel";
@@ -7047,6 +7048,27 @@ function renderVisitedTabList() {
     visitedLocations.sort((a, b) => a.name.localeCompare(b.name));
 
     if (countEl) countEl.textContent = visitedLocations.length + (visitedLocations.length === 1 ? ' location' : ' locations');
+
+    // BUG corrigé (demande du 17/10/2026, "actuellement ça affiche tous les lieux... met
+    // aussi à jour les KPIs du haut avec le nombre de lieux et le nombre de pays visités") :
+    // renderLocations() pose currentFilteredLocations/#stat-locations/#stat-countries pour
+    // sa propre liste Explore, mais cet onglet "Visited" appelait renderMapMarkers()
+    // directement SANS jamais les mettre à jour à son tour. Deux conséquences concrètes :
+    // 1) le KPI "LOCATIONS"/"COUNTRIES" en haut de la carte continuait d'afficher les
+    //    chiffres d'Explore, jamais ceux des lieux visités ; 2) plus grave, currentFilteredLocations
+    //    restait l'ANCIENNE liste Explore (tous les lieux) — et le ré-échelonnage des
+    //    marqueurs au zoom (map.on('zoomend', ...) plus haut dans ce fichier) relit
+    //    currentFilteredLocations à chaque zoom pour redessiner les marqueurs : dès le
+    //    premier zoom/déplacement après avoir cliqué "Show visited" (y compris le
+    //    map.setView() de toggleVisitedOnlyMap() lui-même, qui déclenche déjà un zoomend),
+    //    TOUS les lieux reprenaient silencieusement la place des lieux visités. Posés ici
+    //    AVANT tout retour anticipé (cas vide compris) pour que les deux restent justes
+    //    même avec zéro lieu visité.
+    currentFilteredLocations = visitedLocations;
+    const sLocationsVisited = document.getElementById('stat-locations');
+    if (sLocationsVisited) sLocationsVisited.textContent = visitedLocations.length;
+    const sCountriesVisited = document.getElementById('stat-countries');
+    if (sCountriesVisited) sCountriesVisited.textContent = new Set(visitedLocations.map(l => l.country)).size;
 
     listEl.innerHTML = '';
     if (visitedLocations.length === 0) {
@@ -13563,6 +13585,22 @@ window.renderTrip = function() {
         datesDisplay.textContent = metaText;
         if(metaText.trim() === '0 location') datesDisplay.style.display = 'none';
         else datesDisplay.style.display = 'inline-flex';
+    }
+
+    // Sous-titre du mockup trip_finale_legere.html ("South Korea · 4 days"), mobile
+    // uniquement (demande du 17/10/2026, "remplace intégralement la page trips par
+    // trip_finale_legere.html") — même format que hero(st) dans le mockup, construit à
+    // partir des vraies données du voyage (currentTrip.country/days.length), pas une
+    // valeur de démonstration. "Multiple destinations" quand aucun pays n'est fixé pour ce
+    // voyage (filtre Country laissé vide) plutôt que de ne rien afficher.
+    const heroMetaMobile = document.getElementById('trip-hero-meta-mobile');
+    if (heroMetaMobile) {
+        const dayCount = currentTrip.days.length;
+        const countryLabel = currentTrip.country || (currentLang === 'fr' ? 'Plusieurs destinations' : 'Multiple destinations');
+        const dayLabel = currentLang === 'fr'
+            ? `${dayCount} jour${dayCount > 1 ? 's' : ''}`
+            : `${dayCount} day${dayCount !== 1 ? 's' : ''}`;
+        heroMetaMobile.textContent = `${countryLabel} · ${dayLabel}`;
     }
 
     window.populateEditTripFilters();
