@@ -1728,8 +1728,15 @@ window.changeTourLiveGroup = function(group) {
         // elle-même masquée par renderLiveMapView() quand ce groupe n'a aucune destination
         // (ex: Blackpink) — un simple contrôle "pas masqué" empêchait alors tout
         // rafraîchissement ultérieur, y compris en revenant sur BTS.
+        // BUG corrigé (demande du 17/10/2026, "le filtre de Group ne fonctionne pas : quand
+        // je sélectionne Blackpink, ça affiche le calendrier de BTS") : ce même oubli
+        // existait pour l'onglet "Calendar" — seuls "List" (toujours, juste au-dessus) et
+        // "Map" (ci-dessous) étaient rafraîchis au changement de groupe ; renderLiveCalendar()
+        // n'était JAMAIS rappelée ici, donc la grille affichée restait celle du groupe
+        // précédent (BTS) tant qu'on ne changeait pas d'onglet manuellement.
         const activeTab = document.querySelector('.live-panel-view-tab.active');
         if (activeTab && activeTab.dataset.view === 'map' && typeof renderLiveMapView === 'function') renderLiveMapView();
+        else if (activeTab && activeTab.dataset.view === 'calendar' && typeof renderLiveCalendar === 'function') renderLiveCalendar();
     }
 
     const tourOverlay = document.getElementById('tour-mode-empty-overlay');
@@ -11832,14 +11839,23 @@ window.generateItinerary = function() {
 
     if(validLocs.length === 0) { alert('No locations found for this selection.'); return; }
 
+    // Hôtel de départ du voyage (demande du 17/10/2026, "il faut que ça génère un réel
+    // itinéraire qui prenne en compte... l'hôtel de départ") : ce générateur ignorait
+    // jusqu'ici TOUJOURS currentTrip.homeBase (appelé avec `null` en dur, alors que
+    // createNewTripAdvanced()/les cartes de jour de My Trips l'utilisent déjà, voir
+    // computeDayTimeline(locs, currentTrip.homeBase) plus bas dans ce fichier) — n'a
+    // d'effet que sur cette page (currentTrip n'existe que sur trips.html ; ce même modal
+    // est aussi ouvert depuis une fiche lieu, où il n'y a pas de voyage/hôtel à réutiliser).
+    const homeBase = (currentTrip && currentTrip.homeBase) || null;
+
     // Trajet optimisé (voir buildOptimizedRoute() plus haut : plus proche voisin sur la
     // vraie distance + amélioration 2-opt), pas un simple tri par distance brute en degrés.
-    let route = buildOptimizedRoute(validLocs);
+    let route = buildOptimizedRoute(validLocs, homeBase);
 
     // Répartition réaliste des lieux sur les jours demandés (voir buildDayPlans /
     // computeDayTimeline ci-dessus, partagées avec My Trips).
-    const { dayPlans: dayLocGroups, unplaced } = buildDayPlans(route, days, null);
-    const dayPlans = dayLocGroups.map(dayLocs => computeDayTimeline(dayLocs, null));
+    const { dayPlans: dayLocGroups, unplaced } = buildDayPlans(route, days, homeBase);
+    const dayPlans = dayLocGroups.map(dayLocs => computeDayTimeline(dayLocs, homeBase));
     const unplacedCount = unplaced.length;
 
     const resultDiv = document.getElementById('iti-days-list');
@@ -13328,18 +13344,65 @@ window.populateEditTripFilters = function() {
 window.updateEditTripOptions = function(fieldChanged) {
     if(fieldChanged === 'group') {
         currentTrip.group = document.getElementById('edit-trip-group').value;
-        currentTrip.member = "All"; 
+        currentTrip.member = "All";
     } else if (fieldChanged === 'member') {
         currentTrip.member = document.getElementById('edit-trip-member').value;
     } else if(fieldChanged === 'country') {
         currentTrip.country = document.getElementById('edit-trip-country').value;
-        currentTrip.city = ""; 
+        currentTrip.city = "";
     } else if(fieldChanged === 'city') {
         currentTrip.city = document.getElementById('edit-trip-city').value;
     }
     window.saveTrip();
     window.renderTrip();
 }
+
+// "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()/stayCard()) :
+// jusqu'ici, currentTrip.homeBase n'était renseigné qu'à la création du voyage
+// (createNewTripAdvanced() plus bas) et ne pouvait plus jamais être changé ensuite — alors
+// que generateItinerary()/computeDayTimeline()/regenerateTripItinerary() le lisent tous pour
+// servir de point de départ réel du premier trajet de chaque journée. Même mécanisme de
+// géocodage (Nominatim, voir geocodeAddress() plus haut) que la création, en plus simple :
+// pas de suggestions en direct ici (raffinement optionnel), un seul géocodage à la
+// sauvegarde suffit pour ce cas d'usage plus rare (modifier un hôtel déjà choisi).
+window.toggleTripHomeBaseEditor = function() {
+    const editor = document.getElementById('trip-homebase-editor');
+    const btn = document.getElementById('trip-homebase-edit-btn');
+    if (!editor) return;
+    const opening = editor.classList.contains('hidden');
+    editor.classList.toggle('hidden');
+    if (btn) btn.textContent = opening ? (currentLang === 'fr' ? 'Fermer' : 'Close') : (currentLang === 'fr' ? 'Modifier' : 'Edit');
+    if (opening) {
+        const input = document.getElementById('trip-homebase-input');
+        if (input) input.focus();
+    }
+};
+
+window.saveTripHomeBase = async function() {
+    if (!currentTrip) return;
+    const input = document.getElementById('trip-homebase-input');
+    const btn = document.getElementById('trip-homebase-save-btn');
+    const query = (input.value || '').trim();
+    const originalLabel = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+    if (!query) {
+        currentTrip.homeBase = null;
+        currentTrip.homeBaseLabel = '';
+    } else {
+        const geo = await geocodeAddress(query);
+        if (!geo) {
+            if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
+            alert(currentLang === 'fr' ? "Adresse introuvable — vérifiez l'orthographe et réessayez." : "Couldn't find that address — check the spelling and try again.");
+            return;
+        }
+        currentTrip.homeBase = geo;
+        currentTrip.homeBaseLabel = query;
+    }
+    window.saveTrip();
+    window.renderTrip();
+    window.toggleTripHomeBaseEditor();
+};
 
 // Aperçu en lecture seule des horaires réalistes d'un jour (arrivée/départ, trajet,
 // pause déjeuner) — voir computeDayTimeline. Toujours recalculé à partir de l'ordre
@@ -13776,6 +13839,14 @@ window.renderTrip = function() {
         heroMetaMobile.textContent = `${countryLabel} · ${dayLabel}`;
     }
 
+    // "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) — affiche
+    // l'hôtel/point de départ actuel du voyage ; voir window.toggleTripHomeBaseEditor()/
+    // window.saveTripHomeBase() plus bas pour la saisie.
+    const homeBaseLabelEl = document.getElementById('trip-homebase-label');
+    if (homeBaseLabelEl) homeBaseLabelEl.textContent = currentTrip.homeBaseLabel || (currentLang === 'fr' ? 'Non défini' : 'Not set');
+    const homeBaseInputEl = document.getElementById('trip-homebase-input');
+    if (homeBaseInputEl) homeBaseInputEl.value = currentTrip.homeBaseLabel || '';
+
     window.populateEditTripFilters();
 
     renderFlexibleMonthGrid('edit');
@@ -14028,19 +14099,17 @@ window.regenerateTripItinerary = function() {
     let locs = tripLocIds.map(id => celebLocations.find(l => l.id === id)).filter(Boolean);
     if (locs.length === 0) return;
 
-    let route = [locs.shift()];
-    while (locs.length > 0) {
-        let lastLoc = route[route.length - 1], nearestIdx = 0, minDist = Infinity;
-        for (let i = 0; i < locs.length; i++) {
-            const d = Math.hypot(lastLoc.lat - locs[i].lat, lastLoc.lng - locs[i].lng);
-            if (d < minDist) { minDist = d; nearestIdx = i; }
-        }
-        route.push(locs.splice(nearestIdx, 1)[0]);
-    }
+    // BUG corrigé (demande du 17/10/2026, "génère bien le trip le plus optimisé possible") :
+    // 3e copie de la même logique de plus proche voisin plus faible que buildOptimizedRoute()
+    // (Math.hypot en degrés bruts, pas de passe 2-opt, jamais branchée sur l'hôtel du
+    // voyage) — après createNewTripAdvanced() et generateItinerary(), c'était la dernière
+    // façon de regénérer un itinéraire (ici : "Apply" sur de nouvelles dates) à ne pas
+    // encore passer par la version partagée.
+    const route = buildOptimizedRoute(locs, currentTrip.homeBase);
 
     const dayCount = document.querySelectorAll('#itinerary-box .day-card').length;
     if (!dayCount) return;
-    const { dayPlans } = buildDayPlans(route, dayCount, null);
+    const { dayPlans } = buildDayPlans(route, dayCount, currentTrip.homeBase);
 
     // renderTrip() reconstruit tout le HTML des .day-card/.day-loc à partir de
     // currentTrip.days — saveTrip() relit ENSUITE ce DOM pour persister, donc l'ordre

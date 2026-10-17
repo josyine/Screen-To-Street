@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261049" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261050" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -509,15 +509,23 @@
          tomber exactement sous le bord gauche du bouton "List". */
       #live-map-pill { left: 18px; }
 
-      /* 3) Zone de liste des dates agrandie : .tour-mode-rail-list (flex:1) grandit tout
-         seul si on réduit ses deux voisins de taille fixe (.tour-mode-stop-info/.tour-mode-nav,
-         flex-shrink:0) — padding resserré sans descendre sous une zone de appui confortable.
-         .tour-mode-nav garde sa marge de dégagement de la nav du bas flottante (voir le
-         commentaire juste en dessous, inchangé). */
+      /* 3) Zone de liste des dates agrandie (demande du 17/10/2026, répétée — "baisse la
+         partie du bas... afin que ce soit juste au dessus de 'Only official publicly
+         announced'... l'objectif est d'agrandir l'affichage de la liste des dates") :
+         .tour-mode-rail-list (flex:1) grandit tout seul si on réduit ses deux voisins de
+         taille fixe (.tour-mode-stop-info/.tour-mode-nav, flex-shrink:0).
+         BUG corrigé : le premier essai ci-dessus gardait un margin-bottom:calc(90px+safe)
+         sur .tour-mode-nav "pour dégager la nav du bas flottante" — mais cette marge
+         s'ajoutait ENTRE les boutons Previous/Next et #live-panel .live-panel-footer juste
+         en dessous (dernier enfant du panneau, inchangé), qui réserve DÉJÀ ce même
+         dégagement via son propre padding-bottom (règle juste au-dessus). Cette marge était
+         donc un doublon pur : elle ne faisait que pousser le footer hors de vue tout en
+         rognant d'autant la hauteur dispo de .tour-mode-rail-list (flex:1, donc le premier
+         à rétrécir) — exactement le symptôme inverse de ce qui était demandé. Retirée : le
+         dégagement de la nav flottante reste assuré par le footer, qui redevient collé
+         juste après les boutons Previous/Next comme demandé. */
       #live-panel .tour-mode-stop-info { padding: 8px 14px 2px; }
-      /* padding resserré ET marge de dégagement de la nav du bas flottante (voir le
-         commentaire sur .live-panel-footer juste au-dessus) réunis sur la même règle. */
-      #live-panel .tour-mode-nav { padding: 8px 14px; margin-bottom: calc(90px + env(safe-area-inset-bottom)); }
+      #live-panel .tour-mode-nav { padding: 8px 14px; }
       #live-panel .tour-mode-nav-btn { padding: 9px 12px; }
   }
 
@@ -862,7 +870,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261049';
+        s.src = 'page-loader.js?v=20261050';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -2136,27 +2144,27 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261049"></script>
-<script type="module" src="firebase-init.js?v=20261049"></script>
-<script src="locations-data.js?v=20261049"></script>
+<script src="countries.js?v=20261050"></script>
+<script type="module" src="firebase-init.js?v=20261050"></script>
+<script src="locations-data.js?v=20261050"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261049"></script>
+<script src="artists-content.js?v=20261050"></script>
 <!-- Contours de pays pour la teinte "Show visited" sur la mini-carte de visited.html
      (window.VISITED_WORLD_MAP/visitedWorldMapProject() dans script.js) — gardé ici
      uniquement parce que script.js référence encore ces fonctions ; la carte Leaflet de
      CETTE page n'utilise plus ce fichier pour son propre overlay de pays visités, voir
      country-borders.js ci-dessous (demande du 17/10/2026, "frontières correctes"). -->
-<script src="visited-map-data.js?v=20261049"></script>
+<script src="visited-map-data.js?v=20261050"></script>
 <!-- Vraies frontières de pays (Natural Earth, lat/lng Leaflet) pour l'overlay "Show
      visited" de CETTE carte — remplace l'approximation SVG ci-dessus pour ce usage
      (demande du 17/10/2026). Doit précéder script.js. -->
-<script src="country-borders.js?v=20261049"></script>
-<script src="script.js?v=20261049"></script>
+<script src="country-borders.js?v=20261050"></script>
+<script src="script.js?v=20261050"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261049"></script>
-<script src="map-tour.js?v=20261049"></script>
+<script src="itinerary.js?v=20261050"></script>
+<script src="map-tour.js?v=20261050"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE

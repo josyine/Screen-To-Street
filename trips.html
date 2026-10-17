@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261049" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261050" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -220,6 +220,24 @@
   .gen-btn.ghost:hover { background:#FCE7F0; }
 
   .section-label {font-size:11.5px;font-weight:700;letter-spacing:.7px;color:#94a3b8;text-transform:uppercase;margin:24px 0 16px 0;}
+
+  /* "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) — affiche et
+     permet de définir l'hôtel/point de départ du voyage (currentTrip.homeBase/
+     homeBaseLabel), posé jusqu'ici UNIQUEMENT à la création (createNewTripAdvanced()) et
+     jamais modifiable ensuite, alors que generateItinerary()/computeDayTimeline() le lisent
+     déjà pour servir de point de départ réel du premier trajet de chaque journée — voir
+     window.toggleTripHomeBaseEditor()/window.saveTripHomeBase() dans script.js. */
+  .trip-se-row { display:flex; align-items:center; gap:10px; background:#fff; border-radius:16px; padding:12px 16px; box-shadow:0 2px 10px rgba(74,45,138,.06); margin-bottom:18px; }
+  .trip-se-icon { width:30px; height:30px; border-radius:9px; background:#1F2430; color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .trip-se-text { flex:1; min-width:0; }
+  .trip-se-text small { display:block; font-size:10.5px; font-weight:700; color:#94a3b8; letter-spacing:.6px; }
+  .trip-se-text span { font-size:13.5px; font-weight:600; color:#212832; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
+  .trip-se-edit-btn { font-size:12.5px; font-weight:700; color:#D42759; background:none; border:none; cursor:pointer; flex-shrink:0; }
+  .trip-se-editor { margin:-8px 0 18px; }
+  .trip-se-editor input { width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid #e2e8f0; font-size:13.5px; outline:none; font-family:'Poppins',sans-serif; }
+  .trip-se-editor input:focus { border-color:#D42759; }
+  .trip-se-save-btn { margin-top:10px; background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 20px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; }
+  .trip-se-save-btn:disabled { opacity:.6; cursor:default; }
   
   .edit-banner { background:#faf9fc; border:1px solid #e2e8f0; border-radius:16px; padding:24px;}
   .date-tabs { display: flex; border-bottom: 1px solid #e2e8f0; margin-bottom: 15px; }
@@ -630,7 +648,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261049';
+        s.src = 'page-loader.js?v=20261050';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -896,24 +914,25 @@
                     </div>
                 </div>
 
-                <div class="edit-banner" style="margin-bottom:30px;">
-                    <div class="section-label" style="margin-top:0;">Location Filters</div>
-                    <div style="display:flex; gap:10px; margin-bottom: 10px;">
-                         <select id="edit-trip-group" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('group')"></select>
-                         <select id="edit-trip-member" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('member')"></select>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                         <select id="edit-trip-country" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('country')"></select>
-                         <select id="edit-trip-city" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('city')"></select>
-                    </div>
-                </div>
-
                 <!-- Bouton pour le Générateur d'itinéraire (demande du 12/09/2026 : repositionné
                      juste après les filtres, au lieu de tout en bas de page où il fallait
                      scroller past l'itinéraire + les lieux non-assignés pour le trouver). -->
                 <div style="text-align:center; margin-top:20px; margin-bottom:30px;">
                     <p style="font-size:12px; color:#64748b; margin-bottom:10px;" id="i18n-need-magic">Need some magic?</p>
                     <button class="gen-btn ghost" onclick="openItineraryModal()" id="i18n-open-iti">Open Auto-Itinerary Generator</button>
+                </div>
+
+                <!-- "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) —
+                     voir window.toggleTripHomeBaseEditor()/window.saveTripHomeBase() dans
+                     script.js et la note sur la règle CSS .trip-se-row plus haut. -->
+                <div class="trip-se-row">
+                    <span class="trip-se-icon">H</span>
+                    <span class="trip-se-text"><small>START &amp; END</small><span id="trip-homebase-label">Not set</span></span>
+                    <button type="button" class="trip-se-edit-btn" id="trip-homebase-edit-btn" onclick="window.toggleTripHomeBaseEditor()">Edit</button>
+                </div>
+                <div class="trip-se-editor hidden" id="trip-homebase-editor">
+                    <input type="text" id="trip-homebase-input" placeholder="Hotel or neighborhood" autocomplete="off">
+                    <button type="button" class="trip-se-save-btn" id="trip-homebase-save-btn" onclick="window.saveTripHomeBase()">Save</button>
                 </div>
 
                 <div class="section-label" id="i18n-your-iti">YOUR ITINERARY</div>
@@ -925,7 +944,24 @@
                 </div>
 
                 <div class="trip-tab-panel" data-panel="ideas">
-                <div class="section-label" id="saved-locs-label" style="margin-top: 40px;">UNASSIGNED LOCATIONS (0)</div>
+                <!-- Filtres de lieux (demande du 17/10/2026, "remplace la page par
+                     trip_finale_legere.html") — déplacés ici depuis l'onglet Plan (où ils
+                     n'ont pas d'équivalent dans le mockup) : leur rôle est de filtrer QUELS
+                     lieux peuvent être ajoutés au voyage, ce qui concerne cet onglet
+                     "Ideas"/lieux non-assignés, pas la planification jour par jour. Même
+                     markup/ids qu'avant (updateEditTripOptions() dans script.js, inchangé). -->
+                <div class="edit-banner" style="margin-bottom:20px;">
+                    <div class="section-label" style="margin-top:0;">Location Filters</div>
+                    <div style="display:flex; gap:10px; margin-bottom: 10px;">
+                         <select id="edit-trip-group" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('group')"></select>
+                         <select id="edit-trip-member" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('member')"></select>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                         <select id="edit-trip-country" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('country')"></select>
+                         <select id="edit-trip-city" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('city')"></select>
+                    </div>
+                </div>
+                <div class="section-label" id="saved-locs-label" style="margin-top: 0;">UNASSIGNED LOCATIONS (0)</div>
                 <div id="loc-list" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" style="min-height: 50px; padding: 10px; border: 1px dashed #cbd5e1; background: #fff; border-radius: 12px;"></div>
 
                 <button class="gen-btn ghost" id="add-more-locations-btn" style="margin-top:15px;" onclick="openAddModal()">
@@ -1209,9 +1245,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261049"></script>
-<script src="locations-data.js?v=20261049"></script>
-<script src="script.js?v=20261049"></script>
+<script type="module" src="firebase-init.js?v=20261050"></script>
+<script src="locations-data.js?v=20261050"></script>
+<script src="script.js?v=20261050"></script>
 
 </body>
 </html>
