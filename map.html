@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261046" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261047" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -834,7 +834,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261046';
+        s.src = 'page-loader.js?v=20261047';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -2108,27 +2108,27 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261046"></script>
-<script type="module" src="firebase-init.js?v=20261046"></script>
-<script src="locations-data.js?v=20261046"></script>
+<script src="countries.js?v=20261047"></script>
+<script type="module" src="firebase-init.js?v=20261047"></script>
+<script src="locations-data.js?v=20261047"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261046"></script>
+<script src="artists-content.js?v=20261047"></script>
 <!-- Contours de pays pour la teinte "Show visited" sur la mini-carte de visited.html
      (window.VISITED_WORLD_MAP/visitedWorldMapProject() dans script.js) — gardé ici
      uniquement parce que script.js référence encore ces fonctions ; la carte Leaflet de
      CETTE page n'utilise plus ce fichier pour son propre overlay de pays visités, voir
      country-borders.js ci-dessous (demande du 17/10/2026, "frontières correctes"). -->
-<script src="visited-map-data.js?v=20261046"></script>
+<script src="visited-map-data.js?v=20261047"></script>
 <!-- Vraies frontières de pays (Natural Earth, lat/lng Leaflet) pour l'overlay "Show
      visited" de CETTE carte — remplace l'approximation SVG ci-dessus pour ce usage
      (demande du 17/10/2026). Doit précéder script.js. -->
-<script src="country-borders.js?v=20261046"></script>
-<script src="script.js?v=20261046"></script>
+<script src="country-borders.js?v=20261047"></script>
+<script src="script.js?v=20261047"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261046"></script>
-<script src="map-tour.js?v=20261046"></script>
+<script src="itinerary.js?v=20261047"></script>
+<script src="map-tour.js?v=20261047"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE

@@ -14598,12 +14598,11 @@ function wireCreateTripInviteAutocompleteOnce() {
 }
 
 // LOGIQUE GOOGLE FLIGHTS STYLE TABS (NEW TRIP)
-window.openNewTripModal = function() {
-    document.getElementById('add-trip-modal').classList.remove('hidden');
-    wireCreateTripInviteAutocompleteOnce();
-    // Repart d'un état de calendrier neuf à chaque ouverture (voir _calState dans
-    // renderDateRangeCalendar plus haut) : une modale de création rouverte ne doit jamais
-    // garder la plage de dates du voyage précédent affichée.
+// Repart d'un état de calendrier neuf (voir _calState dans renderDateRangeCalendar plus
+// haut) et (re)peuple le select Groupe si besoin — factorisé hors de openNewTripModal()
+// pour être réutilisé à l'identique par openNewTripMobileSheet() ci-dessous (demande du
+// 17/10/2026), qui ne doit RIEN dupliquer de cette logique.
+function resetCreateTripDateAndGroupState() {
     delete _calState.create;
     document.getElementById('create-trip-start').value = '';
     document.getElementById('create-trip-end').value = '';
@@ -14617,6 +14616,22 @@ window.openNewTripModal = function() {
         const availableGroups = [...new Set(availableLocs.map(l => l.group))].sort();
         availableGroups.forEach(g => gSelect.innerHTML += `<option value="${g}">${g}</option>`);
     }
+}
+window.openNewTripModal = function() {
+    // Sur mobile (demande du 17/10/2026, "voici la page qu'il faut afficher",
+    // nouveau_trip_final.html) : la fiche "Liste épurée" du mockup remplace cette modale
+    // centrée desktop. Elle lit/écrit les MÊMES champs cachés de #add-trip-modal ci-dessous
+    // (selects groupe/membre/pays/ville, onglets de dates, pastilles durée/mois,
+    // #create-trip-hotel, createTripSelectedCategories/createTripPendingInvitees) pour que
+    // createNewTripAdvanced() plus bas continue de fonctionner SANS LA MOINDRE
+    // modification — aucune logique de création de voyage dupliquée.
+    if (window.matchMedia('(max-width: 800px)').matches && typeof window.openNewTripMobileSheet === 'function') {
+        window.openNewTripMobileSheet();
+        return;
+    }
+    document.getElementById('add-trip-modal').classList.remove('hidden');
+    wireCreateTripInviteAutocompleteOnce();
+    resetCreateTripDateAndGroupState();
 }
 
 window.updateCreateTripOptions = function() {
@@ -14696,6 +14711,298 @@ window.addCreateTripInvitee = function() {
 window.removeCreateTripInvitee = function(name) {
     createTripPendingInvitees = createTripPendingInvitees.filter(n => n !== name);
     window.renderCreateTripInvitees();
+};
+
+// ==========================================
+// NOUVEAU VOYAGE — FICHE MOBILE (demande du 17/10/2026, nouveau_trip_final.html,
+// variante "Liste épurée" — la seule réellement affichée dans ce mockup, les 4 autres
+// n'étant que des variantes de présentation jamais montées dans son board). Remplace
+// #add-trip-modal UNIQUEMENT sur mobile (voir window.openNewTripModal() plus haut).
+// Volontairement bâtie comme une simple VUE par-dessus les MÊMES champs cachés que la
+// modale desktop (selects groupe/membre/pays/ville, onglets de dates, pastilles
+// durée/mois, #create-trip-hotel, createTripSelectedCategories/createTripPendingInvitees)
+// : chaque choix ici écrit directement dans ces mêmes champs/variables, et
+// createNewTripAdvanced() plus bas les lit ensuite SANS LA MOINDRE MODIFICATION — aucune
+// logique de création de voyage dupliquée, donc aucun risque de divergence avec le flux
+// desktop (itinéraire optimisé, invitations, sync wishlist...).
+//
+// Le select #create-trip-member reste un choix UNIQUE (pas de multi-sélection comme dans
+// le mockup) : createNewTripAdvanced() ne filtre jamais que sur un seul membre à la fois
+// (voir plus bas, `l.member !== member`), un choix multiple n'y aurait aucun effet réel.
+const NT_IC = {
+    pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11-4-4L4 16z"/></svg>',
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>',
+    bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>'
+};
+let ntState = null;
+let ntFriendsCache = null;
+const ntT = (fr, en) => currentLang === 'fr' ? fr : en;
+const ntRowHtml = (ic, lab, val, pick, right) => `<button type="button" class="qaf-row" data-ntpick="${pick}"><span class="qaf-ri">${ic}</span><span class="qaf-rt"><small>${lab}</small>${val}</span>${right || ''}<span class="qaf-chev">${QA_IC.ch}</span></button>`;
+const ntPh = txt => `<span class="qaf-ph">${escapeHtml(txt)}</span>`;
+function ntFmtDate(iso) {
+    if (!iso) return '';
+    return new Date(iso + 'T12:00').toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short' });
+}
+function ntWhenTxt() {
+    const flexTab = document.querySelector('#add-trip-modal .date-tab[data-tab="create-flexible"]');
+    const flexible = !!(flexTab && flexTab.classList.contains('active'));
+    if (flexible) {
+        const dur = document.querySelector('#add-trip-modal .pill-btn[data-type="create-duration"].active')?.textContent.trim() || '';
+        const month = document.querySelector('#add-trip-modal .pill-btn[data-type="create-month"].active')?.textContent.trim() || '';
+        return dur && month ? `${dur} ${ntT('en', 'in')} ${month}` : '';
+    }
+    const dep = document.getElementById('create-trip-start').value;
+    const ret = document.getElementById('create-trip-end').value;
+    if (!dep) return '';
+    return `${ntFmtDate(dep)}${ret ? ' → ' + ntFmtDate(ret) : ''}`;
+}
+function ntOptions(selectId) {
+    const sel = document.getElementById(selectId);
+    return sel ? Array.from(sel.options).map(o => ({ value: o.value, label: o.textContent })) : [];
+}
+// Fait passer .active sur la VRAIE pastille cachée correspondante (recherchée par son
+// texte, identique à celui affiché sur la pastille "miroir" cliquée dans la fiche
+// mobile) via la fonction déjà en place (selectCreatePill) — jamais de logique de
+// sélection dupliquée.
+function ntClickHiddenPill(scopeSelector, label) {
+    const btns = document.querySelectorAll(scopeSelector);
+    const target = Array.from(btns).find(b => b.textContent.trim() === label.trim());
+    if (target && typeof window.selectCreatePill === 'function') window.selectCreatePill(target, target.dataset.type);
+}
+async function ntEnsureFriends() {
+    if (ntFriendsCache) return ntFriendsCache;
+    if (typeof window.listMyFriends !== 'function') { ntFriendsCache = []; return ntFriendsCache; }
+    try {
+        const raw = await window.listMyFriends();
+        ntFriendsCache = raw.map(f => ({ uid: f.uid, n: f.username || f.uid, h: '@' + (f.username || ''), c: (typeof avatarColorForUsername === 'function' ? avatarColorForUsername(f.username || f.uid) : '#D42759') }));
+    } catch (e) { ntFriendsCache = []; }
+    return ntFriendsCache;
+}
+function ntBody() {
+    const group = document.getElementById('create-trip-group').value;
+    const member = document.getElementById('create-trip-member').value;
+    const country = document.getElementById('create-trip-country').value;
+    const city = document.getElementById('create-trip-city').value;
+    const hotel = document.getElementById('create-trip-hotel').value;
+    const whenTxt = ntWhenTxt();
+    const invitedFriends = (ntFriendsCache || []).filter(f => ntState.invitees.includes(f.h.slice(1)));
+    // Même repli que createNewTripAdvanced() plus bas ("${group} Trip in ${country}") —
+    // un simple aperçu du nom qui sera appliqué si le champ reste vide, jamais localisé
+    // là non plus (comportement réel existant, pas une décision propre à cette fiche).
+    const autoName = (group && country) ? `${group} Trip in ${country}` : '';
+    return `
+    <label class="qaf-row" style="cursor:text">
+        <span class="qaf-ri">${NT_IC.pen}</span>
+        <span class="qaf-rt" style="min-width:0">
+            <small>${ntT('Nom du voyage', 'Trip name')} <em>· ${ntT('facultatif', 'optional')}</em></small>
+            <input data-ntin="name" placeholder="${escapeHtml(autoName ? autoName + ' (auto)' : ntT('ex. Japon 2027', 'e.g. Japan 2027'))}" value="${escapeHtml(document.getElementById('create-trip-name').value)}">
+        </span>
+    </label>
+    ${ntRowHtml(QA_IC.grp, ntT('Groupe', 'Group'), group ? `<span>${escapeHtml(group)}</span>` : ntPh(ntT('Qui suivez-vous ?', 'Who are you following?')), 'group')}
+    ${group ? ntRowHtml(QA_IC.star, `${ntT('Membres', 'Members')} <em>· ${ntT('facultatif', 'optional')}</em>`, member && member !== 'All' ? `<span>${escapeHtml(member)}</span>` : ntPh(ntT('Tous les membres', 'All members')), 'member') : ''}
+    ${ntRowHtml(NT_IC.globe, ntT('Pays', 'Country'), country ? `<span>${escapeHtml(country)}</span>` : ntPh(ntT('Où allez-vous ?', 'Where are you going?')), 'country')}
+    ${country ? ntRowHtml(QA_IC.pin, `${ntT('Ville', 'City')} <em>· ${ntT('facultatif', 'optional')}</em>`, city ? `<span>${escapeHtml(city)}</span>` : ntPh(ntT('Toutes les villes', 'All cities')), 'city') : ''}
+    ${ntRowHtml(QA_IC.cal, ntT('Dates', 'Dates'), whenTxt ? `<span>${escapeHtml(whenTxt)}</span>` : ntPh(ntT('Quand ?', 'When?')), 'dates')}
+    ${ntRowHtml(NT_IC.bed, `${ntT('Hébergement', 'Stay')} <em>· ${ntT('facultatif', 'optional')}</em>`, hotel ? `<span>${escapeHtml(hotel)}</span>` : ntPh(ntT('Hôtel ou quartier', 'Hotel or neighborhood')), 'hotel')}
+    ${ntRowHtml(QA_IC.fr, `${ntT('Compagnons de voyage', 'Travel buddies')} <em>· ${ntT('facultatif', 'optional')}</em>`, ntState.invitees.length ? `<span>${ntState.invitees.length} ${ntT('invité(s)', 'invited')}</span>` : ntPh(ntT('Inviter des amis', 'Invite friends')), 'friends', invitedFriends.length ? qaAvStack(invitedFriends) : '')}
+    `;
+}
+function ntPicker() {
+    if (!ntState.pick) return '';
+    const p = ntState.pick;
+    let title = '', body = '', multi = false, searchPh = '';
+    const q = (ntState.q || '').toLowerCase();
+    if (p === 'group') {
+        title = ntT('Choisir un groupe', 'Choose a group');
+        searchPh = ntT('Rechercher…', 'Search…');
+        const current = document.getElementById('create-trip-group').value;
+        const opts = ntOptions('create-trip-group').filter(o => o.value && o.label.toLowerCase().includes(q));
+        body = opts.map(o => `<button type="button" class="qaf-li" data-ntset="group:${escapeHtml(o.value)}" aria-pressed="${current === o.value}"><span class="qaf-bigav" style="background:${groupColorFor(o.value)}">${escapeHtml(o.value.slice(0, 3).toUpperCase())}</span><span class="qaf-lt"><b>${escapeHtml(o.label)}</b></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    if (p === 'member') {
+        title = ntT('Membres', 'Members');
+        const current = document.getElementById('create-trip-member').value;
+        body = ntOptions('create-trip-member').map(o => `<button type="button" class="qaf-li" data-ntset="member:${escapeHtml(o.value)}" aria-pressed="${current === o.value}"><span class="qaf-lt"><b>${escapeHtml(o.label)}</b></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    if (p === 'country') {
+        title = ntT('Choisir un pays', 'Choose a country');
+        searchPh = ntT('Rechercher…', 'Search…');
+        const current = document.getElementById('create-trip-country').value;
+        const opts = ntOptions('create-trip-country').filter(o => o.value && o.label.toLowerCase().includes(q));
+        body = opts.map(o => `<button type="button" class="qaf-li" data-ntset="country:${escapeHtml(o.value)}" aria-pressed="${current === o.value}"><span class="qaf-pi">${QA_IC.pin}</span><span class="qaf-lt"><b>${escapeHtml(o.label)}</b></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    if (p === 'city') {
+        title = ntT('Ville', 'City');
+        const current = document.getElementById('create-trip-city').value;
+        body = `<button type="button" class="qaf-li" data-ntset="city:" aria-pressed="${!current}"><span class="qaf-lt"><b>${ntT('Toutes les villes', 'All cities')}</b></span><span class="qaf-rd"></span></button>` +
+            ntOptions('create-trip-city').filter(o => o.value).map(o => `<button type="button" class="qaf-li" data-ntset="city:${escapeHtml(o.value)}" aria-pressed="${current === o.value}"><span class="qaf-pi">${QA_IC.pin}</span><span class="qaf-lt"><b>${escapeHtml(o.label)}</b></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    if (p === 'dates') {
+        title = ntT('Quand ?', 'When?');
+        const flexTab = document.querySelector('#add-trip-modal .date-tab[data-tab="create-flexible"]');
+        const flexible = !!(flexTab && flexTab.classList.contains('active'));
+        const dep = document.getElementById('create-trip-start').value;
+        const ret = document.getElementById('create-trip-end').value;
+        body = `<div class="nt-seg"><button type="button" data-ntact="date-specific" aria-pressed="${!flexible}">${ntT('Dates précises', 'Specific dates')}</button><button type="button" data-ntact="date-flexible" aria-pressed="${flexible}">${ntT('Dates flexibles', 'Flexible dates')}</button></div>`;
+        if (!flexible) {
+            body += `<div class="nt-dates">
+                <label class="nt-dt"><small>${ntT('DÉPART', 'DEPARTURE')}</small>${dep ? `<b>${ntFmtDate(dep)}</b>` : `<b class="nt-dt-ph">${ntT('Choisir une date', 'Select date')}</b>`}<input type="date" data-ntin="dep" value="${dep}"></label>
+                <label class="nt-dt"><small>${ntT('RETOUR', 'RETURN')}</small>${ret ? `<b>${ntFmtDate(ret)}</b>` : `<b class="nt-dt-ph">${ntT('Choisir une date', 'Select date')}</b>`}<input type="date" data-ntin="ret" value="${ret}" min="${dep}"></label>
+            </div>`;
+        } else {
+            const durBtns = Array.from(document.querySelectorAll('#add-trip-modal .pill-btn[data-type="create-duration"]'));
+            const monthBtns = Array.from(document.querySelectorAll('#create-month-grid .pill-btn'));
+            body += `<div class="qaf-chips" style="margin-top:12px">${durBtns.map(b => `<button type="button" class="qaf-chip" data-ntdur="${escapeHtml(b.textContent.trim())}" aria-pressed="${b.classList.contains('active')}">${escapeHtml(b.textContent.trim())}</button>`).join('')}</div>
+            <div class="qaf-chips" style="margin-top:8px">${monthBtns.map(b => `<button type="button" class="qaf-chip" data-ntmonth="${escapeHtml(b.textContent.trim())}" aria-pressed="${b.classList.contains('active')}">${escapeHtml(b.textContent.trim())}</button>`).join('')}</div>`;
+        }
+    }
+    if (p === 'hotel') {
+        title = ntT('Hébergement', 'Stay');
+        body = `<label class="qaf-row" style="cursor:text;border-bottom:none"><span class="qaf-ri">${NT_IC.bed}</span><span class="qaf-rt"><input data-ntin="hotel" placeholder="${ntT('Hôtel ou quartier', 'Hotel or neighborhood')}" value="${escapeHtml(document.getElementById('create-trip-hotel').value)}"></span></label>`;
+    }
+    if (p === 'friends') {
+        title = ntT('Inviter des amis', 'Invite friends');
+        multi = true;
+        searchPh = ntT('Rechercher parmi vos amis…', 'Search your friends…');
+        const fs = (ntFriendsCache || []).filter(f => (f.n + f.h).toLowerCase().includes(q));
+        body = fs.length ? fs.map(f => `<button type="button" class="qaf-li" data-nttogf="${escapeHtml(f.h.slice(1))}" aria-pressed="${ntState.invitees.includes(f.h.slice(1))}"><span class="qaf-bigav" style="background:${f.c}">${escapeHtml(f.n.charAt(0).toUpperCase())}</span><span class="qaf-lt"><b>${escapeHtml(f.n)}</b><small>${escapeHtml(f.h)}</small></span><span class="qaf-ck">${QA_IC.ok}</span></button>`).join('') : `<div style="padding:20px 0;color:var(--qa-mut);font-size:13px;text-align:center;">${ntT('Aucun ami pour le moment.', 'No friends yet.')}</div>`;
+    }
+    const n = p === 'friends' ? ntState.invitees.length : 0;
+    return `<div class="qaf-pick on"><div class="qaf-grab"></div><div class="qaf-hd"><button type="button" class="qaf-bk" data-ntact="back">${QA_IC.bk}</button><h2>${escapeHtml(title)}</h2><span style="width:34px"></span></div>
+        ${searchPh ? `<label class="qaf-srch">${QA_IC.search}<input data-ntin="q" placeholder="${escapeHtml(searchPh)}" value="${escapeHtml(ntState.q || '')}"></label>` : ''}
+        <div class="qaf-body">${body}</div>
+        ${(multi || p === 'dates') ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-ntact="back">${p === 'friends' && n ? ntT(`Terminé · ${n} invité${n > 1 ? 's' : ''}`, `Done · ${n} invited`) : ntT('Terminé', 'Done')}</button></div>` : ''}
+    </div>`;
+}
+function ntRender(focusKey) {
+    const overlay = document.getElementById('nt-form-overlay');
+    if (!overlay || !ntState) return;
+    const root = overlay.querySelector('.nt-form-root');
+    const sheetScroll = overlay.querySelector('.qaf-sheet-body')?.scrollTop || 0;
+    const pickScroll = overlay.querySelector('.qaf-pick .qaf-body')?.scrollTop || 0;
+    const ready = !!(document.getElementById('create-trip-group').value && document.getElementById('create-trip-country').value);
+    root.innerHTML = `
+        <div class="qaf-sheet"><div class="qaf-grab"></div><div class="qaf-hd"><h2>${ntT('Nouveau voyage', 'New trip')}</h2><button type="button" class="qaf-x" data-ntact="close">${QA_IC.x}</button></div>
+        <div class="qaf-sheet-body">${ntBody()}</div>
+        <div class="qaf-foot"><button type="button" class="qaf-cta${ready ? '' : ' off'}" data-ntact="create">${ntT('Créer le voyage', 'Create trip')}</button></div></div>${ntPicker()}`;
+    const sb = overlay.querySelector('.qaf-sheet-body'); if (sb) sb.scrollTop = sheetScroll;
+    const pb = overlay.querySelector('.qaf-pick .qaf-body'); if (pb) pb.scrollTop = pickScroll;
+    if (focusKey) {
+        const inp = overlay.querySelector(`[data-ntin="${focusKey}"]`);
+        if (inp && inp.type !== 'date') { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+    }
+}
+window.closeNewTripMobileSheet = function() {
+    const overlay = document.getElementById('nt-form-overlay');
+    if (overlay) overlay.classList.remove('open');
+    ntState = null;
+};
+async function ntSubmitCreate(overlay) {
+    const group = document.getElementById('create-trip-group').value;
+    const country = document.getElementById('create-trip-country').value;
+    if (!group || !country) {
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(ntT('Choisissez un groupe et un pays.', 'Pick a group and a country.'));
+        return;
+    }
+    const btn = overlay.querySelector('[data-ntact="create"]');
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+    createTripPendingInvitees = (ntState.invitees || []).slice();
+    try {
+        await window.createNewTripAdvanced();
+    } finally {
+        // createNewTripAdvanced() écrit un message d'erreur non bloquant dans #create-trip-error
+        // (ex: hôtel introuvable) sans jamais arrêter la création — invisible sur cette fiche
+        // mobile (élément caché, propre à la modale desktop), d'où ce relais en toast.
+        const errEl = document.getElementById('create-trip-error');
+        if (errEl && !errEl.classList.contains('hidden') && typeof window.showSimpleToast === 'function') {
+            window.showSimpleToast(errEl.textContent);
+            errEl.classList.add('hidden');
+        }
+        window.closeNewTripMobileSheet();
+    }
+}
+window.openNewTripMobileSheet = function() {
+    // Repart toujours de zéro à l'ouverture (contrairement à openNewTripModal() desktop,
+    // qui ne réinitialise que les dates/groupes disponibles) : évite qu'une sélection
+    // laissée par un voyage précédent (nom, pays, invités...) ne traîne silencieusement.
+    document.getElementById('create-trip-name').value = '';
+    document.getElementById('create-trip-group').value = '';
+    document.getElementById('create-trip-member').value = 'All';
+    document.getElementById('create-trip-country').value = '';
+    document.getElementById('create-trip-city').value = '';
+    document.getElementById('create-trip-hotel').value = '';
+    createTripHotelSelected = null;
+    createTripSelectedCategories = [];
+    createTripPendingInvitees = [];
+    resetCreateTripDateAndGroupState();
+    window.switchCreateDateTab('specific');
+    window.updateCreateTripOptions();
+    ntState = { pick: null, q: '', invitees: [] };
+    ntFriendsCache = null;
+
+    let overlay = document.getElementById('nt-form-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'nt-form-overlay';
+        overlay.className = 'nt-form-overlay';
+        overlay.innerHTML = `<div class="nt-form-root"></div>`;
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeNewTripMobileSheet(); });
+        overlay.addEventListener('click', (e) => {
+            const d = e.target.closest('[data-ntpick],[data-ntact],[data-ntset],[data-nttogf],[data-ntdur],[data-ntmonth]');
+            if (!d || !ntState) return;
+            const ds = d.dataset;
+            if (ds.ntpick) { ntState.pick = ds.ntpick; ntState.q = ''; ntRender(); return; }
+            if (ds.ntset !== undefined) {
+                const [k, v] = ds.ntset.split(':');
+                if (k === 'group') { document.getElementById('create-trip-group').value = v; window.updateCreateTripOptions(); }
+                else if (k === 'member') { document.getElementById('create-trip-member').value = v; }
+                else if (k === 'country') { document.getElementById('create-trip-country').value = v; window.updateCreateTripOptions(); }
+                else if (k === 'city') { document.getElementById('create-trip-city').value = v || ''; }
+                ntState.pick = null;
+                ntRender();
+                return;
+            }
+            if (ds.nttogf) {
+                const u = ds.nttogf;
+                ntState.invitees = ntState.invitees.includes(u) ? ntState.invitees.filter(x => x !== u) : [...ntState.invitees, u];
+                ntRender();
+                return;
+            }
+            if (ds.ntdur) { ntClickHiddenPill('#add-trip-modal .pill-btn[data-type="create-duration"]', ds.ntdur); ntRender(); return; }
+            if (ds.ntmonth) { ntClickHiddenPill('#create-month-grid .pill-btn', ds.ntmonth); ntRender(); return; }
+            const a = ds.ntact;
+            if (a === 'back') { ntState.pick = null; ntRender(); return; }
+            if (a === 'close') { window.closeNewTripMobileSheet(); return; }
+            if (a === 'date-specific') { window.switchCreateDateTab('specific'); ntRender(); return; }
+            if (a === 'date-flexible') { window.switchCreateDateTab('flexible'); ntRender(); return; }
+            if (a === 'create') { ntSubmitCreate(overlay); return; }
+        });
+        overlay.addEventListener('input', (e) => {
+            const k = e.target.dataset.ntin;
+            if (!k || !ntState) return;
+            if (k === 'name') document.getElementById('create-trip-name').value = e.target.value;
+            else if (k === 'hotel') { document.getElementById('create-trip-hotel').value = e.target.value; createTripHotelSelected = null; }
+            else if (k === 'q') ntState.q = e.target.value;
+            ntRender(k);
+        });
+        overlay.addEventListener('change', (e) => {
+            const k = e.target.dataset.ntin;
+            if (!k) return;
+            if (k === 'dep') {
+                document.getElementById('create-trip-start').value = e.target.value;
+                const retEl = document.getElementById('create-trip-end');
+                if (retEl.value && retEl.value < e.target.value) retEl.value = '';
+                ntRender();
+            } else if (k === 'ret') {
+                document.getElementById('create-trip-end').value = e.target.value;
+                ntRender();
+            }
+        });
+    }
+    ntEnsureFriends().then(() => { if (ntState && ntState.pick === 'friends') ntRender(); });
+    ntRender();
+    overlay.classList.add('open');
 };
 
 window.createNewTripAdvanced = async function() {
