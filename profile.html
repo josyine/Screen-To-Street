@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261050" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261051" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -229,6 +229,11 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 .profile-review-loc { font-size: 13.5px; font-weight: 700; color: #212832; }
 .profile-review-stars { display: flex; gap: 1px; flex-shrink: 0; }
 .profile-review-text { font-size: 12.5px; color: #475569; line-height: 1.5; }
+/* Date de publication (demande du 17/10/2026, onglet Reviews : "ajoute la date de
+   publication de la review") — r.updatedAt (horodatage serveur Firestore, déjà utilisé
+   pour trier ces mêmes avis juste au-dessus dans renderProfileReviews()), pas r.date (la
+   date de VISITE, un champ différent, optionnel et déjà montré ailleurs sur cette carte). */
+.profile-review-date { font-size: 11px; color: #94a3b8; font-weight: 600; margin-top: 6px; }
 
 /* Onglet Map — pas de titre "Here's where I've been" (retiré, demande du 08/09/2026) ni de
    boutons +/- de zoom Leaflet (voir zoomControl:false dans renderProfileMap() plus bas) : le
@@ -432,8 +437,17 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
       position: fixed; inset: 0; z-index: 9000; margin: 0; padding: 0; border-radius: 0;
   }
   .profile-mini-map-frame.fullscreen .profile-mini-map { height: 100%; width: 100%; border-radius: 0; }
+  /* BUG corrigé (demande du 17/10/2026, répétée — "il y a un problème d'affichage quand on
+     clique sur full screen") : ce bouton restait positionné en haut à DROITE (right:14px),
+     exactement par-dessus #mobile-top-icons (le chat/les réglages, toujours visibles,
+     jamais masqués pendant le plein écran) — les deux occupaient le même coin de l'écran,
+     un vrai doublon visuel plutôt qu'un simple souci de z-index (déjà corrigé plus tôt, voir
+     le commentaire sur toggleProfileMapFullscreen()). Déplacé en haut à GAUCHE, où rien
+     d'autre ne vit sur mobile (.universal-logo y est masqué, voir plus bas) — et devient une
+     vraie croix "fermer" plutôt que l'icône "réduire" (voir le SVG dans le HTML plus bas),
+     demande explicite plutôt qu'une simple reformulation de la précédente. */
   .profile-map-shrink-btn {
-      position: absolute; top: calc(14px + env(safe-area-inset-top)); right: 14px; z-index: 10;
+      position: absolute; top: calc(14px + env(safe-area-inset-top)); left: 14px; z-index: 10;
       width: 38px; height: 38px; border-radius: 50%; border: none;
       background: rgba(255,255,255,.92); color: #1F2430; display: flex; align-items: center; justify-content: center;
       cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,.18);
@@ -491,7 +505,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261050';
+        s.src = 'page-loader.js?v=20261051';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -699,8 +713,8 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                     <!-- Bouton "réduire" (demande du 16/10/2026, "ajoute un bouton réduire
                          la carte pour revenir en arrière") — masqué hors plein écran, voir
                          style.css. -->
-                    <button type="button" id="profile-map-shrink-btn" class="profile-map-shrink-btn" onclick="window.toggleProfileMapFullscreen(false)" title="Shrink map">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    <button type="button" id="profile-map-shrink-btn" class="profile-map-shrink-btn" onclick="window.toggleProfileMapFullscreen(false)" title="Close">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
                     </button>
                     <div class="profile-mini-map" id="profile-mini-map"></div>
                 </div>
@@ -791,9 +805,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261050"></script>
-<script src="locations-data.js?v=20261050"></script>
-<script src="script.js?v=20261050"></script>
+<script type="module" src="firebase-init.js?v=20261051"></script>
+<script src="locations-data.js?v=20261051"></script>
+<script src="script.js?v=20261051"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
@@ -929,6 +943,11 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
         frame.classList.toggle('fullscreen', !!expand);
         const navEl = document.getElementById('mobile-bottom-nav');
         if (navEl) navEl.classList.toggle('above-fullscreen-overlay', !!expand);
+        // Header mobile (chat/réglages) gardé visible au-dessus de la carte plein écran,
+        // comme la nav du bas juste au-dessus (demande du 17/10/2026, "hors header et
+        // barre de navigation du bas") — voir la règle CSS jumelle dans style.css.
+        const topIconsEl = document.getElementById('mobile-top-icons');
+        if (topIconsEl) topIconsEl.classList.toggle('above-fullscreen-overlay', !!expand);
         // Leaflet ne redétecte jamais tout seul un changement de taille posé en CSS pur
         // (même remarque que resizeProfileMiniMap() ci-dessus) — laisse le temps au
         // reflow (position:fixed, inset:0) de s'appliquer avant de mesurer.
@@ -1074,12 +1093,16 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                 caption: r.notes,
                 date: r.date
             });
+            const publishedLabel = r.updatedAt && r.updatedAt.seconds
+                ? new Date(r.updatedAt.seconds * 1000).toLocaleDateString(currentLang === 'fr' ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+                : '';
             card.innerHTML = `
                 <div class="profile-review-top">
                     <span class="profile-review-loc">${escapeHtml(r.locationName || '')}</span>
                     <span class="profile-review-stars">${stars}</span>
                 </div>
                 ${r.notes ? `<div class="profile-review-text">${escapeHtml(r.notes)}</div>` : ''}
+                ${publishedLabel ? `<div class="profile-review-date">${escapeHtml(publishedLabel)}</div>` : ''}
             `;
             list.appendChild(card);
         });
