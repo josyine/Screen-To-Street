@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-18T16:44:50.430Z.
+// Généré le 2026-10-18T21:43:03.615Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -17595,6 +17595,90 @@ window.STATIC_LOCATIONS = [
     }
   },
   {
+    "id": "new-5ShQtOSOGBVN7nYEDe5L",
+    "name": "Songdo Central Park",
+    "group": "BTS",
+    "member": "All",
+    "country": "South Korea",
+    "city": "Incheon",
+    "category": "Landmark",
+    "year": "2016",
+    "address": "196 Techno park-ro, Yeonsu-gu, Incheon, South Korea",
+    "lat": 37.3925,
+    "lng": 126.6389,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Songdo_Central_Park_Incheon.jpg",
+    "addedAt": 1792352864242,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Songdo Central Park is a public urban park located in the Songdo International Business District of Incheon. Inspired by New York City's Central Park, it is South Korea's first public park created using seawater drawn directly from the West Sea, featuring a 1.8-kilometer-long central canal. The park is surrounded by striking futuristic skyscrapers, the tri-bowl cultural center, traditional hanok hotels, and manicured lawns, offering water taxis, kayak rentals, and sculpture walks.</p><!--stss:footsteps--><p>Songdo Central Park has hosted multiple BTS video productions, outdoor broadcasting performances, and promotional shoots. During the filming of promotional content for their Japanese single 'For You' and various Incheon K-pop concert broadcasts, the members performed against the backdrop of Songdo's illuminated canal bridges and glassy skyscrapers. The futuristic architecture and clean urban aesthetic made it a frequent background for BTS's growth as global ambassadors during the mid-2010s.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Water taxi ride"
+        },
+        "text": {
+          "en": "Take a 20-minute seawater taxi ride along the canal to view the futuristic architecture from the water level."
+        }
+      },
+      {
+        "title": {
+          "en": "Night view photography"
+        },
+        "text": {
+          "en": "Visit in the evening when the skyscrapers, Tri-Bowl building, and pedestrian bridges light up with vibrant LED displays."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Hanok Village"
+        },
+        "text": {
+          "en": "Stroll through Songdo Hanok Village located inside the park for traditional Korean coffee and dining surrounded by modern towers."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.insiseol.or.kr/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Incheon Subway Line 1 directly to Central Park Station (Exit 3 or 4), which opens straight into the park."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "category": "Restaurant",
     "name": "Geum Dwaeji Sikdang",
     "address": "149 Dasan-ro, Jung-gu, Seoul, South Korea",
@@ -18683,6 +18767,82 @@ window.STATIC_LOCATIONS = [
     }
   },
   {
+    "id": "new-DdlWb9IvOi4tJXp2akR6",
+    "name": "Dia Beacon",
+    "group": "BTS",
+    "member": "RM",
+    "country": "United States",
+    "city": "Beacon",
+    "category": "Museum",
+    "year": "2021",
+    "address": "3 Beekman St, Beacon, NY 12508, United States",
+    "lat": 41.5011,
+    "lng": -73.9814,
+    "img": "",
+    "addedAt": 1792352873273,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Dia Beacon is a acclaimed museum for contemporary art located in a former Nabisco box-printing factory on the banks of the Hudson River in Beacon, New York. It houses large-scale installations, Minimalist, and Conceptual art by figures like Richard Serra, Dan Flavin, and Donald Judd.</p><!--stss:footsteps--><p>RM spent a day visiting Dia Beacon during his art tour of the East Coast of the United States. He shared pictures walking through Richard Serra's massive steel sculptures and light installations by Dan Flavin on Instagram.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Advance tickets"
+        },
+        "text": {
+          "en": "Advance online reservation is strongly recommended, especially on weekends."
+        }
+      },
+      {
+        "title": {
+          "en": "No camera flash"
+        },
+        "text": {
+          "en": "Photography is permitted without flash, so make sure to follow gallery guidelines around delicate light and sculpture installations."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.diaart.org/visit/visit-our-locations-sites/dia-beacon-beacon-united-states",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Metro-North Railroad Hudson Line train from Grand Central Terminal in NYC directly to Beacon Station (approx. 80 minutes). The museum is a 5-minute walk from Beacon station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "img": "images/admin-upload-new-eOOf8yR17d9YjMPrKFbJ-photo.jpg",
     "name": "Sungnyemun Gate (Namdaemun)",
     "year": "2021",
@@ -18863,6 +19023,69 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Housed inside a magnificent grand Beaux-Arts railway station originally built for the 1900 Universal Exposition (Exposition Universelle), the Musée d'Orsay stands as one of Europe's most breathtaking architectural and cultural monuments. The museum boasts the world’s largest and most comprehensive collection of Impressionist and Post-Impressionist masterpieces. Visitors walk through halls filled with iconic canvases by legendary masters such as Claude Monet, Pierre-Auguste Renoir, Vincent van Gogh, Paul Cézanne, Edgar Degas, and Édouard Manet, tracing the profound evolution of modern Western art.</p><!--stss:footsteps--><p>Globally renowned for his sophisticated eye for fine art and his dedication to gallery-hopping, RM (Kim Namjoon) visited the Musée d'Orsay during his personal travels in Paris. Fans can catch a direct visual confirmation of this trip in his recorded travel footage, where Namjoon can be clearly seen exploring the museum's galleries at 33 minutes and 09 seconds (33:09) in the video. As an avid art collector and patron whose public influence has significantly boosted museum attendance and modern art appreciation among younger generations, Namjoon spent hours quietly absorbing the museum's monumental collections. For ARMYs, walking through the Orsay is a deeply inspiring pilgrimage that mirrors RM’s own creative mindset, connecting the classical masterpieces that fuel his lyrics, introspection, and personal aesthetic to his real-life cultural expeditions.</p>"
     }
+  },
+  {
+    "id": "new-HWD31GlT9xSPsBv2iR6y",
+    "name": "Grand Central Terminal",
+    "group": "BTS",
+    "member": "All",
+    "country": "United States",
+    "city": "New York",
+    "category": "MV Location",
+    "year": "2020",
+    "address": "89 E 42nd St, New York, NY 10017, United States",
+    "lat": 40.7527,
+    "lng": -73.9772,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/13/Grand_Central_Terminal_Main_Concourse_Jan_2006.jpg",
+    "addedAt": 1792352883648,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [],
+    "instagramUrls": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Photo Spot"
+        },
+        "text": {
+          "en": "Stand at the top of the East Staircase overlooking the main concourse to get the exact wide-angle perspective shown during the 'ON' intro sequence."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Grand Central Terminal is one of the world's most famous transportation hubs, situated in Midtown Manhattan. Known for its Beaux-Arts architecture, celestial ceiling, and historic main concourse, it serves millions of commuters and tourists annually.</p><!--stss:footsteps--><p>In February 2020, BTS shut down Grand Central Terminal after hours to film a legendary performance of 'ON' for The Tonight Show Starring Jimmy Fallon. Accompanied by a full marching band and dance crew, BTS delivered an explosive showcase inside the completely emptied historic concourse.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Accessible via New York City Subway lines 4, 5, 6, 7, and the S shuttle train directly at 42nd Street - Grand Central Station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": "new-JkEgRxLK90D3OHJYU7gs",
@@ -22544,6 +22767,228 @@ window.STATIC_LOCATIONS = [
           {
             "x": 0.8294,
             "y": 0.6205,
+            "member": "V"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1792353388392-fymfvp",
+    "name": "\"HOPE\" Sculpture",
+    "group": "BTS",
+    "member": "J-Hope",
+    "country": "United States",
+    "city": "New York",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "200 W 53rd St (Corner of 7th Avenue and 53rd Street), New York, NY 10019, USA",
+    "lat": 40.7629218,
+    "lng": -73.9820942,
+    "img": "images/admin-upload-new-manual-1792353388392-fymfvp-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "The Perfect Selfie Spot"
+        },
+        "text": {
+          "en": "Robert Indiana specifically created this modern version of his artwork with the \"selfie generation\" in mind. Don't be shy—step right up to the letters and strike a joyful, energetic pose just like J-Hope did."
+        }
+      },
+      {
+        "title": {
+          "en": "Timing Your Visit"
+        },
+        "text": {
+          "en": "Because it is located in Midtown Manhattan right next to Times Square and major subway lines, the sidewalk can get incredibly crowded. Visit early in the morning for a clean shot without dozens of tourists in your background."
+        }
+      },
+      {
+        "title": {
+          "en": "Wear a Pop of Color"
+        },
+        "text": {
+          "en": "J-Hope is known for his incredible street style. Wear something fun, vibrant, or effortlessly cool to contrast with the bright red of the sculpture for a perfect Instagram photo."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The sculpture is exceptionally easy to reach via the NYC Subway. You can take the B, D, or E trains directly to the 7 Avenue station, and the sculpture will be waiting for you right as you exit onto the street level."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The sculpture is located on a public sidewalk outdoors, meaning it is accessible 24/7 and completely free to visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The sidewalk surrounding the artwork is flat, paved, and fully accessible for wheelchair users and strollers."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792353388392-fymfvp-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3633,
+            "member": "J-Hope",
+            "y": 0.9118
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792353388392-fymfvp-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.4518,
+            "y": 0.8,
+            "member": "J-Hope"
+          }
+        ]
+      }
+    ],
+    "officialLink": "https://www.tripadvisor.com/Attraction_Review-g60763-d10538179-Reviews-Hope_Sculpture-New_York_City_New_York.html",
+    "pinterestUrl": "",
+    "tweetUrl": "https://x.com/BTSNewYorkCity/status/1049059838498676737",
+    "fullDescription": {
+      "en": "<p>Created by the celebrated American pop artist Robert Indiana—who is most globally renowned for his iconic \"LOVE\" design—the monumental \"HOPE\" sculpture is a massive 13-foot tall, 3-ton public artwork located in the bustling heart of Midtown Manhattan. Installed at the corner of 7th Avenue and 53rd Street in September 2014 to celebrate the artist's birthday and International Hope Day, the striking red, stacked Clarendon-font letters were designed to convey a universal, uplifting message of optimism to the millions of people who pass by it.</p><!--stss:footsteps--><p>During a trip to New York City, J-Hope visited this specific Midtown Manhattan corner to photograph himself alongside Robert Indiana's artwork. The sculpture's text directly mirrors his stage name and public persona. He shared photos on social media posing directly in front of the giant red aluminum letters. Following this update, the intersection of 7th Avenue and 53rd Street became a documented stop for fans tracing his travel routes in the city, visually echoing his signature introduction: \"I'm your hope, you're my hope, I'm J-Hope.\"</p>"
+    }
+  },
+  {
+    "id": "new-manual-1792355591426-7td1k5",
+    "name": "Brooklyn Bridge",
+    "group": "BTS",
+    "member": "All",
+    "country": "United States",
+    "city": "New York",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "Brooklyn Bridge, New York, NY, USA",
+    "lat": 40.7061,
+    "lng": 73.9969,
+    "img": "images/admin-upload-new-manual-1792355591426-7td1k5-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk Toward Manhattan"
+        },
+        "text": {
+          "en": "For the best visual experience and to capture the city skyline in your background, start your walk on the Brooklyn side of the bridge and head towards Manhattan."
+        }
+      },
+      {
+        "title": {
+          "en": "Frame the Cables"
+        },
+        "text": {
+          "en": "To recreate Taehyung's exact perspective, position yourself on the center of the wooden walkway so that the diagonal suspension cables frame your shot with one of the stone towers directly behind you."
+        }
+      },
+      {
+        "title": {
+          "en": "Beat the Crowds"
+        },
+        "text": {
+          "en": "The pedestrian walkway gets incredibly crowded by midday. To get a clean photo without hundreds of tourists and cyclists in the background, plan your visit for early in the morning."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Completed in 1883, the Brooklyn Bridge is one of the oldest and most recognizable suspension bridges in the United States. Connecting the boroughs of Manhattan and Brooklyn over the East River, it is famous for its massive neo-Gothic stone arches and intricate web of steel suspension cables. A defining feature of the bridge is its elevated wooden pedestrian promenade, which sits safely above the vehicle traffic and offers sweeping, unobstructed views of the Manhattan skyline, making it a favorite destination for both locals and tourists.</p><!--stss:footsteps--><p>During the North American leg of the Love Yourself world tour in October 2018—the same weekend the group performed their historic, sold-out stadium show at Citi Field—Taehyung took some downtime to explore New York City. On October 6, 2018, he shared a series of photos on the group's official Twitter account with the simple caption \"NY\".\nThe photos document his walk across the Brooklyn Bridge's elevated pedestrian walkway. Dressed for the crisp autumn weather, Taehyung was photographed standing on the wooden planks of the promenade, framed by the bridge's suspension cables and the towering stone arches in the background. Instead of a heavily stylized shoot, the images provided a casual, grounded perspective of his afternoon walking high above the East River.</p>"
+    },
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The bridge is highly accessible via the NYC Subway. To start on the Manhattan side, take the 4, 5, or 6 trains to Brooklyn Bridge-City Hall. To start on the Brooklyn side (recommended for views), take the A or C trains to High Street or the F train to York Street."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The pedestrian promenade is a public thoroughfare open 24/7 and is completely free to cross."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The walkway is ramped and fully accessible for wheelchair users and strollers from both the Brooklyn and Manhattan entrances. However, the path is shared with cyclists and can become tightly congested during peak hours."
+        }
+      }
+    ],
+    "ytId": "",
+    "imgCredit": "Jakub Hałun / CC BY-SA 4.0",
+    "tweetUrl": "https://x.com/bts_twt/status/1048405096881684480?s=46",
+    "officialLink": "https://www.nyc.gov/html/dot/html/infrastructure/brooklyn-bridge.shtml",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792355591426-7td1k5-recreated-0.jpg",
+        "markers": [
+          {
+            "y": 0.7529,
+            "member": "V",
+            "x": 0.7174
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792355591426-7td1k5-recreated-1.jpg",
+        "markers": [
+          {
+            "member": "V",
+            "x": 0.457,
+            "y": 0.5824
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792355591426-7td1k5-recreated-2.jpg",
+        "markers": [
+          {
+            "x": 0.7201,
+            "y": 0.7882,
             "member": "V"
           }
         ]
