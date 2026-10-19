@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-19T06:38:21.929Z.
+// Généré le 2026-10-19T14:54:08.296Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -22990,6 +22990,240 @@ window.STATIC_LOCATIONS = [
             "x": 0.7201,
             "y": 0.7882,
             "member": "V"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1792403051595-tmv37f",
+    "name": "Museum of Modern Art (MoMA)",
+    "group": "BTS",
+    "member": "RM",
+    "country": "United States",
+    "city": "New York",
+    "category": "Museum",
+    "year": "2018",
+    "address": "11 W 53rd St, New York, NY 10019, USA",
+    "lat": 40.7614324,
+    "lng": -73.9768146,
+    "img": "images/admin-upload-new-manual-1792403051595-tmv37f-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in Midtown Manhattan, the Museum of Modern Art (MoMA) is one of the world's most influential museums dedicated to modern and contemporary art. At the heart of the museum lies the Abby Aldrich Rockefeller Sculpture Garden, a serene, marble-paved outdoor courtyard designed as an oasis amidst the towering skyscrapers of New York City.</p><p>During the 2018–2019 temporary installation curated by Peter Fischli, the garden featured Gymnast, II, a striking bronze sculpture by William Tucker (inventory number 159.1986). Departing from his earlier abstract geometric structures, Tucker's Gymnast series explores a raw sense of corporality. Although the piece lacks a distinct head or limbs, its heavy bronze form masterfully evokes the muscular tension, folding, and intense physical effort of an athlete in the middle of a deep stretch or warm-up. For the installation, the artwork was brought out of the museum's storage reserves and prominently displayed on a white marble pedestal facing the esplanade of the sculpture garden.</p><!--stss:footsteps--><p>A well-known art enthusiast, RM frequently spends his free time during international tours visiting museums and galleries—a practice affectionately dubbed \"Namjooning\" by fans. During a visit to MoMA, he documented his time in the Abby Aldrich Rockefeller Sculpture Garden by taking a photo in front of Tucker's Gymnast, II.\nBecause the artwork was only temporarily extracted from the archives for Peter Fischli's specific curation, RM managed to capture it during a rare window of public display. Today, Gymnast, II is officially listed as \"Not on view\" and has been returned to the museum's reserves. This current status makes RM's photographs of the sculpture resting in the outdoor courtyard a precious, time-capsule moment for fans mapping his artistic journeys.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located in Midtown Manhattan, the museum is easily accessible via the NYC Subway. Take the E or M trains to the 5th Avenue/53rd Street station, or the B, D, F, or M trains to 47th-50th Streets - Rockefeller Center."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "MoMA is generally open daily from 10:30 AM to 5:30 PM (and until 7:00 PM on Saturdays). Admission requires a purchased ticket (around $30 for adults), which grants access to all galleries and the sculpture garden. Advance booking is highly recommended."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum and the Abby Aldrich Rockefeller Sculpture Garden are fully accessible to wheelchair users, featuring ramps, elevators, and wide, flat pathways throughout the outdoor courtyard."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Elisa.rolle / CC BY-SA 4.0",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Enjoy the Sculpture Garden"
+        },
+        "text": {
+          "en": "Even though Gymnast, II is no longer on display, the Abby Aldrich Rockefeller Sculpture Garden remains a permanent fixture of MoMA. You can still walk the exact marble-paved courtyard where RM stood and enjoy works by other masters like Picasso, Calder, and Moore."
+        }
+      },
+      {
+        "title": {
+          "en": "Embrace"
+        },
+        "text": {
+          "en": "Channel RM’s mindful approach to art viewing. Rather than rushing through the galleries, take your time to sit by the garden's reflecting pools and appreciate the interplay between the modern sculptures and the surrounding Manhattan architecture."
+        }
+      },
+      {
+        "title": {
+          "en": "Check Current Exhibitions"
+        },
+        "text": {
+          "en": "MoMA frequently rotates its collections. Before your visit, check the museum's website to see if any pieces RM has historically appreciated are currently on view."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://www.moma.org/collection/works/81049",
+    "tweetUrl": "https://x.com/bts_twt/status/1045700844077948928?s=46",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792403051595-tmv37f-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5872,
+            "y": 0.6206,
+            "member": "RM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1792418761687-2uw4ul",
+    "name": "Kjosfossen Waterfall",
+    "group": "BTS",
+    "member": "All",
+    "country": "Norway",
+    "category": "Bon Voyage",
+    "year": "2016",
+    "address": "Kjosfossen, Rallarvegen, 5718 Myrdal, Norway",
+    "lat": 60.7458414,
+    "lng": 7.1379768,
+    "city": "Flåm / Myrdal",
+    "img": "images/admin-upload-new-manual-1792418761687-2uw4ul-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Take the Flåm Railway"
+        },
+        "text": {
+          "en": "The only way to reach this specific viewing platform is by riding the scenic train. The train stops for about five minutes specifically so passengers can step out, take photos, and witness the power of the falls."
+        }
+      },
+      {
+        "title": {
+          "en": "Prepare for the Mist"
+        },
+        "text": {
+          "en": "The waterfall is incredibly forceful, and the viewing platform gets very wet from the spray. Wear a waterproof jacket or a windbreaker to stay dry while posing for your photos."
+        }
+      },
+      {
+        "title": {
+          "en": "Spot the Huldra"
+        },
+        "text": {
+          "en": "Watch the rocks to the right of the main falls to spot the actress playing the mythical Huldra dancing to the echoing folk music—an enchanting experience the members also witnessed during their stop."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "You must book a ticket on the Flåm Railway (Flåmsbana), which runs between the mountain station of Myrdal and the fjord-side village of Flåm. The train stops directly at the Kjosfossen viewing platform along the route."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Accessible during the operating hours of the Flåm Railway. Train tickets typically start around 600–700 NOK (approximately $55–$65 USD) for an adult round trip, though prices vary depending on the season. Advance booking is highly recommended."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Flåm Railway trains are wheelchair accessible, and the viewing platform at Kjosfossen is flat and paved, allowing all passengers to safely step out and enjoy the view."
+        }
+      }
+    ],
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/bts_twt/status/733212449982144512?s=46",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "tweetUrls": [
+      "https://x.com/bts_twt/status/733310367976304640?s=46"
+    ],
+    "pinterestUrl": "https://fr.pinterest.com/pin/610097080767925340/",
+    "ytId": "9M15Ua-A9B8",
+    "imgCredit": "Acediscovery / CC BY 4.0",
+    "fullDescription": {
+      "en": "<p>Kjosfossen is a magnificent 225-meter (738-ft) cascading waterfall located in the majestic fjord landscapes of Norway. It is one of the most famous and visited tourist attractions in the country, primarily because it is exclusively accessible via the world-renowned Flåm Railway (Flåmsbana). The train makes a special stop right in front of the waterfall, allowing passengers to disembark on a viewing platform to feel the mist and admire the sheer, roaring power of the water. During the summer tourist season, a performer dressed as a Huldra—a seductive forest spirit from Scandinavian mythology—dances on the rocks beside the waterfall to traditional Norwegian folk music.</p><!--stss:footsteps--><p>During the first season of BTS Bon Voyage, filmed in May 2016 to celebrate the group's 3rd anniversary, the members embarked on an unforgettable backpacking trip across Northern Europe. During their time in Norway, they took the scenic Flåm Railway to experience the country's spectacular nature firsthand. Their breathtaking stop at the Kjosfossen waterfall is specifically featured in Episode 3, at the 25:23 mark.\nWhen the train made its designated stop at Kjosfossen, the members stepped out onto the viewing platform and were visibly amazed by the massive cascade. They took a memorable group photo here, bundled up in their jackets against the cold, roaring mist, with the waterfall framing them perfectly in the background. It was a classic, early-career \"Bon Voyage\" moment, capturing their youthful wonder and tight-knit camaraderie as they explored the world together.</p>"
+    },
+    "episodeLink": "https://www.bilibili.tv/video/2048079812",
+    "officialLink": "https://www.visitnorway.com/listings/kjosfossen/142513/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792418761687-2uw4ul-recreated-0.jpg",
+        "markers": [
+          {
+            "y": 0.5088,
+            "member": "V",
+            "x": 0.5977
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792418761687-2uw4ul-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0,
+            "y": 0.75,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.0638,
+            "y": 0.5132,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.2174,
+            "y": 0.9059,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.5065,
+            "y": 0.3956,
+            "member": "V"
+          },
+          {
+            "x": 0.5794,
+            "y": 0.8965,
+            "member": "Jin"
+          },
+          {
+            "x": 0.8216,
+            "y": 0.9082,
+            "member": "RM"
+          },
+          {
+            "x": 0.9935,
+            "y": 0.5259,
+            "member": "Suga"
           }
         ]
       }
