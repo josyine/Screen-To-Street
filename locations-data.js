@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-20T18:05:05.275Z.
+// Généré le 2026-10-20T22:32:30.266Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -23228,6 +23228,114 @@ window.STATIC_LOCATIONS = [
         ]
       }
     ]
+  },
+  {
+    "id": "new-manual-1792522535892-i1je7i",
+    "name": "Viña Aquitania",
+    "group": "BTS",
+    "member": "V",
+    "country": "Chile",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "Av. Consistorial 5090, Peñalolén, Región Metropolitana, Chile",
+    "lat": 33.4856,
+    "lng": 70.5446,
+    "city": "Santiago (Peñalolén / Maipo Valley)",
+    "img": "images/admin-upload-new-manual-1792522535892-i1je7i-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Frame the Andes"
+        },
+        "text": {
+          "en": "When taking photos at the estate, make sure to position the towering Andes Mountains in your background to capture the exact natural beauty Taehyung experienced during his visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Book a Tasting Tour"
+        },
+        "text": {
+          "en": "Experience the winery fully by booking a guided tour. You can walk through the vines, see the traditional wine cellar, and taste the signature Cabernet Sauvignon that the region is famous for."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit During Golden Hour"
+        },
+        "text": {
+          "en": "If possible, schedule your visit for the late afternoon. The setting sun casts a warm, cinematic light over the Maipo Valley that perfectly matches Taehyung’s vintage photography aesthetic."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The winery is located within the Santiago metropolitan area. The easiest and most direct way to arrive is by taxi or ride-sharing app (like Uber) from the city center, which takes about 30 to 40 minutes depending on traffic. Alternatively, you can take the Santiago Metro (Line 4) to Quilín station and take a short 10-minute taxi ride up the hill to the estate."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The winery is generally open for tours Monday through Friday, and on Saturday mornings. Guided tours and tastings require advance reservations through their official website. Tour packages typically start around $20,000 to $35,000 CLP (approximately $22 to $40 USD)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main tasting room, gardens, and facilities are accessible to wheelchair users, though navigating the actual dirt paths between the vineyard rows can be uneven."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "https://www.instagram.com/p/Det7oS5lTlB/?psln=ZjhqcXBuaWpnYXZ2",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Richard Espinoza / CC BY 3.0",
+    "instagramUrls": [
+      "https://www.instagram.com/p/DerxqVeGfGS/?xtok=bmh6bXl1aWlwcDg2"
+    ],
+    "fullDescription": {
+      "en": "<p>Located in the Peñalolén commune within the renowned Maipo Valley, just on the eastern outskirts of Santiago, Viña Aquitania is a boutique winery situated directly at the foot of the Andes Mountains. Founded in 1990 by prominent French winemakers from Bordeaux and a Chilean agronomist, the estate is celebrated for elegantly combining traditional French winemaking techniques with the unique Chilean terroir. The vineyard offers a tranquil, scenic escape from the bustling city, featuring lush rows of vines that frame breathtaking, unobstructed views of the towering Andes.</p><!--stss:footsteps--><p>On October 20, 2026, both Taehyung and J-Hope updated their respective Instagram accounts with photos documenting their shared visit to this specific boutique winery in Chile. Taking some downtime to explore the scenic grounds of Viña Aquitania together, the duo enjoyed the very best of South American viticulture.\nThe estate's peaceful atmosphere and stunning mountain backdrop offered the perfect setting for both V's quiet, cinematic photography style and J-Hope's bright, joyful energy. By sharing glimpses of their wine tasting and relaxed strolls through the vineyard, the two members highlighted a beautiful intersection of Chilean culture and their close friendship, instantly placing this Maipo Valley estate on the map for fans tracing their South American itinerary.</p>"
+    },
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792522535892-i1je7i-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6628,
+            "y": 0.5588,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792522535892-i1je7i-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.4935,
+            "y": 0.4971,
+            "member": "J-Hope"
+          }
+        ]
+      }
+    ],
+    "officialLink": "https://aquitania.cl/"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
