@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-21T18:11:10.203Z.
+// Généré le 2026-10-21T22:37:12.554Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -19032,39 +19032,54 @@ window.STATIC_LOCATIONS = [
     "country": "United States",
     "city": "New York",
     "category": "MV Location",
-    "year": "2020",
+    "year": "2020, 2024",
     "address": "89 E 42nd St, New York, NY 10017, United States",
     "lat": 40.7527,
     "lng": -73.9772,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/1/13/Grand_Central_Terminal_Main_Concourse_Jan_2006.jpg",
+    "img": "images/admin-upload-new-HWD31GlT9xSPsBv2iR6y-photo.jpg",
     "addedAt": 1792352883648,
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "recreatedPhotos": [],
-    "instagramUrls": [],
-    "episodeLink": "",
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
     "tipsList": [
       {
         "title": {
-          "en": "Photo Spot"
+          "en": "Stand at the Center"
         },
         "text": {
-          "en": "Stand at the top of the East Staircase overlooking the main concourse to get the exact wide-angle perspective shown during the 'ON' intro sequence."
+          "en": "Walk right into the middle of the Main Concourse near the famous brass information booth clock to experience the sheer scale of the floor space where the core choreography took place."
+        }
+      },
+      {
+        "title": {
+          "en": "Look Up at the Stars"
+        },
+        "text": {
+          "en": "Don't forget to admire the celestial ceiling mural above, which featured prominently in the sweeping wide shots and drone angles of the televised performance."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Off-Peak"
+        },
+        "text": {
+          "en": "To best replicate the empty, grand atmosphere of the BTS performance, avoid rush hour. Visit the terminal very late at night or extremely early in the morning when pedestrian traffic is at its absolute lowest."
         }
       }
     ],
-    "facebookUrls": [],
-    "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Grand Central Terminal is one of the world's most famous transportation hubs, situated in Midtown Manhattan. Known for its Beaux-Arts architecture, celestial ceiling, and historic main concourse, it serves millions of commuters and tourists annually.</p><!--stss:footsteps--><p>In February 2020, BTS shut down Grand Central Terminal after hours to film a legendary performance of 'ON' for The Tonight Show Starring Jimmy Fallon. Accompanied by a full marching band and dance crew, BTS delivered an explosive showcase inside the completely emptied historic concourse.</p>"
-    },
+    "tiktokUrl": "",
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Accessible via New York City Subway lines 4, 5, 6, 7, and the S shuttle train directly at 42nd Street - Grand Central Station."
+          "en": "The terminal is exceptionally easy to reach via the NYC Subway. Take the 4, 5, 6, 7, or S (Times Square Shuttle) trains directly to the Grand Central-42nd Street station."
         }
       },
       {
@@ -19072,7 +19087,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "The terminal is generally open daily from 5:15 AM to 2:00 AM. It is a public transit hub and completely free to enter, walk around, and photograph."
         }
       },
       {
@@ -19080,12 +19095,74 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "The Main Concourse is flat, spacious, and fully accessible for wheelchair users, with wide pathways and elevators available to reach the lower dining concourse and train platforms."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "ytId": "MZh-w2nysuI",
+    "imgCredit": "Diliff & Janke / CC BY 2.5",
+    "episodeLink": "https://www.calvinklein.fr/jung-kook",
+    "officialLink": "https://grandcentralterminal.com/",
+    "instagramUrl": "https://www.instagram.com/reel/C3kdIz-RJ7g/?hl=fr",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-HWD31GlT9xSPsBv2iR6y-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.1029,
+            "y": 0.5647,
+            "member": "Jin"
+          },
+          {
+            "x": 0.2383,
+            "y": 0.5574,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.3633,
+            "y": 0.5824,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.5534,
+            "y": 0.5897,
+            "member": "V"
+          },
+          {
+            "x": 0.6654,
+            "y": 0.6023,
+            "member": "RM"
+          },
+          {
+            "x": 0.806,
+            "y": 0.6465,
+            "member": "Suga"
+          },
+          {
+            "x": 0.9232,
+            "y": 0.62,
+            "member": "J-Hope"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-HWD31GlT9xSPsBv2iR6y-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.4753,
+            "y": 0.5529,
+            "member": "Jungkook"
+          }
+        ]
+      }
+    ],
+    "instagramUrls": [
+      "https://www.instagram.com/p/C3aPwb6uleU/?cplk=eXdkMHJna2FicjJ4",
+      "https://www.instagram.com/reel/C3c3Z9lOAGz/?dlrf=ejBidWxnbXA4YnFp"
+    ],
+    "fullDescription": {
+      "en": "<p>Grand Central Terminal is a world-famous commuter rail station located at 42nd Street and Park Avenue in Midtown Manhattan. Opened in its current form in 1913, the building is a stunning triumph of Beaux-Arts architecture. The Main Concourse is the vast heart of the terminal, universally recognized for its sweeping marble staircases, the iconic four-faced opal brass clock sitting atop the central information booth, and its magnificent celestial ceiling mural depicting the zodiac constellations. As one of the busiest public spaces in the world, the floor is usually teeming with hundreds of thousands of daily commuters and tourists.</p><!--stss:footsteps--><p>2020: In February 2020, to celebrate the release of their Map of the Soul: 7 album, BTS completely shut down the famously busy transit hub after hours for a historic, late-night performance of their lead single, \"ON,\" broadcast on The Tonight Show Starring Jimmy Fallon. Giving the group exclusive access to the completely emptied Main Concourse, the massive production featured a full marching band and an expansive dance crew. The stark contrast of the intensely sharp, powerful choreography echoing inside the cavernous, eerily quiet terminal created one of the most visually stunning and ambitious televised performances in the group's history.</p><p>2024, Jungkook: Four years later, in February 2024, Jungkook returned to this exact location to shoot his highly anticipated Spring 2024 global campaign for Calvin Klein. Directed and photographed by Mert Alas, the sleek black-and-white commercial once again featured an emptied Grand Central Terminal. Dressed in the brand's classic 90s-style denim, Jungkook was filmed effortlessly walking and dancing alone across the massive marble floors, dominating the iconic space and creating yet another legendary visual moment in the heart of New York City.</p>"
+    }
   },
   {
     "id": "new-JkEgRxLK90D3OHJYU7gs",
@@ -23336,6 +23413,483 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "officialLink": "https://aquitania.cl/"
+  },
+  {
+    "id": "new-manual-1792612660406-kbu2ij",
+    "name": "Sepulveda Dam",
+    "group": "BTS",
+    "member": "All",
+    "country": "United States",
+    "category": "MV Location",
+    "year": "2020",
+    "address": "15758 Burbank Blvd, Encino, CA 91436, USA (General Sepulveda Basin Recreation Area)",
+    "lat": 34.1672705,
+    "lng": 118.4729704,
+    "img": "images/admin-upload-new-manual-1792612660406-kbu2ij-photo.jpg",
+    "city": "Los Angeles",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Locate the Spillway"
+        },
+        "text": {
+          "en": "The iconic dance sequences were filmed on the flat concrete expanse immediately in front of the dam's primary floodgates. While you can view this structure, be aware that direct access to the exact floor where the group danced is frequently restricted or fenced off by the Army Corps of Engineers for safety reasons."
+        }
+      },
+      {
+        "title": {
+          "en": "Appreciate the Scale"
+        },
+        "text": {
+          "en": "Take a walk along the designated pedestrian paths overlooking the dam. Viewing the structure from above gives you a true sense of the immense, wide-open space required for the video's sweeping drone shots and large cast of backup performers."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Basin"
+        },
+        "text": {
+          "en": "After viewing the dam, explore the surrounding Sepulveda Basin Wildlife Reserve. The transition from the harsh, brutalist concrete of the filming location to the tranquil, natural trails of the reserve offers a stark and fascinating contrast."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Built by the U.S. Army Corps of Engineers, the Sepulveda Dam was necessitated by devastating regional flooding in 1938 that resulted in 144 fatalities. Construction of the massive concrete dam was completed in 1941. While its primary function remains active flood risk management for the Los Angeles River, the surrounding basin is also authorized for public use. Today, the area is managed by the Los Angeles Department of Recreation and Parks, housing the vast Sepulveda Basin Recreation Center, which includes several public parks, sports facilities, and a dedicated wildlife reserve. With its brutalist, industrial architecture, the dam stands as a silent, imposing reminder of the power required to control natural chaos.</p><!--stss:footsteps--><p>In February 2020, BTS utilized the stark, geometric spillway of the Sepulveda Dam to film the official \"ON\" Kinetic Manifesto Film : Come Prima.\nThe location was carefully chosen to reflect the track's intense energy and themes. Featuring a heavy, percussive sound mimicking a marching band, the song likens the members to fighters and toys with imagery related to Jungian archetypes. Accompanied by the Blue Devils Drum and Bugle Corps and the dance crew The Lab, BTS delivered a fiercely synchronized, stadium-level performance on the dam's vast concrete floor. The military and industrial aesthetic of the facility provided the perfect, unembellished backdrop for the video, emphasizing the raw physical exertion of the choreography and the song's central message of facing internal shadows and pushing through pain.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The dam is located in the San Fernando Valley, conveniently situated near the intersection of the 405 and 101 freeways. Driving or using a ride-sharing service is the most practical way to reach the basin in Los Angeles."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The surrounding recreation areas and parks are generally open from sunrise to sunset and are completely free to visit."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The paved pedestrian and bicycle paths surrounding the dam and within the recreation center are flat and fully accessible for wheelchair users, providing clear viewpoints of the concrete spillway without the need to navigate uneven terrain."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "gwMa6gpoE9I",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792612660406-kbu2ij-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.2513,
+            "y": 0.4382,
+            "member": "V"
+          },
+          {
+            "x": 0.5195,
+            "y": 0.4838,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.7487,
+            "y": 0.4735,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.8763,
+            "y": 0.4662,
+            "member": "RM"
+          },
+          {
+            "x": 0.1315,
+            "y": 0.4818,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.6393,
+            "y": 0.4788,
+            "member": "Suga"
+          },
+          {
+            "x": 0.3971,
+            "y": 0.4759,
+            "member": "Jin"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792612660406-kbu2ij-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.0065,
+            "y": 0.5618,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.2461,
+            "y": 0.5015,
+            "member": "V"
+          },
+          {
+            "x": 0.3294,
+            "y": 0.4706,
+            "member": "Jin"
+          },
+          {
+            "x": 0.5378,
+            "y": 0.5074,
+            "member": "Suga"
+          },
+          {
+            "x": 0.6289,
+            "y": 0.4788,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.7773,
+            "y": 0.52,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.9388,
+            "y": 0.4906,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "https://larepublica.pe/cultura-asiatica/2020/02/24/bts-escenario-mv-on-usado-por-americas-next-top-model-y-american-horror-story-hollywood-map-of-the-soul7",
+    "officialLink": "https://www.spl.usace.army.mil/Missions/Asset-Management/Sepulveda-Dam/"
+  },
+  {
+    "id": "new-manual-1792613843775-27ctxw",
+    "name": "Seoul Forest: Dedicated Bench 8",
+    "group": "BTS",
+    "member": "RM",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54466,
+    "lng": 127.03711,
+    "img": "images/admin-upload-new-manual-1792613843775-27ctxw-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1792613843775-27ctxw-recreated-0.jpg"
+    ],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing Water Reflections"
+        },
+        "text": {
+          "en": "Take a photograph from behind the bench facing toward the lake and footbridge to capture the soft natural light and water reflections."
+        }
+      },
+      {
+        "title": {
+          "en": "Plaque Details and Inscriptions"
+        },
+        "text": {
+          "en": "Focus on a close-up shot of the engraved plaque to document the classic lyrics dedicated to RM from the earliest days of the bench project."
+        }
+      },
+      {
+        "title": {
+          "en": "Namjooning Playlist"
+        },
+        "text": {
+          "en": "Listen to tracks from RM's mixtape \"mono.\" like \"seoul\", \"tokyo\", or \"everythingoes\" to fully submerge yourself in the reflective mood of this spot."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs in 2018 to celebrate BTS's leader, RM (Kim Namjoon), Bench 8 is situated in the western section of the park near the quiet lake and footbridge area. Marked with commemorative plaques featuring deep, reflective lyrics from his solo work, this bench stands as one of the original fan tributes honoring RM’s love for nature, art, and thoughtful walks.</p><!--stss:footsteps--><p>Visiting RM’s dedicated bench by the water offers one of the most serene and contemplative stops along the forest loop. Tucked away near the footbridge, it overlooks the gentle stream and lush surroundings, perfectly encapsulating the essence of \"Namjooning\". Sitting here allows fans to pause, take in the quiet reflection on the water, and connect with the poetic atmosphere that has long inspired RM’s songwriting.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 8 near the footbridge is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, or take Line 2 to Ttukseom Station via Exit 8. From the main entrance, walk west past the central lawn and cross toward the western lake and footbridge area, where Bench 8 is positioned along the wooden trail."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Smooth, paved, and gently graded pathways lead toward the western lake area, ensuring that Bench 8 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "storyImage": "images/admin-upload-new-manual-1792613843775-27ctxw-story.jpg",
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://parks.seoul.go.kr/story/news/detailView.do?key=2604070028&bIdx=3849"
+  },
+  {
+    "id": "new-manual-1792615206507-az4e26",
+    "name": "Los Angeles Theatre",
+    "year": "2020",
+    "address": "615 S Broadway, Los Angeles, CA 90014, USA",
+    "lat": 34.0464607,
+    "lng": -118.2526768,
+    "country": "United States",
+    "city": "Los Angeles",
+    "member": "All",
+    "category": "MV Location",
+    "group": "BTS",
+    "img": "images/admin-upload-new-manual-1792615206507-az4e26-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Catch a Special Event"
+        },
+        "text": {
+          "en": "The theatre is not open for daily public tours. To see the interior where BTS filmed, you must wait for special public events, such as the Los Angeles Conservancy's annual \"Last Remaining Seats\" program, which occasionally screens classic films inside the venue."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Broadway District"
+        },
+        "text": {
+          "en": "Even if the doors are locked, you can appreciate the theatre's stunning exterior marquee. The surrounding Broadway Historic Theatre District is packed with a dozen other historic 1920s and 1930s movie palaces with similar architectural grandeur."
+        }
+      },
+      {
+        "title": {
+          "en": "Look for the Mirrors"
+        },
+        "text": {
+          "en": "If you manage to get inside during an event, seek out the basement lounge and mirrored powder rooms. These intricate, reflective spaces were used heavily in the music video to visually represent the concept of the \"shadow.\""
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Designed by prominent architect S. Charles Lee and constructed between 1911 and 1931, the Los Angeles Theatre is an architectural marvel located in the historic Broadway Theater District of Downtown Los Angeles. The building is renowned for its incredibly ornate, French Baroque-inspired interiors that vividly recall the opulence of 1930s Hollywood. Featuring grand staircases, crystal chandeliers, and lavish mirrored hallways, the structure was added to the National Register of Historic Places in 1979. Today, while it rarely functions as a daily movie palace, its striking aesthetic makes it a highly sought-after filming location, serving as the backdrop for numerous Hollywood productions and several South Korean music videos.</p><!--stss:footsteps--><p>In March 2020, BTS released the official music video for \"Black Swan,\" utilizing the opulent interior of the Los Angeles Theatre to create a haunting, cinematic visual space.\nLyrically, the track explores the deep fear and depression of an artist losing their inspiration and passion for their craft—a theme directly inspired by the 2010 psychological thriller film of the same name. The theatre acts as the perfect conceptual backdrop for this narrative. The juxtaposition of the members grappling with their artistic death, shifting shadows, and dramatic black wings against a venue built to celebrate the glittering, bygone era of classic entertainment results in a deeply moody, gothic atmosphere. The video heavily features the theatre's lavish auditorium, the grand lobby staircases, and the mirrored powder rooms to visually represent the artists navigating their internal labyrinth.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located in Downtown Los Angeles (DTLA), the theatre is highly accessible via public transit. Take the Metro B (Red) or D (Purple) Line to the Pershing Square station, which is just a short, two-block walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The venue operates strictly as a private rental facility for film shoots and special events. There are no regular operating hours for casual walk-in visitors."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a historic building completed in 1931, accessibility can be limited. While the main lobby and orchestra level are typically accessible during events, the lower lounges and upper balconies often require navigating grand staircases."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "pinterestUrl": "https://fr.pinterest.com/pin/647251777742073606/",
+    "ytId": "0lapF4DQPKQ",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792615206507-az4e26-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.2305,
+            "y": 0.2735,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.3477,
+            "y": 0.6103,
+            "member": "Suga"
+          },
+          {
+            "x": 0.4857,
+            "y": 0.4706,
+            "member": "RM"
+          },
+          {
+            "x": 0.5586,
+            "y": 0.6426,
+            "member": "Jin"
+          },
+          {
+            "x": 0.6211,
+            "y": 0.2406,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.7695,
+            "y": 0.3435,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.7279,
+            "y": 0.7259,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792615206507-az4e26-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.4961,
+            "y": 0.6676,
+            "member": "Jungkook"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "https://www.koreaboo.com/stories/bts-p1harmony-filmed-location-served-totally-different-vibes/",
+    "officialLink": "https://www.los-angeles-theatre.com/"
+  },
+  {
+    "id": "new-manual-1792615294276-32j6fj",
+    "name": "Seoul Forest: Dedicated Bench 9",
+    "group": "BTS",
+    "member": "V",
+    "country": "South Korea",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54475,
+    "lng": 127.03809,
+    "img": "images/admin-upload-new-manual-1792615294276-32j6fj-photo.jpg",
+    "city": "Seoul",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1792615294276-32j6fj-recreated-0.jpg"
+    ],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Lakeside Boardwalk Framing"
+        },
+        "text": {
+          "en": "Position your camera along the wooden walkway to capture the bench framed by the surrounding trees and gentle water reflections."
+        }
+      },
+      {
+        "title": {
+          "en": "Plaque Close-ups"
+        },
+        "text": {
+          "en": "Take a detailed photo of the engraved plaque on Bench 9 to highlight the unique lyric and birthday tribute dedicated to V."
+        }
+      },
+      {
+        "title": {
+          "en": "V's Cinematic Playlist"
+        },
+        "text": {
+          "en": "Listen to tracks like \"Christmas Tree\", \"Sweet Night\", or \"For Us\" to soundtrack your peaceful pause beside the lake."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs to celebrate Kim Taehyung (V), Bench 9 is located right along the picturesque wooden boardwalk crossing the lake area. Decorated with commemorative plaques showcasing poetic lyrics and warm messages, this bench honors V’s artistic sensibility and his deep love for calm, scenic landscapes.</p><!--stss:footsteps--><p>Stopping at V’s third dedicated bench along the lake bridge route offers one of the most romantic and scenic views in the park. Positioned right where the pathway meets the water, it provides a quiet sanctuary to pause and admire the reflections on the pond. Sitting here allows visitors to immerse themselves in the tranquil atmosphere that reflects V’s warm, nostalgic aesthetic.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 9 near the lake boardwalk is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, or take Line 2 to Ttukseom Station via Exit 8. From the entrance, walk westward toward the central lake area and follow the elevated wooden walkway where Bench 9 is positioned alongside the bridge path."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Wide and flat wooden boardwalks connect the main lake paths directly to this bench location, ensuring that Bench 9 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "https://parks.seoul.go.kr/index.do",
+    "tiktokUrl": "",
+    "ytId": ""
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
