@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-22T18:07:46.903Z.
+// Généré le 2026-10-22T22:39:12.298Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -23890,6 +23890,95 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://parks.seoul.go.kr/index.do",
     "tiktokUrl": "",
     "ytId": ""
+  },
+  {
+    "id": "new-manual-1792698906366-cjc0rg",
+    "name": "Bradbury Building",
+    "group": "ITZY",
+    "member": "All",
+    "country": "United States",
+    "address": "304 S Broadway, Los Angeles, CA 90013, USA",
+    "lat": 34.0506516,
+    "lng": -118.247866,
+    "episodeLabel": "MV",
+    "city": "Los Angeles",
+    "year": "2019",
+    "episode": "\"ICY\" Official Music Video",
+    "category": "MV Location",
+    "img": "images/admin-upload-new-manual-1792698906366-cjc0rg-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Admire the Ironwork"
+        },
+        "text": {
+          "en": "Pay close attention to the intricate, geometric wrought iron framing the open-cage elevators and balconies, which served as a striking visual framing device for the members in the video."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the Workspace"
+        },
+        "text": {
+          "en": "The Bradbury Building is still an active, functioning office space. Public visitors are generally restricted to the ground floor and the first landing of the stairs, which still offers the perfect angle to recreate the video's sweeping architectural shots."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Grand Central Market"
+        },
+        "text": {
+          "en": "Directly across the street from the Bradbury Building, you can continue your \"ICY\" tour by walking through Grand Central Market to retrace Yeji's exact path from her solo scenes."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Commissioned by gold-mining millionaire Lewis L. Bradbury and designed by architects George Wyman and Sumner Hunt, construction on the Bradbury Building was completed in 1893. While its brick exterior is relatively unassuming, walking through the entrance reveals a stunning, five-story Victorian court bathed in natural light from a massive glass atrium skylight. Famous for its intricate wrought-iron railings, marble stairs, and open-cage elevators, the structure stands as an architectural masterpiece and remains the oldest commercial building in central Los Angeles.</p><!--stss:footsteps--><p>The breathtaking Victorian interior of the Bradbury Building is the first structure prominently featured in ITZY's music video for \"ICY.\" A summery, upbeat anthem of empowerment, the track playfully mocks those who prize strict conformity over individuality.\nThe historic, highly traditional architecture of the building creates a deliberate, striking contrast with the members' vibrant outfits, unapologetic confidence, and rebellious lyrics. By dancing through these classic corridors, ITZY visually dissolves the tension between their modern, arrogant energy and the traditional spaces they occupy. The Bradbury Building acts as the centerpiece of a wider Downtown Los Angeles takeover for the video; the group's rebellious journey continues across other nearby historic sites, including the Eastern Columbia Lofts, the Millennium Biltmore Hotel, the Los Angeles Theatre, and the Grand Central Market, where Yeji pointedly sings, \"Don’t bother to try and trap me inside your box.\"</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located in the heart of Downtown Los Angeles (DTLA), the building is highly accessible via public transit. Take the Metro B (Red) or D (Purple) Line to the Pershing Square station, which is located just a few blocks away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The ground floor lobby and lower stair landing are generally open to the public daily from 9:00 AM to 5:00 PM. Entry is completely free, though access to upper floors is strictly reserved for office tenants."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The ground floor of the Victorian court is flat, paved, and fully accessible to wheelchair users, allowing full view of the atrium and skylight without needing to navigate stairs."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1792698906366-cjc0rg-recreated-0.jpg"
+    ],
+    "officialLink": "https://thebradburybuilding.com/",
+    "ytId": "zndvqTc4P9I"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
