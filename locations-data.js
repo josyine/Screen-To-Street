@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-23T17:56:33.176Z.
+// Généré le 2026-10-23T22:32:45.136Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -23537,8 +23537,8 @@ window.STATIC_LOCATIONS = [
     "address": "Av. Consistorial 5090, Peñalolén, Región Metropolitana, Chile",
     "lat": 33.4856,
     "lng": 70.5446,
-    "city": "Santiago (Peñalolén / Maipo Valley)",
     "img": "images/admin-upload-new-manual-1792522535892-i1je7i-photo.jpg",
+    "city": "Santiago",
     "pinterestUrls": [],
     "tiktokUrls": [],
     "tipsList": [
@@ -23607,9 +23607,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [
       "https://www.instagram.com/p/DerxqVeGfGS/?xtok=bmh6bXl1aWlwcDg2"
     ],
-    "fullDescription": {
-      "en": "<p>Located in the Peñalolén commune within the renowned Maipo Valley, just on the eastern outskirts of Santiago, Viña Aquitania is a boutique winery situated directly at the foot of the Andes Mountains. Founded in 1990 by prominent French winemakers from Bordeaux and a Chilean agronomist, the estate is celebrated for elegantly combining traditional French winemaking techniques with the unique Chilean terroir. The vineyard offers a tranquil, scenic escape from the bustling city, featuring lush rows of vines that frame breathtaking, unobstructed views of the towering Andes.</p><!--stss:footsteps--><p>On October 20, 2026, both Taehyung and J-Hope updated their respective Instagram accounts with photos documenting their shared visit to this specific boutique winery in Chile. Taking some downtime to explore the scenic grounds of Viña Aquitania together, the duo enjoyed the very best of South American viticulture.\nThe estate's peaceful atmosphere and stunning mountain backdrop offered the perfect setting for both V's quiet, cinematic photography style and J-Hope's bright, joyful energy. By sharing glimpses of their wine tasting and relaxed strolls through the vineyard, the two members highlighted a beautiful intersection of Chilean culture and their close friendship, instantly placing this Maipo Valley estate on the map for fans tracing their South American itinerary.</p>"
-    },
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-new-manual-1792522535892-i1je7i-recreated-0.jpg",
@@ -23632,7 +23629,10 @@ window.STATIC_LOCATIONS = [
         ]
       }
     ],
-    "officialLink": "https://aquitania.cl/"
+    "officialLink": "https://aquitania.cl/",
+    "fullDescription": {
+      "en": "<p>Located in the Peñalolén commune within the renowned Maipo Valley, just on the eastern outskirts of Santiago, Viña Aquitania is a boutique winery situated directly at the foot of the Andes Mountains. Founded in 1990 by prominent French winemakers from Bordeaux and a Chilean agronomist, the estate is celebrated for elegantly combining traditional French winemaking techniques with the unique Chilean terroir. The vineyard offers a tranquil, scenic escape from the bustling city, featuring lush rows of vines that frame breathtaking, unobstructed views of the towering Andes.</p><!--stss:footsteps--><p>On October 20, 2026, both Taehyung and J-Hope updated their respective Instagram accounts with photos documenting their shared visit to this specific boutique winery in Chile. Taking some downtime to explore the scenic grounds of Viña Aquitania together, the duo enjoyed the very best of South American viticulture.<br>The estate's peaceful atmosphere and stunning mountain backdrop offered the perfect setting for both V's quiet, cinematic photography style and J-Hope's bright, joyful energy. By sharing glimpses of their wine tasting and relaxed strolls through the vineyard, the two members highlighted a beautiful intersection of Chilean culture and their close friendship, instantly placing this Maipo Valley estate on the map for fans tracing their South American itinerary.</p>"
+    }
   },
   {
     "id": "new-manual-1792612660406-kbu2ij",
@@ -24157,9 +24157,6 @@ window.STATIC_LOCATIONS = [
     ],
     "facebookUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Commissioned by gold-mining millionaire Lewis L. Bradbury and designed by architects George Wyman and Sumner Hunt, construction on the Bradbury Building was completed in 1893. While its brick exterior is relatively unassuming, walking through the entrance reveals a stunning, five-story Victorian court bathed in natural light from a massive glass atrium skylight. Famous for its intricate wrought-iron railings, marble stairs, and open-cage elevators, the structure stands as an architectural masterpiece and remains the oldest commercial building in central Los Angeles.</p><!--stss:footsteps--><p>The breathtaking Victorian interior of the Bradbury Building is the first structure prominently featured in ITZY's music video for \"ICY.\" A summery, upbeat anthem of empowerment, the track playfully mocks those who prize strict conformity over individuality.\nThe historic, highly traditional architecture of the building creates a deliberate, striking contrast with the members' vibrant outfits, unapologetic confidence, and rebellious lyrics. By dancing through these classic corridors, ITZY visually dissolves the tension between their modern, arrogant energy and the traditional spaces they occupy. The Bradbury Building acts as the centerpiece of a wider Downtown Los Angeles takeover for the video; the group's rebellious journey continues across other nearby historic sites, including the Eastern Columbia Lofts, the Millennium Biltmore Hotel, the Los Angeles Theatre, and the Grand Central Market, where Yeji pointedly sings, \"Don’t bother to try and trap me inside your box.\"</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -24194,11 +24191,43 @@ window.STATIC_LOCATIONS = [
     "episodeLink": "",
     "instagramUrl": "",
     "tiktokUrl": "",
-    "recreatedPhotos": [
-      "images/admin-upload-new-manual-1792698906366-cjc0rg-recreated-0.jpg"
-    ],
     "officialLink": "https://thebradburybuilding.com/",
-    "ytId": "zndvqTc4P9I"
+    "ytId": "zndvqTc4P9I",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792698906366-cjc0rg-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.0885,
+            "y": 0.5559,
+            "member": "Chaeryeong"
+          },
+          {
+            "x": 0.276,
+            "y": 0.5221,
+            "member": "Ryujin"
+          },
+          {
+            "x": 0.4844,
+            "y": 0.5147,
+            "member": "Yeji"
+          },
+          {
+            "x": 0.6979,
+            "y": 0.5221,
+            "member": "Yuna"
+          },
+          {
+            "x": 0.8646,
+            "y": 0.4882,
+            "member": "Lia"
+          }
+        ]
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Commissioned by gold-mining millionaire Lewis L. Bradbury and designed by architects George Wyman and Sumner Hunt, construction on the Bradbury Building was completed in 1893. While its brick exterior is relatively unassuming, walking through the entrance reveals a stunning, five-story Victorian court bathed in natural light from a massive glass atrium skylight. Famous for its intricate wrought-iron railings, marble stairs, and open-cage elevators, the structure stands as an architectural masterpiece and remains the oldest commercial building in central Los Angeles.</p><!--stss:footsteps--><p>The breathtaking Victorian interior of the Bradbury Building is the first structure prominently featured in ITZY's music video for \"ICY.\" A summery, upbeat anthem of empowerment, the track playfully mocks those who prize strict conformity over individuality.<br>The historic, highly traditional architecture of the building creates a deliberate, striking contrast with the members' vibrant outfits, unapologetic confidence, and rebellious lyrics. By dancing through these classic corridors, ITZY visually dissolves the tension between their modern, arrogant energy and the traditional spaces they occupy. The Bradbury Building acts as the centerpiece of a wider Downtown Los Angeles takeover for the video; the group's rebellious journey continues across other nearby historic sites, including the Eastern Columbia Lofts, the Millennium Biltmore Hotel, the Los Angeles Theatre, and the Grand Central Market, where Yeji pointedly sings, \"Don’t bother to try and trap me inside your box.\"</p>"
+    }
   },
   {
     "id": "new-manual-1792747982130-vi6iwa",
@@ -24413,6 +24442,79 @@ window.STATIC_LOCATIONS = [
         ]
       }
     ]
+  },
+  {
+    "id": "new-manual-1792794126243-kxymfc",
+    "name": "U.S. Route 101 & Mojave Desert",
+    "year": "2019",
+    "address": "U.S. Route 101 and the Mojave Desert region (California/Nevada, USA)",
+    "lat": 35.1417,
+    "lng": 115.5103,
+    "img": "https://img.youtube.com/vi/iFoqGyWhMws/hqdefault.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Cruise the 101"
+        },
+        "text": {
+          "en": "Roll down your windows and take a drive along a stretch of U.S. Route 101 while playing the track to capture the exact open-road freedom described in the lyrics."
+        }
+      },
+      {
+        "title": {
+          "en": "Spot the Joshua Trees"
+        },
+        "text": {
+          "en": "To safely view the iconic Yucca palms featured in the video's background, visit designated protected areas like Joshua Tree National Park or the Mojave National Preserve."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the Climate"
+        },
+        "text": {
+          "en": "The Mojave Desert is characterized by extreme heat and rugged terrain. If you venture out to recreate the desert road aesthetic, ensure you have a reliable vehicle, abundant water, and sun protection."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>U.S. Route 101 is a historic north-south highway stretching along the American West Coast, renowned for its coastal views and cultural significance. Inland lies the Mojave Desert, a vast, arid landscape stretching across Southeastern California and Southern Nevada. Protected under the California Desert Protection Act of 1994, the Mojave encompasses more than ten national and state parks. The region is defined by its rugged beauty, extreme climate, barren salt flats, and the iconic Yucca palms—commonly known as Joshua trees—that are exclusively native to this desert ecosystem.</p><!--stss:footsteps--><p>In 2019, while embarking on their first major North American tour, NCT 127 utilized their extensive travel schedule to film the music video for the English version of \"Highway to Heaven.\" The production took the group to multiple locations along the historic U.S. Route 101 and deep into the Mojave Desert.\nUnlike most tracks that rely on abstract concepts, the song explicitly names the filming location in its lyrics: \"On the 101, let’s see just where it goes.\" The video features the members executing their expansive choreography on dusty desert roads and vast, sun-baked plains surrounded by native Joshua trees. Beyond the music video, the group released a wealth of travel content on their YouTube channels during this era, effectively promoting both their tour and the raw, historical beauty of the American West to a global audience.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "U.S. Route 101 runs extensively along the California coast. The heart of the Mojave Desert is easily accessible by driving east from Los Angeles via Interstate 15 or Interstate 40."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Public highways and general desert roads are open 24/7 and free to traverse. National and State Parks within the Mojave typically require a vehicle entrance fee (around $30–$35)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Enjoying the scenery from a vehicle is fully accessible. While the open desert terrain is uneven, designated visitor centers and paved scenic overlooks within the parks offer excellent, wheelchair-accessible viewpoints."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "ytId": "iFoqGyWhMws",
+    "recreatedPhoto": ""
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
