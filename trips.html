@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261053" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261054" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -289,13 +289,20 @@
      autre pour que ça affiche réellement les hôtels existants") — voir
      window.openPlaceSearchPopup() dans script.js, partagé par les pastilles START/END et
      l'éditeur per-day de l'itinéraire. */
-  .place-search-popup { position: fixed; z-index: 2000; background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 10px 28px rgba(31,36,48,.18); border: 1px solid #e2e8f0; width: 260px; max-height: 320px; overflow-y: auto; }
+  /* Rétréci + options qui passent bien à la ligne (demande du 23/10/2026, "améliore
+     l'affichage de la barre de recherche... pour que ce soit plus petit et qu'on puisse
+     bien lire le résultat de recherche sans que ce soit coupé") : 260px → 230px, padding
+     interne réduit, et surtout word-break sur .place-search-option — un display_name
+     Nominatim peut contenir un très long segment sans espace (ex: un numéro de référence
+     cadastrale), qui sans ça poussait la largeur de la ligne au-delà de la popup au lieu de
+     passer à la ligne, coupant visuellement le reste du texte hors du cadre arrondi. */
+  .place-search-popup { position: fixed; z-index: 2000; background: #fff; border-radius: 14px; padding: 10px; box-shadow: 0 10px 28px rgba(31,36,48,.18); border: 1px solid #e2e8f0; width: 230px; max-height: 300px; overflow-y: auto; overflow-x: hidden; }
   .place-search-popup.hidden { display: none; }
-  .place-search-title { font-size: 11px; font-weight: 800; letter-spacing: .5px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
-  .place-search-popup input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 13px; outline: none; font-family: 'Poppins', sans-serif; margin-bottom: 8px; }
+  .place-search-title { font-size: 10.5px; font-weight: 800; letter-spacing: .5px; color: #94a3b8; text-transform: uppercase; margin-bottom: 7px; }
+  .place-search-popup input { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 12.5px; outline: none; font-family: 'Poppins', sans-serif; margin-bottom: 7px; box-sizing: border-box; }
   .place-search-popup input:focus { border-color: #D42759; }
-  #place-search-results { margin-bottom: 8px; }
-  .place-search-option { padding: 9px 8px; font-size: 12.5px; color: #334155; cursor: pointer; border-radius: 8px; line-height: 1.4; }
+  #place-search-results { margin-bottom: 7px; }
+  .place-search-option { padding: 8px 7px; font-size: 12px; color: #334155; cursor: pointer; border-radius: 8px; line-height: 1.4; white-space: normal; word-break: break-word; }
   .place-search-option:hover { background: #F4F2F8; }
   .place-search-empty { padding: 8px; font-size: 12px; color: #94a3b8; text-align: center; }
   .place-search-popup button { width: 100%; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; }
@@ -668,6 +675,14 @@
          .itinerary-box en donnait un aux libellés qui s'y trouvent, pas à celui-ci, hors de
          tout conteneur avec marge sur cette mise en page "pleine largeur, sans marge"). */
       #i18n-iti-by-day { margin-left: 16px; }
+      /* BUG rapporté le 23/10/2026, reformulant la demande ci-dessus : les blocs "Day 1",
+         "Day 2"... (#trip-day-pills, juste en dessous du libellé ci-dessus) collaient eux
+         aussi au bord gauche — même .trip-day-pills n'a pas de marge propre (juste un
+         defilement horizontal, voir plus haut), aligné sur la même marge que "ITINERARY BY
+         DAY" au-dessus plutôt qu'une valeur différente choisie au hasard. padding (pas
+         margin) côté droit : garde le dernier pill entièrement visible/cliquable en butée
+         de défilement horizontal, une marge y aurait laissé un espace mort avant le bord. */
+      .trip-day-pills { padding-left: 16px; padding-right: 16px; }
 
       /* Bannière "Auto-Itinerary" façon dégradé du mockup (demande du 18/10/2026,
          trip_finale_legere.html) — remplace le style de base plus sobre (voir plus haut)
@@ -679,7 +694,50 @@
       .trip-magic-banner-sub { color: rgba(255,255,255,.85); }
       .trip-magic-banner-plus { background: rgba(255,255,255,.25); }
       #reco-section { margin-left: 16px; margin-right: 16px; }
-      .ideas-filters-banner { margin: 0 16px 10px; padding: 0; }
+      /* BUG rapporté le 23/10/2026, capture d'écran fournie : refait pour ressembler
+         exactement à la capture — les filtres group/members/country/city en pilules
+         COMPACTES sur UNE seule ligne défilante (comme dans la capture), au lieu de deux
+         rangées empilées à 50/50 (ancien visuel du 17/10/2026, jamais remis en cause
+         jusqu'ici). .ideas-filters-banner > div (les deux rangées d'origine) passent en
+         display:contents pour "disparaître" du flux sans toucher au HTML/onchange
+         existant — leurs <select> enfants deviennent directement les items de cette rangée
+         flex. */
+      .ideas-filters-banner { margin: 0; padding: 0 16px 10px; display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+      .ideas-filters-banner::-webkit-scrollbar { display: none; }
+      .ideas-filters-banner > div { display: contents; }
+      #edit-trip-group, #edit-trip-member, #edit-trip-country, #edit-trip-city {
+          flex: 0 0 auto !important; width: auto !important; min-width: 0 !important;
+      }
+      /* Pastille mise en avant (bordure/texte rose) dès qu'une valeur précise est choisie
+         (pas "All ..."), exactement comme "South Korea" surligné en rose dans la capture —
+         voir window.populateEditTripFilters() dans script.js, qui pose/retire cette classe
+         à chaque (re)rendu, y compris juste après un changement (onchange -> renderTrip()). */
+      #edit-trip-group.ideas-filter-pill-active, #edit-trip-member.ideas-filter-pill-active,
+      #edit-trip-country.ideas-filter-pill-active, #edit-trip-city.ideas-filter-pill-active {
+          background-color: #FCE7F0 !important; color: #D42759 !important;
+          box-shadow: inset 0 0 0 1.5px #D42759;
+      }
+      #edit-trip-group.ideas-filter-pill-active, #edit-trip-member.ideas-filter-pill-active,
+      #edit-trip-country.ideas-filter-pill-active, #edit-trip-city.ideas-filter-pill-active {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D42759' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      }
+      /* "RECOMMENDED IN..." en gris neutre (comme "ITINERARY BY DAY"), pas en rose — la
+         capture d'écran du 23/10/2026 le montre clairement en gris, contrairement à la
+         couleur rose posée en inline style dans le HTML (demande du 18/10/2026, jamais
+         comparée à une capture jusqu'ici). */
+      #i18n-reco { color: #94a3b8 !important; }
+      /* Lignes de la liste "RECOMMENDED IN..." (.loc-row, script.js) : bouton "+" rond rose
+         (au lieu d'un rectangle gris) + badge "CLOSED" gris devant le nom pour un lieu
+         fermé — les deux détails visibles dans la capture d'écran que l'ancien rendu
+         (texte "+" dans un simple rectangle, aucun badge, préfixe "[CLOSED] " laissé tel
+         quel dans le nom) ne reproduisait pas. */
+      .add-to-trip-btn { width: 30px; height: 30px; border-radius: 50%; background: #D42759; border: none; color: #fff; font-size: 17px; line-height: 1; padding: 0; display: flex; align-items: center; justify-content: center; }
+      .add-to-trip-btn:hover { background: #b81f49; }
+      .loc-closed-badge { display: inline-block; background: #94a3b8; color: #fff; font-size: 9.5px; font-weight: 800; letter-spacing: .3px; text-transform: uppercase; padding: 3px 7px; border-radius: 100px; margin-right: 6px; flex-shrink: 0; vertical-align: 1px; }
+      /* "ça chevauche la page et on ne voit pas" (demande du 23/10/2026) : même correctif
+         déjà appliqué aux onglets Map/Plan ci-dessus (padding-bottom réservé sous
+         #mobile-bottom-nav, position:fixed) — jamais fait pour Ideas jusqu'ici. */
+      .trip-tab-panel[data-panel="ideas"] { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 
       /* "Il ne faut pas afficher la carte dans Itinerary" (demande du 18/10/2026,
          trip_finale_legere.html) — la mini-carte par jour (.day-mini-map) reste générée
@@ -799,7 +857,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261053';
+        s.src = 'page-loader.js?v=20261054';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1174,7 +1232,7 @@
                      avant la liste des lieux non assignés : voir recoLabelText() dans
                      script.js pour le libellé dynamique. -->
                 <div id="reco-section" style="display: none; margin-top: 10px;">
-                    <div class="section-label" style="color:#D42759; margin-top:0;" id="i18n-reco">RECOMMENDED FOR THIS TRIP</div>
+                    <div class="section-label" style="margin-top:0;" id="i18n-reco">RECOMMENDED FOR THIS TRIP</div>
                     <div id="reco-list"></div>
                 </div>
                 </div>
@@ -1449,9 +1507,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261053"></script>
-<script src="locations-data.js?v=20261053"></script>
-<script src="script.js?v=20261053"></script>
+<script type="module" src="firebase-init.js?v=20261054"></script>
+<script src="locations-data.js?v=20261054"></script>
+<script src="script.js?v=20261054"></script>
 
 </body>
 </html>

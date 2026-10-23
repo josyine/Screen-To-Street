@@ -249,14 +249,40 @@ window.firebaseChangePassword = async function (currentPassword, newPassword) {
 // autre appareil/compte qui consulterait les mêmes données ensuite. Retourne
 // maintenant {success,code} ET affiche un toast d'erreur (limité à un seul à la
 // fois, pour ne pas spammer si plusieurs sync échouent d'affilée hors-ligne).
+//
+// BUG corrigé (demande du 23/10/2026, "sur un appareil autre que l'ordinateur de
+// l'admin, ça affiche toujours 'Connection issue'") : malgré experimentalForceLongPolling
+// (voir plus haut), un appareil qui vient tout juste d'ouvrir le site peut encore avoir
+// son canal long-polling pas totalement établi au moment du tout premier setDoc() —
+// cette fenêtre de quelques centaines de ms à 1-2s suffit à faire échouer un appel isolé
+// avec un code transitoire ('unavailable'/'deadline-exceeded'/'cancelled'), sans que la
+// connexion soit réellement perdue. Un seul essai suffisait rarement à distinguer "le
+// réseau est VRAIMENT bloqué" de "pas encore prêt" — d'où un faux "Connection issue"
+// quasi systématique sur tout appareil qui n'a pas déjà "chauffé" sa connexion (le
+// propre ordinateur de l'admin, resté ouvert sur le site toute la journée, ne retombe
+// quasiment jamais dans cette fenêtre). Seuls ces codes transitoires sont retentés (avec
+// un court backoff) — 'permission-denied' échoue toujours immédiatement, un vrai refus
+// de règles ne devenant jamais vrai en réessayant.
+const TRANSIENT_FIRESTORE_CODES = ['unavailable', 'deadline-exceeded', 'cancelled', 'internal', 'aborted'];
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 let _syncUserDataErrorToastShown = false;
 window.syncUserData = async function (fields) {
     const user = auth.currentUser;
     if (!user) return { success: false, code: 'not-authenticated' };
-    try {
-        await setDoc(doc(db, 'users', user.uid), fields, { merge: true });
-        return { success: true };
-    } catch (e) {
+    const attempts = [0, 800, 2000];
+    let lastError = null;
+    for (let i = 0; i < attempts.length; i++) {
+        if (attempts[i]) await wait(attempts[i]);
+        try {
+            await setDoc(doc(db, 'users', user.uid), fields, { merge: true });
+            return { success: true };
+        } catch (e) {
+            lastError = e;
+            if (!TRANSIENT_FIRESTORE_CODES.includes(e && e.code)) break;
+        }
+    }
+    {
+        const e = lastError;
         console.warn('Synchronisation Firestore échouée :', e);
         if (!_syncUserDataErrorToastShown && typeof window.showSimpleToast === 'function') {
             _syncUserDataErrorToastShown = true;
