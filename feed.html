@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261052" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261053" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -243,6 +243,21 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .fpf-link.danger { border-color: #D42759; color: #D42759; }
 .fpf-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 20px; }
 
+/* Filtre groupe "Mei's Pictures" — variante "Menu compact" de mei_filtre_groupes_finale.
+   html (demande du 23/10/2026) : pastille compacte + feuille de sélection en bas d'écran.
+   Voir window.toggleSacredGroupSheet()/renderSacredGroupFilterOptions() plus bas. */
+.sacred-group-dd { height: 38px; padding: 0 14px 0 12px; border-radius: 999px; background: #fff; font-size: 13.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(31,36,48,.07); border: none; cursor: pointer; color: #1F2430; font-family: 'Poppins', sans-serif; }
+#sacred-group-filter-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.sacred-group-dim { position: fixed; inset: 0; background: rgba(31,36,48,.33); z-index: 1999; }
+.sacred-group-sheet { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-radius: 26px 26px 0 0; z-index: 2000; padding: 10px 18px calc(24px + env(safe-area-inset-bottom)); box-shadow: 0 -10px 30px rgba(31,36,48,.18); max-height: 70vh; overflow-y: auto; }
+.sacred-group-grab { width: 40px; height: 5px; border-radius: 5px; background: #E2DDEA; margin: 0 auto 14px; }
+.sacred-group-sheet h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; color: #1F2430; }
+.sacred-group-opt { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 0; border: none; background: none; border-bottom: 1px solid #F1EEF6; font-size: 14px; font-weight: 600; color: #1F2430; cursor: pointer; font-family: 'Poppins', sans-serif; text-align: left; }
+.sacred-group-opt-av { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11.5px; font-weight: 800; flex-shrink: 0; background-size: cover; background-position: center; }
+.sacred-group-opt-count { margin-left: auto; color: #8F8B99; font-size: 12.5px; font-weight: 600; }
+.sacred-group-opt-rd { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #D9D4E2; margin-left: 6px; flex-shrink: 0; }
+.sacred-group-opt[aria-pressed="true"] .sacred-group-opt-rd { border: 6px solid #D42759; }
+
 /* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
    "publication" que profile.html — voir #loc-modal plus bas — plutôt que l'ancien
    #feed-post-overlay propre à cette page. SANS la mini-carte Leaflet ("supprime la map
@@ -370,10 +385,8 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
   .feed-tabs { max-width: none; width: calc(100% + 24px); margin: 0 -12px 12px -12px; }
 
   /* "Monte légèrement l'affichage de Mei's Pictures" (demande du 17/10/2026) : resserre
-     l'espace entre le filtre groupe (#sacred-group-filter, seul élément visible juste
-     au-dessus de la grille sur cet onglet) et la grille elle-même — !important nécessaire
-     pour l'emporter sur le style inline posé directement sur l'élément (voir plus bas). */
-  #sacred-group-filter { margin-bottom: 10px !important; }
+     l'espace entre le filtre groupe et la grille elle-même. */
+  #sacred-group-filter-btn { margin: 0 auto 10px; }
 }
 </style>
 <script>
@@ -416,7 +429,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261052';
+        s.src = 'page-loader.js?v=20261053';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -536,12 +549,26 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search a place, a group, a user...">
         <div id="feed-user-suggestions" class="feed-user-suggestions hidden"></div>
     </div>
-    <!-- Filtre groupe de l'onglet "Mei's Pictures" (demande du 16/10/2026, "ajoute un
-         filtre de sélection de groupe afin qu'on puisse filtrer les photos de Mei") —
-         masqué par défaut/sur les autres onglets (voir switchFeedTab()), rempli avec les
-         groupes réellement présents dans cet onglet par renderSacredGroupFilterOptions()
-         (plus bas), jamais avec la liste fixe de tous les groupes du site. -->
-    <select id="sacred-group-filter" class="filter-select hidden" style="max-width:220px;margin:0 auto 18px auto;" onchange="window.filterSacredByGroup(this.value)"></select>
+    <!-- Filtre groupe de l'onglet "Mei's Pictures" (demande du 16/10/2026 puis 23/10/2026,
+         "corrige le filtre de sélection de groupe pour appliquer le filtre de
+         mei_filtre_groupes_finale.html") — reprend la variante "Menu compact" de ce
+         mockup (la seule des 5 réellement retenue dans son board) : une pastille
+         compacte (point de couleur + nom du groupe choisi) qui ouvre une feuille en bas
+         d'écran listant chaque groupe (avatar/initiales, nom, nombre de photos, point de
+         sélection) — remplace l'ancien <select> natif. Masquée par défaut/sur les autres
+         onglets (voir switchFeedTab()), reconstruite avec les groupes RÉELLEMENT présents
+         dans cet onglet par renderSacredGroupFilterOptions() (plus bas), jamais la liste
+         fixe de tous les groupes du site. -->
+    <button type="button" id="sacred-group-filter-btn" class="sacred-group-dd hidden" onclick="window.toggleSacredGroupSheet()">
+        <i id="sacred-group-filter-dot"></i><span id="sacred-group-filter-label">All groups</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div id="sacred-group-dim" class="sacred-group-dim hidden" onclick="window.toggleSacredGroupSheet(false)"></div>
+    <div id="sacred-group-sheet" class="sacred-group-sheet hidden">
+        <div class="sacred-group-grab"></div>
+        <h4 id="i18n-choose-group">Choose a group</h4>
+        <div id="sacred-group-sheet-options"></div>
+    </div>
     <div class="feed-loading" id="feed-loading">Loading…</div>
     <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
     <div class="feed-grid" id="feed-grid"></div>
@@ -599,9 +626,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261052"></script>
-<script src="locations-data.js?v=20261052"></script>
-<script src="script.js?v=20261052"></script>
+<script type="module" src="firebase-init.js?v=20261053"></script>
+<script src="locations-data.js?v=20261053"></script>
+<script src="script.js?v=20261053"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -726,8 +753,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         // (appelée par renderSacredGrid() plus bas) le re-confirme une fois les options
         // reconstruites, mais le bascule aussi immédiatement ici pour ne pas attendre la
         // fin du fetch avant de (dé)masquer.
-        const groupFilterEl = document.getElementById('sacred-group-filter');
+        const groupFilterEl = document.getElementById('sacred-group-filter-btn');
         if (groupFilterEl) groupFilterEl.classList.toggle('hidden', tab !== 'sacred');
+        if (tab !== 'sacred') window.toggleSacredGroupSheet(false);
         if (tab === 'saved') {
             loadSavedFeed();
         } else if (tab === 'sacred') {
@@ -821,11 +849,10 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         return (typeof recreatedPhotoUrl === 'function' ? recreatedPhotoUrl(entry) : entry) || '';
     }
     let sacredGridRendered = false;
-    // Liste ordonnée des lieux affichés dans cet onglet + index de celui actuellement
-    // ouvert dans la modale (-1 = aucun, ou modale ouverte depuis un autre onglet) — sert au
-    // swipe entre photos (voir wireSacredSwipe() plus bas).
+    // Liste ordonnée des lieux (avec au moins une photo Mei) affichés dans cet onglet —
+    // source du fil plein écran défilant, voir openSacredPlace()/renderSacredPostFeed()
+    // plus bas.
     let sacredLocs = [];
-    let sacredSwipeIndex = -1;
     // Photos les plus récentes, par-dessus le catalogue statique (demande du 19/09/2026,
     // "il manque des photos" dans cet onglet) — voir window.fetchAllRecreatedPhotos() dans
     // firebase-init.js (index léger locationPhotos/, PAS l'ancien
@@ -950,14 +977,43 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     // toujours au moins un lieu, sinon retombe sur "All" plutôt que de filtrer vers une
     // liste vide sans que la personne comprenne pourquoi.
     function renderSacredGroupFilterOptions() {
-        const sel = document.getElementById('sacred-group-filter');
-        if (!sel) return;
+        const btn = document.getElementById('sacred-group-filter-btn');
+        const optionsEl = document.getElementById('sacred-group-sheet-options');
+        if (!btn || !optionsEl) return;
         const groups = Array.from(new Set(sacredLocs.map(l => l.group).filter(Boolean))).sort();
         if (sacredActiveGroup !== 'All' && !groups.includes(sacredActiveGroup)) sacredActiveGroup = 'All';
-        sel.innerHTML = `<option value="All">${currentLang === 'fr' ? 'Tous les groupes' : 'All groups'}</option>`
-            + groups.map(g => `<option value="${escapeHtml(g)}"${g === sacredActiveGroup ? ' selected' : ''}>${escapeHtml(g)}</option>`).join('');
-        sel.classList.toggle('hidden', currentFeedTab !== 'sacred');
+        const allLabel = currentLang === 'fr' ? 'Tous les groupes' : 'All groups';
+        const cnt = (g) => g === 'All' ? sacredLocs.length : sacredLocs.filter(l => l.group === g).length;
+
+        const dotEl = document.getElementById('sacred-group-filter-dot');
+        const labelEl = document.getElementById('sacred-group-filter-label');
+        if (dotEl) dotEl.style.background = sacredActiveGroup === 'All' ? 'linear-gradient(135deg,#E0156B,#9B5CF6)' : groupColorFor(sacredActiveGroup);
+        if (labelEl) labelEl.textContent = sacredActiveGroup === 'All' ? allLabel : sacredActiveGroup;
+        const sheetTitleEl = document.getElementById('i18n-choose-group');
+        if (sheetTitleEl) sheetTitleEl.textContent = currentLang === 'fr' ? 'Choisir un groupe' : 'Choose a group';
+
+        const optHtml = (g, name) => `<button type="button" class="sacred-group-opt" data-g="${escapeHtml(g)}" aria-pressed="${sacredActiveGroup === g}">
+            <span class="sacred-group-opt-av" style="background:${g === 'All' ? 'linear-gradient(135deg,#E0156B,#9B5CF6)' : groupColorFor(g)}">${g === 'All' ? '' : escapeHtml(g.slice(0, 2).toUpperCase())}</span>
+            ${escapeHtml(name)}<span class="sacred-group-opt-count">${cnt(g)}</span><span class="sacred-group-opt-rd"></span>
+        </button>`;
+        optionsEl.innerHTML = optHtml('All', allLabel) + groups.map(g => optHtml(g, g)).join('');
+        optionsEl.querySelectorAll('.sacred-group-opt').forEach(el => {
+            el.onclick = () => { window.filterSacredByGroup(el.dataset.g); window.toggleSacredGroupSheet(false); };
+        });
+        btn.classList.toggle('hidden', currentFeedTab !== 'sacred');
     }
+    // Ouvre/referme la feuille de sélection (demande du 23/10/2026, mei_filtre_groupes_
+    // finale.html : variante "Menu compact") — `show` explicite permet de forcer sa
+    // fermeture (changement d'onglet, sélection d'un groupe) sans dépendre de son état
+    // actuel.
+    window.toggleSacredGroupSheet = function (show) {
+        const sheet = document.getElementById('sacred-group-sheet');
+        const dim = document.getElementById('sacred-group-dim');
+        if (!sheet || !dim) return;
+        const opening = show !== undefined ? show : sheet.classList.contains('hidden');
+        sheet.classList.toggle('hidden', !opening);
+        dim.classList.toggle('hidden', !opening);
+    };
 
     // Grille elle-même, séparée du fetch ci-dessus (demande du 16/10/2026) : reconstruite
     // SEULEMENT à partir de sacredLocs déjà en mémoire à chaque changement de filtre, sans
@@ -986,64 +1042,68 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     }
     window.filterSacredByGroup = function (value) {
         sacredActiveGroup = value || 'All';
+        renderSacredGroupFilterOptions();
         renderSacredGridFromData();
     };
 
-    // Ouvre la modale "publication" partagée (voir #loc-modal et window.openLocModal() dans
-    // script.js), avec la photo recréée comme visuel principal — pas de postContext.username
-    // ici (ce n'est pas une publication utilisateur) : openLocModal() masque alors l'entête
-    // "auteur"/like/save et n'affiche que le détail du lieu, exactement ce qu'on veut.
+    // Ouvre le même fil plein écran défilant que Community (demande du 23/10/2026, "qu'on
+    // puisse swipe pour voir les suivantes, comme dans 'Community'") — remplace l'ancienne
+    // modale #loc-modal (swipe gauche/droite entre lieux) par #feed-post-feed (défilement
+    // vertical, voir renderSacredPostFeed() plus bas) : même composant que Community/Saved,
+    // juste alimenté par les lieux-à-photo de CET onglet plutôt que par feedPhotos. Repart
+    // de la liste FILTRÉE par le groupe actuellement choisi (pas sacredLocs en entier) pour
+    // rester cohérent avec ce que la grille montrait au moment du clic.
     function openSacredPlace(locId) {
-        const loc = sacredLocs.find(l => l.id == locId);
-        if (!loc || typeof window.openLocModal !== 'function') return;
-        sacredSwipeIndex = sacredLocs.indexOf(loc);
-        const photo = firstRecreatedPhoto(loc); // simple chaîne — juste pour savoir si CE lieu a une photo
-        // Toutes les photos du lieu (demande du 19/09/2026) — pas seulement la 1ère : voir
-        // le carrousel horizontal ajouté dans openLocModal() (script.js), qui s'active dès
-        // que postContext.photos contient plus d'une photo. Entrées BRUTES (pas passées par
-        // firstRecreatedPhoto()) pour que le statut "pose officielle" (demande du 03/10/2026,
-        // une entrée peut être {url, official:true}) atteigne bien openLocModal() —
-        // recreatedPhotoUrl()/recreatedPhotoIsOfficial() (script.js) savent lire les deux
-        // formats, string ou objet, à l'arrivée.
-        const photos = Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length ? loc.recreatedPhotos : (loc.recreatedPhoto ? [loc.recreatedPhoto] : []);
-        window.openLocModal(locId, photo ? { photo: photos[0], photos } : undefined);
+        const filtered = sacredActiveGroup === 'All' ? sacredLocs : sacredLocs.filter(l => l.group === sacredActiveGroup);
+        const index = filtered.findIndex(l => l.id == locId);
+        if (index === -1) return;
+        renderSacredPostFeed(filtered);
+        const overlay = document.getElementById('feed-post-feed');
+        overlay.classList.add('open');
+        const card = document.getElementById('feed-post-feed-scroll').querySelector(`[data-feed-index="${index}"]`);
+        if (card) card.scrollIntoView({ block: 'start' });
     }
 
-    // Swipe gauche/droite pour passer à la photo recréée suivante/précédente pendant que la
-    // modale est ouverte (demande du 15/09/2026, "je n'arrive pas à swipe") — #loc-modal est
-    // partagé avec l'onglet Community/profile.html, donc le geste ne doit être actif QUE pour
-    // une modale ouverte depuis CET onglet : sacredSwipeIndex reste à -1 sinon, et est remis à
-    // -1 dès que la modale se referme (peu importe comment) via l'observateur ci-dessous.
-    (function wireSacredSwipe() {
-        const modalHero = document.getElementById('modal-hero');
-        const modalOverlay = document.getElementById('loc-modal');
-        if (!modalHero || !modalOverlay) return;
-        let touchStartX = null;
-        modalHero.addEventListener('touchstart', (e) => {
-            if (sacredSwipeIndex === -1) return;
-            touchStartX = e.touches[0].clientX;
-        }, { passive: true });
-        modalHero.addEventListener('touchend', (e) => {
-            // Désactivé quand la galerie multi-photos (demande du 19/09/2026) est active :
-            // le défilement horizontal natif entre les photos DU MÊME lieu (scroll-snap,
-            // voir openLocModal() dans script.js) ne doit pas se faire concurrence avec ce
-            // swipe-ci, qui change de LIEU entier — sinon les deux gestes interfèrent sur le
-            // même geste tactile horizontal.
-            if (modalHero.classList.contains('modal-hero-gallery-active')) return;
-            if (sacredSwipeIndex === -1 || touchStartX === null) return;
-            const deltaX = e.changedTouches[0].clientX - touchStartX;
-            touchStartX = null;
-            if (Math.abs(deltaX) < 50) return; // geste trop court pour être un swipe volontaire
-            const nextIndex = deltaX < 0
-                ? Math.min(sacredSwipeIndex + 1, sacredLocs.length - 1)
-                : Math.max(sacredSwipeIndex - 1, 0);
-            if (nextIndex === sacredSwipeIndex) return;
-            openSacredPlace(sacredLocs[nextIndex].id);
-        }, { passive: true });
-        new MutationObserver(() => {
-            if (modalOverlay.classList.contains('hidden')) sacredSwipeIndex = -1;
-        }).observe(modalOverlay, { attributes: true, attributeFilter: ['class'] });
-    })();
+    // Une carte par LIEU (pas par publication utilisateur, contrairement à
+    // renderFeedPostFeed() plus bas pour Community/Saved) — nom + groupe en petit sur la
+    // photo (demande du 23/10/2026, "affiche le nom du lieu comme pour Community"), jamais
+    // de dégradé noir dessus (même règle .fpf-media-tag que Community, qui n'en a jamais
+    // eu), pas d'entête auteur/like/save (ce ne sont pas des publications). "···more"
+    // déplie "About this place" (t('aboutPlaceLabel'), PAS "Following in ...'s footsteps" —
+    // différent de Community, demande explicite du 23/10/2026) + les boutons Google Maps/
+    // More details.
+    function renderSacredPostFeed(list) {
+        const scroll = document.getElementById('feed-post-feed-scroll');
+        if (!list.length) { scroll.innerHTML = '<div class="fpf-empty">No photos yet.</div>'; return; }
+        scroll.innerHTML = list.map((loc, i) => {
+            const locLabel = `${loc.name}${loc.group ? ' · ' + loc.group : ''}`;
+            return `<div class="fpf-card" data-feed-index="${i}">
+                <div class="fpf-media" style="background-image:url('${firstRecreatedPhoto(loc)}')">
+                    <div class="fpf-media-tag">${escapeHtml(locLabel)}</div>
+                </div>
+                <div class="fpf-body" style="padding-top:14px;">
+                    <button type="button" class="fpf-more-toggle" data-fpf-more>··· more</button>
+                    <div class="fpf-expand hidden" data-fpf-expand>
+                        <span class="fpf-about-label">${escapeHtml(t('aboutPlaceLabel'))}</span>
+                        <div class="fpf-desc">${getLocText(loc.fullDescription) || 'No description available.'}</div>
+                        <div class="fpf-links">
+                            <a class="fpf-link" href="https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}" target="_blank">${t('openInMaps')}</a>
+                            <a class="fpf-link" href="map.html?loc=${loc.id}">${t('moreDetails')}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        scroll.querySelectorAll('.fpf-card').forEach(card => {
+            const moreBtn = card.querySelector('[data-fpf-more]');
+            if (!moreBtn) return;
+            moreBtn.onclick = () => {
+                const expand = card.querySelector('[data-fpf-expand]');
+                const collapsed = expand.classList.toggle('hidden');
+                moreBtn.textContent = collapsed ? '··· more' : '··· less';
+            };
+        });
+    }
 
     async function loadSavedFeed() {
         const loadingEl = document.getElementById('feed-loading');
