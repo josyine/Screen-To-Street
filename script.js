@@ -911,10 +911,34 @@ function loadInstagramWidgetScriptOnce() {
     });
     return _instagramWidgetLoadPromise;
 }
+// BUG corrigé (demande du 23/10/2026, "le format de la photo du post est horizontal et non
+// portrait, donc ça pose problème") : l'iframe instagram.com/p/{code}/embed/ ci-dessous
+// était posée à une hauteur FIXE (480px, pensée pour un post portrait/carré) — pour un post
+// réellement au format paysage, Instagram y recadre/tronque son propre contenu pour tenir
+// dans cette hauteur imposée (y compris sa légende et son bandeau "Voir plus sur
+// Instagram", qui semblaient alors coupés/mal affichés plutôt que simplement présents).
+// Instagram poste un message `{type:"MEASURE", details:{height}}` à la fenêtre parente dès
+// que la hauteur réelle de son contenu est connue (même technique que son propre embed.js
+// officiel, ici appliquée nous-mêmes à l'iframe /embed/ léger) — un seul écouteur global
+// (jamais un par iframe, qui s'accumulerait à chaque réaffichage d'une fiche lieu) resize
+// l'iframe correspondante quelle que soit l'orientation réelle du post.
+if (!window.__igEmbedResizeWired) {
+    window.__igEmbedResizeWired = true;
+    window.addEventListener('message', (e) => {
+        if (!/\.instagram\.com$/.test(new URL(e.origin).hostname) && !/^instagram\.com$/.test(new URL(e.origin).hostname)) return;
+        let data;
+        try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (err) { return; }
+        const height = data && data.details && data.details.height;
+        if (!height) return;
+        document.querySelectorAll('iframe.instagram-embed-iframe').forEach(ifr => {
+            if (ifr.contentWindow === e.source) ifr.style.height = `${height}px`;
+        });
+    });
+}
 async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     const shortcode = extractInstagramShortcode(instagramUrl);
     if (shortcode) {
-        container.innerHTML = `<iframe src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%;"></iframe>`;
+        container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:100%;"></iframe>`;
         return;
     }
     // Repli si jamais aucun code n'a pu être extrait (ne devrait normalement jamais arriver
@@ -13508,73 +13532,126 @@ function dayEndpointRowHTML(dayIndex, role, label, dayColor, timeMinutes) {
     `;
 }
 
-// Éditeur per-day du lieu de départ/arrivée (demande du 18/10/2026, "si on ne sélectionne
-// pas 'Same start & end', il faut sélectionner le lieu de départ et d'arrivée pour chaque
-// jour") — même mécanisme de géocodage que window.saveTripHomeBase() (Nominatim, voir
-// geocodeAddress() plus haut), juste paramétré par jour + rôle plutôt qu'un seul champ pour
-// tout le voyage. Popup flottant positionné au clic (même approche que
-// ensureTripRoleMenuEl()/openTripRoleMenu() plus bas) plutôt qu'un champ par jour toujours
-// visible : un voyage peut monter à 14+ jours (durée "1 mois"), ce qui aurait rendu
-// l'itinéraire illisible avec un input permanent sur chaque ligne de départ/arrivée.
-function ensureDayEndpointPopupEl() {
-    let el = document.getElementById('day-endpoint-popup');
+// Popup flottant générique de recherche de lieu RÉEL (demande du 23/10/2026, "utiliser une
+// API Google Map ou autre pour que ça affiche réellement les hôtels existants") — même API
+// Nominatim (OpenStreetMap, gratuite, sans clé) déjà utilisée par searchHotelSuggestions()
+// plus haut (New Trip), généralisée ici pour être réutilisée par TOUS les éditeurs de lieu
+// de départ/arrivée du site : les deux pastilles START/END de l'onglet Plan (voir
+// window.openTripLevelEndpointEditor() plus bas) ET l'éditeur per-day (voir
+// window.openDayEndpointEditor() plus bas) — plutôt que deux implémentations de recherche
+// de lieu qui auraient fini par diverger. Suggestions en direct pendant la frappe (comme
+// New Trip), contrairement à l'ancienne version de cet éditeur qui ne géocodait qu'une
+// seule adresse à la sauvegarde, sans jamais montrer d'alternative réelle.
+function ensurePlaceSearchPopupEl() {
+    let el = document.getElementById('place-search-popup');
     if (el) return el;
     el = document.createElement('div');
-    el.id = 'day-endpoint-popup';
-    el.className = 'day-endpoint-popup hidden';
+    el.id = 'place-search-popup';
+    el.className = 'place-search-popup hidden';
     document.body.appendChild(el);
     document.addEventListener('click', (e) => {
         if (el.classList.contains('hidden')) return;
-        if (e.target.closest('#day-endpoint-popup') || e.target.closest('.day-endpoint-editable')) return;
+        if (e.target.closest('#place-search-popup') || e.target.closest('.place-search-trigger') || e.target.closest('.day-endpoint-editable')) return;
         el.classList.add('hidden');
     });
     return el;
 }
-window.openDayEndpointEditor = function(evt, dayIndex, role) {
+let placeSearchTimer = null;
+async function runPlaceSearch(query, input) {
+    const resultsEl = document.getElementById('place-search-results');
+    if (!resultsEl) return;
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(query)}`, {
+            headers: { 'Accept-Language': currentLang || 'en' }
+        });
+        if (!res.ok) return;
+        const results = await res.json();
+        if (!input || input.value.trim() !== query) return; // la personne a continué à taper entre-temps
+        if (!Array.isArray(results) || results.length === 0) {
+            resultsEl.innerHTML = `<div class="place-search-empty">${currentLang === 'fr' ? 'Aucun résultat' : 'No results'}</div>`;
+            return;
+        }
+        resultsEl.innerHTML = results.map((r, i) => `<div class="place-search-option" data-idx="${i}">${escapeHtml(r.display_name)}</div>`).join('');
+        resultsEl.querySelectorAll('.place-search-option').forEach(el => {
+            el.addEventListener('click', () => {
+                const r = results[parseInt(el.dataset.idx)];
+                input.value = r.display_name;
+                input.dataset.pickedLat = r.lat;
+                input.dataset.pickedLng = r.lon;
+                resultsEl.innerHTML = '';
+            });
+        });
+    } catch (e) { /* raffinement optionnel : échec silencieux, la saisie manuelle reste géocodée à l'enregistrement */ }
+}
+// `evt.currentTarget` doit être l'élément cliqué (pour positionner le popup à côté) ;
+// `onSave(picked)` reçoit soit `{lat, lng, label}` (lieu choisi ou géocodé), soit `null`
+// (champ vidé volontairement) — jamais rappelé si la recherche manuelle échoue.
+window.openPlaceSearchPopup = function(evt, { title, currentValue, onSave }) {
     evt.stopPropagation();
-    if (!currentTrip) return;
-    const popup = ensureDayEndpointPopupEl();
-    const endpoints = tripDayEndpoints(dayIndex);
-    const currentLabel = role === 'start' ? endpoints.startLabel : endpoints.endLabel;
-    const placeholder = role === 'start'
-        ? (currentLang === 'fr' ? 'Lieu de départ' : 'Start location')
-        : (currentLang === 'fr' ? "Lieu d'arrivée" : 'End location');
+    const popup = ensurePlaceSearchPopupEl();
     popup.innerHTML = `
-        <input type="text" id="day-endpoint-input" value="${currentLabel ? escapeHtml(currentLabel) : ''}" placeholder="${placeholder}" autocomplete="off">
-        <button type="button" onclick="window.saveDayEndpoint(${dayIndex}, '${role}')">${currentLang === 'fr' ? 'Enregistrer' : 'Save'}</button>
+        <div class="place-search-title">${escapeHtml(title)}</div>
+        <input type="text" id="place-search-input" value="${currentValue ? escapeHtml(currentValue) : ''}" placeholder="${currentLang === 'fr' ? 'Rechercher un lieu...' : 'Search a place...'}" autocomplete="off">
+        <div id="place-search-results"></div>
+        <button type="button" id="place-search-save-btn">${currentLang === 'fr' ? 'Enregistrer' : 'Save'}</button>
     `;
     const rect = evt.currentTarget.getBoundingClientRect();
     popup.style.top = `${rect.bottom + window.scrollY + 6}px`;
-    popup.style.left = `${Math.max(12, Math.min(rect.left + window.scrollX, window.innerWidth - 260))}px`;
+    popup.style.left = `${Math.max(12, Math.min(rect.left + window.scrollX, window.innerWidth - 280))}px`;
     popup.classList.remove('hidden');
-    document.getElementById('day-endpoint-input')?.focus();
-};
-window.saveDayEndpoint = async function(dayIndex, role) {
-    if (!currentTrip) return;
-    const input = document.getElementById('day-endpoint-input');
-    const btn = input?.nextElementSibling;
-    const query = (input.value || '').trim();
-    const originalLabel = btn ? btn.textContent : '';
-    if (btn) { btn.disabled = true; btn.textContent = '...'; }
-    if (!currentTrip.dayStartEnd) currentTrip.dayStartEnd = [];
-    if (!currentTrip.dayStartEnd[dayIndex]) currentTrip.dayStartEnd[dayIndex] = {};
-    const entry = currentTrip.dayStartEnd[dayIndex];
-    if (!query) {
-        entry[role] = null;
-        entry[role + 'Label'] = '';
-    } else {
-        const geo = await geocodeAddress(query);
-        if (!geo) {
-            if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
-            alert(currentLang === 'fr' ? "Adresse introuvable — vérifiez l'orthographe et réessayez." : "Couldn't find that address — check the spelling and try again.");
+    const input = document.getElementById('place-search-input');
+    input.addEventListener('input', () => {
+        delete input.dataset.pickedLat; delete input.dataset.pickedLng;
+        clearTimeout(placeSearchTimer);
+        const q = input.value.trim();
+        const resultsEl = document.getElementById('place-search-results');
+        if (q.length < 3) { if (resultsEl) resultsEl.innerHTML = ''; return; }
+        placeSearchTimer = setTimeout(() => runPlaceSearch(q, input), 400);
+    });
+    input.focus();
+    document.getElementById('place-search-save-btn').onclick = async () => {
+        const btn = document.getElementById('place-search-save-btn');
+        const originalLabel = btn.textContent;
+        const query = input.value.trim();
+        if (!query) { popup.classList.add('hidden'); onSave(null); return; }
+        btn.disabled = true; btn.textContent = '...';
+        let result = (input.dataset.pickedLat && input.dataset.pickedLng)
+            ? { lat: parseFloat(input.dataset.pickedLat), lng: parseFloat(input.dataset.pickedLng) }
+            : await geocodeAddress(query);
+        if (!result) {
+            btn.disabled = false; btn.textContent = originalLabel;
+            alert(currentLang === 'fr' ? "Lieu introuvable — vérifiez l'orthographe et réessayez." : "Couldn't find that place — check the spelling and try again.");
             return;
         }
-        entry[role] = geo;
-        entry[role + 'Label'] = query;
-    }
-    document.getElementById('day-endpoint-popup')?.classList.add('hidden');
-    window.saveTrip();
-    window.renderTrip();
+        popup.classList.add('hidden');
+        onSave({ lat: result.lat, lng: result.lng, label: query });
+    };
+};
+
+// Éditeur per-day du lieu de départ/arrivée (demande du 18/10/2026, "si on ne sélectionne
+// pas 'Same start & end', il faut sélectionner le lieu de départ et d'arrivée pour chaque
+// jour") — paramétré par jour + rôle plutôt qu'un seul champ pour tout le voyage. Popup
+// flottant positionné au clic (même approche que ensureTripRoleMenuEl()/openTripRoleMenu()
+// plus bas) plutôt qu'un champ par jour toujours visible : un voyage peut monter à 14+
+// jours (durée "1 mois"), ce qui aurait rendu l'itinéraire illisible avec un input
+// permanent sur chaque ligne de départ/arrivée.
+window.openDayEndpointEditor = function(evt, dayIndex, role) {
+    if (!currentTrip) return;
+    const endpoints = tripDayEndpoints(dayIndex);
+    const currentLabel = role === 'start' ? endpoints.startLabel : endpoints.endLabel;
+    window.openPlaceSearchPopup(evt, {
+        title: role === 'start' ? (currentLang === 'fr' ? 'Lieu de départ' : 'Start location') : (currentLang === 'fr' ? "Lieu d'arrivée" : 'End location'),
+        currentValue: currentLabel,
+        onSave: (picked) => {
+            if (!currentTrip.dayStartEnd) currentTrip.dayStartEnd = [];
+            if (!currentTrip.dayStartEnd[dayIndex]) currentTrip.dayStartEnd[dayIndex] = {};
+            const entry = currentTrip.dayStartEnd[dayIndex];
+            entry[role] = picked ? { lat: picked.lat, lng: picked.lng } : null;
+            entry[role + 'Label'] = picked ? picked.label : '';
+            window.saveTrip();
+            window.renderTrip();
+        }
+    });
 };
 
 // Bascule "Same start & end for the whole trip" (demande du 18/10/2026, trip_finale_legere.
@@ -13614,10 +13691,7 @@ window.updateEditTripOptions = function(fieldChanged) {
 // jusqu'ici, currentTrip.homeBase n'était renseigné qu'à la création du voyage
 // (createNewTripAdvanced() plus bas) et ne pouvait plus jamais être changé ensuite — alors
 // que generateItinerary()/computeDayTimeline()/regenerateTripItinerary() le lisent tous pour
-// servir de point de départ réel du premier trajet de chaque journée. Même mécanisme de
-// géocodage (Nominatim, voir geocodeAddress() plus haut) que la création, en plus simple :
-// pas de suggestions en direct ici (raffinement optionnel), un seul géocodage à la
-// sauvegarde suffit pour ce cas d'usage plus rare (modifier un hôtel déjà choisi).
+// servir de point de départ réel du premier trajet de chaque journée.
 window.toggleTripHomeBaseEditor = function() {
     const editor = document.getElementById('trip-homebase-editor');
     const btn = document.getElementById('trip-homebase-edit-btn');
@@ -13625,36 +13699,25 @@ window.toggleTripHomeBaseEditor = function() {
     const opening = editor.classList.contains('hidden');
     editor.classList.toggle('hidden');
     if (btn) btn.textContent = opening ? (currentLang === 'fr' ? 'Fermer' : 'Close') : (currentLang === 'fr' ? 'Modifier' : 'Edit');
-    if (opening) {
-        const input = document.getElementById('trip-homebase-input');
-        if (input) input.focus();
-    }
 };
 
-window.saveTripHomeBase = async function() {
+// Pastilles START/END (demande du 23/10/2026, capture d'écran fournie : deux lignes
+// distinctes plutôt qu'un seul champ texte) — "Same start & end for the whole trip" cochée
+// veut dire START et END sont LE MÊME hébergement (currentTrip.homeBase/homeBaseLabel) :
+// éditer l'une des deux pastilles met donc à jour les deux. Même popup de recherche de
+// lieu réel que l'éditeur per-day (window.openPlaceSearchPopup() plus haut).
+window.openTripLevelEndpointEditor = function(evt, role) {
     if (!currentTrip) return;
-    const input = document.getElementById('trip-homebase-input');
-    const btn = document.getElementById('trip-homebase-save-btn');
-    const query = (input.value || '').trim();
-    const originalLabel = btn ? btn.textContent : '';
-    if (btn) { btn.disabled = true; btn.textContent = '...'; }
-
-    if (!query) {
-        currentTrip.homeBase = null;
-        currentTrip.homeBaseLabel = '';
-    } else {
-        const geo = await geocodeAddress(query);
-        if (!geo) {
-            if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
-            alert(currentLang === 'fr' ? "Adresse introuvable — vérifiez l'orthographe et réessayez." : "Couldn't find that address — check the spelling and try again.");
-            return;
+    window.openPlaceSearchPopup(evt, {
+        title: role === 'start' ? (currentLang === 'fr' ? 'Lieu de départ' : 'Start location') : (currentLang === 'fr' ? "Lieu d'arrivée" : 'End location'),
+        currentValue: currentTrip.homeBaseLabel || '',
+        onSave: (picked) => {
+            currentTrip.homeBase = picked ? { lat: picked.lat, lng: picked.lng } : null;
+            currentTrip.homeBaseLabel = picked ? picked.label : '';
+            window.saveTrip();
+            window.renderTrip();
         }
-        currentTrip.homeBase = geo;
-        currentTrip.homeBaseLabel = query;
-    }
-    window.saveTrip();
-    window.renderTrip();
-    window.toggleTripHomeBaseEditor();
+    });
 };
 
 // Aperçu en lecture seule des horaires réalistes d'un jour (arrivée, trajet, pause
@@ -14146,7 +14209,7 @@ window.renderTrip = function() {
 
     // "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) — affiche
     // l'hôtel/point de départ actuel du voyage ; voir window.toggleTripHomeBaseEditor()/
-    // window.saveTripHomeBase() plus bas pour la saisie.
+    // window.openTripLevelEndpointEditor() plus bas pour la saisie.
     //
     // Bascule "Same start & end for the whole trip" (demande du 18/10/2026) :
     // currentTrip.sameStartEnd === false veut dire que chaque jour a son propre départ/
@@ -14160,8 +14223,14 @@ window.renderTrip = function() {
             ? (currentTrip.homeBaseLabel || (currentLang === 'fr' ? 'Non défini' : 'Not set'))
             : (currentLang === 'fr' ? 'Différent chaque jour' : 'Different each day');
     }
-    const homeBaseInputEl = document.getElementById('trip-homebase-input');
-    if (homeBaseInputEl) homeBaseInputEl.value = currentTrip.homeBaseLabel || '';
+    // Pastilles START/END (demande du 23/10/2026) — même valeur partagée (homeBaseLabel)
+    // dans les deux tant que "Same start & end" reste coché, voir
+    // window.openTripLevelEndpointEditor() plus haut.
+    const notSetLabel = currentLang === 'fr' ? 'Non défini' : 'Not set';
+    const startLabelEl = document.getElementById('trip-se-start-label');
+    if (startLabelEl) startLabelEl.textContent = currentTrip.homeBaseLabel || notSetLabel;
+    const endLabelEl = document.getElementById('trip-se-end-label');
+    if (endLabelEl) endLabelEl.textContent = currentTrip.homeBaseLabel || notSetLabel;
     const sameToggleEl = document.getElementById('trip-se-same-checkbox');
     if (sameToggleEl) sameToggleEl.checked = sameStartEnd;
     const singleEditorEl = document.getElementById('trip-se-single-editor');
@@ -15489,6 +15558,15 @@ window.openNewTripMobileSheet = function() {
         overlay.addEventListener('input', (e) => {
             const k = e.target.dataset.ntin;
             if (!k || !ntState) return;
+            // BUG corrigé (demande du 23/10/2026, "ça ne prend pas en compte les demandes
+            // de dates") : data-ntin="dep"/"ret" (les deux <input type="date">) ne sont
+            // gérés QUE par le gestionnaire 'change' juste en dessous — ntRender(k) ici
+            // reconstruit tout .nt-form-root (donc remplace ces <input> par de nouveaux,
+            // relus depuis #create-trip-start/-end, encore vides à ce stade) AVANT que le
+            // 'change' natif du navigateur n'ait pu se déclencher sur l'ancien <input> (qui
+            // vient d'être détaché du DOM), l'empêchant alors de jamais remonter jusqu'à ce
+            // gestionnaire délégué — la date tapée/choisie se perdait donc silencieusement.
+            if (k === 'dep' || k === 'ret') return;
             if (k === 'name') document.getElementById('create-trip-name').value = e.target.value;
             else if (k === 'hotel') { document.getElementById('create-trip-hotel').value = e.target.value; createTripHotelSelected = null; }
             else if (k === 'q') ntState.q = e.target.value;

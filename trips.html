@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261052" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261053" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -262,6 +262,16 @@
   .trip-se-same-toggle input { width: 18px; height: 18px; accent-color: #D42759; flex-shrink: 0; }
   .trip-se-perday-hint { font-size: 12px; color: #64748b; line-height: 1.5; margin: 0; }
 
+  /* Pastilles START/END (demande du 23/10/2026, capture d'écran fournie) — remplace
+     l'ancien champ texte unique ; voir window.openTripLevelEndpointEditor() dans script.js. */
+  .trip-se-pill-row { display: flex; gap: 10px; }
+  .trip-se-pill { flex: 1; display: flex; align-items: center; gap: 10px; background: #F4F2F8; border: none; border-radius: 14px; padding: 10px 12px; cursor: pointer; text-align: left; font-family: 'Poppins', sans-serif; min-width: 0; }
+  .trip-se-pill-badge { width: 28px; height: 28px; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .trip-se-pill-text { flex: 1; min-width: 0; }
+  .trip-se-pill-text small { display: block; font-size: 9.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
+  .trip-se-pill-text span { display: block; font-size: 13px; font-weight: 700; color: #212832; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trip-se-pill-chev { color: #94a3b8; flex-shrink: 0; font-size: 12px; }
+
   /* Lignes de départ/arrivée (H ⋯ Hôtel ⋯ heure) au-dessus/en dessous de chaque journée
      dans l'ITINÉRAIRE (demande du 18/10/2026, trip_finale_legere.html) — voir
      dayEndpointRowHTML()/refreshDayTimelines() dans script.js. */
@@ -275,12 +285,21 @@
 
   /* Popup flottant de l'éditeur per-day START & END (demande du 18/10/2026) — voir
      window.openDayEndpointEditor()/saveDayEndpoint() dans script.js. */
-  .day-endpoint-popup { position: fixed; z-index: 2000; background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 10px 28px rgba(31,36,48,.18); border: 1px solid #e2e8f0; width: 240px; }
-  .day-endpoint-popup.hidden { display: none; }
-  .day-endpoint-popup input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 13px; outline: none; font-family: 'Poppins', sans-serif; margin-bottom: 8px; }
-  .day-endpoint-popup input:focus { border-color: #D42759; }
-  .day-endpoint-popup button { width: 100%; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; }
-  .day-endpoint-popup button:disabled { opacity: .6; cursor: default; }
+  /* Popup de recherche de lieu réel (demande du 23/10/2026, "utiliser une API Google Map ou
+     autre pour que ça affiche réellement les hôtels existants") — voir
+     window.openPlaceSearchPopup() dans script.js, partagé par les pastilles START/END et
+     l'éditeur per-day de l'itinéraire. */
+  .place-search-popup { position: fixed; z-index: 2000; background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 10px 28px rgba(31,36,48,.18); border: 1px solid #e2e8f0; width: 260px; max-height: 320px; overflow-y: auto; }
+  .place-search-popup.hidden { display: none; }
+  .place-search-title { font-size: 11px; font-weight: 800; letter-spacing: .5px; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; }
+  .place-search-popup input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 13px; outline: none; font-family: 'Poppins', sans-serif; margin-bottom: 8px; }
+  .place-search-popup input:focus { border-color: #D42759; }
+  #place-search-results { margin-bottom: 8px; }
+  .place-search-option { padding: 9px 8px; font-size: 12.5px; color: #334155; cursor: pointer; border-radius: 8px; line-height: 1.4; }
+  .place-search-option:hover { background: #F4F2F8; }
+  .place-search-empty { padding: 8px; font-size: 12px; color: #94a3b8; text-align: center; }
+  .place-search-popup button { width: 100%; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .place-search-popup button:disabled { opacity: .6; cursor: default; }
 
   /* Pastille d'heure d'arrivée en tête de chaque ligne de l'itinéraire (demande du
      18/10/2026, trip_finale_legere.html) — un seul horaire par arrêt désormais (plus de
@@ -638,6 +657,18 @@
          plus haut, .tab-panel/.qa-sheet dans style.css). */
       .trip-tab-panel[data-panel="map"] { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
 
+      /* BUG rapporté le 23/10/2026 : "Add an empty day" (dernier élément de
+         .itinerary-box) se retrouvait masqué derrière #mobile-bottom-nav pour la même
+         raison que .trip-day-summary ci-dessus — même marge basse. */
+      .trip-tab-panel[data-panel="plan"] { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+
+      /* BUG rapporté le 23/10/2026 : "ITINERARY BY DAY" (en-tête de l'onglet Map) collait
+         au bord gauche de l'écran — même raison et même correctif que #i18n-your-iti plus
+         bas (.section-label n'a pas de marge propre, seul le padding de .edit-banner/
+         .itinerary-box en donnait un aux libellés qui s'y trouvent, pas à celui-ci, hors de
+         tout conteneur avec marge sur cette mise en page "pleine largeur, sans marge"). */
+      #i18n-iti-by-day { margin-left: 16px; }
+
       /* Bannière "Auto-Itinerary" façon dégradé du mockup (demande du 18/10/2026,
          trip_finale_legere.html) — remplace le style de base plus sobre (voir plus haut)
          UNIQUEMENT sur cette mise en page mobile, même fonction (openItineraryModal(),
@@ -647,7 +678,7 @@
       .trip-magic-banner-title { color: #fff; }
       .trip-magic-banner-sub { color: rgba(255,255,255,.85); }
       .trip-magic-banner-plus { background: rgba(255,255,255,.25); }
-      #reco-section, #saved-locs-label, #add-more-locations-btn { margin-left: 16px; margin-right: 16px; }
+      #reco-section { margin-left: 16px; margin-right: 16px; }
       .ideas-filters-banner { margin: 0 16px 10px; padding: 0; }
 
       /* "Il ne faut pas afficher la carte dans Itinerary" (demande du 18/10/2026,
@@ -678,7 +709,7 @@
          (même valeur que le padding de .edit-banner) les aligne sans toucher à la
          pleine largeur des cartes en dessous (.itinerary-box/#loc-list), volontairement
          inchangée. */
-      #i18n-your-iti { margin-left: 16px; }
+      #i18n-your-iti, #saved-locs-label, #add-more-locations-btn { margin-left: 16px; margin-right: 16px; }
 
       .modal-body { padding: 18px 18px 22px 18px; }
       #modal-hero { height: 170px; border-radius: 12px 12px 0 0; }
@@ -768,7 +799,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261052';
+        s.src = 'page-loader.js?v=20261053';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1063,9 +1094,22 @@
                         <input type="checkbox" id="trip-se-same-checkbox" checked onchange="window.toggleSameStartEnd(this.checked)">
                         <span id="i18n-same-se">Same start &amp; end for the whole trip</span>
                     </label>
-                    <div id="trip-se-single-editor">
-                        <input type="text" id="trip-homebase-input" placeholder="Hotel or neighborhood" autocomplete="off">
-                        <button type="button" class="trip-se-save-btn" id="trip-homebase-save-btn" onclick="window.saveTripHomeBase()">Save</button>
+                    <!-- Pastilles START/END (demande du 23/10/2026, capture d'écran fournie)
+                         — remplace l'ancien champ texte unique + bouton Save : les deux
+                         pastilles ci-dessous éditent la MÊME valeur partagée
+                         (currentTrip.homeBase/homeBaseLabel) tant que la case ci-dessus reste
+                         cochée, voir window.openTripLevelEndpointEditor() dans script.js. -->
+                    <div id="trip-se-single-editor" class="trip-se-pill-row">
+                        <button type="button" class="trip-se-pill place-search-trigger" onclick="window.openTripLevelEndpointEditor(event, 'start')">
+                            <span class="trip-se-pill-badge" style="background:#1F2430;">H</span>
+                            <span class="trip-se-pill-text"><small>START</small><span id="trip-se-start-label">Not set</span></span>
+                            <span class="trip-se-pill-chev">⌄</span>
+                        </button>
+                        <button type="button" class="trip-se-pill place-search-trigger" onclick="window.openTripLevelEndpointEditor(event, 'end')">
+                            <span class="trip-se-pill-badge" style="background:#D42759;">H</span>
+                            <span class="trip-se-pill-text"><small>END</small><span id="trip-se-end-label">Not set</span></span>
+                            <span class="trip-se-pill-chev">⌄</span>
+                        </button>
                     </div>
                     <p class="trip-se-perday-hint hidden" id="trip-se-perday-hint">Set each day's start &amp; end directly in the itinerary below.</p>
                 </div>
@@ -1076,6 +1120,20 @@
                         <span id="i18n-add-day">+ Add an empty day</span>
                     </button>
                 </div>
+
+                <!-- "UNASSIGNED LOCATIONS" (demande du 23/10/2026, "il faut donc mettre
+                     'Unassigned locations' dans l'onglet Plan") — déplacé depuis l'onglet
+                     Ideas (qui n'en a pas dans le mockup, voir la 3e capture d'écran fournie
+                     ce jour-là) : ces lieux restent à assigner à un jour par glisser-déposer,
+                     ce qui se passe précisément dans cet onglet. Même markup/ids qu'avant
+                     (renderTrip() dans script.js, inchangé), "+ Add more locations" suit
+                     pour la même raison (chercher d'autres lieux à ajouter à cette liste). -->
+                <div class="section-label" id="saved-locs-label">UNASSIGNED LOCATIONS (0)</div>
+                <div id="loc-list" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" style="min-height: 50px; padding: 10px; border: 1px dashed #cbd5e1; background: #fff; border-radius: 12px;"></div>
+
+                <button class="gen-btn ghost" id="add-more-locations-btn" style="margin-top:15px;" onclick="openAddModal()">
+                    <span id="i18n-add-more">+ Add more locations</span>
+                </button>
                 </div>
 
                 <div class="trip-tab-panel" data-panel="ideas">
@@ -1119,13 +1177,6 @@
                     <div class="section-label" style="color:#D42759; margin-top:0;" id="i18n-reco">RECOMMENDED FOR THIS TRIP</div>
                     <div id="reco-list"></div>
                 </div>
-
-                <div class="section-label" id="saved-locs-label">UNASSIGNED LOCATIONS (0)</div>
-                <div id="loc-list" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" style="min-height: 50px; padding: 10px; border: 1px dashed #cbd5e1; background: #fff; border-radius: 12px;"></div>
-
-                <button class="gen-btn ghost" id="add-more-locations-btn" style="margin-top:15px;" onclick="openAddModal()">
-                    <span id="i18n-add-more">+ Add more locations</span>
-                </button>
                 </div>
             </div>
         </div>
@@ -1398,9 +1449,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261052"></script>
-<script src="locations-data.js?v=20261052"></script>
-<script src="script.js?v=20261052"></script>
+<script type="module" src="firebase-init.js?v=20261053"></script>
+<script src="locations-data.js?v=20261053"></script>
+<script src="script.js?v=20261053"></script>
 
 </body>
 </html>
