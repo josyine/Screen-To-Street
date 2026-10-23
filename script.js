@@ -5024,7 +5024,10 @@ const iconsSVG = {
 };
 
 
-const groupColors = { "BTS": "#8b5cf6", "Blackpink": "#ec4899", "Twice": "#f43f5e", "Seventeen": "#3b82f6", "Katseye": "#10b981", "TXT": "#f59e0b" };
+// ITZY/ENHYPEN/"NCT 127"/"Stray Kids" (demande du 18/10/2026, "ajoute en groupe ITZY,
+// ENHYPEN, TWICE, NCT 127, STRAYKIDS") — Twice avait déjà sa couleur ici (seule son
+// entrée filterData ci-dessous manquait, voir plus bas) ; les 4 autres sont nouvelles.
+const groupColors = { "BTS": "#8b5cf6", "Blackpink": "#ec4899", "Twice": "#f43f5e", "Seventeen": "#3b82f6", "Katseye": "#10b981", "TXT": "#f59e0b", "ITZY": "#eab308", "ENHYPEN": "#06b6d4", "NCT 127": "#14b8a6", "Stray Kids": "#6366f1" };
 
 // Continents (demande du 16/10/2026, maquette carte_profil_finale.html, 3e tuile
 // "Continents" de la grille mobile du profil — réutilisée telle quelle le même jour pour
@@ -5114,6 +5117,14 @@ const filterData = {
     // BTS uniquement, comme leurs voisines.
     "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "In The Soop", "Winter Package", "Summer Package", "Festa", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store"] },
     "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    // Twice/ITZY/ENHYPEN/"NCT 127"/"Stray Kids" (demande du 18/10/2026, "ajoute en groupe
+    // ITZY, ENHYPEN, TWICE, NCT 127, STRAYKIDS") — mêmes catégories génériques que
+    // Blackpink (pas de contenu type "Run BTS" propre à ces groupes), vrais effectifs.
+    "Twice": { members: ["Nayeon", "Jeongyeon", "Momo", "Sana", "Jihyo", "Mina", "Dahyun", "Chaeyoung", "Tzuyu"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    "ITZY": { members: ["Yeji", "Lia", "Ryujin", "Chaeryeong", "Yuna"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    "ENHYPEN": { members: ["Jungwon", "Heeseung", "Jay", "Jake", "Sunghoon", "Sunoo", "Ni-ki"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    "NCT 127": { members: ["Taeyong", "Johnny", "Taeil", "Yuta", "Doyoung", "Jaehyun", "Jungwoo", "Mark", "Haechan"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    "Stray Kids": { members: ["Bang Chan", "Lee Know", "Changbin", "Hyunjin", "Han", "Felix", "Seungmin", "I.N"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
     "General": { categories: ["Cafe", "Concert", "Fashion", "Landmark", "Museum", "Restaurant", "Pop-up Store"] }
 };
 
@@ -5147,6 +5158,35 @@ const GROUP_VARIANT_OWN_FIELDS = ['id', 'group', 'member', 'year', 'episodeLink'
 // champs partagés d'un variant de groupe depuis son lieu de référence (demande du
 // 15/10/2026, "Add a group") — un variant peut déjà exister dans le squelette statique.
 if (typeof hydrateGroupVariantLocations === 'function') hydrateGroupVariantLocations();
+
+// Groupes ajoutés depuis le site (demande du 18/10/2026, "en mode admin on puisse ajouter
+// de nouveaux groupes et nouveaux membres") — fusionne customGroups (Firestore, voir
+// getCustomGroups()/adminAddCustomGroup()/adminAddCustomGroupMember() dans firebase-init.
+// js, câblés depuis admin.html) dans groupColors/filterData, pour qu'un groupe ajouté par
+// un admin se comporte comme un groupe déjà codé en dur (filtres Map/Trips/Agenda,
+// "+ Add a group", memberOptionsForGroup() plus haut) sans toucher au code. Lecture
+// Firestore donc asynchrone : les sélecteurs déjà construits avant que ça résolve sont
+// rafraîchis explicitement ensuite (le seul connu à ce jour, trips.html) ; ceux construits
+// après profitent directement des données déjà fusionnées — repli silencieux (page encore
+// en train de charger firebase-init.js, ou hors-ligne) puisque ces groupes restent de
+// simples extras, jamais indispensables au premier rendu de la page.
+window.applyCustomGroups = async function () {
+    if (typeof window.getCustomGroups !== 'function') return;
+    let groups;
+    try { groups = await window.getCustomGroups(); } catch (e) { return; }
+    Object.keys(groups || {}).forEach(key => {
+        const g = groups[key];
+        if (!g || !g.name) return;
+        if (!groupColors[g.name]) groupColors[g.name] = g.color || '#D42759';
+        filterData[g.name] = { members: Array.isArray(g.members) ? g.members : [], categories: filterData.General.categories };
+    });
+    if (typeof window.populateEditTripFilters === 'function' && typeof currentTrip !== 'undefined' && currentTrip && document.getElementById('edit-trip-group')) window.populateEditTripFilters();
+};
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.applyCustomGroups);
+} else {
+    window.applyCustomGroups();
+}
 
 // Normalise les catégories au singulier (demande du 23/09/2026, "je ne veux garder que
 // Landmark, regroupe les 2 catégories") : certains lieux publiés viennent encore de
@@ -5813,12 +5853,14 @@ function updateUI() {
     if(document.getElementById('edit-trip-name')) {
         const isFr = currentLang === 'fr';
         const eSub = document.getElementById('i18n-sub'); if(eSub) eSub.textContent = isFr ? "Sur les traces de vos artistes préférés" : "Following the footsteps of your favorite artists";
-        const eOpen = document.getElementById('i18n-open-iti'); if(eOpen) eOpen.textContent = isFr ? "Ouvrir le Générateur" : "Open Auto-Itinerary Generator";
-        const eNeed = document.getElementById('i18n-need-magic'); if(eNeed) eNeed.textContent = isFr ? "Besoin de magie ?" : "Need some magic?";
+        const eOpen = document.getElementById('i18n-open-iti'); if(eOpen) eOpen.textContent = isFr ? "Auto-Itinéraire" : "Auto-Itinerary";
+        const eNeed = document.getElementById('i18n-need-magic'); if(eNeed) eNeed.textContent = isFr ? "Composez vos journées en un geste" : "Build or rebuild your days in one tap";
         const eDur = document.getElementById('i18n-trip-duration'); if(eDur) eDur.textContent = isFr ? "Durée & Dates" : "Trip Duration & Dates";
         const eAdd = document.getElementById('i18n-add-more'); if(eAdd) eAdd.textContent = isFr ? "+ Ajouter des lieux" : "+ Add more locations";
-        const eReco = document.getElementById('i18n-reco'); if(eReco) eReco.textContent = isFr ? "RECOMMANDÉ POUR CE VOYAGE (MÊME PAYS)" : "RECOMMENDED FOR THIS TRIP (SAME COUNTRY)";
-        const eIti = document.getElementById('i18n-your-iti'); if(eIti) eIti.textContent = isFr ? "VOTRE ITINÉRAIRE" : "YOUR ITINERARY";
+        const eReco = document.getElementById('i18n-reco'); if(eReco) eReco.textContent = recoLabelText();
+        const eIti = document.getElementById('i18n-your-iti'); if(eIti) eIti.textContent = isFr ? "ITINÉRAIRE" : "ITINERARY";
+        const eSameSE = document.getElementById('i18n-same-se'); if(eSameSE) eSameSE.textContent = isFr ? "Même départ et arrivée pour tout le voyage" : "Same start & end for the whole trip";
+        const ePerDayHint = document.getElementById('trip-se-perday-hint'); if(ePerDayHint) ePerDayHint.textContent = isFr ? "Définissez le départ et l'arrivée de chaque jour directement dans l'itinéraire ci-dessous." : "Set each day's start & end directly in the itinerary below.";
         const eAddDay = document.getElementById('i18n-add-day'); if(eAddDay) eAddDay.textContent = isFr ? "Ajouter un jour" : "Add an empty day";
         const eCancel = document.getElementById('i18n-cancel'); if(eCancel) eCancel.textContent = isFr ? "Annuler" : "Cancel";
         const eModAdd = document.getElementById('i18n-modal-add'); if(eModAdd) eModAdd.textContent = isFr ? "Ajouter au voyage" : "Add to this Trip";
@@ -8555,16 +8597,32 @@ function extractPinterestUrlForEdit(url) {
 }
 // Convertit un fullDescription HTML (<p>...</p><p>...</p>) en texte simple éditable
 // (un paragraphe par ligne vide), et inversement à la sauvegarde.
-function htmlParagraphsToPlainText(html) {
+// `brChar` (demande du 18/10/2026, voir splitFullDescriptionForEdit()/buildFootstepsPlainText()
+// plus bas pour le détail complet) : un <br> redevient normalement un \n (comportement par
+// défaut, utilisé pour "story of this place") — "Following in BTS's footsteps" passe '\u2028'
+// à la place, pour protéger un retour à la ligne TAPÉ DANS UNE SEULE VISITE de se faire
+// confondre, une fois rejoint aux autres visites, avec la VRAIE ligne vide qui, elle, sépare
+// deux visites distinctes (voir parseFootstepsSections() plus bas).
+function htmlParagraphsToPlainText(html, brChar) {
     if (!html) return '';
     const temp = document.createElement('div');
     temp.innerHTML = html;
+    temp.querySelectorAll('br').forEach(br => br.replaceWith(brChar || '\n'));
     const paragraphs = Array.from(temp.querySelectorAll('p'));
     if (paragraphs.length === 0) return temp.textContent || '';
     return paragraphs.map(p => p.textContent.trim()).join('\n\n');
 }
+// BUG corrigé (demande du 18/10/2026, "Following in ...'s footsteps"... prendre en compte
+// lorsque je reviens à la ligne et qu'il y a un espace entre les paragraphes") : une ligne
+// vide ENTRE deux blocs de texte formait déjà un nouveau <p> (paragraphe) ci-dessous, mais
+// un simple retour à la ligne SANS ligne vide À L'INTÉRIEUR d'un même bloc était perdu à
+// l'affichage — un \n brut dans du HTML ne produit aucun saut de ligne visible, juste un
+// espace comme n'importe quel autre espace blanc. \u2028 (voir plus haut) traité de la même
+// façon : c'est la forme "protégée" d'un \n à l'intérieur d'UNE visite de "Following in
+// BTS's footsteps", qui doit s'afficher exactement comme un \n normal. Converti en <br>
+// après l'échappement (jamais avant : escapeHtml() échapperait aussi le <br> lui-même).
 function plainTextToHtmlParagraphs(text) {
-    return (text || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+    return (text || '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean).map(p => `<p>${escapeHtml(p).replace(/\n|\u2028/g, '<br>')}</p>`).join('');
 }
 // Sépare un fullDescription HTML en son HTML "story of this place" et son HTML
 // "BTS's footsteps". BUG corrigé (demande du 23/09/2026, "je veux rédiger plusieurs
@@ -8618,7 +8676,7 @@ function combineStoryAndFootsteps(storyText, btsText) {
 function splitFullDescriptionForEdit(html) {
     if (!html) return { placeText: '', btsText: '' };
     const { storyHtml, btsHtml } = splitFullDescriptionHtml(html);
-    return { placeText: htmlParagraphsToPlainText(storyHtml), btsText: htmlParagraphsToPlainText(btsHtml) };
+    return { placeText: htmlParagraphsToPlainText(storyHtml), btsText: htmlParagraphsToPlainText(btsHtml, '\u2028') };
 }
 
 // Éditeur "une section par visite" pour Following in BTS's footsteps (demande du
@@ -8638,42 +8696,39 @@ function parseFootstepsSections(plainText) {
     if (paragraphs.length === 0) return [{ year: '', member: '', text: '' }];
     return paragraphs.map(p => {
         const m = p.match(VISIT_LABEL_RE);
+        const raw = m ? p.slice(m[0].length).trim() : p;
+        // \u2028 (posé par buildFootstepsPlainText() plus bas / lu depuis le HTML par
+        // splitFullDescriptionForEdit() plus haut, voir sa note) reconverti en vrai \n pour
+        // l'édition — la zone de texte de cette visite doit afficher un vrai retour à la
+        // ligne, pas le caractère protégé lui-même.
+        const text = raw.replace(/\u2028/g, '\n');
         // "&" (ex: "Jimin & J-Hope", la convention suggérée à l'admin avant ce widget)
         // normalisé en ", " — memberMultiSelectHtml() ne reconnaît que des noms séparés
         // par une virgule pour précocher les bonnes cases ci-dessous.
-        if (m) return { year: m[1].trim(), member: m[2].trim().replace(/\s*&\s*/g, ', '), text: p.slice(m[0].length).trim() };
-        return { year: '', member: '', text: p };
+        if (m) return { year: m[1].trim(), member: m[2].trim().replace(/\s*&\s*/g, ', '), text };
+        return { year: '', member: '', text };
     });
-}
-// BUG corrigé (demande du 17/10/2026, capture d'écran fournie : "quand je modifie le
-// lieu, que je rédige un paragraphe et que je reviens à la ligne, ça créé une nouvelle
-// section... je veux juste que ça revienne à la ligne sans que ça créé forcément une
-// nouvelle section") : parseFootstepsSections() (plus haut) découpe TOUT le texte
-// enregistré en sections à chaque ligne vide (`\n\s*\n`), sans distinguer "ligne vide
-// séparant deux VRAIES visites différentes" de "ligne vide tapée par l'admin DANS un
-// même paragraphe, juste pour aérer un texte un peu long" (ex: Entrée pressée deux fois
-// de suite dans un seul textarea .vs-text) — au ré-ouverture de la fiche, cette dernière
-// se retrouvait donc, à tort, éclatée en plusieurs sections distinctes (capture d'écran :
-// 2 sections sans année/membre, qui n'étaient en réalité qu'un seul texte continu).
-// Normalise ici, AVANT stockage, toute ligne vide interne au texte d'UNE section en un
-// simple retour à la ligne — la seule vraie ligne vide qui subsiste dans le texte combiné
-// est donc désormais celle posée explicitement par ce join('\n\n') ci-dessous, entre deux
-// sections réellement distinctes (créées via "+ Add a section") : plus aucune ambiguïté
-// possible pour parseFootstepsSections() au prochain chargement.
-function sanitizeFootstepsSectionText(text) {
-    return (text || '').trim().replace(/\n\s*\n+/g, '\n');
 }
 function buildFootstepsPlainText(sections) {
     const real = (sections || []).filter(s => s && s.text && s.text.trim());
     if (real.length === 0) return '';
+    // \u2028 à la place de \n (demande du 18/10/2026, "prendre en compte [...] quand il y a
+    // un espace entre les paragraphes" — voir la note de htmlParagraphsToPlainText() plus
+    // haut pour le détail complet) : protège tout retour à la ligne TAPÉ DANS UNE VISITE
+    // d'être confondu, une fois cette visite jointe aux autres par le join() plus bas, avec
+    // la VRAIE ligne vide qui, elle, sépare deux visites distinctes — sans ça,
+    // parseFootstepsSections() ci-dessus éclaterait à tort une visite multi-paragraphes en
+    // plusieurs sections au prochain chargement de l'éditeur (le bug déjà corrigé le
+    // 17/10/2026, qu'on recréerait sinon).
+    const encode = (t) => t.trim().replace(/\n/g, '\u2028');
     // Une seule visite : jamais de préfixe "Année, Membre :", même si year/member ont été
     // remplis pendant qu'il y avait plusieurs sections puis que les autres ont été
     // supprimées — voir la consigne "s'il n'y a qu'une seule visite... il ne faut pas
     // afficher l'année" ci-dessus.
-    if (real.length === 1) return sanitizeFootstepsSectionText(real[0].text);
+    if (real.length === 1) return encode(real[0].text);
     return real.map(s => {
         const label = [s.year, s.member].filter(Boolean).join(', ');
-        return (label ? `${label}: ` : '') + sanitizeFootstepsSectionText(s.text);
+        return (label ? `${label}: ` : '') + encode(s.text);
     }).join('\n\n');
 }
 window.createVisitSectionsField = function (container, opts) {
@@ -8857,6 +8912,15 @@ function memberOptionsForGroup(groupName) {
     const key = (groupName || '').toString().trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     const g = window.GROUPS && window.GROUPS.en && window.GROUPS.en[key];
     if (g && Array.isArray(g.members) && g.members.length) return g.members.map(m => m[0]);
+    // Repli sur filterData (demande du 18/10/2026, "ajoute en groupe ITZY, ENHYPEN, TWICE,
+    // NCT 127, STRAYKIDS" + "en mode admin on puisse ajouter de nouveaux groupes") : ces
+    // groupes n'ont pas de fiche complète dans window.GROUPS (artists-content.js, photo/
+    // bio/timeline — hors périmètre de cette demande), mais ont bien une liste de membres
+    // dans filterData (voir plus haut, et window.applyCustomGroups() plus bas pour les
+    // groupes ajoutés depuis l'admin) — réutilisée ici plutôt que dupliquée une 3e fois.
+    if (groupName && filterData[groupName] && Array.isArray(filterData[groupName].members) && filterData[groupName].members.length) {
+        return filterData[groupName].members;
+    }
     return BTS_MEMBER_OPTIONS;
 }
 function memberMultiSelectHtml(currentValue, groupName) {
@@ -13346,6 +13410,190 @@ window.populateEditTripFilters = function() {
     if(cities.includes(currentCity)) citySel.value = currentCity;
 }
 
+// "RECOMMENDED IN {Country}" (demande du 18/10/2026, trip_finale_legere.html) — factorisé
+// hors de renderTrip() pour être réutilisé par updateUI() (changement de langue, qui ne
+// refait pas tourner renderTrip()) sans dupliquer la détection du pays du voyage.
+function recoLabelText() {
+    const isFr = currentLang === 'fr';
+    if (typeof currentTrip !== 'undefined' && currentTrip) {
+        let tripCountries = [currentTrip.country].filter(Boolean);
+        if (tripCountries.length === 0) {
+            const unlockedGroups = getUnlockedGroups();
+            tripCountries = [...new Set(celebLocations
+                .filter(l => unlockedGroups.includes(l.group) && (!currentTrip.group || l.group === currentTrip.group))
+                .map(l => l.country))].filter(Boolean);
+        }
+        if (tripCountries.length === 1) {
+            return isFr ? `RECOMMANDÉ EN ${tripCountries[0].toUpperCase()}` : `RECOMMENDED IN ${tripCountries[0].toUpperCase()}`;
+        }
+    }
+    return isFr ? "RECOMMANDÉ POUR CE VOYAGE" : "RECOMMENDED FOR THIS TRIP";
+}
+
+// Date d'UN jour donné du voyage ("Thu 12 Nov", demande du 18/10/2026,
+// trip_finale_legere.html) — vide pour un voyage en dates flexibles (dateType==='duration')
+// ou sans date de début renseignée : pas de date concrète à afficher dans ce cas, jamais une
+// valeur inventée. Format construit à la main (pas juste toLocaleDateString(...).replace)
+// pour garder le même ordre "jour-semaine jour-numéro mois" dans les deux langues, alors que
+// l'ordre par défaut d'Intl diffère entre fr-FR ("jeu. 12 nov.") et en-US ("Thu, Nov 12").
+function tripDayDateLabel(dayIndex) {
+    if (!currentTrip || currentTrip.dateType !== 'specific' || !currentTrip.startDate) return '';
+    const d = new Date(currentTrip.startDate + 'T00:00:00');
+    if (isNaN(d.getTime())) return '';
+    d.setDate(d.getDate() + dayIndex);
+    const locale = currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    const wd = d.toLocaleDateString(locale, { weekday: 'short' }).replace('.', '');
+    const mo = d.toLocaleDateString(locale, { month: 'short' }).replace('.', '');
+    return `${wd} ${d.getDate()} ${mo}`;
+}
+
+// Point de départ/arrivée réel d'UNE journée donnée (demande du 18/10/2026, "Same start &
+// end for the whole trip" / par-jour) — le même hébergement pour tout le voyage par défaut
+// (currentTrip.homeBase/homeBaseLabel, voir toggleTripHomeBaseEditor()/saveTripHomeBase()
+// plus bas), ou un point propre à ce jour si currentTrip.sameStartEnd === false (voir
+// window.openDayEndpointEditor()/saveDayEndpoint() plus bas) — jamais les deux en même temps.
+function tripDayEndpoints(dayIndex) {
+    if (currentTrip.sameStartEnd === false) {
+        const d = (currentTrip.dayStartEnd && currentTrip.dayStartEnd[dayIndex]) || {};
+        return {
+            startLabel: d.startLabel || '', start: d.start || null,
+            endLabel: d.endLabel || '', end: d.end || null
+        };
+    }
+    return {
+        startLabel: currentTrip.homeBaseLabel || '', start: currentTrip.homeBase || null,
+        endLabel: currentTrip.homeBaseLabel || '', end: currentTrip.homeBase || null
+    };
+}
+
+function formatClockMin(mins) {
+    const d = new Date();
+    d.setHours(Math.floor(mins / 60), ((mins % 60) + 60) % 60, 0, 0);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+// Construit un <div> détaché à partir d'un fragment HTML — utilisé par refreshDayTimelines()
+// ci-dessous pour remplacer des éléments existants en bloc (.replaceWith) sans jamais
+// toucher aux lignes .day-loc elles-mêmes (voir le commentaire sur refreshDayTimelines plus
+// bas : ne jamais les reconstruire, au risque de perturber un glisser-déposer en cours).
+function elFromHTML(html) {
+    const t = document.createElement('template');
+    t.innerHTML = html.trim();
+    return t.content.firstElementChild;
+}
+
+const TRIP_WALK_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><circle cx="13" cy="4" r="2"/><path d="M15 22l-2-7-2 2-3 2M9 15l1-5 4-1 3 4M4 22l5-5"/></svg>';
+
+// Ligne "H ⋯ Hotel Myeongdong ⋯ 09:30" en haut/bas de chaque journée (demande du
+// 18/10/2026, trip_finale_legere.html : seLine() dans l'itinéraire) — pastille NOIRE pour
+// le départ (même teinte que .trip-se-icon, un repère neutre "hébergement") et pastille de
+// la couleur du jour pour l'arrivée (même code couleur que les lieux de ce jour), comme sur
+// la capture d'écran fournie. Cliquable UNIQUEMENT quand currentTrip.sameStartEnd === false
+// (sinon la pastille affiche juste l'hébergement commun à tout le voyage, déjà modifiable
+// depuis la carte "START & END" au-dessus — pas besoin d'un second point d'entrée).
+function dayEndpointRowHTML(dayIndex, role, label, dayColor, timeMinutes) {
+    const badgeColor = role === 'start' ? '#1F2430' : dayColor;
+    const initial = label ? label.trim().charAt(0).toUpperCase() : 'H';
+    const timeLabel = timeMinutes != null ? formatClockMin(timeMinutes) : '';
+    const editable = currentTrip.sameStartEnd === false;
+    const placeholder = role === 'start'
+        ? (currentLang === 'fr' ? 'Définir le départ' : 'Set start location')
+        : (currentLang === 'fr' ? "Définir l'arrivée" : 'Set end location');
+    return `
+        <div class="day-endpoint${editable ? ' day-endpoint-editable' : ''}" data-role="${role}"${editable ? ` onclick="window.openDayEndpointEditor(event, ${dayIndex}, '${role}')"` : ''}>
+            <span class="day-endpoint-badge" style="background:${badgeColor};">${escapeHtml(initial)}</span>
+            <span class="day-endpoint-label">${label ? escapeHtml(label) : placeholder}</span>
+            <span class="day-endpoint-time">${timeLabel}</span>
+        </div>
+    `;
+}
+
+// Éditeur per-day du lieu de départ/arrivée (demande du 18/10/2026, "si on ne sélectionne
+// pas 'Same start & end', il faut sélectionner le lieu de départ et d'arrivée pour chaque
+// jour") — même mécanisme de géocodage que window.saveTripHomeBase() (Nominatim, voir
+// geocodeAddress() plus haut), juste paramétré par jour + rôle plutôt qu'un seul champ pour
+// tout le voyage. Popup flottant positionné au clic (même approche que
+// ensureTripRoleMenuEl()/openTripRoleMenu() plus bas) plutôt qu'un champ par jour toujours
+// visible : un voyage peut monter à 14+ jours (durée "1 mois"), ce qui aurait rendu
+// l'itinéraire illisible avec un input permanent sur chaque ligne de départ/arrivée.
+function ensureDayEndpointPopupEl() {
+    let el = document.getElementById('day-endpoint-popup');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'day-endpoint-popup';
+    el.className = 'day-endpoint-popup hidden';
+    document.body.appendChild(el);
+    document.addEventListener('click', (e) => {
+        if (el.classList.contains('hidden')) return;
+        if (e.target.closest('#day-endpoint-popup') || e.target.closest('.day-endpoint-editable')) return;
+        el.classList.add('hidden');
+    });
+    return el;
+}
+window.openDayEndpointEditor = function(evt, dayIndex, role) {
+    evt.stopPropagation();
+    if (!currentTrip) return;
+    const popup = ensureDayEndpointPopupEl();
+    const endpoints = tripDayEndpoints(dayIndex);
+    const currentLabel = role === 'start' ? endpoints.startLabel : endpoints.endLabel;
+    const placeholder = role === 'start'
+        ? (currentLang === 'fr' ? 'Lieu de départ' : 'Start location')
+        : (currentLang === 'fr' ? "Lieu d'arrivée" : 'End location');
+    popup.innerHTML = `
+        <input type="text" id="day-endpoint-input" value="${currentLabel ? escapeHtml(currentLabel) : ''}" placeholder="${placeholder}" autocomplete="off">
+        <button type="button" onclick="window.saveDayEndpoint(${dayIndex}, '${role}')">${currentLang === 'fr' ? 'Enregistrer' : 'Save'}</button>
+    `;
+    const rect = evt.currentTarget.getBoundingClientRect();
+    popup.style.top = `${rect.bottom + window.scrollY + 6}px`;
+    popup.style.left = `${Math.max(12, Math.min(rect.left + window.scrollX, window.innerWidth - 260))}px`;
+    popup.classList.remove('hidden');
+    document.getElementById('day-endpoint-input')?.focus();
+};
+window.saveDayEndpoint = async function(dayIndex, role) {
+    if (!currentTrip) return;
+    const input = document.getElementById('day-endpoint-input');
+    const btn = input?.nextElementSibling;
+    const query = (input.value || '').trim();
+    const originalLabel = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+    if (!currentTrip.dayStartEnd) currentTrip.dayStartEnd = [];
+    if (!currentTrip.dayStartEnd[dayIndex]) currentTrip.dayStartEnd[dayIndex] = {};
+    const entry = currentTrip.dayStartEnd[dayIndex];
+    if (!query) {
+        entry[role] = null;
+        entry[role + 'Label'] = '';
+    } else {
+        const geo = await geocodeAddress(query);
+        if (!geo) {
+            if (btn) { btn.disabled = false; btn.textContent = originalLabel; }
+            alert(currentLang === 'fr' ? "Adresse introuvable — vérifiez l'orthographe et réessayez." : "Couldn't find that address — check the spelling and try again.");
+            return;
+        }
+        entry[role] = geo;
+        entry[role + 'Label'] = query;
+    }
+    document.getElementById('day-endpoint-popup')?.classList.add('hidden');
+    window.saveTrip();
+    window.renderTrip();
+};
+
+// Bascule "Same start & end for the whole trip" (demande du 18/10/2026, trip_finale_legere.
+// html : capture d'écran de l'éditeur START & END) — true (ou absent, voyages créés avant
+// cette fonctionnalité) garde l'ancien comportement (un seul hébergement pour tout le
+// voyage, currentTrip.homeBase/homeBaseLabel) ; false laisse chaque jour définir son propre
+// départ/arrivée directement depuis l'itinéraire (voir window.openDayEndpointEditor() plus
+// haut), sans jamais effacer l'un ou l'autre réglage au passage.
+window.toggleSameStartEnd = function(checked) {
+    if (!currentTrip) return;
+    currentTrip.sameStartEnd = checked;
+    const singleEditorEl = document.getElementById('trip-se-single-editor');
+    if (singleEditorEl) singleEditorEl.classList.toggle('hidden', !checked);
+    const perDayHintEl = document.getElementById('trip-se-perday-hint');
+    if (perDayHintEl) perDayHintEl.classList.toggle('hidden', checked);
+    window.saveTrip();
+    window.renderTrip();
+};
+
 window.updateEditTripOptions = function(fieldChanged) {
     if(fieldChanged === 'group') {
         currentTrip.group = document.getElementById('edit-trip-group').value;
@@ -13409,45 +13657,41 @@ window.saveTripHomeBase = async function() {
     window.toggleTripHomeBaseEditor();
 };
 
-// Aperçu en lecture seule des horaires réalistes d'un jour (arrivée/départ, trajet,
-// pause déjeuner) — voir computeDayTimeline. Toujours recalculé à partir de l'ordre
-// ACTUEL des lieux du jour (y compris après un glisser-déposer manuel), donc jamais
-// périmé. Un lieu qui ne tient plus dans la journée n'est jamais retiré ici (ce serait
-// surprenant pour un jour édité à la main) : juste signalé par une pastille ⚠.
+// Aperçu en lecture seule des horaires réalistes d'un jour (arrivée, trajet, pause
+// déjeuner) — voir computeDayTimeline. Toujours recalculé à partir de l'ordre ACTUEL des
+// lieux du jour (y compris après un glisser-déposer manuel), donc jamais périmé. Un lieu
+// qui ne tient plus dans la journée n'est jamais retiré ici (ce serait surprenant pour un
+// jour édité à la main) : juste signalé par une pastille ⚠.
+//
+// Mise en page "ITINERARY" du 18/10/2026 (trip_finale_legere.html) : chaque arrêt affiche
+// désormais une SEULE heure d'arrivée (plus de fourchette arrivée-départ) juste avant son
+// nom, et le trajet depuis l'arrêt précédent devient une ligne connecteur À PART ENTRE les
+// lignes .day-loc (voir refreshDayTimelines() plus bas) plutôt qu'un bloc empilé à
+// l'intérieur de la ligne d'arrivée — cette fonction ne construit donc plus que ce qui
+// reste réellement À L'INTÉRIEUR de la ligne (pause déjeuner, avertissement horaire).
 const TRIPS_TXT_DICT = {
-    en: { lunchBreak: "Lunch break (~1h)", fromHotel: "From your accommodation" },
-    fr: { lunchBreak: "Pause déjeuner (~1h)", fromHotel: "Depuis votre hébergement" }
+    en: { lunchBreak: "Lunch break (~1h)" },
+    fr: { lunchBreak: "Pause déjeuner (~1h)" }
 };
-// `isFirstOfDay` est passé explicitement (plutôt que déduit de la position dans un
-// tableau) car cette fonction est appelée une fois par lieu dans refreshDayTimelines(),
-// pour ne mettre à jour que la pastille de CE lieu sans reconstruire toute la liste.
-function renderDayTimelineHTML(it, isFirstOfDay, dayColor) {
+function renderDayLocExtrasHTML(it, dayColor) {
     const txt = TRIPS_TXT_DICT[currentLang] || TRIPS_TXT_DICT.en;
     const color = dayColor || '#D42759';
-    const formatMin = (mins) => {
-        const d = new Date();
-        d.setHours(Math.floor(mins / 60), mins % 60, 0, 0);
-        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    };
     let html = '';
-    if (it.leg) {
-        const legLabel = `${it.leg.mode} · ~${it.leg.minMinutes}-${it.leg.maxMinutes} min`;
-        // Icône épingle SVG plutôt qu'un emoji (demande site-wide, voir CLAUDE.md) pour
-        // repérer le tout premier trajet de la journée (départ de l'hôtel).
-        const pinIcon = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.2"/></svg>';
-        html += `<div class="day-loc-travel"><span class="day-loc-travel-icon">${isFirstOfDay ? pinIcon : ''}</span>${isFirstOfDay ? txt.fromHotel + ' · ' : ''}${legLabel}</div>`;
-    }
     if (it.lunchBefore) {
         html += `<div style="font-size:10.5px; font-weight:600; color:${color}; padding:3px 0 3px 4px;">${txt.lunchBreak}</div>`;
     }
-    const warn = (it.pastClose || it.pastHardEnd) ? ' <span style="color:#ef4444;" title="Hors des horaires réalistes de la journée">⚠</span>' : '';
-    html += `<div style="font-size:10.5px; font-weight:700; color:${color}; padding-left:4px;">${formatMin(it.arrival)} - ${formatMin(it.departure)}${warn}</div>`;
+    if (it.pastClose || it.pastHardEnd) {
+        html += ` <span style="color:#ef4444;" title="Hors des horaires réalistes de la journée">⚠</span>`;
+    }
     return html;
 }
 
 // Recalcule et réinjecte l'aperçu horaire de chaque jour à partir des .day-loc
-// actuellement présents dans le DOM (sans reconstruire les lignes de lieux elles-mêmes,
-// pour ne jamais perturber un glisser-déposer en cours ou en cours d'affichage).
+// actuellement présents dans le DOM, SANS jamais reconstruire les lignes de lieux
+// elles-mêmes (pour ne jamais perturber un glisser-déposer en cours ou en cours
+// d'affichage) : seuls des éléments annexes (pastille d'heure en tête de ligne, pause
+// déjeuner/avertissement, connecteurs de trajet, lignes de départ/arrivée) sont
+// créés/mis à jour/retirés autour d'elles à chaque passage.
 window.refreshDayTimelines = function() {
     if (!currentTrip) return;
     document.querySelectorAll('.day-card').forEach((card, cardIdx) => {
@@ -13458,21 +13702,77 @@ window.refreshDayTimelines = function() {
         // glisser-déposer (saveTrip() appelle cette fonction après chaque déplacement).
         const metaEl = card.querySelector('.day-meta');
         if (metaEl) metaEl.textContent = `${rows.length} ${rows.length === 1 ? (currentLang==='fr'?'lieu':'place') : (currentLang==='fr'?'lieux':'places')}`;
-        if (rows.length === 0) return;
+        const dateEl = card.querySelector('.day-date');
+        if (dateEl) { const lbl = tripDayDateLabel(cardIdx); dateEl.textContent = lbl ? ` · ${lbl}` : ''; }
+
         const dayColor = TRIP_DAY_COLORS[cardIdx % TRIP_DAY_COLORS.length];
+        const itemsEl = card.querySelector('.day-items');
+        const endpoints = tripDayEndpoints(cardIdx);
         const locs = rows.map(el => celebLocations.find(l => l.id === parseInt(el.dataset.id))).filter(Boolean);
-        const items = computeDayTimeline(locs, currentTrip.homeBase);
+        const items = computeDayTimeline(locs, endpoints.start);
+
+        // Connecteurs de trajet ENTRE deux arrêts (demande du 18/10/2026, trip_finale_
+        // legere.html) : retirés puis reconstruits en entier à chaque passage (ce sont de
+        // simples éléments d'affichage, jamais de cible de glisser-déposer) plutôt que
+        // mis à jour un par un, bien plus simple à tenir synchronisé avec l'ordre courant
+        // des lignes après un glisser-déposer.
+        card.querySelectorAll('.day-loc-leg').forEach(el => el.remove());
         items.forEach((it, idx) => {
             const rowEl = rows[idx];
             if (!rowEl) return;
-            let badge = rowEl.querySelector('.day-loc-timing');
-            if (!badge) {
-                badge = document.createElement('div');
-                badge.className = 'day-loc-timing';
-                rowEl.appendChild(badge);
+            let timeEl = rowEl.querySelector('.day-loc-time');
+            if (!timeEl) {
+                timeEl = document.createElement('span');
+                timeEl.className = 'day-loc-time';
+                rowEl.insertBefore(timeEl, rowEl.firstChild);
             }
-            badge.innerHTML = renderDayTimelineHTML(it, idx === 0, dayColor);
+            timeEl.textContent = formatClockMin(it.arrival);
+            let extraEl = rowEl.querySelector('.day-loc-timing');
+            if (!extraEl) {
+                extraEl = document.createElement('div');
+                extraEl.className = 'day-loc-timing';
+                rowEl.appendChild(extraEl);
+            }
+            extraEl.innerHTML = renderDayLocExtrasHTML(it, dayColor);
+            if (idx > 0 && it.leg) {
+                const mins = Math.round((it.leg.minMinutes + it.leg.maxMinutes) / 2);
+                rowEl.insertAdjacentElement('beforebegin', elFromHTML(`<div class="day-loc-leg">${TRIP_WALK_ICON} ${mins} min</div>`));
+            }
         });
+
+        // Lignes de départ/arrivée (START & END, demande du 18/10/2026) : masquées quand
+        // le jour n'a encore aucun lieu (rien à relier) ou qu'aucun hébergement n'est
+        // renseigné pour ce jour.
+        const showEndpoints = rows.length > 0 && (endpoints.startLabel || endpoints.endLabel || currentTrip.sameStartEnd === false);
+        let startRowEl = card.querySelector('.day-endpoint[data-role="start"]');
+        let startLegEl = card.querySelector('.day-endpoint-leg[data-role="start-leg"]');
+        if (showEndpoints && itemsEl) {
+            const newStartRow = elFromHTML(dayEndpointRowHTML(cardIdx, 'start', endpoints.startLabel, dayColor, ITI_DAY_START_MIN));
+            if (startRowEl) startRowEl.replaceWith(newStartRow); else card.insertBefore(newStartRow, itemsEl);
+            if (items.length && items[0].leg) {
+                const mins = Math.round((items[0].leg.minMinutes + items[0].leg.maxMinutes) / 2);
+                const newLeg = elFromHTML(`<div class="day-endpoint-leg" data-role="start-leg">${TRIP_WALK_ICON} ${mins} min</div>`);
+                if (startLegEl) startLegEl.replaceWith(newLeg); else card.insertBefore(newLeg, itemsEl);
+            } else if (startLegEl) { startLegEl.remove(); }
+        } else {
+            if (startRowEl) startRowEl.remove();
+            if (startLegEl) startLegEl.remove();
+        }
+
+        let endLegEl = card.querySelector('.day-endpoint-leg[data-role="end-leg"]');
+        let endRowEl = card.querySelector('.day-endpoint[data-role="end"]');
+        if (showEndpoints && endpoints.end && items.length && itemsEl) {
+            const last = items[items.length - 1];
+            const leg = estimateTransitLeg(last.loc, endpoints.end);
+            const mins = Math.round((leg.minMinutes + leg.maxMinutes) / 2);
+            const newEndLeg = elFromHTML(`<div class="day-endpoint-leg" data-role="end-leg">${TRIP_WALK_ICON} ${mins} min</div>`);
+            if (endLegEl) endLegEl.replaceWith(newEndLeg); else itemsEl.insertAdjacentElement('afterend', newEndLeg);
+            const newEndRow = elFromHTML(dayEndpointRowHTML(cardIdx, 'end', endpoints.endLabel, dayColor, last.departure + mins));
+            if (endRowEl) endRowEl.replaceWith(newEndRow); else newEndLeg.insertAdjacentElement('afterend', newEndRow);
+        } else {
+            if (endLegEl) endLegEl.remove();
+            if (endRowEl) endRowEl.remove();
+        }
     });
 }
 
@@ -13847,10 +14147,27 @@ window.renderTrip = function() {
     // "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) — affiche
     // l'hôtel/point de départ actuel du voyage ; voir window.toggleTripHomeBaseEditor()/
     // window.saveTripHomeBase() plus bas pour la saisie.
+    //
+    // Bascule "Same start & end for the whole trip" (demande du 18/10/2026) :
+    // currentTrip.sameStartEnd === false veut dire que chaque jour a son propre départ/
+    // arrivée (currentTrip.dayStartEnd[i], voir window.openDayEndpointEditor() plus bas) —
+    // absent ou true garde l'ancien comportement (un seul hébergement pour tout le voyage,
+    // voyages créés avant cette fonctionnalité).
     const homeBaseLabelEl = document.getElementById('trip-homebase-label');
-    if (homeBaseLabelEl) homeBaseLabelEl.textContent = currentTrip.homeBaseLabel || (currentLang === 'fr' ? 'Non défini' : 'Not set');
+    const sameStartEnd = currentTrip.sameStartEnd !== false;
+    if (homeBaseLabelEl) {
+        homeBaseLabelEl.textContent = sameStartEnd
+            ? (currentTrip.homeBaseLabel || (currentLang === 'fr' ? 'Non défini' : 'Not set'))
+            : (currentLang === 'fr' ? 'Différent chaque jour' : 'Different each day');
+    }
     const homeBaseInputEl = document.getElementById('trip-homebase-input');
     if (homeBaseInputEl) homeBaseInputEl.value = currentTrip.homeBaseLabel || '';
+    const sameToggleEl = document.getElementById('trip-se-same-checkbox');
+    if (sameToggleEl) sameToggleEl.checked = sameStartEnd;
+    const singleEditorEl = document.getElementById('trip-se-single-editor');
+    if (singleEditorEl) singleEditorEl.classList.toggle('hidden', !sameStartEnd);
+    const perDayHintEl = document.getElementById('trip-se-perday-hint');
+    if (perDayHintEl) perDayHintEl.classList.toggle('hidden', sameStartEnd);
 
     window.populateEditTripFilters();
 
@@ -13936,7 +14253,7 @@ window.renderTrip = function() {
         card.style.setProperty('--day-color', dayColor);
         card.innerHTML = `
             <div class="day-header">
-                <div class="day-title" style="color:${dayColor};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}</div>
+                <div class="day-title" style="color:${dayColor};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}<span class="day-date"></span></div>
                 <div class="day-header-right">
                     <span class="day-meta">${dayIds.length} ${dayIds.length===1 ? (currentLang==='fr'?'lieu':'place') : (currentLang==='fr'?'lieux':'places')}</span>
                     <div class="x-btn edit-only" style="display:block;" onclick="removeDay(this)">✕</div>
@@ -13954,20 +14271,32 @@ window.renderTrip = function() {
         tripCountries = [...new Set(filteredLocs.map(l => l.country))].filter(Boolean);
     }
 
+    // "RECOMMENDED IN {Country}" (demande du 18/10/2026, trip_finale_legere.html) —
+    // factorisé dans recoLabelText() pour être réutilisé par updateUI() (changement de
+    // langue, qui ne refait pas tourner renderTrip()) sans dupliquer la détection du pays.
+    const recoLabelEl = document.getElementById('i18n-reco');
+    if (recoLabelEl) recoLabelEl.textContent = recoLabelText();
+
     const recoList = document.getElementById('reco-list');
     recoList.innerHTML = '';
     let recoCount = 0;
-    
+
     if(tripCountries.length > 0) {
         celebLocations.forEach(loc => {
             // Recommandation si: même pays + PAS assigné à un jour + PAS déjà dans unassignedLocs
             if (tripCountries.includes(loc.country) && !allAssignedIds.includes(loc.id) && !unassignedLocs.some(u=>u.id===loc.id)) {
                 if (recoCount < 4) {
+                    // Pastille d'icône de secours (demande du 18/10/2026, trip_finale_legere.html :
+                    // certains lieux recommandés n'ont pas encore de photo) plutôt qu'une vignette
+                    // vide quand loc.img est absent.
+                    const thumbHtml = loc.img
+                        ? `<div class="loc-thumb" style="background-image:url('${loc.img}');"></div>`
+                        : `<div class="loc-thumb loc-thumb-fallback"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.2"/></svg></div>`;
                     recoList.innerHTML += `
                         <div class="loc-row">
-                            <div class="loc-thumb" style="background-image:url('${loc.img}');"></div>
+                            ${thumbHtml}
                             <div class="loc-info"><div class="loc-name">${loc.name}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
-                            <button class="add-to-trip-btn edit-only" style="display:block;" onclick="quickAddLoc(${loc.id})">+ Add</button>
+                            <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="quickAddLoc(${loc.id})">+</button>
                         </div>
                     `;
                     recoCount++;
@@ -14360,7 +14689,7 @@ window.drop = function(e) {
             c.dataset.day = index + 1;
             const dayTitleEl = c.querySelector('.day-title');
             dayTitleEl.style.color = TRIP_DAY_COLORS[index % TRIP_DAY_COLORS.length];
-            dayTitleEl.innerHTML = `<span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}`;
+            dayTitleEl.innerHTML = `<span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}<span class="day-date"></span>`;
         });
     } else if (dragType === 'loc') {
         if (e.currentTarget.classList.contains('day-loc')) {
@@ -14481,7 +14810,7 @@ function buildDayCardElement(dayNum) {
     card.style.setProperty('--day-color', dayColor);
     card.innerHTML = `
         <div class="day-header">
-            <div class="day-title" style="color:${dayColor};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${dayNum}</div>
+            <div class="day-title" style="color:${dayColor};"><span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${dayNum}<span class="day-date"></span></div>
             <div class="day-header-right">
                 <span class="day-meta">0 ${currentLang==='fr'?'lieux':'places'}</span>
                 <div class="x-btn edit-only" style="display:flex;" onclick="removeDay(this)">✕</div>
@@ -14568,7 +14897,7 @@ window.confirmRemoveDay = function() {
         c.dataset.day = index + 1;
         const dayTitleEl = c.querySelector('.day-title');
         dayTitleEl.style.color = TRIP_DAY_COLORS[index % TRIP_DAY_COLORS.length];
-        dayTitleEl.innerHTML = `<span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}`;
+        dayTitleEl.innerHTML = `<span class="drag-handle edit-only" style="cursor:grab; margin-right:8px;">⠿</span><span class="day-dot"></span>${currentLang==='fr'?'Jour':'Day'} ${index + 1}<span class="day-date"></span>`;
     });
     window.saveTrip();
     closeModal('remove-day-modal');

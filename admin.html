@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261051" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261052" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -261,7 +261,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261051';
+        s.src = 'page-loader.js?v=20261052';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -470,17 +470,43 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
                 <button type="button" id="location-photos-backfill-btn" class="live-submit-btn" onclick="window.runLocationPhotosBackfill()">Rebuild "Mei's Pictures" index now</button>
                 <div id="location-photos-backfill-result" class="live-form-result hidden"></div>
             </div>
+
+            <!-- "Add a group"/"Add a member" (demande du 18/10/2026, "en mode admin on
+                 puisse ajouter de nouveaux groupes et nouveaux membres") — voir
+                 getCustomGroups()/adminAddCustomGroup()/adminAddCustomGroupMember() dans
+                 firebase-init.js, et window.applyCustomGroups() dans script.js qui fusionne
+                 ce qui est créé ici dans groupColors/filterData au chargement de chaque
+                 page (filtres Map/Trips/Agenda, "+ Add a group" sur une fiche lieu). -->
+            <div class="live-form">
+                <h2>Add a group</h2>
+                <p class="sub" style="margin-bottom:14px;">Adds a new group across the whole site — it shows up right away in "+ Add a group" on any location page, and in the Group filters on Map, Trips and Agenda. Add its members below once it's created.</p>
+                <input type="text" id="new-group-name" placeholder="Group name" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13.5px; margin-bottom:10px; font-family:'Poppins',sans-serif;">
+                <label style="display:flex; align-items:center; gap:10px; font-size:12.5px; color:#64748b; margin-bottom:10px;">Color on the map/calendar
+                    <input type="color" id="new-group-color" value="#D42759">
+                </label>
+                <button type="button" class="live-submit-btn" onclick="window.runAddGroup()">Add group</button>
+                <div id="add-group-result" class="live-form-result hidden"></div>
+            </div>
+
+            <div class="live-form">
+                <h2>Add a member to a group</h2>
+                <p class="sub" style="margin-bottom:14px;">Only groups added from this page (above) can have members added here — the site's original groups already have their full lineup built in.</p>
+                <select id="add-member-group-select" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13.5px; margin-bottom:10px; font-family:'Poppins',sans-serif;"></select>
+                <input type="text" id="new-member-name" placeholder="Member name" style="width:100%; padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13.5px; margin-bottom:10px; font-family:'Poppins',sans-serif;">
+                <button type="button" class="live-submit-btn" onclick="window.runAddGroupMember()">Add member</button>
+                <div id="add-member-result" class="live-form-result hidden"></div>
+            </div>
         </div>
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261051"></script>
-<script src="countries.js?v=20261051"></script>
-<script src="locations-data.js?v=20261051"></script>
+<script type="module" src="firebase-init.js?v=20261052"></script>
+<script src="countries.js?v=20261052"></script>
+<script src="locations-data.js?v=20261052"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
-<script src="artists-content.js?v=20261051"></script>
-<script src="script.js?v=20261051"></script>
+<script src="artists-content.js?v=20261052"></script>
+<script src="script.js?v=20261052"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -2811,6 +2837,50 @@ recomposée, sans texte ni légende.`;
         submissions.forEach(sub => listEl.appendChild(renderTourNightCard(sub)));
     };
 
+    // "Add a group"/"Add a member" (demande du 18/10/2026) — voir adminAddCustomGroup()/
+    // adminAddCustomGroupMember()/getCustomGroups() dans firebase-init.js.
+    async function populateAddMemberGroupSelect() {
+        const sel = document.getElementById('add-member-group-select');
+        if (!sel || typeof window.getCustomGroups !== 'function') return;
+        const groups = await window.getCustomGroups();
+        const keys = Object.keys(groups);
+        sel.innerHTML = keys.length
+            ? keys.map(k => `<option value="${escapeHtml(k)}">${escapeHtml(groups[k].name || k)}</option>`).join('')
+            : `<option value="">No groups added from this page yet</option>`;
+    }
+    window.runAddGroup = async function () {
+        const nameInput = document.getElementById('new-group-name');
+        const colorInput = document.getElementById('new-group-color');
+        const resultEl = document.getElementById('add-group-result');
+        const name = (nameInput.value || '').trim();
+        resultEl.classList.remove('hidden');
+        if (!name) { resultEl.textContent = 'Enter a group name first.'; return; }
+        resultEl.textContent = 'Adding…';
+        const res = await window.adminAddCustomGroup(name, colorInput.value);
+        if (res.success) {
+            resultEl.textContent = `"${name}" added — it now appears in group pickers across the site.`;
+            nameInput.value = '';
+            populateAddMemberGroupSelect();
+        } else if (res.code === 'already-exists') {
+            resultEl.textContent = 'A group with that name already exists.';
+        } else {
+            resultEl.textContent = 'Could not add that group — try again.';
+        }
+    };
+    window.runAddGroupMember = async function () {
+        const sel = document.getElementById('add-member-group-select');
+        const nameInput = document.getElementById('new-member-name');
+        const resultEl = document.getElementById('add-member-result');
+        const name = (nameInput.value || '').trim();
+        resultEl.classList.remove('hidden');
+        if (!sel.value) { resultEl.textContent = 'Add a group above first.'; return; }
+        if (!name) { resultEl.textContent = 'Enter a member name first.'; return; }
+        resultEl.textContent = 'Adding…';
+        const res = await window.adminAddCustomGroupMember(sel.value, name);
+        resultEl.textContent = res.success ? 'Member added.' : 'Could not add that member — try again.';
+        if (res.success) nameInput.value = '';
+    };
+
     window.addEventListener('firebase-ready', async (e) => {
         const user = e.detail && e.detail.user;
         const loadingEl = document.getElementById('loading-state');
@@ -2837,6 +2907,7 @@ recomposée, sans texte ni légende.`;
         if (typeof window.loadAllLocationStats === 'function') {
             locationStatsCache = await window.loadAllLocationStats();
         }
+        populateAddMemberGroupSelect();
         await loadSubmissions();
     });
 </script>
