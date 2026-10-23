@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-23T06:22:38.776Z.
+// Généré le 2026-10-23T12:46:58.631Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -18676,6 +18676,74 @@ window.STATIC_LOCATIONS = [
     }
   },
   {
+    "id": "new-cSGDmreP9vza05peFWkh",
+    "name": "Musée Picasso Paris",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmarks",
+    "year": "2021",
+    "address": "5 Rue de Thorigny, 75003 Paris, France",
+    "lat": 48.8597,
+    "lng": 2.3622,
+    "img": "",
+    "addedAt": 1792750234965,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated in the historic Marais district inside the 17th-century Hôtel Salé, the Musée Picasso Paris houses over 5,000 works by Pablo Picasso, detailing the legendary Spanish artist's entire career alongside pieces from his personal art collection.</p><!--stss:footsteps--><p>RM explored the museum during his art trips across Europe, taking time to study Picasso's original sketches and paintings as part of his ongoing passion for art history.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Visitor Tip"
+        },
+        "text": {
+          "en": "Explore the surrounding cobblestone streets of Le Marais for boutique shopping and art galleries after your museum visit."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.museepicassoparis.fr/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Metro Line 1 to Saint-Paul or Line 8 to Chemin Vert, followed by a 5-minute walk through the Marais district."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "id": "new-D2pf3IFWKTH64FaUCAdd",
     "year": "2021",
     "category": "Museum",
@@ -18932,6 +19000,82 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Sungnyemun Gate, officially designated as South Korea's National Treasure No. 1 and historically known as Namdaemun (South Great Gate), is the largest and most magnificent of the four main gates that once protected the ancient Fortress Wall of Seoul. Originally built in 1398 during the Joseon Dynasty, it stands proudly at a bustling intersection, creating a striking visual contrast between Seoul's deep architectural history and its gleaming modern skyline. Meticulously restored after a tragic fire in 2008, the gate remains a powerful, enduring symbol of the city's resilience and cultural pride.</p><!--stss:footsteps--><p>In September 2021, BTS selected this majestic landmark as the stage for their spectacular performance during the Global Citizen Live 24-hour worldwide broadcast. Dressed in elegant, earth-toned outfits, the members performed their hit \"Permission to Dance\" right on the plaza in front of the gate. Illuminated by brilliant lights against the dark night sky, the ancient wooden pavilion provided a breathtaking backdrop. By bringing their modern pop anthems to a 600-year-old royal gateway, BTS beautifully showcased the harmonious blend of Korea's past and present to millions of viewers across the globe.</p>"
     }
+  },
+  {
+    "id": "new-fFXt2TP40qiRSD9EgaRi",
+    "name": "Tennis Club de Paris",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Fashion",
+    "year": "2022",
+    "address": "207 Avenue Felix Faure, 75016 Paris, France",
+    "lat": 48.8386,
+    "lng": 2.2575,
+    "img": "",
+    "addedAt": 1792750264662,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>The Tennis Club de Paris is a historic sports institution located in the 16th arrondissement of Paris, renowned for its indoor and outdoor tennis facilities. Beyond its rich athletic heritage, the venue features large industrial-style event halls and sports structures that are frequently transformed into spectacular runways during Paris Fashion Week. Its vast layout allows world-famous fashion houses to build custom theatrical stages and immersive sound environments. The complex offers a unique blend of vintage architecture and modern event versatility right near the edge of the city.</p><!--stss:footsteps--><p>On June 26, 2022, luxury fashion brand Celine transformed the venue into the runway stage for its Men's Summer 2023 collection show, where Kim Taehyung (V) made his sensational appearance as an official guest. Taehyung arrived wearing a striking leather jacket and sequined top, generating unprecedented crowds of fans outside the entrance along with massive global media coverage. The event marked V's legendary emergence in the European fashion world alongside fellow global stars. Photos and videos of V standing on the venue's exterior platforms went viral, making Tennis Club de Paris an iconic site for BTS fashion history.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Exterior photo spot"
+        },
+        "text": {
+          "en": "While the club interior is private for members, you can take photos outside the perimeter wall where V was greeted by thousands of fans."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine your visit"
+        },
+        "text": {
+          "en": "Combine a visit here with a walk through the nearby Parc des Princes stadium or the Bois de Boulogne gardens."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Paris Metro Line 9 to Porte de Saint-Cloud station or Line 10 to Porte d'Auteuil station, then walk 5–10 minutes toward Avenue Felix Faure."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": "new-HrHCN0x2OgHcNPcuMR0c",
@@ -19436,6 +19580,82 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Museum SAN (Space Art Nature) is a world-class architectural masterpiece designed by the legendary minimalist architect Tadao Ando. Tucked away in the pristine mountains of Wonju, the museum is designed as a sanctuary to foster a deep connection between art and the environment. It seamlessly merges stark, exposed concrete structures, expansive stone and water gardens, and immersive light installations with the breathtaking surrounding natural landscape.</p><!--stss:footsteps--><p>As an avid art enthusiast and the group's resident museum connoisseur, RM traveled to Museum SAN in early 2019 for a peaceful winter \"Namjooning\" retreat. He shared serene photos of his visit on BTS's official Twitter account, most notably posing in front of Alexander Liberman's towering red Archway sculpture that seemingly floats on the tranquil Water Garden. He also spent quiet, introspective moments experiencing the museum's permanent James Turrell light and space exhibits. Through his thoughtful documentation, RM instantly transformed this remote mountain museum into a staple pilgrimage for art-loving ARMYs worldwide.</p>"
     }
+  },
+  {
+    "id": "new-Lz1jcqULST7G90eTfynA",
+    "name": "Château de Chantilly",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Chantilly",
+    "category": "Landmarks",
+    "year": "2021",
+    "address": "60500 Chantilly, France",
+    "lat": 49.1938,
+    "lng": 2.4853,
+    "img": "",
+    "addedAt": 1792750113671,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>The Château de Chantilly is a historic French chateau comprising the Grand Château and Petit Château surrounded by expansive formal French gardens, grand water basins, and the Musée Condé, which houses one of France's finest collections of historic paintings after the Louvre.</p><!--stss:footsteps--><p>RM visited the Château de Chantilly during his private trip to France, taking photos in front of the grand chateau facade and exploring the artwork inside Musée Condé.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Musée Condé Art Collection"
+        },
+        "text": {
+          "en": "Be sure to visit the art galleries inside the chateau, featuring masterpieces by Raphael, Botticelli, and Clouet."
+        }
+      },
+      {
+        "title": {
+          "en": "Taste authentic Creme Chantilly"
+        },
+        "text": {
+          "en": "Try real Chantilly whipped cream at the restaurant located inside the park grounds (La Capitainerie)."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://chateaudechantilly.fr/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the TER train from Paris Gare du Nord to Chantilly-Gouvieux station (approx. 25 minutes), then walk 20 minutes through the forest path or take the local bus."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": "new-manual-1790001265057-lc06qt",
@@ -23981,6 +24201,220 @@ window.STATIC_LOCATIONS = [
     "ytId": "zndvqTc4P9I"
   },
   {
+    "id": "new-manual-1792747982130-vi6iwa",
+    "name": "El Ateneo Grand Splendid",
+    "group": "BTS",
+    "member": "V, Jungkook",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "Av. Santa Fe 1860, C1123 CABA, Argentina",
+    "lat": -34.596017,
+    "lng": -58.3942263,
+    "country": "Argentina",
+    "city": "Buenos Aires",
+    "img": "images/admin-upload-new-manual-1792747982130-vi6iwa-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Read in the Balconies"
+        },
+        "text": {
+          "en": "Head up to the former theater boxes on the upper floors, which have been converted into small, private reading areas offering the best panoramic views of the entire bookstore."
+        }
+      },
+      {
+        "title": {
+          "en": "Coffee on Stage"
+        },
+        "text": {
+          "en": "Sit for a coffee on the actual former stage behind the red velvet curtains to appreciate the architecture from the perspective of a 1920s performer."
+        }
+      },
+      {
+        "title": {
+          "en": "Look Up"
+        },
+        "text": {
+          "en": "Take a moment to admire the original dome ceiling, painted by Nazareno Orlandi to celebrate the end of World War I."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Located in the Recoleta neighborhood, it is easily reachable via the Buenos Aires Underground (Subte). Take Line D to the Callao station, which is a short walk from the entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open Monday through Thursday from 9:00 AM to 10:00 PM, with extended hours on weekends. Entry is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main ground floor is accessible, and elevators are available to reach the upper balconies and basement levels."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "https://www.yenny-elateneo.com/local/grand-splendid/",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Sombra Inquieta / CC BY-SA 4.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792747982130-vi6iwa-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3451,
+            "y": 0.4235,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.6263,
+            "y": 0.3985,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792747982130-vi6iwa-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.5143,
+            "y": 0.5176,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "tweetUrl": "https://x.com/jungkoo_gukkk97/status/2113498022076350786?s=46",
+    "fullDescription": {
+      "en": "<p>Inaugurated in 1919 as the Teatro Gran Splendid, this magnificent building in the Recoleta neighborhood was entirely transformed into a bookstore in 2000. El Ateneo Grand Splendid retains its original opulent architecture, featuring intricately painted ceiling frescoes, ornate gold moldings, and rounded theater balconies that now serve as quiet reading nooks. The original grand stage, still framed by heavy crimson curtains, currently operates as a cafe. Major publications like National Geographic and The Guardian frequently rank it among the most beautiful bookstores in the world.</p><!--stss:footsteps--><p>On October 2026, Taehyung and Jungkook visited this magnificent literary landmark during their time in Buenos Aires. Known for their appreciation of art, history, and striking architecture, the duo took time to explore the vast converted theater. To ensure a peaceful and uninterrupted experience away from the bustling crowds, they exclusively privatized the entire third floor of the bookstore. This upper vantage point offers the most spectacular, sweeping views of the illuminated dome and the grand stage below, allowing them to quietly take in the sheer scale and beauty of the historic space together.</p>"
+    }
+  },
+  {
+    "id": "new-manual-1792749498397-wluu2e",
+    "name": "Palacio Barolo",
+    "group": "BTS",
+    "member": "V, Jungkook",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "Av. de Mayo 1370, C1085 Cdad. Autónoma de Buenos Aires, Argentina",
+    "lat": -34.6096157,
+    "lng": -58.385832,
+    "img": "images/admin-upload-new-manual-1792749498397-wluu2e-photo.jpg",
+    "country": "Argentina",
+    "city": "Buenos Aires",
+    "episodeLabel": "Era",
+    "episode": "Arirang",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Climb to Paradise"
+        },
+        "text": {
+          "en": "To access the exact rounded balconies where Taehyung and Jungkook stood, you must book a guided tour that takes you to the upper tower. General entry does not permit access to the highest vantage points."
+        }
+      },
+      {
+        "title": {
+          "en": "Spot the Allegories"
+        },
+        "text": {
+          "en": "As you walk through the building, pay attention to the architectural details Palanti included to mirror Dante's work, such as the nine vaults of access representing the nine circles of Hell."
+        }
+      },
+      {
+        "title": {
+          "en": "Book a Sunset Tour"
+        },
+        "text": {
+          "en": "For the most dramatic photographs, reserve an evening tour. This allows you to experience the city views at golden hour and see the historic glass lighthouse illuminated after dark."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Inaugurated in 1923, the 100-meter-tall Palacio Barolo is an architectural masterpiece designed by Italian architect Mario Palanti for businessman Luis Barolo. The building’s unique design is entirely inspired by the cosmology of Dante Alighieri’s Divine Comedy. The structure is allegorically divided into three distinct sections: Hell (the ground floor and basements), Purgatory (the middle floors), and Paradise (the upper tower and lighthouse). At the time of its completion, it was the tallest building in South America. Today, its upper rounded balconies and historic lighthouse offer some of the most spectacular, unobstructed 360-degree panoramic views over the Argentine capital.</p><!--stss:footsteps--><p>During their stay in Buenos Aires in October 2026, Taehyung and Jungkook visited this towering literary landmark. Documenting their ascent through the building's allegorical levels, they eventually reached the \"Paradise\" section at the very top.\nPhotographs from their visit highlight the structure's famous rounded upper balconies. Standing high above the Monserrat neighborhood, the duo captured the sweeping 360-degree panoramic views of the city sprawling beneath them. The visit perfectly aligns with their shared appreciation for striking vantage points and deeply conceptual art, utilizing the historic architecture to frame the vast urban landscape of Buenos Aires.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The building is located on the historic Avenida de Mayo. The most convenient access is via the Subte (subway) Line A, getting off at either the Lima or Sáenz Peña stations."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Access to the building for tourists is strictly through ticketed guided tours, which typically operate from Monday to Saturday between 10:00 AM and 8:00 PM. Tickets cost around $15 to $20 USD depending on the chosen tour package."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The ground floor (Hell) and the middle office floors (Purgatory) are accessible via historic elevators. However, reaching the upper balconies and the lighthouse (Paradise) where the 360-degree views are located requires climbing several flights of narrow, steep spiral staircases, making the very top inaccessible for wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Eugenio Hansen, OFS / CC BY-SA 4.0",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/pitstoptalks/status/2113399216252813588?s=46",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "http://www.palaciobarolo.com.ar/",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792749498397-wluu2e-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4362,
+            "y": 0.5206,
+            "member": "V"
+          },
+          {
+            "x": 0.6185,
+            "y": 0.4956,
+            "member": "Jungkook"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
     "name": "Kualoa Ranch",
     "group": "BTS",
@@ -24559,6 +24993,90 @@ window.STATIC_LOCATIONS = [
         ]
       }
     ]
+  },
+  {
+    "id": "new-UgPunwPhjZYgpNf7uc8w",
+    "name": "Musée Rodin",
+    "group": "BTS",
+    "member": "Jimin",
+    "country": "France",
+    "city": "Paris",
+    "category": "Fashion",
+    "year": "2023",
+    "address": "77 Rue de Varenne, 75007 Paris, France",
+    "lat": 48.8553,
+    "lng": 2.3158,
+    "img": "",
+    "addedAt": 1792750167097,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Musée Rodin is a world-renowned art museum opened in 1919 at the Hôtel Biron, a magnificent 18th-century mansion surrounded by vast formal gardens in the 7th arrondissement of Paris. The museum is dedicated to the works of French sculptor Auguste Rodin, housing iconic masterpieces such as 'The Thinker', 'The Gates of Hell', and 'The Kiss'. Its expansive gardens and elegant architecture regularly host exclusive global cultural events and high-fashion runway presentations.</p><!--stss:footsteps--><p>On January 20, 2023, the Musée Rodin hosted the Dior Men's Autumn-Winter 2023-2024 show during Paris Fashion Week, marking Park Jimin's official debut as Dior's newly appointed Global Ambassador. Thousands of fans gathered outside the main entrance along Rue de Varenne to welcome Jimin, whose arrival alongside bandmate J-Hope generated immense international media coverage and made the venue a historic milestone in BTS's global fashion journey.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book tickets in advance"
+        },
+        "text": {
+          "en": "Reserve timed-entry tickets online through the official website to skip the main ticketing line at the entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the sculpture garden"
+        },
+        "text": {
+          "en": "Allocate at least one hour specifically for the garden where 'The Thinker' is located for great photo opportunities in serene surroundings."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit timing"
+        },
+        "text": {
+          "en": "Arrive right at opening time (10:00 AM) to experience the main exhibition halls before tour groups arrive."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://www.musee-rodin.fr",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Metro Line 13 to Varenne station, which opens directly near the museum entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "name": "Daeoh Bookstore",
