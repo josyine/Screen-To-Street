@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261051" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261052" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -254,7 +254,57 @@
   .trip-se-editor input:focus { border-color:#D42759; }
   .trip-se-save-btn { margin-top:10px; background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 20px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; }
   .trip-se-save-btn:disabled { opacity:.6; cursor:default; }
-  
+
+  /* Bascule "Same start & end for the whole trip" (demande du 18/10/2026,
+     trip_finale_legere.html) — pilule cochée façon mockup : voir window.toggleSameStartEnd()
+     dans script.js pour sa logique (currentTrip.sameStartEnd). */
+  .trip-se-same-toggle { display: flex; align-items: center; gap: 10px; background: #FCE7F0; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; color: #212832; }
+  .trip-se-same-toggle input { width: 18px; height: 18px; accent-color: #D42759; flex-shrink: 0; }
+  .trip-se-perday-hint { font-size: 12px; color: #64748b; line-height: 1.5; margin: 0; }
+
+  /* Lignes de départ/arrivée (H ⋯ Hôtel ⋯ heure) au-dessus/en dessous de chaque journée
+     dans l'ITINÉRAIRE (demande du 18/10/2026, trip_finale_legere.html) — voir
+     dayEndpointRowHTML()/refreshDayTimelines() dans script.js. */
+  .day-endpoint { display: flex; align-items: center; gap: 10px; padding: 8px 2px; font-size: 12.5px; font-weight: 700; color: #212832; }
+  .day-endpoint-editable { cursor: pointer; }
+  .day-endpoint-editable:active { opacity: .7; }
+  .day-endpoint-badge { width: 22px; height: 22px; border-radius: 50%; color: #fff; font-size: 10.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .day-endpoint-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .day-endpoint-time { color: #94a3b8; font-weight: 600; flex-shrink: 0; }
+  .day-endpoint-leg, .day-loc-leg { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 600; color: #94a3b8; padding: 2px 0 2px 11px; }
+
+  /* Popup flottant de l'éditeur per-day START & END (demande du 18/10/2026) — voir
+     window.openDayEndpointEditor()/saveDayEndpoint() dans script.js. */
+  .day-endpoint-popup { position: fixed; z-index: 2000; background: #fff; border-radius: 14px; padding: 12px; box-shadow: 0 10px 28px rgba(31,36,48,.18); border: 1px solid #e2e8f0; width: 240px; }
+  .day-endpoint-popup.hidden { display: none; }
+  .day-endpoint-popup input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 13px; outline: none; font-family: 'Poppins', sans-serif; margin-bottom: 8px; }
+  .day-endpoint-popup input:focus { border-color: #D42759; }
+  .day-endpoint-popup button { width: 100%; background: #D42759; color: #fff; border: none; border-radius: 100px; padding: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .day-endpoint-popup button:disabled { opacity: .6; cursor: default; }
+
+  /* Pastille d'heure d'arrivée en tête de chaque ligne de l'itinéraire (demande du
+     18/10/2026, trip_finale_legere.html) — un seul horaire par arrêt désormais (plus de
+     fourchette arrivée-départ), le trajet depuis l'arrêt précédent devenant sa propre ligne
+     connecteur (.day-loc-leg ci-dessus) entre deux lignes plutôt qu'empilé dans la ligne
+     d'arrivée. */
+  .day-loc-time { display: none; font-size: 12px; font-weight: 700; color: #94a3b8; flex-shrink: 0; order: -1; }
+
+  /* Bannière "Auto-Itinerary" de l'onglet Ideas (demande du 18/10/2026, trip_finale_legere.
+     html) — style de base simple ici (desktop, toujours empilé comme avant les onglets
+     mobiles) ; le dégradé/l'ombre façon mockup n'est appliqué que sur mobile, voir
+     @media(max-width:800px) plus bas. */
+  .trip-magic-banner { display: flex; align-items: center; gap: 14px; background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 16px 18px; cursor: pointer; }
+  .trip-magic-banner-icon { width: 40px; height: 40px; border-radius: 50%; background: #FCE7F0; color: #D42759; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .trip-magic-banner-text { flex: 1; min-width: 0; }
+  .trip-magic-banner-title { font-size: 14.5px; font-weight: 800; color: #212832; }
+  .trip-magic-banner-sub { font-size: 11.5px; font-weight: 600; color: #64748b; margin-top: 2px; }
+  .trip-magic-banner-plus { width: 34px; height: 34px; border-radius: 50%; border: none; background: #D42759; color: #fff; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; font-family: 'Poppins', sans-serif; }
+  .ideas-filters-banner { background: transparent; border: none; padding: 16px 0 0; }
+
+  /* Vignette de secours quand le lieu recommandé n'a pas encore de photo (demande du
+     18/10/2026, trip_finale_legere.html). */
+  .loc-thumb-fallback { background: #FCE7F0; color: #D42759; display: flex; align-items: center; justify-content: center; }
+
   .edit-banner { background:#faf9fc; border:1px solid #e2e8f0; border-radius:16px; padding:24px;}
   .date-tabs { display: flex; border-bottom: 1px solid #e2e8f0; margin-bottom: 15px; }
   .date-tab { flex: 1; text-align: center; padding: 10px 15px; cursor: pointer; font-size: 13.5px; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; transition: 0.2s; }
@@ -541,11 +591,16 @@
       .day-loc { border: none; background: #faf8fd; gap: 8px; }
       .day-loc.dragging { background: #f1edf9; }
 
-      /* Pastille de trajet entre deux arrêts (.day-loc-travel, voir
-         renderDayTimelineHTML() dans script.js) — même info qu'avant (mode de transport
-         réel estimé + durée, voir estimateTransitLeg()), juste présentée comme une
-         pastille grise discrète façon mockup (.trl) plutôt qu'une simple ligne de texte. */
-      .day-loc-travel { background: #F4F2F8; border-radius: 100px; padding: 4px 10px; width: max-content; margin: 2px 0 2px 30px; }
+      /* Heure d'arrivée + connecteurs de trajet entre arrêts façon ITINERARY (demande du
+         18/10/2026, trip_finale_legere.html) — voir refreshDayTimelines() dans script.js :
+         .day-loc-time est la pastille d'heure en tête de chaque ligne (masquée par défaut
+         plus haut, visible ici) ; .day-loc-leg/.day-endpoint-leg sont les lignes connecteur
+         "🚶 XX min" insérées ENTRE deux arrêts (ou entre l'hébergement et le premier/dernier
+         arrêt), indentées pour aligner avec la pastille colorée des lieux. */
+      .day-loc-time { display: inline-block; }
+      .day-loc-leg, .day-endpoint-leg { margin-left: 30px; }
+      .day-endpoint { padding-left: 2px; }
+      .day-endpoint-label { margin-left: 2px; }
 
       /* Onglets Plan/Map/Ideas (demande du 17/10/2026, "remplace la page par
          trip_finale_legere.html") — même pastille blanche à 3 boutons que le mockup
@@ -576,6 +631,33 @@
          d'onglet, toujours nécessaire après un conteneur display:none. */
       .trip-tab-panel[data-panel="map"] #trip-map-container { height: 240px; border-radius: 16px; margin-bottom: 18px; }
 
+      /* BUG rapporté le 18/10/2026 : le bas de l'onglet Map (dernière ligne de
+         .trip-day-summary) se retrouvait masqué derrière #mobile-bottom-nav (position:
+         fixed, voir style.css) faute d'espace réservé sous ce panneau — même marge basse
+         que celle déjà utilisée ailleurs sur le site pour ce même cas (.sidebar-scroll-area
+         plus haut, .tab-panel/.qa-sheet dans style.css). */
+      .trip-tab-panel[data-panel="map"] { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+
+      /* Bannière "Auto-Itinerary" façon dégradé du mockup (demande du 18/10/2026,
+         trip_finale_legere.html) — remplace le style de base plus sobre (voir plus haut)
+         UNIQUEMENT sur cette mise en page mobile, même fonction (openItineraryModal(),
+         inchangée). */
+      .trip-magic-banner { background: linear-gradient(120deg, #E0156B, #9B5CF6); border: none; box-shadow: 0 10px 24px rgba(155,92,246,.22); margin: 0 16px 20px; }
+      .trip-magic-banner-icon { background: rgba(255,255,255,.22); color: #fff; }
+      .trip-magic-banner-title { color: #fff; }
+      .trip-magic-banner-sub { color: rgba(255,255,255,.85); }
+      .trip-magic-banner-plus { background: rgba(255,255,255,.25); }
+      #reco-section, #saved-locs-label, #add-more-locations-btn { margin-left: 16px; margin-right: 16px; }
+      .ideas-filters-banner { margin: 0 16px 10px; padding: 0; }
+
+      /* "Il ne faut pas afficher la carte dans Itinerary" (demande du 18/10/2026,
+         trip_finale_legere.html) — la mini-carte par jour (.day-mini-map) reste générée
+         dans le DOM par renderTrip()/saveTrip() (desktop, toujours empilé, la garde) mais
+         n'a plus sa place dans cette liste de lecture compacte sur mobile : l'itinéraire
+         journalier (pastilles de jour + carte + résumé) vit déjà entièrement dans l'onglet
+         Map juste au-dessus (#trip-day-pills/#trip-map-container/#trip-day-summary). */
+      .trip-tab-panel[data-panel="plan"] .day-mini-map { display: none; }
+
       /* Jour vide : placeholder discret plutôt qu'un bloc qui paraît juste cassé/manquant
          (même texte que le mockup, "Drop a place here" / son équivalent FR). Le texte
          vient de l'attribut data-empty-label (posé en JS à la création de la carte,
@@ -596,7 +678,7 @@
          (même valeur que le padding de .edit-banner) les aligne sans toucher à la
          pleine largeur des cartes en dessous (.itinerary-box/#loc-list), volontairement
          inchangée. */
-      #i18n-your-iti, #saved-locs-label, #i18n-reco, #add-more-locations-btn { margin-left: 16px; }
+      #i18n-your-iti { margin-left: 16px; }
 
       .modal-body { padding: 18px 18px 22px 18px; }
       #modal-hero { height: 170px; border-radius: 12px 12px 0 0; }
@@ -686,7 +768,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261051';
+        s.src = 'page-loader.js?v=20261052';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -973,11 +1055,22 @@
                     <button type="button" class="trip-se-edit-btn" id="trip-homebase-edit-btn" onclick="window.toggleTripHomeBaseEditor()">Edit</button>
                 </div>
                 <div class="trip-se-editor hidden" id="trip-homebase-editor">
-                    <input type="text" id="trip-homebase-input" placeholder="Hotel or neighborhood" autocomplete="off">
-                    <button type="button" class="trip-se-save-btn" id="trip-homebase-save-btn" onclick="window.saveTripHomeBase()">Save</button>
+                    <!-- Bascule "Same start & end for the whole trip" (demande du
+                         18/10/2026, trip_finale_legere.html) — décoché, chaque jour définit
+                         son propre départ/arrivée directement dans l'itinéraire ci-dessous
+                         (voir window.openDayEndpointEditor() dans script.js) plutôt qu'ici. -->
+                    <label class="trip-se-same-toggle" for="trip-se-same-checkbox">
+                        <input type="checkbox" id="trip-se-same-checkbox" checked onchange="window.toggleSameStartEnd(this.checked)">
+                        <span id="i18n-same-se">Same start &amp; end for the whole trip</span>
+                    </label>
+                    <div id="trip-se-single-editor">
+                        <input type="text" id="trip-homebase-input" placeholder="Hotel or neighborhood" autocomplete="off">
+                        <button type="button" class="trip-se-save-btn" id="trip-homebase-save-btn" onclick="window.saveTripHomeBase()">Save</button>
+                    </div>
+                    <p class="trip-se-perday-hint hidden" id="trip-se-perday-hint">Set each day's start &amp; end directly in the itinerary below.</p>
                 </div>
 
-                <div class="section-label" id="i18n-your-iti">YOUR ITINERARY</div>
+                <div class="section-label" id="i18n-your-iti">ITINERARY</div>
                 <div class="itinerary-box" id="itinerary-box">
                     <button class="add-day-btn" onclick="addDay()">
                         <span id="i18n-add-day">+ Add an empty day</span>
@@ -986,23 +1079,28 @@
                 </div>
 
                 <div class="trip-tab-panel" data-panel="ideas">
-                <!-- Générateur d'itinéraire (demande du 17/10/2026, répétée — "met le bouton
-                     auto itinerary dans l'onglet Ideas, comme dans trip_finale_legere.html")
-                     — déplacé depuis l'onglet Plan, même fonction (openItineraryModal(),
-                     inchangée) que juste une pastille dégradée en haut de cet onglet, comme
-                     magicBtn dans le mockup. -->
-                <div style="text-align:center; margin-bottom:20px;">
-                    <p style="font-size:12px; color:#64748b; margin-bottom:10px;" id="i18n-need-magic">Need some magic?</p>
-                    <button class="gen-btn ghost" onclick="openItineraryModal()" id="i18n-open-iti">Open Auto-Itinerary Generator</button>
+                <!-- Générateur d'itinéraire (demande du 17/10/2026 puis 18/10/2026, "met le
+                     bouton auto itinerary dans l'onglet Ideas... avec le bouton auto
+                     itinerary, RECOMMENDED IN..., les filtres...") — toujours
+                     openItineraryModal() (inchangée), présenté comme la bannière dégradée
+                     "magicBtn" du mockup plutôt qu'un simple texte + pastille ghost. -->
+                <div class="trip-magic-banner" onclick="openItineraryModal()" style="margin-bottom:20px;">
+                    <div class="trip-magic-banner-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/><path d="M19 15l.9 2.6L22.5 18.5l-2.6.9L19 22l-.9-2.6-2.6-.9 2.6-.9L19 15z"/></svg>
+                    </div>
+                    <div class="trip-magic-banner-text">
+                        <div class="trip-magic-banner-title" id="i18n-open-iti">Auto-Itinerary</div>
+                        <div class="trip-magic-banner-sub" id="i18n-need-magic">Build or rebuild your days in one tap</div>
+                    </div>
+                    <button type="button" class="trip-magic-banner-plus" onclick="event.stopPropagation(); openItineraryModal();">+</button>
                 </div>
-                <!-- Filtres de lieux (demande du 17/10/2026, "remplace la page par
-                     trip_finale_legere.html") — déplacés ici depuis l'onglet Plan (où ils
-                     n'ont pas d'équivalent dans le mockup) : leur rôle est de filtrer QUELS
-                     lieux peuvent être ajoutés au voyage, ce qui concerne cet onglet
-                     "Ideas"/lieux non-assignés, pas la planification jour par jour. Même
-                     markup/ids qu'avant (updateEditTripOptions() dans script.js, inchangé). -->
-                <div class="edit-banner" style="margin-bottom:20px;">
-                    <div class="section-label" style="margin-top:0;">Location Filters</div>
+                <!-- Filtres de lieux (demande du 17/10/2026, redemandée le 18/10/2026 —
+                     "les filtres groups, members, countries, cities") : toujours visibles
+                     (plus seulement dans la section Recommended ci-dessous), même
+                     markup/ids qu'avant (updateEditTripOptions() dans script.js, inchangé) —
+                     reskinnés en pilules sur mobile, voir #edit-trip-group... plus haut dans
+                     ce <style>. -->
+                <div class="edit-banner ideas-filters-banner">
                     <div style="display:flex; gap:10px; margin-bottom: 10px;">
                          <select id="edit-trip-group" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('group')"></select>
                          <select id="edit-trip-member" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('member')"></select>
@@ -1012,18 +1110,22 @@
                          <select id="edit-trip-city" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; flex:1; min-width:0; outline:none;" onchange="updateEditTripOptions('city')"></select>
                     </div>
                 </div>
-                <div class="section-label" id="saved-locs-label" style="margin-top: 0;">UNASSIGNED LOCATIONS (0)</div>
+
+                <!-- "RECOMMENDED IN {Country}" (demande du 18/10/2026, trip_finale_legere.
+                     html) — remonté juste sous les filtres ci-dessus (qui le pilotent),
+                     avant la liste des lieux non assignés : voir recoLabelText() dans
+                     script.js pour le libellé dynamique. -->
+                <div id="reco-section" style="display: none; margin-top: 10px;">
+                    <div class="section-label" style="color:#D42759; margin-top:0;" id="i18n-reco">RECOMMENDED FOR THIS TRIP</div>
+                    <div id="reco-list"></div>
+                </div>
+
+                <div class="section-label" id="saved-locs-label">UNASSIGNED LOCATIONS (0)</div>
                 <div id="loc-list" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" style="min-height: 50px; padding: 10px; border: 1px dashed #cbd5e1; background: #fff; border-radius: 12px;"></div>
 
                 <button class="gen-btn ghost" id="add-more-locations-btn" style="margin-top:15px;" onclick="openAddModal()">
                     <span id="i18n-add-more">+ Add more locations</span>
                 </button>
-
-                <!-- Recommandations Intelligentes -->
-                <div id="reco-section" style="display: none; margin-top: 30px;">
-                    <div class="section-label" style="color:#D42759;" id="i18n-reco">RECOMMENDED FOR THIS TRIP (SAME COUNTRY)</div>
-                    <div id="reco-list"></div>
-                </div>
                 </div>
             </div>
         </div>
@@ -1296,9 +1398,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261051"></script>
-<script src="locations-data.js?v=20261051"></script>
-<script src="script.js?v=20261051"></script>
+<script type="module" src="firebase-init.js?v=20261052"></script>
+<script src="locations-data.js?v=20261052"></script>
+<script src="script.js?v=20261052"></script>
 
 </body>
 </html>

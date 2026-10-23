@@ -953,6 +953,60 @@ window.adminSetArtistOverride = async function (key, { photo, text } = {}) {
     }
 };
 
+// Groupes ajoutés depuis le site (demande du 18/10/2026, "en mode admin on puisse
+// ajouter de nouveaux groupes et nouveaux membres") — un document {name, color,
+// members: []} par groupe dans customGroups (voir firestore.rules), fusionné dans
+// window.GROUPS/groupColors/filterData par window.applyCustomGroups() (script.js) au
+// chargement de chaque page, pour que ces groupes se comportent comme n'importe quel
+// groupe déjà codé en dur (filtres, "+ Add a group"...). Toute la collection chargée en
+// une fois, comme getArtistOverrides() ci-dessus (une poignée de documents).
+window.getCustomGroups = async function () {
+    try {
+        const snap = await getDocs(collection(db, 'customGroups'));
+        const out = {};
+        snap.forEach(d => { out[d.id] = d.data(); });
+        return out;
+    } catch (e) {
+        console.warn('Lecture des groupes personnalisés échouée :', e);
+        return {};
+    }
+};
+window.adminAddCustomGroup = async function (name, color) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    const cleanName = (name || '').toString().trim();
+    const key = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!key) return { success: false, code: 'missing-name' };
+    try {
+        const ref = doc(db, 'customGroups', key);
+        const existing = await getDoc(ref);
+        if (existing.exists()) return { success: false, code: 'already-exists' };
+        await setDoc(ref, { name: cleanName, color: color || '#D42759', members: [] });
+        return { success: true, key };
+    } catch (e) {
+        console.warn('Création du groupe personnalisé échouée :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+window.adminAddCustomGroupMember = async function (key, memberName) {
+    const isAdmin = await window.isCurrentUserAdmin();
+    if (!isAdmin) return { success: false, code: 'not-admin' };
+    const name = (memberName || '').toString().trim();
+    if (!key || !name) return { success: false, code: 'missing-member' };
+    try {
+        const ref = doc(db, 'customGroups', key);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return { success: false, code: 'not-found' };
+        const members = Array.isArray(snap.data().members) ? snap.data().members.slice() : [];
+        if (!members.includes(name)) members.push(name);
+        await setDoc(ref, { members }, { merge: true });
+        return { success: true };
+    } catch (e) {
+        console.warn('Ajout du membre au groupe personnalisé échoué :', e);
+        return { success: false, code: e && e.code || 'unknown' };
+    }
+};
+
 // Biographie éditable du profil public (demande du 08/09/2026) : simple champ texte sur
 // publicProfiles/{uid}, déjà en écriture libre pour son propriétaire (allow write ci-dessous,
 // voir firestore.rules) — pas de règle dédiée nécessaire.
