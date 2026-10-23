@@ -13432,6 +13432,16 @@ window.populateEditTripFilters = function() {
     const cities = [...new Set(cityLocs.map(l => l.city))].filter(Boolean).sort();
     cities.forEach(c => citySel.innerHTML += `<option value="${c}">${c}</option>`);
     if(cities.includes(currentCity)) citySel.value = currentCity;
+
+    // Pastille surlignée en rose dès qu'une valeur précise (pas "All ...") est choisie,
+    // comme "South Korea" dans la capture d'écran du 23/10/2026 — voir .ideas-filter-pill-
+    // active dans trips.html. Repassé à chaque appel (y compris après un onchange, qui
+    // rappelle renderTrip() -> cette fonction), donc toujours synchronisé avec la valeur
+    // réellement sélectionnée.
+    groupSel.classList.toggle('ideas-filter-pill-active', !!groupSel.value);
+    memberSel.classList.toggle('ideas-filter-pill-active', memberSel.value !== 'All');
+    countrySel.classList.toggle('ideas-filter-pill-active', !!countrySel.value);
+    citySel.classList.toggle('ideas-filter-pill-active', !!citySel.value);
 }
 
 // "RECOMMENDED IN {Country}" (demande du 18/10/2026, trip_finale_legere.html) — factorisé
@@ -13573,7 +13583,18 @@ async function runPlaceSearch(query, input) {
         }
         resultsEl.innerHTML = results.map((r, i) => `<div class="place-search-option" data-idx="${i}">${escapeHtml(r.display_name)}</div>`).join('');
         resultsEl.querySelectorAll('.place-search-option').forEach(el => {
-            el.addEventListener('click', () => {
+            el.addEventListener('click', (ev) => {
+                // BUG corrigé (demande du 23/10/2026, "je ne peux pas sélectionner le lieu") :
+                // sans stopPropagation(), CE MÊME clic continuait à remonter (bulles) jusqu'au
+                // listener document posé par ensurePlaceSearchPopupEl() APRÈS que la ligne
+                // suivante (resultsEl.innerHTML = '') ait déjà détaché cet élément du DOM — son
+                // .closest('#place-search-popup') ne trouvait alors plus aucun ancêtre (un
+                // nœud détaché n'a plus de parentNode), donc la condition de sortie anticipée de
+                // ce listener échouait et le popup entier se refermait sur CHAQUE sélection,
+                // juste avant qu'on puisse cliquer "Enregistrer" — exactement "je ne peux pas
+                // sélectionner le lieu". stopPropagation() empêche ce clic d'atteindre le
+                // listener document du tout, qui n'a de toute façon rien à y faire ici.
+                ev.stopPropagation();
                 const r = results[parseInt(el.dataset.idx)];
                 input.value = r.display_name;
                 input.dataset.pickedLat = r.lat;
@@ -13595,9 +13616,29 @@ window.openPlaceSearchPopup = function(evt, { title, currentValue, onSave }) {
         <div id="place-search-results"></div>
         <button type="button" id="place-search-save-btn">${currentLang === 'fr' ? 'Enregistrer' : 'Save'}</button>
     `;
+    // BUG corrigé (demande du 23/10/2026, "je ne peux pas sélectionner le lieu") : .place-
+    // search-popup est en `position: fixed` (voir trips.html) — positionné donc par rapport
+    // à la fenêtre visible, JAMAIS au document. Ajouter window.scrollX/scrollY ici (comme le
+    // faisait cette ligne) le décalait de tout le défilement déjà effectué sur la page au
+    // moment du clic : dès que la pastille START/END n'était pas tout en haut de l'écran (cas
+    // normal après un peu de scroll), le popup entier — titre, champ, résultats, bouton
+    // Enregistrer — se retrouvait rendu hors de l'écran visible, invisible et donc
+    // impossible à cliquer, bien que le code de sélection lui-même ait toujours fonctionné
+    // (vérifié par appel direct en Playwright lors du round précédent, sans jamais avoir
+    // scrollé la page avant de cliquer sur la pastille — ce qui masquait exactement ce bug).
+    // Repli au-dessus de la pastille (via `bottom` plutôt que `top`) quand il n'y a pas assez
+    // de place en dessous (ex: pastille proche du bas de l'écran, clavier virtuel ouvert).
     const rect = evt.currentTarget.getBoundingClientRect();
-    popup.style.top = `${rect.bottom + window.scrollY + 6}px`;
-    popup.style.left = `${Math.max(12, Math.min(rect.left + window.scrollX, window.innerWidth - 280))}px`;
+    const popupWidth = 230;
+    popup.style.left = `${Math.max(12, Math.min(rect.left, window.innerWidth - popupWidth - 12))}px`;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < 220 && rect.top > 220) {
+        popup.style.top = '';
+        popup.style.bottom = `${window.innerHeight - rect.top + 6}px`;
+    } else {
+        popup.style.bottom = '';
+        popup.style.top = `${rect.bottom + 6}px`;
+    }
     popup.classList.remove('hidden');
     const input = document.getElementById('place-search-input');
     input.addEventListener('input', () => {
@@ -14361,10 +14402,16 @@ window.renderTrip = function() {
                     const thumbHtml = loc.img
                         ? `<div class="loc-thumb" style="background-image:url('${loc.img}');"></div>`
                         : `<div class="loc-thumb loc-thumb-fallback"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.2"/></svg></div>`;
+                    // Badge "CLOSED" (demande du 23/10/2026, capture d'écran fournie) au lieu de
+                    // laisser le préfixe brut "[CLOSED] " dans le nom affiché — même convention
+                    // que isClosed ailleurs dans ce fichier (ex: ligne ~10255).
+                    const isClosed = (loc.name || '').startsWith('[CLOSED] ');
+                    const displayName = isClosed ? loc.name.slice(9) : loc.name;
+                    const closedBadgeHtml = isClosed ? `<span class="loc-closed-badge">${currentLang === 'fr' ? 'FERMÉ' : 'CLOSED'}</span>` : '';
                     recoList.innerHTML += `
                         <div class="loc-row">
                             ${thumbHtml}
-                            <div class="loc-info"><div class="loc-name">${loc.name}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
+                            <div class="loc-info"><div class="loc-name">${closedBadgeHtml}${escapeHtml(displayName)}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
                             <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="quickAddLoc(${loc.id})">+</button>
                         </div>
                     `;

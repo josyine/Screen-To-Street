@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261053" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261054" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -219,7 +219,20 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
    par cette version plus discrète, explicitement demandée) — plus dans la zone
    description/légende en dessous (voir .fpf-caption plus bas, qui ne montre plus QUE le
    texte de l'utilisateur). */
-.fpf-media-tag { position: absolute; left: 10px; bottom: 8px; background: rgba(20,16,30,.55); color: #fff; font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 100px; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fpf-media-tag { position: absolute; left: 10px; bottom: 8px; background: rgba(20,16,30,.55); color: #fff; font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 100px; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; z-index: 2; }
+/* Galerie horizontale swipeable DANS une carte "Mei's Pictures" (demande du 23/10/2026,
+   "affiche toutes les photos du lieu s'il y en a plusieurs, actuellement tu en affiches
+   que une") — renderSacredPostFeed() (plus bas) n'utilise ceci QUE quand
+   loc.recreatedPhotos compte plus d'une entrée ; une seule photo garde le simple
+   background-image sur .fpf-media, inchangé pour Community (renderFeedPostFeed, qui ne
+   génère jamais .fpf-media-gallery). */
+.fpf-media-gallery { overflow: hidden; }
+.fpf-gallery-track { position: absolute; inset: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.fpf-gallery-track::-webkit-scrollbar { display: none; }
+.fpf-gallery-slide { flex: 0 0 100%; height: 100%; background-size: cover; background-position: center; scroll-snap-align: start; }
+.fpf-gallery-dots { position: absolute; top: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 5px; z-index: 2; pointer-events: none; }
+.fpf-gallery-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.5); transition: background .15s, transform .15s; }
+.fpf-gallery-dot.active { background: #fff; transform: scale(1.2); }
 .fpf-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px 8px; }
 .fpf-avatar { width: 32px; height: 32px; border-radius: 50%; color: #fff; font-size: 12.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
 .fpf-username { font-size: 13.5px; font-weight: 700; color: #1F2430; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
@@ -429,7 +442,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261053';
+        s.src = 'page-loader.js?v=20261054';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -626,9 +639,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261053"></script>
-<script src="locations-data.js?v=20261053"></script>
-<script src="script.js?v=20261053"></script>
+<script type="module" src="firebase-init.js?v=20261054"></script>
+<script src="locations-data.js?v=20261054"></script>
+<script src="script.js?v=20261054"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -1077,10 +1090,31 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         if (!list.length) { scroll.innerHTML = '<div class="fpf-empty">No photos yet.</div>'; return; }
         scroll.innerHTML = list.map((loc, i) => {
             const locLabel = `${loc.name}${loc.group ? ' · ' + loc.group : ''}`;
+            // Toutes les photos du lieu (demande du 23/10/2026, "affiche toutes les photos du
+            // lieu de Mei s'il y en a plusieurs. Actuellement tu en affiches que une") —
+            // loc.recreatedPhotos (déjà normalisé en tableau, voir plus haut) au lieu de
+            // firstRecreatedPhoto() qui ne prenait que l'entrée [0]. Plusieurs photos : une
+            // mini-galerie horizontale swipeable (.fpf-media-gallery) avec des points en haut,
+            // même principe que le carrousel admin — une seule : exactement le même balisage
+            // qu'avant (simple background-image), sans rien changer pour Community.
+            const photos = (Array.isArray(loc.recreatedPhotos) && loc.recreatedPhotos.length)
+                ? loc.recreatedPhotos.map(p => (typeof recreatedPhotoUrl === 'function' ? recreatedPhotoUrl(p) : p)).filter(Boolean)
+                : [firstRecreatedPhoto(loc)];
+            const mediaHtml = photos.length > 1
+                ? `<div class="fpf-media fpf-media-gallery">
+                        <div class="fpf-gallery-track" data-fpf-gallery>
+                            ${photos.map(url => `<div class="fpf-gallery-slide" style="background-image:url('${url}')"></div>`).join('')}
+                        </div>
+                        <div class="fpf-gallery-dots" data-fpf-dots>
+                            ${photos.map((_, pi) => `<span class="fpf-gallery-dot${pi === 0 ? ' active' : ''}"></span>`).join('')}
+                        </div>
+                        <div class="fpf-media-tag">${escapeHtml(locLabel)}</div>
+                   </div>`
+                : `<div class="fpf-media" style="background-image:url('${photos[0] || ''}')">
+                        <div class="fpf-media-tag">${escapeHtml(locLabel)}</div>
+                   </div>`;
             return `<div class="fpf-card" data-feed-index="${i}">
-                <div class="fpf-media" style="background-image:url('${firstRecreatedPhoto(loc)}')">
-                    <div class="fpf-media-tag">${escapeHtml(locLabel)}</div>
-                </div>
+                ${mediaHtml}
                 <div class="fpf-body" style="padding-top:14px;">
                     <button type="button" class="fpf-more-toggle" data-fpf-more>··· more</button>
                     <div class="fpf-expand hidden" data-fpf-expand>
@@ -1096,12 +1130,22 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         }).join('');
         scroll.querySelectorAll('.fpf-card').forEach(card => {
             const moreBtn = card.querySelector('[data-fpf-more]');
-            if (!moreBtn) return;
-            moreBtn.onclick = () => {
-                const expand = card.querySelector('[data-fpf-expand]');
-                const collapsed = expand.classList.toggle('hidden');
-                moreBtn.textContent = collapsed ? '··· more' : '··· less';
-            };
+            if (moreBtn) {
+                moreBtn.onclick = () => {
+                    const expand = card.querySelector('[data-fpf-expand]');
+                    const collapsed = expand.classList.toggle('hidden');
+                    moreBtn.textContent = collapsed ? '··· more' : '··· less';
+                };
+            }
+            const track = card.querySelector('[data-fpf-gallery]');
+            const dots = card.querySelector('[data-fpf-dots]');
+            if (track && dots) {
+                const dotEls = Array.from(dots.children);
+                track.addEventListener('scroll', () => {
+                    const idx = Math.round(track.scrollLeft / track.clientWidth);
+                    dotEls.forEach((d, di) => d.classList.toggle('active', di === idx));
+                }, { passive: true });
+            }
         });
     }
 
