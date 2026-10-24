@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-24T21:47:38.570Z.
+// Généré le 2026-10-24T23:46:06.050Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -24303,7 +24303,6 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "",
     "facebookUrl": "",
     "episodeLink": "",
-    "instagramUrl": "",
     "officialLink": "https://www.yenny-elateneo.com/local/grand-splendid/",
     "tiktokUrl": "",
     "ytId": "",
@@ -24338,7 +24337,8 @@ window.STATIC_LOCATIONS = [
     "tweetUrl": "https://x.com/jungkoo_gukkk97/status/2113498022076350786?s=46",
     "fullDescription": {
       "en": "<p>Inaugurated in 1919 as the Teatro Gran Splendid, this magnificent building in the Recoleta neighborhood was entirely transformed into a bookstore in 2000. El Ateneo Grand Splendid retains its original opulent architecture, featuring intricately painted ceiling frescoes, ornate gold moldings, and rounded theater balconies that now serve as quiet reading nooks. The original grand stage, still framed by heavy crimson curtains, currently operates as a cafe. Major publications like National Geographic and The Guardian frequently rank it among the most beautiful bookstores in the world.</p><!--stss:footsteps--><p>On October 2026, Taehyung and Jungkook visited this magnificent literary landmark during their time in Buenos Aires. Known for their appreciation of art, history, and striking architecture, the duo took time to explore the vast converted theater. To ensure a peaceful and uninterrupted experience away from the bustling crowds, they exclusively privatized the entire third floor of the bookstore. This upper vantage point offers the most spectacular, sweeping views of the illuminated dome and the grand stage below, allowing them to quietly take in the sheer scale and beauty of the historic space together.</p>"
-    }
+    },
+    "instagramUrl": "https://www.instagram.com/p/De5H0PfE1v7/?psln=MXNrcXBlZWt2OHg1Zw=="
   },
   {
     "id": "new-manual-1792749498397-wluu2e",
