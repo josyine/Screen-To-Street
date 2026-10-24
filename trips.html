@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261054" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261055" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -295,8 +295,15 @@
      interne réduit, et surtout word-break sur .place-search-option — un display_name
      Nominatim peut contenir un très long segment sans espace (ex: un numéro de référence
      cadastrale), qui sans ça poussait la largeur de la ligne au-delà de la popup au lieu de
-     passer à la ligne, coupant visuellement le reste du texte hors du cadre arrondi. */
-  .place-search-popup { position: fixed; z-index: 2000; background: #fff; border-radius: 14px; padding: 10px; box-shadow: 0 10px 28px rgba(31,36,48,.18); border: 1px solid #e2e8f0; width: 230px; max-height: 300px; overflow-y: auto; overflow-x: hidden; }
+     passer à la ligne, coupant visuellement le reste du texte hors du cadre arrondi.
+     BUG corrigé (demande du 24/10/2026, champ "Stay" du générateur Auto-Itinerary) :
+     z-index:2000 suffisait tant que ce popup ne s'ouvrait que par-dessus la page elle-même
+     (pastilles START/END) — mais #itinerary-modal (et tout .modal, voir style.css) vit à
+     z-index:9999, largement au-dessus ; cliquer "Stay" DANS ce modal ouvrait donc le popup
+     DERRIÈRE le reste du modal (champs de dates y compris), invisible et interceptant les
+     clics sur le mauvais élément. Même ordre de grandeur que les autres popups qui doivent
+     dépasser un .modal ailleurs sur le site (#change-cover-modal, z-index:10500). */
+  .place-search-popup { position: fixed; z-index: 10600; background: #fff; border-radius: 14px; padding: 10px; box-shadow: 0 10px 28px rgba(31,36,48,.18); border: 1px solid #e2e8f0; width: 230px; max-height: 300px; overflow-y: auto; overflow-x: hidden; }
   .place-search-popup.hidden { display: none; }
   .place-search-title { font-size: 10.5px; font-weight: 800; letter-spacing: .5px; color: #94a3b8; text-transform: uppercase; margin-bottom: 7px; }
   .place-search-popup input { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 12.5px; outline: none; font-family: 'Poppins', sans-serif; margin-bottom: 7px; box-sizing: border-box; }
@@ -319,7 +326,16 @@
      html) — style de base simple ici (desktop, toujours empilé comme avant les onglets
      mobiles) ; le dégradé/l'ombre façon mockup n'est appliqué que sur mobile, voir
      @media(max-width:800px) plus bas. */
-  .trip-magic-banner { display: flex; align-items: center; gap: 14px; background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 16px 18px; cursor: pointer; }
+  /* "Enlève le deuxième dégradé à l'intérieur du bouton" / "pas de rectangle coloré dans le
+     titre" (demande du 24/10/2026, capture d'écran fournie) : cette bannière entière est un
+     <div onclick=...> cliquable (pas un vrai <button>, qui n'a jamais ce souci) — un
+     tap/appui long sur mobile sélectionnait alors le texte "Auto-Itinerary" comme du texte
+     normal, affichant le surlignage de sélection natif du navigateur (un rectangle mauve
+     clair) PAR-DESSUS le dégradé rose/violet de la bannière, donnant l'impression d'un
+     "deuxième dégradé" posé dans le titre — confirmé par capture d'écran (le même
+     rectangle apparaissait exactement sous "Auto-Itinerary"). user-select:none empêche ce
+     texte d'être sélectionnable du tout, comme pour n'importe quel autre bouton du site. */
+  .trip-magic-banner { display: flex; align-items: center; gap: 14px; background: #faf9fc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 16px 18px; cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
   .trip-magic-banner-icon { width: 40px; height: 40px; border-radius: 50%; background: #FCE7F0; color: #D42759; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .trip-magic-banner-text { flex: 1; min-width: 0; }
   .trip-magic-banner-title { font-size: 14.5px; font-weight: 800; color: #212832; }
@@ -599,11 +615,16 @@
          laissée vide/redondante. Le desktop la garde intégralement. */
       .trip-hero-meta-row { display: none; }
 
-      /* Bouton "Auto-itinerary" façon pastille dégradée du mockup (.magic) — remplace le
-         style "ghost" discret du desktop par un vrai appel à l'action sur mobile, sans
-         toucher à sa fonction (openItineraryModal(), inchangée). */
-      #i18n-open-iti { background: linear-gradient(120deg, #E0156B, #9B5CF6); color: #fff; border: none; box-shadow: 0 8px 20px rgba(224,21,107,.3); }
-      #i18n-open-iti:hover { background: linear-gradient(120deg, #E0156B, #9B5CF6); }
+      /* BUG corrigé (demande du 24/10/2026, "pas de rectangle coloré dans le titre...
+         enlève le deuxième dégradé à l'intérieur du bouton", capture d'écran fournie) :
+         ce bloc date d'AVANT le remaniement du 18/10/2026 qui a entouré #i18n-open-iti
+         d'un vrai conteneur .trip-magic-banner (lui-même dégradé, voir plus haut) — à
+         l'époque #i18n-open-iti ÉTAIT directement la pastille dégradée cliquable. Resté en
+         place après ce remaniement, il peignait son PROPRE dégradé rose/violet + ombre,
+         de la taille du SEUL texte "Auto-Itinerary", PAR-DESSUS le dégradé déjà posé par
+         .trip-magic-banner — exactement le "rectangle coloré dans le titre"/"deuxième
+         dégradé" rapporté. Plus aucune raison d'exister : .trip-magic-banner porte déjà
+         tout le style visuel de cette bannière. */
 
       .day-card { padding: 14px 16px; border: none; border-radius: 20px; box-shadow: 0 2px 14px rgba(138,92,246,.1); }
 
@@ -702,11 +723,21 @@
          display:contents pour "disparaître" du flux sans toucher au HTML/onchange
          existant — leurs <select> enfants deviennent directement les items de cette rangée
          flex. */
-      .ideas-filters-banner { margin: 0; padding: 0 16px 10px; display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; scrollbar-width: none; }
-      .ideas-filters-banner::-webkit-scrollbar { display: none; }
+      .ideas-filters-banner { margin: 0; padding: 0 16px 10px; display: flex; flex-wrap: nowrap; gap: 8px; }
       .ideas-filters-banner > div { display: contents; }
+      /* BUG rapporté le 24/10/2026, capture d'écran fournie : "fais en sorte qu'il fassent
+         tous la même taille, bien alignés" — flex:0 0 auto (largeur au contenu, demande du
+         23/10/2026) donnait 4 pilules de largeurs très différentes ("BTS" minuscule,
+         "South Korea" bien plus large), en ligne défilante peu lisible. flex:1 1 0 les
+         répartit maintenant À ÉGALITÉ sur la largeur disponible (4 pilules réellement de
+         même taille) ; plus de défilement horizontal nécessaire dans ce cas (4 pilules
+         fixes tiennent sur une ligne), donc overflow-x retiré. text-overflow sur un
+         <select> natif tronque proprement un texte trop long pour sa largeur désormais
+         fixe (ex: "South Korea" sur un écran étroit) plutôt que de le laisser déborder.
+         */
       #edit-trip-group, #edit-trip-member, #edit-trip-country, #edit-trip-city {
-          flex: 0 0 auto !important; width: auto !important; min-width: 0 !important;
+          flex: 1 1 0% !important; min-width: 0 !important;
+          text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
       }
       /* Pastille mise en avant (bordure/texte rose) dès qu'une valeur précise est choisie
          (pas "All ..."), exactement comme "South Korea" surligné en rose dans la capture —
@@ -809,10 +840,14 @@
           appearance: none; -webkit-appearance: none;
           background-color: #F4F2F8 !important;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8B99' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-          background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;
-          border: none !important; border-radius: 12px !important;
-          padding: 12px 36px 12px 14px !important;
-          font-weight: 600; color: #1F2430;
+          background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
+          border: none !important;
+          /* "plus rond" (demande du 24/10/2026) : 12px (simple coin arrondi) → 100px (vraie
+             pilule ovale), même langage visuel que .trip-se-pill/les boutons "+"/le bouton
+             "Edit" ailleurs sur cette même page. */
+          border-radius: 100px !important;
+          padding: 10px 26px 10px 12px !important;
+          font-weight: 600; color: #1F2430; font-size: 12px; text-align: center;
       }
   }
 </style>
@@ -857,7 +892,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261054';
+        s.src = 'page-loader.js?v=20261055';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1491,7 +1526,23 @@
                 <div id="iti-categories" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
             </div>
 
+            <!-- Dates + Stay (demande du 24/10/2026, "il faut afficher les mêmes infos que la
+                 page 'New trip' : group, country, cities, dates, stay... garder l'affichage de
+                 popup actuel") — même style simple (select/input bordé, inline) déjà utilisé
+                 par chaque champ de ce formulaire ci-dessus, pas la fiche plein écran de "New
+                 trip". Les dates alimentent #iti-days (inchangé, toujours lu par
+                 generateItinerary()) via window.updateItiDaysFromDates() ci-dessous plutôt que
+                 de le remplacer — garde la saisie manuelle du nombre de jours utilisable telle
+                 quelle quand on préfère ne pas choisir de dates précises (ce générateur est
+                 aussi ouvert depuis une fiche lieu, hors du contexte d'un voyage). -->
+            <div style="display:flex; gap:8px;">
+                <input type="date" id="iti-start-date" style="flex:1; min-width:0; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;" onchange="window.updateItiDaysFromDates()">
+                <input type="date" id="iti-end-date" style="flex:1; min-width:0; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;" onchange="window.updateItiDaysFromDates()">
+            </div>
             <input type="number" id="iti-days" min="1" max="7" value="3" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;">
+            <button type="button" id="iti-hotel-row" class="place-search-trigger" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background:#fff; text-align:left; font-family:inherit; font-size:14px; cursor:pointer;" onclick="window.openItiStayEditor(event)">
+                <span id="iti-hotel-label" style="color:#94a3b8;" data-i18n="itiStayPlaceholder">Stay — hotel or neighborhood (optional)</span>
+            </button>
             <button class="gen-btn" onclick="generateItinerary()" style="padding:14px; font-size:14px; justify-content:center;" data-i18n="itiCreateBtn">Create My Guide</button>
         </div>
 
@@ -1507,9 +1558,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261054"></script>
-<script src="locations-data.js?v=20261054"></script>
-<script src="script.js?v=20261054"></script>
+<script type="module" src="firebase-init.js?v=20261055"></script>
+<script src="locations-data.js?v=20261055"></script>
+<script src="script.js?v=20261055"></script>
 
 </body>
 </html>

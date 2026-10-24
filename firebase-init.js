@@ -265,7 +265,76 @@ window.firebaseChangePassword = async function (currentPassword, newPassword) {
 // de règles ne devenant jamais vrai en réessayant.
 const TRANSIENT_FIRESTORE_CODES = ['unavailable', 'deadline-exceeded', 'cancelled', 'internal', 'aborted'];
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// BUG corrigé (demande répétée du 24/10/2026, "il y a encore écrit 'Connection issue'" —
+// APRÈS le correctif de retry transitoire ci-dessus, qui ne pouvait rien changer à une
+// vraie cause persistante) : chaque trip de myTrips peut porter une coverImage en base64
+// INLINE (voir resizeTripCoverDataUrl() dans script.js, jusqu'à ~1200px — couramment
+// 100-300 Ko UNE FOIS encodée en base64) — ET myTrips/visitedLocs/wishlistLocs/photo
+// vivent TOUS dans le MÊME document users/{uid} (voir syncTrips()/syncVisited() dans
+// script.js). Un compte avec ne serait-ce que 4-5 voyages personnalisés avec couverture
+// dépasse déjà, à lui seul, la limite Firestore de 1 Mio PAR DOCUMENT — après quoi CHAQUE
+// écriture suivante échoue EN PERMANENCE (pas juste "pas encore prêt"), quelle que soit la
+// donnée réellement modifiée (même un simple ajout à la wishlist), avec un code qui n'est
+// NI 'permission-denied' NI un des codes transitoires retentés plus haut — d'où "Connection
+// issue" qui ne disparaît jamais sur CE compte, contrairement au propre compte de test de
+// l'admin (peu ou pas de voyages avec couverture personnalisée, donc jamais dans cette
+// zone). Seul l'admin ayant un compte "propre" explique pourquoi ça n'arrivait "que sur un
+// autre appareil" : la variable qui compte est le volume de données accumulées sur CE
+// COMPTE, pas l'appareil lui-même.
+//
+// Repli automatique : si la toute première tentative échoue ET que fields.myTrips et/ou
+// fields.visitedLocs contient au moins une image encodée en base64, on retente UNE fois
+// avec ces images retirées du PAYLOAD ENVOYÉ seulement (jamais des tableaux locaux passés
+// par l'appelant, qui doivent continuer à les afficher sur CET appareil). Si ce deuxième
+// essai réussit, le reste des données (jours, dates, lieux, wishlist, visites, notes...)
+// est bien synchronisé — seules les photos personnalisées ne suivent pas sur un autre
+// appareil tant que le compte reste trop volumineux, ce qui vaut largement mieux qu'un
+// blocage total et silencieux de toute synchronisation cloud.
+//
+// visitedLocs[].visits[].photo (demande du 24/10/2026, suite logique du même diagnostic) :
+// qaSaveVisit() (script.js) peut attacher une photo en base64 à CHAQUE visite enregistrée
+// via "Add a visited place" — exactement le même risque que myTrips[].coverImage ci-dessus,
+// dans le MÊME document users/{uid}, et sans doute PLUS fréquent en pratique (ajouter une
+// visite avec photo est une action plus courante que personnaliser la couverture d'un
+// voyage) — le premier correctif (couvertures seules) aurait donc laissé "Connection issue"
+// réapparaître pour quiconque accumule des photos de visite plutôt que des couvertures.
+function stripLargeInlineMedia(fields) {
+    if (!fields) return null;
+    let found = false;
+    const result = Object.assign({}, fields);
+    if (Array.isArray(fields.myTrips)) {
+        const slimTrips = fields.myTrips.map(t => {
+            if (t && typeof t.coverImage === 'string' && t.coverImage.startsWith('data:')) {
+                found = true;
+                return Object.assign({}, t, { coverImage: '' });
+            }
+            return t;
+        });
+        if (found) result.myTrips = slimTrips;
+    }
+    if (Array.isArray(fields.visitedLocs)) {
+        let visitedChanged = false;
+        const slimVisited = fields.visitedLocs.map(entry => {
+            if (!entry || !Array.isArray(entry.visits)) return entry;
+            let entryChanged = false;
+            const slimVisits = entry.visits.map(v => {
+                if (v && typeof v.photo === 'string' && v.photo.startsWith('data:')) {
+                    entryChanged = true;
+                    return Object.assign({}, v, { photo: null });
+                }
+                return v;
+            });
+            if (entryChanged) { visitedChanged = true; return Object.assign({}, entry, { visits: slimVisits }); }
+            return entry;
+        });
+        if (visitedChanged) { found = true; result.visitedLocs = slimVisited; }
+    }
+    return found ? result : null;
+}
+
 let _syncUserDataErrorToastShown = false;
+let _syncUserDataCoverToastShown = false;
 window.syncUserData = async function (fields) {
     const user = auth.currentUser;
     if (!user) return { success: false, code: 'not-authenticated' };
@@ -279,6 +348,25 @@ window.syncUserData = async function (fields) {
         } catch (e) {
             lastError = e;
             if (!TRANSIENT_FIRESTORE_CODES.includes(e && e.code)) break;
+        }
+    }
+    if (lastError && lastError.code !== 'permission-denied') {
+        const slimFields = stripLargeInlineMedia(fields);
+        if (slimFields) {
+            try {
+                await setDoc(doc(db, 'users', user.uid), slimFields, { merge: true });
+                if (!_syncUserDataCoverToastShown && typeof window.showSimpleToast === 'function') {
+                    _syncUserDataCoverToastShown = true;
+                    const isFr = document.documentElement.lang === 'fr' || (window.currentLang === 'fr');
+                    window.showSimpleToast(isFr
+                        ? "Vos données sont synchronisées, mais certaines photos (couvertures de voyage, photos de visite...) sont trop volumineuses pour l'instant — elles restent visibles sur cet appareil."
+                        : "Your data is synced, but some photos (trip covers, visit photos...) are too large to sync right now — they stay visible on this device.", { isError: false });
+                    setTimeout(() => { _syncUserDataCoverToastShown = false; }, 15000);
+                }
+                return { success: true, coversSkipped: true };
+            } catch (e2) {
+                lastError = e2;
+            }
         }
     }
     {

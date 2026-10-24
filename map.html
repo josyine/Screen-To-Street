@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261054" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261055" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -821,6 +821,24 @@
   .modal-post-save-btn svg { transition: transform 0.15s; }
   .modal-post-save-btn.saved svg { transform: scale(1.1); fill: #D42759; }
   .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
+  /* "...more" (demande du 24/10/2026, "comme dans Community... ajoute '...more'") — même
+     principe que .fpf-more-toggle/.fpf-caption (feed.html) : légende tronquée sur 2 lignes
+     par défaut, un bouton texte simple bascule le repli. */
+  .modal-post-caption-clamped { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
+  .modal-post-more-btn { display: block; background: none; border: none; padding: 0; margin: 0 0 14px; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; font-family: inherit; }
+  .modal-post-more-btn:hover { color: #D42759; }
+  /* "pas de dégradé noir... titre en petit sur la photo en bas à gauche" (demande du
+     24/10/2026, capture Community fournie) : une vraie PUBLICATION (postContext présent,
+     même condition que le dégradé retiré dans openLocModal()/script.js et que .post-modal
+     ci-dessous) remplace le grand titre superposé sur fond dégradé par une petite pastille
+     façon .fpf-media-tag (feed.html, Community/Mei's Pictures) — une fiche LIEU classique
+     (visited.html/wishlist.html, sans postContext) garde son style inchangé. */
+  #loc-modal.post-modal #modal-title {
+      position: absolute; left: 14px; bottom: 12px; z-index: 2;
+      background: rgba(20,16,30,.55); color: #fff; font-size: 10.5px; font-weight: 700;
+      padding: 4px 9px; border-radius: 100px; text-shadow: none;
+      max-width: calc(100% - 28px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   @media (max-width: 760px) {
     #loc-modal .modal-content { width: 97%; border-radius: 12px; }
     .modal-body { padding: 18px 18px 22px 18px; }
@@ -870,7 +888,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261054';
+        s.src = 'page-loader.js?v=20261055';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1962,6 +1980,7 @@
                 </button>
             </div>
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
+            <button type="button" id="modal-post-more-btn" class="modal-post-more-btn hidden">··· more</button>
             <div id="modal-meta"></div>
             <span class="modal-sub-label" id="modal-details-label">Details</span>
             <div id="modal-meta-box"></div>
@@ -2144,27 +2163,27 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261054"></script>
-<script type="module" src="firebase-init.js?v=20261054"></script>
-<script src="locations-data.js?v=20261054"></script>
+<script src="countries.js?v=20261055"></script>
+<script type="module" src="firebase-init.js?v=20261055"></script>
+<script src="locations-data.js?v=20261055"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261054"></script>
+<script src="artists-content.js?v=20261055"></script>
 <!-- Contours de pays pour la teinte "Show visited" sur la mini-carte de visited.html
      (window.VISITED_WORLD_MAP/visitedWorldMapProject() dans script.js) — gardé ici
      uniquement parce que script.js référence encore ces fonctions ; la carte Leaflet de
      CETTE page n'utilise plus ce fichier pour son propre overlay de pays visités, voir
      country-borders.js ci-dessous (demande du 17/10/2026, "frontières correctes"). -->
-<script src="visited-map-data.js?v=20261054"></script>
+<script src="visited-map-data.js?v=20261055"></script>
 <!-- Vraies frontières de pays (Natural Earth, lat/lng Leaflet) pour l'overlay "Show
      visited" de CETTE carte — remplace l'approximation SVG ci-dessus pour ce usage
      (demande du 17/10/2026). Doit précéder script.js. -->
-<script src="country-borders.js?v=20261054"></script>
-<script src="script.js?v=20261054"></script>
+<script src="country-borders.js?v=20261055"></script>
+<script src="script.js?v=20261055"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261054"></script>
-<script src="map-tour.js?v=20261054"></script>
+<script src="itinerary.js?v=20261055"></script>
+<script src="map-tour.js?v=20261055"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE

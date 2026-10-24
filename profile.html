@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261054" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261055" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -287,7 +287,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
    taille d'origine. */
 .modal-content { padding: 0; }
 .close-btn { top: 12px; right: 18px; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,.4); z-index: 10; }
-#modal-hero { height: 320px; background-size: cover; background-position: center; border-radius: 16px 16px 0 0; display: flex; align-items: flex-end; padding: 20px; }
+#modal-hero { height: 320px; background-size: cover; background-position: center; border-radius: 16px 16px 0 0; display: flex; align-items: flex-end; padding: 20px; position: relative; }
 #modal-title { color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.3); }
 .modal-body { padding: 20px 26px 28px 26px; }
 #modal-meta { font-size: 12.5px; color: #D42759; font-weight: 700; margin-bottom: 16px; }
@@ -313,6 +313,24 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 .modal-post-save-btn svg { transition: transform 0.15s; }
 .modal-post-save-btn.saved svg { transform: scale(1.1); fill: #D42759; }
 .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
+/* "...more" (demande du 24/10/2026, "comme dans Community... ajoute '...more'") — même
+   principe que .fpf-more-toggle/.fpf-caption (feed.html) : légende tronquée sur 2 lignes
+   par défaut, un bouton texte simple bascule le repli. */
+.modal-post-caption-clamped { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
+.modal-post-more-btn { display: block; background: none; border: none; padding: 0; margin: 0 0 14px; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; font-family: inherit; }
+.modal-post-more-btn:hover { color: #D42759; }
+/* "pas de dégradé noir... titre en petit sur la photo en bas à gauche" (demande du
+   24/10/2026, capture Community fournie) : une vraie PUBLICATION (postContext présent,
+   même condition que le dégradé retiré dans openLocModal()/script.js et que .post-modal
+   ci-dessous — les tuiles "Reviews" de cette page passent déjà postContext, voir plus
+   bas) remplace le grand titre superposé sur fond dégradé par une petite pastille façon
+   .fpf-media-tag (feed.html, Community/Mei's Pictures). */
+#loc-modal.post-modal #modal-title {
+    position: absolute; left: 14px; bottom: 12px; z-index: 2;
+    background: rgba(20,16,30,.55); color: #fff; font-size: 10.5px; font-weight: 700;
+    padding: 4px 9px; border-radius: 100px; text-shadow: none;
+    max-width: calc(100% - 28px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 /* Boutons retour (chevron)/modifier (crayon) de la modale publication (demande du
    10/09/2026) — mêmes emplacements que .close-btn (haut de la photo hero), affichés
    uniquement via les classes basculées par openLocModal() dans script.js. */
@@ -446,8 +464,20 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
      d'autre ne vit sur mobile (.universal-logo y est masqué, voir plus bas) — et devient une
      vraie croix "fermer" plutôt que l'icône "réduire" (voir le SVG dans le HTML plus bas),
      demande explicite plutôt qu'une simple reformulation de la précédente. */
+  /* BUG corrigé (demande répétée du 24/10/2026, "le bouton ne s'affiche pas, il est masqué
+     par la map") : z-index:10 suffisait avec le stub de test (jamais de vrais panes
+     Leaflet), mais une VRAIE carte Leaflet pose ses propres panes internes
+     (.leaflet-tile-pane z-index:200, .leaflet-marker-pane:600, .leaflet-popup-pane:700...)
+     à l'intérieur de #profile-mini-map — et .leaflet-container (position:relative, sans
+     z-index à lui) ne crée PAS son propre contexte d'empilement, donc ces z-index internes
+     "fuient" jusqu'au contexte d'empilement du cadre plein écran (z-index:9000 en
+     position:fixed) où vit aussi ce bouton : 200-700 > 10, les tuiles/marqueurs de la carte
+     passaient donc PAR-DESSUS ce bouton, pourtant bien présent et cliquable dans le DOM
+     (invisible seulement à l'œil). z-index largement au-dessus du plus haut pane Leaflet
+     (700) suffit, sans toucher à .leaflet-container lui-même (dont le popup pane sous un
+     marqueur, prévu pour dépasser du cadre carte, doit rester fonctionnel ailleurs). */
   .profile-map-shrink-btn {
-      position: absolute; top: calc(14px + env(safe-area-inset-top)); left: 14px; z-index: 10;
+      position: absolute; top: calc(14px + env(safe-area-inset-top)); left: 14px; z-index: 9500;
       width: 38px; height: 38px; border-radius: 50%; border: none;
       background: rgba(255,255,255,.92); color: #1F2430; display: flex; align-items: center; justify-content: center;
       cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,.18);
@@ -505,7 +535,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261054';
+        s.src = 'page-loader.js?v=20261055';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -784,6 +814,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                 </button>
             </div>
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
+            <button type="button" id="modal-post-more-btn" class="modal-post-more-btn hidden">··· more</button>
             <div id="modal-meta"></div>
             <span class="modal-sub-label" id="modal-details-label">Details</span>
             <div id="modal-meta-box"></div>
@@ -805,9 +836,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261054"></script>
-<script src="locations-data.js?v=20261054"></script>
-<script src="script.js?v=20261054"></script>
+<script type="module" src="firebase-init.js?v=20261055"></script>
+<script src="locations-data.js?v=20261055"></script>
+<script src="script.js?v=20261055"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
