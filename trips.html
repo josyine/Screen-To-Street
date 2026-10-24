@@ -235,6 +235,25 @@
   .gen-btn.ghost {background:transparent;color:#D42759;border:1.5px solid #D42759;box-shadow:none;}
   .gen-btn.ghost:hover { background:#FCE7F0; }
 
+  /* Champs natifs (select/input) des rangées .qaf-row du Générateur d'itinéraire automatique
+     (demande du 24/10/2026, voir #itinerary-modal plus bas) : .qaf-rt span (style.css) donne
+     ce même poids/taille de police à une VALEUR affichée, mais un <select>/<input> natif a son
+     propre style de navigateur par défaut (bordure, fond) qu'il faut neutraliser pour qu'il se
+     fonde dans la rangée comme un simple texte, le chevron de .qaf-chev faisant déjà office
+     d'indicateur "cliquable" — appearance:none retire aussi la propre flèche du <select>,
+     sinon doublée avec celle de .qaf-chev. */
+  #itinerary-modal .qaf-rt select,
+  #itinerary-modal .qaf-rt input[type="number"] {
+      appearance: none; -webkit-appearance: none; border: none; background: none; outline: none;
+      padding: 0; margin: 0; width: 100%; font-family: inherit; font-weight: 600; font-size: 14px; color: #1F2430;
+  }
+  #itinerary-modal .iti-qaf-dates { display: flex; align-items: center; gap: 6px; }
+  #itinerary-modal .iti-qaf-dates input[type="date"] {
+      border: none; background: none; outline: none; padding: 0; font-family: inherit;
+      font-weight: 600; font-size: 14px; color: #1F2430; flex: 1; min-width: 0;
+  }
+  #itinerary-modal .iti-qaf-dates-sep { color: #B4ADC2; font-size: 13px; flex: 0 0 auto; }
+
   .section-label {font-size:11.5px;font-weight:700;letter-spacing:.7px;color:#94a3b8;text-transform:uppercase;margin:24px 0 16px 0;}
 
   /* "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) — affiche et
@@ -1530,39 +1549,72 @@
 </div>
 
 <div id="itinerary-modal" class="modal hidden">
-    <div class="modal-content" style="max-width: 650px;">
+    <div class="modal-content" style="max-width: 650px; --qa-mag:#D42759; --qa-mut:#8F8B99; --qaf-line:#ece8f2; --qa-soft:#F4F2F8;">
         <span class="close-btn" onclick="closeModal('itinerary-modal')">&times;</span>
         <h2 style="color: var(--primary-magenta); font-size:1.4rem; margin-bottom: 5px;" data-i18n="itiTitle">Auto-Itinerary Generator</h2>
         <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;" data-i18n="itiDesc">Select a group, a country, and how many days you stay.</p>
-        
-        <div id="iti-form" style="display:flex; flex-direction:column; gap:12px; margin-bottom: 20px;">
-            <select id="iti-group" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;" onchange="updateItiCity()"></select>
-            <select id="iti-country" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;" onchange="updateItiCity()"></select>
-            <!-- NOUVEAU SELECT VILLE -->
-            <select id="iti-city" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;"><option value="">All Cities (Optional)</option></select>
-            <div>
+
+        <!-- BUG corrigé (demande du 24/10/2026, capture d'écran fournie — deuxième image) :
+             redemandé avec référence explicite à la fiche "New trip" — group/country/city/
+             dates/stay reprennent maintenant exactement son langage visuel (.qaf-row/.qaf-ri/
+             .qaf-rt/.qaf-chev, voir style.css et ntRowHtml() dans script.js, qui dessine les
+             rangées de CETTE MÊME fiche) : pastille d'icône rose, sous-libellé + valeur,
+             chevron à droite. Les <select>/<input> restent de VRAIS champs natifs (voir
+             #iti-group/#iti-country/#iti-city/#iti-start-date/#iti-end-date, tous inchangés
+             côté JS — updateItiCity()/window.updateItiDaysFromDates()/generateItinerary()) au
+             lieu de reconstruire toute la mécanique de fiche plein écran + recherche de "New
+             trip" (overkill ici : ce générateur reste un simple popup, parfois ouvert hors du
+             contexte d'un voyage, voir le commentaire sur #iti-hotel-row plus bas) — seul le
+             HABILLAGE change, pas le fonctionnement. Les 4 variables --qa-mag/--qa-mut/
+             --qaf-line/--qa-soft que .qaf-row consomme (voir style.css) ne sont normalement
+             posées QUE sur .qa-form-overlay (fiche "New trip") ; reposées ici sur
+             .modal-content pour qu'elles résolvent correctement dans cette popup aussi. -->
+        <div id="iti-form" style="margin-bottom: 20px;">
+            <label class="qaf-row" style="cursor:pointer;">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span>
+                <span class="qaf-rt"><small data-i18n="itiGroupLabel">Group</small><select id="iti-group" class="iti-qaf-select" onchange="updateItiCity()"></select></span>
+                <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+            </label>
+            <label class="qaf-row" style="cursor:pointer;">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span>
+                <span class="qaf-rt"><small data-i18n="itiCountryLabel">Country</small><select id="iti-country" class="iti-qaf-select" onchange="updateItiCity()"></select></span>
+                <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+            </label>
+            <label class="qaf-row" style="cursor:pointer;">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+                <span class="qaf-rt"><small data-i18n="itiCityLabel">City <em data-i18n="itiOptional">· optional</em></small><select id="iti-city" class="iti-qaf-select"><option value="" data-i18n="itiAllCities">All cities</option></select></span>
+                <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+            </label>
+            <div class="qaf-row">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
+                <span class="qaf-rt">
+                    <small data-i18n="itiDatesLabel">Dates <em data-i18n="itiOptional">· optional</em></small>
+                    <span class="iti-qaf-dates">
+                        <input type="date" id="iti-start-date" onchange="window.updateItiDaysFromDates()">
+                        <span class="iti-qaf-dates-sep">→</span>
+                        <input type="date" id="iti-end-date" onchange="window.updateItiDaysFromDates()">
+                    </span>
+                </span>
+            </div>
+            <div class="qaf-row">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg></span>
+                <span class="qaf-rt"><small data-i18n="itiLengthLabel">Trip length <em data-i18n="itiLengthUnit">· days</em></small><input type="number" id="iti-days" min="1" max="7" value="3" class="iti-qaf-num"></span>
+            </div>
+            <!-- Stay (demande répétée du 24/10/2026) : reste un <button> (pas un <select>, voir
+                 window.openItiStayEditor() dans script.js — vraies suggestions de lieu Nominatim,
+                 même composant que "New trip"), seul l'habillage passe en .qaf-row. N'existe QUE
+                 sur trips.html (voir le commentaire sur openItiStayEditor()) — map.html a sa
+                 propre copie plus simple de ce modal, sans ce bouton. -->
+            <button type="button" id="iti-hotel-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.openItiStayEditor(event)">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg></span>
+                <span class="qaf-rt"><small data-i18n="itiStayLabel">Stay <em data-i18n="itiOptional">· optional</em></small><span id="iti-hotel-label" class="qaf-ph" data-i18n="itiStayPlaceholder">Hotel or neighborhood</span></span>
+                <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+            </button>
+            <div style="margin-top:14px;">
                 <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px;" data-i18n="itiCatLabel">Categories (optional, select multiple)</div>
                 <div id="iti-categories" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
             </div>
-
-            <!-- Dates + Stay (demande du 24/10/2026, "il faut afficher les mêmes infos que la
-                 page 'New trip' : group, country, cities, dates, stay... garder l'affichage de
-                 popup actuel") — même style simple (select/input bordé, inline) déjà utilisé
-                 par chaque champ de ce formulaire ci-dessus, pas la fiche plein écran de "New
-                 trip". Les dates alimentent #iti-days (inchangé, toujours lu par
-                 generateItinerary()) via window.updateItiDaysFromDates() ci-dessous plutôt que
-                 de le remplacer — garde la saisie manuelle du nombre de jours utilisable telle
-                 quelle quand on préfère ne pas choisir de dates précises (ce générateur est
-                 aussi ouvert depuis une fiche lieu, hors du contexte d'un voyage). -->
-            <div style="display:flex; gap:8px;">
-                <input type="date" id="iti-start-date" style="flex:1; min-width:0; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;" onchange="window.updateItiDaysFromDates()">
-                <input type="date" id="iti-end-date" style="flex:1; min-width:0; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;" onchange="window.updateItiDaysFromDates()">
-            </div>
-            <input type="number" id="iti-days" min="1" max="7" value="3" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;">
-            <button type="button" id="iti-hotel-row" class="place-search-trigger" style="padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background:#fff; text-align:left; font-family:inherit; font-size:14px; cursor:pointer;" onclick="window.openItiStayEditor(event)">
-                <span id="iti-hotel-label" style="color:#94a3b8;" data-i18n="itiStayPlaceholder">Stay — hotel or neighborhood (optional)</span>
-            </button>
-            <button class="gen-btn" onclick="generateItinerary()" style="padding:14px; font-size:14px; justify-content:center;" data-i18n="itiCreateBtn">Create My Guide</button>
+            <button class="gen-btn" onclick="generateItinerary()" style="margin-top:16px; padding:14px; font-size:14px; justify-content:center;" data-i18n="itiCreateBtn">Create My Guide</button>
         </div>
 
         <div id="iti-result" class="hidden" style="border-top: 1px solid #cbd5e1; padding-top: 20px;">
