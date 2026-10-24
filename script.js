@@ -7398,6 +7398,27 @@ window.loadItineraryTabOptions = function() {
     window.clearTripFromMainMap();
 };
 
+// BUG corrigé (demande du 24/10/2026, "New trip n'affiche que 3 lieux alors qu'il y en a
+// beaucoup plus") : tout le code des voyages comparait les ids de lieu via Number(id)/
+// parseInt(id), en supposant qu'ils sont toujours numériques. Or tout lieu ajouté
+// manuellement a un id "new-manual-xxx" (voir createNewTripAdvanced plus bas) ou "new-xxx"
+// (file d'approbation, voir le commentaire sur locationSortKey plus haut) — Number() sur
+// ces chaînes renvoie NaN, et NaN !== NaN fait silencieusement disparaître ces lieux des
+// .find()/.includes() partout où ce voyage est affiché ou recalculé (jours assignés,
+// compteur "N lieux", liste "ajouter un lieu", régénération après changement de dates...).
+// sameLocId()/includesLocId() comparent les ids tels quels (en chaîne), ce qui fonctionne
+// quel que soit leur type d'origine, sans jamais les coercer.
+function sameLocId(a, b) { return String(a) === String(b); }
+function includesLocId(arr, id) { return (arr || []).some(x => sameLocId(x, id)); }
+// Pour embarquer un id de lieu dans un attribut onclick="..." (toujours entre guillemets
+// doubles dans ce fichier) : un id "new-manual-xxx" doit être rendu comme un littéral JS
+// ENTRE GUILLEMETS SIMPLES (sinon il serait interprété comme du code, variable "new" moins
+// "manual" etc.) sans casser l'attribut HTML englobant — JSON.stringify() produirait des
+// guillemets doubles qui refermeraient prématurément l'attribut.
+function locIdLit(id) {
+    return typeof id === 'number' ? String(id) : "'" + String(id).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
+}
+
 // Clic sur une ligne de la liste : sélectionne ce voyage pour l'afficher sur la carte,
 // ou le désélectionne s'il l'était déjà (recliquer un voyage déjà actif le retire de la
 // carte — demande du 06/09/2026). Sur mobile (demande du 12/09/2026) : redirige plutôt
@@ -7440,14 +7461,14 @@ window.loadItineraryView = function(tripId) {
 
     document.getElementById('iti-view-name').textContent = trip.name;
     
-    let allAssignedIds = (trip.days || []).flat().map(Number);
+    let allAssignedIds = (trip.days || []).flat();
     document.getElementById('iti-view-loc-count').textContent = `${allAssignedIds.length} location${allAssignedIds.length > 1 ? 's' : ''}`;
 
     let wList = getWishlistLocs();
     let totalSaved = wList.filter(w => w.tripId === trip.id).length;
-    
+
     let countries = [...new Set(allAssignedIds.map(id => {
-        let loc = celebLocations.find(l => Number(l.id) === id);
+        let loc = celebLocations.find(l => sameLocId(l.id, id));
         return loc ? loc.country : null;
     }).filter(Boolean))];
     
@@ -7473,10 +7494,10 @@ window.loadItineraryView = function(tripId) {
             timelineHtml += `<div class="timeline-loc-city" style="font-style:italic; text-align:left;">No locations planned</div>`;
         } else {
             dayIds.forEach(id => {
-                const loc = celebLocations.find(l => Number(l.id) === Number(id));
+                const loc = celebLocations.find(l => sameLocId(l.id, id));
                 if(loc) {
                     timelineHtml += `
-                        <div class="timeline-loc" onclick="map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 }); window.openDetailsPanel(${loc.id});" style="cursor:pointer;">
+                        <div class="timeline-loc" onclick="map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 }); window.openDetailsPanel(${locIdLit(loc.id)});" style="cursor:pointer;">
                             <span class="timeline-loc-name">${loc.name}</span>
                             <span class="timeline-loc-city">${loc.city || ''}</span>
                         </div>
@@ -7546,7 +7567,7 @@ function drawTripOnMap(trip, targetMap, targetLayerGroup, onlyDayIndex) {
         const color = TRIP_DAY_COLORS[idx % TRIP_DAY_COLORS.length];
         let coords = [];
         dayIds.forEach((id, locIdx) => {
-            const loc = celebLocations.find(l => Number(l.id) === Number(id));
+            const loc = celebLocations.find(l => sameLocId(l.id, id));
             if(loc) {
                 coords.push([loc.lat, loc.lng]);
                 allPoints.push([loc.lat, loc.lng]);
@@ -7604,7 +7625,7 @@ window.renderTripDaySummary = function() {
         if (tripMapSelectedDay >= 0 && tripMapSelectedDay !== i) return;
         const color = TRIP_DAY_COLORS[i % TRIP_DAY_COLORS.length];
         const names = dayIds.map(id => {
-            const loc = celebLocations.find(l => Number(l.id) === Number(id));
+            const loc = celebLocations.find(l => sameLocId(l.id, id));
             return loc ? loc.name.split(' ')[0] : null;
         }).filter(Boolean);
         const route = names.length ? names.join(' → ') : noPlacesLabel;
@@ -7635,7 +7656,7 @@ function renderDayMiniMaps(trip) {
 
         const color = TRIP_DAY_COLORS[idx % TRIP_DAY_COLORS.length];
         const coords = dayIds
-            .map(id => celebLocations.find(l => Number(l.id) === Number(id)))
+            .map(id => celebLocations.find(l => sameLocId(l.id, id)))
             .filter(Boolean)
             .map(loc => [loc.lat, loc.lng]);
 
@@ -12223,7 +12244,7 @@ window.addSelectedDaysToTrip = function() {
             let dayIds = [];
             dayLocs.forEach(loc => {
                 dayIds.push(loc.id);
-                if (!wList.some(w => Number(w.id) === Number(loc.id) && w.tripId === currentTrip.id)) {
+                if (!wList.some(w => sameLocId(w.id, loc.id) && w.tripId === currentTrip.id)) {
                     wList.push({ id: loc.id, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
                 }
             });
@@ -12870,7 +12891,7 @@ window.openFilteredListModal = function(type) {
         currentFilteredLocations.forEach(loc => {
             const clickAction = isMobile
                 ? `closeModal('list-modal'); map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 });`
-                : `closeModal('list-modal'); window.openDetailsPanel(${loc.id}); map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 });`;
+                : `closeModal('list-modal'); window.openDetailsPanel(${locIdLit(loc.id)}); map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 });`;
             content.innerHTML += `
                 <div style="padding: 12px; background: #faf9fc; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#D42759'" onmouseout="this.style.borderColor='#e2e8f0'" onclick="${clickAction}">
                     <div style="font-weight: 700; color: #2E3644; font-size:14px; margin-bottom:2px;">${loc.name}</div>
@@ -13383,7 +13404,7 @@ window.renderTripsSidebar = function() {
 
     trips.forEach(t => {
         let allAssignedIds = (t.days || []).flat();
-        let unassignedCount = wList.filter(w => w.tripId === t.id && !allAssignedIds.includes(Number(w.id))).length;
+        let unassignedCount = wList.filter(w => w.tripId === t.id && !includesLocId(allAssignedIds, w.id)).length;
         let totalLocs = allAssignedIds.length + unassignedCount;
 
         let dateStr = t.dateType === 'duration' ? (t.duration || 'Flexible') : `${t.startDate || '?'} to ${t.endDate || '?'}`;
@@ -13914,7 +13935,7 @@ window.refreshDayTimelines = function() {
         const dayColor = TRIP_DAY_COLORS[cardIdx % TRIP_DAY_COLORS.length];
         const itemsEl = card.querySelector('.day-items');
         const endpoints = tripDayEndpoints(cardIdx);
-        const locs = rows.map(el => celebLocations.find(l => l.id === parseInt(el.dataset.id))).filter(Boolean);
+        const locs = rows.map(el => celebLocations.find(l => sameLocId(l.id, el.dataset.id))).filter(Boolean);
         const items = computeDayTimeline(locs, endpoints.start);
 
         // Connecteurs de trajet ENTRE deux arrêts (demande du 18/10/2026, trip_finale_
@@ -14337,7 +14358,7 @@ window.renderTrip = function() {
     let metaText = "";
     if (currentTrip.group) metaText += currentTrip.group + " • ";
     if (currentTrip.country) metaText += currentTrip.country + " • ";
-    let allAssignedIds = currentTrip.days.flat().map(Number);
+    let allAssignedIds = currentTrip.days.flat();
     metaText += `${allAssignedIds.length} location${allAssignedIds.length > 1 ? 's' : ''}`;
     const datesDisplay = document.getElementById('dates-display');
     if(datesDisplay) {
@@ -14442,8 +14463,8 @@ window.renderTrip = function() {
     // Ne garder dans unassignedLocs QUE les lieux qui sont explicitement dans wishlistLocs pour ce voyage ET qui ne sont pas déjà assignés.
     let wList = getWishlistLocs();
     let unassignedLocs = wList
-        .filter(w => w.tripId === currentTrip.id && !allAssignedIds.includes(Number(w.id)))
-        .map(w => celebLocations.find(l => l.id === Number(w.id)))
+        .filter(w => w.tripId === currentTrip.id && !includesLocId(allAssignedIds, w.id))
+        .map(w => celebLocations.find(l => sameLocId(l.id, w.id)))
         .filter(Boolean);
 
     const locList = document.getElementById('loc-list');
@@ -14469,7 +14490,7 @@ window.renderTrip = function() {
         
         let itemsHtml = '';
         dayIds.forEach(id => {
-            const loc = celebLocations.find(l => l.id === Number(id));
+            const loc = celebLocations.find(l => sameLocId(l.id, id));
             if (loc) itemsHtml += window.createLocRowHtml(loc);
         });
 
@@ -14508,7 +14529,7 @@ window.renderTrip = function() {
     if(tripCountries.length > 0) {
         celebLocations.forEach(loc => {
             // Recommandation si: même pays + PAS assigné à un jour + PAS déjà dans unassignedLocs
-            if (tripCountries.includes(loc.country) && !allAssignedIds.includes(loc.id) && !unassignedLocs.some(u=>u.id===loc.id)) {
+            if (tripCountries.includes(loc.country) && !includesLocId(allAssignedIds, loc.id) && !unassignedLocs.some(u=>sameLocId(u.id, loc.id))) {
                 if (recoCount < 4) {
                     // Pastille d'icône de secours (demande du 18/10/2026, trip_finale_legere.html :
                     // certains lieux recommandés n'ont pas encore de photo) plutôt qu'une vignette
@@ -14526,7 +14547,7 @@ window.renderTrip = function() {
                         <div class="loc-row">
                             ${thumbHtml}
                             <div class="loc-info"><div class="loc-name">${closedBadgeHtml}${escapeHtml(displayName)}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
-                            <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="quickAddLoc(${loc.id})">+</button>
+                            <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="quickAddLoc(${locIdLit(loc.id)})">+</button>
                         </div>
                     `;
                     recoCount++;
@@ -14679,8 +14700,8 @@ window.toggleTripDatesPopup = function() {
 window.regenerateTripItinerary = function() {
     if (!currentTrip || !activeTripAccess.isOwner) return;
     const wList = getWishlistLocs();
-    const tripLocIds = [...new Set(wList.filter(w => w.tripId === currentTrip.id).map(w => Number(w.id)))];
-    let locs = tripLocIds.map(id => celebLocations.find(l => l.id === id)).filter(Boolean);
+    const tripLocIds = [...new Set(wList.filter(w => w.tripId === currentTrip.id).map(w => w.id))];
+    let locs = tripLocIds.map(id => celebLocations.find(l => sameLocId(l.id, id))).filter(Boolean);
     if (locs.length === 0) return;
 
     // BUG corrigé (demande du 17/10/2026, "génère bien le trip le plus optimisé possible") :
@@ -14810,12 +14831,12 @@ window.createLocRow = function(loc) {
     div.setAttribute('ondragover', 'allowDrop(event)');
     div.setAttribute('ondrop', 'drop(event)');
     div.setAttribute('ondragleave', 'dragLeave(event)');
-    div.setAttribute('onclick', `openTripLocDetail(event, ${loc.id})`);
+    div.setAttribute('onclick', `openTripLocDetail(event, ${locIdLit(loc.id)})`);
     div.innerHTML = `
         <span class="drag-handle edit-only" style="display:inline;">⠿</span>
         <span class="day-loc-dot"></span>
         ${loc.name}
-        <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${loc.id})">✕</span>
+        <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${locIdLit(loc.id)})">✕</span>
     `;
     return div;
 }
@@ -14828,11 +14849,11 @@ window.createLocRowHtml = function(loc) {
     // jamais vraie, et le trait indicateur .drag-over-top/.drag-over-bottom (déjà stylé
     // en CSS) ne s'affichait jamais entre deux lieux pendant un glisser-déposer.
     return `
-        <div class="day-loc" data-id="${loc.id}" draggable="true" ondragstart="dragStart(event, 'loc')" ondragend="dragEnd(event)" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" onclick="openTripLocDetail(event, ${loc.id})">
+        <div class="day-loc" data-id="${loc.id}" draggable="true" ondragstart="dragStart(event, 'loc')" ondragend="dragEnd(event)" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" onclick="openTripLocDetail(event, ${locIdLit(loc.id)})">
             <span class="drag-handle edit-only" style="display:inline;">⠿</span>
             <span class="day-loc-dot"></span>
             ${loc.name}
-            <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${loc.id})">✕</span>
+            <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${locIdLit(loc.id)})">✕</span>
         </div>
     `;
 }
@@ -15135,19 +15156,19 @@ window.confirmRemoveDay = function() {
 }
 
 window.removeFromTrip = function(btn, locId) {
-    locToRemoveData = { btn: btn, id: Number(locId) };
+    locToRemoveData = { btn: btn, id: locId };
     document.getElementById('remove-loc-modal').classList.remove('hidden');
 }
 
 window.confirmRemoveLoc = function() {
     if(!locToRemoveData) return;
-    
+
     let wList = getWishlistLocs();
-    wList = wList.filter(w => !(Number(w.id) === locToRemoveData.id && w.tripId === currentTrip.id));
+    wList = wList.filter(w => !(sameLocId(w.id, locToRemoveData.id) && w.tripId === currentTrip.id));
     localStorage.setItem('wishlistLocs', JSON.stringify(wList));
     syncWishlist(wList);
-    
-    currentTrip.days = currentTrip.days.map(day => day.filter(id => Number(id) !== locToRemoveData.id));
+
+    currentTrip.days = currentTrip.days.map(day => day.filter(id => !sameLocId(id, locToRemoveData.id)));
 
     // Important : on persiste directement le voyage mis à jour AVANT de ré-appeler renderTrip().
     // On n'utilise pas saveTrip() ici, car elle reconstruit currentTrip.days en relisant le DOM
@@ -15166,9 +15187,8 @@ window.confirmRemoveLoc = function() {
 }
 
 window.quickAddLoc = function(locId) {
-    locId = Number(locId);
     let wList = getWishlistLocs();
-    if(!wList.some(w => Number(w.id) === locId && w.tripId === currentTrip.id)) {
+    if(!wList.some(w => sameLocId(w.id, locId) && w.tripId === currentTrip.id)) {
         wList.push({ id: locId, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
         localStorage.setItem('wishlistLocs', JSON.stringify(wList));
         syncWishlist(wList);
@@ -15209,7 +15229,16 @@ window.saveTrip = function() {
     const newDays = [];
     document.querySelectorAll('.day-card').forEach(card => {
         const ids = [];
-        card.querySelectorAll('.day-loc').forEach(locEl => { ids.push(parseInt(locEl.dataset.id)); });
+        // dataset.id est TOUJOURS une chaîne (attribut HTML) : parseInt() cassait les ids
+        // "new-manual-xxx" (NaN). On restitue un nombre pour les ids historiques purement
+        // numériques (cohérence avec celebLocations), et on garde la chaîne telle quelle
+        // sinon — voir sameLocId()/locIdLit() plus haut pour la comparaison de ces deux
+        // formes sans jamais les coercer en nombre.
+        card.querySelectorAll('.day-loc').forEach(locEl => {
+            const raw = locEl.dataset.id;
+            const asNum = Number(raw);
+            ids.push(raw !== '' && !Number.isNaN(asNum) && String(asNum) === raw ? asNum : raw);
+        });
         newDays.push(ids);
     });
     currentTrip.days = newDays;
@@ -15280,10 +15309,10 @@ window.filterAddModal = function() {
         return true;
     });
 
-    let allAssignedIds = currentTrip.days.flat().map(Number);
-    
+    let allAssignedIds = currentTrip.days.flat();
+
     filteredLocs.forEach(loc => {
-        if (!allAssignedIds.includes(Number(loc.id))) {
+        if (!includesLocId(allAssignedIds, loc.id)) {
             if(loc.name.toLowerCase().includes(query) || (loc.city && loc.city.toLowerCase().includes(query)) || (loc.category && loc.category.toLowerCase().includes(query))) {
                 list.innerHTML += `
                     <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #e2e8f0;">
@@ -15291,7 +15320,7 @@ window.filterAddModal = function() {
                             <div style="font-weight:700; font-size:13px; color:#212832;">${loc.name}</div>
                             <div style="font-size:11px; color:#64748b;">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div>
                         </div>
-                        <button onclick="quickAddLoc(${loc.id}); this.textContent='Added'; this.disabled=true; this.style.background='#e2e8f0';" style="background:#D42759; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">+ Add</button>
+                        <button onclick="quickAddLoc(${locIdLit(loc.id)}); this.textContent='Added'; this.disabled=true; this.style.background='#e2e8f0';" style="background:#D42759; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">+ Add</button>
                     </div>
                 `;
             }
@@ -15929,7 +15958,7 @@ window.createNewTripAdvanced = async function() {
     // avec le reste du site (stats, page Wishlist).
     let wList = getWishlistLocs();
     daysArray.flat().forEach(id => {
-        if (!wList.some(w => Number(w.id) === Number(id) && w.tripId === newTripId)) {
+        if (!wList.some(w => sameLocId(w.id, id) && w.tripId === newTripId)) {
             wList.push({ id, dateAdded: new Date().toLocaleDateString(), tripId: newTripId });
         }
     });
