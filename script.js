@@ -12151,13 +12151,26 @@ const ITI_LUNCH_WINDOW_START = 12 * 60, ITI_LUNCH_WINDOW_END = 14 * 60, ITI_LUNC
 // jour édité à la main), juste signalés via pastClose/pastHardEnd. homeBase (optionnel,
 // {lat,lng}) sert de point de départ du premier trajet de la journée — hôtel ou quartier
 // d'hébergement renseigné pour le voyage.
-function computeDayTimeline(dayLocs, homeBase) {
+//
+// durationOverrides (demande du 25/10/2026, time_at_final.html, "Time at [lieu]") : map
+// optionnelle {locId (String) -> minutes} — currentTrip.locDurations pour un voyage RÉEL
+// (voir refreshDayTimelines() plus bas), jamais passée par l'Auto-Itinerary Generator
+// (simple aperçu avant création, pas encore de voyage à qui appartiendrait ces réglages).
+// Sans override pour un lieu donné, le comportement reste EXACTEMENT celui d'avant :
+// getLocationVisitProfile(loc).visitMinutes (durée par catégorie déjà utilisée par ce même
+// générateur) — réutilisé tel quel plutôt que d'inventer une deuxième source de durée par
+// défaut, comme demandé ("si le générateur ... utilise déjà des durées, réutilise la même
+// valeur"). Chaque item expose désormais visitMinutes (la durée RÉELLEMENT appliquée, pas
+// seulement le profil par catégorie) pour que refreshDayTimelines() puisse l'afficher.
+function computeDayTimeline(dayLocs, homeBase, durationOverrides) {
     const items = [];
     let curTime = ITI_DAY_START_MIN;
     let lunchTaken = false;
     let prevPoint = homeBase || null;
     dayLocs.forEach(loc => {
         const profile = getLocationVisitProfile(loc);
+        const override = durationOverrides && durationOverrides[String(loc.id)];
+        const visitMinutes = (typeof override === 'number' && override > 0) ? override : profile.visitMinutes;
         let arrival = curTime;
         let leg = null;
         if (prevPoint) {
@@ -12171,9 +12184,9 @@ function computeDayTimeline(dayLocs, homeBase) {
             lunchBefore = true;
         }
         if (arrival < profile.openHour * 60) arrival = profile.openHour * 60;
-        const departure = arrival + profile.visitMinutes;
+        const departure = arrival + visitMinutes;
         items.push({
-            loc, arrival, departure, leg, lunchBefore,
+            loc, arrival, departure, leg, lunchBefore, visitMinutes,
             pastClose: arrival >= profile.closeHour * 60,
             pastHardEnd: departure > ITI_DAY_HARD_END_MIN
         });
@@ -13934,6 +13947,15 @@ function formatClockMin(mins) {
     return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+// "45 min" / "1 h" / "1 h 30" (demande du 25/10/2026, time_at_final.html : fD()) — même
+// format que les pastilles de durée (.day-loc-duration-chip) et la fenêtre "Time at...".
+function formatDurationMin(mins) {
+    mins = Math.round(mins);
+    if (mins < 60) return `${mins} min`;
+    const h = Math.floor(mins / 60), m = mins % 60;
+    return m ? `${h} h ${String(m).padStart(2, '0')}` : `${h} h`;
+}
+
 // Construit un <div> détaché à partir d'un fragment HTML — utilisé par refreshDayTimelines()
 // ci-dessous pour remplacer des éléments existants en bloc (.replaceWith) sans jamais
 // toucher aux lignes .day-loc elles-mêmes (voir le commentaire sur refreshDayTimelines plus
@@ -13945,6 +13967,7 @@ function elFromHTML(html) {
 }
 
 const TRIP_WALK_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><circle cx="13" cy="4" r="2"/><path d="M15 22l-2-7-2 2-3 2M9 15l1-5 4-1 3 4M4 22l5-5"/></svg>';
+const TIME_AT_CLOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
 // BUG corrigé (demande du 24/10/2026, "il faut également préciser le transport emprunté...
 // actuellement ce n'est que de la marche à pied") : estimateTransitLeg() (plus bas dans ce
 // fichier) calcule bien un mode plausible selon la distance à vol d'oiseau (À pied/Métro-
@@ -14266,7 +14289,7 @@ window.refreshDayTimelines = function() {
         const itemsEl = card.querySelector('.day-items');
         const endpoints = tripDayEndpoints(cardIdx);
         const locs = rows.map(el => celebLocations.find(l => sameLocId(l.id, el.dataset.id))).filter(Boolean);
-        const items = computeDayTimeline(locs, endpoints.start);
+        const items = computeDayTimeline(locs, endpoints.start, currentTrip.locDurations || {});
 
         // Connecteurs de trajet ENTRE deux arrêts (demande du 18/10/2026, trip_finale_
         // legere.html) : retirés puis reconstruits en entier à chaque passage (ce sont de
@@ -14291,6 +14314,17 @@ window.refreshDayTimelines = function() {
                 rowEl.appendChild(extraEl);
             }
             extraEl.innerHTML = renderDayLocExtrasHTML(it, dayColor);
+            // Pastille de durée (demande du 25/10/2026, time_at_final.html) : "45 min" +
+            // "until HH:MM" — data-arrival/data-visit lus directement par
+            // window.openTimeAtSheet() au tap, pour ne jamais devoir refaire ce calcul à
+            // l'ouverture de la fenêtre (déjà fait ici, à chaque passage de cette fonction).
+            let durRowEl = rowEl.querySelector('.day-loc-duration-row');
+            if (!durRowEl) {
+                durRowEl = document.createElement('div');
+                durRowEl.className = 'day-loc-duration-row';
+                rowEl.appendChild(durRowEl);
+            }
+            durRowEl.innerHTML = `<button type="button" class="day-loc-duration-chip" data-locid="${escapeHtml(String(it.loc.id))}" data-arrival="${it.arrival}" data-visit="${it.visitMinutes}" onclick="event.stopPropagation(); window.openTimeAtSheet(this);">${TIME_AT_CLOCK_ICON}<span>${formatDurationMin(it.visitMinutes)}</span></button><span class="day-loc-duration-until">${currentLang === 'fr' ? 'jusqu’à' : 'until'} ${formatClockMin(it.departure)}</span>`;
             if (idx > 0 && it.leg) {
                 const mins = Math.round((it.leg.minMinutes + it.leg.maxMinutes) / 2);
                 rowEl.insertAdjacentElement('beforebegin', elFromHTML(`<div class="day-loc-leg">${transitIconFor(it.leg)} ${transitLegLabel(it.leg, mins)}</div>`));
@@ -14332,6 +14366,66 @@ window.refreshDayTimelines = function() {
         }
     });
 }
+
+// Fenêtre "Time at [lieu]" (demande du 25/10/2026, time_at_final.html) — voir la pastille
+// de durée ajoutée par window.refreshDayTimelines() ci-dessus, dont le tap ouvre cette
+// fenêtre. timeAtOpenLocId retient le lieu en cours d'édition entre l'ouverture et Save
+// (l'input range lui-même ne porte que la VALEUR, jamais l'identité du lieu).
+let timeAtOpenLocId = null;
+let timeAtOpenArrival = 0;
+window.openTimeAtSheet = function(btn) {
+    if (!currentTrip) return;
+    const locId = btn.dataset.locid;
+    const loc = celebLocations.find(l => sameLocId(l.id, locId));
+    if (!loc) return;
+    timeAtOpenLocId = locId;
+    timeAtOpenArrival = Number(btn.dataset.arrival) || 0;
+    const visitMinutes = Number(btn.dataset.visit) || 45;
+    const isFr = currentLang === 'fr';
+    document.getElementById('time-at-title').textContent = `${isFr ? 'Temps à' : 'Time at'} ${loc.name}`;
+    document.getElementById('time-at-subtitle').textContent = `${loc.category || ''} · ${isFr ? 'arrivée' : 'arrive'} ${formatClockMin(timeAtOpenArrival)}`;
+    const slider = document.getElementById('time-at-slider');
+    slider.value = Math.max(15, Math.min(240, visitMinutes));
+    window.onTimeAtSliderInput(slider.value);
+    document.getElementById('time-at-sheet-overlay').classList.add('open');
+};
+window.closeTimeAtSheet = function() {
+    document.getElementById('time-at-sheet-overlay').classList.remove('open');
+    timeAtOpenLocId = null;
+};
+// Ne touche QUE des textes/styles existants, jamais innerHTML (demande du mockup : "le
+// glissement doit rester fluide, ne re-génère pas tout le DOM à chaque mouvement") — appelé
+// à chaque évènement 'input' du curseur (donc en continu pendant qu'on glisse le doigt).
+window.onTimeAtSliderInput = function(val) {
+    const mins = Number(val);
+    const pct = ((mins - 15) / (240 - 15)) * 100;
+    const slider = document.getElementById('time-at-slider');
+    slider.style.setProperty('--p', pct + '%');
+    const bubble = document.getElementById('time-at-bubble');
+    bubble.textContent = formatDurationMin(mins);
+    bubble.style.left = `calc(9px + (100% - 18px) * ${pct / 100})`;
+    const isFr = currentLang === 'fr';
+    document.getElementById('time-at-arrive-label').innerHTML = `${isFr ? 'Arrivée' : 'Arrive'} <b id="time-at-arrive">${formatClockMin(timeAtOpenArrival)}</b>`;
+    document.getElementById('time-at-leave-label').innerHTML = `${isFr ? 'Départ' : 'Leave'} <b id="time-at-leave">${formatClockMin(timeAtOpenArrival + mins)}</b>`;
+    document.getElementById('time-at-save-btn').textContent = `${isFr ? 'Enregistrer' : 'Save'} · ${formatDurationMin(mins)}`;
+};
+// Recalcule toute la journée (departure/pause déjeuner/retour hébergement) après Save — en
+// relançant simplement window.refreshDayTimelines() : elle relit déjà currentTrip.
+// locDurations à chaque passage (voir computeDayTimeline() plus haut), donc rien d'autre à
+// recalculer à la main ici. La durée suit le lieu en cas de glisser-déposer (vers un autre
+// jour compris) sans code supplémentaire : la clé est l'id du LIEU, jamais sa position.
+window.saveTimeAtSheet = function() {
+    if (!currentTrip || !timeAtOpenLocId) return;
+    const mins = Number(document.getElementById('time-at-slider').value);
+    const loc = celebLocations.find(l => sameLocId(l.id, timeAtOpenLocId));
+    if (!currentTrip.locDurations) currentTrip.locDurations = {};
+    currentTrip.locDurations[String(timeAtOpenLocId)] = mins;
+    window.closeTimeAtSheet();
+    window.saveTrip(); // appelle déjà window.refreshDayTimelines() en dernière étape
+    if (loc && typeof window.showSimpleToast === 'function') {
+        window.showSimpleToast(`${loc.name} · ${formatDurationMin(mins)} ✓`, { isError: false });
+    }
+};
 
 // Avatars des personnes qui ont accès à ce voyage (voir la demande du 31/08/2026),
 // affichés en haut du détail : le créateur d'abord, puis chaque collaborateur — masqué
