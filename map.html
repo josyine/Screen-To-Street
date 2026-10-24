@@ -835,6 +835,48 @@
       background: rgba(20,16,30,.55); color: #fff; font-size: 11px; font-weight: 700;
       padding: 4px 10px; border-radius: 100px;
   }
+  /* BUG corrigé (demande répétée du 24/10/2026, "il faut afficher exactement la même
+     chose que lorsqu'on ouvre un post dans Community... il faut afficher tous les posts
+     les un à la suite des autres... pour pouvoir swipe et défiler") : le correctif
+     précédent (modale #loc-modal à un seul post + swipe vertical, #modal-post-nav-badge
+     ci-dessus) ne montrait toujours qu'UN post à la fois — pas un vrai fil empilé
+     défilable. Ce bloc .feed-post-feed/.fpf-* reprend TEL QUEL (mêmes classes, même
+     structure) le composant déjà utilisé par Community/Saved (feed.html,
+     renderFeedPostFeed()) — voir window.renderChevronPostFeed()/openChevronPostFeed()
+     dans script.js, qui construit ces cartes à partir de la MÊME liste déjà scopée au
+     lieu/pays du chevron (jamais tous les posts du site). #loc-modal/openLocModal() reste
+     inchangé pour les autres usages (marqueur de carte sans postContext) — ce fil plein
+     écran s'ouvre PAR-DESSUS, n'importe quand le tiroir du chevron (#loc-visitors-overlay)
+     reste ouvert dessous, pas besoin de le fermer/rouvrir comme avant. */
+  .feed-post-feed { position: fixed; inset: 0; z-index: 9700; background: #fff; display: none; flex-direction: column; }
+  .feed-post-feed.open { display: flex; }
+  .feed-post-feed-close { position: absolute; top: calc(14px + env(safe-area-inset-top)); right: 14px; z-index: 10; width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(20,16,30,.45); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .feed-post-feed-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  .fpf-card { border-bottom: 8px solid #F4F2F8; }
+  .fpf-media { position: relative; width: 100%; padding-bottom: 100%; background-size: cover; background-position: center; }
+  .fpf-media-tag { position: absolute; left: 10px; bottom: 8px; background: rgba(20,16,30,.55); color: #fff; font-size: 10.5px; font-weight: 700; padding: 4px 9px; border-radius: 100px; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; z-index: 2; }
+  .fpf-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px 8px; }
+  .fpf-avatar { width: 32px; height: 32px; border-radius: 50%; color: #fff; font-size: 12.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+  .fpf-username { font-size: 13.5px; font-weight: 700; color: #1F2430; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+  .fpf-like-btn, .fpf-save-btn { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; color: #212832; }
+  .fpf-like-btn.liked { color: #D42759; }
+  .fpf-like-btn.liked svg { fill: #D42759; stroke: #D42759; }
+  .fpf-like-count { font-size: 12.5px; font-weight: 700; color: #212832; margin: 0 2px 0 -4px; }
+  .fpf-save-btn.saved { color: #D42759; }
+  .fpf-save-btn.saved svg { fill: #D42759; stroke: #D42759; }
+  .fpf-body { padding: 0 14px 16px; }
+  .fpf-caption { font-size: 13px; color: #1F2430; line-height: 1.5; margin-bottom: 8px; }
+  .fpf-more-toggle { display: block; background: none; border: none; padding: 0; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; font-family: inherit; }
+  .fpf-more-toggle:hover { color: #D42759; }
+  .fpf-expand { margin-top: 10px; }
+  .fpf-expand.hidden { display: none; }
+  .fpf-about-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
+  .fpf-desc { font-size: 13px; line-height: 1.8; color: #3f495c; margin-bottom: 14px; }
+  .fpf-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .fpf-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: #2E3644; font-size: 12.5px; font-weight: 600; transition: .2s; text-decoration: none; }
+  .fpf-link:hover { border-color: #D42759; color: #D42759; }
+  .fpf-link.danger { color: #C81E4B; border-color: #F3C2D8; }
+  .fpf-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 60px 0; }
   /* "pas de dégradé noir... titre en petit sur la photo en bas à gauche" (demande du
      24/10/2026, capture Community fournie) : une vraie PUBLICATION (postContext présent,
      même condition que le dégradé retiré dans openLocModal()/script.js et que .post-modal
@@ -1965,12 +2007,29 @@
     </div>
 </div>
 
+<!-- Fil de publications plein écran du tiroir chevron (demande répétée du 24/10/2026,
+     "afficher exactement la même chose que... Community... tous les posts les un à la
+     suite des autres pour pouvoir swipe et défiler") — mêmes id/classes que le composant
+     équivalent de feed.html (Community/Saved), voir window.renderChevronPostFeed()/
+     openChevronPostFeed() dans script.js. S'ouvre PAR-DESSUS #loc-visitors-overlay (voir
+     son <style>, z-index inférieur) sans jamais le fermer : le tiroir reste simplement
+     révélé en dessous à la fermeture de ce fil, inchangé, pas besoin de le rouvrir. -->
+<div id="feed-post-feed" class="feed-post-feed">
+    <button type="button" class="feed-post-feed-close" onclick="window.closeChevronPostFeed()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="feed-post-feed-scroll" id="feed-post-feed-scroll"></div>
+</div>
+
 <!-- MODAL PUBLICATION (demande du 16/10/2026, "quand on clique sur le post [du tiroir
      chevron] il faut que tu l'ouvre en plein écran") — rempli par window.openLocModal(id,
      postContext) du script.js partagé, même structure que feed.html, SANS mini-carte (ce
      modal ne montre ici qu'une publication de visiteur, pas une fiche lieu classique :
      seul closeDetailsPanel()/#sidebar-details gère la fiche lieu sur cette page). Voir le
-     <style> ajouté plus haut dans <head> pour le plein écran mobile. -->
+     <style> ajouté plus haut dans <head> pour le plein écran mobile. N'est PLUS utilisée
+     par le tiroir chevron (voir #feed-post-feed juste au-dessus) — reste branchée pour
+     tout AUTRE usage de openLocModal() sur cette page (un marqueur de carte, par exemple),
+     jamais avec de légende/postContext dans ce cas. -->
 <div id="loc-modal" class="modal hidden">
     <div class="modal-content">
         <span class="close-btn" onclick="closeLocModal()">&times;</span>
