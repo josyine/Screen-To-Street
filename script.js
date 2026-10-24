@@ -12330,10 +12330,14 @@ window.generateItinerary = function() {
     currentGeneratedItinerary = [];
 
     const ITI_TXT_DICT = {
-        en: { day: "Day", lunchBreak: "Lunch break (~1h)", mapBtn: "Open Route in Google Maps", cancel: "Cancel", add: "Add Selected Days", export: "Export PDF", save: "Save Trip", notAllFit: "location(s) couldn't fit in this schedule (opening hours / time) and were left out — this is just an example itinerary, feel free to adjust it." },
-        fr: { day: "Jour", lunchBreak: "Pause déjeuner (~1h)", mapBtn: "Ouvrir l'itinéraire sur Google Maps", cancel: "Annuler", add: "Ajouter la sélection", export: "Exporter en PDF", save: "Sauvegarder", notAllFit: "lieu(x) n'ont pas pu tenir dans ce planning (horaires d'ouverture / temps) et ont été laissés de côté — ceci reste un exemple d'itinéraire, libre à vous de l'ajuster." }
+        en: { day: "Day", lunchBreak: "Lunch break (~1h)", mapBtn: "Open Route in Google Maps", cancel: "Cancel", export: "Export PDF", save: "Save Trip", notAllFit: "location(s) couldn't fit in this schedule (opening hours / time) and were left out — this is just an example itinerary, feel free to adjust it.", resultTitle: "Your new itinerary", criteria: "Criteria", addSelected: "Add selected places", addAll: "Add all", replace: "Replace my plan" },
+        fr: { day: "Jour", lunchBreak: "Pause déjeuner (~1h)", mapBtn: "Ouvrir l'itinéraire sur Google Maps", cancel: "Annuler", export: "Exporter en PDF", save: "Sauvegarder", notAllFit: "lieu(x) n'ont pas pu tenir dans ce planning (horaires d'ouverture / temps) et ont été laissés de côté — ceci reste un exemple d'itinéraire, libre à vous de l'ajuster.", resultTitle: "Votre nouvel itinéraire", criteria: "Critères", addSelected: "Ajouter les lieux sélectionnés", addAll: "Tout ajouter", replace: "Remplacer mon plan" }
     };
     const txt = ITI_TXT_DICT[currentLang] || ITI_TXT_DICT.en;
+    const resultTitleEl = document.getElementById('iti-result-title');
+    if (resultTitleEl) resultTitleEl.textContent = txt.resultTitle;
+    const criteriaBtnEl = document.querySelector('#iti-result [data-i18n="itiCriteriaBtn"]');
+    if (criteriaBtnEl) criteriaBtnEl.textContent = txt.criteria;
 
     const isTripsPage = !!document.getElementById('edit-trip-name');
     const formatMin = (mins) => {
@@ -12365,7 +12369,6 @@ window.generateItinerary = function() {
         let html = `<div class="iti-day-card" style="padding: 18px 16px;">
             <div class="iti-day-title" style="display:flex; justify-content:space-between; align-items:center; font-size:16px; color:${dayColor}; margin-bottom:20px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
                 <span>${txt.day} ${i + 1}</span>
-                ${isTripsPage ? `<input type="checkbox" class="iti-day-checkbox" value="${i}" checked style="width:18px; height:18px; cursor:pointer; accent-color:${dayColor};">` : ''}
             </div>`;
 
         items.forEach((it, idx) => {
@@ -12386,9 +12389,19 @@ window.generateItinerary = function() {
                 html += `<div style="padding-left:18px; border-left: 2px dashed #cbd5e1; margin-bottom:15px; padding-top:5px; padding-bottom:5px;"><span style="display:inline-block; background:#FFF7F8; padding:4px 8px; border-radius:6px; font-size:10.5px; font-weight:600; color:#D42759; line-height:1.5;">${txt.lunchBreak}</span></div>`;
             }
 
+            // Case À COCHER PAR LIEU (demande répétée du 24/10/2026, référence
+            // auto_itinerary_final.html, voir .ri/.ck dans ce fichier) : remplace l'ancienne
+            // case à cocher PAR JOUR (iti-day-checkbox, tout un jour entier ou rien) — permet
+            // maintenant d'ajouter certains lieux d'une journée sans les autres, cochée par
+            // défaut (equivalent à "tout sélectionné" pour qui ne touche à rien). N'existe que
+            // pour isTripsPage, voir applyGeneratedItinerary() plus bas qui en dépend.
+            const checkboxHtml = isTripsPage
+                ? `<input type="checkbox" class="iti-loc-checkbox" data-day="${i}" data-idx="${idx}" checked style="position:absolute; right:0; top:2px; width:18px; height:18px; cursor:pointer; accent-color:${dayColor};">`
+                : '';
             html += `
-                <div style="padding-left:18px; border-left: 2px solid ${dayColor}; position:relative; margin-bottom:15px;">
+                <div style="padding-left:18px; ${isTripsPage ? 'padding-right:26px;' : ''} border-left: 2px solid ${dayColor}; position:relative; margin-bottom:15px;">
                     <div style="position:absolute; left:-6px; top:0; width:10px; height:10px; border-radius:50%; background:${dayColor}; border:2px solid #fff;"></div>
+                    ${checkboxHtml}
                     <div style="font-size:11px; font-weight:700; color:${dayColor}; margin-bottom:3px;">${formatMin(it.arrival)} - ${formatMin(it.departure)}</div>
                     <div style="font-size:14px; font-weight:700; color:#212832; margin-bottom:4px;">${idx+1}. ${l.name}</div>
                     <div style="font-size:11.5px; color:#64748b; margin-bottom:8px;">${getCatName(l.category)}</div>
@@ -12419,9 +12432,18 @@ window.generateItinerary = function() {
     
     if (actionsContainer) {
         if (isTripsPage) {
+            // Trois actions (demande répétée du 24/10/2026, référence auto_itinerary_
+            // final.html — "Add selected places", "Add all", "Replace my plan") au lieu des
+            // deux d'avant ("Cancel"/"Add Selected Days", qui n'ajoutait que des JOURS
+            // entiers) : voir window.applyGeneratedItinerary() plus bas, qui remplace
+            // addSelectedDaysToTrip() avec les 3 modes 'selected'/'all'/'replace'.
+            actionsContainer.style.flexDirection = 'column';
             actionsContainer.innerHTML = `
-                <button class="gen-btn ghost" onclick="closeModal('itinerary-modal')" style="flex:1; justify-content:center;">${txt.cancel}</button>
-                <button class="gen-btn" onclick="addSelectedDaysToTrip()" style="flex:1; justify-content:center;">${txt.add}</button>
+                <button class="gen-btn" onclick="applyGeneratedItinerary('selected')" style="justify-content:center;">${txt.addSelected}</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="gen-btn ghost" onclick="applyGeneratedItinerary('all')" style="flex:1; justify-content:center;">${txt.addAll}</button>
+                    <button class="gen-btn ghost" onclick="applyGeneratedItinerary('replace')" style="flex:1; justify-content:center;">${txt.replace}</button>
+                </div>
             `;
         } else {
             actionsContainer.innerHTML = `
@@ -12474,42 +12496,78 @@ window.generateItinerary = function() {
     }
 }
 
-window.addSelectedDaysToTrip = function() {
-    const checkboxes = document.querySelectorAll('.iti-day-checkbox:checked');
-    if (checkboxes.length === 0) { 
-        alert(currentLang === 'fr' ? 'Sélectionnez au moins un jour.' : 'Select at least one day.'); 
-        return; 
+// BUG corrigé (demande répétée du 24/10/2026, référence auto_itinerary_final.html —
+// "Add selected places", "Add all", "Replace my plan") : remplace addSelectedDaysToTrip()
+// (une seule case À COCHER PAR JOUR ENTIER, un seul mode "ajouter") par ces 3 modes, tous
+// à partir de la MÊME sélection .iti-loc-checkbox PAR LIEU posée par generateItinerary() —
+// 'selected' n'ajoute que les lieux cochés, 'all' ignore les cases et ajoute tout,
+// 'replace' remplace entièrement currentTrip.days (avec confirmation, seul mode
+// destructeur) plutôt que de toujours empiler de nouveaux jours par-dessus l'existant.
+window.applyGeneratedItinerary = function(mode) {
+    if (!currentGeneratedItinerary || !currentGeneratedItinerary.length) return;
+
+    if (mode === 'selected' && !document.querySelector('.iti-loc-checkbox:checked')) {
+        alert(currentLang === 'fr' ? 'Sélectionnez au moins un lieu.' : 'Select at least one place.');
+        return;
     }
-    
-    window.saveTrip(); 
+    if (mode === 'replace') {
+        const msg = currentLang === 'fr'
+            ? 'Remplacer tout votre plan actuel par ce nouvel itinéraire ?'
+            : 'Replace your entire current plan with this new itinerary?';
+        if (!confirm(msg)) return;
+    }
+
+    window.saveTrip();
     let wList = getWishlistLocs();
-    
-    checkboxes.forEach(cb => {
-        const dayIndex = parseInt(cb.value);
-        const dayLocs = currentGeneratedItinerary[dayIndex];
-        if (dayLocs && dayLocs.length > 0) {
-            let dayIds = [];
-            dayLocs.forEach(loc => {
-                dayIds.push(loc.id);
-                if (!wList.some(w => sameLocId(w.id, loc.id) && w.tripId === currentTrip.id)) {
-                    wList.push({ id: loc.id, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
-                }
-            });
-            currentTrip.days.push(dayIds);
+    const addLocToWishlist = (loc) => {
+        if (!wList.some(w => sameLocId(w.id, loc.id) && w.tripId === currentTrip.id)) {
+            wList.push({ id: loc.id, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
         }
+    };
+
+    const newDays = [];
+    currentGeneratedItinerary.forEach((dayLocs, dayIdx) => {
+        let picked = dayLocs;
+        if (mode === 'selected') {
+            picked = dayLocs.filter((loc, idx) => {
+                const cb = document.querySelector(`.iti-loc-checkbox[data-day="${dayIdx}"][data-idx="${idx}"]`);
+                return cb ? cb.checked : false;
+            });
+        }
+        if (picked.length === 0) return;
+        newDays.push(picked.map(loc => { addLocToWishlist(loc); return loc.id; }));
     });
-    
+
+    if (mode === 'replace') {
+        currentTrip.days = newDays;
+    } else {
+        currentTrip.days.push(...newDays);
+    }
+
     localStorage.setItem('wishlistLocs', JSON.stringify(wList));
     syncWishlist(wList);
-    
+
     let trips = getMyTripsList();
     const tripIndex = trips.findIndex(t => t.id === currentTrip.id);
     if(tripIndex !== -1) trips[tripIndex] = currentTrip;
     localStorage.setItem('myTrips', JSON.stringify(trips));
     syncTrips(trips);
-    
-    window.renderTrip(); 
+
+    window.renderTrip();
     closeModal('itinerary-modal');
+};
+
+// Bouton "Criteria" (demande répétée du 24/10/2026, référence auto_itinerary_final.html)
+// : #iti-form (group/country/city/dates/stay/catégories) n'est jamais masqué pendant que
+// le résultat s'affiche — seul #iti-result vient s'empiler EN DESSOUS une fois généré,
+// voir generateItinerary() plus haut — donc revenir aux critères ne demande que de
+// remasquer le résultat, sans RIEN réinitialiser dans le formulaire : la sélection déjà
+// faite (group/country/city/dates/stay/catégories) reste exactement telle quelle.
+window.backToItiCriteria = function() {
+    const resultEl = document.getElementById('iti-result');
+    if (resultEl) resultEl.classList.add('hidden');
+    const formEl = document.getElementById('iti-form');
+    if (formEl && formEl.scrollIntoView) formEl.scrollIntoView({ block: 'start' });
 };
 
 window.saveItineraryToTrips = async function() {
