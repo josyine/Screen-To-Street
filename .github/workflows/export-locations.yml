@@ -37,13 +37,26 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add locations-data.js
+          # BUG corrigé (demande du 24/10/2026, "dans trips, la header photo... ça n'affiche
+          # rien alors qu'il existe bien une photo") : `git add` ne portait QUE sur
+          # locations-data.js — jamais sur les fichiers binaires que export-locations.js
+          # écrit pourtant dans images/ (images/admin-upload-<id>-photo.jpg, voir son
+          # commentaire sur l'extraction base64 plus haut) à CHAQUE lieu dont la photo a été
+          # uploadée via l'icône crayon d'admin.html. Résultat : locations-data.js référence
+          # ces fichiers par leur chemin relatif, mais ils n'existaient que dans le
+          # répertoire de travail ÉPHÉMÈRE de ce job — jamais poussés sur le dépôt, donc
+          # jamais servis par le site public, quel que soit le nombre de fois où ce workflow
+          # tournait depuis (169 lieux concernés au moment de ce correctif). Le prochain
+          # passage de ce workflow (programmé, ou déclenché manuellement via "Run workflow")
+          # les ré-extrait depuis Firestore (jamais modifié, lecture seule) et les commite
+          # enfin pour de bon.
+          git add locations-data.js 'images/admin-upload-*'
           # --cached : indispensable au tout premier export, où locations-data.js n'est
           # encore ni suivi ni committé — un `git diff` (sans --cached) sur un fichier non
           # suivi le trouve toujours "sans différence" et ne le voit donc JAMAIS comme un
           # changement à publier, même fraîchement créé. `git add` juste au-dessus le fait
           # rentrer dans l'index pour de bon, --cached compare alors cet index à HEAD.
-          if git diff --cached --quiet -- locations-data.js; then
+          if git diff --cached --quiet -- locations-data.js images/; then
             echo "Rien de nouveau à publier."
           else
             git commit -m "chore: republish location catalog (automated)"

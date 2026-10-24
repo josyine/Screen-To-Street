@@ -5986,6 +5986,43 @@ window.openItineraryModal = function() {
     document.getElementById('iti-result').classList.add('hidden');
     document.getElementById('itinerary-modal').classList.remove('hidden');
     window.initItineraryGenerator();
+    // BUG corrigé (demande répétée du 24/10/2026, "il faut réafficher ces informations
+    // dans 'Auto itinerary generator'... si je créé un trip à Paris, France, BTS, Jimin")
+    // : Stay/Dates (juste en dessous) étaient déjà pré-remplis depuis currentTrip, mais pas
+    // Group/Country/City — ces 3 <select> restaient sur leur 1ère option (ordre
+    // alphabétique) à chaque ouverture, jamais sur ceux DU VOYAGE EN COURS. Doit tourner à
+    // CHAQUE ouverture (pas seulement une fois par chargement de page, contrairement au
+    // peuplement des <option> dans initItineraryGenerator(), gardé par
+    // gSelectIti.options.length===0) : rouvrir ce générateur depuis un AUTRE voyage dans la
+    // même session doit refléter CE voyage-là, pas garder la sélection précédente.
+    const gSelectIti = document.getElementById('iti-group');
+    const cSelectIti = document.getElementById('iti-country');
+    const citySelectIti = document.getElementById('iti-city');
+    if (typeof currentTrip !== 'undefined' && currentTrip && gSelectIti && cSelectIti) {
+        if (currentTrip.group && Array.from(gSelectIti.options).some(o => o.value === currentTrip.group)) {
+            gSelectIti.value = currentTrip.group;
+        }
+        window.updateItiCategories();
+        if (currentTrip.country && Array.from(cSelectIti.options).some(o => o.value === currentTrip.country)) {
+            cSelectIti.value = currentTrip.country;
+        }
+        if (citySelectIti) {
+            window.updateItiCity();
+            if (currentTrip.city && Array.from(citySelectIti.options).some(o => o.value === currentTrip.city)) {
+                citySelectIti.value = currentTrip.city;
+            }
+        }
+        // Longueur du séjour : currentTrip.days.length reste juste quel que soit le type
+        // de dates (spécifiques OU flexibles, ex. "Weekend in Nov 2026" — ce générateur n'a
+        // pas l'équivalent du sélecteur flexible de "New trip", seulement des dates
+        // précises) — bien plus fiable que de ne préremplir QUE le cas "dates précises" et
+        // laisser #iti-days sur son 3 par défaut (ou une valeur d'un AUTRE voyage déjà
+        // ouvert dans cette même session) pour un voyage en dates flexibles.
+        const daysInputEl = document.getElementById('iti-days');
+        if (daysInputEl && Array.isArray(currentTrip.days) && currentTrip.days.length > 0) {
+            daysInputEl.value = Math.min(currentTrip.days.length, parseInt(daysInputEl.max, 10) || currentTrip.days.length);
+        }
+    }
     // Pré-remplit Stay/Dates depuis le voyage en cours d'édition quand ce générateur est
     // ouvert depuis trips.html (demande du 24/10/2026) — cohérent avec generateItinerary()
     // plus bas, qui retombe déjà sur currentTrip.homeBase si itiHomeBase reste vide ; reste
@@ -8131,21 +8168,14 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
     `).join('');
     grid.querySelectorAll('.loc-visitors-tile').forEach(tile => {
         tile.addEventListener('click', () => {
-            const i = Number(tile.dataset.i);
-            const entry = postsWithLoc[i];
-            // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
-            // exactement où on était précédemment, toujours avec la flèche chevron
-            // d'ouverte comme avant") : on mémorise CE tiroir précis (titre + liste) avant
-            // de le fermer pour ouvrir la publication — window.closeLocModal() (plus bas)
-            // le rouvre tel quel si cette mémoire est encore présente à la fermeture de la
-            // publication, au lieu de retomber simplement sur la carte en dessous.
-            pendingLocVisitorsDrawerReturn = { title, postsWithLoc };
-            window.closeLocVisitorsDrawer();
-            // navCtx (demande du 24/10/2026, "fais en sorte qu'on puisse swipe les posts du
-            // chevron comme dans Community") : CETTE MÊME liste postsWithLoc, déjà scopée à
-            // ce lieu/pays (voir openLocVisitorsDrawer()/openAreaVisitorsDrawer() plus bas) —
-            // voir window.__locModalNav dans openLocModal()/script.js pour le reste du geste.
-            window.openLocModal(entry.locId, locModalPostContextFromEntry(entry), { list: postsWithLoc, index: i });
+            // BUG corrigé (demande répétée du 24/10/2026, "afficher exactement la même
+            // chose que... Community... tous les posts les un à la suite des autres pour
+            // pouvoir swipe et défiler") : window.openChevronPostFeed() (plus bas) ouvre un
+            // VRAI fil empilé défilable PAR-DESSUS ce tiroir, qui n'a donc plus besoin
+            // d'être fermé/mémorisé pour être rouvert ensuite (contrairement à l'ancien
+            // openLocModal() à un seul post) — il reste simplement révélé dessous une fois
+            // le fil refermé.
+            window.openChevronPostFeed(postsWithLoc, Number(tile.dataset.i));
         });
     });
     overlay.classList.add('open');
@@ -8156,11 +8186,133 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
     const navEl = document.getElementById('mobile-bottom-nav');
     if (navEl) navEl.classList.add('above-fullscreen-overlay');
 }
-// Voir le commentaire dans le listener de clic ci-dessus : état du tiroir à rouvrir après
-// fermeture de la publication qu'il vient d'ouvrir, ou null si la publication en cours
-// n'a pas été ouverte depuis ce tiroir (ex: marqueur de la carte, autre page) — dans ce
-// cas window.closeLocModal() garde son comportement normal (simple fermeture).
-let pendingLocVisitorsDrawerReturn = null;
+// Fil de publications plein écran du tiroir chevron (demande répétée du 24/10/2026, "il
+// faut afficher exactement la même chose que lorsqu'on ouvre un post dans Community de la
+// page feed... afficher tous les posts les un à la suite des autres... pour pouvoir swipe
+// et défiler") — reprend TEL QUEL (mêmes classes .fpf-*, même structure) le composant déjà
+// utilisé par Community/Saved (feed.html, renderFeedPostFeed()/openFeedPost()), adapté
+// pour accepter la liste postsWithLoc ({post, locId}[]) déjà scopée au lieu/pays du
+// chevron par renderVisitorsDrawerContent() plus haut — jamais tous les posts du site.
+// N'existe QUE sur map.html (voir #feed-post-feed dans son HTML) : seule page ayant ce
+// tiroir chevron.
+function renderChevronPostFeed(list) {
+    const scroll = document.getElementById('feed-post-feed-scroll');
+    if (!scroll) return;
+    if (!list.length) { scroll.innerHTML = '<div class="fpf-empty">No public photos yet.</div>'; return; }
+    const heartSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>';
+    const saveSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21 12 16.5 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"></path></svg>';
+    scroll.innerHTML = list.map((entry, i) => {
+        const p = entry.post;
+        const loc = celebLocations.find(l => sameLocId(l.id, entry.locId));
+        // Pastille lieu+groupe sur la photo (demande explicite : "il ne faut afficher que
+        // la biographie du post avec ...more" — retire la ligne rose ville/pays/catégorie
+        // qui s'affichait avant sous le "...more", voir l'ancienne logique #modal-meta
+        // dans openLocModal()) : seule CETTE pastille façon Community reste visible par
+        // défaut, le reste (adresse complète/catégorie) n'a jamais eu sa place ici.
+        const locLabel = loc ? `${loc.name}${loc.group ? ' · ' + loc.group : ''}` : '';
+        const photoKey = p.uid + '_' + p.id;
+        return `<div class="fpf-card" data-feed-index="${i}" data-photo-key="${escapeHtml(photoKey)}">
+            <div class="fpf-media" style="background-image:url('${recreatedPhotoUrl(p.photo)}')">
+                ${locLabel ? `<div class="fpf-media-tag">${escapeHtml(locLabel)}</div>` : ''}
+            </div>
+            <div class="fpf-header">
+                <div class="fpf-avatar" data-fpf-avatar style="background:${window.avatarColorForUsername(p.username)}">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
+                <div class="fpf-username" data-fpf-username>${escapeHtml(p.username || '')}</div>
+                <button type="button" class="fpf-like-btn" data-fpf-like>${heartSvg}</button>
+                <span class="fpf-like-count" data-fpf-like-count>·</span>
+                <button type="button" class="fpf-save-btn" data-fpf-save>${saveSvg}</button>
+            </div>
+            <div class="fpf-body">
+                ${p.caption ? `<div class="fpf-caption">"${escapeHtml(p.caption)}"</div>` : ''}
+                ${loc ? `<button type="button" class="fpf-more-toggle" data-fpf-more>··· more</button>
+                <div class="fpf-expand hidden" data-fpf-expand>
+                    <span class="fpf-about-label">${escapeHtml(t('lStoryBts').replace(/BTS/g, loc.group || 'BTS'))}</span>
+                    <div class="fpf-desc">${getLocText(loc.fullDescription) || 'No description available.'}</div>
+                    <div class="fpf-links">
+                        <a class="fpf-link" href="https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}" target="_blank">${t('openInMaps')}</a>
+                        <a class="fpf-link" href="map.html?loc=${loc.id}">${t('moreDetails')}</a>
+                    </div>
+                </div>` : ''}
+            </div>
+        </div>`;
+    }).join('');
+
+    scroll.querySelectorAll('.fpf-card').forEach((card, i) => {
+        const p = list[i].post;
+        const photoKey = p.uid + '_' + p.id;
+        card.querySelector('[data-fpf-avatar]').onclick = () => { if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username); };
+        card.querySelector('[data-fpf-username]').onclick = () => { if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username); };
+        const moreBtn = card.querySelector('[data-fpf-more]');
+        if (moreBtn) moreBtn.onclick = () => {
+            const expand = card.querySelector('[data-fpf-expand]');
+            const collapsed = expand.classList.toggle('hidden');
+            moreBtn.textContent = collapsed ? '··· more' : '··· less';
+        };
+        const likeBtn = card.querySelector('[data-fpf-like]');
+        const likeCountEl = card.querySelector('[data-fpf-like-count]');
+        likeBtn.onclick = async () => {
+            const nowLiked = !likeBtn.classList.contains('liked');
+            likeBtn.classList.toggle('liked', nowLiked);
+            likeCountEl.textContent = Math.max(0, (parseInt(likeCountEl.textContent, 10) || 0) + (nowLiked ? 1 : -1));
+            if (typeof window.togglePhotoLike === 'function') await window.togglePhotoLike(photoKey, nowLiked);
+        };
+        if (typeof window.getPhotoLikeState === 'function') {
+            window.getPhotoLikeState(photoKey).then(state => {
+                if (!card.isConnected) return;
+                likeCountEl.textContent = state.count;
+                likeBtn.classList.toggle('liked', state.likedByMe);
+            });
+        }
+        const saveBtn = card.querySelector('[data-fpf-save]');
+        saveBtn.onclick = async () => {
+            const nowSaved = !saveBtn.classList.contains('saved');
+            saveBtn.classList.toggle('saved', nowSaved);
+            if (typeof window.togglePhotoSave === 'function') await window.togglePhotoSave(photoKey, nowSaved);
+            if (typeof window.onPhotoSaveToggled === 'function') window.onPhotoSaveToggled(photoKey, nowSaved);
+        };
+        if (typeof window.isPhotoSaved === 'function') {
+            window.isPhotoSaved(photoKey).then(saved => { if (card.isConnected) saveBtn.classList.toggle('saved', saved); });
+        }
+        // Suppression admin (même logique que renderFeedPostFeed() dans feed.html) : un
+        // avis (photoId absent, standalone falsy) et une photo autonome n'utilisent pas la
+        // même fonction de suppression.
+        if (p.uid && typeof window.isCurrentUserAdmin === 'function') {
+            window.isCurrentUserAdmin().then(isAdmin => {
+                if (!isAdmin || !card.isConnected) return;
+                const body = card.querySelector('.fpf-body');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'fpf-link danger';
+                btn.style.marginTop = '10px';
+                btn.textContent = currentLang === 'fr' ? 'Supprimer (admin)' : 'Delete (admin)';
+                btn.onclick = async () => {
+                    const msg = currentLang === 'fr' ? 'Supprimer définitivement cette publication ?' : 'Permanently delete this post?';
+                    if (!confirm(msg)) return;
+                    const result = p.standalone
+                        ? await window.adminDeleteProfilePhoto(p.uid, p.id)
+                        : await window.adminDeleteLocationReview(list[i].locId, p.uid);
+                    if (result && result.success) { window.closeChevronPostFeed(); window.closeLocVisitorsDrawer(); }
+                    else alert(currentLang === 'fr' ? 'Suppression impossible.' : 'Could not delete this post.');
+                };
+                body.appendChild(btn);
+            });
+        }
+    });
+}
+window.openChevronPostFeed = function(list, startIndex) {
+    renderChevronPostFeed(list);
+    const overlay = document.getElementById('feed-post-feed');
+    if (!overlay) return;
+    overlay.classList.add('open');
+    const card = document.getElementById('feed-post-feed-scroll').querySelector(`[data-feed-index="${startIndex}"]`);
+    if (card) card.scrollIntoView({ block: 'start' });
+};
+window.closeChevronPostFeed = function() {
+    const overlay = document.getElementById('feed-post-feed');
+    if (overlay) overlay.classList.remove('open');
+    const scroll = document.getElementById('feed-post-feed-scroll');
+    if (scroll) scroll.innerHTML = '';
+};
 
 function openLocVisitorsDrawer(loc) {
     const posts = window.getLocPosts(loc.id);
@@ -11809,16 +11961,6 @@ window.closeLocModal = function() {
     const modalOverlay = document.getElementById('loc-modal');
     if(modalOverlay) modalOverlay.classList.add('hidden');
     window.__locModalNav = null;
-    // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
-    // exactement où on était précédemment, toujours avec la flèche chevron d'ouverte
-    // comme avant") : si cette publication a été ouverte depuis le tiroir chevron (voir
-    // renderVisitorsDrawerContent() plus haut), on le rouvre tel qu'il était plutôt que de
-    // simplement retomber sur la carte en dessous.
-    if (pendingLocVisitorsDrawerReturn) {
-        const r = pendingLocVisitorsDrawerReturn;
-        pendingLocVisitorsDrawerReturn = null;
-        renderVisitorsDrawerContent(r.title, r.postsWithLoc);
-    }
 };
 
 // ==========================================
@@ -12188,10 +12330,14 @@ window.generateItinerary = function() {
     currentGeneratedItinerary = [];
 
     const ITI_TXT_DICT = {
-        en: { day: "Day", lunchBreak: "Lunch break (~1h)", mapBtn: "Open Route in Google Maps", cancel: "Cancel", add: "Add Selected Days", export: "Export PDF", save: "Save Trip", notAllFit: "location(s) couldn't fit in this schedule (opening hours / time) and were left out — this is just an example itinerary, feel free to adjust it." },
-        fr: { day: "Jour", lunchBreak: "Pause déjeuner (~1h)", mapBtn: "Ouvrir l'itinéraire sur Google Maps", cancel: "Annuler", add: "Ajouter la sélection", export: "Exporter en PDF", save: "Sauvegarder", notAllFit: "lieu(x) n'ont pas pu tenir dans ce planning (horaires d'ouverture / temps) et ont été laissés de côté — ceci reste un exemple d'itinéraire, libre à vous de l'ajuster." }
+        en: { day: "Day", lunchBreak: "Lunch break (~1h)", mapBtn: "Open Route in Google Maps", cancel: "Cancel", export: "Export PDF", save: "Save Trip", notAllFit: "location(s) couldn't fit in this schedule (opening hours / time) and were left out — this is just an example itinerary, feel free to adjust it.", resultTitle: "Your new itinerary", criteria: "Criteria", addSelected: "Add selected places", addAll: "Add all", replace: "Replace my plan" },
+        fr: { day: "Jour", lunchBreak: "Pause déjeuner (~1h)", mapBtn: "Ouvrir l'itinéraire sur Google Maps", cancel: "Annuler", export: "Exporter en PDF", save: "Sauvegarder", notAllFit: "lieu(x) n'ont pas pu tenir dans ce planning (horaires d'ouverture / temps) et ont été laissés de côté — ceci reste un exemple d'itinéraire, libre à vous de l'ajuster.", resultTitle: "Votre nouvel itinéraire", criteria: "Critères", addSelected: "Ajouter les lieux sélectionnés", addAll: "Tout ajouter", replace: "Remplacer mon plan" }
     };
     const txt = ITI_TXT_DICT[currentLang] || ITI_TXT_DICT.en;
+    const resultTitleEl = document.getElementById('iti-result-title');
+    if (resultTitleEl) resultTitleEl.textContent = txt.resultTitle;
+    const criteriaBtnEl = document.querySelector('#iti-result [data-i18n="itiCriteriaBtn"]');
+    if (criteriaBtnEl) criteriaBtnEl.textContent = txt.criteria;
 
     const isTripsPage = !!document.getElementById('edit-trip-name');
     const formatMin = (mins) => {
@@ -12223,7 +12369,6 @@ window.generateItinerary = function() {
         let html = `<div class="iti-day-card" style="padding: 18px 16px;">
             <div class="iti-day-title" style="display:flex; justify-content:space-between; align-items:center; font-size:16px; color:${dayColor}; margin-bottom:20px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
                 <span>${txt.day} ${i + 1}</span>
-                ${isTripsPage ? `<input type="checkbox" class="iti-day-checkbox" value="${i}" checked style="width:18px; height:18px; cursor:pointer; accent-color:${dayColor};">` : ''}
             </div>`;
 
         items.forEach((it, idx) => {
@@ -12244,9 +12389,19 @@ window.generateItinerary = function() {
                 html += `<div style="padding-left:18px; border-left: 2px dashed #cbd5e1; margin-bottom:15px; padding-top:5px; padding-bottom:5px;"><span style="display:inline-block; background:#FFF7F8; padding:4px 8px; border-radius:6px; font-size:10.5px; font-weight:600; color:#D42759; line-height:1.5;">${txt.lunchBreak}</span></div>`;
             }
 
+            // Case À COCHER PAR LIEU (demande répétée du 24/10/2026, référence
+            // auto_itinerary_final.html, voir .ri/.ck dans ce fichier) : remplace l'ancienne
+            // case à cocher PAR JOUR (iti-day-checkbox, tout un jour entier ou rien) — permet
+            // maintenant d'ajouter certains lieux d'une journée sans les autres, cochée par
+            // défaut (equivalent à "tout sélectionné" pour qui ne touche à rien). N'existe que
+            // pour isTripsPage, voir applyGeneratedItinerary() plus bas qui en dépend.
+            const checkboxHtml = isTripsPage
+                ? `<input type="checkbox" class="iti-loc-checkbox" data-day="${i}" data-idx="${idx}" checked style="position:absolute; right:0; top:2px; width:18px; height:18px; cursor:pointer; accent-color:${dayColor};">`
+                : '';
             html += `
-                <div style="padding-left:18px; border-left: 2px solid ${dayColor}; position:relative; margin-bottom:15px;">
+                <div style="padding-left:18px; ${isTripsPage ? 'padding-right:26px;' : ''} border-left: 2px solid ${dayColor}; position:relative; margin-bottom:15px;">
                     <div style="position:absolute; left:-6px; top:0; width:10px; height:10px; border-radius:50%; background:${dayColor}; border:2px solid #fff;"></div>
+                    ${checkboxHtml}
                     <div style="font-size:11px; font-weight:700; color:${dayColor}; margin-bottom:3px;">${formatMin(it.arrival)} - ${formatMin(it.departure)}</div>
                     <div style="font-size:14px; font-weight:700; color:#212832; margin-bottom:4px;">${idx+1}. ${l.name}</div>
                     <div style="font-size:11.5px; color:#64748b; margin-bottom:8px;">${getCatName(l.category)}</div>
@@ -12277,9 +12432,18 @@ window.generateItinerary = function() {
     
     if (actionsContainer) {
         if (isTripsPage) {
+            // Trois actions (demande répétée du 24/10/2026, référence auto_itinerary_
+            // final.html — "Add selected places", "Add all", "Replace my plan") au lieu des
+            // deux d'avant ("Cancel"/"Add Selected Days", qui n'ajoutait que des JOURS
+            // entiers) : voir window.applyGeneratedItinerary() plus bas, qui remplace
+            // addSelectedDaysToTrip() avec les 3 modes 'selected'/'all'/'replace'.
+            actionsContainer.style.flexDirection = 'column';
             actionsContainer.innerHTML = `
-                <button class="gen-btn ghost" onclick="closeModal('itinerary-modal')" style="flex:1; justify-content:center;">${txt.cancel}</button>
-                <button class="gen-btn" onclick="addSelectedDaysToTrip()" style="flex:1; justify-content:center;">${txt.add}</button>
+                <button class="gen-btn" onclick="applyGeneratedItinerary('selected')" style="justify-content:center;">${txt.addSelected}</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="gen-btn ghost" onclick="applyGeneratedItinerary('all')" style="flex:1; justify-content:center;">${txt.addAll}</button>
+                    <button class="gen-btn ghost" onclick="applyGeneratedItinerary('replace')" style="flex:1; justify-content:center;">${txt.replace}</button>
+                </div>
             `;
         } else {
             actionsContainer.innerHTML = `
@@ -12332,42 +12496,78 @@ window.generateItinerary = function() {
     }
 }
 
-window.addSelectedDaysToTrip = function() {
-    const checkboxes = document.querySelectorAll('.iti-day-checkbox:checked');
-    if (checkboxes.length === 0) { 
-        alert(currentLang === 'fr' ? 'Sélectionnez au moins un jour.' : 'Select at least one day.'); 
-        return; 
+// BUG corrigé (demande répétée du 24/10/2026, référence auto_itinerary_final.html —
+// "Add selected places", "Add all", "Replace my plan") : remplace addSelectedDaysToTrip()
+// (une seule case À COCHER PAR JOUR ENTIER, un seul mode "ajouter") par ces 3 modes, tous
+// à partir de la MÊME sélection .iti-loc-checkbox PAR LIEU posée par generateItinerary() —
+// 'selected' n'ajoute que les lieux cochés, 'all' ignore les cases et ajoute tout,
+// 'replace' remplace entièrement currentTrip.days (avec confirmation, seul mode
+// destructeur) plutôt que de toujours empiler de nouveaux jours par-dessus l'existant.
+window.applyGeneratedItinerary = function(mode) {
+    if (!currentGeneratedItinerary || !currentGeneratedItinerary.length) return;
+
+    if (mode === 'selected' && !document.querySelector('.iti-loc-checkbox:checked')) {
+        alert(currentLang === 'fr' ? 'Sélectionnez au moins un lieu.' : 'Select at least one place.');
+        return;
     }
-    
-    window.saveTrip(); 
+    if (mode === 'replace') {
+        const msg = currentLang === 'fr'
+            ? 'Remplacer tout votre plan actuel par ce nouvel itinéraire ?'
+            : 'Replace your entire current plan with this new itinerary?';
+        if (!confirm(msg)) return;
+    }
+
+    window.saveTrip();
     let wList = getWishlistLocs();
-    
-    checkboxes.forEach(cb => {
-        const dayIndex = parseInt(cb.value);
-        const dayLocs = currentGeneratedItinerary[dayIndex];
-        if (dayLocs && dayLocs.length > 0) {
-            let dayIds = [];
-            dayLocs.forEach(loc => {
-                dayIds.push(loc.id);
-                if (!wList.some(w => sameLocId(w.id, loc.id) && w.tripId === currentTrip.id)) {
-                    wList.push({ id: loc.id, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
-                }
-            });
-            currentTrip.days.push(dayIds);
+    const addLocToWishlist = (loc) => {
+        if (!wList.some(w => sameLocId(w.id, loc.id) && w.tripId === currentTrip.id)) {
+            wList.push({ id: loc.id, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
         }
+    };
+
+    const newDays = [];
+    currentGeneratedItinerary.forEach((dayLocs, dayIdx) => {
+        let picked = dayLocs;
+        if (mode === 'selected') {
+            picked = dayLocs.filter((loc, idx) => {
+                const cb = document.querySelector(`.iti-loc-checkbox[data-day="${dayIdx}"][data-idx="${idx}"]`);
+                return cb ? cb.checked : false;
+            });
+        }
+        if (picked.length === 0) return;
+        newDays.push(picked.map(loc => { addLocToWishlist(loc); return loc.id; }));
     });
-    
+
+    if (mode === 'replace') {
+        currentTrip.days = newDays;
+    } else {
+        currentTrip.days.push(...newDays);
+    }
+
     localStorage.setItem('wishlistLocs', JSON.stringify(wList));
     syncWishlist(wList);
-    
+
     let trips = getMyTripsList();
     const tripIndex = trips.findIndex(t => t.id === currentTrip.id);
     if(tripIndex !== -1) trips[tripIndex] = currentTrip;
     localStorage.setItem('myTrips', JSON.stringify(trips));
     syncTrips(trips);
-    
-    window.renderTrip(); 
+
+    window.renderTrip();
     closeModal('itinerary-modal');
+};
+
+// Bouton "Criteria" (demande répétée du 24/10/2026, référence auto_itinerary_final.html)
+// : #iti-form (group/country/city/dates/stay/catégories) n'est jamais masqué pendant que
+// le résultat s'affiche — seul #iti-result vient s'empiler EN DESSOUS une fois généré,
+// voir generateItinerary() plus haut — donc revenir aux critères ne demande que de
+// remasquer le résultat, sans RIEN réinitialiser dans le formulaire : la sélection déjà
+// faite (group/country/city/dates/stay/catégories) reste exactement telle quelle.
+window.backToItiCriteria = function() {
+    const resultEl = document.getElementById('iti-result');
+    if (resultEl) resultEl.classList.add('hidden');
+    const formEl = document.getElementById('iti-form');
+    if (formEl && formEl.scrollIntoView) formEl.scrollIntoView({ block: 'start' });
 };
 
 window.saveItineraryToTrips = async function() {
@@ -13745,6 +13945,31 @@ function elFromHTML(html) {
 }
 
 const TRIP_WALK_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;"><circle cx="13" cy="4" r="2"/><path d="M15 22l-2-7-2 2-3 2M9 15l1-5 4-1 3 4M4 22l5-5"/></svg>';
+// BUG corrigé (demande du 24/10/2026, "il faut également préciser le transport emprunté...
+// actuellement ce n'est que de la marche à pied") : estimateTransitLeg() (plus bas dans ce
+// fichier) calcule bien un mode plausible selon la distance à vol d'oiseau (À pied/Métro-
+// bus/Taxi ou métro, voir son commentaire — pas d'API d'itinéraire en temps réel disponible
+// ici, ni clé Google Maps dans ce dépôt : impossible de vraiment "optimiser via l'API Google
+// Maps" demandé ici, seule cette estimation par distance reste possible) — mais les 3
+// endroits qui affichent une durée de trajet (refreshDayTimelines() plus bas) codaient tous
+// en dur TRIP_WALK_ICON SANS JAMAIS regarder it.leg.mode, donc même un trajet de 20 km
+// affichait un bonhomme qui marche. transitIconFor() choisit maintenant la bonne icône, et
+// le texte affiché inclut le mode (pas seulement la durée) pour les trajets non piétons.
+const TRIP_METRO_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" style="vertical-align:-1px;"><rect x="6" y="3" width="12" height="14" rx="3"/><path d="M6 11h12M9 21l1.5-3M15 21l-1.5-3"/></svg>';
+const TRIP_TRAIN_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" style="vertical-align:-1px;"><path d="M7 3h10l2 9v3a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-3z"/><path d="M5 12h14M9 21l1-3M15 21l-1-3"/></svg>';
+function transitIconFor(leg) {
+    if (!leg) return TRIP_WALK_ICON;
+    if (leg.distKm >= 8) return TRIP_TRAIN_ICON;
+    if (leg.distKm >= 1) return TRIP_METRO_ICON;
+    return TRIP_WALK_ICON;
+}
+// leg.mode est déjà localisé ("On foot"/"À pied"...) — on ne le réaffiche QUE pour un
+// trajet non piéton : "À pied · 4 min" serait redondant avec l'icône marche déjà affichée
+// juste à côté, alors qu'un trajet en métro/taxi n'a pas la même évidence visuelle.
+function transitLegLabel(leg, mins) {
+    if (!leg) return `${mins} min`;
+    return leg.distKm < 1 ? `${mins} min` : `${leg.mode} · ${mins} min`;
+}
 
 // Ligne "H ⋯ Hotel Myeongdong ⋯ 09:30" en haut/bas de chaque journée (demande du
 // 18/10/2026, trip_finale_legere.html : seLine() dans l'itinéraire) — pastille NOIRE pour
@@ -14068,7 +14293,7 @@ window.refreshDayTimelines = function() {
             extraEl.innerHTML = renderDayLocExtrasHTML(it, dayColor);
             if (idx > 0 && it.leg) {
                 const mins = Math.round((it.leg.minMinutes + it.leg.maxMinutes) / 2);
-                rowEl.insertAdjacentElement('beforebegin', elFromHTML(`<div class="day-loc-leg">${TRIP_WALK_ICON} ${mins} min</div>`));
+                rowEl.insertAdjacentElement('beforebegin', elFromHTML(`<div class="day-loc-leg">${transitIconFor(it.leg)} ${transitLegLabel(it.leg, mins)}</div>`));
             }
         });
 
@@ -14083,7 +14308,7 @@ window.refreshDayTimelines = function() {
             if (startRowEl) startRowEl.replaceWith(newStartRow); else card.insertBefore(newStartRow, itemsEl);
             if (items.length && items[0].leg) {
                 const mins = Math.round((items[0].leg.minMinutes + items[0].leg.maxMinutes) / 2);
-                const newLeg = elFromHTML(`<div class="day-endpoint-leg" data-role="start-leg">${TRIP_WALK_ICON} ${mins} min</div>`);
+                const newLeg = elFromHTML(`<div class="day-endpoint-leg" data-role="start-leg">${transitIconFor(items[0].leg)} ${transitLegLabel(items[0].leg, mins)}</div>`);
                 if (startLegEl) startLegEl.replaceWith(newLeg); else card.insertBefore(newLeg, itemsEl);
             } else if (startLegEl) { startLegEl.remove(); }
         } else {
@@ -14097,7 +14322,7 @@ window.refreshDayTimelines = function() {
             const last = items[items.length - 1];
             const leg = estimateTransitLeg(last.loc, endpoints.end);
             const mins = Math.round((leg.minMinutes + leg.maxMinutes) / 2);
-            const newEndLeg = elFromHTML(`<div class="day-endpoint-leg" data-role="end-leg">${TRIP_WALK_ICON} ${mins} min</div>`);
+            const newEndLeg = elFromHTML(`<div class="day-endpoint-leg" data-role="end-leg">${transitIconFor(leg)} ${transitLegLabel(leg, mins)}</div>`);
             if (endLegEl) endLegEl.replaceWith(newEndLeg); else itemsEl.insertAdjacentElement('afterend', newEndLeg);
             const newEndRow = elFromHTML(dayEndpointRowHTML(cardIdx, 'end', endpoints.endLabel, dayColor, last.departure + mins));
             if (endRowEl) endRowEl.replaceWith(newEndRow); else newEndLeg.insertAdjacentElement('afterend', newEndRow);
@@ -15604,7 +15829,8 @@ window.removeCreateTripInvitee = function(name) {
 const NT_IC = {
     pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11-4-4L4 16z"/></svg>',
     globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>',
-    bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>'
+    bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>',
+    tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12.3 12.7 20a2 2 0 0 1-2.8 0l-6-6a2 2 0 0 1 0-2.8L11.7 3.5a2 2 0 0 1 1.4-.6H18a2.5 2.5 0 0 1 2.5 2.5v4.6a2 2 0 0 1-.6 1.4Z"/><circle cx="16.5" cy="7.5" r="1.3"/></svg>'
 };
 let ntState = null;
 let ntFriendsCache = null;
@@ -15694,6 +15920,7 @@ function ntBody() {
     </label>
     ${ntRowHtml(QA_IC.grp, ntT('Groupe', 'Group'), group ? `<span>${escapeHtml(group)}</span>` : ntPh(ntT('Qui suivez-vous ?', 'Who are you following?')), 'group')}
     ${group ? ntRowHtml(QA_IC.star, `${ntT('Membres', 'Members')} <em>· ${ntT('facultatif', 'optional')}</em>`, member && member !== 'All' ? `<span>${escapeHtml(member)}</span>` : ntPh(ntT('Tous les membres', 'All members')), 'member') : ''}
+    ${group ? ntRowHtml(NT_IC.tag, `${ntT('Catégories', 'Categories')} <em>· ${ntT('facultatif', 'optional')}</em>`, createTripSelectedCategories.length ? `<span>${createTripSelectedCategories.map(getCatName).join(', ')}</span>` : ntPh(ntT('Tous les types de lieux', 'All location types')), 'categories') : ''}
     ${ntRowHtml(NT_IC.globe, ntT('Pays', 'Country'), country ? `<span>${escapeHtml(country)}</span>` : ntPh(ntT('Où allez-vous ?', 'Where are you going?')), 'country')}
     ${country ? ntRowHtml(QA_IC.pin, `${ntT('Ville', 'City')} <em>· ${ntT('facultatif', 'optional')}</em>`, city ? `<span>${escapeHtml(city)}</span>` : ntPh(ntT('Toutes les villes', 'All cities')), 'city') : ''}
     ${ntRowHtml(QA_IC.cal, ntT('Dates', 'Dates'), whenTxt ? `<span>${escapeHtml(whenTxt)}</span>` : ntPh(ntT('Quand ?', 'When?')), 'dates')}
@@ -15770,11 +15997,28 @@ function ntPicker() {
         const fs = (ntFriendsCache || []).filter(f => (f.n + f.h).toLowerCase().includes(q));
         body = fs.length ? fs.map(f => `<button type="button" class="qaf-li" data-nttogf="${escapeHtml(f.h.slice(1))}" aria-pressed="${ntState.invitees.includes(f.h.slice(1))}"><span class="qaf-bigav" style="background:${f.c}">${escapeHtml(f.n.charAt(0).toUpperCase())}</span><span class="qaf-lt"><b>${escapeHtml(f.n)}</b><small>${escapeHtml(f.h)}</small></span><span class="qaf-ck">${QA_IC.ok}</span></button>`).join('') : `<div style="padding:20px 0;color:var(--qa-mut);font-size:13px;text-align:center;">${ntT('Aucun ami pour le moment.', 'No friends yet.')}</div>`;
     }
-    const n = p === 'friends' ? ntState.invitees.length : 0;
+    // Catégories (demande du 24/10/2026, "ajoute une ligne pour sélectionner les
+    // catégories (MV Location, Bon Voyage si c'est BTS, Concert, etc.), et fais en sorte
+    // que le choix des catégories soient prises en compte lors de la génération d'un
+    // trip") — createTripSelectedCategories est le MÊME tableau déjà lu par
+    // createNewTripAdvanced() (voir son filtre validLocs plus bas) pour la fiche desktop
+    // (#create-trip-categories, voir window.updateCreateTripCategories() plus haut) :
+    // cette fiche mobile n'avait tout simplement jamais exposé le moyen de le remplir,
+    // alors que la génération le respectait déjà — même liste de catégories par groupe
+    // (filterData[group].categories) que cette fonction desktop, pour rester cohérent.
+    if (p === 'categories') {
+        title = ntT('Catégories', 'Categories');
+        multi = true;
+        const group = document.getElementById('create-trip-group').value;
+        const cats = (filterData[group] && filterData[group].categories) ? filterData[group].categories : filterData["General"].categories;
+        createTripSelectedCategories = createTripSelectedCategories.filter(c => cats.includes(c));
+        body = cats.map(cat => `<button type="button" class="qaf-li" data-nttogcat="${escapeHtml(cat)}" aria-pressed="${createTripSelectedCategories.includes(cat)}"><span class="qaf-lt"><b>${escapeHtml(getCatName(cat))}</b></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    const n = p === 'friends' ? ntState.invitees.length : (p === 'categories' ? createTripSelectedCategories.length : 0);
     return `<div class="qaf-pick on"><div class="qaf-grab"></div><div class="qaf-hd"><button type="button" class="qaf-bk" data-ntact="back">${QA_IC.bk}</button><h2>${escapeHtml(title)}</h2><span style="width:34px"></span></div>
         ${searchPh ? `<label class="qaf-srch">${QA_IC.search}<input data-ntin="q" placeholder="${escapeHtml(searchPh)}" value="${escapeHtml(ntState.q || '')}"></label>` : ''}
         <div class="qaf-body">${body}</div>
-        ${(multi || p === 'dates') ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-ntact="back">${p === 'friends' && n ? ntT(`Terminé · ${n} invité${n > 1 ? 's' : ''}`, `Done · ${n} invited`) : ntT('Terminé', 'Done')}</button></div>` : ''}
+        ${(multi || p === 'dates') ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-ntact="back">${p === 'friends' && n ? ntT(`Terminé · ${n} invité${n > 1 ? 's' : ''}`, `Done · ${n} invited`) : (p === 'categories' && n ? ntT(`Terminé · ${n} sélectionnée${n > 1 ? 's' : ''}`, `Done · ${n} selected`) : ntT('Terminé', 'Done'))}</button></div>` : ''}
     </div>`;
 }
 function ntRender(focusKey) {
@@ -15854,13 +16098,25 @@ window.openNewTripMobileSheet = function() {
         document.body.appendChild(overlay);
         overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeNewTripMobileSheet(); });
         overlay.addEventListener('click', (e) => {
-            const d = e.target.closest('[data-ntpick],[data-ntact],[data-ntset],[data-nttogf],[data-ntdur],[data-ntmonth],[data-nthotelpick]');
+            const d = e.target.closest('[data-ntpick],[data-ntact],[data-ntset],[data-nttogf],[data-nttogcat],[data-ntdur],[data-ntmonth],[data-nthotelpick]');
             if (!d || !ntState) return;
             const ds = d.dataset;
             if (ds.ntpick) { ntState.pick = ds.ntpick; ntState.q = ''; ntRender(); return; }
             if (ds.ntset !== undefined) {
                 const [k, v] = ds.ntset.split(':');
-                if (k === 'group') { document.getElementById('create-trip-group').value = v; window.updateCreateTripOptions(); }
+                if (k === 'group') {
+                    document.getElementById('create-trip-group').value = v;
+                    window.updateCreateTripOptions();
+                    // updateCreateTripCategories() (appelée par la ligne juste au-dessus)
+                    // retombe immédiatement sans rien faire sur cette fiche mobile — son
+                    // garde `if(!catContainer...)` vise #create-trip-categories, qui
+                    // n'existe que côté desktop (voir ntPicker() plus bas, nouvelle fiche
+                    // catégories propre à cette fiche mobile) — abandonne donc ici toute
+                    // catégorie qui n'existe plus pour le nouveau groupe, plutôt que de ne
+                    // le faire qu'à la prochaine ouverture de cette fiche.
+                    const catsForGroup = (filterData[v] && filterData[v].categories) ? filterData[v].categories : filterData["General"].categories;
+                    createTripSelectedCategories = createTripSelectedCategories.filter(c => catsForGroup.includes(c));
+                }
                 else if (k === 'member') { document.getElementById('create-trip-member').value = v; }
                 else if (k === 'country') { document.getElementById('create-trip-country').value = v; window.updateCreateTripOptions(); }
                 else if (k === 'city') { document.getElementById('create-trip-city').value = v || ''; }
@@ -15882,6 +16138,12 @@ window.openNewTripMobileSheet = function() {
             if (ds.nttogf) {
                 const u = ds.nttogf;
                 ntState.invitees = ntState.invitees.includes(u) ? ntState.invitees.filter(x => x !== u) : [...ntState.invitees, u];
+                ntRender();
+                return;
+            }
+            if (ds.nttogcat) {
+                const c = ds.nttogcat;
+                createTripSelectedCategories = createTripSelectedCategories.includes(c) ? createTripSelectedCategories.filter(x => x !== c) : [...createTripSelectedCategories, c];
                 ntRender();
                 return;
             }
