@@ -476,11 +476,30 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
      (invisible seulement à l'œil). z-index largement au-dessus du plus haut pane Leaflet
      (700) suffit, sans toucher à .leaflet-container lui-même (dont le popup pane sous un
      marqueur, prévu pour dépasser du cadre carte, doit rester fonctionnel ailleurs). */
+  /* BUG corrigé (demande répétée du 24/10/2026, "n'affiche pas le bouton quand on est
+     juste sur profile") : ce bloc posait "display:flex" SANS CONDITION dans cette même
+     règle .profile-map-shrink-btn — exactement la même spécificité qu'un sélecteur de
+     classe unique que le "display:none" de base (plus haut dans ce <style>, hors media
+     query) donc, en cascade CSS, cette règle plus mobile arrivant APRÈS l'emportait
+     TOUJOURS sur mobile, rendant le "display:flex" de la règle .fullscreen ci-dessous
+     totalement inutile (déjà visible sans elle) : le bouton restait affiché même sur la
+     page profile normale, jamais en plein écran. Ce display:flex n'a plus sa place ICI —
+     seule la règle .profile-mini-map-frame.fullscreen .profile-map-shrink-btn plus bas
+     doit décider de l'affichage, comme le nom "masqué hors plein écran" (commentaire plus
+     haut) le disait déjà sans que le code ne le fasse vraiment.
+     BUG corrigé (demande du 24/10/2026, "fais en sorte que le bouton soit comme les
+     boutons en haut à droite") : ce bouton avait son propre style maison (fond blanc
+     quasi-opaque sans bordure, ombre plus sombre) au lieu de reprendre .header-icon-btn
+     (#mobile-top-icons — chat/réglages, voir style.css), qui reste le SEUL langage visuel
+     de bouton-icône rond utilisé partout ailleurs sur le site. Mêmes dimensions/bordure/
+     ombre que sa version mobile (36px, voir #mobile-top-icons .header-icon-btn dans
+     style.css) — seuls position/z-index/top-left restent propres à cette superposition
+     plein écran. */
   .profile-map-shrink-btn {
       position: absolute; top: calc(14px + env(safe-area-inset-top)); left: 14px; z-index: 9500;
-      width: 38px; height: 38px; border-radius: 50%; border: none;
-      background: rgba(255,255,255,.92); color: #1F2430; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,.18);
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid #cbd5e1;
+      background: #ffffff; color: #2E3644; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 4px 14px rgba(80,60,120,.05);
   }
   .profile-mini-map-frame.fullscreen .profile-map-shrink-btn { display: flex; }
 }

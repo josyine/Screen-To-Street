@@ -3519,7 +3519,13 @@ window.addEventListener('firebase-ready', async (e) => {
     // visited.html (#visit-container) : renderVisited() (voir plus bas, à chaque appel via
     // les hooks jumeaux de refreshWishlistFromCloud() ci-dessous) lit lui aussi loc.img
     // depuis ce même celebLocations partagé.
-    if (document.getElementById('map') || document.getElementById('feed-grid') || document.getElementById('wish-container') || document.getElementById('visit-container')) {
+    // BUG corrigé (demande du 24/10/2026, "dans trips, fais en sorte d'utiliser la dernière
+    // version de la header photo... actuellement ça prend en compte des anciennes versions")
+    // — même cause, jamais étendue à trips.html (#trips-list-container) : le bloc "RECOMMENDED
+    // IN {Country}" de window.renderTrip() (voir plus bas, loc.img sur chaque .loc-thumb) lit
+    // lui aussi loc.img depuis ce même celebLocations partagé, qui restait donc figé sur
+    // l'export statique pour cette page comme les autres avant ce correctif.
+    if (document.getElementById('map') || document.getElementById('feed-grid') || document.getElementById('wish-container') || document.getElementById('visit-container') || document.getElementById('trips-list-container')) {
         await Promise.all([
             // BUG corrigé (demande du 19/09/2026, "Dans Location submissions, lorsque je
             // publie un lieu il ne se publie plus dans map") — même famille de bug que les
@@ -3565,6 +3571,12 @@ window.addEventListener('firebase-ready', async (e) => {
                     // #visit-container plus haut) : même hook jumeau que refreshWishlistFromCloud
                     // ci-dessus (window.refreshVisitedFromCloud = renderVisited, voir visited.html).
                     if (anyAdded && typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+                    // trips.html (demande du 24/10/2026, voir la note sur le garde
+                    // #trips-list-container plus haut) : pas de hook refreshXFromCloud dédié ici —
+                    // on réutilise directement window.renderTrip() comme le fait déjà le listener
+                    // cloudData.wishlistLocs plus bas dans ce fichier, avec la même garde (un
+                    // voyage doit être ouvert, #edit-trip-name présent sur cette page).
+                    if (anyAdded && document.getElementById('edit-trip-name') && typeof window.renderTrip === 'function' && currentTrip) window.renderTrip();
                 } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
             })(),
             // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
@@ -3598,6 +3610,10 @@ window.addEventListener('firebase-ready', async (e) => {
                     // hook, "Visited" restait sur l'ancienne photo jusqu'au prochain export
                     // statique, exactement le bug signalé.
                     if (anyOverrideApplied && typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+                    // trips.html (demande du 24/10/2026) : c'est aussi CETTE branche qui
+                    // applique skeletonFields.img — même garde/raison que le hook ajouté
+                    // juste au-dessus pour fetchNewLocations().
+                    if (anyOverrideApplied && document.getElementById('edit-trip-name') && typeof window.renderTrip === 'function' && currentTrip) window.renderTrip();
                 } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
             })(),
             // BUG corrigé (demande du 19/09/2026, "le bouton delete location ne fonctionne
@@ -3657,6 +3673,9 @@ window.addEventListener('firebase-ready', async (e) => {
             // wishlist, contrairement à fetchLocationSkeletonOverrides() plus haut.
             if (typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
             if (typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+            // trips.html (demande du 24/10/2026) : même raison que les deux hooks juste
+            // au-dessus, pour cette hydratation de variant de groupe.
+            if (document.getElementById('edit-trip-name') && typeof window.renderTrip === 'function' && currentTrip) window.renderTrip();
         }
     }
 
@@ -5316,6 +5335,7 @@ const translations = {
         checkVisited: "I visited this place", checkWishlist: "Add to Wishlist", tripWhich: "Which trip is this for?",
         tripName: "Trip name", tripWhen: "When are you planning to go?", tripFrom: "From", tripTo: "To", tripCreate: "Create trip", tripCancel: "Cancel",
         itiTitle: "Auto-Itinerary Generator", itiDesc: "Select a group, a country, and how many days you stay.", itiCreateBtn: "Create My Guide", itiCatLabel: "Categories (optional, select multiple)", itiExport: "Export Guide as PDF", itiSave: "Save to My Trips",
+        itiGroupLabel: "Group", itiCountryLabel: "Country", itiCityLabel: "City", itiOptional: "· optional", itiAllCities: "All cities", itiDatesLabel: "Dates", itiLengthLabel: "Trip length", itiLengthUnit: "· days", itiStayLabel: "Stay",
         searchTripsPlaceholder: "Search your trips...", noTripsFound: "No trips found.", selectTripToView: "Select a trip to view", deselectTripOption: "— No trip selected —", locationsWord: "location", locationsWordPlural: "locations",
         addAnotherVisit: "Add another visit",
         tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", accessibilityRating: "Easy to access?", siteQualityRating: "Site quality", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "{count} friends have visited this place", friendsVisitedStatOne: "1 friend has visited this place", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Link:", lOfficialLink: "Source", lFollow: "Follow:", lWatchEpi: "On Screen", lPractical: "Practical information & access", lLearnMore: "Learn more", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lRecreatePhoto: "Mei's Pictures", officialPoseLabel: "Official recreation of the celebrity's pose", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
@@ -5383,6 +5403,7 @@ const translations = {
         checkVisited: "J'ai visité ce lieu", checkWishlist: "Ajouter à ma Wishlist", tripWhich: "Pour quel voyage ?",
         tripName: "Nom du voyage", tripWhen: "Quand prévoyez-vous d'y aller ?", tripFrom: "De", tripTo: "À", tripCreate: "Créer", tripCancel: "Annuler",
         itiTitle: "Générateur Itinéraire", itiDesc: "Sélectionnez un groupe, un pays, et le nombre de jours.", itiCreateBtn: "Créer mon guide", itiCatLabel: "Catégories (facultatif, sélection multiple)", itiExport: "Exporter en PDF", itiSave: "Sauvegarder dans My Trips",
+        itiGroupLabel: "Groupe", itiCountryLabel: "Pays", itiCityLabel: "Ville", itiOptional: "· facultatif", itiAllCities: "Toutes les villes", itiDatesLabel: "Dates", itiLengthLabel: "Durée du séjour", itiLengthUnit: "· jours", itiStayLabel: "Hébergement",
         searchTripsPlaceholder: "Rechercher vos voyages...", noTripsFound: "Aucun voyage trouvé.", selectTripToView: "Sélectionner un voyage", deselectTripOption: "— Aucun voyage sélectionné —", locationsWord: "lieu", locationsWordPlural: "lieux",
         addAnotherVisit: "Ajouter une autre visite",
         tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", accessibilityRating: "Facilement accessible ?", siteQualityRating: "Qualité du lieu", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "{count} amis ont visité cet endroit", friendsVisitedStatOne: "1 ami a visité cet endroit", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Lien :", lOfficialLink: "Source", lFollow: "Suivre :", lWatchEpi: "À l'écran", lPractical: "Informations pratiques & accès", lLearnMore: "En savoir plus", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lRecreatePhoto: "Les photos de Mei", officialPoseLabel: "Reproduction officielle de la célébrité", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
@@ -5450,6 +5471,7 @@ const translations = {
         checkVisited: "He visitado este lugar", checkWishlist: "Añadir a mi lista", tripWhich: "¿Para qué viaje es esto?",
         tripName: "Nombre del viaje", tripWhen: "¿Cuándo planeas ir?", tripFrom: "Desde", tripTo: "Hasta", tripCreate: "Crear viaje", tripCancel: "Cancelar",
         itiTitle: "Generador de Itinerarios", itiDesc: "Selecciona un grupo, un país y cuántos días te quedas.", itiCreateBtn: "Crear mi guía", itiCatLabel: "Categorías (opcional, selección múltiple)", itiExport: "Exportar guía en PDF", itiSave: "Guardar en Mis Viajes",
+        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Ciudad", itiOptional: "· opcional", itiAllCities: "Todas las ciudades", itiDatesLabel: "Fechas", itiLengthLabel: "Duración del viaje", itiLengthUnit: "· días", itiStayLabel: "Alojamiento",
         searchTripsPlaceholder: "Buscar tus viajes...", noTripsFound: "No se encontraron viajes.", selectTripToView: "Selecciona un viaje para ver", deselectTripOption: "— Ningún viaje seleccionado —", locationsWord: "lugar", locationsWordPlural: "lugares",
         addAnotherVisit: "Añadir otra visita",
         tabExplore: "Explorar", tabMyItinerary: "Mi Itinerario", yourRating: "Tu valoración", foodQualityRating: "Calidad de la comida", valueForMoneyRating: "Relación calidad-precio", accessibilityRating: "¿Fácil acceso?", siteQualityRating: "Calidad del lugar", wishlistStat: "El {pct}% de los usuarios añadió este lugar a su lista de deseos", friendsVisitedStat: "{count} amigos han visitado este lugar", friendsVisitedStatOne: "1 amigo ha visitado este lugar", whenDidYouVisit: "¿Cuándo visitaste este lugar?", saveMemory: "Guardar recuerdo", myVisitTab: "Mi Visita", tabReviews: "Reseñas", tabInfo: "Info", tabStory: "Historia", lGroup: "Grupo:", lMembers: "Miembros:", lCountry: "País:", lCity: "Ciudad:", lDate: "Fecha:", lEpisode: "Episodio:", lWatch: "Enlace:", lOfficialLink: "Fuente", lFollow: "Seguir:", lWatchEpi: "En pantalla", lPractical: "Información práctica y acceso", lLearnMore: "Más información", lAddress: "Dirección", lOpenMap: "Abrir en Google Maps", lStoryPlace: "La historia de este lugar", lStoryBts: "Siguiendo los pasos de BTS", lRecreatePhoto: "Las fotos de Mei", officialPoseLabel: "Reproducción oficial de la celebridad", lTipsTitle: "LOS CONSEJOS DE «SCREEN TO STREET»", lHowToGetThere: "Cómo llegar:", memoryNotesLabel: "Tus notas (opcional)", memoryNotesPlaceholder: "¿Qué recuerdas de este lugar?", reviewsCountLabel: "{n} reseñas públicas", reviewsWriteLabel: "Escribe tu reseña", reviewsComposePlaceholder: "Comparte lo que pensaste...", reviewsComposeMakePublic: "Hacer esto público", reviewsComposePost: "Publicar reseña", memoryPhotoLabel: "Añadir una foto (opcional)", memoryPhotoChoose: "Elegir una foto", memoryPhotoRemove: "Quitar", memoryMakePublic: "Hacer pública esta reseña (visible para otros usuarios)", reviewsLoading: "Cargando reseñas…", reviewsEmpty: "Todavía no hay reseñas públicas para este lugar — ¡sé el primero en compartir la tuya desde la pestaña «Mi Visita»!",
@@ -5513,6 +5535,7 @@ const translations = {
         checkVisited: "Ho visitato questo posto", checkWishlist: "Aggiungi alla wishlist", tripWhich: "Per quale viaggio è questo?",
         tripName: "Nome del viaggio", tripWhen: "Quando pensi di andarci?", tripFrom: "Da", tripTo: "A", tripCreate: "Crea viaggio", tripCancel: "Annulla",
         itiTitle: "Generatore di Itinerari", itiDesc: "Seleziona un gruppo, un paese e quanti giorni resti.", itiCreateBtn: "Crea la mia guida", itiCatLabel: "Categorie (opzionale, selezione multipla)", itiExport: "Esporta guida in PDF", itiSave: "Salva nei Miei Viaggi",
+        itiGroupLabel: "Gruppo", itiCountryLabel: "Paese", itiCityLabel: "Città", itiOptional: "· facoltativo", itiAllCities: "Tutte le città", itiDatesLabel: "Date", itiLengthLabel: "Durata del viaggio", itiLengthUnit: "· giorni", itiStayLabel: "Soggiorno",
         searchTripsPlaceholder: "Cerca i tuoi viaggi...", noTripsFound: "Nessun viaggio trovato.", selectTripToView: "Seleziona un viaggio da vedere", deselectTripOption: "— Nessun viaggio selezionato —", locationsWord: "luogo", locationsWordPlural: "luoghi",
         addAnotherVisit: "Aggiungi un'altra visita",
         tabExplore: "Esplora", tabMyItinerary: "Il Mio Itinerario", yourRating: "La tua valutazione", foodQualityRating: "Qualità del cibo", valueForMoneyRating: "Rapporto qualità-prezzo", accessibilityRating: "Facile da raggiungere?", siteQualityRating: "Qualità del luogo", wishlistStat: "Il {pct}% degli utenti ha aggiunto questo posto alla propria wishlist", friendsVisitedStat: "{count} amici hanno visitato questo posto", friendsVisitedStatOne: "1 amico ha visitato questo posto", whenDidYouVisit: "Quando hai visitato questo posto?", saveMemory: "Salva ricordo", myVisitTab: "La Mia Visita", tabReviews: "Recensioni", tabInfo: "Info", tabStory: "Storia", lGroup: "Gruppo:", lMembers: "Membri:", lCountry: "Paese:", lCity: "Città:", lDate: "Data:", lEpisode: "Episodio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Segui:", lWatchEpi: "Sullo schermo", lPractical: "Informazioni pratiche e accesso", lLearnMore: "Scopri di più", lAddress: "Indirizzo", lOpenMap: "Apri in Google Maps", lStoryPlace: "La storia di questo posto", lStoryBts: "Sulle orme dei BTS", lRecreatePhoto: "Le foto di Mei", officialPoseLabel: "Riproduzione ufficiale della celebrità", lTipsTitle: "I CONSIGLI DI «SCREEN TO STREET»", lHowToGetThere: "Come arrivare:", memoryNotesLabel: "Le tue note (facoltativo)", memoryNotesPlaceholder: "Cosa ricordi di questo posto?", reviewsCountLabel: "{n} recensioni pubbliche", reviewsWriteLabel: "Scrivi la tua recensione", reviewsComposePlaceholder: "Condividi cosa ne pensi...", reviewsComposeMakePublic: "Rendi pubblica questa recensione", reviewsComposePost: "Pubblica recensione", memoryPhotoLabel: "Aggiungi una foto (facoltativo)", memoryPhotoChoose: "Scegli una foto", memoryPhotoRemove: "Rimuovi", memoryMakePublic: "Rendi pubblica questa recensione (visibile agli altri utenti)", reviewsLoading: "Caricamento recensioni…", reviewsEmpty: "Ancora nessuna recensione pubblica per questo posto — sii il primo a condividere la tua dalla scheda «La Mia Visita»!",
@@ -5576,6 +5599,7 @@ const translations = {
         checkVisited: "Eu visitei este lugar", checkWishlist: "Adicionar à wishlist", tripWhich: "Para qual viagem é isso?",
         tripName: "Nome da viagem", tripWhen: "Quando você planeja ir?", tripFrom: "De", tripTo: "Até", tripCreate: "Criar viagem", tripCancel: "Cancelar",
         itiTitle: "Gerador de Roteiros", itiDesc: "Selecione um grupo, um país e quantos dias você fica.", itiCreateBtn: "Criar meu guia", itiCatLabel: "Categorias (opcional, seleção múltipla)", itiExport: "Exportar guia em PDF", itiSave: "Salvar em Minhas Viagens",
+        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Cidade", itiOptional: "· opcional", itiAllCities: "Todas as cidades", itiDatesLabel: "Datas", itiLengthLabel: "Duração da viagem", itiLengthUnit: "· dias", itiStayLabel: "Hospedagem",
         searchTripsPlaceholder: "Buscar suas viagens...", noTripsFound: "Nenhuma viagem encontrada.", selectTripToView: "Selecione uma viagem para ver", deselectTripOption: "— Nenhuma viagem selecionada —", locationsWord: "local", locationsWordPlural: "locais",
         addAnotherVisit: "Adicionar outra visita",
         tabExplore: "Explorar", tabMyItinerary: "Meu Itinerário", yourRating: "Sua avaliação", foodQualityRating: "Qualidade da comida", valueForMoneyRating: "Custo-benefício", accessibilityRating: "Fácil acesso?", siteQualityRating: "Qualidade do lugar", wishlistStat: "{pct}% dos usuários adicionaram este lugar à lista de desejos", friendsVisitedStat: "{count} amigos visitaram este lugar", friendsVisitedStatOne: "1 amigo visitou este lugar", whenDidYouVisit: "Quando você visitou este lugar?", saveMemory: "Salvar lembrança", myVisitTab: "Minha Visita", tabReviews: "Avaliações", tabInfo: "Info", tabStory: "História", lGroup: "Grupo:", lMembers: "Membros:", lCountry: "País:", lCity: "Cidade:", lDate: "Data:", lEpisode: "Episódio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Seguir:", lWatchEpi: "Na tela", lPractical: "Informações práticas e acesso", lLearnMore: "Saiba mais", lAddress: "Endereço", lOpenMap: "Abrir no Google Maps", lStoryPlace: "A história deste lugar", lStoryBts: "Nos passos do BTS", lRecreatePhoto: "As fotos da Mei", officialPoseLabel: "Reprodução oficial da celebridade", lTipsTitle: "AS DICAS «SCREEN TO STREET»", lHowToGetThere: "Como chegar:", memoryNotesLabel: "Suas notas (opcional)", memoryNotesPlaceholder: "O que você lembra deste lugar?", reviewsCountLabel: "{n} avaliações públicas", reviewsWriteLabel: "Escreva sua avaliação", reviewsComposePlaceholder: "Compartilhe sua opinião...", reviewsComposeMakePublic: "Tornar isso público", reviewsComposePost: "Publicar avaliação", memoryPhotoLabel: "Adicionar uma foto (opcional)", memoryPhotoChoose: "Escolher uma foto", memoryPhotoRemove: "Remover", memoryMakePublic: "Tornar esta avaliação pública (visível para outros usuários)", reviewsLoading: "Carregando avaliações…", reviewsEmpty: "Ainda não há avaliações públicas para este lugar — seja o primeiro a compartilhar a sua na aba «Minha Visita»!",
@@ -5639,6 +5663,7 @@ const translations = {
         checkVisited: "이 장소를 방문했어요", checkWishlist: "위시리스트에 추가", tripWhich: "어떤 여행을 위한 건가요?",
         tripName: "여행 이름", tripWhen: "언제 갈 계획인가요?", tripFrom: "부터", tripTo: "까지", tripCreate: "여행 만들기", tripCancel: "취소",
         itiTitle: "자동 일정 생성기", itiDesc: "그룹, 국가, 체류 일수를 선택하세요.", itiCreateBtn: "가이드 만들기", itiCatLabel: "카테고리 (선택 사항, 다중 선택 가능)", itiExport: "가이드 PDF로 내보내기", itiSave: "내 여행에 저장",
+        itiGroupLabel: "그룹", itiCountryLabel: "국가", itiCityLabel: "도시", itiOptional: "· 선택 사항", itiAllCities: "모든 도시", itiDatesLabel: "날짜", itiLengthLabel: "여행 기간", itiLengthUnit: "· 일", itiStayLabel: "숙소",
         searchTripsPlaceholder: "여행 검색...", noTripsFound: "여행을 찾을 수 없습니다.", selectTripToView: "볼 여행을 선택하세요", deselectTripOption: "— 선택된 여행 없음 —", locationsWord: "장소", locationsWordPlural: "장소",
         addAnotherVisit: "다른 방문 추가",
         tabExplore: "탐색", tabMyItinerary: "내 일정", yourRating: "평점", foodQualityRating: "음식 품질", valueForMoneyRating: "가성비", accessibilityRating: "접근이 쉬운가요?", siteQualityRating: "장소의 품질", wishlistStat: "사용자의 {pct}%가 이 장소를 위시리스트에 추가했습니다", friendsVisitedStat: "친구 {count}명이 이곳을 방문했어요", friendsVisitedStatOne: "친구 1명이 이곳을 방문했어요", whenDidYouVisit: "언제 방문하셨나요?", saveMemory: "추억 저장", myVisitTab: "내 방문", tabReviews: "후기", tabInfo: "정보", tabStory: "스토리", lGroup: "그룹:", lMembers: "멤버:", lCountry: "국가:", lCity: "도시:", lDate: "날짜:", lEpisode: "에피소드:", lWatch: "링크:", lOfficialLink: "출처", lFollow: "팔로우:", lWatchEpi: "화면 속", lPractical: "실용 정보 및 접근 방법", lLearnMore: "더 알아보기", lAddress: "주소", lOpenMap: "구글 지도에서 열기", lStoryPlace: "이 장소의 이야기", lStoryBts: "BTS의 발자취를 따라", lRecreatePhoto: "메이의 사진", officialPoseLabel: "셀럽의 공식 포즈 재현", lTipsTitle: "'SCREEN TO STREET' 팁", lHowToGetThere: "가는 방법:", memoryNotesLabel: "나의 메모 (선택 사항)", memoryNotesPlaceholder: "이 장소에 대해 기억나는 것이 있나요?", reviewsCountLabel: "공개 후기 {n}개", reviewsWriteLabel: "후기 작성하기", reviewsComposePlaceholder: "느낀 점을 공유해보세요...", reviewsComposeMakePublic: "이 후기를 공개로 설정", reviewsComposePost: "후기 게시", memoryPhotoLabel: "사진 추가 (선택 사항)", memoryPhotoChoose: "사진 선택", memoryPhotoRemove: "제거", memoryMakePublic: "이 후기를 공개로 설정 (다른 사용자에게 표시됨)", reviewsLoading: "후기를 불러오는 중…", reviewsEmpty: "아직 이 장소에 대한 공개 후기가 없습니다 — '내 방문' 탭에서 첫 후기를 남겨보세요!",
@@ -5702,6 +5727,7 @@ const translations = {
         checkVisited: "この場所を訪れました", checkWishlist: "ウィッシュリストに追加", tripWhich: "どの旅行のためですか？",
         tripName: "旅行の名前", tripWhen: "いつ行く予定ですか？", tripFrom: "開始", tripTo: "終了", tripCreate: "旅行を作成", tripCancel: "キャンセル",
         itiTitle: "自動旅程ジェネレーター", itiDesc: "グループ、国、滞在日数を選択してください。", itiCreateBtn: "ガイドを作成", itiCatLabel: "カテゴリー（任意、複数選択可）", itiExport: "ガイドをPDFで出力", itiSave: "マイトリップに保存",
+        itiGroupLabel: "グループ", itiCountryLabel: "国", itiCityLabel: "都市", itiOptional: "・任意", itiAllCities: "すべての都市", itiDatesLabel: "日程", itiLengthLabel: "旅行日数", itiLengthUnit: "・日間", itiStayLabel: "宿泊先",
         searchTripsPlaceholder: "旅行を検索...", noTripsFound: "旅行が見つかりません。", selectTripToView: "表示する旅行を選択", deselectTripOption: "— 選択された旅行はありません —", locationsWord: "スポット", locationsWordPlural: "スポット",
         addAnotherVisit: "別の訪問を追加",
         tabExplore: "探索", tabMyItinerary: "マイ旅程", yourRating: "評価", foodQualityRating: "料理の質", valueForMoneyRating: "コストパフォーマンス", accessibilityRating: "アクセスしやすさ", siteQualityRating: "場所の質", wishlistStat: "ユーザーの{pct}%がこの場所をウィッシュリストに追加しました", friendsVisitedStat: "{count}人の友達がここを訪れました", friendsVisitedStatOne: "1人の友達がここを訪れました", whenDidYouVisit: "いつ訪れましたか？", saveMemory: "思い出を保存", myVisitTab: "マイビジット", tabReviews: "レビュー", tabInfo: "情報", tabStory: "ストーリー", lGroup: "グループ：", lMembers: "メンバー：", lCountry: "国：", lCity: "都市：", lDate: "日付：", lEpisode: "エピソード：", lWatch: "リンク：", lOfficialLink: "出典", lFollow: "フォロー:", lWatchEpi: "画面の中", lPractical: "実用情報とアクセス", lLearnMore: "もっと詳しく", lAddress: "住所", lOpenMap: "Googleマップで開く", lStoryPlace: "この場所の物語", lStoryBts: "BTSの足跡をたどって", lRecreatePhoto: "メイの写真", officialPoseLabel: "セレブの公式ポーズの再現", lTipsTitle: "「SCREEN TO STREET」のヒント", lHowToGetThere: "行き方：", memoryNotesLabel: "メモ（任意）", memoryNotesPlaceholder: "この場所について覚えていることは？", reviewsCountLabel: "公開レビュー{n}件", reviewsWriteLabel: "レビューを書く", reviewsComposePlaceholder: "感想をシェアしましょう…", reviewsComposeMakePublic: "このレビューを公開する", reviewsComposePost: "レビューを投稿", memoryPhotoLabel: "写真を追加（任意）", memoryPhotoChoose: "写真を選択", memoryPhotoRemove: "削除", memoryMakePublic: "このレビューを公開する（他のユーザーに表示されます）", reviewsLoading: "レビューを読み込み中…", reviewsEmpty: "この場所にはまだ公開レビューがありません —「マイビジット」タブから最初のレビューを共有しましょう！",
@@ -5765,6 +5791,7 @@ const translations = {
         checkVisited: "我去过这个地方", checkWishlist: "添加到收藏清单", tripWhich: "这是为哪次行程添加的？",
         tripName: "行程名称", tripWhen: "您计划什么时候出发？", tripFrom: "开始日期", tripTo: "结束日期", tripCreate: "创建行程", tripCancel: "取消",
         itiTitle: "自动行程生成器", itiDesc: "选择一个团体、一个国家，以及停留天数。", itiCreateBtn: "生成我的指南", itiCatLabel: "类别（可选，可多选）", itiExport: "导出指南为 PDF", itiSave: "保存到我的行程",
+        itiGroupLabel: "团体", itiCountryLabel: "国家", itiCityLabel: "城市", itiOptional: "·可选", itiAllCities: "所有城市", itiDatesLabel: "日期", itiLengthLabel: "行程天数", itiLengthUnit: "·天", itiStayLabel: "住宿",
         searchTripsPlaceholder: "搜索您的行程...", noTripsFound: "未找到任何行程。", selectTripToView: "选择要查看的行程", deselectTripOption: "— 未选择行程 —", locationsWord: "个地点", locationsWordPlural: "个地点",
         addAnotherVisit: "添加另一次访问",
         tabExplore: "探索", tabMyItinerary: "我的行程", yourRating: "你的评分", foodQualityRating: "食物质量", valueForMoneyRating: "性价比", accessibilityRating: "是否容易到达？", siteQualityRating: "场地质量", wishlistStat: "{pct}%的用户将这个地方加入了心愿单", friendsVisitedStat: "{count}位好友到访过这里", friendsVisitedStatOne: "1位好友到访过这里", whenDidYouVisit: "你什么时候去的？", saveMemory: "保存回忆", myVisitTab: "我的到访", tabReviews: "评价", tabInfo: "信息", tabStory: "故事", lGroup: "组合：", lMembers: "成员：", lCountry: "国家：", lCity: "城市：", lDate: "日期：", lEpisode: "集数：", lWatch: "链接：", lOfficialLink: "来源", lFollow: "关注：", lWatchEpi: "画面中", lPractical: "实用信息与交通", lLearnMore: "了解更多", lAddress: "地址", lOpenMap: "在谷歌地图中打开", lStoryPlace: "这个地方的故事", lStoryBts: "追随BTS的足迹", lRecreatePhoto: "Mei的照片", officialPoseLabel: "名人官方姿势复刻", lTipsTitle: "「SCREEN TO STREET」小贴士", lHowToGetThere: "交通方式：", memoryNotesLabel: "你的备注（可选）", memoryNotesPlaceholder: "你还记得这个地方的什么？", reviewsCountLabel: "{n}条公开评价", reviewsWriteLabel: "写下你的评价", reviewsComposePlaceholder: "分享你的感受…", reviewsComposeMakePublic: "公开此评价", reviewsComposePost: "发布评价", memoryPhotoLabel: "添加照片（可选）", memoryPhotoChoose: "选择照片", memoryPhotoRemove: "移除", memoryMakePublic: "公开此评价（其他用户可见）", reviewsLoading: "正在加载评价…", reviewsEmpty: "该地点暂无公开评价——从「我的到访」标签页分享第一条评价吧！",
@@ -7398,6 +7425,27 @@ window.loadItineraryTabOptions = function() {
     window.clearTripFromMainMap();
 };
 
+// BUG corrigé (demande du 24/10/2026, "New trip n'affiche que 3 lieux alors qu'il y en a
+// beaucoup plus") : tout le code des voyages comparait les ids de lieu via Number(id)/
+// parseInt(id), en supposant qu'ils sont toujours numériques. Or tout lieu ajouté
+// manuellement a un id "new-manual-xxx" (voir createNewTripAdvanced plus bas) ou "new-xxx"
+// (file d'approbation, voir le commentaire sur locationSortKey plus haut) — Number() sur
+// ces chaînes renvoie NaN, et NaN !== NaN fait silencieusement disparaître ces lieux des
+// .find()/.includes() partout où ce voyage est affiché ou recalculé (jours assignés,
+// compteur "N lieux", liste "ajouter un lieu", régénération après changement de dates...).
+// sameLocId()/includesLocId() comparent les ids tels quels (en chaîne), ce qui fonctionne
+// quel que soit leur type d'origine, sans jamais les coercer.
+function sameLocId(a, b) { return String(a) === String(b); }
+function includesLocId(arr, id) { return (arr || []).some(x => sameLocId(x, id)); }
+// Pour embarquer un id de lieu dans un attribut onclick="..." (toujours entre guillemets
+// doubles dans ce fichier) : un id "new-manual-xxx" doit être rendu comme un littéral JS
+// ENTRE GUILLEMETS SIMPLES (sinon il serait interprété comme du code, variable "new" moins
+// "manual" etc.) sans casser l'attribut HTML englobant — JSON.stringify() produirait des
+// guillemets doubles qui refermeraient prématurément l'attribut.
+function locIdLit(id) {
+    return typeof id === 'number' ? String(id) : "'" + String(id).replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
+}
+
 // Clic sur une ligne de la liste : sélectionne ce voyage pour l'afficher sur la carte,
 // ou le désélectionne s'il l'était déjà (recliquer un voyage déjà actif le retire de la
 // carte — demande du 06/09/2026). Sur mobile (demande du 12/09/2026) : redirige plutôt
@@ -7440,14 +7488,14 @@ window.loadItineraryView = function(tripId) {
 
     document.getElementById('iti-view-name').textContent = trip.name;
     
-    let allAssignedIds = (trip.days || []).flat().map(Number);
+    let allAssignedIds = (trip.days || []).flat();
     document.getElementById('iti-view-loc-count').textContent = `${allAssignedIds.length} location${allAssignedIds.length > 1 ? 's' : ''}`;
 
     let wList = getWishlistLocs();
     let totalSaved = wList.filter(w => w.tripId === trip.id).length;
-    
+
     let countries = [...new Set(allAssignedIds.map(id => {
-        let loc = celebLocations.find(l => Number(l.id) === id);
+        let loc = celebLocations.find(l => sameLocId(l.id, id));
         return loc ? loc.country : null;
     }).filter(Boolean))];
     
@@ -7473,10 +7521,10 @@ window.loadItineraryView = function(tripId) {
             timelineHtml += `<div class="timeline-loc-city" style="font-style:italic; text-align:left;">No locations planned</div>`;
         } else {
             dayIds.forEach(id => {
-                const loc = celebLocations.find(l => Number(l.id) === Number(id));
+                const loc = celebLocations.find(l => sameLocId(l.id, id));
                 if(loc) {
                     timelineHtml += `
-                        <div class="timeline-loc" onclick="map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 }); window.openDetailsPanel(${loc.id});" style="cursor:pointer;">
+                        <div class="timeline-loc" onclick="map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 }); window.openDetailsPanel(${locIdLit(loc.id)});" style="cursor:pointer;">
                             <span class="timeline-loc-name">${loc.name}</span>
                             <span class="timeline-loc-city">${loc.city || ''}</span>
                         </div>
@@ -7546,7 +7594,7 @@ function drawTripOnMap(trip, targetMap, targetLayerGroup, onlyDayIndex) {
         const color = TRIP_DAY_COLORS[idx % TRIP_DAY_COLORS.length];
         let coords = [];
         dayIds.forEach((id, locIdx) => {
-            const loc = celebLocations.find(l => Number(l.id) === Number(id));
+            const loc = celebLocations.find(l => sameLocId(l.id, id));
             if(loc) {
                 coords.push([loc.lat, loc.lng]);
                 allPoints.push([loc.lat, loc.lng]);
@@ -7604,7 +7652,7 @@ window.renderTripDaySummary = function() {
         if (tripMapSelectedDay >= 0 && tripMapSelectedDay !== i) return;
         const color = TRIP_DAY_COLORS[i % TRIP_DAY_COLORS.length];
         const names = dayIds.map(id => {
-            const loc = celebLocations.find(l => Number(l.id) === Number(id));
+            const loc = celebLocations.find(l => sameLocId(l.id, id));
             return loc ? loc.name.split(' ')[0] : null;
         }).filter(Boolean);
         const route = names.length ? names.join(' → ') : noPlacesLabel;
@@ -7635,7 +7683,7 @@ function renderDayMiniMaps(trip) {
 
         const color = TRIP_DAY_COLORS[idx % TRIP_DAY_COLORS.length];
         const coords = dayIds
-            .map(id => celebLocations.find(l => Number(l.id) === Number(id)))
+            .map(id => celebLocations.find(l => sameLocId(l.id, id)))
             .filter(Boolean)
             .map(loc => [loc.lat, loc.lng]);
 
@@ -8083,7 +8131,8 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
     `).join('');
     grid.querySelectorAll('.loc-visitors-tile').forEach(tile => {
         tile.addEventListener('click', () => {
-            const { post: p, locId } = postsWithLoc[Number(tile.dataset.i)];
+            const i = Number(tile.dataset.i);
+            const entry = postsWithLoc[i];
             // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
             // exactement où on était précédemment, toujours avec la flèche chevron
             // d'ouverte comme avant") : on mémorise CE tiroir précis (titre + liste) avant
@@ -8092,17 +8141,11 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
             // publication, au lieu de retomber simplement sur la carte en dessous.
             pendingLocVisitorsDrawerReturn = { title, postsWithLoc };
             window.closeLocVisitorsDrawer();
-            window.openLocModal(locId, {
-                username: p.username,
-                uid: p.uid,
-                avatarColor: window.avatarColorForUsername(p.username),
-                photo: p.photo,
-                caption: p.caption,
-                date: p.date,
-                taggedFriends: p.taggedFriends,
-                photoKey: p.uid + '_' + p.id,
-                photoId: p.standalone ? p.id : null
-            });
+            // navCtx (demande du 24/10/2026, "fais en sorte qu'on puisse swipe les posts du
+            // chevron comme dans Community") : CETTE MÊME liste postsWithLoc, déjà scopée à
+            // ce lieu/pays (voir openLocVisitorsDrawer()/openAreaVisitorsDrawer() plus bas) —
+            // voir window.__locModalNav dans openLocModal()/script.js pour le reste du geste.
+            window.openLocModal(entry.locId, locModalPostContextFromEntry(entry), { list: postsWithLoc, index: i });
         });
     });
     overlay.classList.add('open');
@@ -11302,9 +11345,31 @@ let popupMarker = null;
 // {username, avatarColor, photo, caption, photoKey}. Tous les nouveaux éléments DOM
 // qu'il alimente sont if(el)-gardés : absents sur les autres pages (map.html,
 // visited.html...) qui partagent cette même modale, ils n'y ont simplement aucun effet.
-window.openLocModal = function(id, postContext) {
+// BUG corrigé (demande du 24/10/2026, "fais en sorte qu'on puisse swipe les posts du
+// chevron comme dans Community. Mais il ne faut afficher que les posts du chevron") :
+// navCtx = {list, index} — la MÊME liste déjà scopée (un seul lieu ou un pays, voir
+// renderVisitorsDrawerContent() plus bas) que celle qui a ouvert cette publication, jamais
+// reconstruite à partir de tous les posts du site. Posé sur window (pas une variable locale
+// à cette fonction) : wireLocModalPostNav() plus bas en a besoin après le retour de cette
+// fonction, au moment où la personne swipe réellement, pas seulement à l'ouverture. Remis à
+// null par défaut à CHAQUE appel (pas seulement quand navCtx est fourni) : sans ça, rouvrir
+// cette même modale depuis un marqueur de carte juste après avoir fermé une publication du
+// chevron laisserait le geste de swipe actif alors qu'il n'y a plus aucune liste à parcourir.
+window.__locModalNav = null;
+function locModalPostContextFromEntry(entry) {
+    const p = entry.post;
+    return {
+        username: p.username, uid: p.uid,
+        avatarColor: window.avatarColorForUsername(p.username),
+        photo: p.photo, caption: p.caption, date: p.date,
+        taggedFriends: p.taggedFriends, photoKey: p.uid + '_' + p.id,
+        photoId: p.standalone ? p.id : null
+    };
+}
+window.openLocModal = function(id, postContext, navCtx) {
     const loc = celebLocations.find(l => l.id == id);
     if(!loc) return;
+    window.__locModalNav = navCtx || null;
 
     const modalTitle = document.getElementById('modal-title');
     const modalMeta = document.getElementById('modal-meta');
@@ -11481,26 +11546,34 @@ window.openLocModal = function(id, postContext) {
         if (postContext && postContext.caption) {
             modalPostCaption.textContent = `"${postContext.caption}"`;
             modalPostCaption.classList.remove('hidden');
-            // "...more" (demande du 24/10/2026, "comme dans Community... ajoute '...more'") —
-            // tronque la légende sur 2 lignes par défaut (.modal-post-caption-clamped, voir
-            // le <style> de chaque page) ; le bouton bascule ce repli, même principe que
-            // .fpf-more-toggle (feed.html). Toujours affiché dès qu'il y a une légende plutôt
-            // que de mesurer un éventuel débordement : deux lignes de moins que ça ne gênent
-            // jamais la lecture, et éviter la mesure évite un reflow en plus à l'ouverture.
-            modalPostCaption.classList.add('modal-post-caption-clamped');
-            modalPostCaption.classList.remove('modal-post-caption-expanded');
-            if (modalPostMoreBtn) {
-                modalPostMoreBtn.classList.remove('hidden');
-                modalPostMoreBtn.textContent = '··· more';
-                modalPostMoreBtn.onclick = () => {
-                    const collapsed = !modalPostCaption.classList.toggle('modal-post-caption-expanded');
-                    modalPostCaption.classList.toggle('modal-post-caption-clamped', collapsed);
-                    modalPostMoreBtn.textContent = collapsed ? '··· more' : '··· less';
-                };
-            }
         } else {
             modalPostCaption.classList.add('hidden');
-            if (modalPostMoreBtn) modalPostMoreBtn.classList.add('hidden');
+        }
+    }
+    // BUG corrigé (demande du 24/10/2026, "quand on clique sur ...more ça doit afficher le
+    // detail du post, autrement n'affiche que la description du post rédigée par
+    // l'utilisateur... comme dans community") : "...more" bascule maintenant #modal-post-
+    // expand (adresse/groupe ou date de visite/amis identifiés + "About this place", voir
+    // map.html) au lieu de (dé)tronquer la légende ci-dessus, qui reste désormais TOUJOURS
+    // affichée en entier — exactement .fpf-caption (jamais clampée) + .fpf-more-toggle/
+    // .fpf-expand (repliable, contenu lieu) dans feed.html (Community), au lieu de l'ancien
+    // principe inverse (légende clampée, détail du lieu toujours visible). #modal-post-expand
+    // n'existe que sur map.html (seule page concernée par cette demande) : ce bloc se
+    // comporte comme avant (toujours affiché, bouton "...more" masqué) sur les autres pages
+    // partageant ce même #loc-modal (profile.html/visited.html/wishlist.html/trips.html).
+    const modalPostExpand = document.getElementById('modal-post-expand');
+    if (modalPostMoreBtn) {
+        if (postContext && modalPostExpand) {
+            modalPostMoreBtn.classList.remove('hidden');
+            modalPostExpand.classList.add('hidden');
+            modalPostMoreBtn.textContent = '··· more';
+            modalPostMoreBtn.onclick = () => {
+                const collapsed = modalPostExpand.classList.toggle('hidden');
+                modalPostMoreBtn.textContent = collapsed ? '··· more' : '··· less';
+            };
+        } else {
+            modalPostMoreBtn.classList.add('hidden');
+            if (modalPostExpand) modalPostExpand.classList.remove('hidden');
         }
     }
 
@@ -11655,6 +11728,58 @@ window.openLocModal = function(id, postContext) {
     const modalMapLinkText = document.getElementById('modal-map-link-text');
     if(modalMapLinkText) modalMapLinkText.textContent = t('openInMaps');
 
+    // "swipe les posts du chevron comme dans Community" (demande du 24/10/2026) : voir le
+    // commentaire sur window.__locModalNav tout en haut de cette fonction. Reposé à CHAQUE
+    // appel (même sans navCtx, voir plus haut) pour qu'un swipe ne reste jamais actif une
+    // fois qu'on a quitté le contexte "posts d'un lieu/pays du chevron" qui l'a fourni.
+    (function wireLocModalPostNav() {
+        const heroEl = document.getElementById('modal-hero');
+        const badgeEl = document.getElementById('modal-post-nav-badge');
+        if (!heroEl) return;
+        // Un seul gestionnaire à la fois : sans ce nettoyage, chaque ouverture (y compris
+        // via un swipe précédent, qui rappelle cette même fonction) en empilerait un de
+        // plus, et un swipe finirait par avancer de plusieurs posts d'un coup.
+        if (heroEl._locNavCleanup) { heroEl._locNavCleanup(); heroEl._locNavCleanup = null; }
+        const nav = window.__locModalNav;
+        if (!nav || !Array.isArray(nav.list) || nav.list.length < 2) {
+            if (badgeEl) badgeEl.classList.add('hidden');
+            return;
+        }
+        if (badgeEl) {
+            badgeEl.classList.remove('hidden');
+            badgeEl.textContent = `${nav.index + 1} / ${nav.list.length}`;
+        }
+        // Vertical (haut/bas), pas horizontal : .modal-hero-gallery (carrousel multi-photos
+        // DANS un même post, voir plus haut) utilise déjà le défilement horizontal sur cette
+        // même zone — les deux gestes doivent rester distincts. Seuil à 50px, pas de ratio
+        // dx/dy à vérifier ici (contrairement à wireLiveCalSwipe plus haut) : la galerie
+        // multi-photos gère déjà elle-même son propre défilement horizontal en interne (pas
+        // de touchstart/touchend ici), donc rien à distinguer d'un geste horizontal qui lui
+        // serait destiné.
+        let startY = 0, tracking = false;
+        const onStart = (e) => {
+            if (e.touches.length !== 1) return;
+            startY = e.touches[0].clientY;
+            tracking = true;
+        };
+        const onEnd = (e) => {
+            if (!tracking) return;
+            tracking = false;
+            const dy = e.changedTouches[0].clientY - startY;
+            if (Math.abs(dy) < 50) return;
+            const newIndex = nav.index + (dy < 0 ? 1 : -1); // haut -> suivant, bas -> précédent
+            if (newIndex < 0 || newIndex >= nav.list.length) return;
+            const entry = nav.list[newIndex];
+            window.openLocModal(entry.locId, locModalPostContextFromEntry(entry), { list: nav.list, index: newIndex });
+        };
+        heroEl.addEventListener('touchstart', onStart, { passive: true });
+        heroEl.addEventListener('touchend', onEnd, { passive: true });
+        heroEl._locNavCleanup = () => {
+            heroEl.removeEventListener('touchstart', onStart);
+            heroEl.removeEventListener('touchend', onEnd);
+        };
+    })();
+
     const modalOverlay = document.getElementById('loc-modal');
     if(modalOverlay) modalOverlay.classList.remove('hidden');
 
@@ -11683,6 +11808,7 @@ window.openLocModal = function(id, postContext) {
 window.closeLocModal = function() {
     const modalOverlay = document.getElementById('loc-modal');
     if(modalOverlay) modalOverlay.classList.add('hidden');
+    window.__locModalNav = null;
     // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
     // exactement où on était précédemment, toujours avec la flèche chevron d'ouverte
     // comme avant") : si cette publication a été ouverte depuis le tiroir chevron (voir
@@ -12223,7 +12349,7 @@ window.addSelectedDaysToTrip = function() {
             let dayIds = [];
             dayLocs.forEach(loc => {
                 dayIds.push(loc.id);
-                if (!wList.some(w => Number(w.id) === Number(loc.id) && w.tripId === currentTrip.id)) {
+                if (!wList.some(w => sameLocId(w.id, loc.id) && w.tripId === currentTrip.id)) {
                     wList.push({ id: loc.id, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
                 }
             });
@@ -12870,7 +12996,7 @@ window.openFilteredListModal = function(type) {
         currentFilteredLocations.forEach(loc => {
             const clickAction = isMobile
                 ? `closeModal('list-modal'); map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 });`
-                : `closeModal('list-modal'); window.openDetailsPanel(${loc.id}); map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 });`;
+                : `closeModal('list-modal'); window.openDetailsPanel(${locIdLit(loc.id)}); map.flyTo([${loc.lat}, ${loc.lng}], 16, { duration: 0.6 });`;
             content.innerHTML += `
                 <div style="padding: 12px; background: #faf9fc; border-radius: 8px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s;" onmouseover="this.style.borderColor='#D42759'" onmouseout="this.style.borderColor='#e2e8f0'" onclick="${clickAction}">
                     <div style="font-weight: 700; color: #2E3644; font-size:14px; margin-bottom:2px;">${loc.name}</div>
@@ -13383,7 +13509,7 @@ window.renderTripsSidebar = function() {
 
     trips.forEach(t => {
         let allAssignedIds = (t.days || []).flat();
-        let unassignedCount = wList.filter(w => w.tripId === t.id && !allAssignedIds.includes(Number(w.id))).length;
+        let unassignedCount = wList.filter(w => w.tripId === t.id && !includesLocId(allAssignedIds, w.id)).length;
         let totalLocs = allAssignedIds.length + unassignedCount;
 
         let dateStr = t.dateType === 'duration' ? (t.duration || 'Flexible') : `${t.startDate || '?'} to ${t.endDate || '?'}`;
@@ -13914,7 +14040,7 @@ window.refreshDayTimelines = function() {
         const dayColor = TRIP_DAY_COLORS[cardIdx % TRIP_DAY_COLORS.length];
         const itemsEl = card.querySelector('.day-items');
         const endpoints = tripDayEndpoints(cardIdx);
-        const locs = rows.map(el => celebLocations.find(l => l.id === parseInt(el.dataset.id))).filter(Boolean);
+        const locs = rows.map(el => celebLocations.find(l => sameLocId(l.id, el.dataset.id))).filter(Boolean);
         const items = computeDayTimeline(locs, endpoints.start);
 
         // Connecteurs de trajet ENTRE deux arrêts (demande du 18/10/2026, trip_finale_
@@ -14337,7 +14463,7 @@ window.renderTrip = function() {
     let metaText = "";
     if (currentTrip.group) metaText += currentTrip.group + " • ";
     if (currentTrip.country) metaText += currentTrip.country + " • ";
-    let allAssignedIds = currentTrip.days.flat().map(Number);
+    let allAssignedIds = currentTrip.days.flat();
     metaText += `${allAssignedIds.length} location${allAssignedIds.length > 1 ? 's' : ''}`;
     const datesDisplay = document.getElementById('dates-display');
     if(datesDisplay) {
@@ -14442,8 +14568,8 @@ window.renderTrip = function() {
     // Ne garder dans unassignedLocs QUE les lieux qui sont explicitement dans wishlistLocs pour ce voyage ET qui ne sont pas déjà assignés.
     let wList = getWishlistLocs();
     let unassignedLocs = wList
-        .filter(w => w.tripId === currentTrip.id && !allAssignedIds.includes(Number(w.id)))
-        .map(w => celebLocations.find(l => l.id === Number(w.id)))
+        .filter(w => w.tripId === currentTrip.id && !includesLocId(allAssignedIds, w.id))
+        .map(w => celebLocations.find(l => sameLocId(l.id, w.id)))
         .filter(Boolean);
 
     const locList = document.getElementById('loc-list');
@@ -14469,7 +14595,7 @@ window.renderTrip = function() {
         
         let itemsHtml = '';
         dayIds.forEach(id => {
-            const loc = celebLocations.find(l => l.id === Number(id));
+            const loc = celebLocations.find(l => sameLocId(l.id, id));
             if (loc) itemsHtml += window.createLocRowHtml(loc);
         });
 
@@ -14508,7 +14634,7 @@ window.renderTrip = function() {
     if(tripCountries.length > 0) {
         celebLocations.forEach(loc => {
             // Recommandation si: même pays + PAS assigné à un jour + PAS déjà dans unassignedLocs
-            if (tripCountries.includes(loc.country) && !allAssignedIds.includes(loc.id) && !unassignedLocs.some(u=>u.id===loc.id)) {
+            if (tripCountries.includes(loc.country) && !includesLocId(allAssignedIds, loc.id) && !unassignedLocs.some(u=>sameLocId(u.id, loc.id))) {
                 if (recoCount < 4) {
                     // Pastille d'icône de secours (demande du 18/10/2026, trip_finale_legere.html :
                     // certains lieux recommandés n'ont pas encore de photo) plutôt qu'une vignette
@@ -14526,7 +14652,7 @@ window.renderTrip = function() {
                         <div class="loc-row">
                             ${thumbHtml}
                             <div class="loc-info"><div class="loc-name">${closedBadgeHtml}${escapeHtml(displayName)}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
-                            <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="quickAddLoc(${loc.id})">+</button>
+                            <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="quickAddLoc(${locIdLit(loc.id)})">+</button>
                         </div>
                     `;
                     recoCount++;
@@ -14679,8 +14805,8 @@ window.toggleTripDatesPopup = function() {
 window.regenerateTripItinerary = function() {
     if (!currentTrip || !activeTripAccess.isOwner) return;
     const wList = getWishlistLocs();
-    const tripLocIds = [...new Set(wList.filter(w => w.tripId === currentTrip.id).map(w => Number(w.id)))];
-    let locs = tripLocIds.map(id => celebLocations.find(l => l.id === id)).filter(Boolean);
+    const tripLocIds = [...new Set(wList.filter(w => w.tripId === currentTrip.id).map(w => w.id))];
+    let locs = tripLocIds.map(id => celebLocations.find(l => sameLocId(l.id, id))).filter(Boolean);
     if (locs.length === 0) return;
 
     // BUG corrigé (demande du 17/10/2026, "génère bien le trip le plus optimisé possible") :
@@ -14810,12 +14936,12 @@ window.createLocRow = function(loc) {
     div.setAttribute('ondragover', 'allowDrop(event)');
     div.setAttribute('ondrop', 'drop(event)');
     div.setAttribute('ondragleave', 'dragLeave(event)');
-    div.setAttribute('onclick', `openTripLocDetail(event, ${loc.id})`);
+    div.setAttribute('onclick', `openTripLocDetail(event, ${locIdLit(loc.id)})`);
     div.innerHTML = `
         <span class="drag-handle edit-only" style="display:inline;">⠿</span>
         <span class="day-loc-dot"></span>
         ${loc.name}
-        <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${loc.id})">✕</span>
+        <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${locIdLit(loc.id)})">✕</span>
     `;
     return div;
 }
@@ -14828,11 +14954,11 @@ window.createLocRowHtml = function(loc) {
     // jamais vraie, et le trait indicateur .drag-over-top/.drag-over-bottom (déjà stylé
     // en CSS) ne s'affichait jamais entre deux lieux pendant un glisser-déposer.
     return `
-        <div class="day-loc" data-id="${loc.id}" draggable="true" ondragstart="dragStart(event, 'loc')" ondragend="dragEnd(event)" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" onclick="openTripLocDetail(event, ${loc.id})">
+        <div class="day-loc" data-id="${loc.id}" draggable="true" ondragstart="dragStart(event, 'loc')" ondragend="dragEnd(event)" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" onclick="openTripLocDetail(event, ${locIdLit(loc.id)})">
             <span class="drag-handle edit-only" style="display:inline;">⠿</span>
             <span class="day-loc-dot"></span>
             ${loc.name}
-            <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${loc.id})">✕</span>
+            <span class="x-btn edit-only" style="display:inline;" onclick="removeFromTrip(this, ${locIdLit(loc.id)})">✕</span>
         </div>
     `;
 }
@@ -15135,19 +15261,19 @@ window.confirmRemoveDay = function() {
 }
 
 window.removeFromTrip = function(btn, locId) {
-    locToRemoveData = { btn: btn, id: Number(locId) };
+    locToRemoveData = { btn: btn, id: locId };
     document.getElementById('remove-loc-modal').classList.remove('hidden');
 }
 
 window.confirmRemoveLoc = function() {
     if(!locToRemoveData) return;
-    
+
     let wList = getWishlistLocs();
-    wList = wList.filter(w => !(Number(w.id) === locToRemoveData.id && w.tripId === currentTrip.id));
+    wList = wList.filter(w => !(sameLocId(w.id, locToRemoveData.id) && w.tripId === currentTrip.id));
     localStorage.setItem('wishlistLocs', JSON.stringify(wList));
     syncWishlist(wList);
-    
-    currentTrip.days = currentTrip.days.map(day => day.filter(id => Number(id) !== locToRemoveData.id));
+
+    currentTrip.days = currentTrip.days.map(day => day.filter(id => !sameLocId(id, locToRemoveData.id)));
 
     // Important : on persiste directement le voyage mis à jour AVANT de ré-appeler renderTrip().
     // On n'utilise pas saveTrip() ici, car elle reconstruit currentTrip.days en relisant le DOM
@@ -15166,9 +15292,8 @@ window.confirmRemoveLoc = function() {
 }
 
 window.quickAddLoc = function(locId) {
-    locId = Number(locId);
     let wList = getWishlistLocs();
-    if(!wList.some(w => Number(w.id) === locId && w.tripId === currentTrip.id)) {
+    if(!wList.some(w => sameLocId(w.id, locId) && w.tripId === currentTrip.id)) {
         wList.push({ id: locId, dateAdded: new Date().toLocaleDateString(), tripId: currentTrip.id });
         localStorage.setItem('wishlistLocs', JSON.stringify(wList));
         syncWishlist(wList);
@@ -15209,7 +15334,16 @@ window.saveTrip = function() {
     const newDays = [];
     document.querySelectorAll('.day-card').forEach(card => {
         const ids = [];
-        card.querySelectorAll('.day-loc').forEach(locEl => { ids.push(parseInt(locEl.dataset.id)); });
+        // dataset.id est TOUJOURS une chaîne (attribut HTML) : parseInt() cassait les ids
+        // "new-manual-xxx" (NaN). On restitue un nombre pour les ids historiques purement
+        // numériques (cohérence avec celebLocations), et on garde la chaîne telle quelle
+        // sinon — voir sameLocId()/locIdLit() plus haut pour la comparaison de ces deux
+        // formes sans jamais les coercer en nombre.
+        card.querySelectorAll('.day-loc').forEach(locEl => {
+            const raw = locEl.dataset.id;
+            const asNum = Number(raw);
+            ids.push(raw !== '' && !Number.isNaN(asNum) && String(asNum) === raw ? asNum : raw);
+        });
         newDays.push(ids);
     });
     currentTrip.days = newDays;
@@ -15280,10 +15414,10 @@ window.filterAddModal = function() {
         return true;
     });
 
-    let allAssignedIds = currentTrip.days.flat().map(Number);
-    
+    let allAssignedIds = currentTrip.days.flat();
+
     filteredLocs.forEach(loc => {
-        if (!allAssignedIds.includes(Number(loc.id))) {
+        if (!includesLocId(allAssignedIds, loc.id)) {
             if(loc.name.toLowerCase().includes(query) || (loc.city && loc.city.toLowerCase().includes(query)) || (loc.category && loc.category.toLowerCase().includes(query))) {
                 list.innerHTML += `
                     <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #e2e8f0;">
@@ -15291,7 +15425,7 @@ window.filterAddModal = function() {
                             <div style="font-weight:700; font-size:13px; color:#212832;">${loc.name}</div>
                             <div style="font-size:11px; color:#64748b;">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div>
                         </div>
-                        <button onclick="quickAddLoc(${loc.id}); this.textContent='Added'; this.disabled=true; this.style.background='#e2e8f0';" style="background:#D42759; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">+ Add</button>
+                        <button onclick="quickAddLoc(${locIdLit(loc.id)}); this.textContent='Added'; this.disabled=true; this.style.background='#e2e8f0';" style="background:#D42759; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:700; font-size:11px; cursor:pointer;">+ Add</button>
                     </div>
                 `;
             }
@@ -15929,7 +16063,7 @@ window.createNewTripAdvanced = async function() {
     // avec le reste du site (stats, page Wishlist).
     let wList = getWishlistLocs();
     daysArray.flat().forEach(id => {
-        if (!wList.some(w => Number(w.id) === Number(id) && w.tripId === newTripId)) {
+        if (!wList.some(w => sameLocId(w.id, id) && w.tripId === newTripId)) {
             wList.push({ id, dateAdded: new Date().toLocaleDateString(), tripId: newTripId });
         }
     });

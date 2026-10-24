@@ -333,6 +333,59 @@ function stripLargeInlineMedia(fields) {
     return found ? result : null;
 }
 
+// BUG corrigé (demande du 24/10/2026, "je viens de déployer les règles Firestore et ça
+// affiche encore 'Connection issue'") : stripLargeInlineMedia() ci-dessus n'allège QUE le
+// payload DE CET APPEL (fields) — mais la limite Firestore de 1 Mio s'applique au document
+// STOCKÉ dans son ENTIER, pas seulement aux champs que cet appel modifie. Une fois le
+// document users/{uid} déjà gonflé par une coverImage/photo de visite acceptée AVANT que ce
+// correctif n'existe, TOUTE écriture suivante échoue définitivement — y compris un simple
+// syncUserData({wishlistLocs: wList}) ou {viewedLocationIds: viewed} qui ne mentionne même
+// pas myTrips/visitedLocs — et stripLargeInlineMedia(fields) ne trouve alors rien à alléger
+// puisque le champ responsable n'est tout simplement pas dans CE payload. D'où "Connection
+// issue" qui persiste pour ce compte quoi qu'on fasse côté règles : ce n'en a jamais été une.
+// Cette fonction relit myTrips/visitedLocs directement depuis localStorage (source locale
+// toujours à jour, peu importe ce que l'appel en cours écrit) pour pouvoir les réinjecter,
+// allégés, dans LA MÊME tentative de rattrapage — ce qui réduit enfin la taille du document
+// stocké au lieu de ne jamais toucher aux champs qui le font dépasser 1 Mio.
+function buildFallbackSlimPayload() {
+    let out = null;
+    try {
+        const trips = JSON.parse(localStorage.getItem('myTrips') || '[]');
+        if (Array.isArray(trips)) {
+            let changed = false;
+            const slimTrips = trips.map(t => {
+                if (t && typeof t.coverImage === 'string' && t.coverImage.startsWith('data:')) {
+                    changed = true;
+                    return Object.assign({}, t, { coverImage: '' });
+                }
+                return t;
+            });
+            if (changed) { out = out || {}; out.myTrips = slimTrips; }
+        }
+    } catch (e) { /* localStorage corrompu/absent : on ignore, ça n'empêche pas l'autre champ */ }
+    try {
+        const visited = JSON.parse(localStorage.getItem('visitedLocs') || '[]');
+        if (Array.isArray(visited)) {
+            let changed = false;
+            const slimVisited = visited.map(entry => {
+                if (!entry || !Array.isArray(entry.visits)) return entry;
+                let entryChanged = false;
+                const slimVisits = entry.visits.map(v => {
+                    if (v && typeof v.photo === 'string' && v.photo.startsWith('data:')) {
+                        entryChanged = true;
+                        return Object.assign({}, v, { photo: null });
+                    }
+                    return v;
+                });
+                if (entryChanged) { changed = true; return Object.assign({}, entry, { visits: slimVisits }); }
+                return entry;
+            });
+            if (changed) { out = out || {}; out.visitedLocs = slimVisited; }
+        }
+    } catch (e) { /* idem */ }
+    return out;
+}
+
 let _syncUserDataErrorToastShown = false;
 let _syncUserDataCoverToastShown = false;
 window.syncUserData = async function (fields) {
@@ -351,7 +404,18 @@ window.syncUserData = async function (fields) {
         }
     }
     if (lastError && lastError.code !== 'permission-denied') {
-        const slimFields = stripLargeInlineMedia(fields);
+        const slimFromFields = stripLargeInlineMedia(fields);
+        const fallbackSlim = buildFallbackSlimPayload();
+        let slimFields = slimFromFields ? Object.assign({}, fields, slimFromFields) : null;
+        // Réinjecte les versions allégées de myTrips/visitedLocs lues depuis localStorage
+        // UNIQUEMENT pour celui des deux champs qui n'est pas déjà couvert par fields/
+        // slimFromFields ci-dessus (voir buildFallbackSlimPayload) — c'est ce qui permet de
+        // rattraper l'écriture même quand ce n'est PAS myTrips/visitedLocs qui est en train
+        // d'être synchronisé par cet appel.
+        if (fallbackSlim) {
+            if (fallbackSlim.myTrips && !('myTrips' in fields)) { slimFields = slimFields || Object.assign({}, fields); slimFields.myTrips = fallbackSlim.myTrips; }
+            if (fallbackSlim.visitedLocs && !('visitedLocs' in fields)) { slimFields = slimFields || Object.assign({}, fields); slimFields.visitedLocs = fallbackSlim.visitedLocs; }
+        }
         if (slimFields) {
             try {
                 await setDoc(doc(db, 'users', user.uid), slimFields, { merge: true });
