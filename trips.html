@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261056" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261057" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -253,6 +253,21 @@
       font-weight: 600; font-size: 14px; color: #1F2430; flex: 1; min-width: 0;
   }
   #itinerary-modal .iti-qaf-dates-sep { color: #B4ADC2; font-size: 13px; flex: 0 0 auto; }
+
+  /* BUG corrigé (demande répétée du 25/10/2026, "tu n'as pas écouté ma demande" — le titre/
+     les boutons "Your new itinerary"/Criteria/Add selected places/Add all/Replace my plan du
+     round précédent étaient bien là, mais #itinerary-modal restait la carte générique
+     .modal-content (style.css) : une boîte arrondie et centrée, flottant au-dessus d'un fond
+     assombri visible tout autour, pas du tout l'écran plein cadre de auto_itinerary_final.html)
+     : même traitement "plein écran mobile" que #nt-form-overlay ("Nouveau voyage") ci-dessus
+     (voir sa note du 17/10/2026) — ciblé ici via #itinerary-modal (sélecteur d'ID) pour
+     n'affecter QUE ce générateur sur CETTE page, jamais le .modal générique ailleurs ni la
+     copie séparée de #itinerary-modal que porte map.html (chacune sa propre feuille de style
+     scoped-inline, voir le commentaire plus haut sur .qaf-rt). */
+  @media (max-width: 800px) {
+      #itinerary-modal { align-items: stretch; padding: 0; }
+      #itinerary-modal .modal-content { width: 100%; max-width: none; height: 100%; max-height: none; border-radius: 0; box-shadow: none; padding: 20px 16px calc(24px + env(safe-area-inset-bottom)); }
+  }
 
   .section-label {font-size:11.5px;font-weight:700;letter-spacing:.7px;color:#94a3b8;text-transform:uppercase;margin:24px 0 16px 0;}
 
@@ -488,6 +503,36 @@
      desktop ; même apparence qu'avant par défaut. */
   .day-loc-travel { font-size: 10.5px; font-weight: 600; color: #64748b; padding: 3px 0 3px 4px; display: flex; align-items: center; gap: 4px; }
   .day-loc-travel-icon { display: inline-flex; flex-shrink: 0; }
+
+  /* Pastille de durée par lieu (demande du 25/10/2026, time_at_final.html) : discrète, sous
+     le nom du lieu — icône horloge rose + durée ("45 min"), puis "until HH:MM" en gris à
+     droite. Même colonne de gauche que .day-loc-timing ci-dessus (padding-left:30px) pour
+     rester alignée sous le nom, pas sous la pastille d'heure qui la précède. event.
+     stopPropagation() dans window.openTimeAtSheet() (script.js) évite que ce tap ouvre
+     aussi la fiche détail du lieu (.day-loc a son propre onclick="openTripLocDetail(...)"). */
+  .day-loc-duration-row { flex-basis: 100%; display: flex; align-items: center; gap: 8px; padding-left: 30px; margin-top: 2px; }
+  .day-loc-duration-chip { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 999px; background: #fff; border: 1px solid #E6E4EE; font-size: 11px; font-weight: 600; color: #5F5B68; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  .day-loc-duration-chip:hover { border-color: #D42759; color: #D42759; }
+  .day-loc-duration-chip svg { width: 11px; height: 11px; color: #D42759; flex-shrink: 0; }
+  .day-loc-duration-until { font-size: 11px; color: #94a3b8; font-weight: 600; margin-left: auto; }
+
+  /* Fenêtre "Time at [lieu]" (bottom sheet, demande du 25/10/2026, time_at_final.html) —
+     réutilise .qa-sheet-overlay/.qa-sheet (style.css, déjà utilisées ailleurs sur le site
+     pour un tiroir simple non multi-étapes) + .qaf-grab pour la poignée, seul l'intérieur est
+     propre à cette page. Curseur personnalisé (#time-at-slider) : rail fin 6px, rose jusqu'au
+     bouton puis gris (dégradé piloté par --p, mis à jour en JS SANS reconstruire le DOM à
+     chaque glissement — voir window.onTimeAtSliderInput() dans script.js, même principe que
+     live() dans le mockup), petit bouton rond blanc bordé de rose. */
+  #time-at-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 6px; margin: 0; outline: none; background: linear-gradient(90deg, #E0156B var(--p, 20%), #ECE8F2 var(--p, 20%)); cursor: pointer; }
+  #time-at-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #fff; border: 2.5px solid #E0156B; box-shadow: 0 1px 5px rgba(224,21,107,.4); cursor: grab; }
+  #time-at-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2.5px solid #E0156B; cursor: grab; }
+  .time-at-slider-wrap { position: relative; padding: 30px 0 4px; }
+  .time-at-bubble { position: absolute; top: 0; transform: translateX(-50%); background: #1F2430; color: #fff; font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 8px; white-space: nowrap; pointer-events: none; }
+  .time-at-bubble::after { content: ""; position: absolute; left: 50%; bottom: -4px; margin-left: -4px; border: 4px solid transparent; border-bottom: 0; border-top-color: #1F2430; }
+  .time-at-ticks { display: flex; justify-content: space-between; font-size: 10.5px; color: #B3B1BE; font-weight: 600; margin-top: 4px; }
+  .time-at-box { display: flex; justify-content: space-between; background: #F6F4F9; border-radius: 12px; padding: 10px 12px; margin-top: 12px; font-size: 12.5px; color: #5F5B68; font-weight: 600; }
+  .time-at-box b { color: #1F2430; font-weight: 700; }
+
   .drag-over-top { border-top: 3px solid #D42759 !important; }
   .drag-over-bottom { border-bottom: 3px solid #D42759 !important; }
   
@@ -742,40 +787,30 @@
          display:contents pour "disparaître" du flux sans toucher au HTML/onchange
          existant — leurs <select> enfants deviennent directement les items de cette rangée
          flex. */
-      /* BUG rapporté le 24/10/2026, redemandé avec capture d'écran (images/66.png) : la
-         ligne défilante horizontale ci-dessus (flex:1 1 0 sur une seule rangée nowrap)
-         laissait quand même le pill "City" invisible sur un écran étroit — un <select>
-         natif iOS impose un contenu minimum que flex-shrink/min-width:0 ne peut pas
-         toujours compresser sous ce seuil, donc le 4e pill débordait silencieusement hors
-         du viewport au lieu de se réduire comme prévu. Passage à une VRAIE grille 2
-         colonnes (flex-wrap:wrap + largeur fixe à 2 par rangée) : chaque pill garde
-         désormais une taille réellement identique et garantie, quel que soit son texte —
-         plus aucune dépendance au rétrécissement flexible. Avec seulement 2 rangées de 2
-         visibles à la fois (max-height calée sur UNE rangée + un peu du haut de la
-         suivante, comme indice visuel), on swipe maintenant la zone À LA VERTICALE
-         (overflow-y:auto tactile) pour voir les pills qui ne tiennent pas dans la première
-         rangée — exactement la demande ("il faut qu'on puisse swipe les boutons à la
-         vertical pour voir les suivants"), plutôt qu'un débordement horizontal cassé. */
+      /* BUG rapporté le 25/10/2026, revient sur le correctif du 24/10/2026 ci-dessous : la
+         grille 2 colonnes + swipe vertical ne correspondait finalement pas à la demande —
+         "je veux que ce soit que sur 1 ligne, et on défile vers la droite pour voir tous
+         les filtres". Retour à une seule rangée qui ne wrap jamais (flex-wrap:nowrap) avec
+         défilement HORIZONTAL (overflow-x:auto) : chaque pill garde sa largeur naturelle
+         (flex:0 0 auto, pas de pourcentage calculé sur une mini-rangée qui n'existe plus)
+         et déborde du cadre visible plutôt que de se tasser ou de passer à la ligne — la
+         zone entière se swipe vers la droite pour atteindre les pills suivants, exactement
+         comme demandé. */
       .ideas-filters-banner {
-          margin: 0; padding: 0 16px 10px; display: flex; flex-wrap: wrap; gap: 8px;
-          max-height: 54px; overflow-y: auto; -webkit-overflow-scrolling: touch;
-          align-content: flex-start; scroll-snap-type: y proximity;
+          margin: 0; padding: 0 16px 10px; display: flex; flex-wrap: nowrap; gap: 8px;
+          overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+          scroll-snap-type: x proximity;
       }
-      /* BUG trouvé en testant le correctif ci-dessus (grille 2 colonnes) : cette règle
-         display:contents n'a JAMAIS pris effet — les deux <div> d'origine (markup plus
-         bas, "display:flex; gap:10px") portent un style INLINE qui l'emporte sur cette
-         règle externe sans !important. Les 4 <select> restaient donc chacun dans SA
-         propre mini-rangée de 2 (group+member d'un côté, country+city de l'autre), avec
-         flex:1 1 calc(50% - 4px) calculé par rapport à CETTE mini-rangée plutôt qu'à la
-         largeur réelle de .ideas-filters-banner — exactement pourquoi le pill "City" ne
-         tenait jamais dans la bannière et pourquoi les 4 pilules n'étaient jamais vraiment
-         de la même taille malgré la règle ci-dessous. !important force enfin ces <div> à
-         disparaître de l'arbre de boîtes comme prévu depuis le début. */
+      /* display:contents toujours nécessaire (voir la note du 24/10/2026 conservée ici) :
+         les deux <div> d'origine (markup plus bas, "display:flex; gap:10px") portent un
+         style INLINE qui l'emporte sur une règle externe sans !important — sans ça, les 4
+         <select> restent chacun dans SA propre mini-rangée au lieu d'être directement les
+         items de cette rangée unique. */
       .ideas-filters-banner > div { display: contents !important; }
       #edit-trip-group, #edit-trip-member, #edit-trip-country, #edit-trip-city {
-          flex: 1 1 calc(50% - 4px) !important; min-width: 0 !important;
+          flex: 0 0 auto !important; min-width: 0 !important;
           scroll-snap-align: start;
-          text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+          white-space: nowrap;
       }
       /* Pastille mise en avant (bordure/texte rose) dès qu'une valeur précise est choisie
          (pas "All ..."), exactement comme "South Korea" surligné en rose dans la capture —
@@ -930,7 +965,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261056';
+        s.src = 'page-loader.js?v=20261057';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1637,11 +1672,34 @@
     </div>
 </div>
 
+<!-- "Time at [lieu]" (demande du 25/10/2026, time_at_final.html) : fenêtre bas-d'écran pour
+     régler le temps passé dans un lieu de l'onglet Plan — voir window.openTimeAtSheet()/
+     window.saveTimeAtSheet() dans script.js. Un tap sur le fond assombri ferme SANS
+     enregistrer (onclick sur l'overlay lui-même uniquement, jamais sur .qa-sheet qu'il
+     contient — même garde que les autres tiroirs qa-sheet-overlay du site). -->
+<div id="time-at-sheet-overlay" class="qa-sheet-overlay" onclick="if(event.target===this) window.closeTimeAtSheet()">
+    <div class="qa-sheet">
+        <div class="qaf-grab"></div>
+        <h3 id="time-at-title" style="font-size:17px; font-weight:800; color:#1F2430; margin:0;">Time at</h3>
+        <div id="time-at-subtitle" style="font-size:12.5px; color:#8F8B99; margin-top:2px;"></div>
+        <div class="time-at-slider-wrap">
+            <span class="time-at-bubble" id="time-at-bubble">45 min</span>
+            <input type="range" id="time-at-slider" min="15" max="240" step="15" value="45" oninput="window.onTimeAtSliderInput(this.value)">
+            <div class="time-at-ticks"><span>15 min</span><span>1 h</span><span>2 h</span><span>3 h</span><span>4 h</span></div>
+        </div>
+        <div class="time-at-box">
+            <span id="time-at-arrive-label">Arrive <b id="time-at-arrive"></b></span>
+            <span id="time-at-leave-label">Leave <b id="time-at-leave"></b></span>
+        </div>
+        <button type="button" class="gen-btn" id="time-at-save-btn" style="width:100%; justify-content:center; margin-top:14px;" onclick="window.saveTimeAtSheet()">Save</button>
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261056"></script>
-<script src="locations-data.js?v=20261056"></script>
-<script src="script.js?v=20261056"></script>
+<script type="module" src="firebase-init.js?v=20261057"></script>
+<script src="locations-data.js?v=20261057"></script>
+<script src="script.js?v=20261057"></script>
 
 </body>
 </html>

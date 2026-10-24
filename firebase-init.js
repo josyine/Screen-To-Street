@@ -263,8 +263,32 @@ window.firebaseChangePassword = async function (currentPassword, newPassword) {
 // quasiment jamais dans cette fenêtre). Seuls ces codes transitoires sont retentés (avec
 // un court backoff) — 'permission-denied' échoue toujours immédiatement, un vrai refus
 // de règles ne devenant jamais vrai en réessayant.
-const TRANSIENT_FIRESTORE_CODES = ['unavailable', 'deadline-exceeded', 'cancelled', 'internal', 'aborted'];
+// BUG corrigé (demande répétée du 25/10/2026, "il y a encore écrit 'Connection issue'" —
+// APRÈS les deux correctifs précédents, taille de document ET retry transitoire) :
+// 'resource-exhausted' (quota Firestore temporairement dépassé, fréquent en rafale de
+// requêtes au chargement d'une page) et 'unknown' (le SDK l'utilise pour un échec réseau
+// bas niveau qui n'a pas de code Firestore propre, notamment au tout début d'une session
+// réseau mobile) manquaient à cette liste — un appareil qui les rencontrait tombait
+// directement sur le message d'erreur sans jamais retenter, pile le genre de défaillance
+// vraiment transitoire que cette liste est censée couvrir.
+const TRANSIENT_FIRESTORE_CODES = ['unavailable', 'deadline-exceeded', 'cancelled', 'internal', 'aborted', 'resource-exhausted', 'unknown'];
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// File d'attente pour une seule reprise automatique dès que la connexion revient (voir
+// l'écouteur 'online' plus bas) : si l'appareil est VRAIMENT hors ligne (pas juste un
+// aller-retour Firestore lent), aucun nombre de tentatives immédiates ne peut réussir —
+// mais dès que `online` se déclenche, les données sont déjà là en mémoire/localStorage et
+// peuvent repartir sans que la personne ait à refaire son action. Un seul jeu de champs en
+// attente suffit : un appel plus récent à syncUserData() remplace l'ancien (merge:true n'a
+// besoin que de la dernière valeur de chaque champ).
+let _pendingSyncFields = null;
+window.addEventListener('online', () => {
+    if (_pendingSyncFields && typeof window.syncUserData === 'function') {
+        const fields = _pendingSyncFields;
+        _pendingSyncFields = null;
+        window.syncUserData(fields);
+    }
+});
 
 // BUG corrigé (demande répétée du 24/10/2026, "il y a encore écrit 'Connection issue'" —
 // APRÈS le correctif de retry transitoire ci-dessus, qui ne pouvait rien changer à une
@@ -391,7 +415,11 @@ let _syncUserDataCoverToastShown = false;
 window.syncUserData = async function (fields) {
     const user = auth.currentUser;
     if (!user) return { success: false, code: 'not-authenticated' };
-    const attempts = [0, 800, 2000];
+    // BUG corrigé (demande répétée du 25/10/2026) : [0, 800, 2000] ne laissait qu'environ
+    // 2,8s de délai total avant d'abandonner — trop court pour un réseau mobile qui mettrait
+    // 4-5s à stabiliser son long-polling (voir experimentalForceLongPolling plus haut) après
+    // l'ouverture de l'app ou un changement Wi-Fi/4G. Porté à ~11,5s sur 4 tentatives.
+    const attempts = [0, 1000, 2500, 5000];
     let lastError = null;
     for (let i = 0; i < attempts.length; i++) {
         if (attempts[i]) await wait(attempts[i]);
@@ -432,6 +460,28 @@ window.syncUserData = async function (fields) {
                 lastError = e2;
             }
         }
+    }
+    // Dernier recours avant d'alarmer la personne : une coupure réseau RÉELLE (avion,
+    // tunnel, zone blanche) ne se résout pas en 11,5s, mais beaucoup de "coupures" sur
+    // mobile se résolvent en quelques secondes de plus (retour de signal, bascule Wi-Fi ↔
+    // 4G déjà en cours). Une dernière tentative silencieuse après un répit plus long évite
+    // d'afficher "Connection issue" pour une connexion qui, en pratique, vient de revenir.
+    if (lastError && lastError.code !== 'permission-denied') {
+        await wait(6000);
+        try {
+            await setDoc(doc(db, 'users', user.uid), fields, { merge: true });
+            return { success: true };
+        } catch (e3) {
+            lastError = e3;
+        }
+    }
+    // Toujours pas de connexion : on garde les champs en mémoire pour les renvoyer
+    // automatiquement dès que le navigateur signale 'online' (voir l'écouteur plus haut),
+    // sans que la personne ait à refaire son action — elle n'a pas besoin de le savoir pour
+    // que ça marche, mais ça évite qu'une coupure prolongée perde la synchronisation pour de
+    // bon si elle quitte la page avant que la connexion ne revienne.
+    if (lastError && lastError.code !== 'permission-denied') {
+        _pendingSyncFields = Object.assign({}, _pendingSyncFields, fields);
     }
     {
         const e = lastError;
