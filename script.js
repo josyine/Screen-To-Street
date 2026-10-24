@@ -15771,7 +15771,8 @@ window.removeCreateTripInvitee = function(name) {
 const NT_IC = {
     pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11-4-4L4 16z"/></svg>',
     globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>',
-    bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>'
+    bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>',
+    tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12.3 12.7 20a2 2 0 0 1-2.8 0l-6-6a2 2 0 0 1 0-2.8L11.7 3.5a2 2 0 0 1 1.4-.6H18a2.5 2.5 0 0 1 2.5 2.5v4.6a2 2 0 0 1-.6 1.4Z"/><circle cx="16.5" cy="7.5" r="1.3"/></svg>'
 };
 let ntState = null;
 let ntFriendsCache = null;
@@ -15861,6 +15862,7 @@ function ntBody() {
     </label>
     ${ntRowHtml(QA_IC.grp, ntT('Groupe', 'Group'), group ? `<span>${escapeHtml(group)}</span>` : ntPh(ntT('Qui suivez-vous ?', 'Who are you following?')), 'group')}
     ${group ? ntRowHtml(QA_IC.star, `${ntT('Membres', 'Members')} <em>· ${ntT('facultatif', 'optional')}</em>`, member && member !== 'All' ? `<span>${escapeHtml(member)}</span>` : ntPh(ntT('Tous les membres', 'All members')), 'member') : ''}
+    ${group ? ntRowHtml(NT_IC.tag, `${ntT('Catégories', 'Categories')} <em>· ${ntT('facultatif', 'optional')}</em>`, createTripSelectedCategories.length ? `<span>${createTripSelectedCategories.map(getCatName).join(', ')}</span>` : ntPh(ntT('Tous les types de lieux', 'All location types')), 'categories') : ''}
     ${ntRowHtml(NT_IC.globe, ntT('Pays', 'Country'), country ? `<span>${escapeHtml(country)}</span>` : ntPh(ntT('Où allez-vous ?', 'Where are you going?')), 'country')}
     ${country ? ntRowHtml(QA_IC.pin, `${ntT('Ville', 'City')} <em>· ${ntT('facultatif', 'optional')}</em>`, city ? `<span>${escapeHtml(city)}</span>` : ntPh(ntT('Toutes les villes', 'All cities')), 'city') : ''}
     ${ntRowHtml(QA_IC.cal, ntT('Dates', 'Dates'), whenTxt ? `<span>${escapeHtml(whenTxt)}</span>` : ntPh(ntT('Quand ?', 'When?')), 'dates')}
@@ -15937,11 +15939,28 @@ function ntPicker() {
         const fs = (ntFriendsCache || []).filter(f => (f.n + f.h).toLowerCase().includes(q));
         body = fs.length ? fs.map(f => `<button type="button" class="qaf-li" data-nttogf="${escapeHtml(f.h.slice(1))}" aria-pressed="${ntState.invitees.includes(f.h.slice(1))}"><span class="qaf-bigav" style="background:${f.c}">${escapeHtml(f.n.charAt(0).toUpperCase())}</span><span class="qaf-lt"><b>${escapeHtml(f.n)}</b><small>${escapeHtml(f.h)}</small></span><span class="qaf-ck">${QA_IC.ok}</span></button>`).join('') : `<div style="padding:20px 0;color:var(--qa-mut);font-size:13px;text-align:center;">${ntT('Aucun ami pour le moment.', 'No friends yet.')}</div>`;
     }
-    const n = p === 'friends' ? ntState.invitees.length : 0;
+    // Catégories (demande du 24/10/2026, "ajoute une ligne pour sélectionner les
+    // catégories (MV Location, Bon Voyage si c'est BTS, Concert, etc.), et fais en sorte
+    // que le choix des catégories soient prises en compte lors de la génération d'un
+    // trip") — createTripSelectedCategories est le MÊME tableau déjà lu par
+    // createNewTripAdvanced() (voir son filtre validLocs plus bas) pour la fiche desktop
+    // (#create-trip-categories, voir window.updateCreateTripCategories() plus haut) :
+    // cette fiche mobile n'avait tout simplement jamais exposé le moyen de le remplir,
+    // alors que la génération le respectait déjà — même liste de catégories par groupe
+    // (filterData[group].categories) que cette fonction desktop, pour rester cohérent.
+    if (p === 'categories') {
+        title = ntT('Catégories', 'Categories');
+        multi = true;
+        const group = document.getElementById('create-trip-group').value;
+        const cats = (filterData[group] && filterData[group].categories) ? filterData[group].categories : filterData["General"].categories;
+        createTripSelectedCategories = createTripSelectedCategories.filter(c => cats.includes(c));
+        body = cats.map(cat => `<button type="button" class="qaf-li" data-nttogcat="${escapeHtml(cat)}" aria-pressed="${createTripSelectedCategories.includes(cat)}"><span class="qaf-lt"><b>${escapeHtml(getCatName(cat))}</b></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    const n = p === 'friends' ? ntState.invitees.length : (p === 'categories' ? createTripSelectedCategories.length : 0);
     return `<div class="qaf-pick on"><div class="qaf-grab"></div><div class="qaf-hd"><button type="button" class="qaf-bk" data-ntact="back">${QA_IC.bk}</button><h2>${escapeHtml(title)}</h2><span style="width:34px"></span></div>
         ${searchPh ? `<label class="qaf-srch">${QA_IC.search}<input data-ntin="q" placeholder="${escapeHtml(searchPh)}" value="${escapeHtml(ntState.q || '')}"></label>` : ''}
         <div class="qaf-body">${body}</div>
-        ${(multi || p === 'dates') ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-ntact="back">${p === 'friends' && n ? ntT(`Terminé · ${n} invité${n > 1 ? 's' : ''}`, `Done · ${n} invited`) : ntT('Terminé', 'Done')}</button></div>` : ''}
+        ${(multi || p === 'dates') ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-ntact="back">${p === 'friends' && n ? ntT(`Terminé · ${n} invité${n > 1 ? 's' : ''}`, `Done · ${n} invited`) : (p === 'categories' && n ? ntT(`Terminé · ${n} sélectionnée${n > 1 ? 's' : ''}`, `Done · ${n} selected`) : ntT('Terminé', 'Done'))}</button></div>` : ''}
     </div>`;
 }
 function ntRender(focusKey) {
@@ -16021,13 +16040,25 @@ window.openNewTripMobileSheet = function() {
         document.body.appendChild(overlay);
         overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeNewTripMobileSheet(); });
         overlay.addEventListener('click', (e) => {
-            const d = e.target.closest('[data-ntpick],[data-ntact],[data-ntset],[data-nttogf],[data-ntdur],[data-ntmonth],[data-nthotelpick]');
+            const d = e.target.closest('[data-ntpick],[data-ntact],[data-ntset],[data-nttogf],[data-nttogcat],[data-ntdur],[data-ntmonth],[data-nthotelpick]');
             if (!d || !ntState) return;
             const ds = d.dataset;
             if (ds.ntpick) { ntState.pick = ds.ntpick; ntState.q = ''; ntRender(); return; }
             if (ds.ntset !== undefined) {
                 const [k, v] = ds.ntset.split(':');
-                if (k === 'group') { document.getElementById('create-trip-group').value = v; window.updateCreateTripOptions(); }
+                if (k === 'group') {
+                    document.getElementById('create-trip-group').value = v;
+                    window.updateCreateTripOptions();
+                    // updateCreateTripCategories() (appelée par la ligne juste au-dessus)
+                    // retombe immédiatement sans rien faire sur cette fiche mobile — son
+                    // garde `if(!catContainer...)` vise #create-trip-categories, qui
+                    // n'existe que côté desktop (voir ntPicker() plus bas, nouvelle fiche
+                    // catégories propre à cette fiche mobile) — abandonne donc ici toute
+                    // catégorie qui n'existe plus pour le nouveau groupe, plutôt que de ne
+                    // le faire qu'à la prochaine ouverture de cette fiche.
+                    const catsForGroup = (filterData[v] && filterData[v].categories) ? filterData[v].categories : filterData["General"].categories;
+                    createTripSelectedCategories = createTripSelectedCategories.filter(c => catsForGroup.includes(c));
+                }
                 else if (k === 'member') { document.getElementById('create-trip-member').value = v; }
                 else if (k === 'country') { document.getElementById('create-trip-country').value = v; window.updateCreateTripOptions(); }
                 else if (k === 'city') { document.getElementById('create-trip-city').value = v || ''; }
@@ -16049,6 +16080,12 @@ window.openNewTripMobileSheet = function() {
             if (ds.nttogf) {
                 const u = ds.nttogf;
                 ntState.invitees = ntState.invitees.includes(u) ? ntState.invitees.filter(x => x !== u) : [...ntState.invitees, u];
+                ntRender();
+                return;
+            }
+            if (ds.nttogcat) {
+                const c = ds.nttogcat;
+                createTripSelectedCategories = createTripSelectedCategories.includes(c) ? createTripSelectedCategories.filter(x => x !== c) : [...createTripSelectedCategories, c];
                 ntRender();
                 return;
             }
