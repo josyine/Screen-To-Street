@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-23T22:32:45.136Z.
+// Généré le 2026-10-24T06:17:55.515Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -24445,46 +24445,62 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-manual-1792794126243-kxymfc",
-    "name": "U.S. Route 101 & Mojave Desert",
+    "name": "U.S. Route 101",
     "year": "2019",
-    "address": "U.S. Route 101 and the Mojave Desert region (California/Nevada, USA)",
+    "address": "U.S. Route 101, California, USA",
     "lat": 35.1417,
     "lng": 115.5103,
     "img": "https://img.youtube.com/vi/iFoqGyWhMws/hqdefault.jpg",
+    "country": "United States",
+    "member": "All",
+    "category": "MV Location",
+    "group": "NCT 127",
+    "episodeLabel": "MV",
+    "city": "California",
+    "episode": "\"Highway to Heaven\" Official Music Video",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "recreatedPhotos": [],
     "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "ytId": "iFoqGyWhMws",
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
     "tipsList": [
       {
         "title": {
-          "en": "Cruise the 101"
+          "en": "Rent a Car"
         },
         "text": {
-          "en": "Roll down your windows and take a drive along a stretch of U.S. Route 101 while playing the track to capture the exact open-road freedom described in the lyrics."
+          "en": "The only true way to experience the 101 is by driving it. Rent a vehicle, roll the windows down, and play \"Highway to Heaven\" to capture the exact freeing atmosphere the members experienced."
         }
       },
       {
         "title": {
-          "en": "Spot the Joshua Trees"
+          "en": "Drive South bound"
         },
         "text": {
-          "en": "To safely view the iconic Yucca palms featured in the video's background, visit designated protected areas like Joshua Tree National Park or the Mojave National Preserve."
+          "en": "For the best coastal views along the California stretches of the 101, drive from north to south so your vehicle is on the ocean side of the highway."
         }
       },
       {
         "title": {
-          "en": "Respect the Climate"
+          "en": "Plan Stops"
         },
         "text": {
-          "en": "The Mojave Desert is characterized by extreme heat and rugged terrain. If you venture out to recreate the desert road aesthetic, ensure you have a reliable vehicle, abundant water, and sun protection."
+          "en": "The highway spans hundreds of miles. Map out specific scenic viewpoints and historic landmarks along the route to break up the drive."
         }
       }
     ],
-    "facebookUrls": [],
-    "youtubeUrls": [],
     "fullDescription": {
-      "en": "<p>U.S. Route 101 is a historic north-south highway stretching along the American West Coast, renowned for its coastal views and cultural significance. Inland lies the Mojave Desert, a vast, arid landscape stretching across Southeastern California and Southern Nevada. Protected under the California Desert Protection Act of 1994, the Mojave encompasses more than ten national and state parks. The region is defined by its rugged beauty, extreme climate, barren salt flats, and the iconic Yucca palms—commonly known as Joshua trees—that are exclusively native to this desert ecosystem.</p><!--stss:footsteps--><p>In 2019, while embarking on their first major North American tour, NCT 127 utilized their extensive travel schedule to film the music video for the English version of \"Highway to Heaven.\" The production took the group to multiple locations along the historic U.S. Route 101 and deep into the Mojave Desert.\nUnlike most tracks that rely on abstract concepts, the song explicitly names the filming location in its lyrics: \"On the 101, let’s see just where it goes.\" The video features the members executing their expansive choreography on dusty desert roads and vast, sun-baked plains surrounded by native Joshua trees. Beyond the music video, the group released a wealth of travel content on their YouTube channels during this era, effectively promoting both their tour and the raw, historical beauty of the American West to a global audience.</p>"
+      "en": "<p>U.S. Route 101 is one of the most iconic and historic north-south highways in the United States. Stretching along the Pacific coastline, it serves as a vital artery connecting major cities from Southern California all the way to Washington state. Known for its sweeping ocean views and quintessential West Coast aesthetic, the 101 has long been a symbol of the classic American road trip and a popular backdrop for film and music.</p><!--stss:footsteps--><p>In 2019, while embarking on their first concert tour across the United States, NCT 127 filmed the music video for the English version of \"Highway to Heaven\" on location along this historic highway. The group utilized their time on tour to explore and promote various culturally significant sites across the country through their YouTube content. Unlike many K-pop videos that rely on vague imagery, NCT 127 specifically anchors the song to this exact location, boldly singing the lyric, \"On the 101, let’s see just where it goes.\" The highway serves as a literal and metaphorical path for the group, representing boundless energy and forward momentum.</p>"
     },
     "practicalInfo": [
       {
@@ -24492,7 +24508,7 @@ window.STATIC_LOCATIONS = [
           "en": "How to get there"
         },
         "text": {
-          "en": "U.S. Route 101 runs extensively along the California coast. The heart of the Mojave Desert is easily accessible by driving east from Los Angeles via Interstate 15 or Interstate 40."
+          "en": "The 101 is easily accessible from major California cities including Los Angeles, Santa Barbara, and San Francisco."
         }
       },
       {
@@ -24500,7 +24516,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": "Public highways and general desert roads are open 24/7 and free to traverse. National and State Parks within the Mojave typically require a vehicle entrance fee (around $30–$35)."
+          "en": "As a public highway, it is open 24/7 and free to drive (excluding specific toll bridges in northern sections)."
         }
       },
       {
@@ -24508,13 +24524,27 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": "Enjoying the scenery from a vehicle is fully accessible. While the open desert terrain is uneven, designated visitor centers and paved scenic overlooks within the parks offer excellent, wheelchair-accessible viewpoints."
+          "en": "Rest stops and viewpoints along the highway are generally paved and accessible for wheelchair users."
         }
       }
     ],
-    "tweetUrls": [],
-    "ytId": "iFoqGyWhMws",
-    "recreatedPhoto": ""
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792794126243-kxymfc-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5273,
+            "y": 0.3765,
+            "member": "Yuta"
+          },
+          {
+            "x": 0.668,
+            "y": 0.4426,
+            "member": "Haechan"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
