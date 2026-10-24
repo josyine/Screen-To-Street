@@ -3519,7 +3519,13 @@ window.addEventListener('firebase-ready', async (e) => {
     // visited.html (#visit-container) : renderVisited() (voir plus bas, à chaque appel via
     // les hooks jumeaux de refreshWishlistFromCloud() ci-dessous) lit lui aussi loc.img
     // depuis ce même celebLocations partagé.
-    if (document.getElementById('map') || document.getElementById('feed-grid') || document.getElementById('wish-container') || document.getElementById('visit-container')) {
+    // BUG corrigé (demande du 24/10/2026, "dans trips, fais en sorte d'utiliser la dernière
+    // version de la header photo... actuellement ça prend en compte des anciennes versions")
+    // — même cause, jamais étendue à trips.html (#trips-list-container) : le bloc "RECOMMENDED
+    // IN {Country}" de window.renderTrip() (voir plus bas, loc.img sur chaque .loc-thumb) lit
+    // lui aussi loc.img depuis ce même celebLocations partagé, qui restait donc figé sur
+    // l'export statique pour cette page comme les autres avant ce correctif.
+    if (document.getElementById('map') || document.getElementById('feed-grid') || document.getElementById('wish-container') || document.getElementById('visit-container') || document.getElementById('trips-list-container')) {
         await Promise.all([
             // BUG corrigé (demande du 19/09/2026, "Dans Location submissions, lorsque je
             // publie un lieu il ne se publie plus dans map") — même famille de bug que les
@@ -3565,6 +3571,12 @@ window.addEventListener('firebase-ready', async (e) => {
                     // #visit-container plus haut) : même hook jumeau que refreshWishlistFromCloud
                     // ci-dessus (window.refreshVisitedFromCloud = renderVisited, voir visited.html).
                     if (anyAdded && typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+                    // trips.html (demande du 24/10/2026, voir la note sur le garde
+                    // #trips-list-container plus haut) : pas de hook refreshXFromCloud dédié ici —
+                    // on réutilise directement window.renderTrip() comme le fait déjà le listener
+                    // cloudData.wishlistLocs plus bas dans ce fichier, avec la même garde (un
+                    // voyage doit être ouvert, #edit-trip-name présent sur cette page).
+                    if (anyAdded && document.getElementById('edit-trip-name') && typeof window.renderTrip === 'function' && currentTrip) window.renderTrip();
                 } catch (err) { /* tant pis, le lieu reste invisible jusqu'au prochain export statique */ }
             })(),
             // Corrections Group/Member/Country/City/Category/Year (demande du 15/09/2026,
@@ -3598,6 +3610,10 @@ window.addEventListener('firebase-ready', async (e) => {
                     // hook, "Visited" restait sur l'ancienne photo jusqu'au prochain export
                     // statique, exactement le bug signalé.
                     if (anyOverrideApplied && typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+                    // trips.html (demande du 24/10/2026) : c'est aussi CETTE branche qui
+                    // applique skeletonFields.img — même garde/raison que le hook ajouté
+                    // juste au-dessus pour fetchNewLocations().
+                    if (anyOverrideApplied && document.getElementById('edit-trip-name') && typeof window.renderTrip === 'function' && currentTrip) window.renderTrip();
                 } catch (err) { /* tant pis, on garde les valeurs codées en dur */ }
             })(),
             // BUG corrigé (demande du 19/09/2026, "le bouton delete location ne fonctionne
@@ -3657,6 +3673,9 @@ window.addEventListener('firebase-ready', async (e) => {
             // wishlist, contrairement à fetchLocationSkeletonOverrides() plus haut.
             if (typeof window.refreshWishlistFromCloud === 'function') window.refreshWishlistFromCloud();
             if (typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+            // trips.html (demande du 24/10/2026) : même raison que les deux hooks juste
+            // au-dessus, pour cette hydratation de variant de groupe.
+            if (document.getElementById('edit-trip-name') && typeof window.renderTrip === 'function' && currentTrip) window.renderTrip();
         }
     }
 
