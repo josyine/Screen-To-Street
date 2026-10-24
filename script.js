@@ -342,12 +342,12 @@ window.createPhotoGalleryField = function (container, opts) {
             // charge script.js et en hérite donc aussi).
             try {
                 const resized = typeof fileToResizedDataUrl === 'function'
-                    ? await fileToResizedDataUrl(file, 1200)
+                    ? await fileToResizedDataUrl(file, 1200, 0.8)
                     : await new Promise((resolve, reject) => {
                         const reader = new FileReader();
                         reader.onload = async (event) => {
                             resolve(typeof resizeTripCoverDataUrl === 'function'
-                                ? await resizeTripCoverDataUrl(event.target.result, 1200)
+                                ? await resizeTripCoverDataUrl(event.target.result, 1200, 0.8)
                                 : event.target.result);
                         };
                         reader.onerror = () => reject(new Error('Could not read file'));
@@ -5959,7 +5959,64 @@ window.openItineraryModal = function() {
     document.getElementById('iti-result').classList.add('hidden');
     document.getElementById('itinerary-modal').classList.remove('hidden');
     window.initItineraryGenerator();
+    // Pré-remplit Stay/Dates depuis le voyage en cours d'édition quand ce générateur est
+    // ouvert depuis trips.html (demande du 24/10/2026) — cohérent avec generateItinerary()
+    // plus bas, qui retombe déjà sur currentTrip.homeBase si itiHomeBase reste vide ; reste
+    // simplement vide (comportement précédent, inchangé) quand ouvert depuis une fiche lieu
+    // (map.html, pas de currentTrip/ces champs n'existent pas dans sa copie du modal).
+    const hotelLabelEl = document.getElementById('iti-hotel-label');
+    if (hotelLabelEl) {
+        itiHomeBase = (typeof currentTrip !== 'undefined' && currentTrip && currentTrip.homeBase) || null;
+        itiHomeBaseLabel = (typeof currentTrip !== 'undefined' && currentTrip && currentTrip.homeBaseLabel) || '';
+        hotelLabelEl.textContent = itiHomeBaseLabel || (currentLang === 'fr' ? 'Hébergement — hôtel ou quartier (optionnel)' : 'Stay — hotel or neighborhood (optional)');
+        hotelLabelEl.style.color = itiHomeBaseLabel ? '#1e293b' : '#94a3b8';
+    }
+    const startEl = document.getElementById('iti-start-date');
+    const endEl = document.getElementById('iti-end-date');
+    if (startEl && endEl) {
+        const hasSpecificDates = typeof currentTrip !== 'undefined' && currentTrip && currentTrip.dateType === 'specific' && currentTrip.startDate && currentTrip.endDate;
+        startEl.value = hasSpecificDates ? currentTrip.startDate : '';
+        endEl.value = hasSpecificDates ? currentTrip.endDate : '';
+    }
 }
+
+// "Stay" du générateur Auto-Itinerary (demande du 24/10/2026, "il faut afficher les mêmes
+// infos que la page 'New trip' : group, country, cities, dates, stay") — même popup de
+// recherche réel que window.openTripLevelEndpointEditor()/window.openDayEndpointEditor()
+// (window.openPlaceSearchPopup(), Nominatim), réutilisé tel quel plutôt que d'écrire une
+// troisième implémentation de suggestions. N'existe QUE sur trips.html (voir #iti-hotel-row,
+// absent de la copie plus simple de ce même modal sur map.html, ouverte hors du contexte
+// d'un voyage précis).
+let itiHomeBase = null;
+let itiHomeBaseLabel = '';
+window.openItiStayEditor = function(evt) {
+    window.openPlaceSearchPopup(evt, {
+        title: currentLang === 'fr' ? 'Hébergement' : 'Stay',
+        currentValue: itiHomeBaseLabel,
+        onSave: (picked) => {
+            itiHomeBase = picked ? { lat: picked.lat, lng: picked.lng } : null;
+            itiHomeBaseLabel = picked ? picked.label : '';
+            const labelEl = document.getElementById('iti-hotel-label');
+            if (labelEl) {
+                labelEl.textContent = itiHomeBaseLabel || (currentLang === 'fr' ? 'Hébergement — hôtel ou quartier (optionnel)' : 'Stay — hotel or neighborhood (optional)');
+                labelEl.style.color = itiHomeBaseLabel ? '#1e293b' : '#94a3b8';
+            }
+        }
+    });
+};
+
+// Dates → nombre de jours (demande du 24/10/2026) : #iti-days (déjà lu par
+// generateItinerary(), inchangé) reste la seule source de vérité pour le générateur —
+// choisir deux dates ici ne fait que le PRÉ-REMPLIR, la personne peut toujours l'ajuster à
+// la main ensuite (ex: elle veut explorer sur moins de jours que son séjour complet).
+window.updateItiDaysFromDates = function() {
+    const s = document.getElementById('iti-start-date')?.value;
+    const e = document.getElementById('iti-end-date')?.value;
+    const daysInput = document.getElementById('iti-days');
+    if (!s || !e || !daysInput) return;
+    const diff = Math.ceil((new Date(e) - new Date(s)) / 86400000) + 1;
+    if (diff > 0) daysInput.value = Math.min(diff, parseInt(daysInput.max) || diff);
+};
 
 window.initItineraryGenerator = function() {
     const unlockedGroups = getUnlockedGroups();
@@ -9313,7 +9370,7 @@ function loadHeic2AnyScriptOnce() {
 }
 // Convertit un fichier photo (HEIC compris) en dataURL JPEG redimensionnée — utilisée aussi
 // bien ici que, potentiellement, par tout futur champ d'upload de photo sur ce site.
-async function fileToResizedDataUrl(file, maxSize) {
+async function fileToResizedDataUrl(file, maxSize, quality) {
     let blob = file;
     if (isHeicFile(file)) {
         await loadHeic2AnyScriptOnce();
@@ -9327,7 +9384,7 @@ async function fileToResizedDataUrl(file, maxSize) {
         reader.onerror = () => reject(new Error('Could not read file'));
         reader.readAsDataURL(blob);
     });
-    return typeof resizeTripCoverDataUrl === 'function' ? resizeTripCoverDataUrl(dataUrl, maxSize) : dataUrl;
+    return typeof resizeTripCoverDataUrl === 'function' ? resizeTripCoverDataUrl(dataUrl, maxSize, quality) : dataUrl;
 }
 
 // Recadrage après upload, en mode admin (demande du 23/09/2026, "fais en sorte qu'en mode
@@ -9406,13 +9463,24 @@ window.openImageCropModal = async function (dataUrl, onDone) {
         // puisque la galerie "Mei's Pictures" ouvre CE modal automatiquement après chaque
         // upload (voir window.createPhotoGalleryField() plus haut dans ce fichier), chaque
         // photo ajoutée pesait donc bien plus que prévu en base64 dans le même document
-        // Firestore, jusqu'à dépasser sa limite de 1 Mo au bout de 2-3 photos. Mêmes valeurs
-        // que resizeTripCoverDataUrl ici pour qu'un recadrage ne puisse plus jamais produire
-        // une image plus lourde que l'import d'origine.
+        // Firestore, jusqu'à dépasser sa limite de 1 Mo au bout de 2-3 photos. Même
+        // RÉSOLUTION que resizeTripCoverDataUrl ici (1200px, inchangé) pour qu'un recadrage
+        // ne puisse jamais produire une image plus GRANDE que l'import d'origine.
+        //
+        // BUG corrigé (demande du 24/10/2026, "la qualité d'image est mauvaise... moins
+        // pixellisé") : 0.7 était la même qualité basse que resizeTripCoverDataUrl, choisie
+        // uniquement pour corriger l'incident de stockage ci-dessus — mais ce recadrage
+        // encode TOUJOURS la version FINALE, affichée partout (galerie Mei's Pictures,
+        // header photo, image de la Story) : contrairement à une couverture de voyage (qui
+        // vit dans le même gros document users/{uid} que visitedLocs/wishlistLocs, voir le
+        // commentaire sur resizeTripCoverDataUrl()), CES photos vivent chacune dans un
+        // document PAR LIEU (locationPhotos/locationContent) ou PAR AVIS (locationReviews) —
+        // bien plus petit, une marge raisonnable pour remonter un peu la qualité sans
+        // retomber dans le même incident (0.8 reste loin du 0.9 fautif d'origine).
         let result = dataUrl;
         try {
             const canvas = cropper.getCroppedCanvas({ maxWidth: 1200, maxHeight: 1200, imageSmoothingQuality: 'high' });
-            if (canvas) result = canvas.toDataURL('image/jpeg', 0.7);
+            if (canvas) result = canvas.toDataURL('image/jpeg', 0.8);
         } catch (err) {
             console.warn('Recadrage impossible (image distante sans CORS ?), photo laissée inchangée :', err);
             window.alert("This photo couldn't be cropped (the source doesn't allow it) — it was left unchanged.");
@@ -11254,7 +11322,16 @@ window.openLocModal = function(id, postContext) {
     // d'openSacredPlace(), qui peut désormais être un objet {url, official} (demande du
     // 03/10/2026, voir window.createPhotoGalleryField()).
     const heroImgUrl = (postContext && recreatedPhotoUrl(postContext.photo)) || loc.img || ('https://img.youtube.com/vi/' + loc.ytId + '/hqdefault.jpg');
-    if(modalHero) modalHero.style.backgroundImage = `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
+    // BUG corrigé (demande du 24/10/2026, "je veux que ça affiche le post comme dans
+    // Community... enlève le dégradé noir... mets le titre en petit sur la photo en bas à
+    // gauche") : le dégradé noir + grand titre superposé n'a de sens que pour une fiche
+    // LIEU générique (visited.html/wishlist.html, openLocModal(id) SANS postContext) — pour
+    // une vraie PUBLICATION (postContext présent, même condition que .post-modal juste en
+    // dessous), même traitement que les cartes Community/Mei's Pictures de feed.html
+    // (.fpf-media-tag) : pas de dégradé, juste une petite pastille avec le nom du lieu en
+    // bas à gauche (voir #loc-modal.post-modal #modal-title dans map.html/feed.html/
+    // profile.html — chaque copie page de ce modal partagé).
+    if (modalHero) modalHero.style.backgroundImage = postContext ? `url('${heroImgUrl}')` : `linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('${heroImgUrl}')`;
 
     // Galerie horizontale "Mei's Pictures" (demande du 19/09/2026, "parfois pour un lieu il
     // y a plusieurs photos de Mei... je veux que tu affiches la première photo du lieu dans
@@ -11399,12 +11476,31 @@ window.openLocModal = function(id, postContext) {
             modalPostHeader.classList.add('hidden');
         }
     }
+    const modalPostMoreBtn = document.getElementById('modal-post-more-btn');
     if (modalPostCaption) {
         if (postContext && postContext.caption) {
             modalPostCaption.textContent = `"${postContext.caption}"`;
             modalPostCaption.classList.remove('hidden');
+            // "...more" (demande du 24/10/2026, "comme dans Community... ajoute '...more'") —
+            // tronque la légende sur 2 lignes par défaut (.modal-post-caption-clamped, voir
+            // le <style> de chaque page) ; le bouton bascule ce repli, même principe que
+            // .fpf-more-toggle (feed.html). Toujours affiché dès qu'il y a une légende plutôt
+            // que de mesurer un éventuel débordement : deux lignes de moins que ça ne gênent
+            // jamais la lecture, et éviter la mesure évite un reflow en plus à l'ouverture.
+            modalPostCaption.classList.add('modal-post-caption-clamped');
+            modalPostCaption.classList.remove('modal-post-caption-expanded');
+            if (modalPostMoreBtn) {
+                modalPostMoreBtn.classList.remove('hidden');
+                modalPostMoreBtn.textContent = '··· more';
+                modalPostMoreBtn.onclick = () => {
+                    const collapsed = !modalPostCaption.classList.toggle('modal-post-caption-expanded');
+                    modalPostCaption.classList.toggle('modal-post-caption-clamped', collapsed);
+                    modalPostMoreBtn.textContent = collapsed ? '··· more' : '··· less';
+                };
+            }
         } else {
             modalPostCaption.classList.add('hidden');
+            if (modalPostMoreBtn) modalPostMoreBtn.classList.add('hidden');
         }
     }
 
@@ -11939,7 +12035,13 @@ window.generateItinerary = function() {
     // computeDayTimeline(locs, currentTrip.homeBase) plus bas dans ce fichier) — n'a
     // d'effet que sur cette page (currentTrip n'existe que sur trips.html ; ce même modal
     // est aussi ouvert depuis une fiche lieu, où il n'y a pas de voyage/hôtel à réutiliser).
-    const homeBase = (currentTrip && currentTrip.homeBase) || null;
+    // Priorité au champ "Stay" DE CE POPUP (demande du 24/10/2026, voir
+    // window.openItiStayEditor() plus haut — typeof itiHomeBase !== 'undefined' car cette
+    // variable n'existe que sur trips.html, absente de la copie plus simple du modal sur
+    // map.html) : laisse la personne choisir un hébergement différent de celui déjà
+    // enregistré sur le voyage sans avoir à aller le changer ailleurs d'abord ; retombe sur
+    // currentTrip.homeBase sinon, comme avant.
+    const homeBase = (typeof itiHomeBase !== 'undefined' && itiHomeBase) || (currentTrip && currentTrip.homeBase) || null;
 
     // Trajet optimisé (voir buildOptimizedRoute() plus haut : plus proche voisin sur la
     // vraie distance + amélioration 2-opt), pas un simple tri par distance brute en degrés.
@@ -14049,7 +14151,19 @@ window.renderTripCoverPreview = function() {
     }
 };
 
-function resizeTripCoverDataUrl(dataUrl, maxSize) {
+// `quality` optionnel (demande du 24/10/2026, "la qualité d'image est mauvaise pour les
+// posts de Community et Mei's picture... moins pixellisé") — reste à 0.7 par défaut
+// (comportement inchangé pour TOUT appelant existant, notamment la couverture de voyage,
+// voir resizeTripCoverDataUrl(dataUrl, maxSize) telle qu'appelée ci-dessous : ce champ vit
+// dans myTrips[] à l'intérieur de users/{uid}, le MÊME document que visitedLocs/
+// wishlistLocs/photo — voir le correctif du 24/10/2026 un peu plus bas (syncUserData,
+// firebase-init.js) qui a dû ajouter un repli pour des couvertures déjà trop lourdes à
+// 0.7 ; les remonter encore aggraverait ce risque). Les photos Mei's Pictures/Community,
+// elles, vivent chacune dans un document PAR LIEU ou PAR AVIS (locationPhotos/
+// locationReviews), bien plus petit — la qualité y est donc relevée explicitement par
+// l'appelant (voir fileToResizedDataUrl() et window.openImageCropModal() plus bas) sans
+// courir le même risque de dépassement des 1 Mo par document.
+function resizeTripCoverDataUrl(dataUrl, maxSize, quality) {
     return new Promise((resolve) => {
         const img = new Image();
         img.onload = function () {
@@ -14058,7 +14172,7 @@ function resizeTripCoverDataUrl(dataUrl, maxSize) {
             canvas.width = Math.round(img.width * scale);
             canvas.height = Math.round(img.height * scale);
             canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-            resolve(canvas.toDataURL('image/jpeg', 0.7));
+            resolve(canvas.toDataURL('image/jpeg', quality || 0.7));
         };
         img.onerror = () => resolve(dataUrl);
         img.src = dataUrl;
@@ -15360,6 +15474,28 @@ const NT_IC = {
 };
 let ntState = null;
 let ntFriendsCache = null;
+// Suggestions de lieu réel pour "Stay" côté mobile (demande du 24/10/2026, "dans la partie
+// 'stay', il faut qu'on puisse sélectionner des lieux existants") — jusqu'ici ce champ de
+// la fiche mobile était un simple texte libre, géocodé une seule fois (adresse la plus
+// plausible, jamais vérifiée par la personne) au moment de "Créer le voyage" ; la version
+// desktop (#create-trip-hotel-suggestions, voir searchHotelSuggestions() plus haut) avait
+// déjà de vraies suggestions en direct depuis longtemps, jamais reportées sur la fiche
+// mobile. Même API Nominatim (gratuite, sans clé) que partout ailleurs sur le site.
+let ntHotelSuggestions = [];
+let ntHotelSearchTimer = null;
+async function ntSearchHotelSuggestions(query) {
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(query)}`, {
+            headers: { 'Accept-Language': currentLang || 'en' }
+        });
+        if (!res.ok) return;
+        const results = await res.json();
+        const input = document.querySelector('#nt-form-overlay [data-ntin="hotel"]');
+        if (!input || input.value.trim() !== query) return; // la personne a continué à taper entre-temps
+        ntHotelSuggestions = Array.isArray(results) ? results : [];
+        ntRender('hotel');
+    } catch (e) { /* raffinement optionnel : échec silencieux, la saisie manuelle reste géocodée à la création */ }
+}
 const ntT = (fr, en) => currentLang === 'fr' ? fr : en;
 const ntRowHtml = (ic, lab, val, pick, right) => `<button type="button" class="qaf-row" data-ntpick="${pick}"><span class="qaf-ri">${ic}</span><span class="qaf-rt"><small>${lab}</small>${val}</span>${right || ''}<span class="qaf-chev">${QA_IC.ch}</span></button>`;
 const ntPh = txt => `<span class="qaf-ph">${escapeHtml(txt)}</span>`;
@@ -15482,7 +15618,16 @@ function ntPicker() {
     }
     if (p === 'hotel') {
         title = ntT('Hébergement', 'Stay');
-        body = `<label class="qaf-row" style="cursor:text;border-bottom:none"><span class="qaf-ri">${NT_IC.bed}</span><span class="qaf-rt"><input data-ntin="hotel" placeholder="${ntT('Hôtel ou quartier', 'Hotel or neighborhood')}" value="${escapeHtml(document.getElementById('create-trip-hotel').value)}"></span></label>`;
+        // Suggestions de lieu réel en direct (demande du 24/10/2026) — même API Nominatim
+        // que window.openPlaceSearchPopup()/searchHotelSuggestions() (desktop) ailleurs sur
+        // le site, voir ntSearchHotelSuggestions() plus haut. Cliquer une suggestion fixe
+        // createTripHotelSelected (lu en priorité par createNewTripAdvanced() à la création
+        // du voyage) plutôt que de ne géocoder qu'au moment de "Créer le voyage", qui ne
+        // montrait jamais à la personne CE QU'elle allait obtenir.
+        const suggHtml = ntHotelSuggestions.length
+            ? ntHotelSuggestions.map((r, i) => `<button type="button" class="qaf-li" data-nthotelpick="${i}"><span class="qaf-pi">${QA_IC.pin}</span><span class="qaf-lt"><b>${escapeHtml(r.display_name)}</b></span></button>`).join('')
+            : '';
+        body = `<label class="qaf-row" style="cursor:text;border-bottom:none"><span class="qaf-ri">${NT_IC.bed}</span><span class="qaf-rt"><input data-ntin="hotel" placeholder="${ntT('Hôtel ou quartier', 'Hotel or neighborhood')}" value="${escapeHtml(document.getElementById('create-trip-hotel').value)}"></span></label>${suggHtml}`;
     }
     if (p === 'friends') {
         title = ntT('Inviter des amis', 'Invite friends');
@@ -15563,6 +15708,8 @@ window.openNewTripMobileSheet = function() {
     window.updateCreateTripOptions();
     ntState = { pick: null, q: '', invitees: [] };
     ntFriendsCache = null;
+    ntHotelSuggestions = [];
+    clearTimeout(ntHotelSearchTimer);
 
     let overlay = document.getElementById('nt-form-overlay');
     if (!overlay) {
@@ -15573,7 +15720,7 @@ window.openNewTripMobileSheet = function() {
         document.body.appendChild(overlay);
         overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeNewTripMobileSheet(); });
         overlay.addEventListener('click', (e) => {
-            const d = e.target.closest('[data-ntpick],[data-ntact],[data-ntset],[data-nttogf],[data-ntdur],[data-ntmonth]');
+            const d = e.target.closest('[data-ntpick],[data-ntact],[data-ntset],[data-nttogf],[data-ntdur],[data-ntmonth],[data-nthotelpick]');
             if (!d || !ntState) return;
             const ds = d.dataset;
             if (ds.ntpick) { ntState.pick = ds.ntpick; ntState.q = ''; ntRender(); return; }
@@ -15585,6 +15732,17 @@ window.openNewTripMobileSheet = function() {
                 else if (k === 'city') { document.getElementById('create-trip-city').value = v || ''; }
                 ntState.pick = null;
                 ntRender();
+                return;
+            }
+            if (ds.nthotelpick !== undefined) {
+                const r = ntHotelSuggestions[parseInt(ds.nthotelpick)];
+                if (r) {
+                    document.getElementById('create-trip-hotel').value = r.display_name;
+                    createTripHotelSelected = { lat: parseFloat(r.lat), lng: parseFloat(r.lon), label: r.display_name };
+                    ntHotelSuggestions = [];
+                    ntState.pick = null;
+                    ntRender();
+                }
                 return;
             }
             if (ds.nttogf) {
@@ -15615,7 +15773,14 @@ window.openNewTripMobileSheet = function() {
             // gestionnaire délégué — la date tapée/choisie se perdait donc silencieusement.
             if (k === 'dep' || k === 'ret') return;
             if (k === 'name') document.getElementById('create-trip-name').value = e.target.value;
-            else if (k === 'hotel') { document.getElementById('create-trip-hotel').value = e.target.value; createTripHotelSelected = null; }
+            else if (k === 'hotel') {
+                document.getElementById('create-trip-hotel').value = e.target.value;
+                createTripHotelSelected = null;
+                clearTimeout(ntHotelSearchTimer);
+                const query = e.target.value.trim();
+                if (query.length < 3) { ntHotelSuggestions = []; }
+                else { ntHotelSearchTimer = setTimeout(() => ntSearchHotelSuggestions(query), 400); }
+            }
             else if (k === 'q') ntState.q = e.target.value;
             ntRender(k);
         });

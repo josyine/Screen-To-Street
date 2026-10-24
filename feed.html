@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261054" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261055" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -330,6 +330,20 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .modal-post-save-btn svg { transition: transform 0.15s; }
 .modal-post-save-btn.saved svg { transform: scale(1.1); fill: #D42759; }
 .modal-post-caption { font-size: 13px; color: #475569; line-height: 1.5; font-style: italic; margin-bottom: 18px; word-break: break-word; }
+/* "...more" (demande du 24/10/2026) — même principe que .fpf-more-toggle juste au-dessus,
+   réappliqué ici à cette modale #loc-modal (toujours présente dans le HTML de cette page,
+   même si Community/Mei's Pictures utilisent désormais leur propre fil #feed-post-feed). */
+.modal-post-caption-clamped { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
+.modal-post-more-btn { display: block; background: none; border: none; padding: 0; margin: 0 0 14px; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; font-family: inherit; }
+.modal-post-more-btn:hover { color: #D42759; }
+/* "pas de dégradé noir... titre en petit sur la photo en bas à gauche" (demande du
+   24/10/2026) — voir le même correctif/commentaire complet dans map.html. */
+#loc-modal.post-modal #modal-title {
+    position: absolute; left: 14px; bottom: 12px; z-index: 2;
+    background: rgba(20,16,30,.55); color: #fff; font-size: 10.5px; font-weight: 700;
+    padding: 4px 9px; border-radius: 100px; text-shadow: none;
+    max-width: calc(100% - 28px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 @media (max-width: 760px) {
   .modal-content { width: 97%; border-radius: 12px; }
   .modal-body { padding: 18px 18px 22px 18px; }
@@ -383,12 +397,19 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
      derrière la barre. */
   .feed-page { display: flex; flex-direction: column; }
   .feed-search-wrap { order: -1; margin: 0 0 12px 0; }
-  /* Barre plus fine en HAUTEUR seulement (demande du 13/09/2026, capture d'écran fournie) —
-     distinct de "plus fine" au sens largeur (déjà traité juste au-dessus, toute la largeur
-     de la page). Seul le padding vertical baisse ; la vraie font-size reste 16px (aucun
-     changement ici), donc pas de risque de zoom iOS au focus — impossible de descendre le
-     padding vertical plus bas que ça sans que le texte touche visuellement les bords. */
-  .feed-search-input { background: rgba(255,255,255,.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,.6); padding: 6px 16px 6px 38px; }
+  /* Barre plus fine en HAUTEUR seulement (demande du 13/09/2026 puis 24/10/2026, "reduit en
+     hauteur la taille de la barre") — distinct de "plus fine" au sens largeur (déjà traité
+     juste au-dessus, toute la largeur de la page). Seul le padding vertical baisse encore
+     un peu (6px → 4px, la marge jugée minimale le 13/09/2026 avant que le texte ne touche
+     visuellement les bords — vérifié de nouveau par capture d'écran, encore un peu de jeu
+     à 4px). La vraie font-size NE change PAS ici (demande du 24/10/2026, "reduit la taille
+     du texte" — volontairement pas suivie pour ce champ précis) : c'est la règle globale
+     "input, textarea { font-size: 16px !important; }" (voir style.css) qui l'impose,
+     posée le 08/09/2026 précisément pour empêcher Safari iOS de zoomer automatiquement la
+     page au focus sur tout champ de saisie affiché sous 16px — la repasser plus petite
+     ici réintroduirait ce bug corrigé ailleurs, pour gagner quelques pixels de confort
+     visuel qui n'en vaut pas le risque. */
+  .feed-search-input { background: rgba(255,255,255,.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,.6); padding: 4px 16px 4px 38px; }
   .feed-search-icon { left: 14px; }
   /* Onglets Explore/Saved étirés jusqu'aux bords de l'ÉCRAN (demande du 13/09/2026,
      distincte de la barre de recherche ci-dessus qui reste "à la largeur de la page") :
@@ -442,7 +463,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261054';
+        s.src = 'page-loader.js?v=20261055';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -620,6 +641,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
                 </button>
             </div>
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
+            <button type="button" id="modal-post-more-btn" class="modal-post-more-btn hidden">··· more</button>
             <div id="modal-meta"></div>
             <span class="modal-sub-label" id="modal-details-label">Details</span>
             <div id="modal-meta-box"></div>
@@ -639,9 +661,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261054"></script>
-<script src="locations-data.js?v=20261054"></script>
-<script src="script.js?v=20261054"></script>
+<script type="module" src="firebase-init.js?v=20261055"></script>
+<script src="locations-data.js?v=20261055"></script>
+<script src="script.js?v=20261055"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
