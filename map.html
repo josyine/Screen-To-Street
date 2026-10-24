@@ -824,9 +824,17 @@
   /* "...more" (demande du 24/10/2026, "comme dans Community... ajoute '...more'") — même
      principe que .fpf-more-toggle/.fpf-caption (feed.html) : légende tronquée sur 2 lignes
      par défaut, un bouton texte simple bascule le repli. */
-  .modal-post-caption-clamped { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 6px; }
   .modal-post-more-btn { display: block; background: none; border: none; padding: 0; margin: 0 0 14px; font-size: 12.5px; font-weight: 700; color: #64748b; cursor: pointer; font-family: inherit; }
   .modal-post-more-btn:hover { color: #D42759; }
+  /* Pastille "2 / 5" (demande du 24/10/2026, voir le commentaire sur #modal-post-nav-badge
+     dans le HTML plus bas) : même traitement visuel que #loc-modal.post-modal #modal-title
+     juste en dessous (pastille sombre semi-transparente sur la photo), coin OPPOSÉ (haut
+     droit plutôt que bas gauche) pour ne jamais les superposer. */
+  .modal-post-nav-badge {
+      position: absolute; top: 14px; right: 14px; z-index: 2;
+      background: rgba(20,16,30,.55); color: #fff; font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 100px;
+  }
   /* "pas de dégradé noir... titre en petit sur la photo en bas à gauche" (demande du
      24/10/2026, capture Community fournie) : une vraie PUBLICATION (postContext présent,
      même condition que le dégradé retiré dans openLocModal()/script.js et que .post-modal
@@ -1966,7 +1974,18 @@
 <div id="loc-modal" class="modal hidden">
     <div class="modal-content">
         <span class="close-btn" onclick="closeLocModal()">&times;</span>
-        <div id="modal-hero"><div id="modal-title"></div></div>
+        <!-- "fais en sorte qu'on puisse défiler les posts du chevron comme dans Community"
+             (demande du 24/10/2026) : balayage vertical (haut/bas, pas horizontal — déjà pris
+             par le carrousel multi-photos ci-dessous, voir .modal-hero-gallery) sur cette même
+             zone photo pour passer au post suivant/précédent DANS LA MÊME LISTE que celle
+             ouverte depuis le tiroir du chevron (jamais tous les posts du site, voir
+             window.__locModalNav dans script.js, posé uniquement par renderVisitorsDrawerContent
+             — les autres façons d'ouvrir cette modale, ex: un marqueur de carte, n'ont pas de
+             liste à parcourir et n'affichent donc jamais ce badge ni ce geste). -->
+        <div id="modal-hero">
+            <div id="modal-title"></div>
+            <div id="modal-post-nav-badge" class="modal-post-nav-badge hidden"></div>
+        </div>
         <div class="modal-body">
             <div id="modal-post-header" class="modal-post-header hidden">
                 <div class="modal-post-avatar" id="modal-post-avatar">U</div>
@@ -1982,16 +2001,28 @@
             <div id="modal-post-caption" class="modal-post-caption hidden"></div>
             <button type="button" id="modal-post-more-btn" class="modal-post-more-btn hidden">··· more</button>
             <div id="modal-meta"></div>
-            <span class="modal-sub-label" id="modal-details-label">Details</span>
-            <div id="modal-meta-box"></div>
-            <span class="modal-sub-label" id="modal-about-label">About this place</span>
-            <div id="modal-desc"></div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <span id="modal-map-link-text">Open in Google Maps</span>
-                </a>
-                <a id="modal-more-details" href="#" class="modal-map-link hidden"></a>
+            <!-- BUG corrigé (demande du 24/10/2026, "quand on clique sur ...more ça doit
+                 afficher le detail du post, autrement n'affiche que la description du post
+                 rédigée par l'utilisateur, comme dans community") : ce bloc (adresse/groupe
+                 pour une fiche lieu classique, ou date de visite/amis identifiés + "About
+                 this place" pour une publication) est maintenant ce que "...more" replie/
+                 déplie (voir openLocModal() dans script.js) pour une publication — la légende
+                 juste au-dessus reste, elle, TOUJOURS affichée en entier, jamais tronquée,
+                 exactement comme .fpf-caption/.fpf-expand dans feed.html (Community). Pour
+                 une fiche lieu classique (pas de postContext), ce bloc reste toujours visible
+                 comme avant — seul le cas "publication" change de comportement. -->
+            <div id="modal-post-expand">
+                <span class="modal-sub-label" id="modal-details-label">Details</span>
+                <div id="modal-meta-box"></div>
+                <span class="modal-sub-label" id="modal-about-label">About this place</span>
+                <div id="modal-desc"></div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a id="modal-map-link" href="#" target="_blank" class="modal-map-link">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span id="modal-map-link-text">Open in Google Maps</span>
+                    </a>
+                    <a id="modal-more-details" href="#" class="modal-map-link hidden"></a>
+                </div>
             </div>
         </div>
     </div>

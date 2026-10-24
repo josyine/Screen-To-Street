@@ -8131,7 +8131,8 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
     `).join('');
     grid.querySelectorAll('.loc-visitors-tile').forEach(tile => {
         tile.addEventListener('click', () => {
-            const { post: p, locId } = postsWithLoc[Number(tile.dataset.i)];
+            const i = Number(tile.dataset.i);
+            const entry = postsWithLoc[i];
             // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
             // exactement où on était précédemment, toujours avec la flèche chevron
             // d'ouverte comme avant") : on mémorise CE tiroir précis (titre + liste) avant
@@ -8140,17 +8141,11 @@ function renderVisitorsDrawerContent(title, postsWithLoc) {
             // publication, au lieu de retomber simplement sur la carte en dessous.
             pendingLocVisitorsDrawerReturn = { title, postsWithLoc };
             window.closeLocVisitorsDrawer();
-            window.openLocModal(locId, {
-                username: p.username,
-                uid: p.uid,
-                avatarColor: window.avatarColorForUsername(p.username),
-                photo: p.photo,
-                caption: p.caption,
-                date: p.date,
-                taggedFriends: p.taggedFriends,
-                photoKey: p.uid + '_' + p.id,
-                photoId: p.standalone ? p.id : null
-            });
+            // navCtx (demande du 24/10/2026, "fais en sorte qu'on puisse swipe les posts du
+            // chevron comme dans Community") : CETTE MÊME liste postsWithLoc, déjà scopée à
+            // ce lieu/pays (voir openLocVisitorsDrawer()/openAreaVisitorsDrawer() plus bas) —
+            // voir window.__locModalNav dans openLocModal()/script.js pour le reste du geste.
+            window.openLocModal(entry.locId, locModalPostContextFromEntry(entry), { list: postsWithLoc, index: i });
         });
     });
     overlay.classList.add('open');
@@ -11350,9 +11345,31 @@ let popupMarker = null;
 // {username, avatarColor, photo, caption, photoKey}. Tous les nouveaux éléments DOM
 // qu'il alimente sont if(el)-gardés : absents sur les autres pages (map.html,
 // visited.html...) qui partagent cette même modale, ils n'y ont simplement aucun effet.
-window.openLocModal = function(id, postContext) {
+// BUG corrigé (demande du 24/10/2026, "fais en sorte qu'on puisse swipe les posts du
+// chevron comme dans Community. Mais il ne faut afficher que les posts du chevron") :
+// navCtx = {list, index} — la MÊME liste déjà scopée (un seul lieu ou un pays, voir
+// renderVisitorsDrawerContent() plus bas) que celle qui a ouvert cette publication, jamais
+// reconstruite à partir de tous les posts du site. Posé sur window (pas une variable locale
+// à cette fonction) : wireLocModalPostNav() plus bas en a besoin après le retour de cette
+// fonction, au moment où la personne swipe réellement, pas seulement à l'ouverture. Remis à
+// null par défaut à CHAQUE appel (pas seulement quand navCtx est fourni) : sans ça, rouvrir
+// cette même modale depuis un marqueur de carte juste après avoir fermé une publication du
+// chevron laisserait le geste de swipe actif alors qu'il n'y a plus aucune liste à parcourir.
+window.__locModalNav = null;
+function locModalPostContextFromEntry(entry) {
+    const p = entry.post;
+    return {
+        username: p.username, uid: p.uid,
+        avatarColor: window.avatarColorForUsername(p.username),
+        photo: p.photo, caption: p.caption, date: p.date,
+        taggedFriends: p.taggedFriends, photoKey: p.uid + '_' + p.id,
+        photoId: p.standalone ? p.id : null
+    };
+}
+window.openLocModal = function(id, postContext, navCtx) {
     const loc = celebLocations.find(l => l.id == id);
     if(!loc) return;
+    window.__locModalNav = navCtx || null;
 
     const modalTitle = document.getElementById('modal-title');
     const modalMeta = document.getElementById('modal-meta');
@@ -11529,26 +11546,34 @@ window.openLocModal = function(id, postContext) {
         if (postContext && postContext.caption) {
             modalPostCaption.textContent = `"${postContext.caption}"`;
             modalPostCaption.classList.remove('hidden');
-            // "...more" (demande du 24/10/2026, "comme dans Community... ajoute '...more'") —
-            // tronque la légende sur 2 lignes par défaut (.modal-post-caption-clamped, voir
-            // le <style> de chaque page) ; le bouton bascule ce repli, même principe que
-            // .fpf-more-toggle (feed.html). Toujours affiché dès qu'il y a une légende plutôt
-            // que de mesurer un éventuel débordement : deux lignes de moins que ça ne gênent
-            // jamais la lecture, et éviter la mesure évite un reflow en plus à l'ouverture.
-            modalPostCaption.classList.add('modal-post-caption-clamped');
-            modalPostCaption.classList.remove('modal-post-caption-expanded');
-            if (modalPostMoreBtn) {
-                modalPostMoreBtn.classList.remove('hidden');
-                modalPostMoreBtn.textContent = '··· more';
-                modalPostMoreBtn.onclick = () => {
-                    const collapsed = !modalPostCaption.classList.toggle('modal-post-caption-expanded');
-                    modalPostCaption.classList.toggle('modal-post-caption-clamped', collapsed);
-                    modalPostMoreBtn.textContent = collapsed ? '··· more' : '··· less';
-                };
-            }
         } else {
             modalPostCaption.classList.add('hidden');
-            if (modalPostMoreBtn) modalPostMoreBtn.classList.add('hidden');
+        }
+    }
+    // BUG corrigé (demande du 24/10/2026, "quand on clique sur ...more ça doit afficher le
+    // detail du post, autrement n'affiche que la description du post rédigée par
+    // l'utilisateur... comme dans community") : "...more" bascule maintenant #modal-post-
+    // expand (adresse/groupe ou date de visite/amis identifiés + "About this place", voir
+    // map.html) au lieu de (dé)tronquer la légende ci-dessus, qui reste désormais TOUJOURS
+    // affichée en entier — exactement .fpf-caption (jamais clampée) + .fpf-more-toggle/
+    // .fpf-expand (repliable, contenu lieu) dans feed.html (Community), au lieu de l'ancien
+    // principe inverse (légende clampée, détail du lieu toujours visible). #modal-post-expand
+    // n'existe que sur map.html (seule page concernée par cette demande) : ce bloc se
+    // comporte comme avant (toujours affiché, bouton "...more" masqué) sur les autres pages
+    // partageant ce même #loc-modal (profile.html/visited.html/wishlist.html/trips.html).
+    const modalPostExpand = document.getElementById('modal-post-expand');
+    if (modalPostMoreBtn) {
+        if (postContext && modalPostExpand) {
+            modalPostMoreBtn.classList.remove('hidden');
+            modalPostExpand.classList.add('hidden');
+            modalPostMoreBtn.textContent = '··· more';
+            modalPostMoreBtn.onclick = () => {
+                const collapsed = modalPostExpand.classList.toggle('hidden');
+                modalPostMoreBtn.textContent = collapsed ? '··· more' : '··· less';
+            };
+        } else {
+            modalPostMoreBtn.classList.add('hidden');
+            if (modalPostExpand) modalPostExpand.classList.remove('hidden');
         }
     }
 
@@ -11703,6 +11728,58 @@ window.openLocModal = function(id, postContext) {
     const modalMapLinkText = document.getElementById('modal-map-link-text');
     if(modalMapLinkText) modalMapLinkText.textContent = t('openInMaps');
 
+    // "swipe les posts du chevron comme dans Community" (demande du 24/10/2026) : voir le
+    // commentaire sur window.__locModalNav tout en haut de cette fonction. Reposé à CHAQUE
+    // appel (même sans navCtx, voir plus haut) pour qu'un swipe ne reste jamais actif une
+    // fois qu'on a quitté le contexte "posts d'un lieu/pays du chevron" qui l'a fourni.
+    (function wireLocModalPostNav() {
+        const heroEl = document.getElementById('modal-hero');
+        const badgeEl = document.getElementById('modal-post-nav-badge');
+        if (!heroEl) return;
+        // Un seul gestionnaire à la fois : sans ce nettoyage, chaque ouverture (y compris
+        // via un swipe précédent, qui rappelle cette même fonction) en empilerait un de
+        // plus, et un swipe finirait par avancer de plusieurs posts d'un coup.
+        if (heroEl._locNavCleanup) { heroEl._locNavCleanup(); heroEl._locNavCleanup = null; }
+        const nav = window.__locModalNav;
+        if (!nav || !Array.isArray(nav.list) || nav.list.length < 2) {
+            if (badgeEl) badgeEl.classList.add('hidden');
+            return;
+        }
+        if (badgeEl) {
+            badgeEl.classList.remove('hidden');
+            badgeEl.textContent = `${nav.index + 1} / ${nav.list.length}`;
+        }
+        // Vertical (haut/bas), pas horizontal : .modal-hero-gallery (carrousel multi-photos
+        // DANS un même post, voir plus haut) utilise déjà le défilement horizontal sur cette
+        // même zone — les deux gestes doivent rester distincts. Seuil à 50px, pas de ratio
+        // dx/dy à vérifier ici (contrairement à wireLiveCalSwipe plus haut) : la galerie
+        // multi-photos gère déjà elle-même son propre défilement horizontal en interne (pas
+        // de touchstart/touchend ici), donc rien à distinguer d'un geste horizontal qui lui
+        // serait destiné.
+        let startY = 0, tracking = false;
+        const onStart = (e) => {
+            if (e.touches.length !== 1) return;
+            startY = e.touches[0].clientY;
+            tracking = true;
+        };
+        const onEnd = (e) => {
+            if (!tracking) return;
+            tracking = false;
+            const dy = e.changedTouches[0].clientY - startY;
+            if (Math.abs(dy) < 50) return;
+            const newIndex = nav.index + (dy < 0 ? 1 : -1); // haut -> suivant, bas -> précédent
+            if (newIndex < 0 || newIndex >= nav.list.length) return;
+            const entry = nav.list[newIndex];
+            window.openLocModal(entry.locId, locModalPostContextFromEntry(entry), { list: nav.list, index: newIndex });
+        };
+        heroEl.addEventListener('touchstart', onStart, { passive: true });
+        heroEl.addEventListener('touchend', onEnd, { passive: true });
+        heroEl._locNavCleanup = () => {
+            heroEl.removeEventListener('touchstart', onStart);
+            heroEl.removeEventListener('touchend', onEnd);
+        };
+    })();
+
     const modalOverlay = document.getElementById('loc-modal');
     if(modalOverlay) modalOverlay.classList.remove('hidden');
 
@@ -11731,6 +11808,7 @@ window.openLocModal = function(id, postContext) {
 window.closeLocModal = function() {
     const modalOverlay = document.getElementById('loc-modal');
     if(modalOverlay) modalOverlay.classList.add('hidden');
+    window.__locModalNav = null;
     // BUG corrigé (demande du 16/10/2026, "quand on clique sur la croix ça renvoie
     // exactement où on était précédemment, toujours avec la flèche chevron d'ouverte
     // comme avant") : si cette publication a été ouverte depuis le tiroir chevron (voir
