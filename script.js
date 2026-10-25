@@ -5983,10 +5983,25 @@ function updateUI() {
 }
 
 window.openItineraryModal = function() {
-    document.getElementById('iti-result').classList.add('hidden');
+    const resultEl = document.getElementById('iti-result');
+    resultEl.classList.add('hidden');
     document.getElementById('iti-form').classList.remove('hidden');
-    const itiCriteriaCloseRowEl = document.getElementById('iti-criteria-close-row');
-    if (itiCriteriaCloseRowEl) itiCriteriaCloseRowEl.classList.add('hidden');
+    // Remet #iti-criteria-panel à sa place d'origine (juste avant #iti-result, voir le HTML)
+    // si generateItinerary() l'avait déplacé dans #iti-result lors d'une précédente
+    // génération — une réouverture à froid du générateur repart toujours du formulaire
+    // seul, jamais d'un résultat affiché par défaut. #iti-criteria-panel n'existe QUE sur
+    // trips.html (jamais sur la copie plus simple de map.html) — sa présence sert de
+    // marqueur pour ne rien faire sur map.html.
+    const panelEl = document.getElementById('iti-criteria-panel');
+    if (panelEl) {
+        if (resultEl.parentElement && panelEl.parentElement !== resultEl.parentElement) {
+            resultEl.parentElement.insertBefore(panelEl, resultEl);
+        }
+        const closeRowEl = document.getElementById('iti-criteria-close-row');
+        if (closeRowEl) closeRowEl.classList.add('hidden');
+        const descEl = document.getElementById('iti-desc');
+        if (descEl) descEl.classList.remove('hidden');
+    }
     document.getElementById('itinerary-modal').classList.remove('hidden');
     window.initItineraryGenerator();
     // BUG corrigé (demande répétée du 24/10/2026, "il faut réafficher ces informations
@@ -6051,6 +6066,7 @@ window.openItineraryModal = function() {
     if (typeof window.updateItiDatesSummary === 'function') window.updateItiDatesSummary();
     if (typeof window.setItiPace === 'function') window.setItiPace('balanced');
     itiPick = null;
+    itiDateMode = 'specific';
     if (typeof updateItiPickerSummaries === 'function') updateItiPickerSummaries();
     if (typeof renderItiPicker === 'function') renderItiPicker();
 }
@@ -6168,6 +6184,13 @@ window.setItiPace = function(p) {
 // évite tout risque de régression sur la création de voyage en réutilisant son code.
 let itiPick = null;
 let itiPickQ = '';
+// "When?" (demande du 25/10/2026) : même bascule Specific/Flexible que ntPicker('dates'),
+// propre à ce générateur (jamais touché à ntState) — 'specific' par défaut, cohérent avec
+// le fait que #iti-start-date/#iti-end-date restent la façon normale de renseigner des
+// dates ici (contrairement à "New trip", pas de notion de mois/durée flexible : "Flexible
+// dates" revient simplement à n'avoir QUE #iti-days, déjà le comportement existant quand
+// aucune date précise n'est renseignée).
+let itiDateMode = 'specific';
 window.openItiPicker = function(field) {
     itiPick = field;
     itiPickQ = '';
@@ -6182,11 +6205,15 @@ window.setItiPickerSearch = function(v) {
     renderItiPicker();
 };
 function updateItiPickerSummaries() {
-    const g = document.getElementById('iti-group-summary'), gv = document.getElementById('iti-group').value;
+    // BUG corrigé (demande du 25/10/2026, trouvé en testant map.html — sa copie plus
+    // simple du générateur n'a pas de champ #iti-city du tout) : .value sans ?. plantait
+    // dès l'ouverture du générateur sur map.html (TypeError sur null), cette fonction étant
+    // appelée inconditionnellement par window.openItineraryModal() quelle que soit la page.
+    const g = document.getElementById('iti-group-summary'), gv = document.getElementById('iti-group')?.value;
     if (g) { g.textContent = gv || (currentLang === 'fr' ? 'Qui suivez-vous ?' : 'Who are you following?'); g.classList.toggle('qaf-ph', !gv); }
-    const c = document.getElementById('iti-country-summary'), cv = document.getElementById('iti-country').value;
+    const c = document.getElementById('iti-country-summary'), cv = document.getElementById('iti-country')?.value;
     if (c) { c.textContent = cv || (currentLang === 'fr' ? 'Où allez-vous ?' : 'Where are you going?'); c.classList.toggle('qaf-ph', !cv); }
-    const ci = document.getElementById('iti-city-summary'), civ = document.getElementById('iti-city').value;
+    const ci = document.getElementById('iti-city-summary'), civ = document.getElementById('iti-city')?.value;
     if (ci) { ci.textContent = civ || (currentLang === 'fr' ? 'Toutes les villes' : 'All cities'); ci.classList.toggle('qaf-ph', !civ); }
     if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
 }
@@ -6245,13 +6272,39 @@ function itiPickerHtml() {
         const group = document.getElementById('iti-group').value;
         const cats = (filterData[group] && filterData[group].categories) ? filterData[group].categories : filterData["General"].categories;
         body = cats.map(cat => `<button type="button" class="qaf-li" data-ititogcat="${escapeHtml(cat)}" aria-pressed="${itiSelectedCategories.includes(cat)}"><span class="qaf-lt"><b>${escapeHtml(getCatName(cat))}</b></span><span class="qaf-rd"></span></button>`).join('');
+    } else if (p === 'dates') {
+        // Reprend telle quelle la fiche "Quand ?" de "+ New trip" (ntPicker(), p==='dates'
+        // plus bas dans ce fichier) : mêmes classes .nt-seg/.nt-dates/.nt-dt/.nt-dt-ph
+        // (style.css, génériques, pas scoped à ntPicker) — même "input natif invisible
+        // superposé à un libellé stylé" (.nt-dt input {opacity:0}) pour ne JAMAIS afficher
+        // le widget de date natif du téléphone (ni son bleu système) à l'écran, seul son
+        // sélecteur reste accessible au tap.
+        title = currentLang === 'fr' ? 'Quand ?' : 'When?';
+        const dep = document.getElementById('iti-start-date').value;
+        const ret = document.getElementById('iti-end-date').value;
+        const flexible = itiDateMode === 'flexible';
+        const selectDateLabel = currentLang === 'fr' ? 'Choisir une date' : 'Select date';
+        body = `<div class="nt-seg"><button type="button" data-itiact="date-specific" aria-pressed="${!flexible}">${currentLang === 'fr' ? 'Dates précises' : 'Specific dates'}</button><button type="button" data-itiact="date-flexible" aria-pressed="${flexible}">${currentLang === 'fr' ? 'Dates flexibles' : 'Flexible dates'}</button></div>`;
+        if (!flexible) {
+            body += `<div class="nt-dates">
+                <label class="nt-dt"><small>${currentLang === 'fr' ? 'DÉPART' : 'DEPARTURE'}</small>${dep ? `<b>${itiShortDate(dep)}</b>` : `<b class="nt-dt-ph">${selectDateLabel}</b>`}<input type="date" data-itiin="dep" value="${dep}"></label>
+                <label class="nt-dt"><small>${currentLang === 'fr' ? 'RETOUR' : 'RETURN'}</small>${ret ? `<b>${itiShortDate(ret)}</b>` : `<b class="nt-dt-ph">${selectDateLabel}</b>`}<input type="date" data-itiin="ret" value="${ret}" min="${dep}"></label>
+            </div>`;
+        } else {
+            const days = document.getElementById('iti-days').value || '3';
+            body += `<label style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:16px; font-size:13px; font-weight:600; color:#5F5B68;">
+                <span>${currentLang === 'fr' ? 'Durée du séjour' : 'Trip length'}</span>
+                <input type="number" min="1" max="7" value="${days}" data-itiin="days" style="width:56px; text-align:right; font-weight:700; color:#1F2430; border:1.5px solid #ece8f2; border-radius:8px; padding:4px 8px; font-family:inherit;">
+            </label>`;
+        }
     }
     const isMulti = p === 'cat';
+    const hasFoot = isMulti || p === 'dates';
     const n = isMulti ? itiSelectedCategories.length : 0;
     return `<div class="qaf-pick on"><div class="qaf-grab"></div><div class="qaf-hd"><button type="button" class="qaf-bk" data-itiact="close">${QA_IC.bk}</button><h2>${escapeHtml(title)}</h2><span style="width:34px"></span></div>
         ${searchPh ? `<label class="qaf-srch">${QA_IC.search}<input data-itiq placeholder="${escapeHtml(searchPh)}" value="${escapeHtml(itiPickQ)}"></label>` : ''}
         <div class="qaf-body">${body}</div>
-        ${isMulti ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-itiact="close">${n ? (currentLang === 'fr' ? `Terminé · ${n} sélectionnée${n > 1 ? 's' : ''}` : `Done · ${n} selected`) : (currentLang === 'fr' ? 'Terminé' : 'Done')}</button></div>` : ''}
+        ${hasFoot ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-itiact="close">${n ? (currentLang === 'fr' ? `Terminé · ${n} sélectionnée${n > 1 ? 's' : ''}` : `Done · ${n} selected`) : (currentLang === 'fr' ? 'Terminé' : 'Done')}</button></div>` : ''}
     </div>`;
 }
 function renderItiPicker() {
@@ -6275,12 +6328,48 @@ document.addEventListener('click', (e) => {
         else if (field === 'city') window.setItiCity(value || '');
     } else if (t.dataset.ititogcat !== undefined) {
         window.toggleItiPickerCat(t.dataset.ititogcat);
+    } else if (t.dataset.itiact === 'date-specific') {
+        itiDateMode = 'specific';
+        renderItiPicker();
+    } else if (t.dataset.itiact === 'date-flexible') {
+        // Même bascule mutuellement exclusive que ntPicker('dates') : passer en "Flexible"
+        // vide les dates précises (sinon #iti-days resterait recalculé à partir d'elles à
+        // chaque réouverture, contredisant le mode "Flexible" qu'on vient de choisir).
+        itiDateMode = 'flexible';
+        document.getElementById('iti-start-date').value = '';
+        document.getElementById('iti-end-date').value = '';
+        if (typeof window.updateItiDatesSummary === 'function') window.updateItiDatesSummary();
+        renderItiPicker();
     } else if (t.dataset.itiact === 'close') {
         window.closeItiPicker();
     }
 });
 document.addEventListener('input', (e) => {
-    if (e.target.matches('#iti-picker-root [data-itiq]')) window.setItiPickerSearch(e.target.value);
+    if (e.target.matches('#iti-picker-root [data-itiq]')) { window.setItiPickerSearch(e.target.value); return; }
+    if (e.target.matches('#iti-picker-root [data-itiin="days"]')) {
+        document.getElementById('iti-days').value = e.target.value;
+        if (typeof window.updateItiDatesSummary === 'function') window.updateItiDatesSummary();
+    }
+    // data-itiin="dep"/"ret" (les deux <input type="date"> invisibles de la fiche "Quand ?")
+    // volontairement IGNORÉS ici, gérés par le seul 'change' ci-dessous — même raison que
+    // ntPicker() (voir son commentaire du 23/10/2026) : re-render sur 'input' remplacerait
+    // ces <input> par de nouveaux AVANT que le 'change' natif du navigateur n'ait pu se
+    // déclencher sur l'ancien, perdant silencieusement la date choisie.
+});
+document.addEventListener('change', (e) => {
+    const k = e.target.dataset.itiin;
+    if (!k || !e.target.closest('#iti-picker-root')) return;
+    if (k === 'dep') {
+        document.getElementById('iti-start-date').value = e.target.value;
+        const retEl = document.getElementById('iti-end-date');
+        if (retEl.value && retEl.value < e.target.value) retEl.value = '';
+        window.updateItiDaysFromDates();
+        renderItiPicker();
+    } else if (k === 'ret') {
+        document.getElementById('iti-end-date').value = e.target.value;
+        window.updateItiDaysFromDates();
+        renderItiPicker();
+    }
 });
 
 window.initItineraryGenerator = function() {
@@ -12676,18 +12765,29 @@ window.generateItinerary = function() {
         resultDiv.innerHTML += `<div style="text-align:center; font-size:11.5px; color:#94a3b8; padding:6px 16px 4px; line-height:1.5;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>${unplacedCount} ${txt.notAllFit}</div>`;
     }
 
-    // "sans afficher les critères au-dessus" (demande du 25/10/2026) : #iti-form se masque
-    // dès qu'un résultat existe — voir window.backToItiCriteria()/window.closeItiCriteria()
-    // plus bas, qui basculent entre les deux au lieu de les empiler. #iti-criteria-close-row
-    // n'existe QUE sur trips.html (jamais sur la copie plus simple de map.html, qui n'a ni
-    // bouton Criteria ni cette flèche) — sa présence sert de marqueur pour ne masquer
-    // #iti-form QUE là où on peut ensuite le rouvrir, jamais sur map.html.
-    const itiCriteriaCloseRowEl = document.getElementById('iti-criteria-close-row');
-    if (itiCriteriaCloseRowEl) {
-        document.getElementById('iti-form').classList.add('hidden');
-        itiCriteriaCloseRowEl.classList.add('hidden');
+    // "sans afficher les critères au-dessus" + "il ne faut pas que ça revienne en arrière,
+    // il faut afficher les filtres dans cette nouvelle fenêtre Your new itinerary" (demande
+    // du 25/10/2026) : #iti-criteria-panel (flèche de fermeture + #iti-form, voir le HTML)
+    // est DÉPLACÉ ici dans #iti-result, juste sous son titre/bouton Criteria, puis replié
+    // — "Criteria" le déplie SUR PLACE (window.backToItiCriteria() plus bas), jamais en
+    // masquant #iti-result pour revenir à un autre écran. #iti-criteria-panel n'existe QUE
+    // sur trips.html (jamais sur la copie plus simple de map.html, qui n'a ni bouton
+    // Criteria ni cette flèche) — sa présence sert de marqueur pour ne rien faire sur
+    // map.html, où #iti-form reste affiché en permanence comme avant.
+    const itiPanelEl = document.getElementById('iti-criteria-panel');
+    const itiResultEl = document.getElementById('iti-result');
+    if (itiPanelEl) {
+        const headerEl = document.getElementById('iti-result-header');
+        if (headerEl && itiPanelEl.parentElement !== itiResultEl) {
+            headerEl.insertAdjacentElement('afterend', itiPanelEl);
+        }
+        itiPanelEl.classList.add('hidden');
+        const closeRowEl = document.getElementById('iti-criteria-close-row');
+        if (closeRowEl) closeRowEl.classList.remove('hidden');
+        const descEl = document.getElementById('iti-desc');
+        if (descEl) descEl.classList.add('hidden');
     }
-    document.getElementById('iti-result').classList.remove('hidden');
+    itiResultEl.classList.remove('hidden');
 
     let actionsContainer = document.getElementById('iti-actions-container');
     if (!actionsContainer) {
@@ -12849,33 +12949,27 @@ window.applyGeneratedItinerary = function(mode) {
     closeModal('itinerary-modal');
 };
 
-// Bouton "Criteria" / flèche "Hide criteria" (demande du 24 puis 25/10/2026, référence
-// auto_itinerary_final.html) : le résultat s'affiche désormais SEUL par défaut ("sans
-// afficher les critères au-dessus", voir generateItinerary() plus haut qui masque
-// #iti-form dès qu'un résultat existe) — "Criteria" ré-affiche le formulaire (et masque le
-// résultat pour ne pas les empiler), la flèche #iti-criteria-close-row le referme. Dans les
-// deux sens, RIEN n'est réinitialisé dans le formulaire : la sélection déjà faite (group/
-// country/city/dates/stay/catégories) reste exactement telle quelle.
+// Bouton "Criteria" / flèche "Hide criteria" (demande des 24 puis 25/10/2026, référence
+// auto_itinerary_final.html — "il ne faut pas que ça revienne en arrière, il faut afficher
+// les filtres dans cette nouvelle fenêtre Your new itinerary") : le résultat s'affiche
+// désormais SEUL par défaut ("sans afficher les critères au-dessus", voir
+// generateItinerary() plus haut qui déplace #iti-criteria-panel dans #iti-result puis le
+// replie) — "Criteria" déplie ce même bloc SUR PLACE, #iti-result reste affiché tout du
+// long (jamais masqué, jamais remplacé par un autre écran). RIEN n'est réinitialisé dans le
+// formulaire dans un sens comme dans l'autre : la sélection déjà faite (group/country/city/
+// dates/stay/catégories) reste exactement telle quelle.
 window.backToItiCriteria = function() {
-    const resultEl = document.getElementById('iti-result');
-    if (resultEl) resultEl.classList.add('hidden');
-    const closeRowEl = document.getElementById('iti-criteria-close-row');
-    if (closeRowEl) closeRowEl.classList.remove('hidden');
-    const formEl = document.getElementById('iti-form');
-    if (formEl) {
-        formEl.classList.remove('hidden');
-        if (formEl.scrollIntoView) formEl.scrollIntoView({ block: 'start' });
+    const panelEl = document.getElementById('iti-criteria-panel');
+    if (panelEl) {
+        panelEl.classList.remove('hidden');
+        if (panelEl.scrollIntoView) panelEl.scrollIntoView({ block: 'start' });
     }
 };
 window.closeItiCriteria = function() {
-    const formEl = document.getElementById('iti-form');
-    if (formEl) formEl.classList.add('hidden');
-    const closeRowEl = document.getElementById('iti-criteria-close-row');
-    if (closeRowEl) closeRowEl.classList.add('hidden');
-    const resultEl = document.getElementById('iti-result');
-    if (resultEl) {
-        resultEl.classList.remove('hidden');
-        if (resultEl.scrollIntoView) resultEl.scrollIntoView({ block: 'start' });
+    const panelEl = document.getElementById('iti-criteria-panel');
+    if (panelEl) {
+        panelEl.classList.add('hidden');
+        if (panelEl.scrollIntoView) panelEl.scrollIntoView({ block: 'start' });
     }
 };
 

@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261059" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261060" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -190,6 +190,14 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
    réduit d'autant pour ne jamais redépasser .stb-top en haut sur un petit écran. */
 @media (max-width:760px){
   .stb-det{bottom:calc(90px + env(safe-area-inset-bottom,0px));max-height:calc(100% - 132px - 90px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+  /* BUG corrigé (demande du 25/10/2026, "le pop s'affiche en bas de page" une fois fermée)
+     : translateY(105%) plus haut (règle de base, non scoped) suffisait à faire disparaître
+     #stbDet entièrement tant que bottom:0 — mais bottom:90px ci-dessus (ajouté pour ne pas
+     passer sous la nav) a aussi réduit d'autant le débord réel une fois fermée (105% de la
+     hauteur de la fiche, calculée depuis cette position déjà remontée de 90px) : un
+     reliquat d'environ 90px restait visible au-dessus de la nav. On ajoute ce même
+     décalage directement au transform de fermeture, propre à mobile. */
+  .stb-det:not(.on){transform:translateY(calc(105% + 90px + env(safe-area-inset-bottom,0px)))}
 }
 
 /* =====================================================================
@@ -364,7 +372,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261059';
+        s.src = 'page-loader.js?v=20261060';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -507,9 +515,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
 </div>
 
-<script src="locations-data.js?v=20261059"></script>
-<script type="module" src="firebase-init.js?v=20261059"></script>
-<script src="script.js?v=20261059"></script>
+<script src="locations-data.js?v=20261060"></script>
+<script type="module" src="firebase-init.js?v=20261060"></script>
+<script src="script.js?v=20261060"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -673,9 +681,19 @@ det.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(!a)re
      faut passer par la page badges") : la fiche "défi sur la carte" (ChallengeMap,
      map.html?challenge=1) chevauchait la barre de navigation du bas malgré plusieurs
      correctifs — retirée ; "Voir les lieux sur la carte" d'un défi va maintenant
-     simplement sur la carte, sans fiche spéciale. */
+     simplement sur la carte, sans fiche spéciale.
+     BUG corrigé (demande du 25/10/2026, "il faut rediriger vers le lieu sur la carte" —
+     ça n'ouvrait plus rien) : StbBadges.close() appelait history.back() (page.classList
+     "on" posée via history.pushState({stb:1},"") à l'ouverture, voir StbBadges.open()) —
+     exécuté juste AVANT window.location.href ci-dessous, les deux navigations entraient en
+     course, et map.html finissait par charger sans jamais recevoir l'évènement
+     "firebase-ready" (son script de connexion Firebase, en module différé, se faisait
+     interrompre par ce double changement de page quasi simultané) : la fenêtre de garde
+     de connexion restait donc bloquée indéfiniment, la fiche lieu ne s'ouvrait jamais.
+     On quitte de toute façon la page : pas besoin de revenir en arrière dans l'historique
+     ni de nettoyer l'affichage avant de partir, juste la navigation directe. */
   if(a.dataset.act==="map"){
-    const locId=a.dataset.locId;StbBadges.close();window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
+    const locId=a.dataset.locId;window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
   }});
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(det.classList.contains("on"))closeDet();else if(page.classList.contains("on"))StbBadges.close();}});
 addEventListener("popstate",()=>{if(page.classList.contains("on"))StbBadges.close(true);});
@@ -895,6 +913,21 @@ function toast(t){const e=$("sbxToast");e.textContent=t;e.classList.add("on");cl
 /* ===== 4. ÉVÉNEMENTS ===== */
 document.addEventListener("click",e=>{
   const t=e.target;
+  /* BUG corrigé (demande du 25/10/2026, "il faut rediriger vers le lieu sur la carte" —
+     ça n'ouvrait plus rien) : ce listener est posé sur document (jamais scoped à un
+     conteneur desktop précis, voir plus haut) — il recevait donc AUSSI, par bulles, les
+     clics faits sur la version MOBILE (#stbPage/#stbDim/#stbDet, script juste au-dessus),
+     qui réutilise les mêmes attributs data-place/data-group/data-challenge/data-act que
+     cette version ordinateur. Pour le bouton "Voir sur la carte"/"Y aller" (data-act="map"),
+     ça déclenchait DEUX navigations quasi simultanées vers la même URL (une par script) —
+     la première se faisait interrompre en plein chargement par la seconde, empêchant le
+     module Firebase de finir son initialisation (jamais d'évènement "firebase-ready"), et
+     map.html restait bloqué derrière sa fenêtre de connexion sans jamais afficher la fiche
+     lieu. Les actions masquées (showPlace()/showChallenge() ouvrant #sbxModal, invisible
+     sur mobile par CSS) ne causaient pas de bug visible mais tournaient quand même en
+     double pour rien. Un simple garde-fou en sortie anticipée pour tout clic originaire des
+     éléments mobile, plutôt que de scoper CHAQUE sélecteur ci-dessous un par un. */
+  if(t.closest("#stbPage, #stbDim, #stbDet")) return;
   const n=t.closest(".sbx-nav"); if(n){select(n.dataset.s);return;}
   const g=t.closest("[data-group]"); if(g){groupFilter=g.dataset.group;showAll=false;renderLieux();return;}
   const p=t.closest("[data-place]"); if(p){showPlace(p.dataset.place,p.dataset.locked==="1");return;}
