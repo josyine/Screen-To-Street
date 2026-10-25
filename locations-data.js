@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-25T17:11:23.175Z.
+// Généré le 2026-10-25T21:59:31.642Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -19583,58 +19583,67 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-Lz1jcqULST7G90eTfynA",
-    "name": "Château de Chantilly",
+    "name": "Château de Saudreville",
     "group": "BTS",
-    "member": "RM",
+    "member": "V",
     "country": "France",
-    "city": "Chantilly",
-    "category": "Landmarks",
-    "year": "2021",
-    "address": "60500 Chantilly, France",
-    "lat": 49.1938,
-    "lng": 2.4853,
-    "img": "",
+    "city": "Villeconin",
+    "category": "MV Location",
+    "year": "2024",
+    "address": "Château de Saudreville, 91580 Villeconin, France",
+    "lat": 48.4988609,
+    "lng": 2.1305118,
+    "img": "images/admin-upload-new-Lz1jcqULST7G90eTfynA-photo.jpg",
     "addedAt": 1792750113671,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>The Château de Chantilly is a historic French chateau comprising the Grand Château and Petit Château surrounded by expansive formal French gardens, grand water basins, and the Musée Condé, which houses one of France's finest collections of historic paintings after the Louvre.</p><!--stss:footsteps--><p>RM visited the Château de Chantilly during his private trip to France, taking photos in front of the grand chateau facade and exploring the artwork inside Musée Condé.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "episodeLink": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
     "tipsList": [
       {
         "title": {
-          "en": "Musée Condé Art Collection"
+          "en": "Respect the Privacy"
         },
         "text": {
-          "en": "Be sure to visit the art galleries inside the chateau, featuring masterpieces by Raphael, Botticelli, and Clouet."
+          "en": "Unlike public museums, the Château de Saudreville is a privately owned residence. It is crucial to respect the owners' privacy and view the property only from public roads if visiting the area, as trespassing is strictly prohibited."
         }
       },
       {
         "title": {
-          "en": "Taste authentic Creme Chantilly"
+          "en": "Explore the Essonne Countryside"
         },
         "text": {
-          "en": "Try real Chantilly whipped cream at the restaurant located inside the park grounds (La Capitainerie)."
+          "en": "To recreate the moody, romantic atmosphere of the \"Winter Ahead\" music video, take a drive through the surrounding Essonne department during the colder months to experience the same rural French winter aesthetic."
+        }
+      },
+      {
+        "title": {
+          "en": "Look Out for Heritage Days"
+        },
+        "text": {
+          "en": "If you want to see the interiors of private French monuments, check the calendar for the annual \"Journées Européennes du Patrimoine\" (European Heritage Days) in September, when some private estates occasionally open their doors to the public for a single weekend."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "https://chateaudechantilly.fr/",
+    "fullDescription": {
+      "en": "<p>Located in the quiet commune of Villeconin, approximately an hour and twenty minutes south of Paris, the Château de Saudreville is a striking private estate nestled in the French countryside. Constructed primarily during the 17th and 18th centuries, the property represents classic French provincial architecture. Recognizing its cultural and architectural significance, certain sections of the estate and its surrounding grounds are officially protected under French law as historical monuments.</p><!--stss:footsteps--><p>In November 2024, Taehyung released \"Winter Ahead,\" a smooth jazz-pop duet featuring celebrated South Korean singer Park Hyo Shin. To capture the elegant, cinematic visual language of the track, the production team utilized the historic Château de Saudreville as a primary filming location. The music video features highly artistic scenes framed by the castle's authentic 18th-century decor, aged stonework, and expansive rural grounds. The grand, timeless aesthetic of the French estate perfectly complements the track's warm, vintage musicality and the sophisticated styling of both artists.</p>"
+    },
+    "ytId": "HAWYOuMGkK0",
+    "imgCredit": "Grefeuille / CC BY-SA 4.0",
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take the TER train from Paris Gare du Nord to Chantilly-Gouvieux station (approx. 25 minutes), then walk 20 minutes through the forest path or take the local bus."
+          "en": "The most practical way to reach Villeconin is by car. It is roughly an 80-minute drive south from central Paris via the A10 highway or the N20. Public transportation to this specific rural area is highly limited."
         }
       },
       {
@@ -19642,7 +19651,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "The castle is a private estate and is not open to the general public for daily tours or visits."
         }
       },
       {
@@ -19650,12 +19659,34 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "As a private, historic residence closed to the public, there are no designated accessibility facilities or tour paths available."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "instagramUrl": "https://www.instagram.com/p/DDMTFz2ylYj/?img_index=6&xtok=MTEwMDBhM2swNDViMQ==",
+    "officialLink": "https://fr.wikipedia.org/wiki/Ch%C3%A2teau_de_Saudreville",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-Lz1jcqULST7G90eTfynA-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4896,
+            "y": 0.5412,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-Lz1jcqULST7G90eTfynA-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.3984,
+            "y": 0.5088,
+            "member": "V"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "new-manual-1790001265057-lc06qt",
@@ -24545,6 +24576,188 @@ window.STATIC_LOCATIONS = [
         ]
       }
     ]
+  },
+  {
+    "id": "new-manual-1792951130511-rgujer",
+    "name": "Église Notre-Dame de Versailles",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "MV Location",
+    "year": "2024",
+    "address": "35 Rue de la Paroisse, 78000 Versailles, France",
+    "lat": 48.8083959,
+    "lng": 2.12904,
+    "img": "images/admin-upload-new-manual-1792951130511-rgujer-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate the Mood"
+        },
+        "text": {
+          "en": "To match the exact soft, muted lighting seen in the music video, plan your visit for an overcast autumn or winter day rather than a bright summer afternoon."
+        }
+      },
+      {
+        "title": {
+          "en": "Find the Steps and Gates"
+        },
+        "text": {
+          "en": "Locate the black wrought-iron gates and the small flight of stairs at the entrance of the church. Stand near the bottom step and look upward to recreate Taehyung's exact moment of contemplation."
+        }
+      },
+      {
+        "title": {
+          "en": "Coordinate Your Wardrobe"
+        },
+        "text": {
+          "en": "Channel Taehyung's romantic, cinematic styling by wearing a long, oversized beige trench coat or wool overcoat for your photographs on the parvis."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the historic Notre-Dame district of Versailles, just a short walk from both the Palace and the Théâtre Montansier, the Église Notre-Dame is a striking 17th-century parish church. Commissioned by King Louis XIV to serve the growing population of the royal city, the building features classic French neoclassical and baroque architecture. Its exterior is defined by grand stone facades, a paved forecourt, and imposing black wrought-iron gates, offering a quintessential, timeless Parisian aesthetic.</p><!--stss:footsteps--><p>For the cinematic music video of his jazz-pop duet \"Winter Ahead\" with Park Hyo Shin, Taehyung utilized the forecourt and immediate surroundings of the Église Notre-Dame de Versailles to capture the track's melancholic, vintage atmosphere.<br><br>Filmed during the crisp autumn months, the scene wraps Versailles in a soft, diffused gray light. Dressed in an elegant, oversized beige overcoat and brown trousers, Taehyung wanders the streets carrying a massive brown teddy bear. The church's historic iron gates and classic architecture serve as the backdrop for a moment of quiet contemplation. Standing near the stone steps leading up to the church, he pauses to look up at the sky. This deliberate stroll across the parvis functions as a surreal, poetic visual transition in the video, symbolizing the artist's solitary quest for warmth and comfort as winter approaches.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The church is highly accessible from Paris. Take the Transilien Line L train from Gare Saint-Lazare and get off at the Versailles Rive Droite station, which is less than a 10-minute walk from the church. Alternatively, take the RER C to Versailles Château Rive Gauche."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor forecourt (parvis) is a public space accessible 24/7. The interior of the church is generally open to the public daily from 8:00 AM to 7:00 PM, and entry is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The exterior parvis and the surrounding sidewalks of Rue de la Paroisse are paved and fully accessible for wheelchair users, though navigating the stone steps up to the main church doors requires assistance."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "officialLink": "https://notredameversailles.fr/",
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792951130511-rgujer-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.513,
+            "y": 0.6941,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "ytId": "HAWYOuMGkK0",
+    "pinterestUrl": "https://fr.pinterest.com/pin/1029142952352239269/"
+  },
+  {
+    "id": "new-manual-1792959959225-9curlx",
+    "name": "Théâtre Montansier",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "MV Location",
+    "year": "2024",
+    "address": "13 Rue des Réservoirs, 78000 Versailles, France",
+    "lat": 48.8067,
+    "lng": 2.1228,
+    "img": "images/admin-upload-new-manual-1792959959225-9curlx-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book a Show Ticket"
+        },
+        "text": {
+          "en": "The interior of the theater is not typically open for casual daytime sightseeing. To experience the opulent auditorium where Taehyung filmed the Pygmalion sequences, purchase a ticket for one of the theater's regularly scheduled plays or classical music performances."
+        }
+      },
+      {
+        "title": {
+          "en": "Look Up at the Ceiling"
+        },
+        "text": {
+          "en": "When seated inside, take time to admire the circular canvas ceiling mural and the grand chandelier, which contribute to the dramatic lighting seen in the music video."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk the Route"
+        },
+        "text": {
+          "en": "The theater is located on Rue des Réservoirs, exceptionally close to the Église Notre-Dame de Versailles. You can easily walk between the two \"Winter Ahead\" filming locations in under five minutes."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Inaugurated in 1777 in the presence of King Louis XVI and Marie Antoinette, the Théâtre Montansier is an exquisite, 18th-century Italian-style theater situated just steps away from the Palace of Versailles. Known for its opulent horseshoe-shaped auditorium, gilded balconies, and rich velvet seating, it is one of the oldest operating theaters in France. The venue has preserved its royal, neoclassical charm, making it a prominent cultural institution and a striking architectural time capsule of French theatrical history.</p><!--stss:footsteps--><p>For the visual production of the jazz-pop duet \"Winter Ahead,\" Taehyung utilized the grand interior of the Théâtre Montansier as the primary setting. The venue's management officially confirmed the artist's private shoot within their historic walls.<br><br>The theater's ornate stage and seating areas serve as the direct backdrop for the video's core artistic narrative, which is heavily inspired by the Greek myth of Pygmalion. Utilizing the 18th-century aesthetics to emphasize a timeless, theatrical atmosphere, Taehyung portrays a dedicated sculptor who breathes life into his creation on the Montansier stage. The rich, vintage architecture of the venue perfectly complements the smooth jazz instrumentation of the track and the highly conceptual, cinematic direction of the project.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The venue is highly accessible from Paris. Take the RER C to the Versailles Château Rive Gauche station or the Transilien Line L to Versailles Rive Droite. Both stations are about a 10 to 15-minute walk from the theater."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The box office is generally open from Tuesday to Saturday, 2:00 PM to 6:30 PM. Access to the auditorium requires a valid ticket for an evening performance. Ticket prices vary by show."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The theater is equipped to accommodate wheelchair users, with accessible entryways and specifically designated seating on the orchestra level. Visitors requiring assistance are advised to inform the box office when booking tickets."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "imgCredit": "Peter Potrowl / CC BY-SA 4.0",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": ""
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
