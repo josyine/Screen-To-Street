@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261059" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261060" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -252,18 +252,6 @@
      #iti-group-summary/#iti-country-summary/#iti-city-summary (texte simple) + la "belle
      liste" plein écran de window.openItiPicker(), au lieu du picker natif du téléphone. */
   #itinerary-modal .iti-qaf-select { display: none; }
-  #itinerary-modal .iti-qaf-dates { display: flex; align-items: center; gap: 6px; }
-  #itinerary-modal .iti-qaf-dates input[type="date"] {
-      border: none; background: none; outline: none; padding: 0; font-family: inherit;
-      font-weight: 600; font-size: 14px; color: #1F2430; flex: 1; min-width: 0;
-      /* "la couleur des dates en noir... et non bleu" (demande du 25/10/2026) : color
-         ci-dessus forçait déjà le texte en noir, mais un <input type="date"> natif garde
-         sa propre teinte d'ACCENT (icône calendrier, sélection) sur le bleu système par
-         défaut tant qu'accent-color n'est pas posé — color-scheme:light évite en plus
-         qu'iOS/Android en mode sombre ne reteinte tout le contrôle en bleu malgré ça. */
-      accent-color: #D42759; color-scheme: light;
-  }
-  #itinerary-modal .iti-qaf-dates-sep { color: #B4ADC2; font-size: 13px; flex: 0 0 auto; }
 
   /* BUG corrigé (demande répétée du 25/10/2026, "tu n'as pas écouté ma demande" — le titre/
      les boutons "Your new itinerary"/Criteria/Add selected places/Add all/Replace my plan du
@@ -317,8 +305,6 @@
   .qaf-row.open .qaf-chev svg { transform: rotate(90deg); }
   .iti-accordion-body { padding: 4px 0 14px 48px; border-bottom: 1px solid var(--qaf-line, #ece8f2); }
   .iti-accordion-body.hidden { display: none; }
-  .iti-trip-length-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 13px; font-weight: 600; color: #5F5B68; }
-  .iti-trip-length-row input { width: 56px; text-align: right; font-weight: 700; color: #1F2430; border: 1.5px solid #ece8f2; border-radius: 8px; padding: 4px 8px; font-family: inherit; }
   .iti-pace-seg { display: flex; background: #F4F2F8; border-radius: 12px; padding: 3px; }
   .iti-pace-seg button { flex: 1; text-align: center; height: 34px; border-radius: 9px; font-size: 12.5px; font-weight: 700; color: #8F8B99; background: none; border: none; cursor: pointer; font-family: inherit; }
   .iti-pace-seg button[aria-pressed="true"] { background: #fff; color: #D42759; box-shadow: 0 1px 4px rgba(31,36,48,.1); }
@@ -647,9 +633,14 @@
      des voyages est devenue la vue mobile par défaut (plus seulement un tiroir masqué
      derrière un hamburger), elle reste ouverte EN PERMANENCE sur mobile tant qu'aucun
      voyage n'est sélectionné — ce logo doit donc rester visible PAR-DESSUS elle, pas
-     seulement "quand le tiroir est fermé" comme le commentaire d'origine le supposait. */
-  .mobile-logo { display: none; align-items: center; gap: 8px; position: absolute; top: 14px; left: 14px; z-index: 3100; text-decoration: none; }
-  .mobile-logo-text { font-size: 14px; font-weight: 700; color: #2E3644; }
+     seulement "quand le tiroir est fermé" comme le commentaire d'origine le supposait.
+     BUG corrigé (demande du 25/10/2026, "reprenne exactement le même header que
+     wishlist/visited/account") : position:fixed (plutôt qu'absolute) et même taille que
+     .universal-logo/.brand-text (style.css, wishlist.html/visited.html/account.html...)
+     — ce logo-ci avait sa propre copie, légèrement plus petite (28px/14px au lieu de
+     32px/15px), jamais alignée sur la convention partagée. */
+  .mobile-logo { display: none; align-items: center; gap: 8px; position: fixed; top: 14px; left: 14px; z-index: 3100; text-decoration: none; }
+  .mobile-logo-text { font-size: 15px; font-weight: 700; color: #2E3644; }
 
   /* Onglets Plan/Map/Ideas (demande du 17/10/2026) : masqués par défaut (desktop, où tout
      reste empilé) — voir leur style complet dans le @media (max-width:800px) plus bas,
@@ -669,24 +660,15 @@
          friends.html sur toutes les pages "app" en mobile, cette page y compris. */
       .mobile-logo { display: flex; }
 
-      /* BUG rapporté le 25/10/2026 : "le header... s'affiche toujours, même quand je
-         scrolle. Actuellement, ça affiche les icônes mais pas le fond violet du header" —
-         .mobile-logo ci-dessus ET #mobile-top-icons (message/engrenage, style.css,
-         position:fixed site-wide) restent bien VISIBLES au défilement (tous deux hors du
-         conteneur qui défile réellement, .trips-main, overflow-y:auto un peu plus bas) :
-         ce n'est donc pas leur PRÉSENCE le problème, mais l'absence de tout fond derrière
-         eux — le dégradé rose/violet (.trip-hero-banner, même dégradé que
-         .trip-magic-banner) vit, lui, bien À L'INTÉRIEUR de .trips-main et défile donc
-         normalement avec le reste du contenu, laissant les icônes "flotter" sur du vide
-         dès qu'on a scrollé. Une barre dédiée, position:fixed comme les icônes qu'elle
-         habille, reproduit ce même dégradé en permanence derrière elles — z-index entre
-         .trips-main (z-index par défaut) et .mobile-logo/#mobile-top-icons (3100/3600). */
-      .trips-main::before {
-          content: ""; position: fixed; top: 0; left: 0; right: 0;
-          height: calc(64px + env(safe-area-inset-top));
-          background: linear-gradient(120deg, #E0156B, #9B5CF6);
-          z-index: 3050; pointer-events: none;
-      }
+      /* BUG corrigé (demande du 24/10/2026 puis annulée le 25/10/2026, "reprenne
+         exactement le même header que wishlist/visited/account") : une bande violette
+         permanente (.trips-main::before) avait été ajoutée ici pour garder un fond derrière
+         le logo/les icônes au défilement — mais comparée aux autres pages "app" du site
+         (wishlist/visited/account...), dont le header flotte toujours sur un fond simple
+         sans bande fixe dédiée, ce traitement les désalignait plutôt que de les
+         rapprocher. Retirée : .mobile-logo/#mobile-top-icons restent bien visibles au
+         défilement (position:fixed, inchangé), simplement sans fond spécial derrière eux —
+         exactement comme sur les autres pages. */
 
       /* Fond violet du site + en-tête correct sur la liste des voyages mobile (demande
          du 17/10/2026, redemandée plusieurs fois) : .sidebar porte normalement un verre
@@ -1090,7 +1072,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261059';
+        s.src = 'page-loader.js?v=20261060';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1123,7 +1105,7 @@
 <div class="app-container">
 
     <a href="map.html" class="mobile-logo">
-        <svg width="28" height="28" viewBox="0 0 400 400" style="flex-shrink:0;">
+        <svg width="32" height="32" viewBox="0 0 400 400" style="flex-shrink:0;">
             <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
             <circle cx="200" cy="150" r="26" fill="#D42759"/>
         </svg>
@@ -1714,7 +1696,10 @@
     <div class="modal-content" style="max-width: 650px; --qa-mag:#D42759; --qa-mut:#8F8B99; --qaf-line:#ece8f2; --qa-soft:#F4F2F8;">
         <span class="close-btn" onclick="closeModal('itinerary-modal')">&times;</span>
         <h2 style="color: var(--primary-magenta); font-size:1.4rem; margin-bottom: 5px;" data-i18n="itiTitle">Auto-Itinerary Generator</h2>
-        <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;" data-i18n="itiDesc">Select a group, a country, and how many days you stay.</p>
+        <!-- Masqué une fois "Your new itinerary" affiché (demande du 25/10/2026, "enlève le
+             texte 'Prefilled with this trip - change anything'") — voir generateItinerary()/
+             window.openItineraryModal() dans script.js, qui togglent sa classe "hidden". -->
+        <p id="iti-desc" style="color: #64748b; font-size: 13px; margin-bottom: 20px;" data-i18n="itiDesc">Select a group, a country, and how many days you stay.</p>
 
         <!-- BUG corrigé (demande du 24/10/2026, capture d'écran fournie — deuxième image) :
              redemandé avec référence explicite à la fiche "New trip" — group/country/city/
@@ -1731,10 +1716,18 @@
              --qaf-line/--qa-soft que .qaf-row consomme (voir style.css) ne sont normalement
              posées QUE sur .qa-form-overlay (fiche "New trip") ; reposées ici sur
              .modal-content pour qu'elles résolvent correctement dans cette popup aussi. -->
-        <!-- Flèche "fermer les critères" (demande du 25/10/2026) : masquée par défaut (seule
-             #iti-criteria-btn, dans #iti-result plus bas, ramène ici) — voir
-             window.backToItiCriteria()/window.closeItiCriteria() dans script.js, qui
-             basculent l'affichage entre #iti-form et #iti-result au lieu de les empiler. -->
+        <!-- #iti-criteria-panel (demande répétée du 25/10/2026, "il ne faut pas que ça
+             revienne en arrière, il faut afficher les filtres dans cette nouvelle fenêtre
+             Your new itinerary") : avant de générer un itinéraire, ce bloc (flèche de
+             fermeture + #iti-form) vit ICI, à sa place normale, flèche masquée (rien à
+             fermer). Une fois un résultat généré, window.generateItinerary() le DÉPLACE
+             (vrai DOM move, pas une copie) dans #iti-result juste sous le titre "Your new
+             itinerary"/bouton Criteria, flèche révélée — cliquer "Criteria" ne fait plus
+             basculer vers un autre écran (#iti-result ne se masque plus jamais une fois
+             généré), juste déplier ce même bloc SUR PLACE, dans la même fenêtre. Remis à sa
+             position d'origine par window.openItineraryModal() à chaque réouverture à
+             froid. Voir window.backToItiCriteria()/window.closeItiCriteria() dans script.js. -->
+        <div id="iti-criteria-panel">
         <button type="button" id="iti-criteria-close-row" class="hidden" onclick="window.closeItiCriteria()" style="display:flex; align-items:center; gap:8px; width:100%; background:none; border:none; padding:0 0 14px; cursor:pointer; color:#64748b; font-size:12.5px; font-weight:700;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
             <span data-i18n="itiCriteriaClose">Hide criteria</span>
@@ -1763,30 +1756,23 @@
                 <span class="qaf-rt"><small data-i18n="itiCityLabel">City <em data-i18n="itiOptional">· optional</em></small><span id="iti-city-summary" class="qaf-ph"></span><select id="iti-city" class="iti-qaf-select"><option value="" data-i18n="itiAllCities">All cities</option></select></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
             </button>
-            <!-- Dates + Trip length fusionnées en UNE rangée repliée (demande du 25/10/2026,
-                 référence auto_itinerary_category.html — "Thu 12 Nov → Sun 15 Nov · 4 days")
-                 au lieu de deux rangées séparées (dates natives toujours visibles + un champ
-                 "Trip length" redondant) : voir window.toggleItiAccordion()/
-                 window.updateItiDatesSummary() dans script.js. #iti-start-date/#iti-end-date/
-                 #iti-days restent À L'IDENTIQUE à l'intérieur (generateItinerary() inchangé) —
-                 #iti-days y reste éditable à la main pour qui veut explorer sur moins de
-                 jours que son séjour complet SANS dates précises renseignées. -->
-            <button type="button" id="iti-dates-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.toggleItiAccordion('dates')">
+            <!-- "When?" (demande du 25/10/2026) : ouvre désormais la même "belle liste" plein
+                 écran que Group/Country/City/Category au lieu de l'accordéon de dates natives
+                 — voir window.openItiPicker('dates')/itiPickerHtml() dans script.js, qui
+                 reprend telle quelle la fiche "Quand ?" de "+ New trip" (.nt-seg/.nt-dates/
+                 .nt-dt, style.css, Specific dates/Flexible dates). #iti-start-date/
+                 #iti-end-date/#iti-days restent de VRAIS champs (seule source lue par
+                 generateItinerary(), inchangé) mais cachés — même principe que .iti-qaf-select
+                 pour Group/Country/City plus haut — la fiche "Quand ?" les remplit via ses
+                 propres data-itiin="dep"/"ret"/"days" plutôt que de les éditer directement. -->
+            <button type="button" id="iti-dates-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.openItiPicker('dates')">
                 <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
                 <span class="qaf-rt"><small data-i18n="itiDatesLabel">Dates <em data-i18n="itiOptional">· optional</em></small><span id="iti-dates-summary" class="qaf-ph"></span></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
             </button>
-            <div id="iti-dates-expand" class="iti-accordion-body hidden">
-                <span class="iti-qaf-dates">
-                    <input type="date" id="iti-start-date" onchange="window.updateItiDaysFromDates()">
-                    <span class="iti-qaf-dates-sep">→</span>
-                    <input type="date" id="iti-end-date" onchange="window.updateItiDaysFromDates()">
-                </span>
-                <label class="iti-trip-length-row">
-                    <span data-i18n="itiLengthLabel">Trip length</span>
-                    <input type="number" id="iti-days" min="1" max="7" value="3" class="iti-qaf-num" oninput="window.updateItiDatesSummary()">
-                </label>
-            </div>
+            <input type="date" id="iti-start-date" class="hidden">
+            <input type="date" id="iti-end-date" class="hidden">
+            <input type="number" id="iti-days" min="1" max="7" value="3" class="hidden">
             <!-- Stay (demande répétée du 24/10/2026) : reste un <button> (pas un <select>, voir
                  window.openItiStayEditor() dans script.js — vraies suggestions de lieu Nominatim,
                  même composant que "New trip"), seul l'habillage passe en .qaf-row. N'existe QUE
@@ -1823,17 +1809,18 @@
             </div>
             <button class="gen-btn iti-generate-btn" onclick="generateItinerary()" style="margin-top:16px; padding:14px; font-size:14px; justify-content:center;" data-i18n="itiCreateBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Generate itinerary</button>
         </div>
+        </div>
 
         <div id="iti-result" class="hidden">
-            <!-- "Your new itinerary" + bouton Criteria (demande du 24/10/2026, référence
-                 auto_itinerary_final.html — uniquement l'onglet Ideas de trips.html, voir le
-                 reste du résultat plus bas) : le bouton Criteria RÉ-AFFICHE #iti-form (masqué
-                 pendant que le résultat est visible, demande du 25/10/2026 — "sans afficher
-                 les critères au-dessus") SANS perdre la sélection déjà faite (group/country/
-                 city/dates/stay/catégories restent tous dans les mêmes champs qu'avant, voir
+            <!-- "Your new itinerary" + bouton Criteria (demande des 24 puis 25/10/2026,
+                 référence auto_itinerary_final.html — uniquement l'onglet Ideas de
+                 trips.html, voir le reste du résultat plus bas) : le bouton Criteria déplie
+                 #iti-criteria-panel (défini plus haut, déplacé ICI par generateItinerary())
+                 SANS perdre la sélection déjà faite (group/country/city/dates/stay/
+                 catégories restent tous dans les mêmes champs qu'avant, voir
                  window.backToItiCriteria()/window.closeItiCriteria() dans script.js) plutôt
-                 que devoir fermer puis rouvrir tout le générateur. -->
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                 que de revenir en arrière vers un autre écran. -->
+            <div id="iti-result-header" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
                 <h3 id="iti-result-title" style="font-size:16px; font-weight:800; color:#212832; margin:0;">Your new itinerary</h3>
                 <button type="button" class="gen-btn ghost" onclick="window.backToItiCriteria()" style="padding:8px 14px; font-size:12px;" data-i18n="itiCriteriaBtn">Criteria</button>
             </div>
@@ -1872,9 +1859,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261059"></script>
-<script src="locations-data.js?v=20261059"></script>
-<script src="script.js?v=20261059"></script>
+<script type="module" src="firebase-init.js?v=20261060"></script>
+<script src="locations-data.js?v=20261060"></script>
+<script src="script.js?v=20261060"></script>
 
 </body>
 </html>
