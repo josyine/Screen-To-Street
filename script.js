@@ -5335,7 +5335,7 @@ const translations = {
         checkVisited: "I visited this place", checkWishlist: "Add to Wishlist", tripWhich: "Which trip is this for?",
         tripName: "Trip name", tripWhen: "When are you planning to go?", tripFrom: "From", tripTo: "To", tripCreate: "Create trip", tripCancel: "Cancel",
         itiTitle: "Auto-itinerary", itiDesc: "Prefilled with this trip — change anything.", itiCreateBtn: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Generate itinerary', itiCatLabel: "Categories (optional, select multiple)", itiCatRowLabel: "Category", itiExport: "Export Guide as PDF", itiSave: "Save to My Trips",
-        itiGroupLabel: "Group", itiCountryLabel: "Country", itiCityLabel: "City", itiOptional: "· optional", itiAllCities: "All cities", itiDatesLabel: "Dates", itiLengthLabel: "Trip length", itiLengthUnit: "· days", itiStayLabel: "Stay",
+        itiGroupLabel: "Group", itiCountryLabel: "Country", itiCityLabel: "City", itiOptional: "· optional", itiAllCities: "All cities", itiDatesLabel: "Dates", itiLengthLabel: "Trip length", itiLengthUnit: "· days", itiStayLabel: "Stay", itiCriteriaClose: "Hide criteria",
         searchTripsPlaceholder: "Search your trips...", noTripsFound: "No trips found.", selectTripToView: "Select a trip to view", deselectTripOption: "— No trip selected —", locationsWord: "location", locationsWordPlural: "locations",
         addAnotherVisit: "Add another visit",
         tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", accessibilityRating: "Easy to access?", siteQualityRating: "Site quality", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "{count} friends have visited this place", friendsVisitedStatOne: "1 friend has visited this place", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Link:", lOfficialLink: "Source", lFollow: "Follow:", lWatchEpi: "On Screen", lPractical: "Practical information & access", lLearnMore: "Learn more", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lRecreatePhoto: "Mei's Pictures", officialPoseLabel: "Official recreation of the celebrity's pose", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
@@ -5403,7 +5403,7 @@ const translations = {
         checkVisited: "J'ai visité ce lieu", checkWishlist: "Ajouter à ma Wishlist", tripWhich: "Pour quel voyage ?",
         tripName: "Nom du voyage", tripWhen: "Quand prévoyez-vous d'y aller ?", tripFrom: "De", tripTo: "À", tripCreate: "Créer", tripCancel: "Annuler",
         itiTitle: "Itinéraire automatique", itiDesc: "Pré-rempli avec ce voyage — modifiez ce que vous voulez.", itiCreateBtn: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Générer l\'itinéraire', itiCatLabel: "Catégories (facultatif, sélection multiple)", itiCatRowLabel: "Catégorie", itiExport: "Exporter en PDF", itiSave: "Sauvegarder dans My Trips",
-        itiGroupLabel: "Groupe", itiCountryLabel: "Pays", itiCityLabel: "Ville", itiOptional: "· facultatif", itiAllCities: "Toutes les villes", itiDatesLabel: "Dates", itiLengthLabel: "Durée du séjour", itiLengthUnit: "· jours", itiStayLabel: "Hébergement",
+        itiGroupLabel: "Groupe", itiCountryLabel: "Pays", itiCityLabel: "Ville", itiOptional: "· facultatif", itiAllCities: "Toutes les villes", itiDatesLabel: "Dates", itiLengthLabel: "Durée du séjour", itiLengthUnit: "· jours", itiStayLabel: "Hébergement", itiCriteriaClose: "Masquer les critères",
         searchTripsPlaceholder: "Rechercher vos voyages...", noTripsFound: "Aucun voyage trouvé.", selectTripToView: "Sélectionner un voyage", deselectTripOption: "— Aucun voyage sélectionné —", locationsWord: "lieu", locationsWordPlural: "lieux",
         addAnotherVisit: "Ajouter une autre visite",
         tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", accessibilityRating: "Facilement accessible ?", siteQualityRating: "Qualité du lieu", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "{count} amis ont visité cet endroit", friendsVisitedStatOne: "1 ami a visité cet endroit", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Lien :", lOfficialLink: "Source", lFollow: "Suivre :", lWatchEpi: "À l'écran", lPractical: "Informations pratiques & accès", lLearnMore: "En savoir plus", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lRecreatePhoto: "Les photos de Mei", officialPoseLabel: "Reproduction officielle de la célébrité", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
@@ -5471,7 +5471,7 @@ const translations = {
         checkVisited: "He visitado este lugar", checkWishlist: "Añadir a mi lista", tripWhich: "¿Para qué viaje es esto?",
         tripName: "Nombre del viaje", tripWhen: "¿Cuándo planeas ir?", tripFrom: "Desde", tripTo: "Hasta", tripCreate: "Crear viaje", tripCancel: "Cancelar",
         itiTitle: "Generador de Itinerarios", itiDesc: "Selecciona un grupo, un país y cuántos días te quedas.", itiCreateBtn: "Crear mi guía", itiCatLabel: "Categorías (opcional, selección múltiple)", itiExport: "Exportar guía en PDF", itiSave: "Guardar en Mis Viajes",
-        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Ciudad", itiOptional: "· opcional", itiAllCities: "Todas las ciudades", itiDatesLabel: "Fechas", itiLengthLabel: "Duración del viaje", itiLengthUnit: "· días", itiStayLabel: "Alojamiento",
+        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Ciudad", itiOptional: "· opcional", itiAllCities: "Todas las ciudades", itiDatesLabel: "Fechas", itiLengthLabel: "Duración del viaje", itiLengthUnit: "· días", itiStayLabel: "Alojamiento", itiCriteriaClose: "Ocultar criterios",
         searchTripsPlaceholder: "Buscar tus viajes...", noTripsFound: "No se encontraron viajes.", selectTripToView: "Selecciona un viaje para ver", deselectTripOption: "— Ningún viaje seleccionado —", locationsWord: "lugar", locationsWordPlural: "lugares",
         addAnotherVisit: "Añadir otra visita",
         tabExplore: "Explorar", tabMyItinerary: "Mi Itinerario", yourRating: "Tu valoración", foodQualityRating: "Calidad de la comida", valueForMoneyRating: "Relación calidad-precio", accessibilityRating: "¿Fácil acceso?", siteQualityRating: "Calidad del lugar", wishlistStat: "El {pct}% de los usuarios añadió este lugar a su lista de deseos", friendsVisitedStat: "{count} amigos han visitado este lugar", friendsVisitedStatOne: "1 amigo ha visitado este lugar", whenDidYouVisit: "¿Cuándo visitaste este lugar?", saveMemory: "Guardar recuerdo", myVisitTab: "Mi Visita", tabReviews: "Reseñas", tabInfo: "Info", tabStory: "Historia", lGroup: "Grupo:", lMembers: "Miembros:", lCountry: "País:", lCity: "Ciudad:", lDate: "Fecha:", lEpisode: "Episodio:", lWatch: "Enlace:", lOfficialLink: "Fuente", lFollow: "Seguir:", lWatchEpi: "En pantalla", lPractical: "Información práctica y acceso", lLearnMore: "Más información", lAddress: "Dirección", lOpenMap: "Abrir en Google Maps", lStoryPlace: "La historia de este lugar", lStoryBts: "Siguiendo los pasos de BTS", lRecreatePhoto: "Las fotos de Mei", officialPoseLabel: "Reproducción oficial de la celebridad", lTipsTitle: "LOS CONSEJOS DE «SCREEN TO STREET»", lHowToGetThere: "Cómo llegar:", memoryNotesLabel: "Tus notas (opcional)", memoryNotesPlaceholder: "¿Qué recuerdas de este lugar?", reviewsCountLabel: "{n} reseñas públicas", reviewsWriteLabel: "Escribe tu reseña", reviewsComposePlaceholder: "Comparte lo que pensaste...", reviewsComposeMakePublic: "Hacer esto público", reviewsComposePost: "Publicar reseña", memoryPhotoLabel: "Añadir una foto (opcional)", memoryPhotoChoose: "Elegir una foto", memoryPhotoRemove: "Quitar", memoryMakePublic: "Hacer pública esta reseña (visible para otros usuarios)", reviewsLoading: "Cargando reseñas…", reviewsEmpty: "Todavía no hay reseñas públicas para este lugar — ¡sé el primero en compartir la tuya desde la pestaña «Mi Visita»!",
@@ -5535,7 +5535,7 @@ const translations = {
         checkVisited: "Ho visitato questo posto", checkWishlist: "Aggiungi alla wishlist", tripWhich: "Per quale viaggio è questo?",
         tripName: "Nome del viaggio", tripWhen: "Quando pensi di andarci?", tripFrom: "Da", tripTo: "A", tripCreate: "Crea viaggio", tripCancel: "Annulla",
         itiTitle: "Generatore di Itinerari", itiDesc: "Seleziona un gruppo, un paese e quanti giorni resti.", itiCreateBtn: "Crea la mia guida", itiCatLabel: "Categorie (opzionale, selezione multipla)", itiExport: "Esporta guida in PDF", itiSave: "Salva nei Miei Viaggi",
-        itiGroupLabel: "Gruppo", itiCountryLabel: "Paese", itiCityLabel: "Città", itiOptional: "· facoltativo", itiAllCities: "Tutte le città", itiDatesLabel: "Date", itiLengthLabel: "Durata del viaggio", itiLengthUnit: "· giorni", itiStayLabel: "Soggiorno",
+        itiGroupLabel: "Gruppo", itiCountryLabel: "Paese", itiCityLabel: "Città", itiOptional: "· facoltativo", itiAllCities: "Tutte le città", itiDatesLabel: "Date", itiLengthLabel: "Durata del viaggio", itiLengthUnit: "· giorni", itiStayLabel: "Soggiorno", itiCriteriaClose: "Nascondi criteri",
         searchTripsPlaceholder: "Cerca i tuoi viaggi...", noTripsFound: "Nessun viaggio trovato.", selectTripToView: "Seleziona un viaggio da vedere", deselectTripOption: "— Nessun viaggio selezionato —", locationsWord: "luogo", locationsWordPlural: "luoghi",
         addAnotherVisit: "Aggiungi un'altra visita",
         tabExplore: "Esplora", tabMyItinerary: "Il Mio Itinerario", yourRating: "La tua valutazione", foodQualityRating: "Qualità del cibo", valueForMoneyRating: "Rapporto qualità-prezzo", accessibilityRating: "Facile da raggiungere?", siteQualityRating: "Qualità del luogo", wishlistStat: "Il {pct}% degli utenti ha aggiunto questo posto alla propria wishlist", friendsVisitedStat: "{count} amici hanno visitato questo posto", friendsVisitedStatOne: "1 amico ha visitato questo posto", whenDidYouVisit: "Quando hai visitato questo posto?", saveMemory: "Salva ricordo", myVisitTab: "La Mia Visita", tabReviews: "Recensioni", tabInfo: "Info", tabStory: "Storia", lGroup: "Gruppo:", lMembers: "Membri:", lCountry: "Paese:", lCity: "Città:", lDate: "Data:", lEpisode: "Episodio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Segui:", lWatchEpi: "Sullo schermo", lPractical: "Informazioni pratiche e accesso", lLearnMore: "Scopri di più", lAddress: "Indirizzo", lOpenMap: "Apri in Google Maps", lStoryPlace: "La storia di questo posto", lStoryBts: "Sulle orme dei BTS", lRecreatePhoto: "Le foto di Mei", officialPoseLabel: "Riproduzione ufficiale della celebrità", lTipsTitle: "I CONSIGLI DI «SCREEN TO STREET»", lHowToGetThere: "Come arrivare:", memoryNotesLabel: "Le tue note (facoltativo)", memoryNotesPlaceholder: "Cosa ricordi di questo posto?", reviewsCountLabel: "{n} recensioni pubbliche", reviewsWriteLabel: "Scrivi la tua recensione", reviewsComposePlaceholder: "Condividi cosa ne pensi...", reviewsComposeMakePublic: "Rendi pubblica questa recensione", reviewsComposePost: "Pubblica recensione", memoryPhotoLabel: "Aggiungi una foto (facoltativo)", memoryPhotoChoose: "Scegli una foto", memoryPhotoRemove: "Rimuovi", memoryMakePublic: "Rendi pubblica questa recensione (visibile agli altri utenti)", reviewsLoading: "Caricamento recensioni…", reviewsEmpty: "Ancora nessuna recensione pubblica per questo posto — sii il primo a condividere la tua dalla scheda «La Mia Visita»!",
@@ -5599,7 +5599,7 @@ const translations = {
         checkVisited: "Eu visitei este lugar", checkWishlist: "Adicionar à wishlist", tripWhich: "Para qual viagem é isso?",
         tripName: "Nome da viagem", tripWhen: "Quando você planeja ir?", tripFrom: "De", tripTo: "Até", tripCreate: "Criar viagem", tripCancel: "Cancelar",
         itiTitle: "Gerador de Roteiros", itiDesc: "Selecione um grupo, um país e quantos dias você fica.", itiCreateBtn: "Criar meu guia", itiCatLabel: "Categorias (opcional, seleção múltipla)", itiExport: "Exportar guia em PDF", itiSave: "Salvar em Minhas Viagens",
-        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Cidade", itiOptional: "· opcional", itiAllCities: "Todas as cidades", itiDatesLabel: "Datas", itiLengthLabel: "Duração da viagem", itiLengthUnit: "· dias", itiStayLabel: "Hospedagem",
+        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Cidade", itiOptional: "· opcional", itiAllCities: "Todas as cidades", itiDatesLabel: "Datas", itiLengthLabel: "Duração da viagem", itiLengthUnit: "· dias", itiStayLabel: "Hospedagem", itiCriteriaClose: "Ocultar critérios",
         searchTripsPlaceholder: "Buscar suas viagens...", noTripsFound: "Nenhuma viagem encontrada.", selectTripToView: "Selecione uma viagem para ver", deselectTripOption: "— Nenhuma viagem selecionada —", locationsWord: "local", locationsWordPlural: "locais",
         addAnotherVisit: "Adicionar outra visita",
         tabExplore: "Explorar", tabMyItinerary: "Meu Itinerário", yourRating: "Sua avaliação", foodQualityRating: "Qualidade da comida", valueForMoneyRating: "Custo-benefício", accessibilityRating: "Fácil acesso?", siteQualityRating: "Qualidade do lugar", wishlistStat: "{pct}% dos usuários adicionaram este lugar à lista de desejos", friendsVisitedStat: "{count} amigos visitaram este lugar", friendsVisitedStatOne: "1 amigo visitou este lugar", whenDidYouVisit: "Quando você visitou este lugar?", saveMemory: "Salvar lembrança", myVisitTab: "Minha Visita", tabReviews: "Avaliações", tabInfo: "Info", tabStory: "História", lGroup: "Grupo:", lMembers: "Membros:", lCountry: "País:", lCity: "Cidade:", lDate: "Data:", lEpisode: "Episódio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Seguir:", lWatchEpi: "Na tela", lPractical: "Informações práticas e acesso", lLearnMore: "Saiba mais", lAddress: "Endereço", lOpenMap: "Abrir no Google Maps", lStoryPlace: "A história deste lugar", lStoryBts: "Nos passos do BTS", lRecreatePhoto: "As fotos da Mei", officialPoseLabel: "Reprodução oficial da celebridade", lTipsTitle: "AS DICAS «SCREEN TO STREET»", lHowToGetThere: "Como chegar:", memoryNotesLabel: "Suas notas (opcional)", memoryNotesPlaceholder: "O que você lembra deste lugar?", reviewsCountLabel: "{n} avaliações públicas", reviewsWriteLabel: "Escreva sua avaliação", reviewsComposePlaceholder: "Compartilhe sua opinião...", reviewsComposeMakePublic: "Tornar isso público", reviewsComposePost: "Publicar avaliação", memoryPhotoLabel: "Adicionar uma foto (opcional)", memoryPhotoChoose: "Escolher uma foto", memoryPhotoRemove: "Remover", memoryMakePublic: "Tornar esta avaliação pública (visível para outros usuários)", reviewsLoading: "Carregando avaliações…", reviewsEmpty: "Ainda não há avaliações públicas para este lugar — seja o primeiro a compartilhar a sua na aba «Minha Visita»!",
@@ -5663,7 +5663,7 @@ const translations = {
         checkVisited: "이 장소를 방문했어요", checkWishlist: "위시리스트에 추가", tripWhich: "어떤 여행을 위한 건가요?",
         tripName: "여행 이름", tripWhen: "언제 갈 계획인가요?", tripFrom: "부터", tripTo: "까지", tripCreate: "여행 만들기", tripCancel: "취소",
         itiTitle: "자동 일정 생성기", itiDesc: "그룹, 국가, 체류 일수를 선택하세요.", itiCreateBtn: "가이드 만들기", itiCatLabel: "카테고리 (선택 사항, 다중 선택 가능)", itiExport: "가이드 PDF로 내보내기", itiSave: "내 여행에 저장",
-        itiGroupLabel: "그룹", itiCountryLabel: "국가", itiCityLabel: "도시", itiOptional: "· 선택 사항", itiAllCities: "모든 도시", itiDatesLabel: "날짜", itiLengthLabel: "여행 기간", itiLengthUnit: "· 일", itiStayLabel: "숙소",
+        itiGroupLabel: "그룹", itiCountryLabel: "국가", itiCityLabel: "도시", itiOptional: "· 선택 사항", itiAllCities: "모든 도시", itiDatesLabel: "날짜", itiLengthLabel: "여행 기간", itiLengthUnit: "· 일", itiStayLabel: "숙소", itiCriteriaClose: "기준 숨기기",
         searchTripsPlaceholder: "여행 검색...", noTripsFound: "여행을 찾을 수 없습니다.", selectTripToView: "볼 여행을 선택하세요", deselectTripOption: "— 선택된 여행 없음 —", locationsWord: "장소", locationsWordPlural: "장소",
         addAnotherVisit: "다른 방문 추가",
         tabExplore: "탐색", tabMyItinerary: "내 일정", yourRating: "평점", foodQualityRating: "음식 품질", valueForMoneyRating: "가성비", accessibilityRating: "접근이 쉬운가요?", siteQualityRating: "장소의 품질", wishlistStat: "사용자의 {pct}%가 이 장소를 위시리스트에 추가했습니다", friendsVisitedStat: "친구 {count}명이 이곳을 방문했어요", friendsVisitedStatOne: "친구 1명이 이곳을 방문했어요", whenDidYouVisit: "언제 방문하셨나요?", saveMemory: "추억 저장", myVisitTab: "내 방문", tabReviews: "후기", tabInfo: "정보", tabStory: "스토리", lGroup: "그룹:", lMembers: "멤버:", lCountry: "국가:", lCity: "도시:", lDate: "날짜:", lEpisode: "에피소드:", lWatch: "링크:", lOfficialLink: "출처", lFollow: "팔로우:", lWatchEpi: "화면 속", lPractical: "실용 정보 및 접근 방법", lLearnMore: "더 알아보기", lAddress: "주소", lOpenMap: "구글 지도에서 열기", lStoryPlace: "이 장소의 이야기", lStoryBts: "BTS의 발자취를 따라", lRecreatePhoto: "메이의 사진", officialPoseLabel: "셀럽의 공식 포즈 재현", lTipsTitle: "'SCREEN TO STREET' 팁", lHowToGetThere: "가는 방법:", memoryNotesLabel: "나의 메모 (선택 사항)", memoryNotesPlaceholder: "이 장소에 대해 기억나는 것이 있나요?", reviewsCountLabel: "공개 후기 {n}개", reviewsWriteLabel: "후기 작성하기", reviewsComposePlaceholder: "느낀 점을 공유해보세요...", reviewsComposeMakePublic: "이 후기를 공개로 설정", reviewsComposePost: "후기 게시", memoryPhotoLabel: "사진 추가 (선택 사항)", memoryPhotoChoose: "사진 선택", memoryPhotoRemove: "제거", memoryMakePublic: "이 후기를 공개로 설정 (다른 사용자에게 표시됨)", reviewsLoading: "후기를 불러오는 중…", reviewsEmpty: "아직 이 장소에 대한 공개 후기가 없습니다 — '내 방문' 탭에서 첫 후기를 남겨보세요!",
@@ -5727,7 +5727,7 @@ const translations = {
         checkVisited: "この場所を訪れました", checkWishlist: "ウィッシュリストに追加", tripWhich: "どの旅行のためですか？",
         tripName: "旅行の名前", tripWhen: "いつ行く予定ですか？", tripFrom: "開始", tripTo: "終了", tripCreate: "旅行を作成", tripCancel: "キャンセル",
         itiTitle: "自動旅程ジェネレーター", itiDesc: "グループ、国、滞在日数を選択してください。", itiCreateBtn: "ガイドを作成", itiCatLabel: "カテゴリー（任意、複数選択可）", itiExport: "ガイドをPDFで出力", itiSave: "マイトリップに保存",
-        itiGroupLabel: "グループ", itiCountryLabel: "国", itiCityLabel: "都市", itiOptional: "・任意", itiAllCities: "すべての都市", itiDatesLabel: "日程", itiLengthLabel: "旅行日数", itiLengthUnit: "・日間", itiStayLabel: "宿泊先",
+        itiGroupLabel: "グループ", itiCountryLabel: "国", itiCityLabel: "都市", itiOptional: "・任意", itiAllCities: "すべての都市", itiDatesLabel: "日程", itiLengthLabel: "旅行日数", itiLengthUnit: "・日間", itiStayLabel: "宿泊先", itiCriteriaClose: "条件を隠す",
         searchTripsPlaceholder: "旅行を検索...", noTripsFound: "旅行が見つかりません。", selectTripToView: "表示する旅行を選択", deselectTripOption: "— 選択された旅行はありません —", locationsWord: "スポット", locationsWordPlural: "スポット",
         addAnotherVisit: "別の訪問を追加",
         tabExplore: "探索", tabMyItinerary: "マイ旅程", yourRating: "評価", foodQualityRating: "料理の質", valueForMoneyRating: "コストパフォーマンス", accessibilityRating: "アクセスしやすさ", siteQualityRating: "場所の質", wishlistStat: "ユーザーの{pct}%がこの場所をウィッシュリストに追加しました", friendsVisitedStat: "{count}人の友達がここを訪れました", friendsVisitedStatOne: "1人の友達がここを訪れました", whenDidYouVisit: "いつ訪れましたか？", saveMemory: "思い出を保存", myVisitTab: "マイビジット", tabReviews: "レビュー", tabInfo: "情報", tabStory: "ストーリー", lGroup: "グループ：", lMembers: "メンバー：", lCountry: "国：", lCity: "都市：", lDate: "日付：", lEpisode: "エピソード：", lWatch: "リンク：", lOfficialLink: "出典", lFollow: "フォロー:", lWatchEpi: "画面の中", lPractical: "実用情報とアクセス", lLearnMore: "もっと詳しく", lAddress: "住所", lOpenMap: "Googleマップで開く", lStoryPlace: "この場所の物語", lStoryBts: "BTSの足跡をたどって", lRecreatePhoto: "メイの写真", officialPoseLabel: "セレブの公式ポーズの再現", lTipsTitle: "「SCREEN TO STREET」のヒント", lHowToGetThere: "行き方：", memoryNotesLabel: "メモ（任意）", memoryNotesPlaceholder: "この場所について覚えていることは？", reviewsCountLabel: "公開レビュー{n}件", reviewsWriteLabel: "レビューを書く", reviewsComposePlaceholder: "感想をシェアしましょう…", reviewsComposeMakePublic: "このレビューを公開する", reviewsComposePost: "レビューを投稿", memoryPhotoLabel: "写真を追加（任意）", memoryPhotoChoose: "写真を選択", memoryPhotoRemove: "削除", memoryMakePublic: "このレビューを公開する（他のユーザーに表示されます）", reviewsLoading: "レビューを読み込み中…", reviewsEmpty: "この場所にはまだ公開レビューがありません —「マイビジット」タブから最初のレビューを共有しましょう！",
@@ -5791,7 +5791,7 @@ const translations = {
         checkVisited: "我去过这个地方", checkWishlist: "添加到收藏清单", tripWhich: "这是为哪次行程添加的？",
         tripName: "行程名称", tripWhen: "您计划什么时候出发？", tripFrom: "开始日期", tripTo: "结束日期", tripCreate: "创建行程", tripCancel: "取消",
         itiTitle: "自动行程生成器", itiDesc: "选择一个团体、一个国家，以及停留天数。", itiCreateBtn: "生成我的指南", itiCatLabel: "类别（可选，可多选）", itiExport: "导出指南为 PDF", itiSave: "保存到我的行程",
-        itiGroupLabel: "团体", itiCountryLabel: "国家", itiCityLabel: "城市", itiOptional: "·可选", itiAllCities: "所有城市", itiDatesLabel: "日期", itiLengthLabel: "行程天数", itiLengthUnit: "·天", itiStayLabel: "住宿",
+        itiGroupLabel: "团体", itiCountryLabel: "国家", itiCityLabel: "城市", itiOptional: "·可选", itiAllCities: "所有城市", itiDatesLabel: "日期", itiLengthLabel: "行程天数", itiLengthUnit: "·天", itiStayLabel: "住宿", itiCriteriaClose: "隐藏条件",
         searchTripsPlaceholder: "搜索您的行程...", noTripsFound: "未找到任何行程。", selectTripToView: "选择要查看的行程", deselectTripOption: "— 未选择行程 —", locationsWord: "个地点", locationsWordPlural: "个地点",
         addAnotherVisit: "添加另一次访问",
         tabExplore: "探索", tabMyItinerary: "我的行程", yourRating: "你的评分", foodQualityRating: "食物质量", valueForMoneyRating: "性价比", accessibilityRating: "是否容易到达？", siteQualityRating: "场地质量", wishlistStat: "{pct}%的用户将这个地方加入了心愿单", friendsVisitedStat: "{count}位好友到访过这里", friendsVisitedStatOne: "1位好友到访过这里", whenDidYouVisit: "你什么时候去的？", saveMemory: "保存回忆", myVisitTab: "我的到访", tabReviews: "评价", tabInfo: "信息", tabStory: "故事", lGroup: "组合：", lMembers: "成员：", lCountry: "国家：", lCity: "城市：", lDate: "日期：", lEpisode: "集数：", lWatch: "链接：", lOfficialLink: "来源", lFollow: "关注：", lWatchEpi: "画面中", lPractical: "实用信息与交通", lLearnMore: "了解更多", lAddress: "地址", lOpenMap: "在谷歌地图中打开", lStoryPlace: "这个地方的故事", lStoryBts: "追随BTS的足迹", lRecreatePhoto: "Mei的照片", officialPoseLabel: "名人官方姿势复刻", lTipsTitle: "「SCREEN TO STREET」小贴士", lHowToGetThere: "交通方式：", memoryNotesLabel: "你的备注（可选）", memoryNotesPlaceholder: "你还记得这个地方的什么？", reviewsCountLabel: "{n}条公开评价", reviewsWriteLabel: "写下你的评价", reviewsComposePlaceholder: "分享你的感受…", reviewsComposeMakePublic: "公开此评价", reviewsComposePost: "发布评价", memoryPhotoLabel: "添加照片（可选）", memoryPhotoChoose: "选择照片", memoryPhotoRemove: "移除", memoryMakePublic: "公开此评价（其他用户可见）", reviewsLoading: "正在加载评价…", reviewsEmpty: "该地点暂无公开评价——从「我的到访」标签页分享第一条评价吧！",
@@ -5984,6 +5984,9 @@ function updateUI() {
 
 window.openItineraryModal = function() {
     document.getElementById('iti-result').classList.add('hidden');
+    document.getElementById('iti-form').classList.remove('hidden');
+    const itiCriteriaCloseRowEl = document.getElementById('iti-criteria-close-row');
+    if (itiCriteriaCloseRowEl) itiCriteriaCloseRowEl.classList.add('hidden');
     document.getElementById('itinerary-modal').classList.remove('hidden');
     window.initItineraryGenerator();
     // BUG corrigé (demande répétée du 24/10/2026, "il faut réafficher ces informations
@@ -6046,8 +6049,10 @@ window.openItineraryModal = function() {
     // ouverture, Pace remis sur "Balanced" par défaut (pas de notion de pace sauvegardée
     // sur un voyage existant à retrouver, contrairement à group/country/city/dates/stay).
     if (typeof window.updateItiDatesSummary === 'function') window.updateItiDatesSummary();
-    if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
     if (typeof window.setItiPace === 'function') window.setItiPace('balanced');
+    itiPick = null;
+    if (typeof updateItiPickerSummaries === 'function') updateItiPickerSummaries();
+    if (typeof renderItiPicker === 'function') renderItiPicker();
 }
 
 // "Stay" du générateur Auto-Itinerary (demande du 24/10/2026, "il faut afficher les mêmes
@@ -6151,6 +6156,133 @@ window.setItiPace = function(p) {
     if (el) el.textContent = (ITI_PACE_LABELS[currentLang] || ITI_PACE_LABELS.en)[p];
 };
 
+// ===== "Belles" listes Group/Country/City/Category du générateur Auto-Itinerary (demande
+// du 25/10/2026, "génère de belles listes... reprend la fenêtre choose a group/choose a
+// country de New trip") =====
+// #iti-group/#iti-country/#iti-city restent de VRAIS <select> (seule source lue par
+// generateItinerary(), inchangée) — juste masqués visuellement (voir la CSS .iti-qaf-select
+// plus haut) au profit d'un résumé + tap qui ouvre CETTE liste plein écran, réutilisant le
+// MÊME langage visuel que ntPicker() (.qaf-pick/.qaf-li/.qaf-bigav/.qaf-rd, voir style.css
+// et ntPicker() plus bas dans ce fichier) sans toucher à ntState/ntPicker eux-mêmes — ce
+// générateur n'est pas la fiche "New trip", un état séparé (itiPick/itiPickQ ci-dessous)
+// évite tout risque de régression sur la création de voyage en réutilisant son code.
+let itiPick = null;
+let itiPickQ = '';
+window.openItiPicker = function(field) {
+    itiPick = field;
+    itiPickQ = '';
+    renderItiPicker();
+};
+window.closeItiPicker = function() {
+    itiPick = null;
+    renderItiPicker();
+};
+window.setItiPickerSearch = function(v) {
+    itiPickQ = v;
+    renderItiPicker();
+};
+function updateItiPickerSummaries() {
+    const g = document.getElementById('iti-group-summary'), gv = document.getElementById('iti-group').value;
+    if (g) { g.textContent = gv || (currentLang === 'fr' ? 'Qui suivez-vous ?' : 'Who are you following?'); g.classList.toggle('qaf-ph', !gv); }
+    const c = document.getElementById('iti-country-summary'), cv = document.getElementById('iti-country').value;
+    if (c) { c.textContent = cv || (currentLang === 'fr' ? 'Où allez-vous ?' : 'Where are you going?'); c.classList.toggle('qaf-ph', !cv); }
+    const ci = document.getElementById('iti-city-summary'), civ = document.getElementById('iti-city').value;
+    if (ci) { ci.textContent = civ || (currentLang === 'fr' ? 'Toutes les villes' : 'All cities'); ci.classList.toggle('qaf-ph', !civ); }
+    if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
+}
+window.setItiGroup = function(value) {
+    document.getElementById('iti-group').value = value;
+    window.updateItiCategories();
+    updateItiPickerSummaries();
+    window.closeItiPicker();
+};
+window.setItiCountry = function(value) {
+    document.getElementById('iti-country').value = value;
+    window.updateItiCity();
+    updateItiPickerSummaries();
+    window.closeItiPicker();
+};
+window.setItiCity = function(value) {
+    document.getElementById('iti-city').value = value;
+    updateItiPickerSummaries();
+    window.closeItiPicker();
+};
+window.toggleItiPickerCat = function(cat) {
+    itiSelectedCategories = itiSelectedCategories.includes(cat) ? itiSelectedCategories.filter(c => c !== cat) : [...itiSelectedCategories, cat];
+    updateItiPickerSummaries();
+    renderItiPicker();
+};
+function itiPickerHtml() {
+    if (!itiPick) return '';
+    const p = itiPick;
+    let title = '', body = '', searchPh = '';
+    const q = (itiPickQ || '').toLowerCase();
+    // data-itiset="field:value" (jamais un onclick avec la valeur en dur dans une chaîne
+    // JS entre apostrophes) : un nom de pays avec une apostrophe (ex. "Côte d'Ivoire")
+    // casserait silencieusement l'attribut onclick généré — un attribut data- (toujours
+    // entre guillemets doubles ici) n'a pas ce problème, lu par le délégué de clic plus
+    // bas (document.addEventListener('click', ...), même principe que data-ntset pour
+    // ntPicker()).
+    if (p === 'group') {
+        title = currentLang === 'fr' ? 'Choisir un groupe' : 'Choose a group';
+        searchPh = currentLang === 'fr' ? 'Rechercher…' : 'Search…';
+        const current = document.getElementById('iti-group').value;
+        const opts = ntOptions('iti-group').filter(o => o.value && o.label.toLowerCase().includes(q));
+        body = opts.map(o => `<button type="button" class="qaf-li" data-itiset="group:${escapeHtml(o.value)}" aria-pressed="${current === o.value}"><span class="qaf-bigav" style="background:${groupColorFor(o.value)}">${escapeHtml(o.value.slice(0, 3).toUpperCase())}</span><span class="qaf-lt"><b>${escapeHtml(o.label)}</b></span><span class="qaf-rd"></span></button>`).join('');
+    } else if (p === 'country') {
+        title = currentLang === 'fr' ? 'Choisir un pays' : 'Choose a country';
+        searchPh = currentLang === 'fr' ? 'Rechercher…' : 'Search…';
+        const current = document.getElementById('iti-country').value;
+        const opts = ntOptions('iti-country').filter(o => o.value && o.label.toLowerCase().includes(q));
+        body = opts.map(o => `<button type="button" class="qaf-li" data-itiset="country:${escapeHtml(o.value)}" aria-pressed="${current === o.value}"><span class="qaf-pi">${QA_IC.pin}</span><span class="qaf-lt"><b>${escapeHtml(o.label)}</b></span><span class="qaf-rd"></span></button>`).join('');
+    } else if (p === 'city') {
+        title = currentLang === 'fr' ? 'Ville' : 'City';
+        const current = document.getElementById('iti-city').value;
+        body = `<button type="button" class="qaf-li" data-itiset="city:" aria-pressed="${!current}"><span class="qaf-lt"><b>${currentLang === 'fr' ? 'Toutes les villes' : 'All cities'}</b></span><span class="qaf-rd"></span></button>` +
+            ntOptions('iti-city').filter(o => o.value).map(o => `<button type="button" class="qaf-li" data-itiset="city:${escapeHtml(o.value)}" aria-pressed="${current === o.value}"><span class="qaf-pi">${QA_IC.pin}</span><span class="qaf-lt"><b>${escapeHtml(o.label)}</b></span><span class="qaf-rd"></span></button>`).join('');
+    } else if (p === 'cat') {
+        title = currentLang === 'fr' ? 'Catégories' : 'Categories';
+        const group = document.getElementById('iti-group').value;
+        const cats = (filterData[group] && filterData[group].categories) ? filterData[group].categories : filterData["General"].categories;
+        body = cats.map(cat => `<button type="button" class="qaf-li" data-ititogcat="${escapeHtml(cat)}" aria-pressed="${itiSelectedCategories.includes(cat)}"><span class="qaf-lt"><b>${escapeHtml(getCatName(cat))}</b></span><span class="qaf-rd"></span></button>`).join('');
+    }
+    const isMulti = p === 'cat';
+    const n = isMulti ? itiSelectedCategories.length : 0;
+    return `<div class="qaf-pick on"><div class="qaf-grab"></div><div class="qaf-hd"><button type="button" class="qaf-bk" data-itiact="close">${QA_IC.bk}</button><h2>${escapeHtml(title)}</h2><span style="width:34px"></span></div>
+        ${searchPh ? `<label class="qaf-srch">${QA_IC.search}<input data-itiq placeholder="${escapeHtml(searchPh)}" value="${escapeHtml(itiPickQ)}"></label>` : ''}
+        <div class="qaf-body">${body}</div>
+        ${isMulti ? `<div class="qaf-foot"><button type="button" class="qaf-cta" data-itiact="close">${n ? (currentLang === 'fr' ? `Terminé · ${n} sélectionnée${n > 1 ? 's' : ''}` : `Done · ${n} selected`) : (currentLang === 'fr' ? 'Terminé' : 'Done')}</button></div>` : ''}
+    </div>`;
+}
+function renderItiPicker() {
+    const root = document.getElementById('iti-picker-root');
+    if (!root) return;
+    root.innerHTML = itiPickerHtml();
+    if (itiPick) {
+        const inp = root.querySelector('.qaf-srch input');
+        if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+    }
+}
+document.addEventListener('click', (e) => {
+    const root = document.getElementById('iti-picker-root');
+    if (!root) return;
+    const t = e.target.closest('[data-itiset],[data-ititogcat],[data-itiact]');
+    if (!t || !root.contains(t)) return;
+    if (t.dataset.itiset !== undefined) {
+        const [field, value] = t.dataset.itiset.split(/:(.*)/s);
+        if (field === 'group') window.setItiGroup(value || '');
+        else if (field === 'country') window.setItiCountry(value || '');
+        else if (field === 'city') window.setItiCity(value || '');
+    } else if (t.dataset.ititogcat !== undefined) {
+        window.toggleItiPickerCat(t.dataset.ititogcat);
+    } else if (t.dataset.itiact === 'close') {
+        window.closeItiPicker();
+    }
+});
+document.addEventListener('input', (e) => {
+    if (e.target.matches('#iti-picker-root [data-itiq]')) window.setItiPickerSearch(e.target.value);
+});
+
 window.initItineraryGenerator = function() {
     const unlockedGroups = getUnlockedGroups();
     // Exclut les lieux "[CLOSED]" (demande du 19/09/2026) — même filtre que
@@ -6199,13 +6331,20 @@ window.updateItiCity = function() {
 // sélectionné), pour ne jamais proposer un filtre qui ne donnerait aucun résultat.
 window.updateItiCategories = function() {
     const group = document.getElementById('iti-group')?.value;
-    const catContainer = document.getElementById('iti-categories');
-    if(!catContainer || !group) return;
+    if(!group) return;
 
     const cats = (filterData[group] && filterData[group].categories) ? filterData[group].categories : filterData["General"].categories;
     // Une sélection existante qui ne fait plus partie des catégories du (nouveau) groupe est
     // abandonnée ; celle qui reste valable (ex: simple rafraîchissement de langue) est conservée.
+    // Toujours fait ici (pas seulement quand #iti-categories existe) car trips.html n'a plus ce
+    // conteneur — ses catégories passent désormais par la "belle liste" itiPickerHtml('cat')
+    // plus haut, qui lit directement itiSelectedCategories (demande du 25/10/2026) ; map.html a
+    // encore sa propre copie plus simple du modal AVEC #iti-categories (voir plus bas).
     itiSelectedCategories = itiSelectedCategories.filter(c => cats.includes(c));
+    if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
+
+    const catContainer = document.getElementById('iti-categories');
+    if (!catContainer) return;
 
     catContainer.innerHTML = cats.map(cat =>
         `<div class="cat-card iti-cat-pill${itiSelectedCategories.includes(cat) ? ' active' : ''}" data-cat="${cat}">${getCatName(cat)}</div>`
@@ -12532,9 +12671,22 @@ window.generateItinerary = function() {
     });
 
     if (unplacedCount > 0) {
-        resultDiv.innerHTML += `<div style="text-align:center; font-size:11.5px; color:#94a3b8; padding:6px 16px 4px; line-height:1.5;">⚠️ ${unplacedCount} ${txt.notAllFit}</div>`;
+        // Icône SVG au lieu de l'emoji ⚠️ (règle site-wide, CLAUDE.md : jamais d'emoji dans
+        // l'UI, une icône SVG ou du texte brut à la place).
+        resultDiv.innerHTML += `<div style="text-align:center; font-size:11.5px; color:#94a3b8; padding:6px 16px 4px; line-height:1.5;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>${unplacedCount} ${txt.notAllFit}</div>`;
     }
 
+    // "sans afficher les critères au-dessus" (demande du 25/10/2026) : #iti-form se masque
+    // dès qu'un résultat existe — voir window.backToItiCriteria()/window.closeItiCriteria()
+    // plus bas, qui basculent entre les deux au lieu de les empiler. #iti-criteria-close-row
+    // n'existe QUE sur trips.html (jamais sur la copie plus simple de map.html, qui n'a ni
+    // bouton Criteria ni cette flèche) — sa présence sert de marqueur pour ne masquer
+    // #iti-form QUE là où on peut ensuite le rouvrir, jamais sur map.html.
+    const itiCriteriaCloseRowEl = document.getElementById('iti-criteria-close-row');
+    if (itiCriteriaCloseRowEl) {
+        document.getElementById('iti-form').classList.add('hidden');
+        itiCriteriaCloseRowEl.classList.add('hidden');
+    }
     document.getElementById('iti-result').classList.remove('hidden');
 
     let actionsContainer = document.getElementById('iti-actions-container');
@@ -12697,17 +12849,34 @@ window.applyGeneratedItinerary = function(mode) {
     closeModal('itinerary-modal');
 };
 
-// Bouton "Criteria" (demande répétée du 24/10/2026, référence auto_itinerary_final.html)
-// : #iti-form (group/country/city/dates/stay/catégories) n'est jamais masqué pendant que
-// le résultat s'affiche — seul #iti-result vient s'empiler EN DESSOUS une fois généré,
-// voir generateItinerary() plus haut — donc revenir aux critères ne demande que de
-// remasquer le résultat, sans RIEN réinitialiser dans le formulaire : la sélection déjà
-// faite (group/country/city/dates/stay/catégories) reste exactement telle quelle.
+// Bouton "Criteria" / flèche "Hide criteria" (demande du 24 puis 25/10/2026, référence
+// auto_itinerary_final.html) : le résultat s'affiche désormais SEUL par défaut ("sans
+// afficher les critères au-dessus", voir generateItinerary() plus haut qui masque
+// #iti-form dès qu'un résultat existe) — "Criteria" ré-affiche le formulaire (et masque le
+// résultat pour ne pas les empiler), la flèche #iti-criteria-close-row le referme. Dans les
+// deux sens, RIEN n'est réinitialisé dans le formulaire : la sélection déjà faite (group/
+// country/city/dates/stay/catégories) reste exactement telle quelle.
 window.backToItiCriteria = function() {
     const resultEl = document.getElementById('iti-result');
     if (resultEl) resultEl.classList.add('hidden');
+    const closeRowEl = document.getElementById('iti-criteria-close-row');
+    if (closeRowEl) closeRowEl.classList.remove('hidden');
     const formEl = document.getElementById('iti-form');
-    if (formEl && formEl.scrollIntoView) formEl.scrollIntoView({ block: 'start' });
+    if (formEl) {
+        formEl.classList.remove('hidden');
+        if (formEl.scrollIntoView) formEl.scrollIntoView({ block: 'start' });
+    }
+};
+window.closeItiCriteria = function() {
+    const formEl = document.getElementById('iti-form');
+    if (formEl) formEl.classList.add('hidden');
+    const closeRowEl = document.getElementById('iti-criteria-close-row');
+    if (closeRowEl) closeRowEl.classList.add('hidden');
+    const resultEl = document.getElementById('iti-result');
+    if (resultEl) {
+        resultEl.classList.remove('hidden');
+        if (resultEl.scrollIntoView) resultEl.scrollIntoView({ block: 'start' });
+    }
 };
 
 window.saveItineraryToTrips = async function() {

@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261058" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261059" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -247,10 +247,21 @@
       appearance: none; -webkit-appearance: none; border: none; background: none; outline: none;
       padding: 0; margin: 0; width: 100%; font-family: inherit; font-weight: 600; font-size: 14px; color: #1F2430;
   }
+  /* Group/Country/City (demande du 25/10/2026) : le <select> natif reste la seule source lue
+     par generateItinerary(), mais n'est plus affiché directement — remplacé visuellement par
+     #iti-group-summary/#iti-country-summary/#iti-city-summary (texte simple) + la "belle
+     liste" plein écran de window.openItiPicker(), au lieu du picker natif du téléphone. */
+  #itinerary-modal .iti-qaf-select { display: none; }
   #itinerary-modal .iti-qaf-dates { display: flex; align-items: center; gap: 6px; }
   #itinerary-modal .iti-qaf-dates input[type="date"] {
       border: none; background: none; outline: none; padding: 0; font-family: inherit;
       font-weight: 600; font-size: 14px; color: #1F2430; flex: 1; min-width: 0;
+      /* "la couleur des dates en noir... et non bleu" (demande du 25/10/2026) : color
+         ci-dessus forçait déjà le texte en noir, mais un <input type="date"> natif garde
+         sa propre teinte d'ACCENT (icône calendrier, sélection) sur le bleu système par
+         défaut tant qu'accent-color n'est pas posé — color-scheme:light évite en plus
+         qu'iOS/Android en mode sombre ne reteinte tout le contrôle en bleu malgré ça. */
+      accent-color: #D42759; color-scheme: light;
   }
   #itinerary-modal .iti-qaf-dates-sep { color: #B4ADC2; font-size: 13px; flex: 0 0 auto; }
 
@@ -658,6 +669,25 @@
          friends.html sur toutes les pages "app" en mobile, cette page y compris. */
       .mobile-logo { display: flex; }
 
+      /* BUG rapporté le 25/10/2026 : "le header... s'affiche toujours, même quand je
+         scrolle. Actuellement, ça affiche les icônes mais pas le fond violet du header" —
+         .mobile-logo ci-dessus ET #mobile-top-icons (message/engrenage, style.css,
+         position:fixed site-wide) restent bien VISIBLES au défilement (tous deux hors du
+         conteneur qui défile réellement, .trips-main, overflow-y:auto un peu plus bas) :
+         ce n'est donc pas leur PRÉSENCE le problème, mais l'absence de tout fond derrière
+         eux — le dégradé rose/violet (.trip-hero-banner, même dégradé que
+         .trip-magic-banner) vit, lui, bien À L'INTÉRIEUR de .trips-main et défile donc
+         normalement avec le reste du contenu, laissant les icônes "flotter" sur du vide
+         dès qu'on a scrollé. Une barre dédiée, position:fixed comme les icônes qu'elle
+         habille, reproduit ce même dégradé en permanence derrière elles — z-index entre
+         .trips-main (z-index par défaut) et .mobile-logo/#mobile-top-icons (3100/3600). */
+      .trips-main::before {
+          content: ""; position: fixed; top: 0; left: 0; right: 0;
+          height: calc(64px + env(safe-area-inset-top));
+          background: linear-gradient(120deg, #E0156B, #9B5CF6);
+          z-index: 3050; pointer-events: none;
+      }
+
       /* Fond violet du site + en-tête correct sur la liste des voyages mobile (demande
          du 17/10/2026, redemandée plusieurs fois) : .sidebar porte normalement un verre
          dépoli blanc à 85% d'opacité (règle desktop juste au-dessus, avec !important)
@@ -868,8 +898,19 @@
          .trip-magic-banner comme demandé. Aucun besoin réel d'un alignement "magnétique" ici
          (une poignée de pills courtes, pas un carrousel) : scroll-snap retiré entièrement
          plutôt que bricolé avec scroll-padding-left. */
+      /* BUG rapporté le 25/10/2026, capture d'écran fournie : les filtres apparaissaient
+         comme UN SEUL gros bloc à bordure — pas les .ideas-filters-banner/select ci-dessous
+         (déjà "sans forme" depuis le 25/10/2026 matin) mais la classe PARTAGÉE .edit-banner
+         (réutilisée telle quelle sur ce même <div>, voir plus haut dans ce <style> : fond
+         #faf9fc + bordure + border-radius, pensée pour une carte desktop) qui n'avait jamais
+         été neutralisée ici. Redemandé en sens inverse de ce matin — cette fois de VRAIES
+         pilules séparées (fond blanc/bordure grise fine à l'état inactif, bordure+fond+texte
+         rose à l'état actif), chevron DANS chaque pilule — jamais retrouvées depuis la
+         tentative "sans forme du tout" de ce matin, qui ne correspondait pas non plus à la
+         référence demandée. */
       .ideas-filters-banner {
-          margin: 0; padding: 0 16px 14px; display: flex; flex-wrap: nowrap; gap: 16px;
+          background: transparent !important; border: none !important; border-radius: 0 !important;
+          margin: 0; padding: 0 16px 14px; display: flex; flex-wrap: nowrap; gap: 10px;
           overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
       }
       /* display:contents toujours nécessaire (voir la note du 24/10/2026 conservée ici) :
@@ -882,14 +923,13 @@
           flex: 0 0 auto !important; min-width: 0 !important;
           white-space: nowrap;
       }
-      /* Pastille mise en avant (texte rose, sans fond ni bordure) dès qu'une valeur précise
-         est choisie (pas "All ..."), même logique qu'avant (window.populateEditTripFilters()
-         dans script.js pose/retire cette classe à chaque (re)rendu) mais sans plus jamais de
-         forme autour — seule la couleur du texte et du chevron changent désormais. */
+      /* Pastille mise en avant (bordure + fond + texte roses) dès qu'une valeur précise est
+         choisie (pas "All ..."), même logique qu'avant (window.populateEditTripFilters()
+         dans script.js pose/retire cette classe à chaque (re)rendu). */
       #edit-trip-group.ideas-filter-pill-active, #edit-trip-member.ideas-filter-pill-active,
       #edit-trip-country.ideas-filter-pill-active, #edit-trip-city.ideas-filter-pill-active {
-          background-color: transparent !important; color: #D42759 !important;
-          box-shadow: none !important;
+          background-color: #FCE7F0 !important; color: #D42759 !important;
+          border-color: #D42759 !important;
       }
       #edit-trip-group.ideas-filter-pill-active, #edit-trip-member.ideas-filter-pill-active,
       #edit-trip-country.ideas-filter-pill-active, #edit-trip-city.ideas-filter-pill-active {
@@ -943,8 +983,18 @@
          inchangée. */
       #i18n-your-iti, #saved-locs-label, #add-more-locations-btn { margin-left: 16px; margin-right: 16px; }
 
-      .modal-body { padding: 18px 18px 22px 18px; }
-      #modal-hero { height: 170px; border-radius: 12px 12px 0 0; }
+      /* "réduire la zone blanche (marges)" (demande du 25/10/2026, capture d'écran fournie)
+         : #loc-modal gardait la boîte générique de style.css (width:90% + padding:30px),
+         jamais resserrée pour mobile contrairement aux autres popups de cette page —
+         marge extérieure trop généreuse ET l'image d'en-tête inset de 30px sur tous les
+         côtés au lieu de s'étendre jusqu'aux bords du conteneur blanc. padding:0 ici
+         transfère tout l'espacement interne à .modal-body (ci-dessous, déjà resserré) et
+         #modal-hero (bord à bord désormais) — #modal-meta-box (texte "Details") et
+         #modal-map (la carte grise) héritent du padding latéral réduit de .modal-body,
+         pas besoin de les cibler séparément. */
+      #loc-modal .modal-content { width: 95%; padding: 0; }
+      .modal-body { padding: 16px 14px 20px 14px; }
+      #modal-hero { height: 170px; border-radius: 16px 16px 0 0; }
 
       /* BUG rapporté le 12/09/2026 : le popup "Invite" (#share-trip-modal, voir
          ensureShareTripModal() dans script.js) débordait sur mobile — padding fixe de
@@ -977,22 +1027,25 @@
          <select>, le picker natif du téléphone à l'ouverture reste le bon choix pour une
          liste aussi courte (pas besoin d'une feuille personnalisée comme pour "New trip",
          qui doit en plus chercher parmi des dizaines de pays).
-         BUG rapporté le 25/10/2026, capture d'écran fournie : la pilule arrondie + fond
-         plein posée ici le 17/10/2026 (puis arrondie encore plus le 24/10/2026) donnait
-         "l'impression qu'ils sont tous dans une grosse bulle" une fois les 4 filtres mis
-         bout à bout sur une seule ligne (voir .ideas-filters-banner plus haut) — supprimée :
-         plus de fond, plus de bordure, plus de coin arrondi, texte plus petit (11px). Seul
-         un chevron discret à droite indique encore que c'est cliquable. */
+         BUG rapporté le 25/10/2026 matin, capture d'écran fournie : la pilule arrondie + fond
+         plein posée ici le 17/10/2026 donnait "l'impression qu'ils sont tous dans une grosse
+         bulle" — retiré (fond transparent, pas de bordure). BUG rapporté à nouveau le
+         25/10/2026 après-midi, capture-cible fournie : en fait la "grosse bulle" venait de
+         .edit-banner (classe PARTAGÉE posée sur ce même conteneur, voir .ideas-filters-banner
+         plus haut), jamais neutralisée jusqu'ici — ce correctif-ci avait donc supprimé la
+         bonne pilule PAR lieu en réponse à un bug qui venait d'ailleurs. Revient à de vraies
+         pilules individuelles (fond blanc, bordure grise fine) comme demandé cette fois, avec
+         .edit-banner maintenant bien neutralisée. */
       #edit-trip-group, #edit-trip-member, #edit-trip-country, #edit-trip-city {
           appearance: none; -webkit-appearance: none;
-          background-color: transparent !important;
+          background-color: #fff !important;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8B99' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-          background-repeat: no-repeat; background-position: right 0 center; background-size: 11px;
-          border: none !important;
-          border-radius: 0 !important;
+          background-repeat: no-repeat; background-position: right 10px center; background-size: 11px;
+          border: 1.5px solid #E4E2EC !important;
+          border-radius: 999px !important;
           box-shadow: none !important;
-          padding: 4px 15px 4px 0 !important;
-          font-weight: 600; color: #5F5B68; font-size: 11px; text-align: left;
+          padding: 8px 28px 8px 14px !important;
+          font-weight: 600; color: #5F5B68; font-size: 12px; text-align: left;
       }
   }
 </style>
@@ -1037,7 +1090,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261058';
+        s.src = 'page-loader.js?v=20261059';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1390,6 +1443,13 @@
                     </div>
                     <button type="button" class="trip-magic-banner-plus" onclick="event.stopPropagation(); openItineraryModal();">+</button>
                 </div>
+                <!-- "RECOMMENDED IN {Country}" (demande du 18/10/2026, trip_finale_legere.html,
+                     déplacé le 25/10/2026 après-midi, capture-cible fournie — remonté
+                     AU-DESSUS des filtres, qui restent toujours visibles eux-mêmes même sans
+                     recommandation en cours : voir recoLabelText() dans script.js pour le
+                     libellé dynamique, #reco-section plus bas pour la liste elle-même
+                     (conditionnellement masquée, inchangée). -->
+                <div class="section-label" style="margin-top:0;" id="i18n-reco">RECOMMENDED FOR THIS TRIP</div>
                 <!-- Filtres de lieux (demande du 17/10/2026, redemandée le 18/10/2026 —
                      "les filtres groups, members, countries, cities") : toujours visibles
                      (plus seulement dans la section Recommended ci-dessous), même
@@ -1407,12 +1467,7 @@
                     </div>
                 </div>
 
-                <!-- "RECOMMENDED IN {Country}" (demande du 18/10/2026, trip_finale_legere.
-                     html) — remonté juste sous les filtres ci-dessus (qui le pilotent),
-                     avant la liste des lieux non assignés : voir recoLabelText() dans
-                     script.js pour le libellé dynamique. -->
                 <div id="reco-section" style="display: none; margin-top: 10px;">
-                    <div class="section-label" style="margin-top:0;" id="i18n-reco">RECOMMENDED FOR THIS TRIP</div>
                     <div id="reco-list"></div>
                 </div>
                 </div>
@@ -1676,22 +1731,38 @@
              --qaf-line/--qa-soft que .qaf-row consomme (voir style.css) ne sont normalement
              posées QUE sur .qa-form-overlay (fiche "New trip") ; reposées ici sur
              .modal-content pour qu'elles résolvent correctement dans cette popup aussi. -->
+        <!-- Flèche "fermer les critères" (demande du 25/10/2026) : masquée par défaut (seule
+             #iti-criteria-btn, dans #iti-result plus bas, ramène ici) — voir
+             window.backToItiCriteria()/window.closeItiCriteria() dans script.js, qui
+             basculent l'affichage entre #iti-form et #iti-result au lieu de les empiler. -->
+        <button type="button" id="iti-criteria-close-row" class="hidden" onclick="window.closeItiCriteria()" style="display:flex; align-items:center; gap:8px; width:100%; background:none; border:none; padding:0 0 14px; cursor:pointer; color:#64748b; font-size:12.5px; font-weight:700;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+            <span data-i18n="itiCriteriaClose">Hide criteria</span>
+        </button>
         <div id="iti-form" style="margin-bottom: 20px;">
-            <label class="qaf-row" style="cursor:pointer;">
+            <!-- Group/Country/City : "génère de belles listes... reprend la fenêtre choose a
+                 group/choose a country de New trip" (demande du 25/10/2026) — #iti-group/
+                 #iti-country/#iti-city restent de VRAIS <select>, seule source lue par
+                 generateItinerary() (inchangé), mais cachés visuellement (.iti-qaf-select
+                 ci-dessus passe en display:none) au profit d'un résumé + tap qui ouvre une
+                 vraie liste plein écran (#iti-picker-root, voir window.openItiPicker()/
+                 itiPickerHtml() dans script.js) au lieu du picker natif du téléphone — même
+                 langage visuel que ntPicker() ("New trip"). -->
+            <button type="button" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.openItiPicker('group')">
                 <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span>
-                <span class="qaf-rt"><small data-i18n="itiGroupLabel">Group</small><select id="iti-group" class="iti-qaf-select" onchange="updateItiCity()"></select></span>
+                <span class="qaf-rt"><small data-i18n="itiGroupLabel">Group</small><span id="iti-group-summary" class="qaf-ph"></span><select id="iti-group" class="iti-qaf-select" onchange="updateItiCity()"></select></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
-            </label>
-            <label class="qaf-row" style="cursor:pointer;">
+            </button>
+            <button type="button" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.openItiPicker('country')">
                 <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span>
-                <span class="qaf-rt"><small data-i18n="itiCountryLabel">Country</small><select id="iti-country" class="iti-qaf-select" onchange="updateItiCity()"></select></span>
+                <span class="qaf-rt"><small data-i18n="itiCountryLabel">Country</small><span id="iti-country-summary" class="qaf-ph"></span><select id="iti-country" class="iti-qaf-select" onchange="updateItiCity()"></select></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
-            </label>
-            <label class="qaf-row" style="cursor:pointer;">
+            </button>
+            <button type="button" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.openItiPicker('city')">
                 <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
-                <span class="qaf-rt"><small data-i18n="itiCityLabel">City <em data-i18n="itiOptional">· optional</em></small><select id="iti-city" class="iti-qaf-select"><option value="" data-i18n="itiAllCities">All cities</option></select></span>
+                <span class="qaf-rt"><small data-i18n="itiCityLabel">City <em data-i18n="itiOptional">· optional</em></small><span id="iti-city-summary" class="qaf-ph"></span><select id="iti-city" class="iti-qaf-select"><option value="" data-i18n="itiAllCities">All cities</option></select></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
-            </label>
+            </button>
             <!-- Dates + Trip length fusionnées en UNE rangée repliée (demande du 25/10/2026,
                  référence auto_itinerary_category.html — "Thu 12 Nov → Sun 15 Nov · 4 days")
                  au lieu de deux rangées séparées (dates natives toujours visibles + un champ
@@ -1726,20 +1797,15 @@
                 <span class="qaf-rt"><small data-i18n="itiStayLabel">Stay <em data-i18n="itiOptional">· optional</em></small><span id="iti-hotel-label" class="qaf-ph" data-i18n="itiStayPlaceholder">Hotel or neighborhood</span></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
             </button>
-            <!-- Catégorie : repliée en rangée (demande du 25/10/2026, référence
-                 auto_itinerary_category.html) au lieu d'un bloc de pastilles toujours
-                 visible — #iti-categories reste À L'IDENTIQUE à l'intérieur (window.
-                 updateItiCategories() dans script.js, inchangée), seul l'habillage autour
-                 change. Même icône/position que la rangée "Categories" de "+ New trip"
-                 (NT_IC.tag, voir ntBody() dans script.js). -->
-            <button type="button" id="iti-cat-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.toggleItiAccordion('cat')">
+            <!-- Catégorie : ouvre désormais la même "belle liste" plein écran que Group/
+                 Country/City au lieu de l'accordéon de pastilles (demande du 25/10/2026) —
+                 voir window.openItiPicker('cat')/itiPickerHtml() dans script.js, qui gère
+                 elle-même le multi-sélection + bouton "Done". -->
+            <button type="button" id="iti-cat-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.openItiPicker('cat')">
                 <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg></span>
                 <span class="qaf-rt"><small data-i18n="itiCatRowLabel">Category <em data-i18n="itiOptional">· optional</em></small><span id="iti-cat-summary" class="qaf-ph"></span></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
             </button>
-            <div id="iti-cat-expand" class="iti-accordion-body hidden">
-                <div id="iti-categories" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
-            </div>
             <!-- Pace (demande du 25/10/2026, référence auto_itinerary_category.html) :
                  nouveau — influence combien de lieux buildDayPlans() place au maximum par
                  jour (voir window.setItiPace()/ITI_PACE_CAPS dans script.js). -->
@@ -1758,12 +1824,14 @@
             <button class="gen-btn iti-generate-btn" onclick="generateItinerary()" style="margin-top:16px; padding:14px; font-size:14px; justify-content:center;" data-i18n="itiCreateBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Generate itinerary</button>
         </div>
 
-        <div id="iti-result" class="hidden" style="border-top: 1px solid #cbd5e1; padding-top: 20px;">
+        <div id="iti-result" class="hidden">
             <!-- "Your new itinerary" + bouton Criteria (demande du 24/10/2026, référence
                  auto_itinerary_final.html — uniquement l'onglet Ideas de trips.html, voir le
-                 reste du résultat plus bas) : revient au formulaire SANS perdre la sélection
-                 déjà faite (group/country/city/dates/stay/catégories restent tous dans les
-                 mêmes champs qu'avant, voir window.backToItiCriteria() dans script.js) plutôt
+                 reste du résultat plus bas) : le bouton Criteria RÉ-AFFICHE #iti-form (masqué
+                 pendant que le résultat est visible, demande du 25/10/2026 — "sans afficher
+                 les critères au-dessus") SANS perdre la sélection déjà faite (group/country/
+                 city/dates/stay/catégories restent tous dans les mêmes champs qu'avant, voir
+                 window.backToItiCriteria()/window.closeItiCriteria() dans script.js) plutôt
                  que devoir fermer puis rouvrir tout le générateur. -->
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
                 <h3 id="iti-result-title" style="font-size:16px; font-weight:800; color:#212832; margin:0;">Your new itinerary</h3>
@@ -1775,6 +1843,7 @@
             <div id="iti-days-list" style="max-height: 40vh; overflow-y: auto; margin-bottom: 15px; padding-right: 10px;"></div>
             <div id="iti-actions-container" style="display:flex; gap:10px;"></div>
         </div>
+        <div id="iti-picker-root"></div>
     </div>
 </div>
 
@@ -1803,9 +1872,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261058"></script>
-<script src="locations-data.js?v=20261058"></script>
-<script src="script.js?v=20261058"></script>
+<script type="module" src="firebase-init.js?v=20261059"></script>
+<script src="locations-data.js?v=20261059"></script>
+<script src="script.js?v=20261059"></script>
 
 </body>
 </html>
