@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261057" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261058" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -267,6 +267,60 @@
   @media (max-width: 800px) {
       #itinerary-modal { align-items: stretch; padding: 0; }
       #itinerary-modal .modal-content { width: 100%; max-width: none; height: 100%; max-height: none; border-radius: 0; box-shadow: none; padding: 20px 16px calc(24px + env(safe-area-inset-bottom)); }
+  }
+
+  /* Résultat "Your new itinerary" (demande du 25/10/2026, référence auto_itinerary_
+     category.html) : case à cocher carrée arrondie (au lieu de la case native brute du
+     navigateur) + pastille "In your plan" pour un lieu déjà dans le voyage + bouton
+     "Select day"/"Deselect day" par jour — voir generateItinerary()/window.toggleItiDayAll()
+     dans script.js, qui construisent ce balisage. */
+  .iti-loc-checkbox {
+      position: absolute; right: 0; top: 2px; width: 22px; height: 22px; cursor: pointer;
+      appearance: none; -webkit-appearance: none; margin: 0;
+      border: 2px solid #D9D4E2; border-radius: 7px; background: #fff;
+  }
+  .iti-loc-checkbox:checked {
+      background: var(--iti-day-color, #D42759); border-color: var(--iti-day-color, #D42759);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: center; background-size: 13px;
+  }
+  .iti-loc-dup-badge {
+      position: absolute; right: 0; top: 2px; width: 22px; height: 22px; border-radius: 7px;
+      background: #0E8A55; color: #fff; font-size: 12px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+  }
+  .iti-loc-dup-label {
+      display: inline-block; font-size: 10px; font-weight: 800; color: #0E8A55;
+      background: #E6F6EE; border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: middle;
+  }
+  .iti-day-all-btn {
+      margin-left: auto; font-size: 12px; font-weight: 700; background: none;
+      border: none; cursor: pointer; font-family: inherit;
+  }
+
+  /* Rangées repliables Dates/Category/Pace du formulaire Auto-Itinerary (demande du
+     25/10/2026) : panneau simplement affiché/masqué sous sa rangée (comme exField() dans
+     auto_itinerary_category.html) — pas de fiche plein écran séparée, le générateur garde
+     tout sur un seul écran. .open fait pivoter le chevron (même classe que .qaf-pick ouvert
+     ailleurs sur le site). */
+  .qaf-row.open .qaf-chev svg { transform: rotate(90deg); }
+  .iti-accordion-body { padding: 4px 0 14px 48px; border-bottom: 1px solid var(--qaf-line, #ece8f2); }
+  .iti-accordion-body.hidden { display: none; }
+  .iti-trip-length-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 13px; font-weight: 600; color: #5F5B68; }
+  .iti-trip-length-row input { width: 56px; text-align: right; font-weight: 700; color: #1F2430; border: 1.5px solid #ece8f2; border-radius: 8px; padding: 4px 8px; font-family: inherit; }
+  .iti-pace-seg { display: flex; background: #F4F2F8; border-radius: 12px; padding: 3px; }
+  .iti-pace-seg button { flex: 1; text-align: center; height: 34px; border-radius: 9px; font-size: 12.5px; font-weight: 700; color: #8F8B99; background: none; border: none; cursor: pointer; font-family: inherit; }
+  .iti-pace-seg button[aria-pressed="true"] { background: #fff; color: #D42759; box-shadow: 0 1px 4px rgba(31,36,48,.1); }
+
+  /* Habillage mobile du générateur (demande du 25/10/2026, référence auto_itinerary_
+     category.html) : titre plus petit et noir (au lieu du grand titre rose, réservé au
+     desktop) + bouton "Generate itinerary" en dégradé rose→violet (au lieu du simple rose
+     plein des autres .gen-btn du site) — uniquement sur CETTE page/CETTE largeur, jamais
+     .gen-btn ailleurs. */
+  @media (max-width: 800px) {
+      #itinerary-modal h2[data-i18n="itiTitle"] { color: #1F2430 !important; font-size: 17px !important; font-weight: 800; }
+      #itinerary-modal p[data-i18n="itiDesc"] { color: #8F8B99 !important; }
+      #itinerary-modal .iti-generate-btn { background: linear-gradient(90deg, #E0156B, #9B5CF6) !important; }
   }
 
   .section-label {font-size:11.5px;font-weight:700;letter-spacing:.7px;color:#94a3b8;text-transform:uppercase;margin:24px 0 16px 0;}
@@ -796,10 +850,27 @@
          et déborde du cadre visible plutôt que de se tasser ou de passer à la ligne — la
          zone entière se swipe vers la droite pour atteindre les pills suivants, exactement
          comme demandé. */
+      /* BUG rapporté le 25/10/2026, capture d'écran fournie : "on dirait qu'ils sont tous
+         dans une grosse bulle, supprime la forme qu'il y a autour des filtres" — le fond
+         plein (#F4F2F8) + la pilule arrondie posés sur CHAQUE <select> (voir plus bas, règle
+         #edit-trip-group... du 17/10/2026) faisaient ressembler toute la rangée à un seul
+         gros bloc coloré plutôt qu'à 4 filtres distincts. Supprimés ici (fond transparent,
+         pas de border-radius, pas d'ombre), police réduite, pour rester un simple texte +
+         chevron comme le reste de la demande du 25/10/2026. Le premier filtre (Group)
+         s'aligne désormais avec .trip-magic-banner au-dessus (margin:0 16px 20px) : même
+         padding-left 16px ici, sans plus aucun padding interne au <select> qui décalait
+         visuellement son texte vers la droite. */
+      /* BUG trouvé en vérifiant le correctif ci-dessus : scroll-snap-type:x proximity (avec
+         scroll-snap-align:start sur les <select>, voir plus bas) poussait Chrome/Safari à
+         positionner le défilement initial à scrollLeft:16 (pile la valeur du padding-left
+         ci-dessous) au lieu de 0 — le premier filtre (Group) se retrouvait donc collé au
+         bord de l'écran, SOUS son propre padding, au lieu d'être aligné avec
+         .trip-magic-banner comme demandé. Aucun besoin réel d'un alignement "magnétique" ici
+         (une poignée de pills courtes, pas un carrousel) : scroll-snap retiré entièrement
+         plutôt que bricolé avec scroll-padding-left. */
       .ideas-filters-banner {
-          margin: 0; padding: 0 16px 10px; display: flex; flex-wrap: nowrap; gap: 8px;
+          margin: 0; padding: 0 16px 14px; display: flex; flex-wrap: nowrap; gap: 16px;
           overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
-          scroll-snap-type: x proximity;
       }
       /* display:contents toujours nécessaire (voir la note du 24/10/2026 conservée ici) :
          les deux <div> d'origine (markup plus bas, "display:flex; gap:10px") portent un
@@ -809,17 +880,16 @@
       .ideas-filters-banner > div { display: contents !important; }
       #edit-trip-group, #edit-trip-member, #edit-trip-country, #edit-trip-city {
           flex: 0 0 auto !important; min-width: 0 !important;
-          scroll-snap-align: start;
           white-space: nowrap;
       }
-      /* Pastille mise en avant (bordure/texte rose) dès qu'une valeur précise est choisie
-         (pas "All ..."), exactement comme "South Korea" surligné en rose dans la capture —
-         voir window.populateEditTripFilters() dans script.js, qui pose/retire cette classe
-         à chaque (re)rendu, y compris juste après un changement (onchange -> renderTrip()). */
+      /* Pastille mise en avant (texte rose, sans fond ni bordure) dès qu'une valeur précise
+         est choisie (pas "All ..."), même logique qu'avant (window.populateEditTripFilters()
+         dans script.js pose/retire cette classe à chaque (re)rendu) mais sans plus jamais de
+         forme autour — seule la couleur du texte et du chevron changent désormais. */
       #edit-trip-group.ideas-filter-pill-active, #edit-trip-member.ideas-filter-pill-active,
       #edit-trip-country.ideas-filter-pill-active, #edit-trip-city.ideas-filter-pill-active {
-          background-color: #FCE7F0 !important; color: #D42759 !important;
-          box-shadow: inset 0 0 0 1.5px #D42759;
+          background-color: transparent !important; color: #D42759 !important;
+          box-shadow: none !important;
       }
       #edit-trip-group.ideas-filter-pill-active, #edit-trip-member.ideas-filter-pill-active,
       #edit-trip-country.ideas-filter-pill-active, #edit-trip-city.ideas-filter-pill-active {
@@ -903,24 +973,26 @@
          <select> natifs de LOCATION FILTERS (#edit-trip-group/member/country/city) étaient
          le seul coin de la fiche voyage mobile resté dans le style brut par défaut du
          navigateur (bordure grise plate, aucune cohérence avec le reste de la page déjà
-         redessinée — hero, onglets Plan/Map/Ideas, cases de dates). Reskinnés ici en pilules
-         arrondies sur le même fond doux (#F4F2F8) que .qaf-row/.qaf-li (voir la fiche "New
-         trip", même langage visuel) — toujours de VRAIS <select>, le picker natif du
-         téléphone à l'ouverture reste le bon choix pour une liste aussi courte (pas besoin
-         d'une feuille personnalisée comme pour "New trip", qui doit en plus chercher parmi
-         des dizaines de pays). */
+         redessinée — hero, onglets Plan/Map/Ideas, cases de dates). Toujours de VRAIS
+         <select>, le picker natif du téléphone à l'ouverture reste le bon choix pour une
+         liste aussi courte (pas besoin d'une feuille personnalisée comme pour "New trip",
+         qui doit en plus chercher parmi des dizaines de pays).
+         BUG rapporté le 25/10/2026, capture d'écran fournie : la pilule arrondie + fond
+         plein posée ici le 17/10/2026 (puis arrondie encore plus le 24/10/2026) donnait
+         "l'impression qu'ils sont tous dans une grosse bulle" une fois les 4 filtres mis
+         bout à bout sur une seule ligne (voir .ideas-filters-banner plus haut) — supprimée :
+         plus de fond, plus de bordure, plus de coin arrondi, texte plus petit (11px). Seul
+         un chevron discret à droite indique encore que c'est cliquable. */
       #edit-trip-group, #edit-trip-member, #edit-trip-country, #edit-trip-city {
           appearance: none; -webkit-appearance: none;
-          background-color: #F4F2F8 !important;
+          background-color: transparent !important;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8B99' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-          background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
+          background-repeat: no-repeat; background-position: right 0 center; background-size: 11px;
           border: none !important;
-          /* "plus rond" (demande du 24/10/2026) : 12px (simple coin arrondi) → 100px (vraie
-             pilule ovale), même langage visuel que .trip-se-pill/les boutons "+"/le bouton
-             "Edit" ailleurs sur cette même page. */
-          border-radius: 100px !important;
-          padding: 10px 26px 10px 12px !important;
-          font-weight: 600; color: #1F2430; font-size: 12px; text-align: center;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          padding: 4px 15px 4px 0 !important;
+          font-weight: 600; color: #5F5B68; font-size: 11px; text-align: left;
       }
   }
 </style>
@@ -965,7 +1037,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261057';
+        s.src = 'page-loader.js?v=20261058';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1620,20 +1692,29 @@
                 <span class="qaf-rt"><small data-i18n="itiCityLabel">City <em data-i18n="itiOptional">· optional</em></small><select id="iti-city" class="iti-qaf-select"><option value="" data-i18n="itiAllCities">All cities</option></select></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
             </label>
-            <div class="qaf-row">
+            <!-- Dates + Trip length fusionnées en UNE rangée repliée (demande du 25/10/2026,
+                 référence auto_itinerary_category.html — "Thu 12 Nov → Sun 15 Nov · 4 days")
+                 au lieu de deux rangées séparées (dates natives toujours visibles + un champ
+                 "Trip length" redondant) : voir window.toggleItiAccordion()/
+                 window.updateItiDatesSummary() dans script.js. #iti-start-date/#iti-end-date/
+                 #iti-days restent À L'IDENTIQUE à l'intérieur (generateItinerary() inchangé) —
+                 #iti-days y reste éditable à la main pour qui veut explorer sur moins de
+                 jours que son séjour complet SANS dates précises renseignées. -->
+            <button type="button" id="iti-dates-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.toggleItiAccordion('dates')">
                 <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
-                <span class="qaf-rt">
-                    <small data-i18n="itiDatesLabel">Dates <em data-i18n="itiOptional">· optional</em></small>
-                    <span class="iti-qaf-dates">
-                        <input type="date" id="iti-start-date" onchange="window.updateItiDaysFromDates()">
-                        <span class="iti-qaf-dates-sep">→</span>
-                        <input type="date" id="iti-end-date" onchange="window.updateItiDaysFromDates()">
-                    </span>
+                <span class="qaf-rt"><small data-i18n="itiDatesLabel">Dates <em data-i18n="itiOptional">· optional</em></small><span id="iti-dates-summary" class="qaf-ph"></span></span>
+                <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+            </button>
+            <div id="iti-dates-expand" class="iti-accordion-body hidden">
+                <span class="iti-qaf-dates">
+                    <input type="date" id="iti-start-date" onchange="window.updateItiDaysFromDates()">
+                    <span class="iti-qaf-dates-sep">→</span>
+                    <input type="date" id="iti-end-date" onchange="window.updateItiDaysFromDates()">
                 </span>
-            </div>
-            <div class="qaf-row">
-                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg></span>
-                <span class="qaf-rt"><small data-i18n="itiLengthLabel">Trip length <em data-i18n="itiLengthUnit">· days</em></small><input type="number" id="iti-days" min="1" max="7" value="3" class="iti-qaf-num"></span>
+                <label class="iti-trip-length-row">
+                    <span data-i18n="itiLengthLabel">Trip length</span>
+                    <input type="number" id="iti-days" min="1" max="7" value="3" class="iti-qaf-num" oninput="window.updateItiDatesSummary()">
+                </label>
             </div>
             <!-- Stay (demande répétée du 24/10/2026) : reste un <button> (pas un <select>, voir
                  window.openItiStayEditor() dans script.js — vraies suggestions de lieu Nominatim,
@@ -1645,11 +1726,36 @@
                 <span class="qaf-rt"><small data-i18n="itiStayLabel">Stay <em data-i18n="itiOptional">· optional</em></small><span id="iti-hotel-label" class="qaf-ph" data-i18n="itiStayPlaceholder">Hotel or neighborhood</span></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
             </button>
-            <div style="margin-top:14px;">
-                <div style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px;" data-i18n="itiCatLabel">Categories (optional, select multiple)</div>
+            <!-- Catégorie : repliée en rangée (demande du 25/10/2026, référence
+                 auto_itinerary_category.html) au lieu d'un bloc de pastilles toujours
+                 visible — #iti-categories reste À L'IDENTIQUE à l'intérieur (window.
+                 updateItiCategories() dans script.js, inchangée), seul l'habillage autour
+                 change. Même icône/position que la rangée "Categories" de "+ New trip"
+                 (NT_IC.tag, voir ntBody() dans script.js). -->
+            <button type="button" id="iti-cat-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.toggleItiAccordion('cat')">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg></span>
+                <span class="qaf-rt"><small data-i18n="itiCatRowLabel">Category <em data-i18n="itiOptional">· optional</em></small><span id="iti-cat-summary" class="qaf-ph"></span></span>
+                <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+            </button>
+            <div id="iti-cat-expand" class="iti-accordion-body hidden">
                 <div id="iti-categories" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
             </div>
-            <button class="gen-btn" onclick="generateItinerary()" style="margin-top:16px; padding:14px; font-size:14px; justify-content:center;" data-i18n="itiCreateBtn">Create My Guide</button>
+            <!-- Pace (demande du 25/10/2026, référence auto_itinerary_category.html) :
+                 nouveau — influence combien de lieux buildDayPlans() place au maximum par
+                 jour (voir window.setItiPace()/ITI_PACE_CAPS dans script.js). -->
+            <button type="button" id="iti-pace-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.toggleItiAccordion('pace')">
+                <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg></span>
+                <span class="qaf-rt"><small>Pace <em data-i18n="itiOptional">· optional</em></small><span id="iti-pace-summary"></span></span>
+                <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
+            </button>
+            <div id="iti-pace-expand" class="iti-accordion-body hidden">
+                <div class="iti-pace-seg">
+                    <button type="button" data-pace="relaxed" onclick="window.setItiPace('relaxed')" aria-pressed="false">Relaxed</button>
+                    <button type="button" data-pace="balanced" onclick="window.setItiPace('balanced')" aria-pressed="true">Balanced</button>
+                    <button type="button" data-pace="packed" onclick="window.setItiPace('packed')" aria-pressed="false">Packed</button>
+                </div>
+            </div>
+            <button class="gen-btn iti-generate-btn" onclick="generateItinerary()" style="margin-top:16px; padding:14px; font-size:14px; justify-content:center;" data-i18n="itiCreateBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Generate itinerary</button>
         </div>
 
         <div id="iti-result" class="hidden" style="border-top: 1px solid #cbd5e1; padding-top: 20px;">
@@ -1697,9 +1803,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261057"></script>
-<script src="locations-data.js?v=20261057"></script>
-<script src="script.js?v=20261057"></script>
+<script type="module" src="firebase-init.js?v=20261058"></script>
+<script src="locations-data.js?v=20261058"></script>
+<script src="script.js?v=20261058"></script>
 
 </body>
 </html>
