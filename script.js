@@ -5334,7 +5334,7 @@ const translations = {
         allGroups: "All Groups", allMembers: "All Members", allAreas: "All Areas", allYears: "All Years", allCategories: "All Categories",
         checkVisited: "I visited this place", checkWishlist: "Add to Wishlist", tripWhich: "Which trip is this for?",
         tripName: "Trip name", tripWhen: "When are you planning to go?", tripFrom: "From", tripTo: "To", tripCreate: "Create trip", tripCancel: "Cancel",
-        itiTitle: "Auto-Itinerary Generator", itiDesc: "Select a group, a country, and how many days you stay.", itiCreateBtn: "Create My Guide", itiCatLabel: "Categories (optional, select multiple)", itiExport: "Export Guide as PDF", itiSave: "Save to My Trips",
+        itiTitle: "Auto-itinerary", itiDesc: "Prefilled with this trip — change anything.", itiCreateBtn: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Generate itinerary', itiCatLabel: "Categories (optional, select multiple)", itiCatRowLabel: "Category", itiExport: "Export Guide as PDF", itiSave: "Save to My Trips",
         itiGroupLabel: "Group", itiCountryLabel: "Country", itiCityLabel: "City", itiOptional: "· optional", itiAllCities: "All cities", itiDatesLabel: "Dates", itiLengthLabel: "Trip length", itiLengthUnit: "· days", itiStayLabel: "Stay",
         searchTripsPlaceholder: "Search your trips...", noTripsFound: "No trips found.", selectTripToView: "Select a trip to view", deselectTripOption: "— No trip selected —", locationsWord: "location", locationsWordPlural: "locations",
         addAnotherVisit: "Add another visit",
@@ -5402,7 +5402,7 @@ const translations = {
         allGroups: "Tous les groupes", allMembers: "Tous les membres", allAreas: "Toutes les régions", allYears: "Toutes les années", allCategories: "Toutes les catégories",
         checkVisited: "J'ai visité ce lieu", checkWishlist: "Ajouter à ma Wishlist", tripWhich: "Pour quel voyage ?",
         tripName: "Nom du voyage", tripWhen: "Quand prévoyez-vous d'y aller ?", tripFrom: "De", tripTo: "À", tripCreate: "Créer", tripCancel: "Annuler",
-        itiTitle: "Générateur Itinéraire", itiDesc: "Sélectionnez un groupe, un pays, et le nombre de jours.", itiCreateBtn: "Créer mon guide", itiCatLabel: "Catégories (facultatif, sélection multiple)", itiExport: "Exporter en PDF", itiSave: "Sauvegarder dans My Trips",
+        itiTitle: "Itinéraire automatique", itiDesc: "Pré-rempli avec ce voyage — modifiez ce que vous voulez.", itiCreateBtn: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Générer l\'itinéraire', itiCatLabel: "Catégories (facultatif, sélection multiple)", itiCatRowLabel: "Catégorie", itiExport: "Exporter en PDF", itiSave: "Sauvegarder dans My Trips",
         itiGroupLabel: "Groupe", itiCountryLabel: "Pays", itiCityLabel: "Ville", itiOptional: "· facultatif", itiAllCities: "Toutes les villes", itiDatesLabel: "Dates", itiLengthLabel: "Durée du séjour", itiLengthUnit: "· jours", itiStayLabel: "Hébergement",
         searchTripsPlaceholder: "Rechercher vos voyages...", noTripsFound: "Aucun voyage trouvé.", selectTripToView: "Sélectionner un voyage", deselectTripOption: "— Aucun voyage sélectionné —", locationsWord: "lieu", locationsWordPlural: "lieux",
         addAnotherVisit: "Ajouter une autre visite",
@@ -6032,7 +6032,7 @@ window.openItineraryModal = function() {
     if (hotelLabelEl) {
         itiHomeBase = (typeof currentTrip !== 'undefined' && currentTrip && currentTrip.homeBase) || null;
         itiHomeBaseLabel = (typeof currentTrip !== 'undefined' && currentTrip && currentTrip.homeBaseLabel) || '';
-        hotelLabelEl.textContent = itiHomeBaseLabel || (currentLang === 'fr' ? 'Hébergement — hôtel ou quartier (optionnel)' : 'Stay — hotel or neighborhood (optional)');
+        hotelLabelEl.textContent = itiHomeBaseLabel || (currentLang === 'fr' ? 'Hôtel ou quartier' : 'Hotel or neighborhood');
         hotelLabelEl.style.color = itiHomeBaseLabel ? '#1e293b' : '#94a3b8';
     }
     const startEl = document.getElementById('iti-start-date');
@@ -6042,6 +6042,12 @@ window.openItineraryModal = function() {
         startEl.value = hasSpecificDates ? currentTrip.startDate : '';
         endEl.value = hasSpecificDates ? currentTrip.endDate : '';
     }
+    // Rangées repliées mobiles (demande du 25/10/2026) : résumés recalculés à CHAQUE
+    // ouverture, Pace remis sur "Balanced" par défaut (pas de notion de pace sauvegardée
+    // sur un voyage existant à retrouver, contrairement à group/country/city/dates/stay).
+    if (typeof window.updateItiDatesSummary === 'function') window.updateItiDatesSummary();
+    if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
+    if (typeof window.setItiPace === 'function') window.setItiPace('balanced');
 }
 
 // "Stay" du générateur Auto-Itinerary (demande du 24/10/2026, "il faut afficher les mêmes
@@ -6062,7 +6068,7 @@ window.openItiStayEditor = function(evt) {
             itiHomeBaseLabel = picked ? picked.label : '';
             const labelEl = document.getElementById('iti-hotel-label');
             if (labelEl) {
-                labelEl.textContent = itiHomeBaseLabel || (currentLang === 'fr' ? 'Hébergement — hôtel ou quartier (optionnel)' : 'Stay — hotel or neighborhood (optional)');
+                labelEl.textContent = itiHomeBaseLabel || (currentLang === 'fr' ? 'Hôtel ou quartier' : 'Hotel or neighborhood');
                 labelEl.style.color = itiHomeBaseLabel ? '#1e293b' : '#94a3b8';
             }
         }
@@ -6080,6 +6086,69 @@ window.updateItiDaysFromDates = function() {
     if (!s || !e || !daysInput) return;
     const diff = Math.ceil((new Date(e) - new Date(s)) / 86400000) + 1;
     if (diff > 0) daysInput.value = Math.min(diff, parseInt(daysInput.max) || diff);
+    window.updateItiDatesSummary();
+};
+
+// ===== Rangées repliables du générateur mobile (demande du 25/10/2026, référence
+// auto_itinerary_category.html) =====
+// Dates+Durée et Catégories vivaient jusqu'ici en permanence ouverts (deux rangées natives
+// de date + une rangée "Trip length" séparée pour les dates, un bloc de pastilles toujours
+// visible pour les catégories) — contrairement au reste du formulaire (Group/Country/City/
+// Stay), déjà en rangées repliées façon "New trip" (qaf-row + chevron). Fusionnées ici en
+// UNE SEULE rangée chacune, avec un résumé en lecture seule tant qu'elles restent fermées
+// (ex: "Thu 12 Nov → Sun 15 Nov · 4 days") — exactement le langage visuel demandé. Les
+// champs réels (iti-start-date/iti-end-date/iti-days/iti-categories) restent À L'IDENTIQUE
+// à l'intérieur, generateItinerary() n'a besoin d'aucun changement.
+window.toggleItiAccordion = function(key) {
+    const row = document.getElementById(`iti-${key}-row`);
+    const body = document.getElementById(`iti-${key}-expand`);
+    if (!row || !body) return;
+    const opening = body.classList.contains('hidden');
+    body.classList.toggle('hidden', !opening);
+    row.classList.toggle('open', opening);
+};
+function itiShortDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    if (isNaN(d.getTime())) return '';
+    const locale = currentLang === 'fr' ? 'fr-FR' : 'en-US';
+    const wd = d.toLocaleDateString(locale, { weekday: 'short' }).replace('.', '');
+    const mo = d.toLocaleDateString(locale, { month: 'short' }).replace('.', '');
+    return `${wd} ${d.getDate()} ${mo}`;
+}
+window.updateItiDatesSummary = function() {
+    const el = document.getElementById('iti-dates-summary');
+    if (!el) return;
+    const s = document.getElementById('iti-start-date')?.value;
+    const e = document.getElementById('iti-end-date')?.value;
+    const days = document.getElementById('iti-days')?.value || '1';
+    const dayWord = currentLang === 'fr' ? 'jour' : 'day';
+    const dayLabel = `${days} ${dayWord}${Number(days) > 1 ? 's' : ''}`;
+    el.textContent = (s && e) ? `${itiShortDate(s)} → ${itiShortDate(e)} · ${dayLabel}` : dayLabel;
+    el.classList.remove('qaf-ph');
+};
+window.updateItiCatSummary = function() {
+    const el = document.getElementById('iti-cat-summary');
+    if (!el) return;
+    el.textContent = itiSelectedCategories.length
+        ? itiSelectedCategories.map(getCatName).join(', ')
+        : (currentLang === 'fr' ? 'Toutes les catégories' : 'All categories');
+};
+const ITI_PACE_LABELS = {
+    en: { relaxed: 'Relaxed · 2 places a day', balanced: 'Balanced · 3 places a day', packed: 'Packed · 4 places a day' },
+    fr: { relaxed: 'Détendu · 2 lieux par jour', balanced: 'Équilibré · 3 lieux par jour', packed: 'Intense · 4 lieux par jour' }
+};
+// Pace (demande du 25/10/2026, référence auto_itinerary_category.html) : influence combien
+// de lieux buildDayPlans() place au maximum par jour (voir son paramètre paceCap, ajouté
+// pour cette seule demande) — le budget horaire réaliste (computeDayTimeline) reste
+// toujours prioritaire et peut placer MOINS, jamais plus, que ce plafond. 'balanced' (3/j)
+// est le réglage par défaut, cohérent avec le résumé affiché par défaut dans cette rangée.
+let itiPace = 'balanced';
+window.setItiPace = function(p) {
+    itiPace = p;
+    document.querySelectorAll('#iti-pace-expand [data-pace]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.pace === p)));
+    const el = document.getElementById('iti-pace-summary');
+    if (el) el.textContent = (ITI_PACE_LABELS[currentLang] || ITI_PACE_LABELS.en)[p];
 };
 
 window.initItineraryGenerator = function() {
@@ -6152,8 +6221,10 @@ window.updateItiCategories = function() {
                 itiSelectedCategories.push(cat);
                 this.classList.add('active');
             }
+            if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
         });
     });
+    if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
 };
 
 // Même principe que updateItiCategories, pour la modale "Create New Trip" (My Trips) —
@@ -12265,7 +12336,13 @@ function buildOptimizedRoute(locs, anchor) {
     }
     return route;
 }
-function buildDayPlans(orderedLocs, days, homeBase) {
+// paceCap (demande du 25/10/2026, champ "Pace" du générateur Auto-Itinerary — voir
+// window.setItiPace() plus haut) : plafond ADDITIONNEL optionnel sur le nombre de lieux par
+// jour, appliqué par-dessus le partage égal habituel (maxPerDay ci-dessous) plutôt qu'à sa
+// place — un voyage à peu de jours/beaucoup de lieux ne se retrouve donc jamais à dépasser
+// "Relaxed"/"Packed" même si le partage égal aurait permis plus. undefined (tous les autres
+// appelants, ex. createNewTripAdvanced()) = comportement inchangé, aucun plafond ajouté.
+function buildDayPlans(orderedLocs, days, homeBase, paceCap) {
     let pool = orderedLocs.slice();
     const dayPlans = [];
     // BUG rapporté le 12/09/2026 ("j'ai précisé 3 jours mais un seul jour généré") : sans
@@ -12275,7 +12352,8 @@ function buildDayPlans(orderedLocs, days, homeBase) {
     // ignoré. maxPerDay répartit plutôt le total sur le nombre de jours demandé (part
     // égale, arrondie au-dessus) ; le budget horaire (computeDayTimeline) reste
     // prioritaire et peut toujours placer MOINS qu'un jour plein, jamais plus.
-    const maxPerDay = Math.max(1, Math.ceil(orderedLocs.length / days));
+    let maxPerDay = Math.max(1, Math.ceil(orderedLocs.length / days));
+    if (paceCap) maxPerDay = Math.min(maxPerDay, paceCap);
     for (let d = 0; d < days && pool.length > 0; d++) {
         const dayLocs = [];
         while (pool.length > 0 && dayLocs.length < maxPerDay) {
@@ -12330,7 +12408,8 @@ window.generateItinerary = function() {
 
     // Répartition réaliste des lieux sur les jours demandés (voir buildDayPlans /
     // computeDayTimeline ci-dessus, partagées avec My Trips).
-    const { dayPlans: dayLocGroups, unplaced } = buildDayPlans(route, days, homeBase);
+    const ITI_PACE_CAPS = { relaxed: 2, balanced: 3, packed: 4 };
+    const { dayPlans: dayLocGroups, unplaced } = buildDayPlans(route, days, homeBase, ITI_PACE_CAPS[itiPace]);
     const dayPlans = dayLocGroups.map(dayLocs => computeDayTimeline(dayLocs, homeBase));
     const unplacedCount = unplaced.length;
 
@@ -12358,6 +12437,17 @@ window.generateItinerary = function() {
         d.setHours(Math.floor(mins / 60), mins % 60, 0, 0);
         return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
+    // "In your plan" (demande du 25/10/2026, référence auto_itinerary_category.html) : un
+    // lieu déjà présent dans currentTrip.days n'avait jusqu'ici AUCUN traitement particulier
+    // — il pouvait être re-sélectionné puis réellement dupliqué dans le voyage via "Add
+    // selected places"/"Add all" (voir window.applyGeneratedItinerary() plus bas, qui filtre
+    // maintenant ces mêmes ids). Ici, purement visuel : pas de case à cocher, un badge vert
+    // à la place.
+    const tripLocIdSet = (isTripsPage && currentTrip && Array.isArray(currentTrip.days))
+        ? new Set(currentTrip.days.flat().map(String)) : new Set();
+    const dupLabel = currentLang === 'fr' ? 'Déjà dans votre voyage' : 'In your plan';
+    const selectDayLabel = currentLang === 'fr' ? 'Sélectionner le jour' : 'Select day';
+    const deselectDayLabel = currentLang === 'fr' ? 'Désélectionner le jour' : 'Deselect day';
 
     dayPlans.forEach((items, i) => {
         const dayLocs = items.map(it => it.loc);
@@ -12379,13 +12469,23 @@ window.generateItinerary = function() {
         // besoin de faire l'aller-retour avec la carte pour savoir quel jour est lequel.
         const dayColor = TRIP_DAY_COLORS[i % TRIP_DAY_COLORS.length];
 
+        // "Select day"/"Deselect day" (demande du 25/10/2026, référence auto_itinerary_
+        // category.html) : coche/décoche d'un coup toutes les cases À COCHER de ce jour
+        // (jamais les lieux "In your plan", qui n'en ont pas) — absent si le jour ne
+        // contient que des doublons déjà dans le voyage, rien à (dé)sélectionner alors.
+        const daySelectableCount = items.filter(it => !tripLocIdSet.has(String(it.loc.id))).length;
+        const dayAllBtnHtml = (isTripsPage && daySelectableCount > 0)
+            ? `<button type="button" class="iti-day-all-btn" data-dayall="${i}" onclick="window.toggleItiDayAll(${i}, this)" style="color:${dayColor}; border-color:${dayColor};">${deselectDayLabel}</button>`
+            : '';
         let html = `<div class="iti-day-card" style="padding: 18px 16px;">
             <div class="iti-day-title" style="display:flex; justify-content:space-between; align-items:center; font-size:16px; color:${dayColor}; margin-bottom:20px; border-bottom:1px solid #e2e8f0; padding-bottom:8px;">
                 <span>${txt.day} ${i + 1}</span>
+                ${dayAllBtnHtml}
             </div>`;
 
         items.forEach((it, idx) => {
             const l = it.loc;
+            const isDup = tripLocIdSet.has(String(l.id));
 
             if (idx > 0) {
                 // Pas d'API d'itinéraire disponible : le mode de transport et la durée sont
@@ -12408,15 +12508,18 @@ window.generateItinerary = function() {
             // maintenant d'ajouter certains lieux d'une journée sans les autres, cochée par
             // défaut (equivalent à "tout sélectionné" pour qui ne touche à rien). N'existe que
             // pour isTripsPage, voir applyGeneratedItinerary() plus bas qui en dépend.
-            const checkboxHtml = isTripsPage
-                ? `<input type="checkbox" class="iti-loc-checkbox" data-day="${i}" data-idx="${idx}" checked style="position:absolute; right:0; top:2px; width:18px; height:18px; cursor:pointer; accent-color:${dayColor};">`
-                : '';
+            // "In your plan" (demande du 25/10/2026) : un lieu déjà dans currentTrip.days
+            // n'a pas de case — une pastille verte à la place, non interactive — voir
+            // tripLocIdSet plus haut.
+            const checkboxHtml = !isTripsPage ? '' : isDup
+                ? `<span class="iti-loc-dup-badge" title="${dupLabel}">✓</span>`
+                : `<input type="checkbox" class="iti-loc-checkbox" data-day="${i}" data-idx="${idx}" checked style="--iti-day-color:${dayColor};">`;
             html += `
-                <div style="padding-left:18px; ${isTripsPage ? 'padding-right:26px;' : ''} border-left: 2px solid ${dayColor}; position:relative; margin-bottom:15px;">
+                <div style="padding-left:18px; ${isTripsPage ? 'padding-right:26px;' : ''} border-left: 2px solid ${dayColor}; position:relative; margin-bottom:15px;${isDup ? ' opacity:.7;' : ''}">
                     <div style="position:absolute; left:-6px; top:0; width:10px; height:10px; border-radius:50%; background:${dayColor}; border:2px solid #fff;"></div>
                     ${checkboxHtml}
                     <div style="font-size:11px; font-weight:700; color:${dayColor}; margin-bottom:3px;">${formatMin(it.arrival)} - ${formatMin(it.departure)}</div>
-                    <div style="font-size:14px; font-weight:700; color:#212832; margin-bottom:4px;">${idx+1}. ${l.name}</div>
+                    <div style="font-size:14px; font-weight:700; color:#212832; margin-bottom:4px;">${idx+1}. ${l.name}${isDup ? `<span class="iti-loc-dup-label">${dupLabel}</span>` : ''}</div>
                     <div style="font-size:11.5px; color:#64748b; margin-bottom:8px;">${getCatName(l.category)}</div>
                 </div>`;
         });
@@ -12509,6 +12612,21 @@ window.generateItinerary = function() {
     }
 }
 
+// "Select day"/"Deselect day" (demande du 25/10/2026, référence auto_itinerary_category.
+// html) : coche/décoche toutes les .iti-loc-checkbox de ce jour d'un coup, puis alterne le
+// texte du bouton (jamais sur les lieux "In your plan", qui n'ont pas de case). isTripsPage
+// uniquement, mêmes cases que window.applyGeneratedItinerary() juste en dessous.
+window.toggleItiDayAll = function(dayIdx, btn) {
+    const boxes = document.querySelectorAll(`.iti-loc-checkbox[data-day="${dayIdx}"]`);
+    if (!boxes.length) return;
+    const allChecked = Array.from(boxes).every(b => b.checked);
+    boxes.forEach(b => { b.checked = !allChecked; });
+    const isFr = currentLang === 'fr';
+    btn.textContent = allChecked
+        ? (isFr ? 'Sélectionner le jour' : 'Select day')
+        : (isFr ? 'Désélectionner le jour' : 'Deselect day');
+};
+
 // BUG corrigé (demande répétée du 24/10/2026, référence auto_itinerary_final.html —
 // "Add selected places", "Add all", "Replace my plan") : remplace addSelectedDaysToTrip()
 // (une seule case À COCHER PAR JOUR ENTIER, un seul mode "ajouter") par ces 3 modes, tous
@@ -12538,6 +12656,13 @@ window.applyGeneratedItinerary = function(mode) {
         }
     };
 
+    // "In your plan" (demande du 25/10/2026) : un lieu déjà dans currentTrip.days ne doit
+    // jamais être rajouté une deuxième fois par 'all' (voir generateItinerary() plus haut,
+    // qui ne lui donne déjà plus de case à cocher — donc déjà naturellement exclu du mode
+    // 'selected' sans rien de plus ici). 'replace' garde tout tel quel : il remplace le plan
+    // entier, ces lieux y ont donc légitimement leur place.
+    const tripLocIdSetForApply = (mode !== 'replace' && currentTrip && Array.isArray(currentTrip.days))
+        ? new Set(currentTrip.days.flat().map(String)) : null;
     const newDays = [];
     currentGeneratedItinerary.forEach((dayLocs, dayIdx) => {
         let picked = dayLocs;
@@ -12546,6 +12671,8 @@ window.applyGeneratedItinerary = function(mode) {
                 const cb = document.querySelector(`.iti-loc-checkbox[data-day="${dayIdx}"][data-idx="${idx}"]`);
                 return cb ? cb.checked : false;
             });
+        } else if (mode === 'all' && tripLocIdSetForApply) {
+            picked = dayLocs.filter(loc => !tripLocIdSetForApply.has(String(loc.id)));
         }
         if (picked.length === 0) return;
         newDays.push(picked.map(loc => { addLocToWishlist(loc); return loc.id; }));
@@ -14968,10 +15095,10 @@ window.renderTrip = function() {
                     const displayName = isClosed ? loc.name.slice(9) : loc.name;
                     const closedBadgeHtml = isClosed ? `<span class="loc-closed-badge">${currentLang === 'fr' ? 'FERMÉ' : 'CLOSED'}</span>` : '';
                     recoList.innerHTML += `
-                        <div class="loc-row">
+                        <div class="loc-row" style="cursor:pointer;" onclick="openTripLocDetail(event, ${locIdLit(loc.id)})">
                             ${thumbHtml}
                             <div class="loc-info"><div class="loc-name">${closedBadgeHtml}${escapeHtml(displayName)}</div><div class="loc-meta">${loc.city}, ${loc.country} &middot; ${getCatName(loc.category)}</div></div>
-                            <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="quickAddLoc(${locIdLit(loc.id)})">+</button>
+                            <button class="add-to-trip-btn edit-only" style="display:flex;" onclick="event.stopPropagation(); quickAddLoc(${locIdLit(loc.id)})">+</button>
                         </div>
                     `;
                     recoCount++;
