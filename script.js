@@ -922,6 +922,18 @@ function loadInstagramWidgetScriptOnce() {
 // officiel, ici appliquée nous-mêmes à l'iframe /embed/ léger) — un seul écouteur global
 // (jamais un par iframe, qui s'accumulerait à chaque réaffichage d'une fiche lieu) resize
 // l'iframe correspondante quelle que soit l'orientation réelle du post.
+// BUG rapporté à nouveau le 26/10/2026 (toujours "Viña Aquitania", photo au format paysage)
+// après la 1re tentative (hauteur de DÉPART augmentée, insuffisante — le vrai problème n'était
+// pas la hauteur de départ) : "Voir plus sur Instagram" chevauche la photo elle-même, pas
+// juste coupée en bas. La hauteur que ce message MEASURE annonce semble ne couvrir que la
+// photo + sa légende, PAS ce bandeau qu'Instagram rajoute par-dessus en bas de son propre
+// iframe — invisible pour un post portrait/carré (la marge de sécurité qu'on laissait déjà,
+// hauteur de départ large avant que ce redimensionnement n'intervienne, le cachait par
+// hasard), mais ce même bandeau déborde SUR la photo une fois l'iframe réduite pile à la
+// hauteur annoncée pour un post paysage (donc une hauteur annoncée nettement plus courte).
+// Marge fixe systématique ajoutée à la hauteur annoncée pour lui laisser sa place, quelle que
+// soit l'orientation du post.
+const INSTAGRAM_EMBED_FOOTER_BUFFER_PX = 44;
 if (!window.__igEmbedResizeWired) {
     window.__igEmbedResizeWired = true;
     window.addEventListener('message', (e) => {
@@ -931,21 +943,16 @@ if (!window.__igEmbedResizeWired) {
         const height = data && data.details && data.details.height;
         if (!height) return;
         document.querySelectorAll('iframe.instagram-embed-iframe').forEach(ifr => {
-            if (ifr.contentWindow === e.source) ifr.style.height = `${height}px`;
+            if (ifr.contentWindow === e.source) ifr.style.height = `${height + INSTAGRAM_EMBED_FOOTER_BUFFER_PX}px`;
         });
     });
 }
 async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     const shortcode = extractInstagramShortcode(instagramUrl);
     if (shortcode) {
-        // BUG rapporté le 26/10/2026 (lieu "Viña Aquitania", premier embed Instagram) : le
-        // bandeau "View more on Instagram" d'Instagram apparaissait superposé SUR la photo
-        // au lieu d'une section propre en dessous — 480px de hauteur initiale (avant que le
-        // postMessage "MEASURE" ci-dessus n'ait pu redimensionner l'iframe à sa vraie
-        // hauteur) ne suffit pas pour certains posts (légende longue, carrousel). Hauteur de
-        // départ plus généreuse pour réduire ce risque de recadrage visible le temps que le
-        // redimensionnement réel arrive — n'affecte aucun post déjà correctement redimensionné
-        // (son propre postMessage l'ajuste de toute façon ensuite).
+        // Hauteur de départ généreuse, juste le temps que le vrai redimensionnement (message
+        // MEASURE + marge fixe pour son bandeau, voir juste au-dessus) arrive — n'affecte
+        // aucun post déjà correctement redimensionné.
         container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="620" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:100%;"></iframe>`;
         return;
     }
