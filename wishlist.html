@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261060" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261061" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -174,7 +174,14 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
   h1.pg-title { font-size: 22px; }
   .wish-thumb { width: 46px; height: 46px; }
   .modal-content { width: 97%; border-radius: 12px; }
-  .modal-body { padding: 18px 18px 22px 18px; }
+  /* "réduire la marge" (demande du 26/10/2026) : même bug que celui déjà corrigé sur
+     trips.html — #loc-modal gardait le padding:30px générique de style.css (.modal-content,
+     même sélecteur, chargé avant ce <style> local qui ne redéfinit jamais padding), cumulé
+     au padding de .modal-body ci-dessous → marge blanche doublée. padding:0 ici, scopé à
+     #loc-modal pour ne pas toucher #cart-modal (.paywall-modal-content, pas de .modal-body
+     interne, a besoin de son propre padding). */
+  #loc-modal .modal-content { padding: 0; }
+  .modal-body { padding: 16px 14px 20px 14px; }
   #modal-hero { height: 170px; border-radius: 12px 12px 0 0; }
 }
 </style>
@@ -218,7 +225,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261060';
+        s.src = 'page-loader.js?v=20261061';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -408,9 +415,9 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261060"></script>
-<script src="locations-data.js?v=20261060"></script>
-<script src="script.js?v=20261060"></script>
+<script type="module" src="firebase-init.js?v=20261061"></script>
+<script src="locations-data.js?v=20261061"></script>
+<script src="script.js?v=20261061"></script>
 <script>
     // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
     // updateCartPrice / soumission de #cart-form), pour être identique à map.html.
@@ -424,6 +431,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         if(savedPic) { btn.innerHTML = `<img src="${savedPic}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`; }
         else { btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'; }
     });
+
+    // Clé de regroupement d'un lieu de wishlist : son tripId QUAND ce voyage existe
+    // vraiment, sinon 'none' ("Someday") — voir renderWishlist()/removeFromWishlist()
+    // ci-dessous, qui doivent s'accorder sur la MÊME clé pour un même lieu (sinon
+    // "Supprimer" sur un lieu dont le voyage a été supprimé depuis ne retrouve jamais la
+    // bonne entrée et échoue silencieusement).
+    function wishGroupKey(w, trips) {
+        const tripExists = w.tripId && w.tripId !== 'none' && trips.some(t => t.id === w.tripId);
+        return tripExists ? w.tripId : 'none';
+    }
 
     // --- LISTE DE LA WISHLIST (groupée par voyage) ---
     function renderWishlist() {
@@ -444,9 +461,17 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         emptyEl.classList.add('hidden');
 
         // Groupement par tripId ("none" = "Someday")
+        // BUG corrigé (demande du 26/10/2026, "'Someday / no trip yet' s'affiche deux fois")
+        // : un lieu dont le tripId pointait vers un voyage SUPPRIMÉ depuis (ou invalide pour
+        // toute autre raison) gardait ce tripId orphelin comme clé de groupe — différente de
+        // la clé 'none' — mais se retrouvait quand même affiché sous le même libellé
+        // "Someday / no trip yet" (repli ci-dessous quand trips.find() ne trouve rien), d'où
+        // DEUX en-têtes identiques au lieu d'un seul regroupant tous ces lieux ensemble. La
+        // clé de groupe (wishGroupKey() ci-dessus) se base maintenant sur l'EXISTENCE réelle
+        // du voyage, pas seulement sur la valeur brute de tripId.
         const groups = {};
         wList.forEach(w => {
-            const key = w.tripId && w.tripId !== 'none' ? w.tripId : 'none';
+            const key = wishGroupKey(w, trips);
             if (!groups[key]) groups[key] = [];
             groups[key].push(w);
         });
@@ -487,7 +512,8 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 
     function removeFromWishlist(id, tripId) {
         let wList = JSON.parse(localStorage.getItem('wishlistLocs') || '[]');
-        wList = wList.filter(w => !(Number(w.id) === Number(id) && ((w.tripId && w.tripId !== 'none' ? w.tripId : 'none') === tripId)));
+        const trips = JSON.parse(localStorage.getItem('myTrips') || '[]');
+        wList = wList.filter(w => !(Number(w.id) === Number(id) && wishGroupKey(w, trips) === tripId));
         localStorage.setItem('wishlistLocs', JSON.stringify(wList));
         if (typeof syncWishlist === 'function') syncWishlist(wList);
         else if (typeof window.syncUserData === 'function') window.syncUserData({ wishlistLocs: wList });
