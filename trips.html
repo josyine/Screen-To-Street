@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261061" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261062" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -252,6 +252,21 @@
      #iti-group-summary/#iti-country-summary/#iti-city-summary (texte simple) + la "belle
      liste" plein écran de window.openItiPicker(), au lieu du picker natif du téléphone. */
   #itinerary-modal .iti-qaf-select { display: none; }
+
+  /* BUG rapporté le 26/10/2026 ("le bandeau du filtre est en dessous de la map et de
+     l'itinéraire") : .qaf-pick (style.css, position:absolute, z-index:2) suffit DANS
+     .qa-form-overlay/.nt-form-overlay car ces conteneurs sont eux-mêmes position:fixed avec
+     z-index:9650 — tout ce qui est À L'INTÉRIEUR profite déjà de cette élévation globale, un
+     z-index:2 local n'a besoin de dépasser que ses propres frères. #itinerary-modal, lui, est
+     juste un .modal générique (z-index:9999, mais SANS ce même isolement) : une fois
+     "Your new itinerary" généré, #iti-map-container (carte Leaflet en direct, voir
+     window.generateItinerary() dans script.js) crée ses propres panneaux internes (tuiles/
+     marqueurs/popups) à des z-index pouvant monter jusqu'à ~700 — AUCUN wrapper intermédiaire
+     n'isole ces panneaux dans leur propre contexte d'empilement, leurs z-index se comparent
+     donc directement à celui de .qaf-pick (2) dans le MÊME contexte, et l'emportent. Valeur
+     largement au-dessus de tout ce que Leaflet peut produire, scopée à cette seule page pour
+     ne jamais affecter #add-trip-modal/.nt-form-overlay (sans cette carte, déjà correct). */
+  #itinerary-modal .qaf-pick { z-index: 5000; }
 
   /* BUG corrigé (demande répétée du 25/10/2026, "tu n'as pas écouté ma demande" — le titre/
      les boutons "Your new itinerary"/Criteria/Add selected places/Add all/Replace my plan du
@@ -639,20 +654,14 @@
   .empty-state { text-align: center; color: #94a3b8; padding: 80px 0; font-size: 15px; width: 100%; }
   .empty-state-new-trip-btn { margin-top: 20px; }
 
-  /* Logo toujours visible sur mobile, header partagé avec le reste du site (voir plus
-     bas, demande du 17/10/2026 : "le bon header"). Son z-index est volontairement
-     au-dessus de .sidebar (z-index 3000, voir le @media plus bas) : depuis que la liste
-     des voyages est devenue la vue mobile par défaut (plus seulement un tiroir masqué
-     derrière un hamburger), elle reste ouverte EN PERMANENCE sur mobile tant qu'aucun
-     voyage n'est sélectionné — ce logo doit donc rester visible PAR-DESSUS elle, pas
-     seulement "quand le tiroir est fermé" comme le commentaire d'origine le supposait.
-     BUG corrigé (demande du 25/10/2026, "reprenne exactement le même header que
-     wishlist/visited/account") : position:fixed (plutôt qu'absolute) et même taille que
-     .universal-logo/.brand-text (style.css, wishlist.html/visited.html/account.html...)
-     — ce logo-ci avait sa propre copie, légèrement plus petite (28px/14px au lieu de
-     32px/15px), jamais alignée sur la convention partagée. */
+  /* Ancien logo flottant par-dessus le contenu (demande du 17 puis 25/10/2026) — retiré le
+     26/10/2026 ("je ne veux pas que le header reste statique quand on swipe"), voir le
+     @media plus bas et .sidebar-scroll-logo qui le remplace (défile avec la liste des
+     voyages au lieu de rester fixe). display:none n'est plus jamais réécrit nulle part :
+     cette règle reste donc l'état final, pas juste la valeur par défaut hors mobile. */
   .mobile-logo { display: none; align-items: center; gap: 8px; position: fixed; top: 14px; left: 14px; z-index: 3100; text-decoration: none; }
   .mobile-logo-text { font-size: 15px; font-weight: 700; color: #2E3644; }
+  .sidebar-scroll-logo { display: none; }
 
   /* Onglets Plan/Map/Ideas (demande du 17/10/2026) : masqués par défaut (desktop, où tout
      reste empilé) — voir leur style complet dans le @media (max-width:800px) plus bas,
@@ -665,48 +674,29 @@
   .trip-mobile-icon-row, .trip-hero-meta-mobile { display: none; }
 
   @media (max-width: 800px) {
-      /* Logo "Screen To Street" remis sur mobile (demande du 15/10/2026, "il faut que le
-         header soit exactement le même que dans la page 'message', avec le logo, icone
-         message, engrenage") — remplace le retrait du 12/09/2026 (voir l'historique de ce
-         fichier) : le site affiche maintenant le même trio logo/message/engrenage que
-         friends.html sur toutes les pages "app" en mobile, cette page y compris. */
-      .mobile-logo { display: flex; }
-
-      /* Fond du header (demande des 24, 25 puis 26/10/2026) : trois allers-retours sur ce
-         même bouton — d'abord une bande violette permanente (.trips-main::before, dégradé
-         ROSE/magenta du hero du voyage), retirée le 25/10 pour "reprendre exactement le
-         header de wishlist/visited/account" (qui n'ont PAS de bande dédiée, leur logo
-         flotte juste sur le fond de la page) ; mais CE retrait laissait le logo/les icônes
-         flotter sur du BLANC une fois .trips-main défilé (ses cartes ont leur propre fond
-         opaque), contrairement à wishlist/visited/account où le logo flotte TOUJOURS sur le
-         même dégradé lavande — .hero-background (plus haut dans ce fichier, position:fixed,
-         z-index:0) EST ce même dégradé partagé sur CETTE page aussi, mais reste caché dès
-         qu'on défile dès que le contenu de .trips-main (cartes blanches, bannière du voyage)
-         passe par-dessus. Remis ici, mais avec CE dégradé lavande partagé (identique à
-         --sidebar-bg juste en dessous) plutôt que l'ancien rose/magenta — cohérent avec
-         wishlist/visited/account cette fois, tout en restant visible en permanence quel que
-         soit ce qui défile dessous. */
-      .trips-main::before {
-          content: ""; position: fixed; top: 0; left: 0; right: 0;
-          height: calc(64px + env(safe-area-inset-top));
-          background: linear-gradient(160deg, #F5F3FC, #E9DFF6);
-          z-index: 3050; pointer-events: none;
-      }
-
-      /* Fond violet du site + en-tête correct sur la liste des voyages mobile (demande
-         du 17/10/2026, redemandée plusieurs fois) : .sidebar porte normalement un verre
-         dépoli blanc à 85% d'opacité (règle desktop juste au-dessus, avec !important)
-         pensé pour laisser transparaître .hero-background (les "blobs" violets) DERRIÈRE
-         un panneau étroit — sur mobile, où .sidebar devient un panneau PLEIN ÉCRAN
-         (position:absolute, voir plus bas), ce même verre dépoli écrase presque entièrement
-         .hero-background et rend un gris-blanc plat au lieu du violet attendu. Remplacé
-         ici par le même dégradé que --sidebar-bg (style.css), cohérent avec le reste du
-         site, sans effet de flou qui n'a plus de sens plein écran.
-         Le logo/bandeau INTERNE à .sidebar (.brand-row) est masqué : .mobile-logo
-         ci-dessus (vrai header partagé, visible par-dessus grâce à son z-index relevé)
-         fait désormais ce rôle, pour ne pas avoir deux logos empilés. */
-      .sidebar { background: linear-gradient(160deg, #F5F3FC, #E9DFF6) !important; backdrop-filter: none; padding-top: 90px; }
+      /* BUG corrigé (demande du 26/10/2026, "je ne veux pas que le header reste statique
+         quand on swipe [...] enlève le fond du header, revient comme avant") : quatrième
+         aller-retour sur ce même bouton (voir l'historique juste au-dessus dans les versions
+         antérieures de ce fichier) — cette fois le retour en arrière porte sur le PRINCIPE
+         même d'un logo flottant par-dessus le contenu (.mobile-logo, position:fixed) plutôt
+         que seulement sur sa couleur de fond. .mobile-logo (et la bande .trips-main::before
+         qui l'accompagnait) sont désormais entièrement retirés sur cette page : .mobile-logo
+         reste caché (display:none, sa valeur par défaut hors mobile, voir sa déclaration plus
+         haut). Le logo interne .brand-row (lui, DANS .sidebar-content mais HORS de
+         .sidebar-scroll-area, voir le HTML plus bas) reste caché lui aussi : il ne défile
+         pas plus que .mobile-logo ne le faisait, pour la même raison structurelle (un frère
+         statique AVANT la zone qui défile, pas un enfant DEDANS) — un nouvel élément dédié,
+         .sidebar-scroll-logo (voir le HTML plus bas, premier enfant de .sidebar-scroll-area
+         cette fois), le remplace : il défile donc réellement avec la liste des voyages,
+         disparaissant de l'écran en même temps qu'elle, exactement comme avant
+         l'introduction de .mobile-logo le 15/10/2026. La vue "détail d'un voyage"
+         (.trips-main) n'a jamais eu son propre logo avant cette date-là non plus : son
+         bouton retour (.trip-mobile-icon-row, plus bas) suffit à en sortir. */
+      .sidebar { background: linear-gradient(160deg, #F5F3FC, #E9DFF6) !important; backdrop-filter: none; padding-top: calc(20px + env(safe-area-inset-top)); }
       #app-sidebar .brand-row { display: none; }
+      .sidebar-scroll-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; padding: 0 6px 16px 6px; }
+      .sidebar-scroll-logo svg { width: 32px; height: 32px; flex-shrink: 0; }
+      .sidebar-scroll-logo span { font-size: 15px; font-weight: 700; color: #2E3644; }
       /* Le bouton "+ New trip" (dernier élément de .sidebar-scroll-area) se retrouvait
          partiellement caché DERRIÈRE #mobile-bottom-nav (position:fixed, z-index 3500 >
          3000 de .sidebar) une fois la nav du bas laissée visible ci-dessus — même
@@ -721,7 +711,10 @@
          0 ici — le padding INTERNE de chaque carte (.itinerary-box/.day-card/
          .edit-banner, inchangé plus bas) garde leur texte lisible malgré tout, seul
          l'espace autour d'elles disparaît. */
-      .trips-main { padding: 90px 0 40px 0; max-width: 100%; }
+      /* 90px de marge haute (hérités de la version desktop, pensée pour .top-nav) n'ont plus
+         lieu d'être ici une fois .mobile-logo/.trips-main::before retirés ci-dessus (demande
+         du 26/10/2026) : rien à dégager en haut de l'écran sur mobile désormais. */
+      .trips-main { padding: calc(20px + env(safe-area-inset-top)) 0 40px 0; max-width: 100%; }
       .trip-detail-wrapper { padding: 22px 0; border-radius: 0; border: none; box-shadow: none; }
       .trip-hero { margin: -22px 0 24px; border-radius: 0; }
       .trip-hero-top { flex-direction: column; padding-left: 16px; padding-right: 16px; }
@@ -742,7 +735,10 @@
          dégradé fixe pour tous les voyages, ce que cette fonctionnalité existante visait
          justement à éviter. Seule la forme de la bannière change ici. */
       .trip-hero-banner { border-radius: 0 0 28px 28px; }
-      .trip-hero-overlay { padding-bottom: 20px; padding-top: 4px; }
+      /* "augmente la marge du haut du header du trip (au dessus des icones)" (demande du
+         26/10/2026) : padding-top était quasi nul (4px), collant .trip-mobile-icon-row
+         (back/share/"...") tout en haut de la bannière. */
+      .trip-hero-overlay { padding-bottom: 20px; padding-top: 20px; }
 
       /* Rangée d'icônes back/share/"..." façon mockup (voir le HTML plus haut et
          window.switchTripMobileTab()... non, pas lié aux onglets — juste le menu "..."
@@ -985,8 +981,14 @@
          .edit-banner, n'avaient donc plus la moindre marge. Un simple margin-left
          (même valeur que le padding de .edit-banner) les aligne sans toucher à la
          pleine largeur des cartes en dessous (.itinerary-box/#loc-list), volontairement
-         inchangée. */
-      #i18n-your-iti, #saved-locs-label, #add-more-locations-btn { margin-left: 16px; margin-right: 16px; }
+         inchangée.
+         BUG rapporté à nouveau le 26/10/2026 pour le même #i18n-reco dans l'onglet Ideas
+         cette fois ("ajoute une marge à gauche de 'Recommended In France' pour que ce soit
+         aligné à l'horizontal avec le bouton Auto Itinerary") — exactement le même bug,
+         jamais corrigé ici car #i18n-reco n'avait jamais été ajouté à cette règle (seul
+         son équivalent de l'onglet Plan, #i18n-your-iti, l'était). Ajouté ci-dessous pour
+         s'aligner avec .trip-magic-banner (margin:0 16px 20px, voir plus bas). */
+      #i18n-your-iti, #saved-locs-label, #add-more-locations-btn, #i18n-reco { margin-left: 16px; margin-right: 16px; }
 
       /* "réduire la zone blanche (marges)" (demande du 25/10/2026, capture d'écran fournie)
          : #loc-modal gardait la boîte générique de style.css (width:90% + padding:30px),
@@ -1095,7 +1097,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261061';
+        s.src = 'page-loader.js?v=20261062';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1149,6 +1151,18 @@
             </a>
 
             <div class="sidebar-scroll-area" style="flex:1; display:flex; flex-direction:column; margin-top: 10px;">
+                <!-- Logo mobile qui défile avec la liste (demande du 26/10/2026, voir le
+                     commentaire complet dans le @media plus haut) : visible uniquement sur
+                     mobile (.sidebar-scroll-logo, display:none par défaut) — premier enfant de
+                     .sidebar-scroll-area pour défiler réellement avec elle, contrairement à
+                     .brand-row juste au-dessus (hors de cette zone, toujours caché sur mobile). -->
+                <a href="map.html" class="sidebar-scroll-logo">
+                    <svg width="32" height="32" viewBox="0 0 400 400" style="flex-shrink:0;">
+                        <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+                        <circle cx="200" cy="150" r="26" fill="#D42759"/>
+                    </svg>
+                    <span>Screen To <b style="color:#D42759;">Street</b></span>
+                </a>
                 <div class="sidebar-title" id="sidebar-title">MY TRIPS (0)</div>
                 <!-- Invitations à rejoindre un voyage (demande du 07/09/2026), tout en haut
                      de la liste, avant les voyages existants — voir refreshTripInvitesSidebar()
@@ -1716,7 +1730,7 @@
 </div>
 
 <div id="itinerary-modal" class="modal hidden">
-    <div class="modal-content" style="max-width: 650px; --qa-mag:#D42759; --qa-mut:#8F8B99; --qaf-line:#ece8f2; --qa-soft:#F4F2F8;">
+    <div class="modal-content" style="max-width: 650px; --qa-ink:#1F2430; --qa-mag:#D42759; --qa-mut:#8F8B99; --qaf-line:#ece8f2; --qa-soft:#F4F2F8;">
         <span class="close-btn" onclick="closeModal('itinerary-modal')">&times;</span>
         <!-- Masqués une fois "Your new itinerary" affiché (demande des 25 puis 26/10/2026,
              "enlève le texte 'Prefilled with this trip - change anything'" puis "enlève le
@@ -1887,9 +1901,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261061"></script>
-<script src="locations-data.js?v=20261061"></script>
-<script src="script.js?v=20261061"></script>
+<script type="module" src="firebase-init.js?v=20261062"></script>
+<script src="locations-data.js?v=20261062"></script>
+<script src="script.js?v=20261062"></script>
 
 </body>
 </html>
