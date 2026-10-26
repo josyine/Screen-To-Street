@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261060" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261061" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -319,6 +319,18 @@
       #itinerary-modal p[data-i18n="itiDesc"] { color: #8F8B99 !important; }
       #itinerary-modal .iti-generate-btn { background: linear-gradient(90deg, #E0156B, #9B5CF6) !important; }
   }
+
+  /* Rangée résumé "CRITERIA" (demande du 26/10/2026, capture d'écran "CRITERIA / BTS ·
+     Seoul · 4 days" + chevron) : carte à bord rose une fois #iti-criteria-panel déplacé
+     dans #iti-result par generateItinerary() (jamais avant — le formulaire seul, à sa
+     position d'origine sous le titre/la description, n'a pas besoin de ce cadre). Même
+     teinte rose pâle que .trip-dates ailleurs sur cette page. */
+  #iti-result #iti-criteria-panel {
+      border: 1.5px solid #FBD5DC; border-radius: 14px; padding: 0 14px; margin-bottom: 16px;
+  }
+  #iti-criteria-summary-row .qaf-rt small { text-transform: uppercase; letter-spacing: .5px; }
+  #iti-criteria-chev svg { transition: transform .2s; }
+  #iti-criteria-summary-row[aria-expanded="true"] #iti-criteria-chev svg { transform: rotate(90deg); }
 
   .section-label {font-size:11.5px;font-weight:700;letter-spacing:.7px;color:#94a3b8;text-transform:uppercase;margin:24px 0 16px 0;}
 
@@ -660,15 +672,26 @@
          friends.html sur toutes les pages "app" en mobile, cette page y compris. */
       .mobile-logo { display: flex; }
 
-      /* BUG corrigé (demande du 24/10/2026 puis annulée le 25/10/2026, "reprenne
-         exactement le même header que wishlist/visited/account") : une bande violette
-         permanente (.trips-main::before) avait été ajoutée ici pour garder un fond derrière
-         le logo/les icônes au défilement — mais comparée aux autres pages "app" du site
-         (wishlist/visited/account...), dont le header flotte toujours sur un fond simple
-         sans bande fixe dédiée, ce traitement les désalignait plutôt que de les
-         rapprocher. Retirée : .mobile-logo/#mobile-top-icons restent bien visibles au
-         défilement (position:fixed, inchangé), simplement sans fond spécial derrière eux —
-         exactement comme sur les autres pages. */
+      /* Fond du header (demande des 24, 25 puis 26/10/2026) : trois allers-retours sur ce
+         même bouton — d'abord une bande violette permanente (.trips-main::before, dégradé
+         ROSE/magenta du hero du voyage), retirée le 25/10 pour "reprendre exactement le
+         header de wishlist/visited/account" (qui n'ont PAS de bande dédiée, leur logo
+         flotte juste sur le fond de la page) ; mais CE retrait laissait le logo/les icônes
+         flotter sur du BLANC une fois .trips-main défilé (ses cartes ont leur propre fond
+         opaque), contrairement à wishlist/visited/account où le logo flotte TOUJOURS sur le
+         même dégradé lavande — .hero-background (plus haut dans ce fichier, position:fixed,
+         z-index:0) EST ce même dégradé partagé sur CETTE page aussi, mais reste caché dès
+         qu'on défile dès que le contenu de .trips-main (cartes blanches, bannière du voyage)
+         passe par-dessus. Remis ici, mais avec CE dégradé lavande partagé (identique à
+         --sidebar-bg juste en dessous) plutôt que l'ancien rose/magenta — cohérent avec
+         wishlist/visited/account cette fois, tout en restant visible en permanence quel que
+         soit ce qui défile dessous. */
+      .trips-main::before {
+          content: ""; position: fixed; top: 0; left: 0; right: 0;
+          height: calc(64px + env(safe-area-inset-top));
+          background: linear-gradient(160deg, #F5F3FC, #E9DFF6);
+          z-index: 3050; pointer-events: none;
+      }
 
       /* Fond violet du site + en-tête correct sur la liste des voyages mobile (demande
          du 17/10/2026, redemandée plusieurs fois) : .sidebar porte normalement un verre
@@ -1072,7 +1095,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261060';
+        s.src = 'page-loader.js?v=20261061';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1695,10 +1718,11 @@
 <div id="itinerary-modal" class="modal hidden">
     <div class="modal-content" style="max-width: 650px; --qa-mag:#D42759; --qa-mut:#8F8B99; --qaf-line:#ece8f2; --qa-soft:#F4F2F8;">
         <span class="close-btn" onclick="closeModal('itinerary-modal')">&times;</span>
-        <h2 style="color: var(--primary-magenta); font-size:1.4rem; margin-bottom: 5px;" data-i18n="itiTitle">Auto-Itinerary Generator</h2>
-        <!-- Masqué une fois "Your new itinerary" affiché (demande du 25/10/2026, "enlève le
-             texte 'Prefilled with this trip - change anything'") — voir generateItinerary()/
-             window.openItineraryModal() dans script.js, qui togglent sa classe "hidden". -->
+        <!-- Masqués une fois "Your new itinerary" affiché (demande des 25 puis 26/10/2026,
+             "enlève le texte 'Prefilled with this trip - change anything'" puis "enlève le
+             texte 'Auto-itinerary'") — voir generateItinerary()/window.openItineraryModal()
+             dans script.js, qui togglent leur classe "hidden". -->
+        <h2 id="iti-title" style="color: var(--primary-magenta); font-size:1.4rem; margin-bottom: 5px;" data-i18n="itiTitle">Auto-Itinerary Generator</h2>
         <p id="iti-desc" style="color: #64748b; font-size: 13px; margin-bottom: 20px;" data-i18n="itiDesc">Select a group, a country, and how many days you stay.</p>
 
         <!-- BUG corrigé (demande du 24/10/2026, capture d'écran fournie — deuxième image) :
@@ -1716,21 +1740,24 @@
              --qaf-line/--qa-soft que .qaf-row consomme (voir style.css) ne sont normalement
              posées QUE sur .qa-form-overlay (fiche "New trip") ; reposées ici sur
              .modal-content pour qu'elles résolvent correctement dans cette popup aussi. -->
-        <!-- #iti-criteria-panel (demande répétée du 25/10/2026, "il ne faut pas que ça
-             revienne en arrière, il faut afficher les filtres dans cette nouvelle fenêtre
-             Your new itinerary") : avant de générer un itinéraire, ce bloc (flèche de
-             fermeture + #iti-form) vit ICI, à sa place normale, flèche masquée (rien à
-             fermer). Une fois un résultat généré, window.generateItinerary() le DÉPLACE
-             (vrai DOM move, pas une copie) dans #iti-result juste sous le titre "Your new
-             itinerary"/bouton Criteria, flèche révélée — cliquer "Criteria" ne fait plus
-             basculer vers un autre écran (#iti-result ne se masque plus jamais une fois
-             généré), juste déplier ce même bloc SUR PLACE, dans la même fenêtre. Remis à sa
-             position d'origine par window.openItineraryModal() à chaque réouverture à
-             froid. Voir window.backToItiCriteria()/window.closeItiCriteria() dans script.js. -->
+        <!-- #iti-criteria-panel (demande répétée des 25 puis 26/10/2026, "il ne faut pas que
+             ça revienne en arrière, il faut afficher les filtres dans cette nouvelle fenêtre
+             Your new itinerary") : avant de générer un itinéraire, ce bloc (rangée résumé +
+             #iti-form) vit ICI, à sa place normale, rangée résumé masquée (rien à résumer
+             tant qu'aucun résultat n'existe, le formulaire est déjà visible tel quel). Une
+             fois un résultat généré, window.generateItinerary() le DÉPLACE (vrai DOM move,
+             pas une copie) dans #iti-result juste sous son titre, rangée résumé révélée —
+             le bouton "Criteria" séparé du round précédent a fusionné avec elle (demande du
+             26/10/2026, capture "CRITERIA / BTS · Seoul · 4 days" + chevron) : une seule
+             rangée fait à la fois office de résumé ET de bouton montrer/masquer (chevron
+             qui pivote, voir window.toggleItiCriteria() dans script.js), au lieu d'un bouton
+             Criteria ET d'une flèche de fermeture séparés. Remis à sa position d'origine par
+             window.openItineraryModal() à chaque réouverture à froid. -->
         <div id="iti-criteria-panel">
-        <button type="button" id="iti-criteria-close-row" class="hidden" onclick="window.closeItiCriteria()" style="display:flex; align-items:center; gap:8px; width:100%; background:none; border:none; padding:0 0 14px; cursor:pointer; color:#64748b; font-size:12.5px; font-weight:700;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-            <span data-i18n="itiCriteriaClose">Hide criteria</span>
+        <button type="button" id="iti-criteria-summary-row" class="qaf-row hidden" onclick="window.toggleItiCriteria()" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;">
+            <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="7" cy="18" r="2" fill="currentColor" stroke="none"/></svg></span>
+            <span class="qaf-rt"><small data-i18n="itiCriteriaLabel">CRITERIA</small><span id="iti-criteria-summary-value"></span></span>
+            <span class="qaf-chev" id="iti-criteria-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
         </button>
         <div id="iti-form" style="margin-bottom: 20px;">
             <!-- Group/Country/City : "génère de belles listes... reprend la fenêtre choose a
@@ -1812,17 +1839,18 @@
         </div>
 
         <div id="iti-result" class="hidden">
-            <!-- "Your new itinerary" + bouton Criteria (demande des 24 puis 25/10/2026,
-                 référence auto_itinerary_final.html — uniquement l'onglet Ideas de
-                 trips.html, voir le reste du résultat plus bas) : le bouton Criteria déplie
-                 #iti-criteria-panel (défini plus haut, déplacé ICI par generateItinerary())
-                 SANS perdre la sélection déjà faite (group/country/city/dates/stay/
-                 catégories restent tous dans les mêmes champs qu'avant, voir
-                 window.backToItiCriteria()/window.closeItiCriteria() dans script.js) plutôt
-                 que de revenir en arrière vers un autre écran. -->
-            <div id="iti-result-header" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+            <!-- "Your new itinerary" (demande des 24, 25 puis 26/10/2026, référence
+                 auto_itinerary_final.html — uniquement l'onglet Ideas de trips.html, voir le
+                 reste du résultat plus bas) : plus de bouton "Criteria" séparé ici — la
+                 rangée résumé "CRITERIA" (#iti-criteria-summary-row, définie avec
+                 #iti-criteria-panel plus haut, déplacée ICI par generateItinerary() juste en
+                 dessous) fait désormais à la fois office de résumé ET de bouton montrer/
+                 masquer, SANS perdre la sélection déjà faite (group/country/city/dates/
+                 stay/catégories restent tous dans les mêmes champs qu'avant, voir
+                 window.toggleItiCriteria() dans script.js) plutôt que de revenir en arrière
+                 vers un autre écran. -->
+            <div id="iti-result-header" style="margin-bottom:16px;">
                 <h3 id="iti-result-title" style="font-size:16px; font-weight:800; color:#212832; margin:0;">Your new itinerary</h3>
-                <button type="button" class="gen-btn ghost" onclick="window.backToItiCriteria()" style="padding:8px 14px; font-size:12px;" data-i18n="itiCriteriaBtn">Criteria</button>
             </div>
             <div style="width: 100%; height: 250px; background: #e2e8f0; border-radius: 12px; margin-bottom: 15px; position: relative; z-index: 10; overflow: hidden;">
                 <div id="iti-map-container" style="height: 100%; width: 100%;"></div>
@@ -1859,9 +1887,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261060"></script>
-<script src="locations-data.js?v=20261060"></script>
-<script src="script.js?v=20261060"></script>
+<script type="module" src="firebase-init.js?v=20261061"></script>
+<script src="locations-data.js?v=20261061"></script>
+<script src="script.js?v=20261061"></script>
 
 </body>
 </html>

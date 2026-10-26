@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261060" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261061" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -372,7 +372,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261060';
+        s.src = 'page-loader.js?v=20261061';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -515,9 +515,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
 </div>
 
-<script src="locations-data.js?v=20261060"></script>
-<script type="module" src="firebase-init.js?v=20261060"></script>
-<script src="script.js?v=20261060"></script>
+<script src="locations-data.js?v=20261061"></script>
+<script type="module" src="firebase-init.js?v=20261061"></script>
+<script src="script.js?v=20261061"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -691,9 +691,14 @@ det.addEventListener("click",e=>{const a=e.target.closest("[data-act]");if(!a)re
      interrompre par ce double changement de page quasi simultané) : la fenêtre de garde
      de connexion restait donc bloquée indéfiniment, la fiche lieu ne s'ouvrait jamais.
      On quitte de toute façon la page : pas besoin de revenir en arrière dans l'historique
-     ni de nettoyer l'affichage avant de partir, juste la navigation directe. */
+     ni de nettoyer l'affichage avant de partir, juste la navigation directe.
+     BUG corrigé (demande du 26/10/2026, "il faut rediriger vers le lieu sur la carte et non
+     afficher la page détail du lieu. Il faut zoomer sur le lieu sur la carte") : map.html?loc=
+     (ci-dessus pour tout CE fichier avant ce correctif) ouvre la fiche détail du lieu — voulu
+     pour Share/"More details" ailleurs sur le site, mais pas ici. map.html?focus=ID (voir sa
+     note dans script.js) recentre/zoome la carte sur le lieu SANS ouvrir sa fiche. */
   if(a.dataset.act==="map"){
-    const locId=a.dataset.locId;window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
+    const locId=a.dataset.locId;window.location.href=locId?"map.html?focus="+encodeURIComponent(locId):"map.html";
   }});
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(det.classList.contains("on"))closeDet();else if(page.classList.contains("on"))StbBadges.close();}});
 addEventListener("popstate",()=>{if(page.classList.contains("on"))StbBadges.close(true);});
@@ -936,13 +941,17 @@ document.addEventListener("click",e=>{
   const a=t.closest("[data-act]"); if(!a)return;
   if(a.dataset.act==="more"){showAll=!showAll;renderLieux();}
   if(a.dataset.act==="close")closeModal();
-  /* AJOUT SITE : navigue vraiment vers le lieu (map.html?loc=ID, même convention que la
-     version mobile) au lieu du simple toast de démonstration du fichier fourni.
+  /* AJOUT SITE : navigue vraiment vers le lieu (map.html?focus=ID, même convention que la
+     version mobile — voir sa note juste au-dessus dans ce fichier) au lieu du simple toast
+     de démonstration du fichier fourni.
      BUG corrigé (demande du 10/10/2026, "supprime la fiche de map") : la fiche "défi sur
      la carte" (ChallengeMap) a été retirée — "Voir les lieux sur la carte" d'un défi va
-     maintenant simplement sur la carte, sans fiche spéciale. */
+     maintenant simplement sur la carte, sans fiche spéciale.
+     BUG corrigé (demande du 26/10/2026, "il faut rediriger vers le lieu sur la carte et non
+     afficher la page détail du lieu") : map.html?focus=ID recentre la carte sans ouvrir la
+     fiche (contrairement à ?loc=, voulu pour Share/"More details" ailleurs sur le site). */
   if(a.dataset.act==="map"){
-    const locId=a.dataset.locId;closeModal();window.location.href=locId?"map.html?loc="+encodeURIComponent(locId):"map.html";
+    const locId=a.dataset.locId;closeModal();window.location.href=locId?"map.html?focus="+encodeURIComponent(locId):"map.html";
   }
 });
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
