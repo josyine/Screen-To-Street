@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-26T06:47:19.185Z.
+// Généré le 2026-10-26T14:29:45.198Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -24683,12 +24683,11 @@ window.STATIC_LOCATIONS = [
     "category": "MV Location",
     "year": "2024",
     "address": "13 Rue des Réservoirs, 78000 Versailles, France",
-    "lat": 48.8067,
-    "lng": 2.1228,
+    "lat": 48.8081108,
+    "lng": 2.124438,
     "img": "images/admin-upload-new-manual-1792959959225-9curlx-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "recreatedPhotos": [],
     "instagramUrls": [],
     "tipsList": [
       {
@@ -24748,16 +24747,37 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrls": [],
-    "recreatedPhoto": "",
     "imgCredit": "Peter Potrowl / CC BY-SA 4.0",
-    "pinterestUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
     "episodeLink": "",
     "instagramUrl": "",
-    "officialLink": "",
     "tiktokUrl": "",
-    "ytId": ""
+    "officialLink": "https://www.theatremontansier.com/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1792959959225-9curlx-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5052,
+            "y": 0.65,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1792959959225-9curlx-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.4896,
+            "y": 0.6118,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "pinterestUrl": "https://fr.pinterest.com/pin/986358755886827627/",
+    "ytId": "HAWYOuMGkK0"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
