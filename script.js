@@ -938,7 +938,15 @@ if (!window.__igEmbedResizeWired) {
 async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     const shortcode = extractInstagramShortcode(instagramUrl);
     if (shortcode) {
-        container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:100%;"></iframe>`;
+        // BUG rapporté le 26/10/2026 (lieu "Viña Aquitania", premier embed Instagram) : le
+        // bandeau "View more on Instagram" d'Instagram apparaissait superposé SUR la photo
+        // au lieu d'une section propre en dessous — 480px de hauteur initiale (avant que le
+        // postMessage "MEASURE" ci-dessus n'ait pu redimensionner l'iframe à sa vraie
+        // hauteur) ne suffit pas pour certains posts (légende longue, carrousel). Hauteur de
+        // départ plus généreuse pour réduire ce risque de recadrage visible le temps que le
+        // redimensionnement réel arrive — n'affecte aucun post déjà correctement redimensionné
+        // (son propre postMessage l'ajuste de toute façon ensuite).
+        container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="620" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:100%;"></iframe>`;
         return;
     }
     // Repli si jamais aucun code n'a pu être extrait (ne devrait normalement jamais arriver
@@ -5018,6 +5026,32 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             setTimeout(() => tryOpenSharedLocation(40), 300); // 40 x 300ms = 12s de plafond
         }
+        // ?focus=ID (demande du 26/10/2026, "il faut rediriger vers le lieu sur la carte...
+        // et non afficher la page détail du lieu. Il faut zoomer sur le lieu sur la carte")
+        // — bouton "Voir sur la carte"/"Y aller" de badges.html, voir son commentaire :
+        // un lien DISTINCT de ?loc= ci-dessus (qui reste inchangé pour tous ses autres
+        // appelants — Share, "More details" de visited.html/wishlist.html/trips.html — qui
+        // eux veulent bien ouvrir la fiche). Ici, seulement recentrer/zoomer la carte sur le
+        // lieu, sans jamais ouvrir sa fiche détail. Même mécanique de réessai que
+        // tryOpenSharedLocation ci-dessus (celebLocations pas encore fusionné / fenêtre de
+        // connexion encore bloquante au moment du chargement).
+        const focusParam = params.get('focus');
+        if (focusParam) {
+            const tryFocusLocation = (attemptsLeft) => {
+                const gateBlocking = document.body.classList.contains('auth-gate-active');
+                const matchedLoc = typeof celebLocations !== 'undefined' ? celebLocations.find(l => String(l.id) === focusParam) : null;
+                if (!gateBlocking && matchedLoc) {
+                    if (typeof window.switchMainTab === 'function') window.switchMainTab('explore');
+                    if (typeof map !== 'undefined' && map && matchedLoc.lat && matchedLoc.lng) {
+                        map.flyTo([matchedLoc.lat, matchedLoc.lng], 16, { duration: 0.6 });
+                    }
+                    return;
+                }
+                if (attemptsLeft <= 0) return;
+                setTimeout(() => tryFocusLocation(attemptsLeft - 1), 300);
+            };
+            setTimeout(() => tryFocusLocation(40), 300);
+        }
         // ?live=1 : icône "Live" de la nav du bas mobile (injectMobileBottomNav) quand on
         // n'est pas déjà sur map.html — ouvre le panneau Live/Tour dès que la page a fini
         // de s'initialiser.
@@ -5335,7 +5369,7 @@ const translations = {
         checkVisited: "I visited this place", checkWishlist: "Add to Wishlist", tripWhich: "Which trip is this for?",
         tripName: "Trip name", tripWhen: "When are you planning to go?", tripFrom: "From", tripTo: "To", tripCreate: "Create trip", tripCancel: "Cancel",
         itiTitle: "Auto-itinerary", itiDesc: "Prefilled with this trip — change anything.", itiCreateBtn: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Generate itinerary', itiCatLabel: "Categories (optional, select multiple)", itiCatRowLabel: "Category", itiExport: "Export Guide as PDF", itiSave: "Save to My Trips",
-        itiGroupLabel: "Group", itiCountryLabel: "Country", itiCityLabel: "City", itiOptional: "· optional", itiAllCities: "All cities", itiDatesLabel: "Dates", itiLengthLabel: "Trip length", itiLengthUnit: "· days", itiStayLabel: "Stay", itiCriteriaClose: "Hide criteria",
+        itiGroupLabel: "Group", itiCountryLabel: "Country", itiCityLabel: "City", itiOptional: "· optional", itiAllCities: "All cities", itiDatesLabel: "Dates", itiLengthLabel: "Trip length", itiLengthUnit: "· days", itiStayLabel: "Stay", itiCriteriaLabel: "CRITERIA",
         searchTripsPlaceholder: "Search your trips...", noTripsFound: "No trips found.", selectTripToView: "Select a trip to view", deselectTripOption: "— No trip selected —", locationsWord: "location", locationsWordPlural: "locations",
         addAnotherVisit: "Add another visit",
         tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", accessibilityRating: "Easy to access?", siteQualityRating: "Site quality", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "{count} friends have visited this place", friendsVisitedStatOne: "1 friend has visited this place", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Link:", lOfficialLink: "Source", lFollow: "Follow:", lWatchEpi: "On Screen", lPractical: "Practical information & access", lLearnMore: "Learn more", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lRecreatePhoto: "Mei's Pictures", officialPoseLabel: "Official recreation of the celebrity's pose", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
@@ -5358,7 +5392,7 @@ const translations = {
         setManage: "Manage", setNotifConfirmTitle: "Enable email notifications?", setNotifConfirmBody: "By enabling this, you agree to receive an email whenever new locations are added — at an interval that depends on how active the artist currently is (more frequent during a comeback or tour, quieter otherwise). Choose which groups and countries you care about below.", setNotifEnableBtn: "Enable", setPushNotifConfirmTitle: "Enable push notifications?", setPushNotifConfirmBody: "By enabling this, you agree to receive a push notification whenever new locations are added — at an interval that depends on how active the artist currently is (more frequent during a comeback or tour, quieter otherwise). Choose which groups and countries you care about below.", setNotifGroupsLabel: "Notify me for these groups", setNotifCountryLabel: "Notify me for these countries", setNotifAllCountries: "All countries", setNotifSearchCountry: "Search countries...", setCookiePrefsTitle: "Cookie Preferences", setCookiePrefsBody: "Necessary cookies keep the site working (login, saved wishlist) and can't be turned off. You choose whether we also use cookies to remember your preferences across visits.", setCookieNecessary: "Necessary", setCookieNecessarySub: "Always active", setCookieAnalytics: "Preferences & analytics", setCookieAnalyticsSub: "Remember your choices between visits", setSavePreferences: "Save preferences",
         setDanger: "Danger zone", setDeleteAccTitle: "Delete account", setDeleteAccSub: "This permanently deletes your trips, wishlist and unlocked passes.", setDeleteAccBtn: "Delete Account",
         wishTitle: "My Wishlist", wishEmpty: "You haven't saved any places yet. Explore the map and click \"Add to Wishlist\"!", wishSomeday: "Someday / No trip yet",
-        visitTitle: "Visited", visitEmpty: "You haven't marked any place as visited yet. Explore the map and check \"I visited this place\"!",
+        visitTitle: "Visited", visitEmpty: "You haven't marked any place as visited yet. Explore the map and check \"I visited this place\"!", visitByLocation: "By location",
         destTitle: "Explore Destinations", destSub: "Browse every country and city featured on Screen To Street", destCountries: "Countries", destCities: "Cities", destLocations: "Locations", destViewMap: "View on Map →",
         artTitle: "Explore Artists", artSub: "Discover every group featured on Screen To Street", artGroups: "Groups", artFeatured: "Featured group",
 
@@ -5403,7 +5437,7 @@ const translations = {
         checkVisited: "J'ai visité ce lieu", checkWishlist: "Ajouter à ma Wishlist", tripWhich: "Pour quel voyage ?",
         tripName: "Nom du voyage", tripWhen: "Quand prévoyez-vous d'y aller ?", tripFrom: "De", tripTo: "À", tripCreate: "Créer", tripCancel: "Annuler",
         itiTitle: "Itinéraire automatique", itiDesc: "Pré-rempli avec ce voyage — modifiez ce que vous voulez.", itiCreateBtn: '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;"><path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/></svg> Générer l\'itinéraire', itiCatLabel: "Catégories (facultatif, sélection multiple)", itiCatRowLabel: "Catégorie", itiExport: "Exporter en PDF", itiSave: "Sauvegarder dans My Trips",
-        itiGroupLabel: "Groupe", itiCountryLabel: "Pays", itiCityLabel: "Ville", itiOptional: "· facultatif", itiAllCities: "Toutes les villes", itiDatesLabel: "Dates", itiLengthLabel: "Durée du séjour", itiLengthUnit: "· jours", itiStayLabel: "Hébergement", itiCriteriaClose: "Masquer les critères",
+        itiGroupLabel: "Groupe", itiCountryLabel: "Pays", itiCityLabel: "Ville", itiOptional: "· facultatif", itiAllCities: "Toutes les villes", itiDatesLabel: "Dates", itiLengthLabel: "Durée du séjour", itiLengthUnit: "· jours", itiStayLabel: "Hébergement", itiCriteriaLabel: "CRITÈRES",
         searchTripsPlaceholder: "Rechercher vos voyages...", noTripsFound: "Aucun voyage trouvé.", selectTripToView: "Sélectionner un voyage", deselectTripOption: "— Aucun voyage sélectionné —", locationsWord: "lieu", locationsWordPlural: "lieux",
         addAnotherVisit: "Ajouter une autre visite",
         tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", accessibilityRating: "Facilement accessible ?", siteQualityRating: "Qualité du lieu", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "{count} amis ont visité cet endroit", friendsVisitedStatOne: "1 ami a visité cet endroit", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Lien :", lOfficialLink: "Source", lFollow: "Suivre :", lWatchEpi: "À l'écran", lPractical: "Informations pratiques & accès", lLearnMore: "En savoir plus", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lRecreatePhoto: "Les photos de Mei", officialPoseLabel: "Reproduction officielle de la célébrité", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
@@ -5426,7 +5460,7 @@ const translations = {
         setManage: "Gérer", setNotifConfirmTitle: "Activer les notifications par e-mail ?", setNotifConfirmBody: "En activant cette option, vous acceptez de recevoir un e-mail à chaque nouveau lieu ajouté — à une fréquence qui dépend de l'activité actuelle de l'artiste (plus fréquent lors d'un comeback ou d'une tournée, plus calme sinon). Choisissez ci-dessous les groupes et les pays qui vous intéressent.", setNotifEnableBtn: "Activer", setPushNotifConfirmTitle: "Activer les notifications push ?", setPushNotifConfirmBody: "En activant cette option, vous acceptez de recevoir une notification push à chaque nouveau lieu ajouté — à une fréquence qui dépend de l'activité actuelle de l'artiste (plus fréquent lors d'un comeback ou d'une tournée, plus calme sinon). Choisissez ci-dessous les groupes et les pays qui vous intéressent.", setNotifGroupsLabel: "Me notifier pour ces groupes", setNotifCountryLabel: "Me notifier pour ces pays", setNotifAllCountries: "Tous les pays", setNotifSearchCountry: "Rechercher un pays...", setCookiePrefsTitle: "Préférences de cookies", setCookiePrefsBody: "Les cookies nécessaires font fonctionner le site (connexion, wishlist sauvegardée) et ne peuvent pas être désactivés. Vous choisissez si on utilise aussi des cookies pour mémoriser vos préférences d'une visite à l'autre.", setCookieNecessary: "Nécessaires", setCookieNecessarySub: "Toujours actifs", setCookieAnalytics: "Préférences et analyse", setCookieAnalyticsSub: "Mémorise vos choix d'une visite à l'autre", setSavePreferences: "Enregistrer les préférences",
         setDanger: "Zone de danger", setDeleteAccTitle: "Supprimer le compte", setDeleteAccSub: "Ceci supprime définitivement vos voyages, votre wishlist et vos pass débloqués.", setDeleteAccBtn: "Supprimer le compte",
         wishTitle: "Ma Wishlist", wishEmpty: "Vous n'avez encore enregistré aucun lieu. Explorez la carte et cliquez sur « Ajouter à ma Wishlist » !", wishSomeday: "Un jour / Pas de voyage prévu",
-        visitTitle: "Mes lieux visités", visitEmpty: "Vous n'avez marqué aucun lieu comme visité. Explorez la carte et cochez « J'ai visité ce lieu » !",
+        visitTitle: "Mes lieux visités", visitEmpty: "Vous n'avez marqué aucun lieu comme visité. Explorez la carte et cochez « J'ai visité ce lieu » !", visitByLocation: "Par lieu",
         destTitle: "Explorer les destinations", destSub: "Parcourez tous les pays et villes présents sur Screen To Street", destCountries: "Pays", destCities: "Villes", destLocations: "Lieux", destViewMap: "Voir sur la carte →",
         artTitle: "Explorer les artistes", artSub: "Découvrez tous les groupes présents sur Screen To Street", artGroups: "Groupes", artFeatured: "Groupe à la une",
 
@@ -5471,7 +5505,7 @@ const translations = {
         checkVisited: "He visitado este lugar", checkWishlist: "Añadir a mi lista", tripWhich: "¿Para qué viaje es esto?",
         tripName: "Nombre del viaje", tripWhen: "¿Cuándo planeas ir?", tripFrom: "Desde", tripTo: "Hasta", tripCreate: "Crear viaje", tripCancel: "Cancelar",
         itiTitle: "Generador de Itinerarios", itiDesc: "Selecciona un grupo, un país y cuántos días te quedas.", itiCreateBtn: "Crear mi guía", itiCatLabel: "Categorías (opcional, selección múltiple)", itiExport: "Exportar guía en PDF", itiSave: "Guardar en Mis Viajes",
-        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Ciudad", itiOptional: "· opcional", itiAllCities: "Todas las ciudades", itiDatesLabel: "Fechas", itiLengthLabel: "Duración del viaje", itiLengthUnit: "· días", itiStayLabel: "Alojamiento", itiCriteriaClose: "Ocultar criterios",
+        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Ciudad", itiOptional: "· opcional", itiAllCities: "Todas las ciudades", itiDatesLabel: "Fechas", itiLengthLabel: "Duración del viaje", itiLengthUnit: "· días", itiStayLabel: "Alojamiento", itiCriteriaLabel: "CRITERIOS",
         searchTripsPlaceholder: "Buscar tus viajes...", noTripsFound: "No se encontraron viajes.", selectTripToView: "Selecciona un viaje para ver", deselectTripOption: "— Ningún viaje seleccionado —", locationsWord: "lugar", locationsWordPlural: "lugares",
         addAnotherVisit: "Añadir otra visita",
         tabExplore: "Explorar", tabMyItinerary: "Mi Itinerario", yourRating: "Tu valoración", foodQualityRating: "Calidad de la comida", valueForMoneyRating: "Relación calidad-precio", accessibilityRating: "¿Fácil acceso?", siteQualityRating: "Calidad del lugar", wishlistStat: "El {pct}% de los usuarios añadió este lugar a su lista de deseos", friendsVisitedStat: "{count} amigos han visitado este lugar", friendsVisitedStatOne: "1 amigo ha visitado este lugar", whenDidYouVisit: "¿Cuándo visitaste este lugar?", saveMemory: "Guardar recuerdo", myVisitTab: "Mi Visita", tabReviews: "Reseñas", tabInfo: "Info", tabStory: "Historia", lGroup: "Grupo:", lMembers: "Miembros:", lCountry: "País:", lCity: "Ciudad:", lDate: "Fecha:", lEpisode: "Episodio:", lWatch: "Enlace:", lOfficialLink: "Fuente", lFollow: "Seguir:", lWatchEpi: "En pantalla", lPractical: "Información práctica y acceso", lLearnMore: "Más información", lAddress: "Dirección", lOpenMap: "Abrir en Google Maps", lStoryPlace: "La historia de este lugar", lStoryBts: "Siguiendo los pasos de BTS", lRecreatePhoto: "Las fotos de Mei", officialPoseLabel: "Reproducción oficial de la celebridad", lTipsTitle: "LOS CONSEJOS DE «SCREEN TO STREET»", lHowToGetThere: "Cómo llegar:", memoryNotesLabel: "Tus notas (opcional)", memoryNotesPlaceholder: "¿Qué recuerdas de este lugar?", reviewsCountLabel: "{n} reseñas públicas", reviewsWriteLabel: "Escribe tu reseña", reviewsComposePlaceholder: "Comparte lo que pensaste...", reviewsComposeMakePublic: "Hacer esto público", reviewsComposePost: "Publicar reseña", memoryPhotoLabel: "Añadir una foto (opcional)", memoryPhotoChoose: "Elegir una foto", memoryPhotoRemove: "Quitar", memoryMakePublic: "Hacer pública esta reseña (visible para otros usuarios)", reviewsLoading: "Cargando reseñas…", reviewsEmpty: "Todavía no hay reseñas públicas para este lugar — ¡sé el primero en compartir la tuya desde la pestaña «Mi Visita»!",
@@ -5494,7 +5528,7 @@ const translations = {
         setManage: "Gestionar", setNotifConfirmTitle: "¿Activar las notificaciones por correo?", setNotifConfirmBody: "Al activarlo, aceptas recibir un correo cada vez que se añadan nuevos lugares — con una frecuencia que depende de la actividad actual del artista (más frecuente durante un comeback o gira, más tranquilo el resto del tiempo). Elige a continuación los grupos y los países que te interesan.", setNotifEnableBtn: "Activar", setPushNotifConfirmTitle: "¿Activar las notificaciones push?", setPushNotifConfirmBody: "Al activarlo, aceptas recibir una notificación push cada vez que se añadan nuevos lugares — con una frecuencia que depende de la actividad actual del artista (más frecuente durante un comeback o gira, más tranquilo el resto del tiempo). Elige a continuación los grupos y los países que te interesan.", setNotifGroupsLabel: "Notificarme para estos grupos", setNotifCountryLabel: "Notificarme para estos países", setNotifAllCountries: "Todos los países", setNotifSearchCountry: "Buscar países...", setCookiePrefsTitle: "Preferencias de cookies", setCookiePrefsBody: "Las cookies necesarias hacen que el sitio funcione (inicio de sesión, lista de deseos guardada) y no se pueden desactivar. Tú decides si también usamos cookies para recordar tus preferencias entre visitas.", setCookieNecessary: "Necesarias", setCookieNecessarySub: "Siempre activas", setCookieAnalytics: "Preferencias y análisis", setCookieAnalyticsSub: "Recuerda tus elecciones entre visitas", setSavePreferences: "Guardar preferencias",
         setDanger: "Zona de peligro", setDeleteAccTitle: "Eliminar cuenta", setDeleteAccSub: "Esto elimina permanentemente tus viajes, lista de deseos y pases desbloqueados.", setDeleteAccBtn: "Eliminar cuenta",
         wishTitle: "Mi Lista de Deseos", wishEmpty: "Aún no has guardado ningún lugar. ¡Explora el mapa y haz clic en «Añadir a mi lista»!", wishSomeday: "Algún día / Sin viaje aún",
-        visitTitle: "Mis Lugares Visitados", visitEmpty: "Aún no has marcado ningún lugar como visitado. ¡Explora el mapa y marca «He visitado este lugar»!",
+        visitTitle: "Mis Lugares Visitados", visitEmpty: "Aún no has marcado ningún lugar como visitado. ¡Explora el mapa y marca «He visitado este lugar»!", visitByLocation: "Por lugar",
         destTitle: "Explorar Destinos", destSub: "Explora todos los países y ciudades de Screen To Street", destCountries: "Países", destCities: "Ciudades", destLocations: "Lugares", destViewMap: "Ver en el mapa →",
         artTitle: "Explorar Artistas", artSub: "Descubre todos los grupos presentes en Screen To Street", artGroups: "Grupos", artFeatured: "Grupo destacado",
 
@@ -5535,7 +5569,7 @@ const translations = {
         checkVisited: "Ho visitato questo posto", checkWishlist: "Aggiungi alla wishlist", tripWhich: "Per quale viaggio è questo?",
         tripName: "Nome del viaggio", tripWhen: "Quando pensi di andarci?", tripFrom: "Da", tripTo: "A", tripCreate: "Crea viaggio", tripCancel: "Annulla",
         itiTitle: "Generatore di Itinerari", itiDesc: "Seleziona un gruppo, un paese e quanti giorni resti.", itiCreateBtn: "Crea la mia guida", itiCatLabel: "Categorie (opzionale, selezione multipla)", itiExport: "Esporta guida in PDF", itiSave: "Salva nei Miei Viaggi",
-        itiGroupLabel: "Gruppo", itiCountryLabel: "Paese", itiCityLabel: "Città", itiOptional: "· facoltativo", itiAllCities: "Tutte le città", itiDatesLabel: "Date", itiLengthLabel: "Durata del viaggio", itiLengthUnit: "· giorni", itiStayLabel: "Soggiorno", itiCriteriaClose: "Nascondi criteri",
+        itiGroupLabel: "Gruppo", itiCountryLabel: "Paese", itiCityLabel: "Città", itiOptional: "· facoltativo", itiAllCities: "Tutte le città", itiDatesLabel: "Date", itiLengthLabel: "Durata del viaggio", itiLengthUnit: "· giorni", itiStayLabel: "Soggiorno", itiCriteriaLabel: "CRITERI",
         searchTripsPlaceholder: "Cerca i tuoi viaggi...", noTripsFound: "Nessun viaggio trovato.", selectTripToView: "Seleziona un viaggio da vedere", deselectTripOption: "— Nessun viaggio selezionato —", locationsWord: "luogo", locationsWordPlural: "luoghi",
         addAnotherVisit: "Aggiungi un'altra visita",
         tabExplore: "Esplora", tabMyItinerary: "Il Mio Itinerario", yourRating: "La tua valutazione", foodQualityRating: "Qualità del cibo", valueForMoneyRating: "Rapporto qualità-prezzo", accessibilityRating: "Facile da raggiungere?", siteQualityRating: "Qualità del luogo", wishlistStat: "Il {pct}% degli utenti ha aggiunto questo posto alla propria wishlist", friendsVisitedStat: "{count} amici hanno visitato questo posto", friendsVisitedStatOne: "1 amico ha visitato questo posto", whenDidYouVisit: "Quando hai visitato questo posto?", saveMemory: "Salva ricordo", myVisitTab: "La Mia Visita", tabReviews: "Recensioni", tabInfo: "Info", tabStory: "Storia", lGroup: "Gruppo:", lMembers: "Membri:", lCountry: "Paese:", lCity: "Città:", lDate: "Data:", lEpisode: "Episodio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Segui:", lWatchEpi: "Sullo schermo", lPractical: "Informazioni pratiche e accesso", lLearnMore: "Scopri di più", lAddress: "Indirizzo", lOpenMap: "Apri in Google Maps", lStoryPlace: "La storia di questo posto", lStoryBts: "Sulle orme dei BTS", lRecreatePhoto: "Le foto di Mei", officialPoseLabel: "Riproduzione ufficiale della celebrità", lTipsTitle: "I CONSIGLI DI «SCREEN TO STREET»", lHowToGetThere: "Come arrivare:", memoryNotesLabel: "Le tue note (facoltativo)", memoryNotesPlaceholder: "Cosa ricordi di questo posto?", reviewsCountLabel: "{n} recensioni pubbliche", reviewsWriteLabel: "Scrivi la tua recensione", reviewsComposePlaceholder: "Condividi cosa ne pensi...", reviewsComposeMakePublic: "Rendi pubblica questa recensione", reviewsComposePost: "Pubblica recensione", memoryPhotoLabel: "Aggiungi una foto (facoltativo)", memoryPhotoChoose: "Scegli una foto", memoryPhotoRemove: "Rimuovi", memoryMakePublic: "Rendi pubblica questa recensione (visibile agli altri utenti)", reviewsLoading: "Caricamento recensioni…", reviewsEmpty: "Ancora nessuna recensione pubblica per questo posto — sii il primo a condividere la tua dalla scheda «La Mia Visita»!",
@@ -5558,7 +5592,7 @@ const translations = {
         setManage: "Gestisci", setNotifConfirmTitle: "Attivare le notifiche email?", setNotifConfirmBody: "Attivandole, accetti di ricevere un'email ogni volta che vengono aggiunti nuovi luoghi — con una frequenza che dipende dall'attività attuale dell'artista (più frequente durante un comeback o un tour, più tranquilla altrimenti). Scegli qui sotto i gruppi e i paesi che ti interessano.", setNotifEnableBtn: "Attiva", setPushNotifConfirmTitle: "Attivare le notifiche push?", setPushNotifConfirmBody: "Attivandole, accetti di ricevere una notifica push ogni volta che vengono aggiunti nuovi luoghi — con una frequenza che dipende dall'attività attuale dell'artista (più frequente durante un comeback o un tour, più tranquilla altrimenti). Scegli qui sotto i gruppi e i paesi che ti interessano.", setNotifGroupsLabel: "Notificami per questi gruppi", setNotifCountryLabel: "Notificami per questi paesi", setNotifAllCountries: "Tutti i paesi", setNotifSearchCountry: "Cerca paesi...", setCookiePrefsTitle: "Preferenze cookie", setCookiePrefsBody: "I cookie necessari fanno funzionare il sito (accesso, lista dei desideri salvata) e non possono essere disattivati. Puoi scegliere se usiamo anche cookie per ricordare le tue preferenze tra una visita e l'altra.", setCookieNecessary: "Necessari", setCookieNecessarySub: "Sempre attivi", setCookieAnalytics: "Preferenze e analisi", setCookieAnalyticsSub: "Ricorda le tue scelte tra una visita e l'altra", setSavePreferences: "Salva preferenze",
         setDanger: "Zona pericolosa", setDeleteAccTitle: "Elimina account", setDeleteAccSub: "Questo elimina definitivamente i tuoi viaggi, la wishlist e i pass sbloccati.", setDeleteAccBtn: "Elimina account",
         wishTitle: "La Mia Wishlist", wishEmpty: "Non hai ancora salvato nessun luogo. Esplora la mappa e clicca su «Aggiungi alla wishlist»!", wishSomeday: "Un giorno / Nessun viaggio ancora",
-        visitTitle: "I Miei Luoghi Visitati", visitEmpty: "Non hai ancora segnato nessun luogo come visitato. Esplora la mappa e seleziona «Ho visitato questo posto»!",
+        visitTitle: "I Miei Luoghi Visitati", visitEmpty: "Non hai ancora segnato nessun luogo come visitato. Esplora la mappa e seleziona «Ho visitato questo posto»!", visitByLocation: "Per luogo",
         destTitle: "Esplora Destinazioni", destSub: "Esplora tutti i paesi e le città presenti su Screen To Street", destCountries: "Paesi", destCities: "Città", destLocations: "Luoghi", destViewMap: "Vedi sulla mappa →",
         artTitle: "Esplora Artisti", artSub: "Scopri tutti i gruppi presenti su Screen To Street", artGroups: "Gruppi", artFeatured: "Gruppo in evidenza",
 
@@ -5599,7 +5633,7 @@ const translations = {
         checkVisited: "Eu visitei este lugar", checkWishlist: "Adicionar à wishlist", tripWhich: "Para qual viagem é isso?",
         tripName: "Nome da viagem", tripWhen: "Quando você planeja ir?", tripFrom: "De", tripTo: "Até", tripCreate: "Criar viagem", tripCancel: "Cancelar",
         itiTitle: "Gerador de Roteiros", itiDesc: "Selecione um grupo, um país e quantos dias você fica.", itiCreateBtn: "Criar meu guia", itiCatLabel: "Categorias (opcional, seleção múltipla)", itiExport: "Exportar guia em PDF", itiSave: "Salvar em Minhas Viagens",
-        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Cidade", itiOptional: "· opcional", itiAllCities: "Todas as cidades", itiDatesLabel: "Datas", itiLengthLabel: "Duração da viagem", itiLengthUnit: "· dias", itiStayLabel: "Hospedagem", itiCriteriaClose: "Ocultar critérios",
+        itiGroupLabel: "Grupo", itiCountryLabel: "País", itiCityLabel: "Cidade", itiOptional: "· opcional", itiAllCities: "Todas as cidades", itiDatesLabel: "Datas", itiLengthLabel: "Duração da viagem", itiLengthUnit: "· dias", itiStayLabel: "Hospedagem", itiCriteriaLabel: "CRITÉRIOS",
         searchTripsPlaceholder: "Buscar suas viagens...", noTripsFound: "Nenhuma viagem encontrada.", selectTripToView: "Selecione uma viagem para ver", deselectTripOption: "— Nenhuma viagem selecionada —", locationsWord: "local", locationsWordPlural: "locais",
         addAnotherVisit: "Adicionar outra visita",
         tabExplore: "Explorar", tabMyItinerary: "Meu Itinerário", yourRating: "Sua avaliação", foodQualityRating: "Qualidade da comida", valueForMoneyRating: "Custo-benefício", accessibilityRating: "Fácil acesso?", siteQualityRating: "Qualidade do lugar", wishlistStat: "{pct}% dos usuários adicionaram este lugar à lista de desejos", friendsVisitedStat: "{count} amigos visitaram este lugar", friendsVisitedStatOne: "1 amigo visitou este lugar", whenDidYouVisit: "Quando você visitou este lugar?", saveMemory: "Salvar lembrança", myVisitTab: "Minha Visita", tabReviews: "Avaliações", tabInfo: "Info", tabStory: "História", lGroup: "Grupo:", lMembers: "Membros:", lCountry: "País:", lCity: "Cidade:", lDate: "Data:", lEpisode: "Episódio:", lWatch: "Link:", lOfficialLink: "Fonte", lFollow: "Seguir:", lWatchEpi: "Na tela", lPractical: "Informações práticas e acesso", lLearnMore: "Saiba mais", lAddress: "Endereço", lOpenMap: "Abrir no Google Maps", lStoryPlace: "A história deste lugar", lStoryBts: "Nos passos do BTS", lRecreatePhoto: "As fotos da Mei", officialPoseLabel: "Reprodução oficial da celebridade", lTipsTitle: "AS DICAS «SCREEN TO STREET»", lHowToGetThere: "Como chegar:", memoryNotesLabel: "Suas notas (opcional)", memoryNotesPlaceholder: "O que você lembra deste lugar?", reviewsCountLabel: "{n} avaliações públicas", reviewsWriteLabel: "Escreva sua avaliação", reviewsComposePlaceholder: "Compartilhe sua opinião...", reviewsComposeMakePublic: "Tornar isso público", reviewsComposePost: "Publicar avaliação", memoryPhotoLabel: "Adicionar uma foto (opcional)", memoryPhotoChoose: "Escolher uma foto", memoryPhotoRemove: "Remover", memoryMakePublic: "Tornar esta avaliação pública (visível para outros usuários)", reviewsLoading: "Carregando avaliações…", reviewsEmpty: "Ainda não há avaliações públicas para este lugar — seja o primeiro a compartilhar a sua na aba «Minha Visita»!",
@@ -5622,7 +5656,7 @@ const translations = {
         setManage: "Gerenciar", setNotifConfirmTitle: "Ativar notificações por e-mail?", setNotifConfirmBody: "Ao ativar, você concorda em receber um e-mail sempre que novos locais forem adicionados — com uma frequência que depende da atividade atual do artista (mais frequente durante um comeback ou turnê, mais tranquila fora disso). Escolha abaixo os grupos e os países do seu interesse.", setNotifEnableBtn: "Ativar", setPushNotifConfirmTitle: "Ativar notificações push?", setPushNotifConfirmBody: "Ao ativar, você concorda em receber uma notificação push sempre que novos locais forem adicionados — com uma frequência que depende da atividade atual do artista (mais frequente durante um comeback ou turnê, mais tranquila fora disso). Escolha abaixo os grupos e os países do seu interesse.", setNotifGroupsLabel: "Notificar-me para estes grupos", setNotifCountryLabel: "Notificar-me para estes países", setNotifAllCountries: "Todos os países", setNotifSearchCountry: "Buscar países...", setCookiePrefsTitle: "Preferências de cookies", setCookiePrefsBody: "Os cookies necessários fazem o site funcionar (login, lista de desejos salva) e não podem ser desativados. Você escolhe se também usamos cookies para lembrar suas preferências entre visitas.", setCookieNecessary: "Necessários", setCookieNecessarySub: "Sempre ativos", setCookieAnalytics: "Preferências e análise", setCookieAnalyticsSub: "Lembra suas escolhas entre visitas", setSavePreferences: "Salvar preferências",
         setDanger: "Zona de perigo", setDeleteAccTitle: "Excluir conta", setDeleteAccSub: "Isso exclui permanentemente suas viagens, wishlist e passes desbloqueados.", setDeleteAccBtn: "Excluir conta",
         wishTitle: "Minha Wishlist", wishEmpty: "Você ainda não salvou nenhum local. Explore o mapa e clique em «Adicionar à wishlist»!", wishSomeday: "Algum dia / Ainda sem viagem",
-        visitTitle: "Meus Locais Visitados", visitEmpty: "Você ainda não marcou nenhum local como visitado. Explore o mapa e marque «Eu visitei este lugar»!",
+        visitTitle: "Meus Locais Visitados", visitEmpty: "Você ainda não marcou nenhum local como visitado. Explore o mapa e marque «Eu visitei este lugar»!", visitByLocation: "Por local",
         destTitle: "Explorar Destinos", destSub: "Explore todos os países e cidades do Screen To Street", destCountries: "Países", destCities: "Cidades", destLocations: "Locais", destViewMap: "Ver no mapa →",
         artTitle: "Explorar Artistas", artSub: "Descubra todos os grupos presentes no Screen To Street", artGroups: "Grupos", artFeatured: "Grupo em destaque",
 
@@ -5663,7 +5697,7 @@ const translations = {
         checkVisited: "이 장소를 방문했어요", checkWishlist: "위시리스트에 추가", tripWhich: "어떤 여행을 위한 건가요?",
         tripName: "여행 이름", tripWhen: "언제 갈 계획인가요?", tripFrom: "부터", tripTo: "까지", tripCreate: "여행 만들기", tripCancel: "취소",
         itiTitle: "자동 일정 생성기", itiDesc: "그룹, 국가, 체류 일수를 선택하세요.", itiCreateBtn: "가이드 만들기", itiCatLabel: "카테고리 (선택 사항, 다중 선택 가능)", itiExport: "가이드 PDF로 내보내기", itiSave: "내 여행에 저장",
-        itiGroupLabel: "그룹", itiCountryLabel: "국가", itiCityLabel: "도시", itiOptional: "· 선택 사항", itiAllCities: "모든 도시", itiDatesLabel: "날짜", itiLengthLabel: "여행 기간", itiLengthUnit: "· 일", itiStayLabel: "숙소", itiCriteriaClose: "기준 숨기기",
+        itiGroupLabel: "그룹", itiCountryLabel: "국가", itiCityLabel: "도시", itiOptional: "· 선택 사항", itiAllCities: "모든 도시", itiDatesLabel: "날짜", itiLengthLabel: "여행 기간", itiLengthUnit: "· 일", itiStayLabel: "숙소", itiCriteriaLabel: "기준",
         searchTripsPlaceholder: "여행 검색...", noTripsFound: "여행을 찾을 수 없습니다.", selectTripToView: "볼 여행을 선택하세요", deselectTripOption: "— 선택된 여행 없음 —", locationsWord: "장소", locationsWordPlural: "장소",
         addAnotherVisit: "다른 방문 추가",
         tabExplore: "탐색", tabMyItinerary: "내 일정", yourRating: "평점", foodQualityRating: "음식 품질", valueForMoneyRating: "가성비", accessibilityRating: "접근이 쉬운가요?", siteQualityRating: "장소의 품질", wishlistStat: "사용자의 {pct}%가 이 장소를 위시리스트에 추가했습니다", friendsVisitedStat: "친구 {count}명이 이곳을 방문했어요", friendsVisitedStatOne: "친구 1명이 이곳을 방문했어요", whenDidYouVisit: "언제 방문하셨나요?", saveMemory: "추억 저장", myVisitTab: "내 방문", tabReviews: "후기", tabInfo: "정보", tabStory: "스토리", lGroup: "그룹:", lMembers: "멤버:", lCountry: "국가:", lCity: "도시:", lDate: "날짜:", lEpisode: "에피소드:", lWatch: "링크:", lOfficialLink: "출처", lFollow: "팔로우:", lWatchEpi: "화면 속", lPractical: "실용 정보 및 접근 방법", lLearnMore: "더 알아보기", lAddress: "주소", lOpenMap: "구글 지도에서 열기", lStoryPlace: "이 장소의 이야기", lStoryBts: "BTS의 발자취를 따라", lRecreatePhoto: "메이의 사진", officialPoseLabel: "셀럽의 공식 포즈 재현", lTipsTitle: "'SCREEN TO STREET' 팁", lHowToGetThere: "가는 방법:", memoryNotesLabel: "나의 메모 (선택 사항)", memoryNotesPlaceholder: "이 장소에 대해 기억나는 것이 있나요?", reviewsCountLabel: "공개 후기 {n}개", reviewsWriteLabel: "후기 작성하기", reviewsComposePlaceholder: "느낀 점을 공유해보세요...", reviewsComposeMakePublic: "이 후기를 공개로 설정", reviewsComposePost: "후기 게시", memoryPhotoLabel: "사진 추가 (선택 사항)", memoryPhotoChoose: "사진 선택", memoryPhotoRemove: "제거", memoryMakePublic: "이 후기를 공개로 설정 (다른 사용자에게 표시됨)", reviewsLoading: "후기를 불러오는 중…", reviewsEmpty: "아직 이 장소에 대한 공개 후기가 없습니다 — '내 방문' 탭에서 첫 후기를 남겨보세요!",
@@ -5686,7 +5720,7 @@ const translations = {
         setManage: "관리", setNotifConfirmTitle: "이메일 알림을 활성화할까요?", setNotifConfirmBody: "이 옵션을 켜면 새 장소가 추가될 때마다 이메일을 받는 것에 동의하는 것입니다 — 빈도는 아티스트의 현재 활동량에 따라 달라집니다(컴백이나 투어 중에는 더 자주, 그 외에는 더 조용하게). 아래에서 관심 있는 그룹과 국가를(를) 선택하세요.", setNotifEnableBtn: "활성화", setPushNotifConfirmTitle: "푸시 알림을 활성화할까요?", setPushNotifConfirmBody: "이 옵션을 켜면 새 장소가 추가될 때마다 푸시 알림을 받는 것에 동의하는 것입니다 — 빈도는 아티스트의 현재 활동량에 따라 달라집니다(컴백이나 투어 중에는 더 자주, 그 외에는 더 조용하게). 아래에서 관심 있는 그룹과 국가를(를) 선택하세요.", setNotifGroupsLabel: "알림을 받을 그룹", setNotifCountryLabel: "알림을 받을 국가(복수 선택 가능)", setNotifAllCountries: "모든 국가", setNotifSearchCountry: "국가 검색...", setCookiePrefsTitle: "쿠키 설정", setCookiePrefsBody: "필수 쿠키는 사이트가 작동하는 데 필요하며(로그인, 저장된 위시리스트) 끌 수 없습니다. 방문 간에 선호도를 기억하는 쿠키를 추가로 사용할지는 직접 선택할 수 있습니다.", setCookieNecessary: "필수", setCookieNecessarySub: "항상 활성화됨", setCookieAnalytics: "선호도 및 분석", setCookieAnalyticsSub: "방문 간 선택 사항을 기억합니다", setSavePreferences: "환경설정 저장",
         setDanger: "위험 구역", setDeleteAccTitle: "계정 삭제", setDeleteAccSub: "여행, 위시리스트, 잠금 해제된 이용권이 영구적으로 삭제됩니다.", setDeleteAccBtn: "계정 삭제",
         wishTitle: "내 위시리스트", wishEmpty: "아직 저장한 장소가 없습니다. 지도를 둘러보고 「위시리스트에 추가」를 클릭해보세요!", wishSomeday: "언젠가 / 아직 정해진 여행 없음",
-        visitTitle: "내가 방문한 장소", visitEmpty: "아직 방문으로 표시한 장소가 없습니다. 지도를 둘러보고 「이 장소를 방문했어요」를 체크해보세요!",
+        visitTitle: "내가 방문한 장소", visitEmpty: "아직 방문으로 표시한 장소가 없습니다. 지도를 둘러보고 「이 장소를 방문했어요」를 체크해보세요!", visitByLocation: "장소별",
         destTitle: "여행지 둘러보기", destSub: "Screen To Street에 소개된 모든 국가와 도시를 살펴보세요", destCountries: "국가", destCities: "도시", destLocations: "장소", destViewMap: "지도에서 보기 →",
         artTitle: "아티스트 둘러보기", artSub: "Screen To Street에 소개된 모든 그룹을 만나보세요", artGroups: "그룹", artFeatured: "추천 그룹",
 
@@ -5727,7 +5761,7 @@ const translations = {
         checkVisited: "この場所を訪れました", checkWishlist: "ウィッシュリストに追加", tripWhich: "どの旅行のためですか？",
         tripName: "旅行の名前", tripWhen: "いつ行く予定ですか？", tripFrom: "開始", tripTo: "終了", tripCreate: "旅行を作成", tripCancel: "キャンセル",
         itiTitle: "自動旅程ジェネレーター", itiDesc: "グループ、国、滞在日数を選択してください。", itiCreateBtn: "ガイドを作成", itiCatLabel: "カテゴリー（任意、複数選択可）", itiExport: "ガイドをPDFで出力", itiSave: "マイトリップに保存",
-        itiGroupLabel: "グループ", itiCountryLabel: "国", itiCityLabel: "都市", itiOptional: "・任意", itiAllCities: "すべての都市", itiDatesLabel: "日程", itiLengthLabel: "旅行日数", itiLengthUnit: "・日間", itiStayLabel: "宿泊先", itiCriteriaClose: "条件を隠す",
+        itiGroupLabel: "グループ", itiCountryLabel: "国", itiCityLabel: "都市", itiOptional: "・任意", itiAllCities: "すべての都市", itiDatesLabel: "日程", itiLengthLabel: "旅行日数", itiLengthUnit: "・日間", itiStayLabel: "宿泊先", itiCriteriaLabel: "条件",
         searchTripsPlaceholder: "旅行を検索...", noTripsFound: "旅行が見つかりません。", selectTripToView: "表示する旅行を選択", deselectTripOption: "— 選択された旅行はありません —", locationsWord: "スポット", locationsWordPlural: "スポット",
         addAnotherVisit: "別の訪問を追加",
         tabExplore: "探索", tabMyItinerary: "マイ旅程", yourRating: "評価", foodQualityRating: "料理の質", valueForMoneyRating: "コストパフォーマンス", accessibilityRating: "アクセスしやすさ", siteQualityRating: "場所の質", wishlistStat: "ユーザーの{pct}%がこの場所をウィッシュリストに追加しました", friendsVisitedStat: "{count}人の友達がここを訪れました", friendsVisitedStatOne: "1人の友達がここを訪れました", whenDidYouVisit: "いつ訪れましたか？", saveMemory: "思い出を保存", myVisitTab: "マイビジット", tabReviews: "レビュー", tabInfo: "情報", tabStory: "ストーリー", lGroup: "グループ：", lMembers: "メンバー：", lCountry: "国：", lCity: "都市：", lDate: "日付：", lEpisode: "エピソード：", lWatch: "リンク：", lOfficialLink: "出典", lFollow: "フォロー:", lWatchEpi: "画面の中", lPractical: "実用情報とアクセス", lLearnMore: "もっと詳しく", lAddress: "住所", lOpenMap: "Googleマップで開く", lStoryPlace: "この場所の物語", lStoryBts: "BTSの足跡をたどって", lRecreatePhoto: "メイの写真", officialPoseLabel: "セレブの公式ポーズの再現", lTipsTitle: "「SCREEN TO STREET」のヒント", lHowToGetThere: "行き方：", memoryNotesLabel: "メモ（任意）", memoryNotesPlaceholder: "この場所について覚えていることは？", reviewsCountLabel: "公開レビュー{n}件", reviewsWriteLabel: "レビューを書く", reviewsComposePlaceholder: "感想をシェアしましょう…", reviewsComposeMakePublic: "このレビューを公開する", reviewsComposePost: "レビューを投稿", memoryPhotoLabel: "写真を追加（任意）", memoryPhotoChoose: "写真を選択", memoryPhotoRemove: "削除", memoryMakePublic: "このレビューを公開する（他のユーザーに表示されます）", reviewsLoading: "レビューを読み込み中…", reviewsEmpty: "この場所にはまだ公開レビューがありません —「マイビジット」タブから最初のレビューを共有しましょう！",
@@ -5750,7 +5784,7 @@ const translations = {
         setManage: "管理", setNotifConfirmTitle: "メール通知を有効にしますか？", setNotifConfirmBody: "有効にすると、新しい場所が追加されるたびにメールを受け取ることに同意したことになります — 頻度はアーティストの現在の活動状況によって変わります（カムバックやツアー中は頻繁に、それ以外は控えめに）。以下で興味のあるグループと国を選んでください。", setNotifEnableBtn: "有効にする", setPushNotifConfirmTitle: "プッシュ通知を有効にしますか？", setPushNotifConfirmBody: "有効にすると、新しい場所が追加されるたびにプッシュ通知を受け取ることに同意したことになります — 頻度はアーティストの現在の活動状況によって変わります（カムバックやツアー中は頻繁に、それ以外は控えめに）。以下で興味のあるグループと国を選んでください。", setNotifGroupsLabel: "通知を受け取るグループ", setNotifCountryLabel: "通知を受け取る国（複数選択可）", setNotifAllCountries: "すべての国", setNotifSearchCountry: "国を検索...", setCookiePrefsTitle: "クッキー設定", setCookiePrefsBody: "必須クッキーはサイトの動作（ログイン、保存されたウィッシュリスト）に必要で、無効にはできません。訪問間で設定を記憶するクッキーを追加で使うかどうかは選択できます。", setCookieNecessary: "必須", setCookieNecessarySub: "常に有効", setCookieAnalytics: "設定と分析", setCookieAnalyticsSub: "訪問間で選択内容を記憶します", setSavePreferences: "設定を保存",
         setDanger: "危険ゾーン", setDeleteAccTitle: "アカウントを削除", setDeleteAccSub: "旅行、ウィッシュリスト、解除済みパスが完全に削除されます。", setDeleteAccBtn: "アカウントを削除",
         wishTitle: "ウィッシュリスト", wishEmpty: "まだ保存した場所がありません。地図を見て「ウィッシュリストに追加」をクリックしてみましょう！", wishSomeday: "いつか / まだ旅行の予定なし",
-        visitTitle: "訪れた場所", visitEmpty: "まだ訪問済みにした場所がありません。地図を見て「この場所を訪れました」にチェックしてみましょう！",
+        visitTitle: "訪れた場所", visitEmpty: "まだ訪問済みにした場所がありません。地図を見て「この場所を訪れました」にチェックしてみましょう！", visitByLocation: "場所別",
         destTitle: "旅先を探す", destSub: "Screen To Streetで紹介されているすべての国と都市をチェック", destCountries: "国", destCities: "都市", destLocations: "スポット", destViewMap: "地図で見る →",
         artTitle: "アーティストを探す", artSub: "Screen To Streetで紹介されているすべてのグループを見る", artGroups: "グループ", artFeatured: "注目のグループ",
 
@@ -5791,7 +5825,7 @@ const translations = {
         checkVisited: "我去过这个地方", checkWishlist: "添加到收藏清单", tripWhich: "这是为哪次行程添加的？",
         tripName: "行程名称", tripWhen: "您计划什么时候出发？", tripFrom: "开始日期", tripTo: "结束日期", tripCreate: "创建行程", tripCancel: "取消",
         itiTitle: "自动行程生成器", itiDesc: "选择一个团体、一个国家，以及停留天数。", itiCreateBtn: "生成我的指南", itiCatLabel: "类别（可选，可多选）", itiExport: "导出指南为 PDF", itiSave: "保存到我的行程",
-        itiGroupLabel: "团体", itiCountryLabel: "国家", itiCityLabel: "城市", itiOptional: "·可选", itiAllCities: "所有城市", itiDatesLabel: "日期", itiLengthLabel: "行程天数", itiLengthUnit: "·天", itiStayLabel: "住宿", itiCriteriaClose: "隐藏条件",
+        itiGroupLabel: "团体", itiCountryLabel: "国家", itiCityLabel: "城市", itiOptional: "·可选", itiAllCities: "所有城市", itiDatesLabel: "日期", itiLengthLabel: "行程天数", itiLengthUnit: "·天", itiStayLabel: "住宿", itiCriteriaLabel: "条件",
         searchTripsPlaceholder: "搜索您的行程...", noTripsFound: "未找到任何行程。", selectTripToView: "选择要查看的行程", deselectTripOption: "— 未选择行程 —", locationsWord: "个地点", locationsWordPlural: "个地点",
         addAnotherVisit: "添加另一次访问",
         tabExplore: "探索", tabMyItinerary: "我的行程", yourRating: "你的评分", foodQualityRating: "食物质量", valueForMoneyRating: "性价比", accessibilityRating: "是否容易到达？", siteQualityRating: "场地质量", wishlistStat: "{pct}%的用户将这个地方加入了心愿单", friendsVisitedStat: "{count}位好友到访过这里", friendsVisitedStatOne: "1位好友到访过这里", whenDidYouVisit: "你什么时候去的？", saveMemory: "保存回忆", myVisitTab: "我的到访", tabReviews: "评价", tabInfo: "信息", tabStory: "故事", lGroup: "组合：", lMembers: "成员：", lCountry: "国家：", lCity: "城市：", lDate: "日期：", lEpisode: "集数：", lWatch: "链接：", lOfficialLink: "来源", lFollow: "关注：", lWatchEpi: "画面中", lPractical: "实用信息与交通", lLearnMore: "了解更多", lAddress: "地址", lOpenMap: "在谷歌地图中打开", lStoryPlace: "这个地方的故事", lStoryBts: "追随BTS的足迹", lRecreatePhoto: "Mei的照片", officialPoseLabel: "名人官方姿势复刻", lTipsTitle: "「SCREEN TO STREET」小贴士", lHowToGetThere: "交通方式：", memoryNotesLabel: "你的备注（可选）", memoryNotesPlaceholder: "你还记得这个地方的什么？", reviewsCountLabel: "{n}条公开评价", reviewsWriteLabel: "写下你的评价", reviewsComposePlaceholder: "分享你的感受…", reviewsComposeMakePublic: "公开此评价", reviewsComposePost: "发布评价", memoryPhotoLabel: "添加照片（可选）", memoryPhotoChoose: "选择照片", memoryPhotoRemove: "移除", memoryMakePublic: "公开此评价（其他用户可见）", reviewsLoading: "正在加载评价…", reviewsEmpty: "该地点暂无公开评价——从「我的到访」标签页分享第一条评价吧！",
@@ -5814,7 +5848,7 @@ const translations = {
         setManage: "管理", setNotifConfirmTitle: "开启邮件通知？", setNotifConfirmBody: "开启后，即表示您同意在新增地点时收到邮件通知——频率取决于该艺人当前的活跃程度（回归或巡演期间更频繁，其余时间较少）。请在下方选择您关心的组合和国家。", setNotifEnableBtn: "开启", setPushNotifConfirmTitle: "开启推送通知？", setPushNotifConfirmBody: "开启后，即表示您同意在新增地点时收到推送通知——频率取决于该艺人当前的活跃程度（回归或巡演期间更频繁，其余时间较少）。请在下方选择您关心的组合和国家。", setNotifGroupsLabel: "为以下组合通知我", setNotifCountryLabel: "为以下国家通知我（可多选）", setNotifAllCountries: "所有国家", setNotifSearchCountry: "搜索国家...", setCookiePrefsTitle: "Cookie 偏好设置", setCookiePrefsBody: "必要 Cookie 用于保证网站正常运行（登录、已保存的心愿单），无法关闭。您可以选择是否同时使用 Cookie 来记住您在不同访问之间的偏好设置。", setCookieNecessary: "必要", setCookieNecessarySub: "始终启用", setCookieAnalytics: "偏好与分析", setCookieAnalyticsSub: "记住您在不同访问之间的选择", setSavePreferences: "保存偏好设置",
         setDanger: "危险区域", setDeleteAccTitle: "删除账户", setDeleteAccSub: "此操作将永久删除您的行程、收藏清单和已解锁的通行证。", setDeleteAccBtn: "删除账户",
         wishTitle: "我的收藏清单", wishEmpty: "您还没有收藏任何地点。快去地图上点击「添加到收藏清单」吧！", wishSomeday: "以后再说 / 暂无行程",
-        visitTitle: "我已访问的地点", visitEmpty: "您还没有标记任何已访问的地点。快去地图上勾选「我去过这个地方」吧！",
+        visitTitle: "我已访问的地点", visitEmpty: "您还没有标记任何已访问的地点。快去地图上勾选「我去过这个地方」吧！", visitByLocation: "按地点",
         destTitle: "探索目的地", destSub: "浏览 Screen To Street 收录的所有国家和城市", destCountries: "国家", destCities: "城市", destLocations: "地点", destViewMap: "在地图上查看 →",
         artTitle: "探索艺人", artSub: "了解 Screen To Street 收录的所有团体", artGroups: "团体", artFeatured: "精选团体",
 
@@ -5997,8 +6031,10 @@ window.openItineraryModal = function() {
         if (resultEl.parentElement && panelEl.parentElement !== resultEl.parentElement) {
             resultEl.parentElement.insertBefore(panelEl, resultEl);
         }
-        const closeRowEl = document.getElementById('iti-criteria-close-row');
-        if (closeRowEl) closeRowEl.classList.add('hidden');
+        const summaryRowEl = document.getElementById('iti-criteria-summary-row');
+        if (summaryRowEl) { summaryRowEl.classList.add('hidden'); summaryRowEl.setAttribute('aria-expanded', 'false'); }
+        const titleEl = document.getElementById('iti-title');
+        if (titleEl) titleEl.classList.remove('hidden');
         const descEl = document.getElementById('iti-desc');
         if (descEl) descEl.classList.remove('hidden');
     }
@@ -6147,6 +6183,7 @@ window.updateItiDatesSummary = function() {
     const dayLabel = `${days} ${dayWord}${Number(days) > 1 ? 's' : ''}`;
     el.textContent = (s && e) ? `${itiShortDate(s)} → ${itiShortDate(e)} · ${dayLabel}` : dayLabel;
     el.classList.remove('qaf-ph');
+    if (typeof window.updateItiCriteriaSummary === 'function') window.updateItiCriteriaSummary();
 };
 window.updateItiCatSummary = function() {
     const el = document.getElementById('iti-cat-summary');
@@ -6216,6 +6253,7 @@ function updateItiPickerSummaries() {
     const ci = document.getElementById('iti-city-summary'), civ = document.getElementById('iti-city')?.value;
     if (ci) { ci.textContent = civ || (currentLang === 'fr' ? 'Toutes les villes' : 'All cities'); ci.classList.toggle('qaf-ph', !civ); }
     if (typeof window.updateItiCatSummary === 'function') window.updateItiCatSummary();
+    if (typeof window.updateItiCriteriaSummary === 'function') window.updateItiCriteriaSummary();
 }
 window.setItiGroup = function(value) {
     document.getElementById('iti-group').value = value;
@@ -10926,6 +10964,12 @@ window.openDetailsPanel = function(id, fromList) {
     const loc = celebLocations.find(l => l.id === id);
     if(!loc) return;
 
+    // Permet à unlockBadgeForLocation() (demande du 26/10/2026) de savoir si la fiche de
+    // CE lieu est déjà ouverte à l'instant où son badge se débloque (proximité GPS), pour
+    // rafraîchir la case "I visited this place" en direct plutôt que seulement à la
+    // prochaine ouverture de la fiche.
+    window.__openDetailsLocId = id;
+
     // BUG corrigé (demande du 08/10/2026, "quand je clique sur Back to list, il faut que
     // ça nous redirige vers la liste de tous les lieux, exactement où on était") : seul un
     // clic sur une carte DANS la liste (voir renderLocations()/renderVisitedTabList() plus
@@ -11726,6 +11770,7 @@ const reviewComposePostBtn = document.getElementById('review-compose-post-btn');
 if (reviewComposePostBtn) reviewComposePostBtn.addEventListener('click', () => window.postQuickReview());
 
 window.closeDetailsPanel = function() {
+    window.__openDetailsLocId = null;
     const dDetails = document.getElementById('sidebar-details');
     if(dDetails) {
         dDetails.classList.add('hidden');
@@ -12656,8 +12701,6 @@ window.generateItinerary = function() {
     const txt = ITI_TXT_DICT[currentLang] || ITI_TXT_DICT.en;
     const resultTitleEl = document.getElementById('iti-result-title');
     if (resultTitleEl) resultTitleEl.textContent = txt.resultTitle;
-    const criteriaBtnEl = document.querySelector('#iti-result [data-i18n="itiCriteriaBtn"]');
-    if (criteriaBtnEl) criteriaBtnEl.textContent = txt.criteria;
 
     const isTripsPage = !!document.getElementById('edit-trip-name');
     const formatMin = (mins) => {
@@ -12767,13 +12810,14 @@ window.generateItinerary = function() {
 
     // "sans afficher les critères au-dessus" + "il ne faut pas que ça revienne en arrière,
     // il faut afficher les filtres dans cette nouvelle fenêtre Your new itinerary" (demande
-    // du 25/10/2026) : #iti-criteria-panel (flèche de fermeture + #iti-form, voir le HTML)
-    // est DÉPLACÉ ici dans #iti-result, juste sous son titre/bouton Criteria, puis replié
-    // — "Criteria" le déplie SUR PLACE (window.backToItiCriteria() plus bas), jamais en
+    // des 25 puis 26/10/2026) : #iti-criteria-panel (rangée résumé "CRITERIA" + #iti-form,
+    // voir le HTML) est DÉPLACÉ ici dans #iti-result, juste sous son titre — la rangée
+    // résumé reste TOUJOURS visible une fois là (c'est elle qui montre/masque #iti-form en
+    // repliant/dépliant SUR PLACE, voir window.toggleItiCriteria() plus bas), jamais en
     // masquant #iti-result pour revenir à un autre écran. #iti-criteria-panel n'existe QUE
-    // sur trips.html (jamais sur la copie plus simple de map.html, qui n'a ni bouton
-    // Criteria ni cette flèche) — sa présence sert de marqueur pour ne rien faire sur
-    // map.html, où #iti-form reste affiché en permanence comme avant.
+    // sur trips.html (jamais sur la copie plus simple de map.html, qui n'a ni cette rangée
+    // ni bouton Criteria) — sa présence sert de marqueur pour ne rien faire sur map.html, où
+    // #iti-form reste affiché en permanence comme avant.
     const itiPanelEl = document.getElementById('iti-criteria-panel');
     const itiResultEl = document.getElementById('iti-result');
     if (itiPanelEl) {
@@ -12781,9 +12825,12 @@ window.generateItinerary = function() {
         if (headerEl && itiPanelEl.parentElement !== itiResultEl) {
             headerEl.insertAdjacentElement('afterend', itiPanelEl);
         }
-        itiPanelEl.classList.add('hidden');
-        const closeRowEl = document.getElementById('iti-criteria-close-row');
-        if (closeRowEl) closeRowEl.classList.remove('hidden');
+        document.getElementById('iti-form').classList.add('hidden');
+        const summaryRowEl = document.getElementById('iti-criteria-summary-row');
+        if (summaryRowEl) { summaryRowEl.classList.remove('hidden'); summaryRowEl.setAttribute('aria-expanded', 'false'); }
+        if (typeof window.updateItiCriteriaSummary === 'function') window.updateItiCriteriaSummary();
+        const titleEl = document.getElementById('iti-title');
+        if (titleEl) titleEl.classList.add('hidden');
         const descEl = document.getElementById('iti-desc');
         if (descEl) descEl.classList.add('hidden');
     }
@@ -12949,28 +12996,42 @@ window.applyGeneratedItinerary = function(mode) {
     closeModal('itinerary-modal');
 };
 
-// Bouton "Criteria" / flèche "Hide criteria" (demande des 24 puis 25/10/2026, référence
-// auto_itinerary_final.html — "il ne faut pas que ça revienne en arrière, il faut afficher
-// les filtres dans cette nouvelle fenêtre Your new itinerary") : le résultat s'affiche
-// désormais SEUL par défaut ("sans afficher les critères au-dessus", voir
-// generateItinerary() plus haut qui déplace #iti-criteria-panel dans #iti-result puis le
-// replie) — "Criteria" déplie ce même bloc SUR PLACE, #iti-result reste affiché tout du
-// long (jamais masqué, jamais remplacé par un autre écran). RIEN n'est réinitialisé dans le
-// formulaire dans un sens comme dans l'autre : la sélection déjà faite (group/country/city/
-// dates/stay/catégories) reste exactement telle quelle.
-window.backToItiCriteria = function() {
-    const panelEl = document.getElementById('iti-criteria-panel');
-    if (panelEl) {
-        panelEl.classList.remove('hidden');
-        if (panelEl.scrollIntoView) panelEl.scrollIntoView({ block: 'start' });
-    }
+// Rangée résumé "CRITERIA" (demande des 25 puis 26/10/2026, référence
+// auto_itinerary_final.html, puis capture "CRITERIA / BTS · Seoul · 4 days" + chevron) : le
+// résultat s'affiche désormais SEUL par défaut ("sans afficher les critères au-dessus", voir
+// generateItinerary() plus haut qui déplace #iti-criteria-panel dans #iti-result) — cette
+// rangée (icône + "CRITERIA" + résumé + chevron) fait à la fois office de résumé ET de
+// bouton montrer/masquer #iti-form SUR PLACE (elle-même reste visible dans les deux états,
+// #iti-result n'est jamais masqué). RIEN n'est réinitialisé dans le formulaire en dépliant/
+// repliant : la sélection déjà faite (group/country/city/dates/stay/catégories) reste
+// exactement telle quelle.
+window.toggleItiCriteria = function() {
+    const formEl = document.getElementById('iti-form');
+    const rowEl = document.getElementById('iti-criteria-summary-row');
+    if (!formEl || !rowEl) return;
+    const expanding = formEl.classList.contains('hidden');
+    formEl.classList.toggle('hidden', !expanding);
+    rowEl.setAttribute('aria-expanded', String(expanding));
 };
-window.closeItiCriteria = function() {
-    const panelEl = document.getElementById('iti-criteria-panel');
-    if (panelEl) {
-        panelEl.classList.add('hidden');
-        if (panelEl.scrollIntoView) panelEl.scrollIntoView({ block: 'start' });
-    }
+// Texte résumé ("BTS · Seoul · 4 days") de la rangée ci-dessus — recalculé à chaque
+// changement d'un des champs qu'il combine (voir updateItiPickerSummaries()/
+// window.updateItiDatesSummary() plus haut, qui l'appellent toutes les deux), pas seulement
+// à l'ouverture du résultat, pour rester à jour si la personne ajuste un critère après coup
+// (le formulaire reste modifiable, voir le commentaire au-dessus).
+function itiDaysLabel(days) {
+    const n = parseInt(days, 10) || 0;
+    if (!n) return '';
+    const word = currentLang === 'fr' ? (n > 1 ? 'jours' : 'jour') : (n > 1 ? 'days' : 'day');
+    return `${n} ${word}`;
+}
+window.updateItiCriteriaSummary = function() {
+    const el = document.getElementById('iti-criteria-summary-value');
+    if (!el) return;
+    const group = document.getElementById('iti-group')?.value || '';
+    const city = document.getElementById('iti-city')?.value || '';
+    const country = document.getElementById('iti-country')?.value || '';
+    const days = document.getElementById('iti-days')?.value || '';
+    el.textContent = [group, city || country, itiDaysLabel(days)].filter(Boolean).join(' · ');
 };
 
 window.saveItineraryToTrips = async function() {
@@ -13488,12 +13549,38 @@ function markBadgeCelebrationShown(idStr) {
     } catch (e) { /* stockage indisponible (navigation privée...) — pas bloquant */ }
 }
 
+// AJOUT SITE (demande du 26/10/2026, "quand on débloque un badge pour un lieu, qu'il
+// apparaisse automatiquement sur la page Visited + case 'I visited this place' cochée") :
+// réutilise exactement le même chemin que la case à cocher manuelle (getVisitedLocs/
+// normalizeVisitEntry/syncVisited, voir le onchange de #details-visited plus haut) pour
+// que ce lieu se comporte ensuite comme n'importe quelle visite ajoutée à la main — ne
+// touche à rien si déjà présent (ne jamais écraser une visite déjà notée/datée à la main).
+function markLocationVisitedFromBadge(loc) {
+    let list = getVisitedLocs();
+    const already = list.some(v => (v && typeof v === 'object' ? v.id : v) === loc.id);
+    if (!already) {
+        list.push({ id: loc.id, visits: [] });
+        localStorage.setItem('visitedLocs', JSON.stringify(list));
+        syncVisited(list);
+        // visited.html s'abonne à ce hook (voir window.refreshVisitedFromCloud = renderVisited
+        // dans ce fichier) pour se mettre à jour sans recharger si la page est déjà ouverte.
+        if (typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+    }
+    // Si la fiche de ce lieu est déjà ouverte (ex: on la consultait en marchant au moment où
+    // le badge se débloque), on la réaffiche pour cocher la case en direct plutôt qu'à la
+    // prochaine ouverture (openDetailsPanel() relit toujours getVisitedLocs() à chaque appel).
+    if (window.__openDetailsLocId === loc.id && typeof window.openDetailsPanel === 'function') {
+        window.openDetailsPanel(loc.id);
+    }
+}
+
 async function unlockBadgeForLocation(loc) {
     const idStr = String(loc.id);
     try {
         const res = await window.awardLocationBadge(idStr);
         if (res && res.success) {
             myUnlockedBadgeIds.add(idStr);
+            markLocationVisitedFromBadge(loc);
             if (!hasBadgeCelebrationBeenShown(idStr)) {
                 markBadgeCelebrationShown(idStr);
                 showBadgeUnlockCelebration(loc, res.rank);
