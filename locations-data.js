@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-26T14:29:45.198Z.
+// Généré le 2026-10-26T23:16:47.767Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -23566,8 +23566,8 @@ window.STATIC_LOCATIONS = [
     "category": "Landmark",
     "year": "2026",
     "address": "Av. Consistorial 5090, Peñalolén, Región Metropolitana, Chile",
-    "lat": -33.4856,
-    "lng": -70.5446,
+    "lat": 33.4856,
+    "lng": 70.5446,
     "img": "images/admin-upload-new-manual-1792522535892-i1je7i-photo.jpg",
     "city": "Santiago",
     "pinterestUrls": [],
