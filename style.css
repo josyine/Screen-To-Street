@@ -1333,6 +1333,21 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .nt-form-overlay.open{display:flex}
 :where(.nt-form-overlay) button{all:unset;cursor:pointer;box-sizing:border-box;font-family:inherit}
 .nt-form-overlay input{font-family:inherit;font-size:14px;color:var(--qa-ink);border:0;outline:0;background:none;width:100%}
+/* BUG rapporté le 24, 25 puis encore le 26/10/2026 ("texte bleu dans les filtres de Auto
+   itinerary") malgré plusieurs vérifications n'ayant jamais rien trouvé de bleu dans aucune
+   règle CSS de ce fichier : #itinerary-modal réutilise bien les mêmes classes .qaf-* que
+   .qa-form-overlay/.nt-form-overlay ci-dessus (voir leurs commentaires), MAIS jamais le
+   reset :where(...) button{all:unset;...} qui va avec — ses <button> (.qaf-row/.qaf-li...)
+   gardaient donc leur apparence native de bouton du navigateur par-dessus le CSS de ces
+   classes (confirmé : appearance:auto, fond gris thémé plutôt que transparent). Sur Safari
+   iOS en particulier, un <button> jamais ainsi réinitialisé prend par défaut le bleu système
+   pour son texte — exactement le bug rapporté, invisible sur Chrome desktop (son propre bleu
+   de bouton par défaut n'existe pas), d'où l'échec des vérifications précédentes. Même
+   principe de spécificité nulle que les 2 règles ci-dessus (voir le commentaire détaillé sur
+   .qa-form-overlay) : DOIT rester :where(), jamais .itinerary-modal-content button tout
+   court, qui écraserait .qaf-cta/.qaf-row/... */
+:where(#itinerary-modal) button{all:unset;cursor:pointer;box-sizing:border-box;font-family:inherit}
+#itinerary-modal input{font-family:inherit;font-size:14px;color:var(--qa-ink,#1F2430);border:0;outline:0;background:none}
 /* BUG corrigé (demande du 17/10/2026, répétée — "il y a encore l'ancienne version... il
    faut que l'affichage prenne tout l'écran, car actuellement ça ne prend qu'une partie de
    l'écran") : contrairement à .qa-form-root (voir plus haut, width:100%;max-width:480px),
