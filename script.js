@@ -3386,16 +3386,23 @@ window.setCommunityRatings = function(ratings) {
 // que les autres utilisateurs le voient aussi à leur prochain chargement. `deltas` ne
 // contient que les clés à modifier parmi RATING_DIMENSION_KEYS (ex: {sum:4, count:1} pour
 // une nouvelle visite sans note food/valeur).
-function applyCommunityRatingDelta(locId, deltas) {
-    if (!deltas || RATING_DIMENSION_KEYS.every(k => !deltas[k])) return;
+// BUG rapporté le 27/10/2026 ("j'ai ajouté une note... mais ça ne s'est pas ajouté") :
+// renvoie maintenant le résultat de window.updateLocationRatingAggregate() (voir son
+// commentaire, firebase-init.js) — la mise à jour locale ci-dessous reste synchrone et
+// optimiste (affichage immédiat inchangé), mais l'appelant peut désormais attendre ce
+// résultat pour savoir si la sauvegarde côté serveur a réellement réussi, et prévenir la
+// personne sinon (voir saveMemoryBtn plus bas).
+async function applyCommunityRatingDelta(locId, deltas) {
+    if (!deltas || RATING_DIMENSION_KEYS.every(k => !deltas[k])) return { success: true };
     const cur = communityRatings[locId] || zeroRatingAggregate();
     const next = Object.assign({}, cur);
     RATING_DIMENSION_KEYS.forEach(k => { if (deltas[k]) next[k] = (cur[k] || 0) + deltas[k]; });
     ['count'].concat(OPTIONAL_RATING_DIMENSIONS.map(d => d + 'Count')).forEach(k => { if (next[k] < 0) next[k] = 0; });
     communityRatings[locId] = next;
     if (typeof window.updateLocationRatingAggregate === 'function') {
-        window.updateLocationRatingAggregate(locId, deltas);
+        return window.updateLocationRatingAggregate(locId, deltas);
     }
+    return { success: true };
 }
 
 // Calcule les deltas à appliquer pour un visit donné, selon qu'il s'agit d'une NOUVELLE
@@ -4498,6 +4505,17 @@ window.openQuickAddFormSheet = async function (kind) {
     }
     qaRender(overlay);
     overlay.classList.add('open');
+    // BUG rapporté le 27/10/2026 ("Add a photo"... "les filtres apparaissent sous la barre
+    // de navigation du bas... je ne peux même pas cliquer sur Publish car il est masqué") :
+    // .qaf-sheet est ancré au tout bas de l'écran (.qa-form-overlay, align-items:flex-end),
+    // donc .qaf-foot/le bouton Publier se retrouvent dans la MÊME zone que #mobile-bottom-nav
+    // (lui-même flottant à quelques px du bord, pas collé à bord non plus) — un z-index plus
+    // élevé (9650 > 3500) suffit pour qu'il reste cliquable PAR-DESSUS, mais les deux se
+    // chevauchent visuellement malgré tout. Masquée ici le temps que la fiche est ouverte,
+    // comme déjà fait ailleurs sur le site pour d'autres recouvrements du même genre (voir
+    // .mobile-bottom-nav.menu-open dans style.css) — restaurée par closeQuickAddFormSheet().
+    const navEl = document.getElementById('mobile-bottom-nav');
+    if (navEl) navEl.classList.add('qa-sheet-open');
 };
 // Confirmation explicite "dans la fiche" avant fermeture (demande du 16/10/2026, "Add a
 // review... affiche un pop up qui précise que la review a bien été publiée") — voir le
@@ -4515,6 +4533,8 @@ window.closeQuickAddFormSheet = function () {
     if (overlay) overlay.classList.remove('open');
     qaState = null;
     qaCurrentKind = null;
+    const navEl = document.getElementById('mobile-bottom-nav');
+    if (navEl) navEl.classList.remove('qa-sheet-open');
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11407,13 +11427,28 @@ if(saveMemoryBtn) {
             // Nouvelle visite : la note s'ajoute intégralement à la moyenne communautaire.
             // Modification d'une visite existante : seule la différence avec l'ancienne
             // note compte (le nombre de visites, lui, ne change pas).
+            // BUG rapporté le 27/10/2026 ("j'ai ajouté une note pour Rue Aubriot mais ça ne
+            // s'est pas ajouté") : même principe que l'alerte déjà posée plus bas pour
+            // setLocationReview() — un échec de sauvegarde côté serveur de la note
+            // communautaire (le plus probable étant une règle Firestore locationRatings pas
+            // encore republiée avec les champs value/accessibility/siteQuality, voir
+            // updateLocationRatingAggregate() dans firebase-init.js) passait jusqu'ici
+            // totalement inaperçu : la note s'affichait quand même localement (mise à jour
+            // optimiste dans applyCommunityRatingDelta()), donnant l'impression que tout
+            // s'était bien passé alors que rien n'était réellement persisté.
+            let ratingDeltaResult;
             if (editingVisitIndex === null) {
                 list[idx].visits.push(visitData);
-                applyCommunityRatingDelta(currentLocationIdForMemory, buildRatingDeltas(visitData, true));
+                ratingDeltaResult = await applyCommunityRatingDelta(currentLocationIdForMemory, buildRatingDeltas(visitData, true));
             } else {
                 const oldVisit = list[idx].visits[editingVisitIndex];
                 list[idx].visits[editingVisitIndex] = visitData;
-                applyCommunityRatingDelta(currentLocationIdForMemory, buildRatingDeltas(visitData, false, oldVisit));
+                ratingDeltaResult = await applyCommunityRatingDelta(currentLocationIdForMemory, buildRatingDeltas(visitData, false, oldVisit));
+            }
+            if (ratingDeltaResult && ratingDeltaResult.success === false) {
+                alert(currentLang === 'fr'
+                    ? "Votre visite a bien été enregistrée, mais la note communautaire n'a pas pu être sauvegardée (problème de connexion ou de configuration). Réessayez plus tard."
+                    : "Your visit was saved, but the community rating couldn't be saved (connection or configuration issue). Please try again later.");
             }
 
             localStorage.setItem('visitedLocs', JSON.stringify(list));
@@ -11496,7 +11531,12 @@ window.renderVisitsList = function(visits) {
             }
         }
 
-        const notesText = v.notes ? `"${v.notes}"` : (currentLang === 'fr' ? "Aucune note pour cette visite." : "No notes for this visit.");
+        // BUG rapporté le 27/10/2026 ("quand il y a une review sans note n'affiche pas 'No
+        // notes for this visit.'") : simple texte vide désormais plutôt qu'un message de
+        // remplissage — même principe déjà appliqué à l'onglet "Reviews" public juste plus
+        // bas (loadLocationReviews(), notesHtml = r.notes ? ... : ''), qui n'affichait déjà
+        // rien du tout dans ce cas.
+        const notesHtml = v.notes ? `<div class="memory-notes">"${v.notes}"</div>` : '';
         const editLabel = currentLang === 'fr' ? 'Modifier' : 'Edit memory';
         const deleteLabel = currentLang === 'fr' ? 'Supprimer cette visite' : 'Delete this visit';
         const publicLabel = currentLang === 'fr' ? 'Publique' : 'Public';
@@ -11516,7 +11556,7 @@ window.renderVisitsList = function(visits) {
             ${dimensionRow(t('valueForMoneyRating'), v.ratingValue)}
             ${dimensionRow(t('accessibilityRating'), v.ratingAccessibility)}
             ${dimensionRow(t('siteQualityRating'), v.ratingSiteQuality)}
-            <div class="memory-notes">${notesText}</div>
+            ${notesHtml}
             ${photoHtml}
             <button class="edit-memory-btn" data-idx="${v.__idx}" style="background:transparent; border:1.5px solid #cbd5e1; color:#64748b; font-size:11px; font-weight:700; padding:6px 12px; border-radius:100px; margin-top:20px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">${editSvg} ${editLabel}</button>
         `;

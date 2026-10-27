@@ -567,18 +567,29 @@ window.loadUserCloudData = async function () {
 // chaque dimension de OPTIONAL_RATING_DIMENSIONS (script.js), <dim>Sum/<dim>Count —
 // foodSum/foodCount n'existent que pour les lieux Cafe/Restaurants, les autres
 // dimensions (value/accessibility/siteQuality) s'appliquent à tous les lieux.
+// BUG rapporté le 27/10/2026 ("j'ai ajouté une note pour Rue Aubriot mais ça ne s'est pas
+// ajouté") : un échec ici (le plus probable étant une règle Firestore locationRatings pas
+// encore republiée avec les champs value/accessibility/siteQuality, voir le commentaire
+// au-dessus) ne remontait jusqu'ici qu'un console.warn — totalement invisible pour la
+// personne, qui voyait sa note s'appliquer dans l'interface (mise à jour locale optimiste
+// dans applyCommunityRatingDelta(), script.js) sans jamais savoir qu'elle n'avait pas
+// réellement été sauvegardée côté serveur. Retourne désormais {success} comme
+// window.setLocationReview() (même fichier), pour qu'applyCommunityRatingDelta() puisse la
+// remonter à son tour à l'appelant (voir saveMemoryBtn dans script.js).
 window.updateLocationRatingAggregate = async function (locationId, deltas) {
-    if (!deltas) return;
+    if (!deltas) return { success: true };
     const payload = {};
     for (const key of ['sum', 'count', 'foodSum', 'foodCount', 'valueSum', 'valueCount',
                         'accessibilitySum', 'accessibilityCount', 'siteQualitySum', 'siteQualityCount']) {
         if (deltas[key]) payload[key] = increment(deltas[key]);
     }
-    if (Object.keys(payload).length === 0) return;
+    if (Object.keys(payload).length === 0) return { success: true };
     try {
         await setDoc(doc(db, 'locationRatings', String(locationId)), payload, { merge: true });
+        return { success: true };
     } catch (e) {
         console.warn('Mise à jour de la note communautaire échouée :', e);
+        return { success: false, code: e && e.code };
     }
 };
 
