@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-27T18:54:14.239Z.
+// Généré le 2026-10-27T23:04:33.857Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -19003,58 +19003,65 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-fFXt2TP40qiRSD9EgaRi",
-    "name": "Tennis Club de Paris",
+    "name": "Place de la Concorde",
     "group": "BTS",
     "member": "V",
     "country": "France",
     "city": "Paris",
     "category": "Fashion",
-    "year": "2022",
-    "address": "207 Avenue Felix Faure, 75016 Paris, France",
-    "lat": 48.8386,
-    "lng": 2.2575,
-    "img": "",
+    "year": "2025",
+    "address": "Place de la Concorde, 75008 Paris, France",
+    "lat": 48.8647606,
+    "lng": 2.3187385,
+    "img": "images/admin-upload-new-fFXt2TP40qiRSD9EgaRi-photo.jpg",
     "addedAt": 1792750264662,
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>The Tennis Club de Paris is a historic sports institution located in the 16th arrondissement of Paris, renowned for its indoor and outdoor tennis facilities. Beyond its rich athletic heritage, the venue features large industrial-style event halls and sports structures that are frequently transformed into spectacular runways during Paris Fashion Week. Its vast layout allows world-famous fashion houses to build custom theatrical stages and immersive sound environments. The complex offers a unique blend of vintage architecture and modern event versatility right near the edge of the city.</p><!--stss:footsteps--><p>On June 26, 2022, luxury fashion brand Celine transformed the venue into the runway stage for its Men's Summer 2023 collection show, where Kim Taehyung (V) made his sensational appearance as an official guest. Taehyung arrived wearing a striking leather jacket and sequined top, generating unprecedented crowds of fans outside the entrance along with massive global media coverage. The event marked V's legendary emergence in the European fashion world alongside fellow global stars. Photos and videos of V standing on the venue's exterior platforms went viral, making Tennis Club de Paris an iconic site for BTS fashion history.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "episodeLink": "",
+    "facebookUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
     "tipsList": [
       {
         "title": {
-          "en": "Exterior photo spot"
+          "en": "Go for a Run"
         },
         "text": {
-          "en": "While the club interior is private for members, you can take photos outside the perimeter wall where V was greeted by thousands of fans."
+          "en": "Replicate Taehyung's exact activity by packing your running shoes and jogging along the lower quays of the Seine. The pedestrian pathways are completely free of vehicle traffic and offer uninterrupted views of the city's monuments."
         }
       },
       {
         "title": {
-          "en": "Combine your visit"
+          "en": "Frame the Obelisk"
         },
         "text": {
-          "en": "Combine a visit here with a walk through the nearby Parc des Princes stadium or the Bois de Boulogne gardens."
+          "en": "When taking a photo near Concorde from the riverbanks, use the towering Luxor Obelisk or the ornate streetlamps of the square in the background to visually anchor your location."
+        }
+      },
+      {
+        "title": {
+          "en": "Early Morning Visit"
+        },
+        "text": {
+          "en": "The Place de la Concorde is a major traffic hub, and the riverbanks get crowded with locals and tourists by midday. Head out early in the morning to enjoy a peaceful jog and clear photography lighting."
         }
       }
     ],
-    "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "",
+    "instagramUrl": "https://www.instagram.com/p/DPeQRtACMQE/?img_index=10&mdxt=eTJ6ZnA2aHBobXMz",
+    "fullDescription": {
+      "en": "<p>Situated at the eastern end of the Champs-Élysées, Place de la Concorde is the largest public square in Paris. It is renowned for its sweeping architecture, two monumental maritime fountains, and the 3,300-year-old golden-tipped Luxor Obelisk standing at its center. The southern edge of the massive square opens directly onto the Pont de la Concorde and the Seine riverbanks (Parc Rives de Seine). These lower quays have been entirely pedestrianized, transforming the historic waterfront into a miles-long promenade heavily frequented by local Parisian runners, cyclists, and pedestrians.</p><!--stss:footsteps--><p>In October 2026, Taehyung traveled to the French capital to attend Paris Fashion Week as a global ambassador for CELINE. His schedule was heavily publicized, featuring high-profile appearances in full CELINE looks at the brand's Men's runway presentation and exclusive private dinners alongside figures like actor Park Bo-gum.<br><br>Despite the intense media attention and crowded fashion week schedule, Taehyung took time for a quiet, grounded activity. On October 6, he shared an update documenting a casual jog along the banks of the Seine. He paused his run to take a photo right next to the Place de la Concorde. This update provided a stark contrast to his glamorous runway appearances, showcasing a relaxed, everyday Parisian routine along the city's historic waterfront.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Paris Metro Line 9 to Porte de Saint-Cloud station or Line 10 to Porte d'Auteuil station, then walk 5–10 minutes toward Avenue Felix Faure."
+          "en": "The square is easily accessible via the Paris Métro. Take Lines 1, 8, or 12 directly to the Concorde station. To reach the exact running paths Taehyung used, walk to the southern edge of the square toward the river and take the stone staircases down to the pedestrian quays."
         }
       },
       {
@@ -19062,7 +19069,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "Both the square and the pedestrian river promenades are public spaces, open 24/7, and completely free to visit."
         }
       },
       {
@@ -19070,12 +19077,26 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Place de la Concorde is flat and paved, making it fully accessible. The lower pedestrian river promenades are accessible via specific ramps located near major bridges (like the Pont de l'Alma or Pont Royal), though the immediate staircases at the Pont de la Concorde are steep."
         }
       }
     ],
-    "tweetUrls": [],
-    "recreatedPhoto": ""
+    "ytId": "",
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://parisjetaime.com/transport/place-de-la-concorde-p1981",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-fFXt2TP40qiRSD9EgaRi-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4857,
+            "y": 0.6235,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "instagramUrls": []
   },
   {
     "id": "new-HrHCN0x2OgHcNPcuMR0c",
