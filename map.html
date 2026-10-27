@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261062" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261063" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -938,7 +938,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261062';
+        s.src = 'page-loader.js?v=20261063';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1325,15 +1325,18 @@
                         <span class="sub-label" data-i18n="memoryNotesLabel">Your notes (optional)</span>
                         <textarea id="memory-notes" data-i18n-placeholder="memoryNotesPlaceholder" placeholder="What do you remember about this place?" style="width:100%; border:1px solid #cbd5e1; border-radius:8px; padding:10px 12px; font-size:12px; font-family:'Poppins',sans-serif; height:60px; resize:none; margin-bottom:14px; outline:none;"></textarea>
 
-                        <span class="sub-label" data-i18n="memoryPhotoLabel">Add a photo (optional)</span>
-                        <div style="margin-bottom:14px;">
-                            <div id="memory-photo-preview" class="hidden" style="width:100%; height:110px; border-radius:8px; overflow:hidden; margin-bottom:8px; background:#f1f5f9;"><img id="memory-photo-preview-img" style="width:100%; height:100%; object-fit:cover;"></div>
-                            <input type="file" id="memory-photo-input" accept="image/*,.heic,.heif" style="display:none;">
-                            <div style="display:flex; gap:8px;">
-                                <button type="button" onclick="document.getElementById('memory-photo-input').click()" style="flex:1; background:transparent; border:1.5px dashed #cbd5e1; color:#64748b; font-size:11.5px; font-weight:700; padding:9px; border-radius:8px; cursor:pointer; font-family:'Poppins',sans-serif;" data-i18n="memoryPhotoChoose">Choose a photo</button>
-                                <button type="button" id="memory-photo-remove" class="hidden" style="background:transparent; border:1.5px solid #FBD5DC; color:#D42759; font-size:11.5px; font-weight:700; padding:9px 12px; border-radius:8px; cursor:pointer; font-family:'Poppins',sans-serif;" data-i18n="memoryPhotoRemove">Remove</button>
-                            </div>
-                        </div>
+                        <!-- "Add a photo (optional)" retiré ici (demande du 27/10/2026, "supprime
+                             le fait de pouvoir ajouter une photo dans Review car ça prend trop de
+                             stockage") — même principe déjà appliqué à "Add a visited place" le
+                             16/10/2026 (voir qaBody()/qaSaveVisit() dans script.js, rating=0 jamais
+                             compté + commentaire associé). Les éléments #memory-photo-* restent
+                             référencés par openMemoryEditor()/memoryPhotoInput/memoryPhotoRemoveBtn
+                             (script.js) : tous déjà protégés par `if (el)`, donc inoffensifs une
+                             fois absents du DOM — pendingMemoryPhoto reste simplement toujours null
+                             pour une NOUVELLE visite. Une visite déjà enregistrée AVEC une photo
+                             (avant ce retrait) garde la sienne si on modifie seulement sa note/date
+                             (openMemoryEditor() la recharge dans pendingMemoryPhoto sans UI pour la
+                             changer ni la retirer, voir ce même fichier). -->
 
                         <label style="display:flex; align-items:center; gap:8px; margin-bottom:14px; cursor:pointer;">
                             <input type="checkbox" id="memory-public-check" style="width:16px; height:16px; cursor:pointer; accent-color:#D42759;">
@@ -2253,27 +2256,27 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261062"></script>
-<script type="module" src="firebase-init.js?v=20261062"></script>
-<script src="locations-data.js?v=20261062"></script>
+<script src="countries.js?v=20261063"></script>
+<script type="module" src="firebase-init.js?v=20261063"></script>
+<script src="locations-data.js?v=20261063"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261062"></script>
+<script src="artists-content.js?v=20261063"></script>
 <!-- Contours de pays pour la teinte "Show visited" sur la mini-carte de visited.html
      (window.VISITED_WORLD_MAP/visitedWorldMapProject() dans script.js) — gardé ici
      uniquement parce que script.js référence encore ces fonctions ; la carte Leaflet de
      CETTE page n'utilise plus ce fichier pour son propre overlay de pays visités, voir
      country-borders.js ci-dessous (demande du 17/10/2026, "frontières correctes"). -->
-<script src="visited-map-data.js?v=20261062"></script>
+<script src="visited-map-data.js?v=20261063"></script>
 <!-- Vraies frontières de pays (Natural Earth, lat/lng Leaflet) pour l'overlay "Show
      visited" de CETTE carte — remplace l'approximation SVG ci-dessus pour ce usage
      (demande du 17/10/2026). Doit précéder script.js. -->
-<script src="country-borders.js?v=20261062"></script>
-<script src="script.js?v=20261062"></script>
+<script src="country-borders.js?v=20261063"></script>
+<script src="script.js?v=20261063"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261062"></script>
-<script src="map-tour.js?v=20261062"></script>
+<script src="itinerary.js?v=20261063"></script>
+<script src="map-tour.js?v=20261063"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
