@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261062" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261063" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -661,7 +661,7 @@
      cette règle reste donc l'état final, pas juste la valeur par défaut hors mobile. */
   .mobile-logo { display: none; align-items: center; gap: 8px; position: fixed; top: 14px; left: 14px; z-index: 3100; text-decoration: none; }
   .mobile-logo-text { font-size: 15px; font-weight: 700; color: #2E3644; }
-  .sidebar-scroll-logo { display: none; }
+  .sidebar-scroll-logo, .trips-main-scroll-logo { display: none; }
 
   /* Onglets Plan/Map/Ideas (demande du 17/10/2026) : masqués par défaut (desktop, où tout
      reste empilé) — voir leur style complet dans le @media (max-width:800px) plus bas,
@@ -674,29 +674,27 @@
   .trip-mobile-icon-row, .trip-hero-meta-mobile { display: none; }
 
   @media (max-width: 800px) {
-      /* BUG corrigé (demande du 26/10/2026, "je ne veux pas que le header reste statique
-         quand on swipe [...] enlève le fond du header, revient comme avant") : quatrième
-         aller-retour sur ce même bouton (voir l'historique juste au-dessus dans les versions
-         antérieures de ce fichier) — cette fois le retour en arrière porte sur le PRINCIPE
-         même d'un logo flottant par-dessus le contenu (.mobile-logo, position:fixed) plutôt
-         que seulement sur sa couleur de fond. .mobile-logo (et la bande .trips-main::before
-         qui l'accompagnait) sont désormais entièrement retirés sur cette page : .mobile-logo
-         reste caché (display:none, sa valeur par défaut hors mobile, voir sa déclaration plus
-         haut). Le logo interne .brand-row (lui, DANS .sidebar-content mais HORS de
-         .sidebar-scroll-area, voir le HTML plus bas) reste caché lui aussi : il ne défile
-         pas plus que .mobile-logo ne le faisait, pour la même raison structurelle (un frère
-         statique AVANT la zone qui défile, pas un enfant DEDANS) — un nouvel élément dédié,
-         .sidebar-scroll-logo (voir le HTML plus bas, premier enfant de .sidebar-scroll-area
-         cette fois), le remplace : il défile donc réellement avec la liste des voyages,
-         disparaissant de l'écran en même temps qu'elle, exactement comme avant
-         l'introduction de .mobile-logo le 15/10/2026. La vue "détail d'un voyage"
-         (.trips-main) n'a jamais eu son propre logo avant cette date-là non plus : son
-         bouton retour (.trip-mobile-icon-row, plus bas) suffit à en sortir. */
+      /* Historique de ce bouton : bande violette permanente (24/10) → "même header que
+         wishlist/visited/account" (25/10) → entièrement retiré, logo redevenu interne au
+         flux (.sidebar-scroll-logo, défile avec la liste, 26/10, voir le reste de cet
+         historique dans l'ancien commentaire de cette section). BUG rapporté à nouveau le
+         27/10/2026 ("il n'y a plus le logo Screen to street [...] garde exactement le même
+         header [...] même quand on ouvre un trip") : .sidebar-scroll-logo ne couvrait QUE
+         la liste des voyages (#app-sidebar/.sidebar-scroll-area) — la vue détail d'un voyage
+         (.trips-main) n'en a jamais eu d'équivalent, d'où les deux vues qui ne "matchaient"
+         pas. .trips-main-scroll-logo (voir le HTML plus bas, premier enfant de .trips-main,
+         qui défile déjà lui-même — overflow-y:auto) reprend EXACTEMENT le même style pour
+         que les deux vues soient identiques, toujours sans repasser par .mobile-logo
+         (position:fixed) : la demande du 26/10/2026 ("je ne veux pas que le header reste
+         statique quand on swipe") n'a pas été remise en cause ce coup-ci, seule l'absence du
+         logo dans la vue détail et sa hauteur l'ont été. Taille augmentée (32→38px/15→18px,
+         padding vertical 16→22px) sur les deux pour la même raison ("agrandit la hauteur du
+         header"). */
       .sidebar { background: linear-gradient(160deg, #F5F3FC, #E9DFF6) !important; backdrop-filter: none; padding-top: calc(20px + env(safe-area-inset-top)); }
       #app-sidebar .brand-row { display: none; }
-      .sidebar-scroll-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; padding: 0 6px 16px 6px; }
-      .sidebar-scroll-logo svg { width: 32px; height: 32px; flex-shrink: 0; }
-      .sidebar-scroll-logo span { font-size: 15px; font-weight: 700; color: #2E3644; }
+      .sidebar-scroll-logo, .trips-main-scroll-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 0 6px 22px 6px; }
+      .sidebar-scroll-logo svg, .trips-main-scroll-logo svg { width: 38px; height: 38px; flex-shrink: 0; }
+      .sidebar-scroll-logo span, .trips-main-scroll-logo span { font-size: 18px; font-weight: 700; color: #2E3644; }
       /* Le bouton "+ New trip" (dernier élément de .sidebar-scroll-area) se retrouvait
          partiellement caché DERRIÈRE #mobile-bottom-nav (position:fixed, z-index 3500 >
          3000 de .sidebar) une fois la nav du bas laissée visible ci-dessus — même
@@ -1097,7 +1095,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261062';
+        s.src = 'page-loader.js?v=20261063';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1250,6 +1248,19 @@
         <!-- TOP NAV IDENTIQUE A MAP.HTML (mêmes classes header-icon-btn, hamburger mobile ajouté) -->
 
         <div class="trips-main">
+            <!-- Logo mobile qui défile avec le contenu (demande du 27/10/2026, voir le
+                 commentaire complet dans le @media plus haut) : visible uniquement sur mobile
+                 (.trips-main-scroll-logo, display:none par défaut) — premier enfant de
+                 .trips-main, qui défile déjà elle-même (overflow-y:auto), pour que ce logo
+                 défile réellement avec le contenu, que ce soit l'état "Loading..."/vide ou un
+                 voyage ouvert — même composant que .sidebar-scroll-logo (liste des voyages). -->
+            <a href="map.html" class="trips-main-scroll-logo">
+                <svg width="38" height="38" viewBox="0 0 400 400" style="flex-shrink:0;">
+                    <path d="M200,50 C148,50 106,92 106,146 C106,220 200,340 200,340 C200,340 294,220 294,146 C294,92 252,50 200,50 Z" fill="#2E3644"/>
+                    <circle cx="200" cy="150" r="26" fill="#D42759"/>
+                </svg>
+                <span>Screen To <b style="color:#D42759;">Street</b></span>
+            </a>
             <div class="empty-state" id="empty-state">Loading your trips...</div>
 
             <div id="trip-detail-content" class="trip-detail-wrapper" data-active-tab="plan">
@@ -1901,9 +1912,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261062"></script>
-<script src="locations-data.js?v=20261062"></script>
-<script src="script.js?v=20261062"></script>
+<script type="module" src="firebase-init.js?v=20261063"></script>
+<script src="locations-data.js?v=20261063"></script>
+<script src="script.js?v=20261063"></script>
 
 </body>
 </html>

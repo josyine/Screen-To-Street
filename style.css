@@ -994,6 +994,15 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
     }
     .mobile-bottom-nav.menu-open { display: none !important; }
 
+    /* BUG rapporté le 27/10/2026 ("Add a photo"... le bouton Publish est masqué par la barre
+       de navigation du bas) : voir le commentaire complet dans window.openQuickAddFormSheet()
+       (script.js) — .qaf-foot/le bouton Publier, ancré en bas de .qaf-sheet lui-même ancré en
+       bas de l'écran, se retrouve dans la même zone que cette nav flottante. Masquée le temps
+       que la fiche "Add a photo"/"Add a visited place"/"Add a review" est ouverte (même
+       classe .qa-sheet-open posée/retirée par openQuickAddFormSheet()/closeQuickAddFormSheet()
+       pour les 3, un seul composant partagé), même principe que .menu-open juste au-dessus. */
+    .mobile-bottom-nav.qa-sheet-open { display: none !important; }
+
     /* BUG corrigé (demande du 09/10/2026, "il faut afficher les icones du bas par dessus
        la page Agenda") : .live-panel occupe tout l'écran sur mobile (z-index 9500, voir
        map.html) et passe donc normalement PAR-DESSUS cette nav (z-index 3500 ci-dessus) —
