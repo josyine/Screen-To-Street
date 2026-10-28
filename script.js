@@ -933,7 +933,16 @@ function loadInstagramWidgetScriptOnce() {
 // hauteur annoncée pour un post paysage (donc une hauteur annoncée nettement plus courte).
 // Marge fixe systématique ajoutée à la hauteur annoncée pour lui laisser sa place, quelle que
 // soit l'orientation du post.
-const INSTAGRAM_EMBED_FOOTER_BUFFER_PX = 44;
+// BUG signalé une 3e fois le 27/10/2026 (encore "Viña Aquitania") malgré cette marge : le
+// vrai souci n'était pas la marge mais la LARGEUR — l'iframe était posée en `width:100%` de
+// sa carte (potentiellement bien plus large que les ~400px pour lesquels Instagram construit
+// son HTML interne /embed/, qui n'est pas vraiment fluide à toute largeur). Étirée au-delà de
+// sa largeur naturelle, la mise en page interne d'Instagram se détend verticalement — pour un
+// post paysage (photo déjà plus basse), son bandeau "Voir plus sur Instagram" décolle alors du
+// bas de la photo et la chevauche. Largeur désormais plafonnée à sa valeur naturelle (centrée),
+// marge augmentée par sécurité.
+const INSTAGRAM_EMBED_MAX_WIDTH_PX = 400;
+const INSTAGRAM_EMBED_FOOTER_BUFFER_PX = 60;
 if (!window.__igEmbedResizeWired) {
     window.__igEmbedResizeWired = true;
     window.addEventListener('message', (e) => {
@@ -953,7 +962,7 @@ async function renderInstagramEmbedOnDetails(container, instagramUrl) {
         // Hauteur de départ généreuse, juste le temps que le vrai redimensionnement (message
         // MEASURE + marge fixe pour son bandeau, voir juste au-dessus) arrive — n'affecte
         // aucun post déjà correctement redimensionné.
-        container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="620" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:100%;"></iframe>`;
+        container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="620" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:${INSTAGRAM_EMBED_MAX_WIDTH_PX}px; display:block; margin:0 auto;"></iframe>`;
         return;
     }
     // Repli si jamais aucun code n'a pu être extrait (ne devrait normalement jamais arriver
@@ -14728,37 +14737,334 @@ window.updateEditTripOptions = function(fieldChanged) {
     window.renderTrip();
 }
 
-// "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()/stayCard()) :
-// jusqu'ici, currentTrip.homeBase n'était renseigné qu'à la création du voyage
-// (createNewTripAdvanced() plus bas) et ne pouvait plus jamais être changé ensuite — alors
-// que generateItinerary()/computeDayTimeline()/regenerateTripItinerary() le lisent tous pour
-// servir de point de départ réel du premier trajet de chaque journée.
-window.toggleTripHomeBaseEditor = function() {
-    const editor = document.getElementById('trip-homebase-editor');
-    const btn = document.getElementById('trip-homebase-edit-btn');
-    if (!editor) return;
-    const opening = editor.classList.contains('hidden');
-    editor.classList.toggle('hidden');
-    if (btn) btn.textContent = opening ? (currentLang === 'fr' ? 'Fermer' : 'Close') : (currentLang === 'fr' ? 'Modifier' : 'Edit');
-};
-
-// Pastilles START/END (demande du 23/10/2026, capture d'écran fournie : deux lignes
-// distinctes plutôt qu'un seul champ texte) — "Same start & end for the whole trip" cochée
-// veut dire START et END sont LE MÊME hébergement (currentTrip.homeBase/homeBaseLabel) :
-// éditer l'une des deux pastilles met donc à jour les deux. Même popup de recherche de
-// lieu réel que l'éditeur per-day (window.openPlaceSearchPopup() plus haut).
-window.openTripLevelEndpointEditor = function(evt, role) {
-    if (!currentTrip) return;
-    window.openPlaceSearchPopup(evt, {
-        title: role === 'start' ? (currentLang === 'fr' ? 'Lieu de départ' : 'Start location') : (currentLang === 'fr' ? "Lieu d'arrivée" : 'End location'),
-        currentValue: currentTrip.homeBaseLabel || '',
-        onSave: (picked) => {
-            currentTrip.homeBase = picked ? { lat: picked.lat, lng: picked.lng } : null;
-            currentTrip.homeBaseLabel = picked ? picked.label : '';
-            window.saveTrip();
-            window.renderTrip();
-        }
+// ===== Carte "START & END" — page de recherche plein écran (demande du 27/10/2026, maquette
+// fournie depart_arrivee_final.html) =====
+// Remplace l'ancienne petite fenêtre flottante (window.openTripLevelEndpointEditor() +
+// window.openPlaceSearchPopup(), qui restent inchangées pour l'éditeur PER-DAY — voir
+// window.openDayEndpointEditor() plus haut, non concerné par cette demande) par une page
+// plein écran dédiée, avec "Use my current location", "YOUR STAY" (currentTrip.accommodation,
+// voir createNewTripAdvanced() plus bas), "RECENT" (currentTrip.recentPlaces, nouveau) et des
+// suggestions Google Places (API "New"). currentTrip.homeBase/homeBaseLabel restent la seule
+// source lue par generateItinerary()/computeDayTimeline() pour le point de départ réel de
+// chaque journée — cette page les écrit exactement comme le faisait l'ancien éditeur, plus
+// homeBaseAddress (nouveau, pour la ligne d'adresse grise de la carte).
+//
+// Clé Google Cloud : APIs à activer sur le projet Google Cloud du site — "Maps JavaScript
+// API" + "Places API (New)" — puis coller la clé ici. Vide = la recherche retombe
+// automatiquement sur l'API Nominatim (OpenStreetMap, gratuite, sans clé, déjà utilisée
+// ailleurs sur cette page) sans jamais bloquer la page, voir seSearchPlaces() plus bas.
+const GOOGLE_PLACES_API_KEY = "";
+let seGoogleReadyPromise = null;
+function seLoadGoogle() {
+    if (!GOOGLE_PLACES_API_KEY) return Promise.resolve(false);
+    if (seGoogleReadyPromise) return seGoogleReadyPromise;
+    seGoogleReadyPromise = new Promise((resolve) => {
+        window.__seGmCallback = () => resolve(true);
+        const s = document.createElement('script');
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_PLACES_API_KEY)}&libraries=places&loading=async&callback=__seGmCallback`;
+        s.async = true;
+        s.onerror = () => resolve(false);
+        document.head.appendChild(s);
     });
+    return seGoogleReadyPromise;
+}
+let seSessionToken = null;
+async function seGoogleSearch(query, biasCenter) {
+    const { AutocompleteSuggestion, AutocompleteSessionToken } = await google.maps.importLibrary("places");
+    if (!seSessionToken) seSessionToken = new AutocompleteSessionToken();
+    const req = { input: query, sessionToken: seSessionToken, language: currentLang === 'fr' ? 'fr' : 'en' };
+    if (biasCenter) req.locationBias = { center: biasCenter, radius: 30000 };
+    const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions(req);
+    return (suggestions || []).filter(s => s.placePrediction).slice(0, 5).map(s => {
+        const p = s.placePrediction, types = p.types || [];
+        return {
+            id: p.placeId,
+            name: (p.mainText && p.mainText.text) || (p.text && p.text.text) || '',
+            address: (p.secondaryText && p.secondaryText.text) || '',
+            type: types.includes('lodging') ? 'hotel' : types.some(t => /airport/.test(t)) ? 'air' : types.some(t => /station/.test(t)) ? 'train' : types.some(t => /museum|landmark|tourist_attraction/.test(t)) ? 'landmark' : 'addr',
+            _prediction: p
+        };
+    });
+}
+// Résolution des coordonnées + nom/adresse exacts (demande explicite : "placePrediction.toPlace()
+// puis fetchFields") — seulement au clic sur une suggestion Google, jamais pour toutes les
+// suggestions affichées (économise des appels facturés à l'API Places).
+async function seResolveGooglePlace(p) {
+    const place = p._prediction.toPlace();
+    await place.fetchFields({ fields: ['displayName', 'formattedAddress', 'location'] });
+    seSessionToken = null; // une session par recherche, terminée après ce choix
+    return {
+        name: place.displayName || p.name,
+        address: place.formattedAddress || p.address || '',
+        lat: place.location ? place.location.lat() : null,
+        lng: place.location ? place.location.lng() : null
+    };
+}
+// Centre de biais (locationBias) pour prioriser les résultats proches du voyage : géocode la
+// ville/pays du voyage UNE FOIS via Nominatim (gratuit, déjà utilisé ailleurs sur cette page),
+// mis en cache par voyage plutôt que re-géocodé à chaque frappe.
+let seBiasCenterCache = {};
+async function seGetBiasCenter() {
+    if (!currentTrip) return null;
+    const key = currentTrip.id;
+    if (key in seBiasCenterCache) return seBiasCenterCache[key];
+    const q = [currentTrip.city, currentTrip.country].filter(Boolean).join(', ');
+    let center = null;
+    if (q) { try { center = await geocodeAddress(q); } catch (e) { center = null; } }
+    seBiasCenterCache[key] = center;
+    return center;
+}
+// Recherche de lieux réels pour la page plein écran START/END — Google Places (API "New")
+// quand une clé est configurée, repli silencieux sur Nominatim sinon ou en cas d'échec (ne
+// bloque jamais la page, voir la note sur GOOGLE_PLACES_API_KEY plus haut).
+async function seSearchPlaces(query) {
+    if (await seLoadGoogle().catch(() => false)) {
+        try {
+            const biasCenter = await seGetBiasCenter();
+            return { source: 'google', results: await seGoogleSearch(query, biasCenter) };
+        } catch (e) { console.warn('Google Places indisponible, repli Nominatim :', e); }
+    }
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(query)}`, { headers: { 'Accept-Language': currentLang || 'en' } });
+        const raw = res.ok ? await res.json() : [];
+        const results = (Array.isArray(raw) ? raw : []).map(r => ({
+            id: 'nom-' + r.place_id, name: (r.display_name || '').split(',')[0], address: r.display_name || '',
+            type: 'addr', lat: parseFloat(r.lat), lng: parseFloat(r.lon), _resolved: true
+        }));
+        return { source: 'nominatim', results };
+    } catch (e) {
+        return { source: 'error', results: [] };
+    }
+}
+
+const SE_IC = {
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>',
+    flag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+    hotel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V7M3 13h18v5M21 13a3 3 0 0 0-3-3h-7v3"/><circle cx="7" cy="10.5" r="1.8"/></svg>',
+    train: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="3" width="12" height="14" rx="3"/><path d="M6 11h12M9 21l1.5-3M15 21l-1.5-3"/></svg>',
+    air: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5L3 11l1.5-1.5 7 1L16 6c1-1 2.6-1.4 3-1s0 2-1 3l-4.5 4.5 1 7L13 21l-2.5-7.5z"/></svg>',
+    landmark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-6 10 6z"/></svg>',
+    loc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    srch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>',
+    xc: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+    bk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'
+};
+const seTypeIcon = t => SE_IC[{ addr: 'pin', hotel: 'hotel', train: 'train', air: 'air', landmark: 'landmark', loc: 'loc', stay: 'hotel', recent: 'clock' }[t] || 'pin'];
+function seHighlight(name, q) {
+    const n = escapeHtml(name);
+    const query = (q || '').trim();
+    if (!query) return n;
+    const idx = name.toLowerCase().indexOf(query.toLowerCase());
+    if (idx < 0) return n;
+    return escapeHtml(name.slice(0, idx)) + '<strong>' + escapeHtml(name.slice(idx, idx + query.length)) + '</strong>' + escapeHtml(name.slice(idx + query.length));
+}
+
+let seState = null; // { role: 'start'|'end', query, searchToken }
+let seSearchDebounce = null;
+
+function ensureSeOverlayEl() {
+    let el = document.getElementById('se-search-overlay');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'se-search-overlay';
+    el.className = 'se-search-overlay hidden';
+    document.body.appendChild(el);
+    return el;
+}
+
+function seRowHTML(p, q) {
+    return `<button type="button" class="se-si" data-se-pick="${escapeHtml(p.id)}">
+        <span class="se-si-ic">${seTypeIcon(p.type)}</span>
+        <span class="se-si-t"><b>${seHighlight(p.name, q)}</b><small>${escapeHtml(p.address || '')}</small></span>
+    </button>`;
+}
+
+function seSuggestionsHTML() {
+    const st = seState;
+    if (!currentTrip) return '';
+    if (!st.query) {
+        const stay = currentTrip.accommodation;
+        const recent = (currentTrip.recentPlaces || []).slice(0, 3);
+        let html = `<button type="button" class="se-si" data-se-use-current>
+            <span class="se-si-ic se-si-ic-loc">${SE_IC.loc}</span>
+            <span class="se-si-t"><b>${currentLang === 'fr' ? 'Utiliser ma position actuelle' : 'Use my current location'}</b><small>${currentLang === 'fr' ? 'Géolocalisation du navigateur' : "Uses your browser's location"}</small></span>
+        </button>`;
+        if (stay && stay.name) {
+            html += `<div class="se-sgh">${currentLang === 'fr' ? 'VOTRE HÉBERGEMENT' : 'YOUR STAY'}</div>` + seRowHTML({ id: 'stay', name: stay.name, address: stay.address, type: 'stay', lat: stay.lat, lng: stay.lng }, '');
+        }
+        if (recent.length) {
+            html += `<div class="se-sgh">${currentLang === 'fr' ? 'RÉCENTS' : 'RECENT'}</div>` + recent.map((p, i) => seRowHTML({ id: 'recent-' + i, name: p.name, address: p.address, type: 'recent', lat: p.lat, lng: p.lng }, '')).join('');
+        }
+        return html;
+    }
+    if (st.loading) return `<div class="se-ld"><span class="se-spin"></span>${currentLang === 'fr' ? 'Recherche de lieux…' : 'Searching places…'}</div>`;
+    if (st.error) return `<div class="se-empty">${currentLang === 'fr' ? "Impossible de contacter le service de recherche pour l'instant — vérifiez l'adresse puis réessayez." : "Couldn't reach the search service right now — check the address and try again."}</div>`;
+    if (!st.results || !st.results.length) return `<div class="se-empty">${currentLang === 'fr' ? 'Aucun lieu trouvé.' : 'No place found.'}</div>`;
+    seState.pool = {};
+    st.results.forEach(p => { seState.pool[p.id] = p; });
+    return st.results.map(p => seRowHTML(p, st.query)).join('') + (st.source === 'google' ? `<div class="se-pw">${currentLang === 'fr' ? 'propulsé par' : 'powered by'} <b>Google</b></div>` : '');
+}
+
+function seRender() {
+    const el = ensureSeOverlayEl();
+    const st = seState;
+    const title = st.role === 'start'
+        ? (currentLang === 'fr' ? 'Où partez-vous ?' : 'Where do you start?')
+        : (currentLang === 'fr' ? 'Où finissez-vous la journée ?' : 'Where do you end the day?');
+    el.innerHTML = `
+        <div class="se-full">
+            <div class="se-fh">
+                <button type="button" class="se-bk" data-se-close>${SE_IC.bk}</button>
+                <h3>${escapeHtml(title)}</h3>
+            </div>
+            <div class="se-sbox">
+                <span class="se-sbox-ic">${SE_IC.srch}</span>
+                <input type="text" id="se-search-input" placeholder="${currentLang === 'fr' ? 'Adresse, hôtel, gare…' : 'Address, hotel, station…'}" value="${escapeHtml(st.query || '')}" autocomplete="off">
+                <button type="button" class="se-sbox-clr" data-se-clear>${SE_IC.xc}</button>
+            </div>
+            <div class="se-fsc"><div id="se-suggestions">${seSuggestionsHTML()}</div></div>
+        </div>`;
+    const input = document.getElementById('se-search-input');
+    if (input) {
+        input.focus();
+        const L = input.value.length;
+        input.setSelectionRange(L, L);
+    }
+}
+
+async function seRunSearch(query) {
+    const myToken = ++seState.searchToken;
+    seState.query = query;
+    if (!query) { seState.loading = false; seState.error = false; seState.results = null; seRender(); return; }
+    seState.loading = true; seState.error = false;
+    const box = document.getElementById('se-suggestions');
+    if (box) box.innerHTML = seSuggestionsHTML();
+    const { source, results } = await seSearchPlaces(query);
+    if (!seState || myToken !== seState.searchToken) return; // une frappe plus récente a déjà relancé une recherche
+    seState.loading = false;
+    seState.source = source;
+    seState.results = results;
+    seState.error = source === 'error';
+    const box2 = document.getElementById('se-suggestions');
+    if (box2) box2.innerHTML = seSuggestionsHTML();
+}
+
+// "Use my current location" : géolocalisation navigateur puis géocodage inverse (Google si une
+// clé est configurée, sinon Nominatim — même règle de repli que seSearchPlaces()). Message
+// visible plutôt qu'un échec silencieux si l'accès est refusé.
+async function seUseCurrentLocation() {
+    if (!navigator.geolocation) {
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "La géolocalisation n'est pas disponible sur cet appareil." : 'Geolocation is not available on this device.', { isError: true });
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        let address = '';
+        try {
+            if (await seLoadGoogle().catch(() => false)) {
+                const { Geocoder } = await google.maps.importLibrary("geocoding");
+                const geocoder = new Geocoder();
+                const { results } = await geocoder.geocode({ location: { lat, lng } });
+                if (results && results[0]) address = results[0].formatted_address;
+            }
+            if (!address) {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, { headers: { 'Accept-Language': currentLang || 'en' } });
+                if (res.ok) { const data = await res.json(); address = data && data.display_name || ''; }
+            }
+        } catch (e) { console.warn('Géocodage inverse échoué :', e); }
+        seSavePlace({ name: currentLang === 'fr' ? 'Position actuelle' : 'Current location', address: address || '', lat, lng });
+    }, () => {
+        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(currentLang === 'fr' ? "Accès à la position refusé — autorisez la géolocalisation ou choisissez une adresse." : 'Location access denied — allow geolocation or pick an address instead.', { isError: true });
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+}
+
+// Enregistre le lieu choisi comme départ ou arrivée (demande explicite : "enregistre-le comme
+// départ ou arrivée... referme la page, met à jour la carte START & END et les lignes de
+// départ/retour des jours, et affiche un toast"). "Same start & end" reste cochée pour la
+// carte trip-level (seule accessible par cette page, voir la note sur .se-route dans
+// trips.html) : les deux rôles partagent donc currentTrip.homeBase, exactement comme avant.
+function seSavePlace(place) {
+    if (!currentTrip || !place || place.lat == null || place.lng == null) {
+        seCloseSearch();
+        return;
+    }
+    const role = seState.role;
+    currentTrip.homeBase = { lat: place.lat, lng: place.lng };
+    currentTrip.homeBaseLabel = place.name;
+    currentTrip.homeBaseAddress = place.address || '';
+    if (!Array.isArray(currentTrip.recentPlaces)) currentTrip.recentPlaces = [];
+    currentTrip.recentPlaces = [
+        { name: place.name, address: place.address || '', lat: place.lat, lng: place.lng },
+        ...currentTrip.recentPlaces.filter(p => p.name !== place.name || p.address !== place.address)
+    ].slice(0, 3);
+    seCloseSearch();
+    window.saveTrip();
+    window.renderTrip();
+    if (typeof window.showSimpleToast === 'function') {
+        const roleLabel = role === 'start' ? (currentLang === 'fr' ? 'Départ' : 'Start') : (currentLang === 'fr' ? 'Arrivée' : 'End');
+        window.showSimpleToast(`${roleLabel} · ${place.name} ✓`);
+    }
+}
+
+function seCloseSearch() {
+    const el = document.getElementById('se-search-overlay');
+    if (el) el.classList.add('hidden');
+    seState = null;
+}
+
+window.openSeSearch = function(evt, role) {
+    if (evt) evt.stopPropagation();
+    if (!currentTrip) return;
+    seState = { role, query: '', searchToken: 0, loading: false, error: false, results: null, pool: {} };
+    const el = ensureSeOverlayEl();
+    el.classList.remove('hidden');
+    seRender();
+    if (!el.dataset.wired) {
+        el.dataset.wired = '1';
+        el.addEventListener('input', (e) => {
+            if (e.target.id !== 'se-search-input' || !seState) return;
+            clearTimeout(seSearchDebounce);
+            const q = e.target.value.trim();
+            seSearchDebounce = setTimeout(() => seRunSearch(q), 200);
+        });
+        el.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' || !seState) return;
+            const first = document.querySelector('#se-suggestions [data-se-pick]');
+            if (first) first.click();
+        });
+        el.addEventListener('click', async (e) => {
+            if (!seState) return;
+            if (e.target.closest('[data-se-close]')) { seCloseSearch(); return; }
+            if (e.target.closest('[data-se-clear]')) {
+                const input = document.getElementById('se-search-input');
+                if (input) { input.value = ''; input.focus(); }
+                seRunSearch('');
+                return;
+            }
+            if (e.target.closest('[data-se-use-current]')) { seUseCurrentLocation(); return; }
+            const pickBtn = e.target.closest('[data-se-pick]');
+            if (pickBtn) {
+                const id = pickBtn.dataset.sePick;
+                const p = seState.pool && seState.pool[id];
+                if (p && p._resolved) { seSavePlace(p); return; }
+                if (p && p._prediction) {
+                    pickBtn.style.opacity = '.5';
+                    try { seSavePlace(await seResolveGooglePlace(p)); }
+                    catch (err) { console.warn(err); pickBtn.style.opacity = ''; }
+                    return;
+                }
+                // "YOUR STAY" / "RECENT" (déjà résolus, pas de _prediction Google à relire).
+                if (id === 'stay' && currentTrip.accommodation) { seSavePlace(currentTrip.accommodation); return; }
+                if (id.startsWith('recent-')) {
+                    const i = parseInt(id.slice(7));
+                    const rp = (currentTrip.recentPlaces || [])[i];
+                    if (rp) seSavePlace(rp);
+                }
+            }
+        });
+    }
 };
 
 // Aperçu en lecture seule des horaires réalistes d'un jour (arrivée, trajet, pause
@@ -15331,30 +15637,24 @@ window.renderTrip = function() {
         heroMetaMobile.textContent = `${countryLabel} · ${dayLabel}`;
     }
 
-    // "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) — affiche
-    // l'hôtel/point de départ actuel du voyage ; voir window.toggleTripHomeBaseEditor()/
-    // window.openTripLevelEndpointEditor() plus bas pour la saisie.
+    // "START & END" — carte refaite (demande du 27/10/2026, maquette depart_arrivee_final.
+    // html) : voir window.openSeSearch() plus haut pour la saisie (page plein écran).
     //
-    // Bascule "Same start & end for the whole trip" (demande du 18/10/2026) :
+    // Bascule "Same start & end for the whole trip" (demande du 18/10/2026, inchangée) :
     // currentTrip.sameStartEnd === false veut dire que chaque jour a son propre départ/
     // arrivée (currentTrip.dayStartEnd[i], voir window.openDayEndpointEditor() plus bas) —
     // absent ou true garde l'ancien comportement (un seul hébergement pour tout le voyage,
     // voyages créés avant cette fonctionnalité).
-    const homeBaseLabelEl = document.getElementById('trip-homebase-label');
     const sameStartEnd = currentTrip.sameStartEnd !== false;
-    if (homeBaseLabelEl) {
-        homeBaseLabelEl.textContent = sameStartEnd
-            ? (currentTrip.homeBaseLabel || (currentLang === 'fr' ? 'Non défini' : 'Not set'))
-            : (currentLang === 'fr' ? 'Différent chaque jour' : 'Different each day');
-    }
-    // Pastilles START/END (demande du 23/10/2026) — même valeur partagée (homeBaseLabel)
-    // dans les deux tant que "Same start & end" reste coché, voir
-    // window.openTripLevelEndpointEditor() plus haut.
     const notSetLabel = currentLang === 'fr' ? 'Non défini' : 'Not set';
-    const startLabelEl = document.getElementById('trip-se-start-label');
-    if (startLabelEl) startLabelEl.textContent = currentTrip.homeBaseLabel || notSetLabel;
-    const endLabelEl = document.getElementById('trip-se-end-label');
-    if (endLabelEl) endLabelEl.textContent = currentTrip.homeBaseLabel || notSetLabel;
+    const startNameEl = document.getElementById('se-start-name');
+    if (startNameEl) startNameEl.textContent = currentTrip.homeBaseLabel || notSetLabel;
+    const startAddrEl = document.getElementById('se-start-addr');
+    if (startAddrEl) startAddrEl.textContent = currentTrip.homeBaseAddress || '';
+    const endNameEl = document.getElementById('se-end-name');
+    if (endNameEl) endNameEl.textContent = currentTrip.homeBaseLabel || notSetLabel;
+    const endAddrEl = document.getElementById('se-end-addr');
+    if (endAddrEl) endAddrEl.textContent = currentTrip.homeBaseAddress || '';
     const sameToggleEl = document.getElementById('trip-se-same-checkbox');
     if (sameToggleEl) sameToggleEl.checked = sameStartEnd;
     const singleEditorEl = document.getElementById('trip-se-single-editor');
@@ -16935,7 +17235,14 @@ window.createNewTripAdvanced = async function() {
         id: newTripId, name: name, dateType: dateType, duration: duration, startDate: startDate, endDate: endDate, days: daysArray,
         group: group, member: member, country: country, city: city,
         categories: createTripSelectedCategories.slice(),
-        homeBase: homeBase, homeBaseLabel: homeBase ? hotelQuery : ''
+        homeBase: homeBase, homeBaseLabel: homeBase ? hotelQuery : '', homeBaseAddress: '',
+        // "YOUR STAY" (demande du 27/10/2026, carte START & END refaite) : capturé UNE SEULE
+        // FOIS ici, à la création, à partir du même hôtel que homeBase ci-dessus — pour que la
+        // page de recherche plein écran puisse toujours proposer "le logement du voyage" même
+        // après que START/END aient été modifiés séparément et aient donc divergé de ce lieu
+        // d'origine (homeBase/homeBaseLabel sont désormais aussi écrits par
+        // window.openSeSearch() plus bas, qui n'a aucune raison de connaître ce champ-ci).
+        accommodation: homeBase ? { name: hotelQuery, address: hotelQuery, lat: homeBase.lat, lng: homeBase.lng } : null
     };
 
     // Comme pour l'Auto-Itinerary Generator (saveItineraryToTrips) : les lieux assignés

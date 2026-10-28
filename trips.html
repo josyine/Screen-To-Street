@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261063" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261064" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -349,40 +349,78 @@
 
   .section-label {font-size:11.5px;font-weight:700;letter-spacing:.7px;color:#94a3b8;text-transform:uppercase;margin:24px 0 16px 0;}
 
-  /* "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) — affiche et
-     permet de définir l'hôtel/point de départ du voyage (currentTrip.homeBase/
-     homeBaseLabel), posé jusqu'ici UNIQUEMENT à la création (createNewTripAdvanced()) et
-     jamais modifiable ensuite, alors que generateItinerary()/computeDayTimeline() le lisent
-     déjà pour servir de point de départ réel du premier trajet de chaque journée — voir
-     window.toggleTripHomeBaseEditor()/window.saveTripHomeBase() dans script.js. */
-  .trip-se-row { display:flex; align-items:center; gap:10px; background:#fff; border-radius:16px; padding:12px 16px; box-shadow:0 2px 10px rgba(74,45,138,.06); margin-bottom:18px; }
-  .trip-se-icon { width:30px; height:30px; border-radius:9px; background:#1F2430; color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .trip-se-text { flex:1; min-width:0; }
-  .trip-se-text small { display:block; font-size:10.5px; font-weight:700; color:#94a3b8; letter-spacing:.6px; }
-  .trip-se-text span { font-size:13.5px; font-weight:600; color:#212832; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; }
-  .trip-se-edit-btn { font-size:12.5px; font-weight:700; color:#D42759; background:none; border:none; cursor:pointer; flex-shrink:0; }
-  .trip-se-editor { margin:-8px 0 18px; }
-  .trip-se-editor input { width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid #e2e8f0; font-size:13.5px; outline:none; font-family:'Poppins',sans-serif; }
-  .trip-se-editor input:focus { border-color:#D42759; }
-  .trip-se-save-btn { margin-top:10px; background:#D42759; color:#fff; border:none; border-radius:100px; padding:10px 20px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:'Poppins',sans-serif; }
-  .trip-se-save-btn:disabled { opacity:.6; cursor:default; }
+  /* ===== NOUVELLE carte "START & END" (demande du 27/10/2026, maquette fournie
+     depart_arrivee_final.html — remplace l'ancienne ligne résumé + bouton "Edit" + pastilles
+     ci-dessus) =====
+     Toutes les classes de ce bloc sont préfixées se- pour ne jamais percuter une classe déjà
+     utilisée ailleurs sur le site. Couleurs/police/arrondis repris à l'identique de la
+     maquette (icônes maison/drapeau/crayon en SVG inline, jamais d'émoji). currentTrip.
+     homeBase/homeBaseLabel restent la SEULE source de vérité lue par generateItinerary()/
+     computeDayTimeline() pour le point de départ réel de chaque journée — voir
+     window.openSeSearch()/window.renderTrip() dans script.js, qui remplissent ces mêmes
+     champs qu'avant (plus homeBaseAddress, nouveau, pour la ligne d'adresse grise). */
+  .se-card { background:#fff; border-radius:20px; box-shadow:0 2px 10px rgba(74,45,138,.06); margin-bottom:18px; font-family:'Poppins',sans-serif; }
+  .se-card-head { padding:14px 16px 2px; }
+  .se-card-head small { font-size:10.5px; font-weight:800; letter-spacing:.7px; color:#8A93A6; }
+  .se-route { position:relative; padding:4px 16px 4px; }
+  .se-route::before { content:""; position:absolute; left:33px; top:32px; bottom:32px; border-left:2px dashed #D9D5E3; }
+  .se-row { display:flex; align-items:center; gap:12px; width:100%; padding:10px 0; background:none; border:none; cursor:pointer; text-align:left; font-family:'Poppins',sans-serif; position:relative; }
+  .se-dot { width:28px; height:28px; border-radius:50%; color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .se-dot svg { width:14px; height:14px; }
+  .se-dot-start { background:#1F2430; }
+  .se-dot-end { background:#D42759; }
+  .se-row-text { flex:1; min-width:0; }
+  .se-row-text small { display:block; font-size:10.5px; font-weight:800; letter-spacing:.7px; color:#8A93A6; }
+  .se-row-text b { display:block; font-size:13.5px; font-weight:600; color:#1F2430; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .se-row-text i { font-style:normal; display:block; font-size:11.5px; color:#8F8B99; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .se-row-edit { color:#B5B1C2; flex-shrink:0; }
+  .se-row-edit svg { width:16px; height:16px; }
 
-  /* Bascule "Same start & end for the whole trip" (demande du 18/10/2026,
-     trip_finale_legere.html) — pilule cochée façon mockup : voir window.toggleSameStartEnd()
-     dans script.js pour sa logique (currentTrip.sameStartEnd). */
-  .trip-se-same-toggle { display: flex; align-items: center; gap: 10px; background: #FCE7F0; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; cursor: pointer; font-size: 12.5px; font-weight: 700; color: #212832; }
-  .trip-se-same-toggle input { width: 18px; height: 18px; accent-color: #D42759; flex-shrink: 0; }
-  .trip-se-perday-hint { font-size: 12px; color: #64748b; line-height: 1.5; margin: 0; }
+  /* Bascule "Same start & end for the whole trip" — séparée du reste par la fine ligne
+     .se-same (border-top), comme sur la maquette. Logique inchangée :
+     window.toggleSameStartEnd() dans script.js (currentTrip.sameStartEnd). */
+  .se-same { display:flex; align-items:center; gap:10px; width:100%; padding:11px 16px; border-top:1px solid #ECE8F2; font-size:13px; font-weight:600; color:#1F2430; cursor:pointer; }
+  .se-same input { position:absolute; opacity:0; width:0; height:0; }
+  .se-cb { width:20px; height:20px; border-radius:6px; border:2px solid #CFCBD9; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .se-cb svg { width:12px; height:12px; color:#fff; }
+  .se-same input:checked ~ .se-cb { background:#D42759; border-color:#D42759; }
+  .se-perday-hint { font-size:12px; color:#64748b; line-height:1.5; margin:0; padding:0 16px 14px; }
 
-  /* Pastilles START/END (demande du 23/10/2026, capture d'écran fournie) — remplace
-     l'ancien champ texte unique ; voir window.openTripLevelEndpointEditor() dans script.js. */
-  .trip-se-pill-row { display: flex; gap: 10px; }
-  .trip-se-pill { flex: 1; display: flex; align-items: center; gap: 10px; background: #F4F2F8; border: none; border-radius: 14px; padding: 10px 12px; cursor: pointer; text-align: left; font-family: 'Poppins', sans-serif; min-width: 0; }
-  .trip-se-pill-badge { width: 28px; height: 28px; border-radius: 50%; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .trip-se-pill-text { flex: 1; min-width: 0; }
-  .trip-se-pill-text small { display: block; font-size: 9.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
-  .trip-se-pill-text span { display: block; font-size: 13px; font-weight: 700; color: #212832; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .trip-se-pill-chev { color: #94a3b8; flex-shrink: 0; font-size: 12px; }
+  /* ===== Page de recherche plein écran START/END (demande du 27/10/2026) =====
+     Injectée dynamiquement dans <body> par window.ensureSeOverlayEl()/window.openSeSearch()
+     dans script.js (même convention que #place-search-popup plus bas) — jamais présente dans
+     ce HTML statique. z-index au-dessus de tout (y compris .mobile-bottom-nav, .modal) pour
+     rester une page plein écran véritable sur mobile comme sur desktop. */
+  .se-search-overlay { position:fixed; inset:0; z-index:10700; font-family:'Poppins',sans-serif; }
+  .se-search-overlay.hidden { display:none; }
+  .se-full { position:absolute; inset:0; background:#fff; display:flex; flex-direction:column; padding:calc(16px + env(safe-area-inset-top)) 16px 16px; }
+  .se-fh { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .se-bk { width:38px; height:38px; border-radius:50%; background:#F6F4F9; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#1F2430; flex-shrink:0; }
+  .se-bk svg { width:17px; height:17px; }
+  .se-fh h3 { font-size:17px; font-weight:800; color:#1F2430; margin:0; }
+  .se-sbox { display:flex; align-items:center; gap:8px; background:#F6F4F9; border:1.5px solid transparent; border-radius:14px; padding:0 12px; height:48px; margin-bottom:10px; flex-shrink:0; }
+  .se-sbox:focus-within { border-color:#D42759; background:#fff; box-shadow:0 0 0 4px rgba(224,21,107,.08); }
+  .se-sbox-ic { color:#D42759; display:flex; flex-shrink:0; }
+  .se-sbox-ic svg { width:18px; height:18px; }
+  .se-sbox input { flex:1; min-width:0; height:100%; border:0; outline:0; background:none; font-family:'Poppins',sans-serif; font-size:15px; color:#1F2430; }
+  .se-sbox-clr { color:#B5B1C2; background:none; border:none; cursor:pointer; display:flex; flex-shrink:0; }
+  .se-sbox-clr svg { width:16px; height:16px; }
+  .se-fsc { flex:1; overflow-y:auto; }
+  .se-si { display:flex; align-items:center; gap:12px; width:100%; padding:10px 4px; border:none; background:none; border-bottom:1px solid #F0EEF4; cursor:pointer; text-align:left; font-family:'Poppins',sans-serif; }
+  .se-si-ic { width:34px; height:34px; border-radius:50%; background:#F6F4F9; display:flex; align-items:center; justify-content:center; color:#5F5B68; flex-shrink:0; }
+  .se-si-ic svg { width:16px; height:16px; }
+  .se-si-ic-loc { background:#FFE8F1; color:#D42759; }
+  .se-si-t { flex:1; min-width:0; }
+  .se-si-t b { display:block; font-size:13.5px; font-weight:500; color:#1F2430; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .se-si-t b strong { font-weight:800; }
+  .se-si-t small { display:block; font-size:11.5px; color:#8F8B99; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .se-sgh { font-size:10.5px; font-weight:800; letter-spacing:.7px; color:#8A93A6; margin:12px 4px 2px; }
+  .se-pw { display:flex; justify-content:flex-end; gap:4px; font-size:10.5px; color:#9B98A6; padding:8px 4px 0; }
+  .se-pw b { font-weight:600; color:#6B6878; }
+  .se-empty { font-size:12.5px; color:#8F8B99; padding:14px 4px; }
+  .se-ld { display:flex; align-items:center; gap:8px; font-size:12.5px; color:#8F8B99; padding:12px 4px; }
+  .se-spin { width:16px; height:16px; border-radius:50%; border:2.5px solid #EADFF0; border-top-color:#D42759; animation:se-spin .7s linear infinite; }
+  @keyframes se-spin { to { transform:rotate(360deg); } }
 
   /* Lignes de départ/arrivée (H ⋯ Hôtel ⋯ heure) au-dessus/en dessous de chaque journée
      dans l'ITINÉRAIRE (demande du 18/10/2026, trip_finale_legere.html) — voir
@@ -1095,7 +1133,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261063';
+        s.src = 'page-loader.js?v=20261064';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1398,41 +1436,40 @@
                     </div>
                 </div>
 
-                <!-- "START & END" (demande du 17/10/2026, trip_finale_legere.html : seLine()) —
-                     voir window.toggleTripHomeBaseEditor()/window.saveTripHomeBase() dans
-                     script.js et la note sur la règle CSS .trip-se-row plus haut. -->
-                <div class="trip-se-row">
-                    <span class="trip-se-icon">H</span>
-                    <span class="trip-se-text"><small>START &amp; END</small><span id="trip-homebase-label">Not set</span></span>
-                    <button type="button" class="trip-se-edit-btn" id="trip-homebase-edit-btn" onclick="window.toggleTripHomeBaseEditor()">Edit</button>
-                </div>
-                <div class="trip-se-editor hidden" id="trip-homebase-editor">
-                    <!-- Bascule "Same start & end for the whole trip" (demande du
-                         18/10/2026, trip_finale_legere.html) — décoché, chaque jour définit
-                         son propre départ/arrivée directement dans l'itinéraire ci-dessous
-                         (voir window.openDayEndpointEditor() dans script.js) plutôt qu'ici. -->
-                    <label class="trip-se-same-toggle" for="trip-se-same-checkbox">
-                        <input type="checkbox" id="trip-se-same-checkbox" checked onchange="window.toggleSameStartEnd(this.checked)">
-                        <span id="i18n-same-se">Same start &amp; end for the whole trip</span>
-                    </label>
-                    <!-- Pastilles START/END (demande du 23/10/2026, capture d'écran fournie)
-                         — remplace l'ancien champ texte unique + bouton Save : les deux
-                         pastilles ci-dessous éditent la MÊME valeur partagée
-                         (currentTrip.homeBase/homeBaseLabel) tant que la case ci-dessus reste
-                         cochée, voir window.openTripLevelEndpointEditor() dans script.js. -->
-                    <div id="trip-se-single-editor" class="trip-se-pill-row">
-                        <button type="button" class="trip-se-pill place-search-trigger" onclick="window.openTripLevelEndpointEditor(event, 'start')">
-                            <span class="trip-se-pill-badge" style="background:#1F2430;">H</span>
-                            <span class="trip-se-pill-text"><small>START</small><span id="trip-se-start-label">Not set</span></span>
-                            <span class="trip-se-pill-chev">⌄</span>
+                <!-- "START & END" — carte refaite (demande du 27/10/2026, maquette fournie
+                     depart_arrivee_final.html) : remplace l'ancienne ligne résumé + bouton
+                     "Edit" + pastilles par une carte toujours visible, les deux lignes
+                     START/END étant directement cliquables (voir window.openSeSearch() dans
+                     script.js, qui ouvre désormais la page de recherche plein écran).
+                     Classes toutes préfixées se- (voir le bloc CSS commenté juste au-dessus
+                     de l'ancien, conservé plus bas) pour ne jamais percuter le reste du site.
+                     IDs conservés tels quels (trip-se-same-checkbox/trip-se-perday-hint/
+                     trip-se-single-editor/i18n-same-se) : window.toggleSameStartEnd() et
+                     window.renderTrip() les lisent par id, pas par classe. -->
+                <div class="se-card">
+                    <div class="se-card-head"><small>START &amp; END</small></div>
+                    <div id="trip-se-single-editor" class="se-route">
+                        <button type="button" class="se-row" onclick="window.openSeSearch(event, 'start')">
+                            <span class="se-dot se-dot-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></span>
+                            <span class="se-row-text"><small>START</small><b id="se-start-name">Not set</b><i id="se-start-addr"></i></span>
+                            <span class="se-row-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></span>
                         </button>
-                        <button type="button" class="trip-se-pill place-search-trigger" onclick="window.openTripLevelEndpointEditor(event, 'end')">
-                            <span class="trip-se-pill-badge" style="background:#D42759;">H</span>
-                            <span class="trip-se-pill-text"><small>END</small><span id="trip-se-end-label">Not set</span></span>
-                            <span class="trip-se-pill-chev">⌄</span>
+                        <button type="button" class="se-row" onclick="window.openSeSearch(event, 'end')">
+                            <span class="se-dot se-dot-end"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg></span>
+                            <span class="se-row-text"><small>END</small><b id="se-end-name">Not set</b><i id="se-end-addr"></i></span>
+                            <span class="se-row-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></span>
                         </button>
                     </div>
-                    <p class="trip-se-perday-hint hidden" id="trip-se-perday-hint">Set each day's start &amp; end directly in the itinerary below.</p>
+                    <!-- Bascule "Same start & end for the whole trip" (inchangée depuis le
+                         18/10/2026) — décochée, chaque jour définit son propre départ/arrivée
+                         directement dans l'itinéraire ci-dessous (voir
+                         window.openDayEndpointEditor() dans script.js, non touché ici). -->
+                    <label class="se-same" for="trip-se-same-checkbox">
+                        <input type="checkbox" id="trip-se-same-checkbox" checked onchange="window.toggleSameStartEnd(this.checked)">
+                        <span class="se-cb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+                        <span id="i18n-same-se">Same start &amp; end for the whole trip</span>
+                    </label>
+                    <p class="se-perday-hint hidden" id="trip-se-perday-hint">Set each day's start &amp; end directly in the itinerary below.</p>
                 </div>
 
                 <div class="section-label" id="i18n-your-iti">ITINERARY</div>
@@ -1912,9 +1949,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261063"></script>
-<script src="locations-data.js?v=20261063"></script>
-<script src="script.js?v=20261063"></script>
+<script type="module" src="firebase-init.js?v=20261064"></script>
+<script src="locations-data.js?v=20261064"></script>
+<script src="script.js?v=20261064"></script>
 
 </body>
 </html>
