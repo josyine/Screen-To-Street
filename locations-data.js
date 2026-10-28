@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-28T14:20:39.338Z.
+// Généré le 2026-10-28T23:26:00.183Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -19003,7 +19003,7 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": "new-fFXt2TP40qiRSD9EgaRi",
-    "name": "Place de la Concorde",
+    "name": "Concorde Riverbanks",
     "group": "BTS",
     "member": "V",
     "country": "France",
@@ -24801,6 +24801,288 @@ window.STATIC_LOCATIONS = [
     ],
     "pinterestUrl": "https://fr.pinterest.com/pin/986358755886827627/",
     "ytId": "HAWYOuMGkK0"
+  },
+  {
+    "id": "new-manual-1793215634298-pkk5ur",
+    "name": "Seine Riverbanks (Pont Alexandre III Viewpoint)",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2025",
+    "address": "Port de la Conférence (Parc Rives de Seine), 75008 Paris, France",
+    "lat": 48.8644,
+    "lng": 2.3172,
+    "img": "images/admin-upload-new-manual-1793215634298-pkk5ur-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793215634298-pkk5ur-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.7669,
+            "y": 0.7,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Recreate the Angle"
+        },
+        "text": {
+          "en": "To capture the exact layered skyline from Taehyung's post, you must be on the lower pedestrian path of the Right Bank, positioned slightly east of the Pont Alexandre III and facing west toward the Eiffel Tower."
+        }
+      },
+      {
+        "title": {
+          "en": "Pose from Behind"
+        },
+        "text": {
+          "en": "Have a friend photograph you from the back as you look out over the river toward the bridge, mirroring Taehyung's anonymous, contemplative stance."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit at Dusk"
+        },
+        "text": {
+          "en": "While the view is beautiful during the day, visiting right at sunset or during the \"blue hour\" allows you to capture the golden streetlamps of the Pont Alexandre III and the sparkling lights of the Eiffel Tower turning on."
+        }
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/DPeQRtACMQE/?img_index=10&mdxt=eTJ6ZnA2aHBobXMz",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The closest Paris Métro stations are Invalides (Lines 8 and 13, crossing over from the Left Bank) or Champs-Élysées - Clemenceau (Lines 1 and 13). Walk toward the river and take the access ramps or stairs down to the pedestrian-only lower quays."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The pedestrian riverbanks are public spaces open 24/7 and completely free to access."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The lower promenade of the Parc Rives de Seine is flat and paved. While some immediate access points use stairs, accessible ramps for wheelchair users are strategically located along the quays, including near the Pont de l'Alma."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>The banks of the Seine, recognized as a UNESCO World Heritage site, form the historic and visual artery of Paris. Specifically, the stretch of the pedestrianized lower quays known as the Port de la Conférence, located on the Right Bank (Rive Droite), offers one of the most celebrated and unobstructed architectural panoramas in the city. Looking westward from this paved promenade, pedestrians are treated to a perfectly layered view of the Pont Alexandre III—widely considered the most ornate and beautiful bridge in Paris with its Beaux-Arts style and gilded statues—set directly against the towering iron silhouette of the Eiffel Tower in the distance.</p><!--stss:footsteps--><p>In October 2025, while visiting the French capital to attend Paris Fashion Week events as a global ambassador for CELINE, Taehyung shared an Instagram update capturing a quiet moment along this specific stretch of the Seine.<br><br>Stepping away from the high-profile runway shows and exclusive brand dinners, he took a walk along the river. The photograph features Taehyung shot from behind, standing on the lower pedestrian quay. Facing westward, his perspective perfectly frames the opulent streetlamps and arch of the Pont Alexandre III, with the Eiffel Tower rising prominently in the background. The image documents a relaxed, anonymous moment of architectural appreciation in the heart of the city, utilizing the classic Parisian skyline to create a deeply atmospheric and cinematic composition.</p>"
+    }
+  },
+  {
+    "id": "new-manual-1793223192844-2y4ecq",
+    "name": "Mandarin Oriental Lutetia",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Fashion",
+    "year": "2025",
+    "address": "45 Bd Raspail, 75006 Paris, France",
+    "lat": 48.8511656,
+    "lng": 2.32722441,
+    "img": "images/admin-upload-new-manual-1793223192844-2y4ecq-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "The Private View"
+        },
+        "text": {
+          "en": "The exact vantage point Taehyung photographed is from a private, upper-floor luxury suite facing west. Accessing this specific balcony requires booking one of the hotel's premium Eiffel Tower view rooms."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit the Ground Floor"
+        },
+        "text": {
+          "en": "If you are not booking a room, you can still experience the historic atmosphere of the building where Taehyung stayed by visiting the hotel's famous Bar Joséphine or having coffee in the ground-floor salon."
+        }
+      },
+      {
+        "title": {
+          "en": "Alternative Public Panoramas"
+        },
+        "text": {
+          "en": "To get a similar Left Bank view of the Dôme des Invalides and the Eiffel Tower without booking a luxury suite, visit the rooftop terrace of the nearby Le Bon Marché or climb the dome of the Panthéon."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Opened in 1910 by the founders of the nearby Le Bon Marché department store, the Hôtel Lutetia is a historic landmark and the only official luxury \"Palace\" hotel located on Paris's Left Bank (Rive Gauche). Situated in the vibrant Saint-Germain-des-Prés neighborhood, the building is a stunning architectural transition from Art Nouveau to Art Deco. Beyond its lavish ground-floor bars and historic frescoes, the hotel is renowned for its upper-floor suites. These rooms feature classic Parisian wrought-iron balconies lined with flower boxes, offering sweeping, elevated panoramas of the city's skyline.</p><!--stss:footsteps--><p>In early July 2025, Taehyung traveled to Paris to attend the CELINE Spring 2026 menswear runway show. This trip was highly significant, as it marked one of his first major international fashion and public appearances following the completion of his mandatory South Korean military service in June.<br><br>On July 10, wrapping up a heavily publicized two-week stay, Taehyung shared an Instagram \"photo dump\" captioned \"My last glimpses of Paris.\" The photos show him in a relaxed, private moment, leaning against the flowered balcony of his suite. The distinct skyline in the background—featuring the Eiffel Tower on the right and the golden Dôme des Invalides on the left—identifies the unique Left Bank vantage point exclusively offered by the upper suites of the Hôtel Lutetia.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The hotel is located in the 6th arrondissement, directly across from the square. It is highly accessible via the Paris Métro, sitting right on top of the Sèvres - Babylone station (Lines 10 and 12)."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The hotel's lobby, restaurants, and bars are open daily to patrons. Suite rates vary significantly depending on the season and room type."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The hotel underwent massive modern renovations before reopening in 2018. The main entrances, lobby, restaurants, and elevators are fully accessible for wheelchair users, and specific ADA-compliant rooms are available upon request."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793223192844-2y4ecq-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.8242,
+            "y": 0.7588,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Polymagou / CC BY 4.0",
+    "officialLink": "https://www.mandarinoriental.com/en/paris/lutetia?src=loc.local-listings.molut.ggl",
+    "instagramUrl": "https://www.instagram.com/p/DL8RqLqz-q8/?img_index=5&cplk=MWxnNGl3bHZwajdheQ=="
+  },
+  {
+    "id": "new-manual-1793226789505-5hvupw",
+    "name": "National Palace",
+    "group": "BTS",
+    "member": "All",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "Plaza de la Constitución S/N, Centro Histórico de la Cdad. de México, Cuauhtémoc, 06066 Ciudad de México, CDMX, Mexico",
+    "lat": 19.4327779,
+    "lng": -99.13137,
+    "img": "images/admin-upload-new-manual-1793226789505-5hvupw-photo.jpg",
+    "country": "Mexico",
+    "city": "Mexico City",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Stand in the Zócalo"
+        },
+        "text": {
+          "en": "To fully grasp the scale of the 50,000-person gathering, stand in the center of the Plaza de la Constitución and look east toward the central balcony where the members and the President appeared."
+        }
+      },
+      {
+        "title": {
+          "en": "Book a Guided Tour"
+        },
+        "text": {
+          "en": "The interior of the National Palace, including the courtyards and the Diego Rivera murals, is accessible to the public but strictly requires a pre-booked guided tour."
+        }
+      },
+      {
+        "title": {
+          "en": "Bring Official ID"
+        },
+        "text": {
+          "en": "Because it is a highly secure, active government building, you must present a physical, valid government-issued ID (such as a passport) to pass through the security checkpoints."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located on the eastern side of the Zócalo (Plaza de la Constitución) in the heart of Mexico City, the National Palace is the seat of the federal executive branch of the Mexican government. Built on the site of the former palace of the Aztec ruler Moctezuma II, the sprawling complex features colonial architecture, expansive courtyards, and the world-famous murals by Diego Rivera depicting the history of Mexico on its main stairwells. The central balcony, directly facing the massive Zócalo, is historically significant and traditionally used by the President of Mexico to deliver the Grito de Dolores on Independence Day.</p><!--stss:footsteps--><p>On May 6, 2026, all seven members of BTS were officially received at the National Palace by Mexican President Claudia Sheinbaum. The high-profile meeting centered on cultural exchange and the group's ongoing role in global musical diplomacy. During the event, the members were awarded an official recognition highlighting their positive influence on Mexican youth.<br><br>The most visually monumental moment of the visit occurred when the group stepped out onto the palace's historic central balcony alongside the President. An estimated 50,000 fans had gathered in the Zócalo below to greet them. The massive crowd filling one of the world's largest city squares created a striking visual testament to the group's global reach, anchored directly against the seat of Mexican political history.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The palace is highly accessible via the Mexico City Metro. Take Line 2 (the Blue Line) directly to the Zócalo/Tenochtitlan station, which exits right into the square"
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Zócalo is a public square open 24/7. Entry to the National Palace is free, but visitors must reserve a tour in advance. Guided tours generally operate from Tuesday to Sunday, between 9:00 AM and 5:00 PM."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Zócalo is a vast, flat, paved plaza fully accessible to wheelchair users. Inside the National Palace, the ground floor courtyards are accessible, but viewing the upper sections of the Diego Rivera murals requires navigating historic stone staircases, which may present mobility challenges."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "instagramUrl": "https://www.instagram.com/p/DYGyjqGjY9Y/?dlrf=cDNnNGRzNDEyOHlj",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "José Luiz Bernardes Ribeiro / CC BY-SA 4.0",
+    "officialLink": "https://www.gob.mx/palacionacional/articulos/patrimonio-edificado?idiom=es",
+    "instagramUrls": [
+      "https://www.instagram.com/p/DYA_syrGnya/?psln=MW9iZ3kxajNwYnFiZg==",
+      "https://www.instagram.com/p/DYBeuavGt8Q/?cplk=ZHAxdGtkcXhncGxo",
+      "https://www.instagram.com/p/DYDI8mtlF78/?srtk=b3lxMDBydnY1enFv"
+    ],
+    "episodeLink": "https://www.billboard.com/music/latin/bts-visit-mexico-national-palace-video-1236258323/"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
