@@ -950,11 +950,21 @@ window.adminDeleteLocationReview = async function (locationId, ownerUid) {
 };
 
 // Page de profil public (profile.html) : miroir des avis d'un compte, voir
-// setLocationReview()/deleteLocationReview() ci-dessus.
+// setLocationReview()/deleteLocationReview() ci-dessus. Le champ .photos retourné fusionne
+// les anciennes photos (encore dans la map publicProfiles/{uid}.photos, demande du
+// 28/10/2026 — voir la note au-dessus d'addProfilePhoto()) et les nouvelles (sous-
+// collection publicProfiles/{uid}/photos) dans un seul objet {photoId: {...}}, pour que
+// profile.html (Object.entries(publicProfile.photos || {})) n'ait rien à changer.
 window.fetchPublicProfile = async function (uid) {
     try {
-        const snap = await getDoc(doc(db, 'publicProfiles', uid));
-        return snap.exists() ? snap.data() : { reviews: {} };
+        const [snap, photosSnap] = await Promise.all([
+            getDoc(doc(db, 'publicProfiles', uid)),
+            getDocs(collection(db, 'publicProfiles', uid, 'photos'))
+        ]);
+        const data = snap.exists() ? snap.data() : { reviews: {} };
+        const mergedPhotos = Object.assign({}, data.photos || {});
+        photosSnap.forEach(d => { mergedPhotos[d.id] = d.data(); });
+        return Object.assign({}, data, { photos: mergedPhotos });
     } catch (e) {
         console.warn('Lecture du profil public échouée :', e);
         return { reviews: {} };
@@ -1034,21 +1044,26 @@ window.listFollowers = async function (targetUid) {
 // window.openQuickAddFormSheet() dans script.js) : tableau d'uids identifiés sur cette
 // photo, stocké tel quel — rien ne l'affiche encore nulle part, posé en prévision d'un
 // futur usage (ex: notifier les amis tagués) plutôt que perdu silencieusement.
+// BUG corrigé (demande du 28/10/2026, "Something went wrong" à l'ajout d'une photo) :
+// cette fonction écrivait auparavant CHAQUE photo comme une entrée de plus dans
+// publicProfiles/{uid}.photos — un seul document accumulant TOUTES les photos jamais
+// publiées par ce compte. Firestore plafonne un document à 1 Mo ; même compressées
+// (~100-300 Ko chacune en base64, voir fileToResizedDataUrl() dans script.js), il ne
+// fallait qu'une poignée de photos pour dépasser cette limite, après quoi CHAQUE
+// nouvelle tentative échouait avec cette même erreur générique. Chaque photo est
+// désormais son propre document dans la sous-collection publicProfiles/{uid}/photos
+// (voir firestore.rules) — même principe que feedPosts, qui n'a jamais eu ce problème.
 window.addProfilePhoto = async function ({ locationId, locationName, photo, date, caption, taggedFriends }) {
     const user = auth.currentUser;
     if (!user) return { success: false, code: 'not-authenticated' };
     try {
         const photoId = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-        await setDoc(doc(db, 'publicProfiles', user.uid), {
-            photos: {
-                [photoId]: {
-                    locationId, locationName: locationName || null, photo,
-                    date: date || null, caption: (caption || '').slice(0, 280),
-                    taggedFriends: Array.isArray(taggedFriends) && taggedFriends.length ? taggedFriends : [],
-                    updatedAt: serverTimestamp()
-                }
-            }
-        }, { merge: true });
+        await setDoc(doc(db, 'publicProfiles', user.uid, 'photos', photoId), {
+            locationId, locationName: locationName || null, photo,
+            date: date || null, caption: (caption || '').slice(0, 280),
+            taggedFriends: Array.isArray(taggedFriends) && taggedFriends.length ? taggedFriends : [],
+            updatedAt: serverTimestamp()
+        });
         // Index du fil global (voir la note au-dessus de setLocationReview()). date/
         // taggedFriends ajoutés (demande du 16/10/2026, "dans les posts publiés... ajoute
         // aussi la date de visite... et s'il a identifié des personnes il faut les
@@ -1074,6 +1089,15 @@ window.addProfilePhoto = async function ({ locationId, locationName, photo, date
 // (publicProfiles/{uid}.photos.{photoId}, voir addProfilePhoto() ci-dessus), pas les
 // photos attachées à un avis "I visited this place" (celles-ci font partie d'un avis
 // complet avec note/visite, modifiées via ce flux existant, pas celui-ci).
+// Une photo publiée AVANT ce correctif (28/10/2026) peut encore vivre dans l'ancienne
+// map publicProfiles/{uid}.photos plutôt que dans la sous-collection — pas de script de
+// migration : on détecte simplement où elle habite et on écrit au même endroit, pour ne
+// jamais recréer une entrée partielle dans la sous-collection (champs manquants) à côté
+// de l'originale restée dans l'ancienne map.
+async function _profilePhotoLivesInSubcollection(uid, photoId) {
+    const snap = await getDoc(doc(db, 'publicProfiles', uid, 'photos', photoId));
+    return snap.exists();
+}
 window.updateProfilePhoto = async function (photoId, { photo, caption }) {
     const user = auth.currentUser;
     if (!user || !photoId) return { success: false, code: 'not-authenticated' };
@@ -1081,7 +1105,11 @@ window.updateProfilePhoto = async function (photoId, { photo, caption }) {
         const fields = { updatedAt: serverTimestamp() };
         if (photo !== undefined) fields.photo = photo;
         if (caption !== undefined) fields.caption = (caption || '').slice(0, 280);
-        await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: fields } }, { merge: true });
+        if (await _profilePhotoLivesInSubcollection(user.uid, photoId)) {
+            await setDoc(doc(db, 'publicProfiles', user.uid, 'photos', photoId), fields, { merge: true });
+        } else {
+            await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: fields } }, { merge: true });
+        }
         // Index du fil global : jamais likeCount ici (merge ne touche que les champs
         // fournis), pour ne pas remettre le compteur de "J'aime" à zéro sur une simple
         // modification de légende/photo.
@@ -1099,7 +1127,11 @@ window.deleteProfilePhoto = async function (photoId) {
     const user = auth.currentUser;
     if (!user || !photoId) return { success: false, code: 'not-authenticated' };
     try {
-        await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        if (await _profilePhotoLivesInSubcollection(user.uid, photoId)) {
+            await deleteDoc(doc(db, 'publicProfiles', user.uid, 'photos', photoId));
+        } else {
+            await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        }
         await _deleteFeedPost(user.uid, photoId);
         return { success: true };
     } catch (e) {
@@ -1113,14 +1145,19 @@ window.deleteProfilePhoto = async function (photoId) {
 // ci-dessus, mais pour le compte d'un AUTRE utilisateur (feed.html liste des photos de
 // tout le monde). La règle Firestore (publicProfiles/{uid}) n'autorise cette écriture
 // que si le compte connecté est dans la collection admins/ ET qu'elle ne touche que la
-// clé "photos" — voir firestore.rules.
+// clé "photos" — voir firestore.rules. La sous-collection publicProfiles/{uid}/photos a sa
+// propre règle de suppression admin, voir firestore.rules.
 window.adminDeleteProfilePhoto = async function (ownerUid, photoId) {
     const user = auth.currentUser;
     if (!user || !ownerUid || !photoId) return { success: false, code: 'not-authenticated' };
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
     try {
-        await setDoc(doc(db, 'publicProfiles', ownerUid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        if (await _profilePhotoLivesInSubcollection(ownerUid, photoId)) {
+            await deleteDoc(doc(db, 'publicProfiles', ownerUid, 'photos', photoId));
+        } else {
+            await setDoc(doc(db, 'publicProfiles', ownerUid), { photos: { [photoId]: deleteField() } }, { merge: true });
+        }
         // La règle feedPosts autorise un admin à supprimer le document de n'importe qui
         // (pas seulement le sien) — voir firestore.rules.
         await _deleteFeedPost(ownerUid, photoId);

@@ -6268,6 +6268,17 @@ window.openItiPicker = function(field) {
     itiPick = field;
     itiPickQ = '';
     renderItiPicker();
+    // Remonte la fenêtre en haut (demande du 28/10/2026, "pour country c'est bien... mais
+    // pour [when] c'est trop bas") — #iti-picker-root/.qaf-pick est en position:absolute
+    // DANS #itinerary-modal .modal-content (le formulaire défilant), pas en position:fixed
+    // par rapport à l'écran : un critère situé plus bas dans le formulaire (ex: "When")
+    // laissait .modal-content déjà défilé au moment de l'ouverture, donc la fenêtre
+    // (ancrée à bottom:0 de CE contenu défilé) apparaissait trop bas/coupée. "Country" ne
+    // semblait correct que parce qu'il est proche du haut du formulaire, pas parce que ce
+    // cas était vraiment géré. Un seul scrollTo(0) ici couvre tous les critères de façon
+    // identique, sans rien changer à la hauteur propre de chaque fenêtre.
+    const modalContent = document.querySelector('#itinerary-modal .modal-content');
+    if (modalContent) modalContent.scrollTo({ top: 0 });
 };
 window.closeItiPicker = function() {
     itiPick = null;
@@ -6385,10 +6396,12 @@ function renderItiPicker() {
     const root = document.getElementById('iti-picker-root');
     if (!root) return;
     root.innerHTML = itiPickerHtml();
-    if (itiPick) {
-        const inp = root.querySelector('.qaf-srch input');
-        if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
-    }
+    // Pas de focus auto sur le champ de recherche à l'ouverture (demande du 28/10/2026,
+    // "ne clique pas sur la barre de recherche... pour ne pas afficher le clavier") —
+    // contrairement au popup "+ New Trip" (qui focus intentionnellement son propre champ),
+    // ce critère se consulte souvent sans vouloir taper : le clavier mobile qui s'ouvrait
+    // par défaut masquait une partie de la liste et n'était pas demandé ici. La recherche
+    // reste utilisable normalement, juste sans focus automatique.
 }
 document.addEventListener('click', (e) => {
     const root = document.getElementById('iti-picker-root');
@@ -12339,10 +12352,14 @@ window.openLocModal = function(id, postContext, navCtx) {
         const mapEl = document.getElementById('modal-map');
         if(!mapEl || typeof L === 'undefined') return;
 
-        const catIconSvg = iconsSVG[loc.category] || iconsSVG["Default"];
+        // Point plein coloré par groupe (demande du 28/10/2026, "reprend le même point que
+        // dans map") — remplace l'ancienne icône de catégorie : même marquage que
+        // addSingleLocationMarker() pour la carte principale (.custom-category-marker
+        // .location-dot-marker, voir style.css), pour rester visuellement cohérent partout
+        // où openLocModal() est utilisé (pas seulement depuis Trips).
         const baseColor = groupColors[loc.group] || '#D42759';
-        const markerHtml = `<div class="popup-marker-icon" style="background:${baseColor}; color:#fff;">${catIconSvg}</div>`;
-        const customIcon = L.divIcon({ className: '', html: markerHtml, iconSize: [34,34], iconAnchor: [17,17] });
+        const markerHtml = `<div style="background-color:${baseColor}; --marker-color:${baseColor};"></div>`;
+        const customIcon = L.divIcon({ className: 'custom-category-marker location-dot-marker', html: markerHtml, iconSize: [10, 10], iconAnchor: [5, 5] });
 
         if(!popupMap) {
             popupMap = L.map('modal-map', { zoomControl: false, attributionControl: false }).setView([loc.lat, loc.lng], 15);
@@ -14172,6 +14189,31 @@ window.toggleTripsListDrawer = function() {
 // sa classe .open à chaque appelant. Sans effet sur desktop : .sidebar.open n'y change rien
 // visuellement (la media query mobile est seule à définir left:0), #app-sidebar y reste
 // affiché en permanence à côté du détail comme avant.
+// #mobile-top-icons (Messages/Engrenage) (demande du 28/10/2026) : ce duo partagé est en
+// position:fixed (style.css) donc reste à l'écran EN PERMANENCE quel que soit le défilement,
+// flottant au-dessus du contenu plutôt que de rester confiné au header comme le reste de ce
+// dernier (voir la décision du 17/10/2026 plus haut : le header de trips.html disparaît au
+// défilement, non statique) — l'utilisateur veut ce même comportement pour ces deux icônes
+// spécifiquement sur trips.html. Scindé de injectMobileTopIcons() (partagé par tout le site,
+// jamais modifié ici) : un simple écouteur de défilement propre à cette page qui bascule une
+// classe sur l'élément partagé, posé une seule fois (mtiScrollHideWired) sur les DEUX
+// conteneurs de défilement possibles de cette page (liste des voyages vs détail d'un voyage —
+// voir window.setTripMobileView() juste en dessous), puisqu'un seul des deux est visible à la
+// fois selon la vue mobile active.
+let mtiScrollHideWired = false;
+function wireMobileTopIconsScrollHide() {
+    if (mtiScrollHideWired) return;
+    const containers = [document.querySelector('.sidebar-scroll-area'), document.querySelector('.trips-main')].filter(Boolean);
+    if (!containers.length) return;
+    mtiScrollHideWired = true;
+    containers.forEach(c => {
+        c.addEventListener('scroll', () => {
+            const icons = document.getElementById('mobile-top-icons');
+            if (icons) icons.classList.toggle('mti-scroll-hidden', c.scrollTop > 24);
+        }, { passive: true });
+    });
+}
+
 window.setTripMobileView = function(view) {
     const sidebarEl = document.getElementById('app-sidebar');
     if (!sidebarEl) return;
@@ -14223,6 +14265,7 @@ window.initTrips = function() {
 
     window.renderTripsSidebar();
     window.renderTrip();
+    wireMobileTopIconsScrollHide();
 
     // Sur mobile, au premier chargement de la page (pas à chaque appel d'initTrips,
     // qui tourne aussi après chaque sauvegarde/changement de langue) : si on arrive
@@ -14445,7 +14488,11 @@ function recoLabelText() {
 // pour garder le même ordre "jour-semaine jour-numéro mois" dans les deux langues, alors que
 // l'ordre par défaut d'Intl diffère entre fr-FR ("jeu. 12 nov.") et en-US ("Thu, Nov 12").
 function tripDayDateLabel(dayIndex) {
-    if (!currentTrip || currentTrip.dateType !== 'specific' || !currentTrip.startDate) return '';
+    // Demande du 28/10/2026 : les voyages "Flexible dates" ont désormais aussi de vraies
+    // dates (voir resolveFlexibleTripDates() plus bas) — la garde ne porte donc plus que sur
+    // la présence d'une date de départ, plus sur dateType === 'specific' (qui aurait sinon
+    // caché les dates des voyages flexibles créés/modifiés après ce correctif).
+    if (!currentTrip || !currentTrip.startDate) return '';
     const d = new Date(currentTrip.startDate + 'T00:00:00');
     if (isNaN(d.getTime())) return '';
     d.setDate(d.getDate() + dayIndex);
@@ -15671,16 +15718,28 @@ window.renderTrip = function() {
         document.querySelector('.date-tab[data-tab="edit-specific"]').classList.remove('active');
         document.querySelector('.date-tab[data-tab="edit-flexible"]').classList.add('active');
 
-        document.querySelectorAll('.edit-banner .pill-btn').forEach(el => el.classList.remove('active'));
+        // BUG corrigé (demande du 28/10/2026, "Flexible dates ne fonctionne pas") : ce bloc
+        // (et les autres occurrences de ".edit-banner" dans ce fichier, voir
+        // selectEditPill()/syncItineraryDaysToDates()/saveTrip() plus bas) ciblait une classe
+        // ".edit-banner" qui n'entoure plus cet éditeur de dates depuis la refonte de l'onglet
+        // Plan du 17/10/2026 (trip_finale_legere.html) — #trip-dates-popup (voir trips.html)
+        // l'a remplacée sans que ces sélecteurs soient mis à jour. document.querySelectorAll
+        // ne trouvait donc plus JAMAIS ces pastilles : aucune ne se pré-sélectionnait en
+        // rouvrant un voyage existant, selectEditPill() ne désélectionnait plus les autres
+        // pastilles du même groupe au clic, et surtout syncItineraryDaysToDates()/saveTrip()
+        // détectaient TOUJOURS isFlexible === false (même onglet "Flexible dates" actif), donc
+        // écrivaient systématiquement dateType:'specific' avec des dates vides — la fonction
+        // ne faisait donc tout simplement rien, quoi qu'on sélectionne.
+        document.querySelectorAll('#trip-dates-popup .pill-btn').forEach(el => el.classList.remove('active'));
         if (currentTrip.duration) {
             const parts = currentTrip.duration.split(' in ');
             if (parts[0]) {
-                document.querySelectorAll('.edit-banner .pill-btn[data-type="edit-duration"]').forEach(el => {
+                document.querySelectorAll('#trip-dates-popup .pill-btn[data-type="edit-duration"]').forEach(el => {
                     if (el.textContent === parts[0]) el.classList.add('active');
                 });
             }
             if (parts[1]) {
-                document.querySelectorAll('.edit-banner .pill-btn[data-type="edit-month"]').forEach(el => {
+                document.querySelectorAll('#trip-dates-popup .pill-btn[data-type="edit-month"]').forEach(el => {
                     if (el.textContent === parts[1]) el.classList.add('active');
                 });
             }
@@ -16020,6 +16079,54 @@ window.pickCalendarDate = function(prefix, iso) {
     if (prefix === 'edit') { syncItineraryDaysToDates(); window.saveTrip(); }
 };
 
+// Résout une pastille de durée ("Weekend"/"1 week"/"2 weeks"/"1 month") + le décalage en
+// mois de la pastille de mois active (0 = mois en cours, même indexation que la grille
+// générée par renderFlexibleMonthGrid() juste en dessous : tuile i = aujourd'hui + i mois)
+// en vraies dates calendaires (demande du 28/10/2026, "fais en sorte que Flexible dates
+// fonctionne... en prenant en compte la date actuelle"). Jusqu'ici "Weekend in October"
+// restait un simple texte d'affichage (voir saveTrip()/createNewTripAdvanced() plus bas) —
+// AUCUNE date réelle n'en était jamais déduite, donc l'itinéraire ne s'appliquait à rien de
+// concret. "Weekend" cherche le premier samedi (+dimanche) à partir d'aujourd'hui qui tombe
+// DANS le mois choisi, pour rester fidèle à l'exemple donné (choisir "Weekend" un lundi 15
+// octobre doit proposer un week-end plus tard CE MÊME mois, pas un jour déjà passé) ; si le
+// mois choisi est le mois en cours et qu'il ne reste plus aucun week-end dedans (ex: cliqué le
+// 30 du mois), bascule sur ce même mois civil l'année suivante plutôt que de renvoyer une
+// date déjà passée. Les 3 autres durées démarrent simplement au plus tard entre aujourd'hui et
+// le 1er du mois choisi (un mois futur commence donc à son 1er), pour le nombre de jours
+// correspondant — pas de contrainte de jour de semaine particulière, non demandée ici.
+function resolveFlexibleTripDates(monthOffset, durationLabel) {
+    if (monthOffset == null || monthOffset < 0 || !durationLabel) return { startDate: '', endDate: '' };
+    const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    let year = today.getFullYear(), month = today.getMonth() + monthOffset;
+    year += Math.floor(month / 12); month = ((month % 12) + 12) % 12;
+    let monthStart = new Date(year, month, 1);
+    let monthEnd = new Date(year, month + 1, 0);
+
+    if (durationLabel.includes('Weekend')) {
+        const nextSaturday = from => { const d = new Date(from); d.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7)); return d; };
+        let sat = nextSaturday(today > monthStart ? today : monthStart);
+        if (sat > monthEnd) sat = nextSaturday(new Date(year + 1, month, 1));
+        const sun = new Date(sat); sun.setDate(sun.getDate() + 1);
+        return { startDate: iso(sat), endDate: iso(sun) };
+    }
+
+    let days = 7;
+    if (durationLabel.includes('2 week') || durationLabel.includes('2 semaine')) days = 14;
+    else if (durationLabel.includes('1 month') || durationLabel.includes('1 mois')) days = 30;
+    const start = today > monthStart ? today : monthStart;
+    const end = new Date(start); end.setDate(end.getDate() + days - 1);
+    return { startDate: iso(start), endDate: iso(end) };
+}
+// Décalage (0-11) de la pastille de mois active dans #<prefix>-month-grid, même indexation
+// que resolveFlexibleTripDates() ci-dessus — pas besoin de reparser le texte localisé du
+// mois (qui change selon la langue), juste sa position parmi les tuiles générées dans l'ordre.
+function activeFlexibleMonthOffset(prefix) {
+    const tiles = Array.from(document.querySelectorAll(`#${prefix}-month-grid .pill-btn`));
+    const idx = tiles.findIndex(el => el.classList.contains('active'));
+    return idx >= 0 ? idx : 0;
+}
+
 // Grille de mois pour l'onglet "Dates flexibles" (demande du 07/09/2026 : plus de choix
 // qu'avant — 12 mois glissants à partir d'aujourd'hui, calculés dynamiquement plutôt que
 // codés en dur, sans aucune couleur de prix). Réutilise les fonctions de sélection déjà en
@@ -16064,7 +16171,9 @@ window.switchEditDateTab = function(tab) {
 }
 
 window.selectEditPill = function(btn, type) {
-    document.querySelectorAll(`.edit-banner .pill-btn[data-type="${type}"]`).forEach(el => el.classList.remove('active'));
+    // ".edit-banner" -> "#trip-dates-popup" (demande du 28/10/2026, voir la note détaillée
+    // au-dessus de renderTrip()/#edit-date-flexible-panel plus haut).
+    document.querySelectorAll(`#trip-dates-popup .pill-btn[data-type="${type}"]`).forEach(el => el.classList.remove('active'));
     btn.classList.add('active');
     window.saveTrip();
 }
@@ -16333,10 +16442,14 @@ function buildDayCardElement(dayNum) {
 // demandée explicitement par la personne.
 function syncItineraryDaysToDates() {
     if (!currentTrip || !activeTripAccess.isOwner) return;
-    const isFlexible = document.querySelector('.edit-banner .date-tab[data-tab="edit-flexible"]')?.classList.contains('active');
+    // ".edit-banner" -> "#trip-dates-popup" (demande du 28/10/2026, voir la note détaillée
+    // au-dessus de renderTrip()/#edit-date-flexible-panel plus haut) : sans ce correctif,
+    // isFlexible restait TOUJOURS faux ici (le sélecteur ne trouvait jamais rien), donc cette
+    // fonction ne redimensionnait jamais les jours en mode "Flexible dates".
+    const isFlexible = document.querySelector('#trip-dates-popup .date-tab[data-tab="edit-flexible"]')?.classList.contains('active');
     let desiredDays = null;
     if (isFlexible) {
-        const length = document.querySelector('.edit-banner .pill-btn[data-type="edit-duration"].active')?.textContent || '';
+        const length = document.querySelector('#trip-dates-popup .pill-btn[data-type="edit-duration"].active')?.textContent || '';
         if (length.includes('Weekend')) desiredDays = 2;
         else if (length.includes('1 week') || length.includes('1 semaine')) desiredDays = 7;
         else if (length.includes('2 weeks') || length.includes('2 semaines')) desiredDays = 14;
@@ -16462,12 +16575,21 @@ window.saveTrip = function() {
     if (!activeTripAccess.isOwner && activeTripAccess.role === 'view') return; // lecture seule : aucune écriture
     currentTrip.name = document.getElementById('edit-trip-name').value || currentTrip.name;
     
-    const isFlexible = document.querySelector('.edit-banner .date-tab[data-tab="edit-flexible"]')?.classList.contains('active');
+    // ".edit-banner" -> "#trip-dates-popup" (demande du 28/10/2026, voir la note détaillée
+    // au-dessus de renderTrip()/#edit-date-flexible-panel plus haut) : sans ce correctif,
+    // isFlexible restait TOUJOURS faux ici même onglet "Flexible dates" actif, donc
+    // currentTrip.dateType repassait systématiquement à 'specific' avec des dates vides.
+    const isFlexible = document.querySelector('#trip-dates-popup .date-tab[data-tab="edit-flexible"]')?.classList.contains('active');
     if(isFlexible) {
         currentTrip.dateType = 'duration';
-        const month = document.querySelector('.edit-banner .pill-btn[data-type="edit-month"].active')?.textContent || '';
-        const length = document.querySelector('.edit-banner .pill-btn[data-type="edit-duration"].active')?.textContent || '';
+        const month = document.querySelector('#trip-dates-popup .pill-btn[data-type="edit-month"].active')?.textContent || '';
+        const length = document.querySelector('#trip-dates-popup .pill-btn[data-type="edit-duration"].active')?.textContent || '';
         currentTrip.duration = `${length} in ${month}`;
+        // Demande du 28/10/2026 : "Weekend in October" devient aussi de vraies dates (plus
+        // seulement ce texte d'affichage), voir resolveFlexibleTripDates() plus bas.
+        const resolved = resolveFlexibleTripDates(activeFlexibleMonthOffset('edit'), length);
+        currentTrip.startDate = resolved.startDate;
+        currentTrip.endDate = resolved.endDate;
     } else {
         currentTrip.dateType = 'specific';
         currentTrip.startDate = document.getElementById('date-start').value;
@@ -17163,6 +17285,12 @@ window.createNewTripAdvanced = async function() {
         else if(length.includes('1 week') || length.includes('1 semaine')) numDays = 7;
         else if(length.includes('2 weeks') || length.includes('2 semaines')) numDays = 14;
         else if(length.includes('1 month') || length.includes('1 mois')) numDays = 30;
+
+        // Demande du 28/10/2026 : "Weekend in October" devient aussi de vraies dates (plus
+        // seulement ce texte d'affichage), voir resolveFlexibleTripDates() plus haut.
+        const resolved = resolveFlexibleTripDates(activeFlexibleMonthOffset('create'), length);
+        startDate = resolved.startDate;
+        endDate = resolved.endDate;
     } else {
         startDate = document.getElementById('create-trip-start').value;
         endDate = document.getElementById('create-trip-end').value;

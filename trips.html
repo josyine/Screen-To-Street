@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261064" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261065" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -733,6 +733,17 @@
       .sidebar-scroll-logo, .trips-main-scroll-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 0 6px 22px 6px; }
       .sidebar-scroll-logo svg, .trips-main-scroll-logo svg { width: 38px; height: 38px; flex-shrink: 0; }
       .sidebar-scroll-logo span, .trips-main-scroll-logo span { font-size: 18px; font-weight: 700; color: #2E3644; }
+      /* Icônes Messages/Engrenage (demande du 28/10/2026) : #mobile-top-icons est en
+         position:fixed (style.css, partagé par tout le site) donc restait visible EN
+         PERMANENCE au défilement sur cette page, flottant par-dessus le contenu plutôt que
+         de rester confiné au header comme le reste de celui-ci (qui, lui, défile déjà avec
+         le contenu depuis le 26/10/2026, voir plus haut). Classe posée/retirée par
+         wireMobileTopIconsScrollHide() dans script.js selon le défilement du conteneur
+         actif (.sidebar-scroll-area ou .trips-main) — scoping à trips.html uniquement via
+         ce <style>, jamais une règle globale dans style.css qui affecterait les autres pages
+         partageant le même élément. */
+      #mobile-top-icons { transition: opacity .15s ease; }
+      #mobile-top-icons.mti-scroll-hidden { opacity: 0; pointer-events: none; }
       /* Le bouton "+ New trip" (dernier élément de .sidebar-scroll-area) se retrouvait
          partiellement caché DERRIÈRE #mobile-bottom-nav (position:fixed, z-index 3500 >
          3000 de .sidebar) une fois la nav du bas laissée visible ci-dessus — même
@@ -1133,7 +1144,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261064';
+        s.src = 'page-loader.js?v=20261065';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1949,9 +1960,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261064"></script>
-<script src="locations-data.js?v=20261064"></script>
-<script src="script.js?v=20261064"></script>
+<script type="module" src="firebase-init.js?v=20261065"></script>
+<script src="locations-data.js?v=20261065"></script>
+<script src="script.js?v=20261065"></script>
 
 </body>
 </html>
