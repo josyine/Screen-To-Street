@@ -480,6 +480,24 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['photos', 'reviews']);
     }
 
+    // Publications-photo autonomes d'un compte (demande du 28/10/2026, "something went
+    // wrong" à l'ajout d'une photo) — un document PAR PHOTO plutôt qu'une entrée de plus
+    // dans la map publicProfiles/{uid}.photos ci-dessus : ce champ accumulait TOUTES les
+    // photos jamais publiées sur le même document, qui a fini par dépasser la limite
+    // Firestore de 1 Mo par document (plusieurs photos en base64 à ~100-300 Ko chacune) —
+    // chaque écriture suivante échouait alors silencieusement, exactement le "something
+    // went wrong" rapporté. Même principe de sharding que feedPosts ci-dessus. Les
+    // anciennes photos restent lisibles/modifiables via la map existante (voir
+    // window.addProfilePhoto()/updateProfilePhoto()/deleteProfilePhoto() dans
+    // firebase-init.js, qui fusionnent les deux sources) — seules les NOUVELLES photos
+    // passent désormais par ici.
+    match /publicProfiles/{uid}/photos/{photoId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+      allow delete: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
     // Abonnement à sens unique façon Instagram (bouton "Follow" du profil public,
     // demande du 08/09/2026) — distinct du système d'amis mutuel ci-dessus (friendIndex/
     // friendCount) : n'importe qui peut suivre n'importe quel compte sans réciprocité, un
