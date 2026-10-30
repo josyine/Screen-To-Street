@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261065" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261066" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #fdfbfb; }
 
@@ -1144,7 +1144,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261065';
+        s.src = 'page-loader.js?v=20261066';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1856,15 +1856,18 @@
                 <span class="qaf-rt"><small data-i18n="itiCityLabel">City <em data-i18n="itiOptional">· optional</em></small><span id="iti-city-summary" class="qaf-ph"></span><select id="iti-city" class="iti-qaf-select"><option value="" data-i18n="itiAllCities">All cities</option></select></span>
                 <span class="qaf-chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></span>
             </button>
-            <!-- "When?" (demande du 25/10/2026) : ouvre désormais la même "belle liste" plein
-                 écran que Group/Country/City/Category au lieu de l'accordéon de dates natives
-                 — voir window.openItiPicker('dates')/itiPickerHtml() dans script.js, qui
-                 reprend telle quelle la fiche "Quand ?" de "+ New trip" (.nt-seg/.nt-dates/
-                 .nt-dt, style.css, Specific dates/Flexible dates). #iti-start-date/
+            <!-- "When?" (demande du 25/10/2026, puis du 30/10/2026) : ouvre la même "belle
+                 liste" plein écran que Group/Country/City/Category — voir
+                 window.openItiPicker('dates')/itiPickerHtml() dans script.js. Depuis le
+                 30/10/2026, le filtre Dates lui-même reprend EXACTEMENT le même composant que
+                 l'onglet Plan de la page Trip (#trip-dates-popup) : calendrier réel pour
+                 "Specific dates" (renderDateRangeCalendar('iti')) et pastilles Weekend/
+                 1 week/2 weeks/1 month + grille de mois pour "Flexible dates"
+                 (resolveFlexibleTripDates()/renderFlexibleMonthGrid('iti')), au lieu de
+                 l'ancien input date natif + nombre de jours saisi à la main. #iti-start-date/
                  #iti-end-date/#iti-days restent de VRAIS champs (seule source lue par
                  generateItinerary(), inchangé) mais cachés — même principe que .iti-qaf-select
-                 pour Group/Country/City plus haut — la fiche "Quand ?" les remplit via ses
-                 propres data-itiin="dep"/"ret"/"days" plutôt que de les éditer directement. -->
+                 pour Group/Country/City plus haut. -->
             <button type="button" id="iti-dates-row" class="qaf-row" style="width:100%; background:none; border:none; text-align:left; font-family:inherit; cursor:pointer;" onclick="window.openItiPicker('dates')">
                 <span class="qaf-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span>
                 <span class="qaf-rt"><small data-i18n="itiDatesLabel">Dates <em data-i18n="itiOptional">· optional</em></small><span id="iti-dates-summary" class="qaf-ph"></span></span>
@@ -1872,7 +1875,11 @@
             </button>
             <input type="date" id="iti-start-date" class="hidden">
             <input type="date" id="iti-end-date" class="hidden">
-            <input type="number" id="iti-days" min="1" max="7" value="3" class="hidden">
+            <!-- max relevé de 7 à 30 (demande du 30/10/2026) : le filtre Dates propose
+                 désormais aussi "1 month" (voir window.updateItiDatesFromFlexiblePills()
+                 dans script.js), qui se faisait plafonner silencieusement à 7 jours tant que
+                 cette limite restait celle de l'ancien champ "Trip length" (max 7 jours). -->
+            <input type="number" id="iti-days" min="1" max="30" value="3" class="hidden">
             <!-- Stay (demande répétée du 24/10/2026) : reste un <button> (pas un <select>, voir
                  window.openItiStayEditor() dans script.js — vraies suggestions de lieu Nominatim,
                  même composant que "New trip"), seul l'habillage passe en .qaf-row. N'existe QUE
@@ -1960,9 +1967,9 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script type="module" src="firebase-init.js?v=20261065"></script>
-<script src="locations-data.js?v=20261065"></script>
-<script src="script.js?v=20261065"></script>
+<script type="module" src="firebase-init.js?v=20261066"></script>
+<script src="locations-data.js?v=20261066"></script>
+<script src="script.js?v=20261066"></script>
 
 </body>
 </html>
