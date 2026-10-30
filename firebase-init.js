@@ -323,38 +323,33 @@ window.addEventListener('online', () => {
 // visite avec photo est une action plus courante que personnaliser la couverture d'un
 // voyage) — le premier correctif (couvertures seules) aurait donc laissé "Connection issue"
 // réapparaître pour quiconque accumule des photos de visite plutôt que des couvertures.
+//
+// BUG corrigé une 3e fois (demande répétée du 30/10/2026, "il y a encore écrit 'Connection
+// issue'" — APRÈS les deux correctifs ci-dessus, coverImage ET visits[].photo) : lister les
+// champs photo UN PAR UN (coverImage, puis visits[].photo) oblige à deviner à l'avance tous
+// les champs base64 existants — et en oublie un troisième si jamais il en existe un, ou un
+// futur champ pas encore ajouté quand ce code a été écrit. stripDataUrlsDeep() ci-dessous
+// parcourt récursivement N'IMPORTE QUELLE structure (objets/tableaux imbriqués à n'importe
+// quelle profondeur) et retire TOUTE chaîne "data:" rencontrée, quel que soit le nom du champ
+// qui la porte — plus besoin d'énumérer les champs photo un par un, connus ou futurs.
+function stripDataUrlsDeep(value, found) {
+    if (typeof value === 'string') {
+        if (value.length > 500 && value.startsWith('data:')) { found.hit = true; return ''; }
+        return value;
+    }
+    if (Array.isArray(value)) return value.map(v => stripDataUrlsDeep(v, found));
+    if (value && typeof value === 'object') {
+        const out = {};
+        for (const k in value) { if (Object.prototype.hasOwnProperty.call(value, k)) out[k] = stripDataUrlsDeep(value[k], found); }
+        return out;
+    }
+    return value;
+}
 function stripLargeInlineMedia(fields) {
     if (!fields) return null;
-    let found = false;
-    const result = Object.assign({}, fields);
-    if (Array.isArray(fields.myTrips)) {
-        const slimTrips = fields.myTrips.map(t => {
-            if (t && typeof t.coverImage === 'string' && t.coverImage.startsWith('data:')) {
-                found = true;
-                return Object.assign({}, t, { coverImage: '' });
-            }
-            return t;
-        });
-        if (found) result.myTrips = slimTrips;
-    }
-    if (Array.isArray(fields.visitedLocs)) {
-        let visitedChanged = false;
-        const slimVisited = fields.visitedLocs.map(entry => {
-            if (!entry || !Array.isArray(entry.visits)) return entry;
-            let entryChanged = false;
-            const slimVisits = entry.visits.map(v => {
-                if (v && typeof v.photo === 'string' && v.photo.startsWith('data:')) {
-                    entryChanged = true;
-                    return Object.assign({}, v, { photo: null });
-                }
-                return v;
-            });
-            if (entryChanged) { visitedChanged = true; return Object.assign({}, entry, { visits: slimVisits }); }
-            return entry;
-        });
-        if (visitedChanged) { found = true; result.visitedLocs = slimVisited; }
-    }
-    return found ? result : null;
+    const found = { hit: false };
+    const result = stripDataUrlsDeep(fields, found);
+    return found.hit ? result : null;
 }
 
 // BUG corrigé (demande du 24/10/2026, "je viens de déployer les règles Firestore et ça
@@ -367,46 +362,21 @@ function stripLargeInlineMedia(fields) {
 // pas myTrips/visitedLocs — et stripLargeInlineMedia(fields) ne trouve alors rien à alléger
 // puisque le champ responsable n'est tout simplement pas dans CE payload. D'où "Connection
 // issue" qui persiste pour ce compte quoi qu'on fasse côté règles : ce n'en a jamais été une.
-// Cette fonction relit myTrips/visitedLocs directement depuis localStorage (source locale
-// toujours à jour, peu importe ce que l'appel en cours écrit) pour pouvoir les réinjecter,
-// allégés, dans LA MÊME tentative de rattrapage — ce qui réduit enfin la taille du document
-// stocké au lieu de ne jamais toucher aux champs qui le font dépasser 1 Mio.
+// Cette fonction relit myTrips/visitedLocs/wishlistLocs directement depuis localStorage
+// (source locale toujours à jour, peu importe ce que l'appel en cours écrit) pour pouvoir les
+// réinjecter, allégés (même nettoyage générique stripDataUrlsDeep() ci-dessus), dans LA MÊME
+// tentative de rattrapage — ce qui réduit enfin la taille du document stocké au lieu de ne
+// jamais toucher aux champs qui le font dépasser 1 Mio.
 function buildFallbackSlimPayload() {
     let out = null;
-    try {
-        const trips = JSON.parse(localStorage.getItem('myTrips') || '[]');
-        if (Array.isArray(trips)) {
-            let changed = false;
-            const slimTrips = trips.map(t => {
-                if (t && typeof t.coverImage === 'string' && t.coverImage.startsWith('data:')) {
-                    changed = true;
-                    return Object.assign({}, t, { coverImage: '' });
-                }
-                return t;
-            });
-            if (changed) { out = out || {}; out.myTrips = slimTrips; }
-        }
-    } catch (e) { /* localStorage corrompu/absent : on ignore, ça n'empêche pas l'autre champ */ }
-    try {
-        const visited = JSON.parse(localStorage.getItem('visitedLocs') || '[]');
-        if (Array.isArray(visited)) {
-            let changed = false;
-            const slimVisited = visited.map(entry => {
-                if (!entry || !Array.isArray(entry.visits)) return entry;
-                let entryChanged = false;
-                const slimVisits = entry.visits.map(v => {
-                    if (v && typeof v.photo === 'string' && v.photo.startsWith('data:')) {
-                        entryChanged = true;
-                        return Object.assign({}, v, { photo: null });
-                    }
-                    return v;
-                });
-                if (entryChanged) { changed = true; return Object.assign({}, entry, { visits: slimVisits }); }
-                return entry;
-            });
-            if (changed) { out = out || {}; out.visitedLocs = slimVisited; }
-        }
-    } catch (e) { /* idem */ }
+    ['myTrips', 'visitedLocs', 'wishlistLocs'].forEach((key) => {
+        try {
+            const raw = JSON.parse(localStorage.getItem(key) || '[]');
+            const found = { hit: false };
+            const slim = stripDataUrlsDeep(raw, found);
+            if (found.hit) { out = out || {}; out[key] = slim; }
+        } catch (e) { /* localStorage corrompu/absent pour ce champ : on ignore, ça n'empêche pas les autres */ }
+    });
     return out;
 }
 
@@ -486,6 +456,21 @@ window.syncUserData = async function (fields) {
     {
         const e = lastError;
         console.warn('Synchronisation Firestore échouée :', e);
+        // Diagnostic (demande répétée, "Connection issue" encore vu après coverImage ET
+        // visits[].photo déjà retirés par stripDataUrlsDeep() ci-dessus) : si MALGRÉ ce
+        // nettoyage générique la synchronisation échoue toujours, la cause n'est
+        // probablement plus un champ photo isolé mais un VOLUME de données (beaucoup de
+        // voyages/lieux visités/texte), que ce nettoyage ne peut pas deviner comment réduire
+        // sans perdre des données. Ce log donne, champ par champ, la taille réelle envoyée —
+        // de quoi identifier précisément le prochain coupable plutôt que reproduire un 6e
+        // correctif à l'aveugle.
+        if (e && e.code !== 'permission-denied' && !TRANSIENT_FIRESTORE_CODES.includes(e && e.code)) {
+            try {
+                const sizes = {};
+                Object.keys(fields || {}).forEach((k) => { sizes[k] = JSON.stringify(fields[k]).length; });
+                console.warn('Taille (octets JSON) par champ synchronisé :', sizes, '— total :', JSON.stringify(fields).length);
+            } catch (diagErr) { /* purement informatif, ne doit jamais faire échouer la suite */ }
+        }
         if (!_syncUserDataErrorToastShown && typeof window.showSimpleToast === 'function') {
             _syncUserDataErrorToastShown = true;
             const isFr = document.documentElement.lang === 'fr' || (window.currentLang === 'fr');

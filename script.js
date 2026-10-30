@@ -942,7 +942,17 @@ function loadInstagramWidgetScriptOnce() {
 // bas de la photo et la chevauche. Largeur désormais plafonnée à sa valeur naturelle (centrée),
 // marge augmentée par sécurité.
 const INSTAGRAM_EMBED_MAX_WIDTH_PX = 400;
-const INSTAGRAM_EMBED_FOOTER_BUFFER_PX = 60;
+// BUG signalé une 4e fois le 30/10/2026 ("Viña Aquitania", cette fois le DEUXIÈME lien
+// Instagram embeddé pour ce lieu — voir instagramUrls[] dans locations-data.js,
+// renderMultiEmbedsInto() dans ce fichier, qui pose un <iframe> indépendant par lien, chacun
+// correctement redimensionné séparément par l'écouteur juste en dessous — ce n'est donc pas
+// un bug d'aiguillage entre plusieurs embeds, seulement la marge, encore insuffisante pour CE
+// post précis malgré le passage de 44 à 60px la semaine dernière). Impossible de mesurer la
+// vraie hauteur du bandeau Instagram (iframe cross-origin, voir plus haut) : à chaque post
+// plus court que prévu, seule une marge plus généreuse protège contre le chevauchement.
+// Beaucoup plus large cette fois (120px) — un peu d'espace vide sous un post déjà haut reste
+// largement préférable à un 5e signalement du même chevauchement.
+const INSTAGRAM_EMBED_FOOTER_BUFFER_PX = 120;
 if (!window.__igEmbedResizeWired) {
     window.__igEmbedResizeWired = true;
     window.addEventListener('message', (e) => {
@@ -5129,6 +5139,7 @@ const iconsSVG = {
     "Fashion": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a8.59 8.59 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>`,
     "Pop-up Store": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
     "Landmark": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="4" y="8" rx="2" ry="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+    "Hotel": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>`,
     "In The Soop": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
     "Winter Package": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>`,
     "Summer Package": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
@@ -5228,17 +5239,20 @@ const filterData = {
     // (demande du 30/09/2026) : ajoutées aux côtés de "Run BTS"/"Bon Voyage" — même famille
     // (contenu/évènements BTS, pas un vrai commerce avec horaires), donc réservées au groupe
     // BTS uniquement, comme leurs voisines.
-    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "In The Soop", "Winter Package", "Summer Package", "Festa", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store"] },
-    "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "In The Soop", "Winter Package", "Summer Package", "Festa", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store", "Hotel"] },
+    "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
     // Twice/ITZY/ENHYPEN/"NCT 127"/"Stray Kids" (demande du 18/10/2026, "ajoute en groupe
     // ITZY, ENHYPEN, TWICE, NCT 127, STRAYKIDS") — mêmes catégories génériques que
     // Blackpink (pas de contenu type "Run BTS" propre à ces groupes), vrais effectifs.
-    "Twice": { members: ["Nayeon", "Jeongyeon", "Momo", "Sana", "Jihyo", "Mina", "Dahyun", "Chaeyoung", "Tzuyu"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "ITZY": { members: ["Yeji", "Lia", "Ryujin", "Chaeryeong", "Yuna"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "ENHYPEN": { members: ["Jungwon", "Heeseung", "Jay", "Jake", "Sunghoon", "Sunoo", "Ni-ki"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "NCT 127": { members: ["Taeyong", "Johnny", "Taeil", "Yuta", "Doyoung", "Jaehyun", "Jungwoo", "Mark", "Haechan"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "Stray Kids": { members: ["Bang Chan", "Lee Know", "Changbin", "Hyunjin", "Han", "Felix", "Seungmin", "I.N"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "General": { categories: ["Cafe", "Concert", "Fashion", "Landmark", "Museum", "Restaurant", "Pop-up Store"] }
+    // "Hotel" (demande du 30/10/2026) : ajoutée partout aux côtés de Cafe/Restaurant, même
+    // traitement générique (pas propre à un groupe) — voir iconsSVG/catTranslations/
+    // ITI_CATEGORY_PROFILE plus bas pour les 3 autres endroits à tenir à jour ensemble.
+    "Twice": { members: ["Nayeon", "Jeongyeon", "Momo", "Sana", "Jihyo", "Mina", "Dahyun", "Chaeyoung", "Tzuyu"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "ITZY": { members: ["Yeji", "Lia", "Ryujin", "Chaeryeong", "Yuna"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "ENHYPEN": { members: ["Jungwon", "Heeseung", "Jay", "Jake", "Sunghoon", "Sunoo", "Ni-ki"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "NCT 127": { members: ["Taeyong", "Johnny", "Taeil", "Yuta", "Doyoung", "Jaehyun", "Jungwoo", "Mark", "Haechan"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "Stray Kids": { members: ["Bang Chan", "Lee Know", "Changbin", "Hyunjin", "Han", "Felix", "Seungmin", "I.N"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "General": { categories: ["Cafe", "Concert", "Fashion", "Landmark", "Museum", "Restaurant", "Pop-up Store", "Hotel"] }
 };
 
 // Catalogue statique (demande du 13/09/2026, "mets toutes les données des lieux en brut
@@ -5925,7 +5939,8 @@ const catTranslations = {
     "MV Location": "MV Location", "Concert": "Concert",
     "Fashion": {en: "Fashion", fr: "Mode"},
     "Landmark": {en: "Landmark", fr: "Lieu mythique"},
-    "Pop-up Store": "Pop-up Store"
+    "Pop-up Store": "Pop-up Store",
+    "Hotel": {en: "Hotel", fr: "Hôtel"}
 };
 
 function getCatName(cat) {
@@ -6264,6 +6279,41 @@ let itiPickQ = '';
 // dates" revient simplement à n'avoir QUE #iti-days, déjà le comportement existant quand
 // aucune date précise n'est renseignée).
 let itiDateMode = 'specific';
+// "Weekend"/"1 week"/"2 weeks"/"1 month" + mois actif pour le mode Flexible du générateur
+// (demande du 30/10/2026, "modifie le filtre Dates pour reprendre le filtre de date de la
+// page trip") — suivi explicitement ici (plutôt que lu depuis le DOM comme pour "edit"/
+// "create") car itiPickerHtml()/renderItiPicker() reconstruisent ENTIÈREMENT #iti-picker-root
+// à chaque interaction (voir renderItiPicker() plus bas) : un simple classList.toggle('active')
+// sur les pastilles serait effacé au prochain re-rendu, contrairement à l'éditeur de voyage
+// où la grille de mois n'est construite qu'UNE fois puis seulement mutée en place.
+let itiFlexDuration = 'Weekend';
+let itiFlexMonthOffset = 0;
+// Recalcule #iti-start-date/#iti-end-date/#iti-days à partir de itiFlexDuration/
+// itiFlexMonthOffset via resolveFlexibleTripDates() (voir plus bas dans ce fichier, ajoutée
+// la semaine dernière pour #trip-dates-popup — generenaliste, prend juste un décalage de
+// mois + un libellé de durée) — mêmes champs que lisait déjà l'ancien champ "Trip length".
+window.updateItiDatesFromFlexiblePills = function() {
+    const resolved = resolveFlexibleTripDates(itiFlexMonthOffset, itiFlexDuration);
+    const startEl = document.getElementById('iti-start-date'), endEl = document.getElementById('iti-end-date');
+    if (startEl) startEl.value = resolved.startDate;
+    if (endEl) endEl.value = resolved.endDate;
+    window.updateItiDaysFromDates();
+};
+window.selectItiFlexDuration = function(label) {
+    itiFlexDuration = label;
+    window.updateItiDatesFromFlexiblePills();
+    renderItiPicker();
+};
+// Appelée par renderFlexibleMonthGrid('iti') avec la même convention que selectEditPill()/
+// selectCreatePill() (voir son fnName plus bas) — seul le mois nous concerne ici, la durée
+// passe par window.selectItiFlexDuration() ci-dessus (pastilles générées directement par
+// itiPickerHtml(), pas par renderFlexibleMonthGrid()).
+window.selectItiPill = function(btn, type) {
+    if (type !== 'iti-month') return;
+    itiFlexMonthOffset = Array.from(btn.parentElement.children).indexOf(btn);
+    window.updateItiDatesFromFlexiblePills();
+    renderItiPicker();
+};
 window.openItiPicker = function(field) {
     itiPick = field;
     itiPickQ = '';
@@ -6358,29 +6408,38 @@ function itiPickerHtml() {
         const cats = (filterData[group] && filterData[group].categories) ? filterData[group].categories : filterData["General"].categories;
         body = cats.map(cat => `<button type="button" class="qaf-li" data-ititogcat="${escapeHtml(cat)}" aria-pressed="${itiSelectedCategories.includes(cat)}"><span class="qaf-lt"><b>${escapeHtml(getCatName(cat))}</b></span><span class="qaf-rd"></span></button>`).join('');
     } else if (p === 'dates') {
-        // Reprend telle quelle la fiche "Quand ?" de "+ New trip" (ntPicker(), p==='dates'
-        // plus bas dans ce fichier) : mêmes classes .nt-seg/.nt-dates/.nt-dt/.nt-dt-ph
-        // (style.css, génériques, pas scoped à ntPicker) — même "input natif invisible
-        // superposé à un libellé stylé" (.nt-dt input {opacity:0}) pour ne JAMAIS afficher
-        // le widget de date natif du téléphone (ni son bleu système) à l'écran, seul son
-        // sélecteur reste accessible au tap.
+        // Reprend désormais EXACTEMENT le même filtre de dates que l'onglet Plan de la page
+        // Trip (demande du 30/10/2026, "reprendre le filtre de date de la page trip, avec
+        // Specific dates... et flexible dates...") — remplace l'ancien input date natif +
+        // "Trip length" numérique par le même calendrier (.stp-cal-popup, voir
+        // renderDateRangeCalendar()) et les mêmes pastilles Weekend/1 week/2 weeks/1 month +
+        // grille de mois (renderFlexibleMonthGrid()/resolveFlexibleTripDates(), ajoutées la
+        // semaine dernière pour #trip-dates-popup) que window.renderItiPicker() appelle juste
+        // après ce rendu — voir ce commentaire plus bas pour pourquoi ces deux fonctions ont
+        // besoin d'un re-rendu séparé plutôt que de construire leurs grilles ici même.
+        // #iti-start-date/#iti-end-date/#iti-days restent les VRAIS champs lus par
+        // generateItinerary() (inchangé) — seule la façon de les remplir change.
         title = currentLang === 'fr' ? 'Quand ?' : 'When?';
-        const dep = document.getElementById('iti-start-date').value;
-        const ret = document.getElementById('iti-end-date').value;
         const flexible = itiDateMode === 'flexible';
-        const selectDateLabel = currentLang === 'fr' ? 'Choisir une date' : 'Select date';
         body = `<div class="nt-seg"><button type="button" data-itiact="date-specific" aria-pressed="${!flexible}">${currentLang === 'fr' ? 'Dates précises' : 'Specific dates'}</button><button type="button" data-itiact="date-flexible" aria-pressed="${flexible}">${currentLang === 'fr' ? 'Dates flexibles' : 'Flexible dates'}</button></div>`;
         if (!flexible) {
-            body += `<div class="nt-dates">
-                <label class="nt-dt"><small>${currentLang === 'fr' ? 'DÉPART' : 'DEPARTURE'}</small>${dep ? `<b>${itiShortDate(dep)}</b>` : `<b class="nt-dt-ph">${selectDateLabel}</b>`}<input type="date" data-itiin="dep" value="${dep}"></label>
-                <label class="nt-dt"><small>${currentLang === 'fr' ? 'RETOUR' : 'RETURN'}</small>${ret ? `<b>${itiShortDate(ret)}</b>` : `<b class="nt-dt-ph">${selectDateLabel}</b>`}<input type="date" data-itiin="ret" value="${ret}" min="${dep}"></label>
+            body += `<div id="iti-date-specific-panel">
+                <div class="stp-cal-popup" id="iti-cal-popup">
+                    <div class="stp-cal-nav">
+                        <div class="stp-cal-arrow" onclick="navCalendar('iti',-1)">&lsaquo;</div>
+                        <div class="stp-cal-arrow" onclick="navCalendar('iti',1)">&rsaquo;</div>
+                    </div>
+                    <div class="stp-cal-grids"></div>
+                </div>
             </div>`;
         } else {
-            const days = document.getElementById('iti-days').value || '3';
-            body += `<label style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:16px; font-size:13px; font-weight:600; color:#5F5B68;">
-                <span>${currentLang === 'fr' ? 'Durée du séjour' : 'Trip length'}</span>
-                <input type="number" min="1" max="7" value="${days}" data-itiin="days" style="width:56px; text-align:right; font-weight:700; color:#1F2430; border:1.5px solid #ece8f2; border-radius:8px; padding:4px 8px; font-family:inherit;">
-            </label>`;
+            const durations = ['Weekend', '1 week', '2 weeks', '1 month'];
+            body += `<div id="iti-date-flexible-panel">
+                <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+                    ${durations.map(d => `<div class="pill-btn${itiFlexDuration === d ? ' active' : ''}" data-type="iti-duration" onclick="window.selectItiFlexDuration('${d}')">${d}</div>`).join('')}
+                </div>
+                <div class="stp-month-grid" id="iti-month-grid" style="margin-top:12px;"></div>
+            </div>`;
         }
     }
     const isMulti = p === 'cat';
@@ -6402,6 +6461,16 @@ function renderItiPicker() {
     // ce critère se consulte souvent sans vouloir taper : le clavier mobile qui s'ouvrait
     // par défaut masquait une partie de la liste et n'était pas demandé ici. La recherche
     // reste utilisable normalement, juste sans focus automatique.
+    //
+    // Grilles calendrier/mois du filtre Dates (demande du 30/10/2026) : contrairement à
+    // #edit-month-grid/#edit-cal-popup (construits UNE fois puis seulement mutés en place),
+    // #iti-picker-root.innerHTML ci-dessus vient de tout reconstruire — ces grilles doivent
+    // donc être repeuplées à CHAQUE rendu tant que le filtre Dates reste ouvert, pas
+    // seulement à l'ouverture initiale.
+    if (itiPick === 'dates') {
+        if (itiDateMode === 'flexible') renderFlexibleMonthGrid('iti');
+        else renderDateRangeCalendar('iti');
+    }
 }
 document.addEventListener('click', (e) => {
     const root = document.getElementById('iti-picker-root');
@@ -6419,13 +6488,12 @@ document.addEventListener('click', (e) => {
         itiDateMode = 'specific';
         renderItiPicker();
     } else if (t.dataset.itiact === 'date-flexible') {
-        // Même bascule mutuellement exclusive que ntPicker('dates') : passer en "Flexible"
-        // vide les dates précises (sinon #iti-days resterait recalculé à partir d'elles à
-        // chaque réouverture, contredisant le mode "Flexible" qu'on vient de choisir).
+        // Demande du 30/10/2026 : passer en "Flexible" calcule désormais de vraies dates
+        // (Weekend/1 week/2 weeks/1 month + mois actif, voir resolveFlexibleTripDates())
+        // au lieu de vider #iti-start-date/#iti-end-date comme avant ce correctif — le
+        // nombre de jours ("Trip length") n'était jusqu'ici qu'une saisie manuelle séparée.
         itiDateMode = 'flexible';
-        document.getElementById('iti-start-date').value = '';
-        document.getElementById('iti-end-date').value = '';
-        if (typeof window.updateItiDatesSummary === 'function') window.updateItiDatesSummary();
+        window.updateItiDatesFromFlexiblePills();
         renderItiPicker();
     } else if (t.dataset.itiact === 'close') {
         window.closeItiPicker();
@@ -6433,31 +6501,13 @@ document.addEventListener('click', (e) => {
 });
 document.addEventListener('input', (e) => {
     if (e.target.matches('#iti-picker-root [data-itiq]')) { window.setItiPickerSearch(e.target.value); return; }
-    if (e.target.matches('#iti-picker-root [data-itiin="days"]')) {
-        document.getElementById('iti-days').value = e.target.value;
-        if (typeof window.updateItiDatesSummary === 'function') window.updateItiDatesSummary();
-    }
-    // data-itiin="dep"/"ret" (les deux <input type="date"> invisibles de la fiche "Quand ?")
-    // volontairement IGNORÉS ici, gérés par le seul 'change' ci-dessous — même raison que
-    // ntPicker() (voir son commentaire du 23/10/2026) : re-render sur 'input' remplacerait
-    // ces <input> par de nouveaux AVANT que le 'change' natif du navigateur n'ait pu se
-    // déclencher sur l'ancien, perdant silencieusement la date choisie.
 });
-document.addEventListener('change', (e) => {
-    const k = e.target.dataset.itiin;
-    if (!k || !e.target.closest('#iti-picker-root')) return;
-    if (k === 'dep') {
-        document.getElementById('iti-start-date').value = e.target.value;
-        const retEl = document.getElementById('iti-end-date');
-        if (retEl.value && retEl.value < e.target.value) retEl.value = '';
-        window.updateItiDaysFromDates();
-        renderItiPicker();
-    } else if (k === 'ret') {
-        document.getElementById('iti-end-date').value = e.target.value;
-        window.updateItiDaysFromDates();
-        renderItiPicker();
-    }
-});
+// Les anciens data-itiin="dep"/"ret"/"days" (input date natif + nombre de jours saisi à la
+// main, et le listener 'change' qui les lisait) ont disparu avec le filtre Dates du
+// 30/10/2026, remplacé par le même calendrier/pastilles Flexible que #trip-dates-popup (voir
+// itiPickerHtml(), p==='dates' plus haut) — ces dates/ce nombre de jours sont désormais
+// choisis via pickCalendarDate('iti', iso)/window.selectItiFlexDuration()/
+// window.selectItiPill(), jamais par un <input> natif ici.
 
 window.initItineraryGenerator = function() {
     const unlockedGroups = getUnlockedGroups();
@@ -12529,7 +12579,10 @@ const ITI_CATEGORY_PROFILE = {
     'Summer Package': { openHour: 9, closeHour: 19, visitMinutes: 30 },
     'Festa':        { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'MV Location':  { openHour: 9,  closeHour: 19, visitMinutes: 30 },
-    'Landmark':     { openHour: 9,  closeHour: 19, visitMinutes: 40 }
+    'Landmark':     { openHour: 9,  closeHour: 19, visitMinutes: 40 },
+    // Ouvert en permanence (check-in/check-out à toute heure), halte courte dans un
+    // itinéraire (demande du 30/10/2026, nouvelle catégorie "Hotel").
+    'Hotel':        { openHour: 0,  closeHour: 24, visitMinutes: 20 }
 };
 const ITI_DEFAULT_PROFILE = { openHour: 9, closeHour: 19, visitMinutes: 45 };
 function getCategoryProfile(cat) { return ITI_CATEGORY_PROFILE[cat] || ITI_DEFAULT_PROFILE; }
@@ -15893,7 +15946,12 @@ window.renderTrip = function() {
 const _calState = {};
 
 function _calInputIds(prefix) {
-    return prefix === 'edit' ? ['date-start', 'date-end'] : ['create-trip-start', 'create-trip-end'];
+    // 'iti' ajouté (demande du 30/10/2026) : #iti-start-date/#iti-end-date sont déjà de
+    // vrais <input type="date"> cachés, seuls champs lus par generateItinerary() — voir la
+    // note au-dessus de #iti-dates-row dans trips.html.
+    if (prefix === 'edit') return ['date-start', 'date-end'];
+    if (prefix === 'iti') return ['iti-start-date', 'iti-end-date'];
+    return ['create-trip-start', 'create-trip-end'];
 }
 
 function renderDateRangeCalendar(prefix) {
@@ -16077,6 +16135,9 @@ window.pickCalendarDate = function(prefix, iso) {
     // jamais pendant la création (prefix 'create' : l'itinéraire n'existe pas encore, il
     // est généré séparément par createNewTripAdvanced() avec son propre calcul de durée).
     if (prefix === 'edit') { syncItineraryDaysToDates(); window.saveTrip(); }
+    // 'iti' (demande du 30/10/2026) : pas de voyage à sauvegarder ici, juste #iti-days/le
+    // résumé affiché à tenir à jour à chaque date choisie dans le calendrier.
+    else if (prefix === 'iti') { window.updateItiDaysFromDates(); }
 };
 
 // Résout une pastille de durée ("Weekend"/"1 week"/"2 weeks"/"1 month") + le décalage en
@@ -16146,9 +16207,14 @@ function renderFlexibleMonthGrid(prefix) {
     for (let i = 0; i < 12; i++) {
         const d = new Date(today.getFullYear(), today.getMonth() + i, 1);
         const label = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
-        const fnName = prefix === 'edit' ? 'selectEditPill' : 'selectCreatePill';
+        // 'iti' ajouté (demande du 30/10/2026) — voir window.selectItiPill() plus haut. La
+        // tuile active vient de itiFlexMonthOffset (un état explicite, pas la tuile i===0 par
+        // défaut) : ce générateur reconstruit cette grille à CHAQUE rendu, contrairement à
+        // "edit"/"create" où elle n'est bâtie qu'une fois puis mutée en place.
+        const fnName = prefix === 'edit' ? 'selectEditPill' : prefix === 'iti' ? 'selectItiPill' : 'selectCreatePill';
         const save = prefix === 'edit' ? ' saveTrip();' : '';
-        html += `<div class="pill-btn stp-month-tile${i === 0 ? ' active' : ''}" data-type="${prefix}-month" onclick="${fnName}(this, '${prefix}-month');${save}">${label}</div>`;
+        const isActive = prefix === 'iti' ? (i === itiFlexMonthOffset) : (i === 0);
+        html += `<div class="pill-btn stp-month-tile${isActive ? ' active' : ''}" data-type="${prefix}-month" onclick="${fnName}(this, '${prefix}-month');${save}">${label}</div>`;
     }
     grid.innerHTML = html;
 }
