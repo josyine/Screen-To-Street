@@ -5129,6 +5129,7 @@ const iconsSVG = {
     "Fashion": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a8.59 8.59 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>`,
     "Pop-up Store": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
     "Landmark": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="13" x="4" y="8" rx="2" ry="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+    "Hotel": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19V6M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="2"/></svg>`,
     "In The Soop": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
     "Winter Package": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>`,
     "Summer Package": `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
@@ -5228,17 +5229,20 @@ const filterData = {
     // (demande du 30/09/2026) : ajoutées aux côtés de "Run BTS"/"Bon Voyage" — même famille
     // (contenu/évènements BTS, pas un vrai commerce avec horaires), donc réservées au groupe
     // BTS uniquement, comme leurs voisines.
-    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "In The Soop", "Winter Package", "Summer Package", "Festa", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store"] },
-    "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
+    "BTS": { members: ["Namjoon", "Jin", "Suga", "JHope", "Jimin", "V", "Jungkook"], categories: ["Run BTS", "Bon Voyage", "In The Soop", "Winter Package", "Summer Package", "Festa", "Museum", "Restaurant", "Cafe", "MV Location", "Concert", "Fashion", "Landmark", "Pop-up Store", "Hotel"] },
+    "Blackpink": { members: ["Jisoo", "Jennie", "Rosé", "Lisa"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
     // Twice/ITZY/ENHYPEN/"NCT 127"/"Stray Kids" (demande du 18/10/2026, "ajoute en groupe
     // ITZY, ENHYPEN, TWICE, NCT 127, STRAYKIDS") — mêmes catégories génériques que
     // Blackpink (pas de contenu type "Run BTS" propre à ces groupes), vrais effectifs.
-    "Twice": { members: ["Nayeon", "Jeongyeon", "Momo", "Sana", "Jihyo", "Mina", "Dahyun", "Chaeyoung", "Tzuyu"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "ITZY": { members: ["Yeji", "Lia", "Ryujin", "Chaeryeong", "Yuna"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "ENHYPEN": { members: ["Jungwon", "Heeseung", "Jay", "Jake", "Sunghoon", "Sunoo", "Ni-ki"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "NCT 127": { members: ["Taeyong", "Johnny", "Taeil", "Yuta", "Doyoung", "Jaehyun", "Jungwoo", "Mark", "Haechan"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "Stray Kids": { members: ["Bang Chan", "Lee Know", "Changbin", "Hyunjin", "Han", "Felix", "Seungmin", "I.N"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion"] },
-    "General": { categories: ["Cafe", "Concert", "Fashion", "Landmark", "Museum", "Restaurant", "Pop-up Store"] }
+    // "Hotel" (demande du 30/10/2026) : ajoutée partout aux côtés de Cafe/Restaurant, même
+    // traitement générique (pas propre à un groupe) — voir iconsSVG/catTranslations/
+    // ITI_CATEGORY_PROFILE plus bas pour les 3 autres endroits à tenir à jour ensemble.
+    "Twice": { members: ["Nayeon", "Jeongyeon", "Momo", "Sana", "Jihyo", "Mina", "Dahyun", "Chaeyoung", "Tzuyu"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "ITZY": { members: ["Yeji", "Lia", "Ryujin", "Chaeryeong", "Yuna"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "ENHYPEN": { members: ["Jungwon", "Heeseung", "Jay", "Jake", "Sunghoon", "Sunoo", "Ni-ki"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "NCT 127": { members: ["Taeyong", "Johnny", "Taeil", "Yuta", "Doyoung", "Jaehyun", "Jungwoo", "Mark", "Haechan"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "Stray Kids": { members: ["Bang Chan", "Lee Know", "Changbin", "Hyunjin", "Han", "Felix", "Seungmin", "I.N"], categories: ["Cafe", "Restaurant", "MV Location", "Pop-up Store", "Concert", "Fashion", "Hotel"] },
+    "General": { categories: ["Cafe", "Concert", "Fashion", "Landmark", "Museum", "Restaurant", "Pop-up Store", "Hotel"] }
 };
 
 // Catalogue statique (demande du 13/09/2026, "mets toutes les données des lieux en brut
@@ -5925,7 +5929,8 @@ const catTranslations = {
     "MV Location": "MV Location", "Concert": "Concert",
     "Fashion": {en: "Fashion", fr: "Mode"},
     "Landmark": {en: "Landmark", fr: "Lieu mythique"},
-    "Pop-up Store": "Pop-up Store"
+    "Pop-up Store": "Pop-up Store",
+    "Hotel": {en: "Hotel", fr: "Hôtel"}
 };
 
 function getCatName(cat) {
@@ -12529,7 +12534,10 @@ const ITI_CATEGORY_PROFILE = {
     'Summer Package': { openHour: 9, closeHour: 19, visitMinutes: 30 },
     'Festa':        { openHour: 9,  closeHour: 19, visitMinutes: 30 },
     'MV Location':  { openHour: 9,  closeHour: 19, visitMinutes: 30 },
-    'Landmark':     { openHour: 9,  closeHour: 19, visitMinutes: 40 }
+    'Landmark':     { openHour: 9,  closeHour: 19, visitMinutes: 40 },
+    // Ouvert en permanence (check-in/check-out à toute heure), halte courte dans un
+    // itinéraire (demande du 30/10/2026, nouvelle catégorie "Hotel").
+    'Hotel':        { openHour: 0,  closeHour: 24, visitMinutes: 20 }
 };
 const ITI_DEFAULT_PROFILE = { openHour: 9, closeHour: 19, visitMinutes: 45 };
 function getCategoryProfile(cat) { return ITI_CATEGORY_PROFILE[cat] || ITI_DEFAULT_PROFILE; }
