@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-30T07:37:31.905Z.
+// Généré le 2026-10-30T18:46:49.734Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -23652,13 +23652,9 @@ window.STATIC_LOCATIONS = [
     "facebookUrl": "",
     "tweetUrl": "",
     "episodeLink": "",
-    "instagramUrl": "https://www.instagram.com/p/Det7oS5lTlB/?psln=ZjhqcXBuaWpnYXZ2",
     "tiktokUrl": "",
     "ytId": "",
     "imgCredit": "Richard Espinoza / CC BY 3.0",
-    "instagramUrls": [
-      "https://www.instagram.com/p/DerxqVeGfGS/?xtok=bmh6bXl1aWlwcDg2"
-    ],
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-new-manual-1792522535892-i1je7i-recreated-0.jpg",
@@ -23684,7 +23680,11 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://aquitania.cl/",
     "fullDescription": {
       "en": "<p>Located in the Peñalolén commune within the renowned Maipo Valley, just on the eastern outskirts of Santiago, Viña Aquitania is a boutique winery situated directly at the foot of the Andes Mountains. Founded in 1990 by prominent French winemakers from Bordeaux and a Chilean agronomist, the estate is celebrated for elegantly combining traditional French winemaking techniques with the unique Chilean terroir. The vineyard offers a tranquil, scenic escape from the bustling city, featuring lush rows of vines that frame breathtaking, unobstructed views of the towering Andes.</p><!--stss:footsteps--><p>On October 20, 2026, both Taehyung and J-Hope updated their respective Instagram accounts with photos documenting their shared visit to this specific boutique winery in Chile. Taking some downtime to explore the scenic grounds of Viña Aquitania together, the duo enjoyed the very best of South American viticulture.<br>The estate's peaceful atmosphere and stunning mountain backdrop offered the perfect setting for both V's quiet, cinematic photography style and J-Hope's bright, joyful energy. By sharing glimpses of their wine tasting and relaxed strolls through the vineyard, the two members highlighted a beautiful intersection of Chilean culture and their close friendship, instantly placing this Maipo Valley estate on the map for fans tracing their South American itinerary.</p>"
-    }
+    },
+    "instagramUrls": [
+      "https://www.instagram.com/p/Det7oS5lTlB/?psln=ZjhqcXBuaWpnYXZ2"
+    ],
+    "instagramUrl": "https://www.instagram.com/p/DerxqVeGfGS/?xtok=bmh6bXl1aWlwcDg2"
   },
   {
     "id": "new-manual-1792612660406-kbu2ij",
@@ -25009,7 +25009,6 @@ window.STATIC_LOCATIONS = [
     "city": "Mexico City",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "recreatedPhotos": [],
     "tipsList": [
       {
         "title": {
@@ -25068,7 +25067,6 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrls": [],
-    "recreatedPhoto": "",
     "pinterestUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
@@ -25082,7 +25080,173 @@ window.STATIC_LOCATIONS = [
       "https://www.instagram.com/p/DYBeuavGt8Q/?cplk=ZHAxdGtkcXhncGxo",
       "https://www.instagram.com/p/DYDI8mtlF78/?srtk=b3lxMDBydnY1enFv"
     ],
-    "episodeLink": "https://www.billboard.com/music/latin/bts-visit-mexico-national-palace-video-1236258323/"
+    "episodeLink": "https://www.billboard.com/music/latin/bts-visit-mexico-national-palace-video-1236258323/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793226789505-5hvupw-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.0221,
+            "y": 0.5412,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.2357,
+            "y": 0.5044,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.4023,
+            "y": 0.4971,
+            "member": "Jin"
+          },
+          {
+            "x": 0.6523,
+            "y": 0.5368,
+            "member": "Suga"
+          },
+          {
+            "x": 0.8372,
+            "y": 0.52,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.9857,
+            "y": 0.5494,
+            "member": "RM"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1793226789505-5hvupw-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.0039,
+            "y": 0.55,
+            "member": "Jimin"
+          },
+          {
+            "x": 0.1367,
+            "y": 0.5426,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.2878,
+            "y": 0.5176,
+            "member": "Jin"
+          },
+          {
+            "x": 0.4909,
+            "y": 0.5044,
+            "member": "RM"
+          },
+          {
+            "x": 0.6497,
+            "y": 0.5288,
+            "member": "V"
+          },
+          {
+            "x": 0.8372,
+            "y": 0.52,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.9883,
+            "y": 0.5553,
+            "member": "Suga"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1793361552602-zwsrqv",
+    "name": "Manidalo (Cafe Juice and Coffee)",
+    "group": "BTS",
+    "member": "Jin",
+    "country": "South Korea",
+    "city": "Seoul",
+    "address": "16 Teheran-ro 52-gil, 1st Floor, Shop 20, Gangnam District, Seoul, South Korea",
+    "lat": 37.50371,
+    "lng": 127.04689,
+    "year": "2026",
+    "img": "images/admin-upload-new-manual-1793361552602-zwsrqv-photo.jpg",
+    "category": "Cafe",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Late Night Stop"
+        },
+        "text": {
+          "en": "Because the cafe uniquely operates 24/7, it is an excellent and convenient stop to add to your itinerary after a late-night dinner or a long day of exploring the Gangnam area."
+        }
+      },
+      {
+        "title": {
+          "en": "Try the Juice"
+        },
+        "text": {
+          "en": "While they serve standard espresso drinks, their fresh juice selection is a primary specialty that differentiates them from standard coffee chains."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the Staff"
+        },
+        "text": {
+          "en": "As with any family-owned business associated with a global celebrity, treat the establishment primarily as a functioning cafe. Enjoy your drinks and respect the privacy and workspace of the employees."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "AI-generated illustrative image",
+    "fullDescription": {
+      "en": "<p>Opened in October 2026, Manidalo (Cafe Juice and Coffee) is a modern, 24-hour beverage establishment located in the bustling, fast-paced Gangnam district of Seoul. Catering to the round-the-clock lifestyle of the district's residents and workers, the cafe specializes in a wide variety of coffee, fresh juices, and specialty drinks. The venture marks the latest culinary enterprise from its owner, Kim Seok-joong (the older brother of BTS member Jin). The Kim family previously gained recognition in the local food scene by operating Ossu Seiromushi, a popular restaurant dedicated to traditional Japanese steamed cuisine (seiro-mushi) which operated until early 2026.</p><!--stss:footsteps--><p>Manidalo is owned and operated by Kim Seok-joong, the older brother of BTS member Jin. While this cafe is not a direct music video filming location or concert venue, it serves as a notable point of interest for ARMYs mapping the extended business ventures of the members' families in Seoul. Jin has historically been highly supportive of his brother's entrepreneurial endeavors—having previously co-directed Ossu Seiromushi with him—and Manidalo represents the Kim family's continued presence in Seoul's highly competitive food and beverage industry.</p>"
+    },
+    "instagramUrl": "https://www.instagram.com/reel/Dd8iznbvt22/",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1793361552602-zwsrqv-recreated-0.jpg"
+    ],
+    "officialLink": "https://manidalo.com/",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The Manidalo Seolleung branch is highly accessible via the Seoul Metropolitan Subway. Take Line 2 (Green) or the Suin-Bundang Line to Seolleung station. The cafe is located approximately a 270-meter walk directly from Exit 4."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The cafe operates 24 hours a day, 7 days a week. Entry is free, with standard Seoul cafe pricing for beverages."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Modern ground-floor commercial spaces in Gangnam are generally paved, flat, and fully accessible for wheelchair users."
+        }
+      }
+    ],
+    "instagramUrls": [
+      "https://www.instagram.com/p/Dei2icXxnSU/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+    ]
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
