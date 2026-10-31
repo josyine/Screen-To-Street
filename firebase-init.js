@@ -380,6 +380,46 @@ function buildFallbackSlimPayload() {
     return out;
 }
 
+// BUG corrigé (demande répétée "il y a encore écrit Connection issue" — confirmé le
+// 31/10/2026 grâce au message exact copié depuis la console du navigateur, jamais vu avant
+// ce jour malgré ce même rapport répété à de nombreuses reprises, le toast générique plus
+// bas masquant systématiquement le vrai message FirebaseError) : "Function setDoc() called
+// with invalid data. Nested arrays are not supported". Firestore refuse catégoriquement un
+// tableau qui contient DIRECTEMENT un autre tableau comme élément — currentTrip.days est
+// pourtant depuis toujours un tableau de tableaux d'ids de lieux par jour, un par jour du
+// voyage (ex: [[id1,id2],[id3]], voir saveTrip()/createNewTripAdvanced() dans script.js). Une
+// erreur de VALIDATION CÔTÉ CLIENT (jamais réseau) qui échoue À COUP SÛR avant même la
+// moindre tentative réseau — aucune des reprises/délais de syncUserData() plus bas n'a jamais
+// pu la corriger, expliquant pourquoi ce même "Connection issue" revenait identique après
+// CHAQUE correctif précédent (long-polling, retry transitoire, taille de document...) : des
+// pistes réelles et chacune vérifiée, mais jamais la bonne, puisque ce toast ne laissait
+// jamais voir le vrai message. Convertit récursivement et de façon TOTALEMENT TRANSPARENTE
+// chaque tableau trouvé à l'intérieur d'un autre tableau en objet {__arr:[...]} (autorisé par
+// Firestore) juste avant l'écriture — toFirestoreSafeArrays()/fromFirestoreSafeArrays()
+// (cette dernière dans loadUserCloudData() plus bas) sont le seul endroit du code à connaître
+// cette conversion ; le reste de l'app continue de lire/écrire de vrais tableaux partout.
+function toFirestoreSafeArrays(value) {
+    if (Array.isArray(value)) {
+        return value.map(item => Array.isArray(item) ? { __arr: toFirestoreSafeArrays(item) } : toFirestoreSafeArrays(item));
+    }
+    if (value && typeof value === 'object') {
+        const out = {};
+        for (const k in value) { if (Object.prototype.hasOwnProperty.call(value, k)) out[k] = toFirestoreSafeArrays(value[k]); }
+        return out;
+    }
+    return value;
+}
+function fromFirestoreSafeArrays(value) {
+    if (Array.isArray(value)) return value.map(fromFirestoreSafeArrays);
+    if (value && typeof value === 'object') {
+        if (Array.isArray(value.__arr) && Object.keys(value).length === 1) return fromFirestoreSafeArrays(value.__arr);
+        const out = {};
+        for (const k in value) { if (Object.prototype.hasOwnProperty.call(value, k)) out[k] = fromFirestoreSafeArrays(value[k]); }
+        return out;
+    }
+    return value;
+}
+
 let _syncUserDataErrorToastShown = false;
 let _syncUserDataCoverToastShown = false;
 window.syncUserData = async function (fields) {
@@ -394,7 +434,7 @@ window.syncUserData = async function (fields) {
     for (let i = 0; i < attempts.length; i++) {
         if (attempts[i]) await wait(attempts[i]);
         try {
-            await setDoc(doc(db, 'users', user.uid), fields, { merge: true });
+            await setDoc(doc(db, 'users', user.uid), toFirestoreSafeArrays(fields), { merge: true });
             return { success: true };
         } catch (e) {
             lastError = e;
@@ -416,7 +456,7 @@ window.syncUserData = async function (fields) {
         }
         if (slimFields) {
             try {
-                await setDoc(doc(db, 'users', user.uid), slimFields, { merge: true });
+                await setDoc(doc(db, 'users', user.uid), toFirestoreSafeArrays(slimFields), { merge: true });
                 if (!_syncUserDataCoverToastShown && typeof window.showSimpleToast === 'function') {
                     _syncUserDataCoverToastShown = true;
                     const isFr = document.documentElement.lang === 'fr' || (window.currentLang === 'fr');
@@ -439,7 +479,7 @@ window.syncUserData = async function (fields) {
     if (lastError && lastError.code !== 'permission-denied') {
         await wait(6000);
         try {
-            await setDoc(doc(db, 'users', user.uid), fields, { merge: true });
+            await setDoc(doc(db, 'users', user.uid), toFirestoreSafeArrays(fields), { merge: true });
             return { success: true };
         } catch (e3) {
             lastError = e3;
@@ -519,7 +559,11 @@ window.loadUserCloudData = async function () {
     if (!user) return null;
     try {
         const snap = await getDoc(doc(db, 'users', user.uid));
-        return snap.exists() ? snap.data() : null;
+        // fromFirestoreSafeArrays() défait la conversion {__arr:[...]} appliquée par
+        // toFirestoreSafeArrays() à l'écriture (voir syncUserData() plus haut) — totalement
+        // transparent, le reste de l'app ne voit jamais de différence avec un vrai tableau
+        // de tableaux (currentTrip.days, etc.) tel qu'il l'a toujours manipulé.
+        return snap.exists() ? fromFirestoreSafeArrays(snap.data()) : null;
     } catch (e) {
         console.warn('Lecture Firestore échouée :', e);
         return null;
