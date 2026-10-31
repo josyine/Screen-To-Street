@@ -898,6 +898,18 @@ function extractInstagramShortcode(url) {
     const m = (url || '').trim().match(/instagram\.com\/(?:p|reel|tv)\/([^/?]+)/i);
     return m ? m[1] : '';
 }
+// BUG corrigé (demande du 31/10/2026, "lorsque je mets un lien d'un réel Instagram ça
+// applatit le post, car c'est formaté pour les publications Instagram et non les Réels") :
+// renderInstagramEmbedOnDetails() ci-dessous construisait TOUJOURS l'URL d'embed avec le
+// chemin "/p/", même pour un Reel dont le lien d'origine était "/reel/{code}" — le shortcode
+// restait valide sous ce chemin "p" (Instagram ne renvoie pas d'erreur), mais y sert la mise
+// en page pensée pour un POST (photo large, souvent proche du carré) plutôt que celle d'un
+// REEL (vidéo verticale 9:16) — d'où un Reel étiré/aplati dans une boîte bien trop large pour
+// sa hauteur réelle. Reprend simplement le même chemin ("p"/"reel"/"tv") que le lien collé.
+function extractInstagramEmbedType(url) {
+    const m = (url || '').trim().match(/instagram\.com\/(p|reel|tv)\//i);
+    return m ? m[1].toLowerCase() : 'p';
+}
 let _instagramWidgetLoadPromise = null;
 function loadInstagramWidgetScriptOnce() {
     if (window.instgrm && window.instgrm.Embeds) return Promise.resolve();
@@ -969,10 +981,18 @@ if (!window.__igEmbedResizeWired) {
 async function renderInstagramEmbedOnDetails(container, instagramUrl) {
     const shortcode = extractInstagramShortcode(instagramUrl);
     if (shortcode) {
+        // Même chemin ("p"/"reel"/"tv") que le lien d'origine (voir extractInstagramEmbedType()
+        // plus haut) — jamais forcé à "p" comme avant ce correctif, sous peine d'un Reel servi
+        // avec la mise en page d'un post et donc aplati.
+        const embedType = extractInstagramEmbedType(instagramUrl);
         // Hauteur de départ généreuse, juste le temps que le vrai redimensionnement (message
         // MEASURE + marge fixe pour son bandeau, voir juste au-dessus) arrive — n'affecte
-        // aucun post déjà correctement redimensionné.
-        container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/p/${encodeURIComponent(shortcode)}/embed/" width="400" height="620" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:${INSTAGRAM_EMBED_MAX_WIDTH_PX}px; display:block; margin:0 auto;"></iframe>`;
+        // aucun post déjà correctement redimensionné. Un Reel est un format vertical (9:16,
+        // donc naturellement bien plus haut qu'un post) : hauteur de départ plus grande pour
+        // lui, sans conséquence si l'estimation est encore trop courte ou trop longue, purement
+        // un point de départ avant le vrai redimensionnement.
+        const startHeight = embedType === 'reel' ? 760 : 620;
+        container.innerHTML = `<iframe class="instagram-embed-iframe" src="https://www.instagram.com/${embedType}/${encodeURIComponent(shortcode)}/embed/" width="400" height="${startHeight}" frameborder="0" scrolling="no" allowtransparency="true" style="max-width:100%; width:${INSTAGRAM_EMBED_MAX_WIDTH_PX}px; display:block; margin:0 auto;"></iframe>`;
         return;
     }
     // Repli si jamais aucun code n'a pu être extrait (ne devrait normalement jamais arriver
