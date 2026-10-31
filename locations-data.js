@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-31T13:47:54.193Z.
+// Généré le 2026-10-31T22:43:29.202Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -24606,7 +24606,7 @@ window.STATIC_LOCATIONS = [
     "group": "BTS",
     "member": "V",
     "country": "France",
-    "city": "Paris",
+    "city": "Versailles",
     "category": "MV Location",
     "year": "2024",
     "address": "35 Rue de la Paroisse, 78000 Versailles, France",
@@ -24702,7 +24702,7 @@ window.STATIC_LOCATIONS = [
     "group": "BTS",
     "member": "V",
     "country": "France",
-    "city": "Paris",
+    "city": "Versailles",
     "category": "MV Location",
     "year": "2024",
     "address": "13 Rue des Réservoirs, 78000 Versailles, France",
@@ -25247,6 +25247,102 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [
       "https://www.instagram.com/p/Dei2icXxnSU/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
     ]
+  },
+  {
+    "id": "new-manual-1793480110251-lz11ry",
+    "name": "Rue des Deux Portes",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "category": "MV Location",
+    "year": "2024",
+    "address": "7 Rue des 2 Portes, 78000 Versailles, France",
+    "lat": 48.8059,
+    "lng": 2.1307,
+    "city": "Versailles",
+    "img": "images/admin-upload-new-manual-1793480110251-lz11ry-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Trace the Lighting"
+        },
+        "text": {
+          "en": "Walk down the center of the narrow street and look up to observe how the close proximity of the historic facades provided the perfect structural anchor for the production's overhead string lights."
+        }
+      },
+      {
+        "title": {
+          "en": "Connect the Locations"
+        },
+        "text": {
+          "en": "The street is centrally located in the Notre-Dame district. From here, you can easily walk to both the Église Notre-Dame and the Théâtre Montansier in under ten minutes to complete your \"Winter Ahead\" tour."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit the Market"
+        },
+        "text": {
+          "en": "Pair your visit with a stop at the adjacent Place du Marché Notre-Dame, one of the most famous historic food markets in the Île-de-France region."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located just steps away from the bustling Place du Marché Notre-Dame, the Rue des Deux Portes serves as the historic and commercial heart of Versailles. This narrow, cobbled pedestrian street is renowned for its colorful old facades, independent boutiques, artisan workshops, and inviting cafe terraces. Its carefully preserved, authentic village atmosphere makes it a highly sought-after natural cinematic backdrop, tucked away just a short distance from the grandeur of the Palace of Versailles.</p><!--stss:footsteps--><p>This historic street served as a key outdoor location for Taehyung's \"Winter Ahead,\" a warm jazz-pop duet recorded with South Korean balladeer Park Hyo-shin. Released in November 2024 as a special winter project while Taehyung was completing his mandatory military service, the music video was actually filmed in strict secrecy two years prior, in November 2022, while he was officially in France attending fashion events.<br><br>To capture the track's cozy, intimate aesthetic, the production team utilized the street's linear, narrow structure to string up overhead fairy lights. In a nod to the video's relaxed direction, a technician standing on a stepladder adjusting these lights is briefly visible behind Taehyung, lending the scene an authentic, slice-of-life documentary feel before the video transitions to the opulent interior of the nearby Théâtre Montansier.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The street is highly accessible from Paris. Take the RER C to Versailles Château Rive Gauche or the Transilien Line L to Versailles Rive Droite. Both train stations are approximately a 10 to 15-minute walk from the street."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a public thoroughfare, the street is open 24/7 and completely free to access."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The street is a dedicated pedestrian zone without vehicle traffic, but the ground consists of historic, uneven cobblestones, which can present a bumpy experience for wheelchair users and strollers."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793480110251-lz11ry-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5977,
+            "y": 0.6,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "HAWYOuMGkK0",
+    "officialLink": "https://actu.fr/ile-de-france/versailles_78646/lauthentique-rue-des-deux-portes_12475507.html"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
