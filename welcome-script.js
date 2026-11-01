@@ -67,7 +67,7 @@ let currentLang = localStorage.getItem('lang') || 'en';
 const dict = {
     en: {
         navDest: "Destinations", navArtists: "Artists", navLogin: "Log in", 
-        heroTitle: "You have a destination.<br>We have the guide.", 
+        heroTitle: "You have a destination.<br>We have the <span class=\"hero-title-accent\">guide.</span>",
         heroSubtitle: "Create custom routes instantly, with tools designed to follow your favorite artists.", 
         heroCta: "Create an account", heroDemo: "See Demo",
         authTitle: "Log in or sign up", authDesc: "Use your email or another service to continue with Screen To Street.",
@@ -124,7 +124,7 @@ const dict = {
     },
     fr: {
         navDest: "Destinations", navArtists: "Artistes", navLogin: "Se connecter", 
-        heroTitle: "Vous avez une destination.<br>Nous avons le guide.", 
+        heroTitle: "Vous avez une destination.<br>Nous avons le <span class=\"hero-title-accent\">guide.</span>",
         heroSubtitle: "Créez des itinéraires sur mesure instantanément, avec des outils conçus pour suivre vos idoles.", 
         heroCta: "Créer un compte", heroDemo: "Voir la démo",
         authTitle: "Connectez-vous ou créez un compte", authDesc: "Utilisez votre e-mail ou un autre service pour continuer.",

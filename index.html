@@ -14,11 +14,11 @@
 <meta name="theme-color" content="#F5F3FC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="welcome-style.css?v=20261068" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="welcome-style.css?v=20261069" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- Onboarding de Mei (demande du 03/10/2026), mobile uniquement — voir mei-onboarding.css/
      .js et la note dans welcome-script.js (.open-auth-btn). Chargé ici seulement, jamais sur
      les autres pages du site. -->
-<link rel="stylesheet" href="mei-onboarding.css?v=20261068">
+<link rel="stylesheet" href="mei-onboarding.css?v=20261069">
 <style>
     a { text-decoration: none !important; }
     
@@ -123,7 +123,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261068';
+        s.src = 'page-loader.js?v=20261069';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -156,6 +156,22 @@
       <circle class="dot dot-e" cx="840" cy="140" r="6" fill="#B9A8DA"/>
       <circle class="dot dot-f" cx="150" cy="240" r="5" fill="#D9CDEE"/>
       <circle class="dot dot-g" cx="640" cy="380" r="7" fill="#D42759"/>
+    </svg>
+
+    <!-- Fond animé dédié mobile (portrait) : repris masqué par défaut via l'attribut inline
+         ci-dessous (et non une règle CSS hors media query), affiché uniquement par
+         .bg-route-m dans le bloc "@media (max-width: 760px)" de welcome-style.css. Mêmes
+         classes route-line/dot-a..g que le SVG desktop ci-dessus pour hériter automatiquement
+         des délais --sync-t déjà définis plus bas dans ce fichier. -->
+    <svg class="bg-route-m" viewBox="0 0 390 844" preserveAspectRatio="none" style="display:none" aria-hidden="true">
+      <path class="route-line" d="M-30,250 C80,200 140,300 230,250 C320,200 330,120 430,140" fill="none" stroke="#B9A8DA" stroke-width="2.5" stroke-linecap="round"/>
+      <circle class="dot dot-a" cx="100" cy="215" r="6" fill="#B9A8DA"/>
+      <circle class="dot dot-b" cx="230" cy="250" r="6" fill="#B9A8DA"/>
+      <circle class="dot dot-c" cx="330" cy="170" r="8" fill="#D42759"/>
+      <circle class="dot dot-d" cx="60" cy="120" r="5" fill="#C6B8E3"/>
+      <circle class="dot dot-e" cx="300" cy="95" r="6" fill="#B9A8DA"/>
+      <circle class="dot dot-f" cx="40" cy="420" r="5" fill="#D9CDEE"/>
+      <circle class="dot dot-g" cx="180" cy="330" r="7" fill="#D42759"/>
     </svg>
 
     <!-- Navbar : Logo mis à jour -->
@@ -195,11 +211,11 @@
 
     <!-- Contenu Principal -->
     <div class="copy">
-      <h1 data-i18n="heroTitle">You have a destination.<br>We have the guide.</h1>
+      <h1 data-i18n="heroTitle">You have a destination.<br>We have the <span class="hero-title-accent">guide.</span></h1>
       <p data-i18n="heroSubtitle">Create custom routes instantly, with tools designed to follow your favorite artists.</p>
       <div class="cta-row">
         <button class="cta-primary open-auth-btn"><span data-i18n="heroCta">Create an account</span> <span>→</span></button>
-        <a class="cta-secondary" id="see-demo-btn" href="map.html?demo=1" data-i18n="heroDemo">See Demo</a>
+        <a class="cta-secondary" id="see-demo-btn" href="map.html?demo=1"><span class="cta-play-dot" style="display:none" aria-hidden="true"><svg viewBox="0 0 10 12" fill="currentColor"><path d="M0 0l10 6-10 6z"/></svg></span><span data-i18n="heroDemo">See Demo</span></a>
       </div>
     </div>
 
@@ -430,8 +446,8 @@
     </div>
 </div>
 
-<script src="countries.js?v=20261068"></script>
-<script type="module" src="welcome-script.js?v=20261068"></script>
+<script src="countries.js?v=20261069"></script>
+<script type="module" src="welcome-script.js?v=20261069"></script>
 
 <!-- Onboarding de Mei (demande du 03/10/2026) — markup repris du prototype fourni, voir
      mei-onboarding.css/.js. Masqué par défaut (.hidden) : window.MeiOnboarding.open()
@@ -476,6 +492,6 @@
   </div>
  </div>
 </div>
-<script defer src="mei-onboarding.js?v=20261068"></script>
+<script defer src="mei-onboarding.js?v=20261069"></script>
 </body>
 </html>
