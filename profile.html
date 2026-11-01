@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261070" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261071" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -142,6 +142,15 @@ body{background:#E7E9EC;padding:0; height:100vh; overflow-x:hidden; overflow-y:a
 /* Icône crayon sur l'avatar (mobile uniquement, voir media query plus bas) — remplace le
    bouton "Edit profile" en dessous de 760px (demande du 09/09/2026, capture d'écran). */
 .profile-avatar-edit-badge { display: none; position: absolute; right: -2px; bottom: -2px; width: 28px; height: 28px; border-radius: 50%; background: #212832; color: #fff; align-items: center; justify-content: center; border: 2.5px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
+/* Cadenas sur l'avatar d'un compte privé (demande du 01/11/2026, maquette jointe) —
+   contrairement au badge crayon ci-dessus (mobile uniquement), visible sur desktop ET
+   mobile : ce n'est pas une action d'édition réservée à un format d'écran, juste un
+   indicateur d'état. Même position/taille/habillage que .profile-avatar-edit-badge pour
+   rester cohérent, affiché/masqué par applyProfileGateUI() plus bas (jamais les deux à la
+   fois : .hidden par défaut dans le HTML, une seule des deux variantes perd .hidden selon
+   que la page affiche SON PROPRE profil ou un compte privé verrouillé). */
+.profile-avatar-lock-badge { display: flex; position: absolute; right: -2px; bottom: -2px; width: 28px; height: 28px; border-radius: 50%; background: #212832; color: #fff; align-items: center; justify-content: center; border: 2.5px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,.25); }
+.profile-avatar-lock-badge.hidden { display: none; }
 /* Bouton "Follow"/"Following" (demande du 08/09/2026, seul bouton de connexion à un
    profil depuis le 11/09/2026 — voir la note dans le HTML ci-dessous) : abonnement à
    sens unique, voir window.followUser()/unfollowUser() dans firebase-init.js.
@@ -199,11 +208,21 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 .profile-empty { text-align: center; color: #94a3b8; font-size: 13px; padding: 50px 0; }
 
 /* Compte privé, visiteur non-ami (demande du 11/09/2026) : remplace .profile-tabs +
-   panneaux, même largeur max centrée que le reste du contenu. */
-.profile-private-notice { max-width: 780px; margin: 10px auto 40px; text-align: center; color: #64748b; padding: 40px 20px; border-top: 2px solid #e2e8f0; }
-.profile-private-notice svg { color: #94a3b8; margin-bottom: 10px; }
+   panneaux, même largeur max centrée que le reste du contenu. Icône posée dans un cercle à
+   bordure fine (demande du 01/11/2026, maquette jointe) plutôt que l'icône seule d'origine. */
+.profile-private-notice { max-width: 780px; margin: 10px auto 40px; text-align: center; color: #64748b; padding: 32px 20px 40px; border-top: 2px solid #e2e8f0; }
+.profile-private-notice-icon { width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%; border: 1.5px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: #475569; }
 .profile-private-notice-title { font-size: 15px; font-weight: 700; color: #212832; margin-bottom: 6px; }
 .profile-private-notice-desc { font-size: 12.5px; max-width: 320px; margin: 0 auto; line-height: 1.5; }
+
+/* "Followed by X and N others you know" (demande du 01/11/2026, maquette jointe) — petits
+   avatars colorés qui se chevauchent légèrement, même palette déterministe que
+   profileAvatarColor() (JS plus bas), suivis du texte. */
+.profile-mutual-row { display: flex; align-items: center; gap: 8px; max-width: 780px; margin: 10px auto 0; padding: 0 4px; font-size: 12px; color: #64748b; }
+.profile-mutual-avatars { display: flex; flex-shrink: 0; }
+.profile-mutual-avatar { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #fff; margin-left: -8px; color: #fff; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.profile-mutual-avatar:first-child { margin-left: 0; }
+.profile-mutual-row b { color: #212832; font-weight: 700; }
 
 /* Onglet Photos : grille dominante façon Instagram */
 .profile-photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
@@ -561,7 +580,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261070';
+        s.src = 'page-loader.js?v=20261071';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -680,6 +699,14 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                         <button type="button" class="profile-avatar-edit-badge hidden" id="profile-avatar-edit-badge" title="Edit profile">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
                         </button>
+                        <!-- Cadenas sur la photo de profil (demande du 01/11/2026, maquette jointe)
+                             — visible uniquement pour un visiteur qui n'a pas (encore) accès à ce
+                             compte privé, voir applyProfileGateUI() plus bas. Jamais affiché en
+                             même temps que le badge crayon ci-dessus (son propre profil ne peut
+                             jamais être "gated" pour soi-même, voir computeProfileGate()). -->
+                        <div class="profile-avatar-lock-badge hidden" id="profile-avatar-lock-badge" title="Private account">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </div>
                     </div>
                     <div class="profile-header-info">
                         <div class="profile-username" id="profile-username"></div>
@@ -717,13 +744,22 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
                 <button type="button" class="profile-edit-cancel-btn" id="profile-edit-cancel-btn">Cancel</button>
             </div>
 
+            <!-- "Followed by X and N others you know" (demande du 01/11/2026, maquette
+                 jointe) — uniquement sur un compte privé verrouillé, voir applyProfileGateUI()
+                 plus bas et window.listMutualFollowers() dans firebase-init.js. Masquée quand
+                 aucun abonné en commun n'est trouvé, plutôt que de laisser une ligne vide. -->
+            <div class="profile-mutual-row hidden" id="profile-mutual-row"></div>
+
             <!-- Compte privé, visiteur non-ami (demande du 11/09/2026) : remplace tabs +
                  panneaux ci-dessous — seuls avatar + bio (au-dessus) restent visibles. Voir
-                 applyProfilePrivacyGate() plus bas. -->
+                 applyProfilePrivacyGate() plus bas. Icône posée dans un cercle à bordure fine
+                 (demande du 01/11/2026, maquette jointe) plutôt que l'icône seule d'origine. -->
             <div class="profile-private-notice hidden" id="profile-private-notice">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                <div class="profile-private-notice-title" data-i18n="profilePrivateTitle">This account is private</div>
-                <div class="profile-private-notice-desc" data-i18n="profilePrivateDesc">Send a friend request to see their photos, map and reviews.</div>
+                <div class="profile-private-notice-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <div class="profile-private-notice-title" data-i18n="profilePrivateTitle">Only followers see their trips</div>
+                <div class="profile-private-notice-desc" data-i18n="profilePrivateDesc">Photos, reviews and the travel map are shared with approved followers only.</div>
             </div>
 
             <div class="profile-tabs" id="profile-tabs">
@@ -862,9 +898,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261070"></script>
-<script src="locations-data.js?v=20261070"></script>
-<script src="script.js?v=20261070"></script>
+<script type="module" src="firebase-init.js?v=20261071"></script>
+<script src="locations-data.js?v=20261071"></script>
+<script src="script.js?v=20261071"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');
@@ -1360,16 +1396,48 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     function applyProfileGateUI(gated) {
         const tabs = document.getElementById('profile-tabs');
         const notice = document.getElementById('profile-private-notice');
-        const statsRow = document.querySelector('.profile-stats');
+        // Compteurs (visited/photos/followers) : restent VISIBLES même verrouillé (demande
+        // du 01/11/2026, maquette jointe — "12 visited · 34 photos · 58 followers" reste
+        // affiché au-dessus du cadenas) — seul le CONTENU (photos/avis/carte) reste masqué
+        // ci-dessous. Avant ce correctif, toute la ligne de compteurs disparaissait aussi.
+        const lockBadge = document.getElementById('profile-avatar-lock-badge');
+        if (lockBadge) lockBadge.classList.toggle('hidden', !gated);
         if (tabs) tabs.classList.toggle('hidden', gated);
         if (notice) notice.classList.toggle('hidden', !gated);
-        if (statsRow) statsRow.classList.toggle('hidden', gated);
         if (gated) {
             ['profile-panel-photos', 'profile-panel-reviews', 'profile-panel-map'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
             });
+            renderProfileMutualRow();
+        } else {
+            const mutualRow = document.getElementById('profile-mutual-row');
+            if (mutualRow) mutualRow.classList.add('hidden');
         }
+    }
+
+    // "Followed by X and N others you know" (demande du 01/11/2026, maquette jointe) —
+    // voir window.listMutualFollowers() dans firebase-init.js. N'affiche rien (ligne
+    // masquée) si aucun abonné en commun n'est trouvé, plutôt qu'une ligne vide/trompeuse.
+    async function renderProfileMutualRow() {
+        const row = document.getElementById('profile-mutual-row');
+        if (!row || typeof window.listMutualFollowers !== 'function') return;
+        row.classList.add('hidden');
+        let mutuals = [];
+        try { mutuals = await window.listMutualFollowers(profileUid); } catch (e) { return; }
+        if (!mutuals.length) return;
+        const shown = mutuals.slice(0, 3);
+        const avatarsHtml = shown.map(m => `<div class="profile-mutual-avatar" style="background:${profileAvatarColor(m.username)};" title="${escapeHtml(m.username)}">${escapeHtml(m.username.charAt(0).toUpperCase())}</div>`).join('');
+        let textHtml;
+        if (mutuals.length === 1) {
+            textHtml = t('profileMutualOne').replace('{a}', `<b>${escapeHtml(mutuals[0].username)}</b>`);
+        } else if (mutuals.length === 2) {
+            textHtml = t('profileMutualTwo').replace('{a}', `<b>${escapeHtml(mutuals[0].username)}</b>`).replace('{b}', `<b>${escapeHtml(mutuals[1].username)}</b>`);
+        } else {
+            textHtml = t('profileMutualMore').replace('{a}', `<b>${escapeHtml(mutuals[0].username)}</b>`).replace('{n}', String(mutuals.length - 1));
+        }
+        row.innerHTML = `<div class="profile-mutual-avatars">${avatarsHtml}</div><div>${textHtml}</div>`;
+        row.classList.remove('hidden');
     }
 
     // Biographie : toujours en lecture seule ici (demande du 09/09/2026 — l'édition se
@@ -1510,6 +1578,14 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
         // un élément introuvable — remonter sans être rattrapée) : la personne voyait
         // "Loading profile..." rester affiché indéfiniment sans aucune indication d'erreur,
         // même quand le compte et les données étaient en réalité valides.
+        // BUG corrigé (demande du 01/11/2026, "sur mobile... 'This user could not be
+        // found'") : ce catch englobant retombait TOUJOURS sur le message générique "ce
+        // compte n'existe pas", même pour une exception survenue bien APRÈS avoir confirmé
+        // que le compte existe (ex: le rendu de la mini-carte, des photos...) — accountFound
+        // retient ce moment pour afficher le message "problème de connexion" (déjà prévu
+        // plus bas, voir showProfileNotFound(true)) dans ce cas à la place, plutôt que de
+        // prétendre qu'un compte qu'on vient tout juste de trouver n'existerait pas.
+        let accountFound = false;
         try {
             if (!profileUid && profileUsernameParam && typeof window.lookupUserByUsername === 'function') {
                 profileUid = await window.lookupUserByUsername(profileUsernameParam);
@@ -1539,6 +1615,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             }
 
             if (!username) { showProfileNotFound(); return; }
+            accountFound = true;
 
             // Photo de profil publique (demande du 11/09/2026) : publicProfile.photo, un
             // champ distinct de localStorage.userPhoto (privé à CET appareil) — sans lui,
@@ -1617,7 +1694,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
             }
         } catch (e) {
             console.warn('Chargement du profil échoué :', e);
-            showProfileNotFound();
+            showProfileNotFound(accountFound);
         }
     }
 
