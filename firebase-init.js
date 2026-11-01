@@ -849,18 +849,36 @@ window.fetchLocationContent = async function (locationId) {
 // lancé window.adminBackfillFeedPosts() une fois (voir plus bas, bouton dans admin.html)
 // — see également le fallback de fetchGlobalPhotoFeed() si la collection est encore vide.
 function feedPostKey(uid, itemId) { return uid + '_' + itemId; }
+// isPrivate ajouté au même cache/à la même lecture (demande du 01/11/2026, "vérifie que
+// si on créé un compte privé... les publications n'apparaissent pas dans Community") —
+// BUG corrigé : addProfilePhoto()/setLocationReview() ci-dessous indexaient CHAQUE photo/
+// avis dans feedPosts/ (lu par fetchGlobalPhotoFeed(), le fil Community) sans jamais
+// vérifier la confidentialité du compte qui publie. setAccountPrivacy() ne retire les
+// documents feedPosts DÉJÀ existants qu'au moment où le compte PASSE en privé — toute
+// publication faite APRÈS, par un compte DÉJÀ privé, se réindexait donc quand même,
+// fuitant dans le fil public malgré le réglage. _getMyUsernameCached() lit déjà
+// users/{uid} à chaque appel de ces deux fonctions (pour le pseudo affiché dans le post) :
+// isPrivate vient de la même lecture, sans coût Firestore supplémentaire.
 let _myUsernameCache = null;
 async function _getMyUsernameCached(uid) {
     if (_myUsernameCache && _myUsernameCache.uid === uid) return _myUsernameCache.username;
     try {
         const snap = await getDoc(doc(db, 'users', uid));
-        const username = (snap.exists() && snap.data().username) || '';
-        _myUsernameCache = { uid, username };
-        return username;
+        const data = snap.exists() ? snap.data() : {};
+        _myUsernameCache = { uid, username: data.username || '', isPrivate: !!data.isPrivate };
+        return _myUsernameCache.username;
     } catch (e) {
         return '';
     }
 }
+async function _isMyAccountPrivateCached(uid) {
+    if (!_myUsernameCache || _myUsernameCache.uid !== uid) await _getMyUsernameCached(uid);
+    return !!(_myUsernameCache && _myUsernameCache.uid === uid && _myUsernameCache.isPrivate);
+}
+// Invalidé par setAccountPrivacy() ci-dessous (voir plus bas) dès qu'on change ce réglage,
+// pour qu'une publication faite juste après reflète immédiatement la nouvelle valeur sans
+// attendre qu'autre chose ne vide ce cache en premier.
+function _invalidateMyUsernameCache(uid) { if (_myUsernameCache && _myUsernameCache.uid === uid) _myUsernameCache = null; }
 // BUG corrigé (demande du 16/10/2026, répétée — "je viens de publier 2 lieux à Paris et
 // ils n'apparaissent pas" dans le tiroir du chevron) : invalidateLocPostsIndex() (script.js,
 // posé la dernière fois) ne remettait à zéro QUE le cache d'ensurelocPostsIndex() côté
@@ -915,8 +933,9 @@ window.setLocationReview = async function (locationId, reviewData) {
             console.warn('Miroir public de l\'avis échoué :', mirrorErr);
         }
         // Index du fil global (voir la note au-dessus) : seuls les avis AVEC photo
-        // apparaissent dans feed.html, comme avant côté lecture.
-        if (reviewData.photo) {
+        // apparaissent dans feed.html, comme avant côté lecture — jamais pour un compte
+        // privé (voir la note sur _isMyAccountPrivateCached() plus haut).
+        if (reviewData.photo && !(await _isMyAccountPrivateCached(user.uid))) {
             const username = await _getMyUsernameCached(user.uid);
             await _upsertFeedPost(user.uid, String(locationId), {
                 username, locationId: String(locationId), locationName: reviewData.locationName || '',
@@ -984,20 +1003,25 @@ window.adminDeleteLocationReview = async function (locationId, ownerUid) {
 // 28/10/2026 — voir la note au-dessus d'addProfilePhoto()) et les nouvelles (sous-
 // collection publicProfiles/{uid}/photos) dans un seul objet {photoId: {...}}, pour que
 // profile.html (Object.entries(publicProfile.photos || {})) n'ait rien à changer.
+// BUG corrigé (demande du 01/11/2026, "sur mobile... ça affiche 'This user could not be
+// found'") : avalait jusqu'ici TOUTE erreur (réseau, permission, timeout — fréquent sur
+// mobile en changeant de réseau) en un simple `{ reviews: {} }`, qui ressemble en tout
+// point à un compte sans aucun avis — profile.html (loadProfilePage()) ne peut alors plus
+// distinguer "ce compte existe mais n'a rien publié" de "la lecture a échoué", et son
+// mécanisme de retry-puis-message-de-connexion (déjà écrit, voir withTimeout() plus bas
+// dans ce même appelant) ne se déclenche jamais : Promise.all() ne voit passer aucun rejet
+// à retenter. Relance maintenant l'erreur — chaque appelant qui tolérait un échec
+// silencieux (badges.html, account.html, script.js) a déjà son propre try/catch ou
+// .catch(), sauf account.html qui en reçoit un ici même.
 window.fetchPublicProfile = async function (uid) {
-    try {
-        const [snap, photosSnap] = await Promise.all([
-            getDoc(doc(db, 'publicProfiles', uid)),
-            getDocs(collection(db, 'publicProfiles', uid, 'photos'))
-        ]);
-        const data = snap.exists() ? snap.data() : { reviews: {} };
-        const mergedPhotos = Object.assign({}, data.photos || {});
-        photosSnap.forEach(d => { mergedPhotos[d.id] = d.data(); });
-        return Object.assign({}, data, { photos: mergedPhotos });
-    } catch (e) {
-        console.warn('Lecture du profil public échouée :', e);
-        return { reviews: {} };
-    }
+    const [snap, photosSnap] = await Promise.all([
+        getDoc(doc(db, 'publicProfiles', uid)),
+        getDocs(collection(db, 'publicProfiles', uid, 'photos'))
+    ]);
+    const data = snap.exists() ? snap.data() : { reviews: {} };
+    const mergedPhotos = Object.assign({}, data.photos || {});
+    photosSnap.forEach(d => { mergedPhotos[d.id] = d.data(); });
+    return Object.assign({}, data, { photos: mergedPhotos });
 };
 
 // Abonnement à sens unique façon Instagram (bouton "Follow" du profil public, demande du
@@ -1063,6 +1087,43 @@ window.listFollowers = async function (targetUid) {
     }
 };
 
+// "Followed by X and N others you know" (demande du 01/11/2026, maquette jointe,
+// profile.html sur un compte privé) : parmi les abonnés de targetUid, lesquels le compte
+// CONNECTÉ suit-il déjà lui-même ("des gens que vous connaissez"). follows/{uid}/items/
+// {followerUid} ne stocke QUE followerUid comme ID de document (voir followUser()
+// ci-dessus), sans champ dédié — une requête collectionGroup("items") filtrée par
+// "abonné == moi" sur TOUT le site nécessiterait un index composite à créer à la main
+// dans la console Firebase (comme firestore.rules, ce dépôt n'a aucun pipeline de
+// déploiement d'index), un pré-requis fragile et facile à oublier pour une fonctionnalité
+// mineure. Lit donc directement, pour chaque abonné de targetUid, si follows/{abonné}/
+// items/{moi} existe — une lecture par abonné (collection généralement petite sur un site
+// de cette taille), sans aucun index à créer. Retourne jusqu'à `limit` comptes {uid,
+// username}, le compte lui-même toujours exclu.
+window.listMutualFollowers = async function (targetUid, limit_) {
+    const user = auth.currentUser;
+    if (!user || !targetUid || targetUid === user.uid) return [];
+    try {
+        const theirFollowers = (await window.listFollowers(targetUid)).filter(uid => uid !== user.uid);
+        const checks = await Promise.all(theirFollowers.map(async (uid) => {
+            try {
+                const snap = await getDoc(doc(db, 'follows', uid, 'items', user.uid));
+                return snap.exists() ? uid : null;
+            } catch (e) {
+                return null;
+            }
+        }));
+        const mutualUids = checks.filter(Boolean).slice(0, limit_ || 50);
+        const withUsernames = await Promise.all(mutualUids.map(async (uid) => {
+            const username = await window.lookupUsernameByUid(uid).catch(() => null);
+            return username ? { uid, username } : null;
+        }));
+        return withUsernames.filter(Boolean);
+    } catch (e) {
+        console.warn('Lecture des abonnés en commun échouée :', e);
+        return [];
+    }
+};
+
 // Photo publiée de façon autonome (bouton "+" -> "Add a photo", demande du 09/09/2026) —
 // distincte des photos attachées à un avis "I visited this place"/"Add a review" : pas de
 // note ni de visite associée, juste un lieu, une date et une légende facultative. Stockée
@@ -1099,13 +1160,18 @@ window.addProfilePhoto = async function ({ locationId, locationName, photo, date
         // ajouter") : déjà écrits juste au-dessus dans publicProfiles/{uid}.photos, mais
         // jamais recopiés ici — openLocModal() (script.js) ne lit QUE cet index pour
         // afficher une publication, ces deux champs y étaient donc invisibles jusqu'ici.
-        const username = await _getMyUsernameCached(user.uid);
-        await _upsertFeedPost(user.uid, photoId, {
-            username, locationId: locationId || null, locationName: locationName || '',
-            photo, caption: (caption || '').slice(0, 280), date: date || null,
-            taggedFriends: Array.isArray(taggedFriends) && taggedFriends.length ? taggedFriends : [],
-            updatedAt: serverTimestamp(), standalone: true
-        });
+        // Jamais pour un compte privé (voir la note sur _isMyAccountPrivateCached() plus
+        // haut, au-dessus de setLocationReview()) — la photo reste publiée sur le profil
+        // lui-même (déjà écrite ci-dessus), juste absente du fil Community public.
+        if (!(await _isMyAccountPrivateCached(user.uid))) {
+            const username = await _getMyUsernameCached(user.uid);
+            await _upsertFeedPost(user.uid, photoId, {
+                username, locationId: locationId || null, locationName: locationName || '',
+                photo, caption: (caption || '').slice(0, 280), date: date || null,
+                taggedFriends: Array.isArray(taggedFriends) && taggedFriends.length ? taggedFriends : [],
+                updatedAt: serverTimestamp(), standalone: true
+            });
+        }
         return { success: true };
     } catch (e) {
         console.warn('Publication de la photo échouée :', e);
@@ -1141,11 +1207,17 @@ window.updateProfilePhoto = async function (photoId, { photo, caption }) {
         }
         // Index du fil global : jamais likeCount ici (merge ne touche que les champs
         // fournis), pour ne pas remettre le compteur de "J'aime" à zéro sur une simple
-        // modification de légende/photo.
-        const feedFields = { updatedAt: serverTimestamp() };
-        if (photo !== undefined) feedFields.photo = photo;
-        if (caption !== undefined) feedFields.caption = (caption || '').slice(0, 280);
-        await _upsertFeedPost(user.uid, photoId, feedFields);
+        // modification de légende/photo. Jamais non plus pour un compte privé (voir la
+        // note sur _isMyAccountPrivateCached() plus haut) — un merge() sur un document
+        // feedPosts qui n'existe pas encore (publication jamais indexée, compte déjà
+        // privé au moment de sa publication initiale) le CRÉERAIT ici avec seulement ces
+        // quelques champs, fuitant quand même une entrée dans le fil public.
+        if (!(await _isMyAccountPrivateCached(user.uid))) {
+            const feedFields = { updatedAt: serverTimestamp() };
+            if (photo !== undefined) feedFields.photo = photo;
+            if (caption !== undefined) feedFields.caption = (caption || '').slice(0, 280);
+            await _upsertFeedPost(user.uid, photoId, feedFields);
+        }
         return { success: true };
     } catch (e) {
         console.warn('Modification de la photo échouée :', e);
@@ -1573,18 +1645,17 @@ window.listMySavedPhotoKeys = async function () {
 // lookupUserByUsername ci-dessus) : nécessaire pour afficher l'en-tête d'un profil
 // public ouvert depuis un uid (avatar ami, "a visité ce lieu"...) plutôt qu'un pseudo.
 // Même collection publique usernames/ que lookupUserByUsername (allow read: if true).
+// Ne ravale plus l'erreur en `null` (même bug/raison que fetchPublicProfile ci-dessus) —
+// `null` voulait déjà dire "aucun pseudo trouvé pour ce uid" pour l'appelant principal
+// (profile.html), rendant un vrai échec réseau indiscernable d'un compte sans pseudo
+// indexé, et empêchant son retry automatique de jamais se déclencher.
 window.lookupUsernameByUid = async function (uid) {
     if (!uid) return null;
-    try {
-        const q = query(collection(db, 'usernames'), where('uid', '==', uid), limit(1));
-        const snap = await getDocs(q);
-        let username = null;
-        snap.forEach(d => { username = d.data().username || d.id; });
-        return username;
-    } catch (e) {
-        console.warn('Recherche du pseudo par uid échouée :', e);
-        return null;
-    }
+    const q = query(collection(db, 'usernames'), where('uid', '==', uid), limit(1));
+    const snap = await getDocs(q);
+    let username = null;
+    snap.forEach(d => { username = d.data().username || d.id; });
+    return username;
 };
 
 window.fetchLocationReviews = async function (locationId) {
@@ -2963,13 +3034,21 @@ window.setAccountPrivacy = async function (isPrivate) {
             setDoc(doc(db, 'users', user.uid), { isPrivate: !!isPrivate }, { merge: true }),
             setDoc(doc(db, 'publicProfiles', user.uid), { isPrivate: !!isPrivate }, { merge: true })
         ]);
+        // BUG corrigé (demande du 01/11/2026) : ce commentaire affirmait que
+        // "publicProfiles.isPrivate est déjà filtré par fetchGlobalPhotoFeed()" — faux,
+        // cette fonction (plus haut dans ce fichier) ne vérifie jamais isPrivate, elle lit
+        // feedPosts/ tel quel. _isMyAccountPrivateCached() serait périmé sans ça :
+        // invalidé ici pour qu'une publication faite juste après ce changement (voir
+        // addProfilePhoto()/setLocationReview()/updateProfilePhoto() plus haut) utilise
+        // tout de suite la nouvelle valeur plutôt que l'ancienne, mise en cache.
+        _invalidateMyUsernameCache(user.uid);
         // Index du fil global (feedPosts/, voir la grande note au-dessus de
-        // setLocationReview()) : lisible par TOUT LE MONDE, contrairement à
-        // publicProfiles.isPrivate qui, lui, est déjà filtré par fetchGlobalPhotoFeed()
-        // — passer un compte en privé doit donc RETIRER ses documents feedPosts (sinon
-        // ses publications restent visibles dans le fil public malgré le compte privé),
-        // et les restaurer si le compte redevient public. N'échoue jamais le changement
-        // de confidentialité lui-même si cette partie échoue.
+        // setLocationReview()) : lisible par TOUT LE MONDE — passer un compte en privé
+        // doit donc RETIRER ses documents feedPosts déjà existants (sinon ses publications
+        // passées restent visibles dans le fil public malgré le compte privé ; les
+        // nouvelles sont déjà couvertes par le garde ajouté plus haut), et les restaurer
+        // si le compte redevient public. N'échoue jamais le changement de confidentialité
+        // lui-même si cette partie échoue.
         try {
             if (isPrivate) {
                 const snap = await getDoc(doc(db, 'publicProfiles', user.uid));
@@ -3048,16 +3127,13 @@ window.loadFriendVisits = async function (friendUids) {
 };
 
 // Page de profil public (profile.html) : lieux visités d'UN compte quelconque, pas
-// nécessairement un ami (friendVisits/{uid} est public en lecture, voir plus haut).
+// nécessairement un ami (friendVisits/{uid} est public en lecture, voir plus haut). Ne
+// ravale plus l'erreur (même raison que fetchPublicProfile/lookupUsernameByUid
+// ci-dessus) — seul appelant restant (profile.html, dans le même Promise.all qu'eux).
 window.fetchUserVisitedIds = async function (uid) {
     if (!uid) return [];
-    try {
-        const snap = await getDoc(doc(db, 'friendVisits', uid));
-        return (snap.exists() && snap.data().locationIds) || [];
-    } catch (e) {
-        console.warn('Lecture des lieux visités du profil échouée :', e);
-        return [];
-    }
+    const snap = await getDoc(doc(db, 'friendVisits', uid));
+    return (snap.exists() && snap.data().locationIds) || [];
 };
 
 // Partage d'un lieu précis à un ami (suite du système d'amis ci-dessus) : un simple
