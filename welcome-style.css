@@ -186,15 +186,19 @@ select.field-input { appearance: none; background-image: url("data:image/svg+xml
    N'affecte que les écrans étroits, rien ne change sur desktop.
    ========================================== */
 @media (max-width: 760px) {
-    .nav { padding: 20px 5%; flex-wrap: wrap; row-gap: 14px; }
-    .brand span { font-size: 18px; }
+    /* ====== ACCUEIL MOBILE (refonte du 01/11/2026, maquette accueil_mobile_final.html) ====== */
+    .nav { padding: 8px 20px; flex-wrap: nowrap; }
+    .brand { flex: 1; min-width: 0; }
+    .brand span { font-size: 17px; }
     .pin { width: 30px; height: 30px; }
 
-    .nav-right { width: 100%; justify-content: space-between; gap: 0; }
+    .nav-right { justify-content: space-between; gap: 0; }
     .nav-link { display: none; } /* Destinations / Artists passent dans le menu si besoin, cachés pour garder l'en-tête léger sur mobile */
     .nav-actions { gap: 10px; margin-left: auto; }
-    .icon-btn { width: 38px; height: 38px; }
-    .login-btn-v5 { padding: 9px 18px; font-size: 13px; }
+    .icon-btn { width: 40px; height: 40px; }
+    .login-btn-v5 { height: 40px; display: flex; align-items: center; justify-content: center; padding: 0 18px; font-size: 13px; }
+
+    .lang-menu { right: 16px; top: 56px; }
 
     .hero { min-height: 100svh; }
     /* Audit visuel du 13/09/2026 : .bg-route (ligne d'itinéraire + points décoratifs) a un
@@ -202,21 +206,33 @@ select.field-input { appearance: none; background-image: url("data:image/svg+xml
        preserveAspectRatio="xMidYMid slice" l'agrandit pour couvrir un écran mobile bien
        plus haut que large — un des points (dot-g, rose vif, le plus visible) atterrit alors
        en plein milieu du bouton "See Demo" au lieu de rester une décoration discrète en
-       arrière-plan. Retiré sur mobile plutôt que recalculé : purement décoratif, son
-       absence ne change aucune information ni interaction. */
+       arrière-plan. Caché sur mobile ; remplacé ci-dessous par .bg-route-m, un second SVG
+       au viewBox portrait dédié au mobile (reprend les mêmes classes route-line/dot-x pour
+       hériter automatiquement de la synchronisation --sync-t). */
     .bg-route { display: none; }
-    .copy { margin: auto 6% 10% 6%; max-width: 100%; padding-bottom: 0; }
-    .copy h1 { font-size: 34px; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; }
-    .copy p { font-size: 15px; margin-bottom: 28px; max-width: 100%; }
+    .bg-route-m { display: block !important; position: absolute; inset: 0; width: 100%; height: 100%; opacity: .55; pointer-events: none; }
+    .blob-1 { width: 380px; height: 380px; }
+    .blob-2 { width: 440px; height: 440px; }
+    .blob-3 { width: 300px; height: 300px; }
 
-    .cta-row { flex-direction: column; align-items: flex-start; gap: 14px; width: 100%; }
-    .cta-primary { width: 100%; justify-content: center; padding: 15px 28px; font-size: 15px; }
-    .cta-secondary { font-size: 14px; }
+    .copy { margin: auto 24px 20px 24px; max-width: 100%; padding-bottom: 0; }
+    .copy h1 { font-size: 35px; line-height: 1.15; letter-spacing: -0.6px; margin-bottom: 12px; }
+    .hero-title-accent { color: var(--primary-magenta); }
+    .copy p { font-size: 15px; line-height: 1.55; color: #4A5262; margin-bottom: 26px; max-width: 100%; }
 
-    .index-footer { flex-direction: column; align-items: flex-start; gap: 14px !important; padding: 24px 6% !important; }
-    .index-footer > div:last-child { display: flex; flex-wrap: wrap; gap: 14px 20px !important; font-size: 11.5px; }
+    .cta-row { flex-direction: column; align-items: flex-start; gap: 10px; width: 100%; }
+    .cta-primary { width: 100%; height: 56px; justify-content: center; padding: 15px 28px; font-size: 15px; }
+    .cta-secondary { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 52px; border-radius: 999px; background: rgba(255,255,255,.75); backdrop-filter: blur(6px); border: 1.5px solid rgba(46,54,68,.12); color: #2E3644; font-size: 14px; font-weight: 600; }
+    .cta-secondary:hover { color: #2E3644; text-decoration: none; }
+    .cta-play-dot { display: flex !important; width: 24px; height: 24px; border-radius: 50%; background: #2E3644; align-items: center; justify-content: center; flex-shrink: 0; }
+    .cta-play-dot svg { width: 10px; height: 10px; color: #fff; margin-left: 1px; }
 
-    .lang-menu { right: 14px; top: 66px; }
+    /* margin-top:auto hérité du style inline desktop est neutralisé ici : avec deux marges
+       auto (.copy + .index-footer) sur le même conteneur flex en colonne, l'espace libre se
+       partage entre les deux au lieu de ne pousser que .copy vers le bas, juste au-dessus
+       du footer comme demandé. */
+    .index-footer { margin-top: 0 !important; flex-direction: column; align-items: center !important; text-align: center; gap: 14px !important; font-size: 11.5px !important; padding: 24px 6% calc(20px + env(safe-area-inset-bottom)) 6% !important; }
+    .index-footer > div:last-child { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 20px !important; font-size: 11.5px; }
 
     /* Modale d'authentification en plein écran sur mobile */
     .auth-modal { padding: 0; align-items: flex-end; }
