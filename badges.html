@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F7F5FB">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261072" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261073" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <!-- =====================================================================
      Screen To Street — page Badges / Classement
      Reprise telle quelle du fichier HTML fourni (badges_final (1).html, demande du
@@ -372,7 +372,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261072';
+        s.src = 'page-loader.js?v=20261073';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -515,9 +515,9 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="sbx-toast" id="sbxToast" role="status" aria-live="polite"></div>
 </div>
 
-<script src="locations-data.js?v=20261072"></script>
-<script type="module" src="firebase-init.js?v=20261072"></script>
-<script src="script.js?v=20261072"></script>
+<script src="locations-data.js?v=20261073"></script>
+<script type="module" src="firebase-init.js?v=20261073"></script>
+<script src="script.js?v=20261073"></script>
 <script>
 /* =====================================================================
    1. DONNÉES — AJOUT SITE : coquille vide, remplie plus bas par de vraies
@@ -569,6 +569,16 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const short=d=>d.replace(/ 20\d\d$/,"");
 const needN=c=>Array.isArray(c.need)?c.need.length:c.need;
 const isDone=c=>c.done>=needN(c);
+/* AJOUT SITE (demande du 01/11/2026, tableau de 26 défis classés par catégorie Lieux/
+   Artistes/Voyage/Communauté/Limité dans le temps) : regroupe une liste de défis par la
+   clé `category` posée par buildRealChallenges() (script.js), dans cet ordre fixe —
+   "Limité dans le temps" n'apparaît que si elle a au moins un défi (seul "Monthly
+   Mission" y est généré aujourd'hui, voir script.js). */
+const CAT_ORDER=["lieux","artistes","voyage","communaute","limite"];
+const CAT_LABEL={lieux:"Lieux",artistes:"Artistes",voyage:"Voyage",communaute:"Communauté",limite:"Limité dans le temps"};
+function groupByCategory(list){
+  return CAT_ORDER.filter(k=>list.some(c=>c.category===k)).map(k=>({label:CAT_LABEL[k],items:list.filter(c=>c.category===k)}));
+}
 
 /* =====================================================================
    3. RENDU
@@ -604,9 +614,9 @@ function renderBadges(){
    <div class="stb-grid">${shown.map(([v,l])=>`<button class="stb-b${l?" locked":""}" data-place="${v.id}" data-locked="${l?1:0}">${placeBadge(v,62,l)}<b>${esc(v.name)}</b></button>`).join("")}</div>
    ${all.length>9?`<button class="stb-more" data-act="more">${showAll?"Afficher moins":"Voir tout"}</button>`:""}
    ${DATA.challenges.length?`<div class="stb-sec" style="margin-top:28px"><h3>Défis relevés</h3><small>${doneCh.length}/${DATA.challenges.length}</small></div>
-   <div class="stb-list">${doneCh.map(c=>challengeRow(c)).join("")}</div>
-   <div class="stb-sub">En cours</div>
-   <div class="stb-list">${openCh.map(c=>challengeRow(c)).join("")}</div>`:""}`;
+   ${groupByCategory(doneCh).map(g=>`<div class="stb-sub">${esc(g.label)}</div><div class="stb-list">${g.items.map(c=>challengeRow(c)).join("")}</div>`).join("")}
+   <div class="stb-sub" style="margin-top:${doneCh.length?"18px":"0"}">En cours</div>
+   ${groupByCategory(openCh).map(g=>`<div class="stb-sub">${esc(g.label)}</div><div class="stb-list">${g.items.map(c=>challengeRow(c)).join("")}</div>`).join("")}`:""}`;
 }
 function challengeRow(c){
   const n=needN(c), done=isDone(c);
@@ -730,9 +740,9 @@ window.StbBadges=StbBadges;
     // évènement — un compte connecté verrait alors tous ses badges comme non débloqués.
     await new Promise(resolve => window.addEventListener('firebase-ready', resolve, { once: true }));
     const user=window.firebaseCurrentUser;
-    let myBadges={};
+    let myBadges={}, myReviewIds=[];
     if(user&&typeof window.fetchPublicProfile==="function"){
-        try{ const profile=await window.fetchPublicProfile(user.uid); myBadges=profile.badges||{}; }catch(e){}
+        try{ const profile=await window.fetchPublicProfile(user.uid); myBadges=profile.badges||{}; myReviewIds=Object.keys(profile.reviews||{}); }catch(e){}
     }
     const allLocs=allRealLocations();
     const visited=[], notVisited=[];
@@ -746,24 +756,43 @@ window.StbBadges=StbBadges;
     const isFr=(typeof currentLang!=="undefined"&&currentLang==="fr");
     const myName=(localStorage.getItem("userFirstName")||localStorage.getItem("userName")||(isFr?"Toi":"You")).trim()||(isFr?"Toi":"You");
     const myInitial=(myName.charAt(0)||"?").toUpperCase();
-    const myChallenges=buildRealChallenges(allLocs,new Set(Object.keys(myBadges)),isFr,true);
-    const ranking=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",Object.keys(myBadges).length]];
-    const rankChallenges=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",myChallenges.filter(isDone).length]];
     const palette=["#D42759","#8B5CF6","#F06090","#10b981","#3b82f6","#f59e0b"];
+    // AJOUT SITE (demande du 01/11/2026, nouveaux défis Voyage/Communauté) : amis AVANT le
+    // calcul de mes propres défis (nécessaire pour "Travel Buddies"), puis voyages et
+    // publications déjà indexées du compte (voir fetchMyTripsForChallenges()/
+    // fetchMyFeedPostsForChallenges() dans firebase-init.js) — un seul appel chacun,
+    // jamais recalculé pour le classement des amis (qui n'a pas besoin de ce niveau de
+    // détail, comme avant cet ajout).
+    let friends=[], profiles=[];
     if(user&&typeof window.listMyFriends==="function"&&typeof window.fetchPublicProfile==="function"){
         try{
-            const friends=await window.listMyFriends();
-            const profiles=await Promise.all(friends.map(f=>window.fetchPublicProfile(f.uid).catch(()=>({badges:{}}))));
-            friends.forEach((f,i)=>{
-                const friendBadges=(profiles[i]&&profiles[i].badges)||{};
-                const count=Object.keys(friendBadges).length;
-                const color=palette[i%palette.length], initial=(f.username||"?").charAt(0).toUpperCase();
-                const friendChallengesDone=buildRealChallenges(allLocs,new Set(Object.keys(friendBadges)),isFr).filter(isDone).length;
-                ranking.push([f.uid,f.username,initial,color,count]);
-                rankChallenges.push([f.uid,f.username,initial,color,friendChallengesDone]);
-            });
+            friends=await window.listMyFriends();
+            profiles=await Promise.all(friends.map(f=>window.fetchPublicProfile(f.uid).catch(()=>({badges:{}}))));
         }catch(e){}
     }
+    let myTrips=[], myFeedPosts=[];
+    if(user){
+        try{ if(typeof window.fetchMyTripsForChallenges==="function") myTrips=await window.fetchMyTripsForChallenges(); }catch(e){}
+        try{ if(typeof window.fetchMyFeedPostsForChallenges==="function") myFeedPosts=await window.fetchMyFeedPostsForChallenges(); }catch(e){}
+    }
+    const extra={
+        badgesMap: myBadges,
+        trips: myTrips,
+        feedPosts: myFeedPosts,
+        reviewIds: myReviewIds,
+        friendsBadges: profiles.map(p=>(p&&p.badges)||{})
+    };
+    const myChallenges=buildRealChallenges(allLocs,new Set(Object.keys(myBadges)),isFr,true,extra);
+    const ranking=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",Object.keys(myBadges).length]];
+    const rankChallenges=[["me",isFr?"Toi":"You",myInitial,"#9B3CEB",myChallenges.filter(isDone).length]];
+    friends.forEach((f,i)=>{
+        const friendBadges=(profiles[i]&&profiles[i].badges)||{};
+        const count=Object.keys(friendBadges).length;
+        const color=palette[i%palette.length], initial=(f.username||"?").charAt(0).toUpperCase();
+        const friendChallengesDone=buildRealChallenges(allLocs,new Set(Object.keys(friendBadges)),isFr).filter(isDone).length;
+        ranking.push([f.uid,f.username,initial,color,count]);
+        rankChallenges.push([f.uid,f.username,initial,color,friendChallengesDone]);
+    });
 
     const badgesPayload={
         me:{id:"me",name:myName,initial:myInitial,color:"#9B3CEB"},
@@ -834,6 +863,15 @@ const DEF_COL=["#3B82F6","#9B3CEB"];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const needN=c=>Array.isArray(c.need)?c.need.length:c.need;
 const isDone=c=>c.done>=needN(c);
+/* AJOUT SITE (demande du 01/11/2026) : même regroupement par catégorie que la version
+   mobile ci-dessus (voir son commentaire), dupliqué ici pour la même raison que IC/
+   GROUP_COL/placeBadge/challIcon un peu plus haut — portée séparée (IIFE), voir la note
+   "collision de portée" en tête de ce bloc. */
+const CAT_ORDER=["lieux","artistes","voyage","communaute","limite"];
+const CAT_LABEL={lieux:"Lieux",artistes:"Artistes",voyage:"Voyage",communaute:"Communauté",limite:"Limité dans le temps"};
+function groupByCategory(list){
+  return CAT_ORDER.filter(k=>list.some(c=>c.category===k)).map(k=>({label:CAT_LABEL[k],items:list.filter(c=>c.category===k)}));
+}
 const LOCK_SVG='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B4ADC2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9.5" rx="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 function placeBadge(v,size=64,locked=false){
   if(locked) return `<span class="stb-ph lock" style="width:${size}px;height:${size}px">${LOCK_SVG}</span>`;
@@ -878,8 +916,8 @@ function chCard(c){
 function renderDefis(){
   const dn=DATA.challenges.filter(isDone), op=DATA.challenges.filter(c=>!isDone(c));
   $("sbxDefis").innerHTML=`<div class="sbx-h"><h2>Défis</h2><small>${dn.length}/${DATA.challenges.length} relevés</small></div>
-   ${dn.length?`<div class="sbx-sub">Relevés</div><div class="sbx-cgrid" style="margin-bottom:24px">${dn.map(chCard).join("")}</div>`:""}
-   <div class="sbx-sub">En cours</div><div class="sbx-cgrid">${op.map(chCard).join("")}</div>`;
+   ${groupByCategory(dn).map(g=>`<div class="sbx-sub">${esc(g.label)} — Relevés</div><div class="sbx-cgrid" style="margin-bottom:24px">${g.items.map(chCard).join("")}</div>`).join("")}
+   ${groupByCategory(op).map(g=>`<div class="sbx-sub">${esc(g.label)} — En cours</div><div class="sbx-cgrid" style="margin-bottom:24px">${g.items.map(chCard).join("")}</div>`).join("")}`;
 }
 function rankBlock(title,unit,list,isD){
   const L=[...list].sort((a,b)=>b[4]-a[4]), max=L[0]&&L[0][4]||1;

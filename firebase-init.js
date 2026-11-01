@@ -2781,6 +2781,66 @@ window.listSharedTripsForMe = async function () {
     }
 };
 
+// AJOUT SITE (demande du 01/11/2026, défis "Trip Completed"/"Road Trip"/"Squad Goals" de
+// la page badges) : rassemble en une seule liste plate tous les voyages du compte — privés
+// (users/{uid}.myTrips, jamais partagés), possédés et partagés (trips/ avec ownerUid ==
+// moi, voir createSharedTrip() plus haut) ET partagés AVEC moi par quelqu'un d'autre
+// (listSharedTripsForMe() ci-dessus) — pour que badges.html calcule ces défis sans
+// dupliquer la logique de lecture déjà éclatée entre ces trois sources. `owned` distingue
+// les voyages que J'AI créés (seuls comptés pour "Squad Goals", qui mesure le fait d'avoir
+// SOI-MÊME partagé un trip, pas d'avoir simplement été invité sur celui d'un ami) des
+// autres (comptés quand même pour "Trip Completed"/"Road Trip", qui ne regardent que les
+// lieux du trip, peu importe qui l'a créé).
+window.fetchMyTripsForChallenges = async function () {
+    const user = auth.currentUser;
+    if (!user) return [];
+    const trips = [];
+    try {
+        const userSnap = await getDoc(doc(db, 'users', user.uid));
+        const myTrips = (userSnap.exists() && userSnap.data().myTrips) || [];
+        myTrips.forEach(t => trips.push({ id: t.id, days: t.days || [], owned: true, memberCount: 0 }));
+    } catch (e) {
+        console.warn('Lecture de mes voyages privés (défis) échouée :', e);
+    }
+    try {
+        const q = query(collection(db, 'trips'), where('ownerUid', '==', user.uid));
+        const snap = await getDocs(q);
+        snap.forEach(d => {
+            const data = d.data();
+            trips.push({ id: d.id, days: data.days || [], owned: true, memberCount: Object.keys(data.members || {}).length });
+        });
+    } catch (e) {
+        console.warn('Lecture de mes voyages partagés (défis) échouée :', e);
+    }
+    try {
+        const shared = await window.listSharedTripsForMe();
+        shared.forEach(data => trips.push({ id: data._sharedTripId, days: data.days || [], owned: false, memberCount: 0 }));
+    } catch (e) {
+        console.warn('Lecture des voyages partagés avec moi (défis) échouée :', e);
+    }
+    return trips;
+};
+
+// AJOUT SITE (demande du 01/11/2026, défis "Recreate the Shot"/"Helpful Fan") : feedPosts/
+// (voir le commentaire au-dessus de feedPostKey()) porte déjà `uid`, `locationId`,
+// `standalone` (true = photo de profil façon Mei, false = avis republié avec photo) et
+// `likeCount` sur CHAQUE publication — une seule requête donne donc tout ce qu'il faut
+// pour ces deux défis sans nouvelle structure de données.
+window.fetchMyFeedPostsForChallenges = async function () {
+    const user = auth.currentUser;
+    if (!user) return [];
+    try {
+        const q = query(collection(db, 'feedPosts'), where('uid', '==', user.uid));
+        const snap = await getDocs(q);
+        const result = [];
+        snap.forEach(d => result.push(d.data()));
+        return result;
+    } catch (e) {
+        console.warn('Lecture de mes publications (défis) échouée :', e);
+        return [];
+    }
+};
+
 // ==========================================
 // AMIS (ajout d'amis, partage de lieux, "quels amis ont visité ce lieu")
 // ==========================================
