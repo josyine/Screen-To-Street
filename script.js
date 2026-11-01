@@ -13528,19 +13528,52 @@ window.allRealLocations = allRealLocations;
 
 const CATEGORY_ICON = { 'Bon Voyage': 'plane', 'Run BTS': 'cam', 'Concert': 'mic', 'Cafe': 'cup', 'Restaurant': 'cup', 'Restaurants': 'cup', 'MV Location': 'cam', 'Museum': 'star', 'Museums': 'star', 'Art Museum': 'star', 'Fashion': 'bag', 'Pop-up Store': 'bag', 'Landmark': 'tower', 'Landmarks': 'tower', 'In The Soop': 'tower', 'Hotel': 'tower' };
 
+// AJOUT SITE (demande du 01/11/2026, tableau de 26 défis classés par catégorie Lieux/
+// Artistes/Voyage/Communauté/Limité dans le temps) : noms de catégories utilisés comme
+// clé `category` sur chaque défi généré plus bas, pour que badges.html puisse les
+// regrouper à l'affichage (voir groupByCategory() dans badges.html).
+const AGENCY_NAME_RE = /HYBE|YG\s*Entertainment|JYP|SM\s*(Entertainment|Town)/i;
+const CAPITAL_CITIES = ['Seoul', 'Tokyo', 'Paris', 'London', 'Berlin', 'Rome', 'Madrid', 'Lisbon', 'Vienna', 'Amsterdam', 'Brussels', 'Bangkok', 'Washington', 'Washington D.C.', 'Ottawa', 'Canberra', 'Wellington', 'Dublin', 'Stockholm', 'Oslo', 'Copenhagen', 'Helsinki', 'Warsaw', 'Prague', 'Budapest', 'Athens', 'Beijing', 'Hanoi', 'Moscow', 'Bern'];
+// "Monthly Mission" (demande explicite : "un défi différent chaque mois", objectif
+// "Variable") — un seul mois défini pour l'instant, avec l'exemple donné par la demande
+// elle-même ("3 cafés en novembre"). Ajouter une entrée pour chaque nouveau mois au fil du
+// temps est le fonctionnement VOULU (contenu éditorial, pas une donnée calculable), comme
+// pour MONTHLY_MISSIONS ci-dessous : ne pas essayer de la rendre "automatique".
+const MONTHLY_MISSIONS = {
+    10: { // novembre (Date#getMonth() est 0-indexé : 10 = novembre)
+        need: 3,
+        pred: l => l.category === 'Cafe',
+        name: isFr => isFr ? 'Mission du mois' : 'Monthly Mission',
+        desc: isFr => isFr ? '3 cafés visités en novembre.' : '3 cafés visited in November.'
+    }
+};
+function _challengeMemberList(member) {
+    return String(member || '').split(',').map(s => s.trim()).filter(s => s && s.toLowerCase() !== 'all');
+}
+function _challengeDayKey(ms) { const d = new Date(ms); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
+function _challengeUnlockedAtMillis(entry) { return (entry && entry.unlockedAt && typeof entry.unlockedAt.toMillis === 'function') ? entry.unlockedAt.toMillis() : 0; }
+
 // withPlaces (false par défaut) attache en plus un tableau `places` par défi — les VRAIS
 // lieux qui comptent pour ce défi (pas juste son nombre).
-function buildRealChallenges(allLocs, unlockedIds, isFr, withPlaces) {
+// `extra` (optionnel) donne accès aux données qu'une simple liste de lieux débloqués ne
+// suffit pas à calculer (dates de visite, voyages, avis/publications/likes du compte) —
+// voir badges.html pour comment il est construit. Absent (cas du classement des AMIS, qui
+// ne connaît que leurs lieux débloqués), les défis qui en ont besoin sont simplement omis :
+// le classement "défis" des amis reste alors approximatif sur ces catégories, comme avant
+// cet ajout.
+function buildRealChallenges(allLocs, unlockedIds, isFr, withPlaces, extra) {
     const challenges = [];
     const doneCountFor = pred => allLocs.filter(l => unlockedIds.has(String(l.id)) && pred(l)).length;
     const placesFor = pred => withPlaces ? allLocs.filter(pred).map(l => ({ id: String(l.id), name: l.name, group: l.group, lat: l.lat, lng: l.lng, visited: unlockedIds.has(String(l.id)), photo: l.img || '' })) : undefined;
-    challenges.push({ id: 'first', name: isFr ? 'Premier pas' : 'First step', desc: isFr ? 'Visiter ton tout premier lieu.' : 'Visit your very first place.', need: 1, done: Math.min(1, unlockedIds.size), icon: 'pin', places: placesFor(() => true) });
+    const push = (category, obj) => challenges.push(Object.assign({ category }, obj));
+
+    push('lieux', { id: 'first', name: isFr ? 'Premier pas' : 'First step', desc: isFr ? 'Visiter ton tout premier lieu.' : 'Visit your very first place.', need: 1, done: Math.min(1, unlockedIds.size), icon: 'pin', places: placesFor(() => true) });
     const catCounts = {};
     allLocs.forEach(l => { if (l.category) catCounts[l.category] = (catCounts[l.category] || 0) + 1; });
     const topCats = Object.keys(catCounts).filter(cat => catCounts[cat] >= 3).sort((a, b) => catCounts[b] - catCounts[a]).slice(0, 5);
     topCats.forEach(cat => {
         const target = Math.min(3, catCounts[cat]);
-        challenges.push({
+        push('lieux', {
             id: 'cat-' + cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
             name: cat,
             desc: (isFr ? `Visiter ${target} lieux de l'émission ` : `Visit ${target} places from `) + cat + '.',
@@ -13550,27 +13583,173 @@ function buildRealChallenges(allLocs, unlockedIds, isFr, withPlaces) {
             places: placesFor(l => l.category === cat)
         });
     });
+
+    // ----- Lieux : défis nommés (demande du 01/11/2026) -----
+    const foodiePred = l => l.category === 'Restaurant' || l.category === 'Restaurants';
+    if (allLocs.some(foodiePred)) {
+        const target = Math.min(3, allLocs.filter(foodiePred).length);
+        push('lieux', { id: 'foodie', name: 'Foodie', desc: isFr ? `Visiter ${target} restaurants visités par des idols.` : `Visit ${target} restaurants idols have visited.`, need: target, done: Math.min(doneCountFor(foodiePred), target), icon: 'cup', places: placesFor(foodiePred) });
+    }
+    const cafePred = l => l.category === 'Cafe';
+    if (allLocs.some(cafePred)) {
+        const target = Math.min(5, allLocs.filter(cafePred).length);
+        push('lieux', { id: 'cafe-hopper', name: 'Café Hopper', desc: isFr ? `Visiter ${target} cafés de la carte.` : `Visit ${target} cafés on the map.`, need: target, done: Math.min(doneCountFor(cafePred), target), icon: 'cup', places: placesFor(cafePred) });
+    }
+    const shoppingPred = l => l.category === 'Fashion' || l.category === 'Pop-up Store';
+    if (allLocs.some(shoppingPred)) {
+        const target = Math.min(3, allLocs.filter(shoppingPred).length);
+        push('lieux', { id: 'shopping-spree', name: 'Shopping Spree', desc: isFr ? `Visiter ${target} boutiques ou rues commerçantes.` : `Visit ${target} shops or shopping streets.`, need: target, done: Math.min(doneCountFor(shoppingPred), target), icon: 'bag', places: placesFor(shoppingPred) });
+    }
+    const varietyPred = l => l.category === 'Run BTS';
+    if (allLocs.some(varietyPred)) {
+        const target = Math.min(3, allLocs.filter(varietyPred).length);
+        push('lieux', { id: 'variety-show', name: 'Variety Show', desc: isFr ? `Visiter ${target} lieux de tournage d'émissions (Run BTS, Going Seventeen…).` : `Visit ${target} variety-show filming locations (Run BTS, Going Seventeen…).`, need: target, done: Math.min(doneCountFor(varietyPred), target), icon: 'cam', places: placesFor(varietyPred) });
+    }
+    const albumPred = l => l.category === 'Photoshoot Location';
+    if (allLocs.some(albumPred)) {
+        const target = Math.min(2, allLocs.filter(albumPred).length);
+        push('lieux', { id: 'album-cover', name: 'Album Cover', desc: isFr ? `Visiter ${target} lieux de pochettes ou de photos d'album.` : `Visit ${target} album cover or photoshoot locations.`, need: target, done: Math.min(doneCountFor(albumPred), target), icon: 'cam', places: placesFor(albumPred) });
+    }
+    const agencyPred = l => AGENCY_NAME_RE.test(l.name || '');
+    if (allLocs.some(agencyPred)) {
+        push('lieux', { id: 'agency-tour', name: 'Agency Tour', desc: isFr ? "Visiter 3 bâtiments d'agences (HYBE, YG, JYP, SM)." : 'Visit 3 agency buildings (HYBE, YG, JYP, SM).', need: 3, done: Math.min(doneCountFor(agencyPred), 3), icon: 'tower', places: placesFor(agencyPred) });
+    }
+
+    // ----- Artistes -----
     const groupCounts = {};
     allLocs.forEach(l => { if (l.group) groupCounts[l.group] = (groupCounts[l.group] || 0) + 1; });
-    const topGroup = Object.keys(groupCounts).filter(g => groupCounts[g] >= 5).sort((a, b) => groupCounts[b] - groupCounts[a])[0];
-    if (topGroup) {
-        const target = Math.min(5, groupCounts[topGroup]);
-        challenges.push({
-            id: 'group-' + topGroup.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-            name: (isFr ? 'Fan de ' : 'Fan of ') + topGroup,
-            desc: (isFr ? `Visiter ${target} lieux liés à ` : `Visit ${target} places linked to `) + topGroup + '.',
+    // AJOUT SITE (demande du 01/11/2026, "un défi par groupe présent sur la carte") :
+    // remplace l'ancien défi unique limité au SEUL groupe le plus représenté par un défi
+    // "Fan de X" pour CHAQUE groupe présent (même logique de cible min(5, total), juste
+    // répétée pour chacun au lieu d'un seul).
+    Object.keys(groupCounts).forEach(g => {
+        const target = Math.min(5, groupCounts[g]);
+        push('artistes', {
+            id: 'group-' + g.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            name: (isFr ? 'Fan de ' : 'Fan of ') + g,
+            desc: (isFr ? `Visiter ${target} lieux liés à ` : `Visit ${target} places linked to `) + g + '.',
             need: target,
-            done: Math.min(doneCountFor(l => l.group === topGroup), target),
+            done: Math.min(doneCountFor(l => l.group === g), target),
             icon: 'heart',
-            places: placesFor(l => l.group === topGroup)
+            places: placesFor(l => l.group === g)
         });
+    });
+    // "Bias Hunter" (lieux liés à un même membre, choisi par l'utilisateur) : comme pour
+    // l'ancien défi de groupe unique ci-dessus avant cet ajout, le membre est auto-choisi
+    // (celui avec le plus de lieux sur la carte) plutôt qu'un vrai sélecteur — même
+    // simplification que le site appliquait déjà à "Fan de X" pour un seul groupe.
+    const memberLocs = {};
+    allLocs.forEach(l => _challengeMemberList(l.member).forEach(m => { (memberLocs[m] = memberLocs[m] || []).push(l); }));
+    const biasMember = Object.keys(memberLocs).filter(m => memberLocs[m].length >= 3).sort((a, b) => memberLocs[b].length - memberLocs[a].length)[0];
+    if (biasMember) {
+        const target = Math.min(3, memberLocs[biasMember].length);
+        const biasPred = l => memberLocs[biasMember].indexOf(l) !== -1;
+        push('artistes', { id: 'bias-hunter', name: 'Bias Hunter', desc: isFr ? `Visiter ${target} lieux liés à ${biasMember}.` : `Visit ${target} places linked to ${biasMember}.`, need: target, done: Math.min(doneCountFor(biasPred), target), icon: 'heart', places: placesFor(biasPred) });
+    }
+    const distinctGroups = new Set(allLocs.map(l => l.group).filter(Boolean));
+    if (distinctGroups.size >= 3) {
+        const visitedGroups = new Set(allLocs.filter(l => unlockedIds.has(String(l.id))).map(l => l.group).filter(Boolean));
+        push('artistes', { id: 'multi-stan', name: 'Multi-stan', desc: isFr ? 'Visiter des lieux de 3 groupes différents.' : 'Visit places from 3 different groups.', need: 3, done: Math.min(visitedGroups.size, 3), icon: 'crown', places: placesFor(() => true) });
+    }
+
+    // ----- Voyage -----
+    const cityCounts = {};
+    allLocs.forEach(l => { if (l.city) cityCounts[l.city] = (cityCounts[l.city] || 0) + 1; });
+    if (Object.values(cityCounts).some(n => n >= 5)) {
+        const visitedCityCounts = {};
+        allLocs.filter(l => unlockedIds.has(String(l.id)) && l.city).forEach(l => { visitedCityCounts[l.city] = (visitedCityCounts[l.city] || 0) + 1; });
+        const bestCityDone = Math.max(0, ...Object.values(visitedCityCounts));
+        push('voyage', { id: 'city-explorer', name: 'City Explorer', desc: isFr ? '5 lieux dans une même ville.' : '5 places in the same city.', need: 5, done: Math.min(bestCityDone, 5), icon: 'pin', places: placesFor(() => true) });
+    }
+    // "Seoul Master" (même principe pour Busan/Tokyo/Paris…) : une entrée par ville qui
+    // compte au moins 10 lieux au total sur la carte, pas une liste de villes figée à la
+    // main — s'applique donc telle quelle à toute nouvelle ville ajoutée plus tard dès
+    // qu'elle atteint ce seuil.
+    Object.keys(cityCounts).filter(city => cityCounts[city] >= 10).forEach(city => {
+        const target = Math.min(10, cityCounts[city]);
+        push('voyage', { id: 'master-' + city.toLowerCase().replace(/[^a-z0-9]+/g, '-'), name: city + ' Master', desc: isFr ? `${target} lieux à ${city}.` : `${target} places in ${city}.`, need: target, done: Math.min(doneCountFor(l => l.city === city), target), icon: 'crown', places: placesFor(l => l.city === city) });
+    });
+    const offBeatenPred = l => l.city && CAPITAL_CITIES.indexOf(l.city) === -1;
+    if (allLocs.some(offBeatenPred)) {
+        const target = Math.min(3, allLocs.filter(offBeatenPred).length);
+        push('voyage', { id: 'off-beaten-path', name: 'Off the Beaten Path', desc: isFr ? `Visiter ${target} lieux hors des capitales (Gangneung, Wanju…).` : `Visit ${target} places off the beaten path, outside capital cities.`, need: target, done: Math.min(doneCountFor(offBeatenPred), target), icon: 'plane', places: placesFor(offBeatenPred) });
     }
     const countries = new Set(allLocs.map(l => l.country).filter(Boolean));
     if (countries.size >= 3) {
         const target = Math.min(5, countries.size);
         const doneCountries = new Set(allLocs.filter(l => unlockedIds.has(String(l.id))).map(l => l.country).filter(Boolean)).size;
-        challenges.push({ id: 'globe', name: isFr ? 'Globe-trotteur' : 'Globetrotter', desc: isFr ? `Visiter des lieux dans ${target} pays différents.` : `Visit places in ${target} different countries.`, need: target, done: Math.min(doneCountries, target), icon: 'crown', places: placesFor(() => true) });
+        push('voyage', { id: 'globe', name: isFr ? 'Globe-trotteur' : 'Globetrotter', desc: isFr ? `Visiter des lieux dans ${target} pays différents.` : `Visit places in ${target} different countries.`, need: target, done: Math.min(doneCountries, target), icon: 'crown', places: placesFor(() => true) });
     }
+
+    // ----- Défis qui ont besoin de plus que la seule liste des lieux débloqués (dates de
+    // visite exactes, voyages, avis/publications/likes) : voir le commentaire sur `extra`
+    // au-dessus de cette fonction. -----
+    if (extra && extra.badgesMap) {
+        const byIdLoc = {};
+        allLocs.forEach(l => { byIdLoc[String(l.id)] = l; });
+        const dayGroups = {};
+        Object.keys(extra.badgesMap).forEach(idStr => {
+            const ms = _challengeUnlockedAtMillis(extra.badgesMap[idStr]);
+            if (!ms || !byIdLoc[idStr]) return;
+            const key = _challengeDayKey(ms);
+            (dayGroups[key] = dayGroups[key] || []).push(idStr);
+        });
+        const bestDay = Object.values(dayGroups).reduce((best, arr) => arr.length > best.length ? arr : best, []);
+        push('voyage', {
+            id: 'day-tripper', name: 'Day Tripper', desc: isFr ? '4 lieux visités le même jour.' : '4 places visited on the same day.', need: 4, done: Math.min(bestDay.length, 4), icon: 'plane',
+            places: withPlaces ? bestDay.map(idStr => byIdLoc[idStr]).filter(Boolean).map(l => ({ id: String(l.id), name: l.name, group: l.group, lat: l.lat, lng: l.lng, visited: true, photo: l.img || '' })) : undefined
+        });
+
+        const now = new Date();
+        const mission = MONTHLY_MISSIONS[now.getMonth()];
+        if (mission) {
+            const missionPred = l => {
+                const ms = _challengeUnlockedAtMillis(extra.badgesMap[String(l.id)]);
+                if (!ms || !mission.pred(l)) return false;
+                const d = new Date(ms);
+                return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+            };
+            push('limite', { id: 'monthly-mission', name: mission.name(isFr), desc: mission.desc(isFr), need: mission.need, done: Math.min(doneCountFor(missionPred), mission.need), icon: 'star', places: placesFor(missionPred) });
+        }
+    }
+    if (extra && extra.trips) {
+        const byIdLoc = {};
+        allLocs.forEach(l => { byIdLoc[String(l.id)] = l; });
+        let tripCompletedDone = 0, bestTripCities = 0, bestOwnedMemberCount = 0;
+        extra.trips.forEach(trip => {
+            const ids = (trip.days || []).flat().map(String).filter(id => byIdLoc[id]);
+            if (ids.length && ids.every(id => unlockedIds.has(id))) tripCompletedDone = 1;
+            const cities = new Set(ids.map(id => byIdLoc[id].city).filter(Boolean));
+            if (cities.size > bestTripCities) bestTripCities = cities.size;
+            if (trip.owned && (trip.memberCount || 0) > bestOwnedMemberCount) bestOwnedMemberCount = trip.memberCount;
+        });
+        push('voyage', { id: 'trip-completed', name: 'Trip Completed', desc: isFr ? 'Un trip du planning entièrement visité.' : 'A planned trip, fully visited.', need: 1, done: tripCompletedDone, icon: 'plane' });
+        push('voyage', { id: 'road-trip', name: 'Road Trip', desc: isFr ? "3 villes différentes au cours d'un même trip." : '3 different cities in the same trip.', need: 3, done: Math.min(bestTripCities, 3), icon: 'plane' });
+        push('communaute', { id: 'squad-goals', name: 'Squad Goals', desc: isFr ? 'Un trip partagé avec 3 amis.' : 'A trip shared with 3 friends.', need: 3, done: Math.min(bestOwnedMemberCount, 3), icon: 'heart' });
+    }
+    if (extra && extra.feedPosts) {
+        const recreateDone = extra.feedPosts.filter(p => p.standalone && p.locationId && unlockedIds.has(String(p.locationId))).length;
+        push('communaute', { id: 'recreate-the-shot', name: 'Recreate the Shot', desc: isFr ? "3 photos recréées publiées sur des lieux visités, comme Mei." : "3 recreated photos posted on places you've visited, like Mei.", need: 3, done: Math.min(recreateDone, 3), icon: 'cam' });
+        const likesTotal = extra.feedPosts.reduce((sum, p) => sum + (p.likeCount || 0), 0);
+        push('communaute', { id: 'helpful-fan', name: 'Helpful Fan', desc: isFr ? '10 likes reçus sur tes photos ou tes avis.' : '10 likes received on your photos or reviews.', need: 10, done: Math.min(likesTotal, 10), icon: 'heart' });
+    }
+    if (extra && Array.isArray(extra.reviewIds)) {
+        const reviewDone = extra.reviewIds.filter(id => unlockedIds.has(String(id))).length;
+        push('communaute', { id: 'reviewer', name: 'Reviewer', desc: isFr ? '5 avis laissés sur des lieux visités.' : '5 reviews left on places you’ve visited.', need: 5, done: Math.min(reviewDone, 5), icon: 'star' });
+    }
+    if (extra && extra.badgesMap && extra.friendsBadges) {
+        const myDayMap = {};
+        Object.keys(extra.badgesMap).forEach(idStr => {
+            const ms = _challengeUnlockedAtMillis(extra.badgesMap[idStr]);
+            if (ms) myDayMap[idStr] = _challengeDayKey(ms);
+        });
+        const buddyDone = extra.friendsBadges.some(friendBadges => Object.keys(friendBadges).some(idStr => {
+            const friendMs = _challengeUnlockedAtMillis(friendBadges[idStr]);
+            return myDayMap[idStr] && friendMs && _challengeDayKey(friendMs) === myDayMap[idStr];
+        })) ? 1 : 0;
+        push('communaute', { id: 'travel-buddies', name: 'Travel Buddies', desc: isFr ? 'Un lieu visité le même jour qu’un ami.' : 'A place visited on the same day as a friend.', need: 1, done: buddyDone, icon: 'heart' });
+    }
+
     return challenges;
 }
 window.buildRealChallenges = buildRealChallenges;
