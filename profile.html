@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261069" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261070" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -260,7 +260,14 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
    window.toggleProfileMapFullscreen()) — règles de reset nécessaires qu'un <a> n'avait
    pas besoin. */
 .profile-map-fullscreen-link { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: #D42759; text-decoration: none; background: none; border: none; padding: 0; font-family: inherit; cursor: pointer; }
-.profile-mini-map-frame { display: none; }
+/* BUG corrigé (demande du 01/11/2026, "My map ne fonctionne que sur mobile") : ce cadre
+   était masqué par défaut et seulement révélé dans le @media mobile plus bas — desktop
+   était censé garder "sa carte pleine largeur d'origine" (voir le commentaire au-dessus),
+   mais #profile-mini-map vit DANS ce cadre depuis la refonte du 16/10/2026, donc le
+   masquer masquait aussi la carte elle-même sur desktop, qui ne l'a jamais retrouvée.
+   display:block ici (desktop) ; le @media mobile ajoute par-dessus son propre habillage
+   (cadre dégradé, hauteur fixe) sans toucher à cette visibilité de base. */
+.profile-mini-map-frame { display: block; }
 /* Bouton "réduire" (demande du 16/10/2026) — masqué hors plein écran (voir
    .profile-mini-map-frame.fullscreen plus bas), toujours présent dans le DOM. */
 .profile-map-shrink-btn { display: none; }
@@ -554,7 +561,7 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261069';
+        s.src = 'page-loader.js?v=20261070';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -855,9 +862,9 @@ body.profile-editing .profile-avatar-edit-badge { background: #D42759; }
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261069"></script>
-<script src="locations-data.js?v=20261069"></script>
-<script src="script.js?v=20261069"></script>
+<script type="module" src="firebase-init.js?v=20261070"></script>
+<script src="locations-data.js?v=20261070"></script>
+<script src="script.js?v=20261070"></script>
 <script>
     const profileParams = new URLSearchParams(location.search);
     let profileUid = profileParams.get('uid');

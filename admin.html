@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261069" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261070" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -261,7 +261,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261069';
+        s.src = 'page-loader.js?v=20261070';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -500,13 +500,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261069"></script>
-<script src="countries.js?v=20261069"></script>
-<script src="locations-data.js?v=20261069"></script>
+<script type="module" src="firebase-init.js?v=20261070"></script>
+<script src="countries.js?v=20261070"></script>
+<script src="locations-data.js?v=20261070"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
-<script src="artists-content.js?v=20261069"></script>
-<script src="script.js?v=20261069"></script>
+<script src="artists-content.js?v=20261070"></script>
+<script src="script.js?v=20261070"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1024,19 +1024,30 @@ recomposée, sans texte ni légende.`;
     // les deux. Calculé une seule fois (mémorisé) plutôt qu'à chaque carte affichée : des
     // dizaines de soumissions/lieux ne doivent pas reparcourir celebLocations à chaque fois.
     let _locationFieldOptionsCache = null;
+    // BUG corrigé (demande du 01/11/2026, "j'ai ajouté Austria donc ajoute le dans la
+    // sélection") : lisait jusqu'ici uniquement `celebLocations` (le squelette statique de
+    // locations-data.js) — un pays/ville tout juste publié via Approve ou le bouton "Add"
+    // (Firestore newLocations, voir loadAllSiteLocationsOnce() plus bas) n'y figure qu'au
+    // PROCHAIN export planifié (admin-scripts/export-locations.js), pas avant. Lit
+    // maintenant allSiteLocationsCache (squelette + newLocations + corrections déjà
+    // enregistrées, voir ce même loadAllSiteLocationsOnce()) quand disponible, qui inclut
+    // ces ajouts tout juste publiés immédiatement — repli sur celebLocations seul tant que
+    // ce chargement (async, déclenché dès 'firebase-ready' plus bas) n'est pas terminé.
     function getLocationFieldOptions() {
         if (_locationFieldOptionsCache) return _locationFieldOptionsCache;
         const fields = ['group', 'member', 'country', 'city', 'category', 'year'];
         const sets = {};
         fields.forEach(f => { sets[f] = new Set(); });
-        if (typeof celebLocations !== 'undefined') {
-            celebLocations.forEach(loc => {
-                fields.forEach(f => { if (loc[f]) sets[f].add(String(loc[f])); });
-            });
-        }
+        const source = allSiteLocationsCache || (typeof celebLocations !== 'undefined' ? celebLocations : []);
+        source.forEach(loc => {
+            fields.forEach(f => { if (loc[f]) sets[f].add(String(loc[f])); });
+        });
         const result = {};
         fields.forEach(f => { result[f] = Array.from(sets[f]).sort((a, b) => a.localeCompare(b)); });
-        _locationFieldOptionsCache = result;
+        // Mémorisé seulement une fois allSiteLocationsCache disponible — tant qu'il ne
+        // l'est pas encore, chaque appel recalcule (peu coûteux, quelques dizaines de
+        // lieux) pour ne jamais figer une liste incomplète lue trop tôt.
+        if (allSiteLocationsCache) _locationFieldOptionsCache = result;
         return result;
     }
     // La valeur ACTUELLE du lieu/de la proposition est toujours incluse dans la liste même
@@ -1672,8 +1683,12 @@ recomposée, sans texte ni légende.`;
                 // juste publié n'apparaissait qu'après un rechargement complet de la page,
                 // malgré la publication Firestore déjà réussie. Invalidé ici pour que le
                 // prochain appel à loadAllSiteLocationsOnce() (changement d'onglet) relise
-                // newLocations et l'inclue immédiatement.
+                // newLocations et l'inclue immédiatement. _locationFieldOptionsCache
+                // invalidé avec lui (demande du 01/11/2026) — même raison : un pays/ville
+                // tout juste publié ici doit apparaître dans les sélections Country/City
+                // sans attendre un rechargement complet de la page.
                 allSiteLocationsCache = null;
+                _locationFieldOptionsCache = null;
                 // Lien retour pour "+ Add a group" : plus géré ici (demande du 15/10/2026,
                 // voir window.openAddGroupModal() dans script.js, qui publie désormais
                 // directement sans passer par cette file de soumissions ni ce bouton
@@ -2091,6 +2106,7 @@ recomposée, sans texte ni légende.`;
                 if (typeof window.openAddGroupModal !== 'function') return;
                 window.openAddGroupModal(loc, () => {
                     allSiteLocationsCache = null;
+                    _locationFieldOptionsCache = null;
                     window.renderExistingLocationsList();
                 });
             };
@@ -2916,6 +2932,13 @@ recomposée, sans texte ni légende.`;
             locationStatsCache = await window.loadAllLocationStats();
         }
         populateAddMemberGroupSelect();
+        // Chargé AVANT loadSubmissions() (demande du 01/11/2026, "j'ai ajouté Austria donc
+        // ajoute le dans la sélection") : getLocationFieldOptions() (voir plus haut) lit
+        // allSiteLocationsCache en priorité pour que les sélections Country/City/etc. de
+        // l'onglet "Location submissions" (actif par défaut, y compris pour le bouton
+        // "Add" manuel) incluent dès ce tout premier rendu les lieux tout juste publiés,
+        // sans devoir d'abord ouvrir "Existing locations" une fois dans la session.
+        if (typeof loadAllSiteLocationsOnce === 'function') { try { await loadAllSiteLocationsOnce(); } catch (e) { /* tant pis, repli sur celebLocations seul */ } }
         await loadSubmissions();
     });
 </script>

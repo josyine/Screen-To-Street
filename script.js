@@ -3461,6 +3461,14 @@ function buildRatingDeltas(newVisit, isNewVisit, oldVisit) {
     } else {
         const old = oldVisit || {};
         deltas.sum = (newVisit.rating || 0) - (old.rating || 0);
+        // BUG corrigé (demande du 01/11/2026, "vérifie... que ça fasse bien la moyenne des
+        // notes") : `count` n'était jusqu'ici jamais ajusté dans cette branche (modification
+        // d'une visite existante), contrairement à la même transition déjà gérée pour
+        // chaque dimension optionnelle juste en dessous — si une visite passait de "sans
+        // note" (rating absent/0) à notée, ou inversement, sa contribution au dénominateur
+        // de la moyenne communautaire (sum/count) ne changeait jamais, faussant
+        // silencieusement cette moyenne au fil des modifications.
+        deltas.count = (newVisit.rating > 0 ? 1 : 0) - (old.rating > 0 ? 1 : 0);
         OPTIONAL_RATING_DIMENSIONS.forEach(d => {
             const key = ratingKeyFor(d);
             if (newVisit[key] != null || old[key] != null) {
