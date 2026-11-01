@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-10-31T22:43:29.202Z.
+// Généré le 2026-11-01T07:56:53.546Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -2434,7 +2434,7 @@ window.STATIC_LOCATIONS = [
     "country": "France",
     "city": "Saint-Denis",
     "category": "Concert",
-    "year": "2019 · 2026",
+    "year": "2019, 2026",
     "episode": "Love Yourself: Speak Yourself & World Tour 'ARIRANG'",
     "episodeLink": "https://en.wikipedia.org/wiki/Love_Yourself_World_Tour",
     "address": "ZAC du Cornillon Nord",
@@ -2442,8 +2442,8 @@ window.STATIC_LOCATIONS = [
     "lng": 2.3601,
     "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Stade_de_France_1000_023.jpg",
     "fullDescription": {
-      "en": "<p>The Stade de France stop marked the European leg of the \"ARIRANG\" World Tour, filling France's national stadium with a crowd that had clearly been counting down since the date was first announced. It's a venue built for football finals and Olympic ceremonies, and for one night it belonged entirely to seven idols and an ocean of ARMY Bombs.</p><p>Paris shows have their own distinct flavour — multilingual chanting, a crowd that skews heavily international given the city's status as a European hub — and Saint-Denis's stadium gave that energy the biggest possible room to expand into.</p>",
-      "fr": "<p>L'étape du Stade de France a marqué le passage européen de la tournée mondiale « ARIRANG », remplissant le stade national français d'une foule qui comptait manifestement les jours depuis l'annonce de la date. C'est une enceinte construite pour les finales de football et les cérémonies olympiques, et le temps d'une soirée, elle a appartenu entièrement à sept idoles et à un océan d'ARMY Bombs.</p><p>Les concerts parisiens ont leur propre saveur — des chants multilingues, un public fortement international compte tenu du statut de la ville comme carrefour européen — et le stade de Saint-Denis a offert à cette énergie le plus grand espace possible pour s'exprimer.</p>"
+      "fr": "<p>L'étape du Stade de France a marqué le passage européen de la tournée mondiale « ARIRANG », remplissant le stade national français d'une foule qui comptait manifestement les jours depuis l'annonce de la date. C'est une enceinte construite pour les finales de football et les cérémonies olympiques, et le temps d'une soirée, elle a appartenu entièrement à sept idoles et à un océan d'ARMY Bombs.</p><p>Les concerts parisiens ont leur propre saveur — des chants multilingues, un public fortement international compte tenu du statut de la ville comme carrefour européen — et le stade de Saint-Denis a offert à cette énergie le plus grand espace possible pour s'exprimer.</p>",
+      "en": "<p>Built originally for the 1998 FIFA World Cup, the Stade de France is the national stadium of France and the largest sporting and cultural venue in the country, boasting a seating capacity of over 80,000. Located in the commune of Saint-Denis, just north of central Paris, its distinctive elliptical roof suspended by 18 massive steel masts makes it a modern architectural landmark. Beyond serving as the home for France's national football and rugby teams and hosting the 2024 Olympic track and field events, it is the premier destination for the world's most massive musical stadium tours.</p><!--stss:footsteps--><p>2019: BTS holds a historic relationship with the Stade de France, utilizing the massive venue for major milestones in their international touring career. In June 2019, during the European leg of their Love Yourself: Speak Yourself world tour, they became the first South Korean act to headline the stadium. The group sold out two consecutive nights, delivering their large-scale production to over 110,000 attendees.</p><p>2026: Seven years later, BTS returned to the iconic Saint-Denis venue in 2026. Their return to the Stade de France reaffirmed their ongoing capacity to command France's largest arena, utilizing the expansive pitch and towering stands for their high-end stage production, pyrotechnics, and extensive choreography.</p>"
     },
     "tipsList": [
       {
@@ -2456,10 +2456,18 @@ window.STATIC_LOCATIONS = [
       },
       {
         "title": {
-          "en": "Two visits, one stadium"
+          "en": "Book a Stadium Tour"
         },
         "text": {
-          "en": "BTS played this exact stadium twice, seven years apart — in 2019 on their first stadium tour, and again in 2026 on 'ARIRANG' — a rare marker of how long their stadium-level draw in Europe has lasted."
+          "en": "When the venue is not actively hosting a match or a concert setup, the Stade de France offers official guided behind-the-scenes tours. You can walk through the locker rooms, the player tunnels, and step out onto the edge of the pitch where the main stage is traditionally built."
+        }
+      },
+      {
+        "title": {
+          "en": "Appreciate the Architecture"
+        },
+        "text": {
+          "en": "Take a walk around the exterior public concourse to view the 18 imposing steel masts that hold up the suspended roof, which provide a true sense of the engineering scale required to house 80,000 spectators."
         }
       }
     ],
@@ -2470,7 +2478,49 @@ window.STATIC_LOCATIONS = [
     "tip": {
       "en": "The RER B and D lines both serve the stadium directly — public transport is strongly recommended over driving on concert nights due to heavy traffic.",
       "fr": "Les lignes RER B et D desservent toutes deux le stade directement — les transports en commun sont fortement recommandés plutôt que la voiture les soirs de concert, en raison d'une circulation dense."
-    }
+    },
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "ytId": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The stadium is highly accessible via public transit from central Paris. You can take the RER B train to La Plaine - Stade de France, the RER D train to Stade de France - Saint-Denis, or the Paris Métro Line 13 directly to the Saint-Denis - Porte de Paris station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Access to the interior of the stadium requires an event ticket or a booked guided tour. Guided tours generally operate from Tuesday to Sunday and cost approximately €16 for adults."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Stade de France is fully equipped for wheelchair users, featuring designated accessible entrance gates, wide ramps, elevators, and specifically allocated seating platforms on the concourses that provide clear, unobstructed sightlines of the stage."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "imgCredit": "Screentostreet"
   },
   {
     "id": 41,
