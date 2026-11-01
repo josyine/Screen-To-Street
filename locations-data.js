@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-01T07:56:53.546Z.
+// Généré le 2026-11-01T18:29:53.121Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -534,7 +534,7 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-7-photo.jpg",
     "fullDescription": {
       "fr": "<p>Donnant sur le Parc Monceau, cet hôtel particulier du début du XXe siècle parfaitement préservé abrite une collection exceptionnelle d'arts décoratifs français du XVIIIe siècle, ses pièces étant conservées telles qu'elles étaient du vivant de la famille Camondo.</p><p>Les intérieurs somptueux et intacts du musée en ont fait un décor saisissant pour une apparition mode haut de gamme liée à Jimin, et le lieu attire depuis des fans intéressés à la fois par la musique et par le patrimoine architectural français.</p>",
-      "en": "<p>The Musée Nissim de Camondo is a breathtaking, tragic, and flawlessly preserved jewel of Parisian history. Located in the 8th arrondissement and overlooking the lush, romantic Parc Monceau, this elegant private mansion was built in 1911 by Count Moïse de Camondo. He designed it specifically to house his extraordinary, world-class collection of 18th-century French furniture and decorative arts. Upon his death, he bequeathed the house and its contents to the French state in memory of his son, Nissim, who died in World War I, with the strict condition that nothing inside could ever be moved or changed. Today, the rooms remain exactly as they were a century ago, offering an incredibly intimate glimpse into the grand Parisian lifestyle of the Belle Époque.</p><p>During his time in Paris in 2026, Jimin stepped away from the intense spotlight and frenetic energy of the city to visit this quiet, historically rich museum. Known for his own elegant aesthetic and deep appreciation for meticulous craftsmanship—traits that perfectly align with his role as a global ambassador for heritage luxury houses like Dior and Tiffany &amp; Co.—Jimin's visit to the Musée Nissim de Camondo was a moment of profound cultural immersion. Wandering through the perfectly preserved salons, dining rooms, and private apartments, he was able to experience the delicate artistry and timeless beauty of 18th-century France in an atmosphere that feels much more like a private home than a traditional museum.</p>"
+      "en": "<p>The Musée Nissim de Camondo is a breathtaking, tragic, and flawlessly preserved jewel of Parisian history. Located in the 8th arrondissement and overlooking the lush, romantic Parc Monceau, this elegant private mansion was built in 1911 by Count Moïse de Camondo. He designed it specifically to house his extraordinary, world-class collection of 18th-century French furniture and decorative arts. Upon his death, he bequeathed the house and its contents to the French state in memory of his son, Nissim, who died in World War I, with the strict condition that nothing inside could ever be moved or changed. Today, the rooms remain exactly as they were a century ago, offering an incredibly intimate glimpse into the grand Parisian lifestyle of the Belle Époque.</p><!--stss:footsteps--><p>During his time in Paris in 2026, Jimin stepped away from the intense spotlight and frenetic energy of the city to visit this quiet, historically rich museum. Known for his own elegant aesthetic and deep appreciation for meticulous craftsmanship—traits that perfectly align with his role as a global ambassador for heritage luxury houses like Dior and Tiffany &amp; Co.—Jimin's visit to the Musée Nissim de Camondo was a moment of profound cultural immersion. Wandering through the perfectly preserved salons, dining rooms, and private apartments, he was able to experience the delicate artistry and timeless beauty of 18th-century France in an atmosphere that feels much more like a private home than a traditional museum.</p>"
     },
     "tipsList": [
       {
@@ -611,8 +611,16 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://madparis.fr/Musee-Nissim-de-Camondo-125",
     "episodeLink": "https://wwd.com/fashion-news/fashion-scoops/jimin-dior-morning-show-paris-fashion-heatwave-1239028935/",
     "recreatedPhotos": [
-      "images/admin-upload-7-recreated-0.jpg",
-      "images/admin-upload-7-recreated-1.jpg"
+      {
+        "url": "images/admin-upload-7-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4909,
+            "y": 0.4529,
+            "member": "Jimin"
+          }
+        ]
+      }
     ]
   },
   {
@@ -2435,12 +2443,12 @@ window.STATIC_LOCATIONS = [
     "city": "Saint-Denis",
     "category": "Concert",
     "year": "2019, 2026",
-    "episode": "Love Yourself: Speak Yourself & World Tour 'ARIRANG'",
-    "episodeLink": "https://en.wikipedia.org/wiki/Love_Yourself_World_Tour",
-    "address": "ZAC du Cornillon Nord",
+    "episode": "Love Yourself: Speak Yourself ; 'ARIRANG'",
+    "episodeLink": "",
+    "address": "93200 Saint-Denis, France",
     "lat": 48.9244,
     "lng": 2.3601,
-    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Stade_de_France_1000_023.jpg",
+    "img": "images/admin-upload-40-photo.jpg",
     "fullDescription": {
       "fr": "<p>L'étape du Stade de France a marqué le passage européen de la tournée mondiale « ARIRANG », remplissant le stade national français d'une foule qui comptait manifestement les jours depuis l'annonce de la date. C'est une enceinte construite pour les finales de football et les cérémonies olympiques, et le temps d'une soirée, elle a appartenu entièrement à sept idoles et à un océan d'ARMY Bombs.</p><p>Les concerts parisiens ont leur propre saveur — des chants multilingues, un public fortement international compte tenu du statut de la ville comme carrefour européen — et le stade de Saint-Denis a offert à cette énergie le plus grand espace possible pour s'exprimer.</p>",
       "en": "<p>Built originally for the 1998 FIFA World Cup, the Stade de France is the national stadium of France and the largest sporting and cultural venue in the country, boasting a seating capacity of over 80,000. Located in the commune of Saint-Denis, just north of central Paris, its distinctive elliptical roof suspended by 18 massive steel masts makes it a modern architectural landmark. Beyond serving as the home for France's national football and rugby teams and hosting the 2024 Olympic track and field events, it is the premier destination for the world's most massive musical stadium tours.</p><!--stss:footsteps--><p>2019: BTS holds a historic relationship with the Stade de France, utilizing the massive venue for major milestones in their international touring career. In June 2019, during the European leg of their Love Yourself: Speak Yourself world tour, they became the first South Korean act to headline the stadium. The group sold out two consecutive nights, delivering their large-scale production to over 110,000 attendees.</p><p>2026: Seven years later, BTS returned to the iconic Saint-Denis venue in 2026. Their return to the Stade de France reaffirmed their ongoing capacity to command France's largest arena, utilizing the expansive pitch and towering stands for their high-end stage production, pyrotechnics, and extensive choreography.</p>"
@@ -2475,6 +2483,7 @@ window.STATIC_LOCATIONS = [
       "en": "Take RER B or D to Saint-Denis - Stade de France station; the stadium entrance is a short walk from the platform.",
       "fr": "Prenez le RER B ou D jusqu'à la station Saint-Denis - Stade de France ; l'entrée du stade se trouve à quelques pas du quai."
     },
+    "episodeLabel": "Tour",
     "tip": {
       "en": "The RER B and D lines both serve the stadium directly — public transport is strongly recommended over driving on concert nights due to heavy traffic.",
       "fr": "Les lignes RER B et D desservent toutes deux le stade directement — les transports en commun sont fortement recommandés plutôt que la voiture les soirs de concert, en raison d'une circulation dense."
@@ -2490,8 +2499,6 @@ window.STATIC_LOCATIONS = [
     "tweetUrl": "",
     "recreatedPhotos": [],
     "facebookUrls": [],
-    "instagramUrl": "",
-    "officialLink": "",
     "practicalInfo": [
       {
         "title": {
@@ -2520,7 +2527,9 @@ window.STATIC_LOCATIONS = [
     ],
     "tweetUrls": [],
     "recreatedPhoto": "",
-    "imgCredit": "Screentostreet"
+    "imgCredit": "Screentostreet",
+    "officialLink": "Daniel / CC BY 2.0",
+    "instagramUrl": "https://www.instagram.com/p/DbFt_-eGB2x/?img_index=2&psln=MXZyOG9vdG52eDZzNg=="
   },
   {
     "id": 41,
@@ -16999,6 +17008,90 @@ window.STATIC_LOCATIONS = [
     }
   },
   {
+    "id": "new-2FsfovpPUfvVRnRplQi7",
+    "name": "Dalseong Park",
+    "group": "BTS",
+    "member": "V",
+    "country": "South Korea",
+    "city": "Daegu",
+    "category": "Landmark",
+    "year": "2015",
+    "address": "35 Dalseong-gongwon-ro, Jung-gu, Daegu, South Korea",
+    "lat": 35.8731,
+    "lng": 128.5815,
+    "img": "",
+    "addedAt": 1793537248443,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Dalseong Park is one of the oldest public urban parks in Daegu, South Korea, built inside the historic site of an ancient earthen fortress dating back to the Proto-Three Kingdoms period. Located in the Jung-gu district, the park features tranquil shaded walking trails, historic pavilions, wide grass lawns, and a city zoo surrounded by lush trees. It has long served as a cherished recreational haven for local residents seeking relaxation and natural greenery in central Daegu. The park retains deep historical value for the region while offering a peaceful getaway from city life.</p><!--stss:footsteps--><p>Dalseong Park holds a special nostalgic connection for BTS member V (Kim Taehyung), who grew up in Daegu and spent much of his childhood playing here with his family. In 2015, V shared a heartwarming photo on Twitter recreating an original picture taken in the exact same spot at Dalseong Park when he was a young toddler. Fans frequently visit the park to recreate his signature childhood pose along the central plaza and walking paths, honoring V's journey from Daegu to global stardom. The park remains an essential stop for ARMY exploring the hometown roots of BTS members.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://twitter.com/BTS_twt/status/619080756784402432",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Best time to visit"
+        },
+        "text": {
+          "en": "Visit during spring or autumn when the park trees display bright cherry blossoms or vibrant fall foliage."
+        }
+      },
+      {
+        "title": {
+          "en": "Admission details"
+        },
+        "text": {
+          "en": "Admission to Dalseong Park and its small grounds is completely free for all visitors."
+        }
+      },
+      {
+        "title": {
+          "en": "Photo tip"
+        },
+        "text": {
+          "en": "Look for the wide open walkway near the earthen wall path to mirror V's famous boyhood photo recreation."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Daegu Metro Line 3 to Dalseong Park Station (Exit 3) and walk approximately 5 minutes directly to the main park gate."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
+  },
+  {
     "id": "new-2LGcTZJG0izlFK23EBq2",
     "name": "Jardin des Tuileries",
     "group": "BTS",
@@ -17643,6 +17736,90 @@ window.STATIC_LOCATIONS = [
     "fullDescription": {
       "en": "<p>Korea House is a premier traditional cultural center situated at the foot of Namsan Mountain in Seoul. Built in traditional Joseon Dynasty architectural style, the complex promotes Korean heritage through traditional performing arts, royal cuisine court dining, and cultural workshops.</p><!--stss:footsteps--><p>In 2018, BTS held their iconic photoshoot with Billboard Magazine at Korea House. Dressed in modern luxury high fashion blended with traditional aesthetic surroundings, the members posed in the elegant outdoor hanok courtyards, making it a celebrated landmark for ARMY interested in traditional Korean architecture.</p>"
     }
+  },
+  {
+    "id": "new-4JWU97ScwPWWKW2X41rm",
+    "name": "Hyangiram Temple",
+    "group": "BTS",
+    "member": "RM",
+    "country": "South Korea",
+    "city": "Yeosu",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "60 Hyangiram-ro, Dolsan-eup, Yeosu-si, Jeollanam-do, South Korea",
+    "lat": 34.5912,
+    "lng": 127.8014,
+    "img": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Hyangiram_Yeosu.jpg/800px-Hyangiram_Yeosu.jpg",
+    "addedAt": 1793537272607,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Hyangiram Temple is one of four historic hermitages in South Korea dedicated to Avalokiteshvara (the Bodhisattva of Compassion). Perched high on the steep sea cliffs of Mount Geumosan at the southern tip of Dolsando Island, the temple is famous for its narrow rock passage entrances, ancient stone turtles, and breathtaking coastal sunrise views.</p><!--stss:footsteps--><p>RM (Kim Namjoon) visited Hyangiram Temple during a vacation trip in 2019 while traveling through the southern coastal region of Korea. He posted scenic photos on Twitter showing him walking along the stone pathways and gazing out at the vast ocean horizon, highlighting his deep passion for serene cultural spaces and Korean spiritual heritage.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Wear sturdy walking shoes"
+        },
+        "text": {
+          "en": "The path leading to the temple involves steep stone staircases and narrow rock tunnels that require comfortable footwear."
+        }
+      },
+      {
+        "title": {
+          "en": "Catch the sunrise"
+        },
+        "text": {
+          "en": "Hyangiram is one of the most famous sunrise viewing spots in Korea; plan an early arrival if visiting in the morning."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect temple etiquette"
+        },
+        "text": {
+          "en": "Maintain a quiet tone near main worship halls and ask before photographing monks or religious ceremonies."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "http://www.hyangiram.org",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Bus No. 111 or 116 from Yeosu Intercity Bus Terminal to the final Hyangiram stop, followed by a 15-minute uphill walk."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "id": "new-5ShQtOSOGBVN7nYEDe5L",
@@ -18737,40 +18914,32 @@ window.STATIC_LOCATIONS = [
     "address": "5 Rue de Thorigny, 75003 Paris, France",
     "lat": 48.8597,
     "lng": 2.3622,
-    "img": "",
+    "img": "images/admin-upload-new-cSGDmreP9vza05peFWkh-photo.jpg",
     "addedAt": 1792750234965,
     "pinterestUrls": [],
     "tiktokUrls": [],
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Situated in the historic Marais district inside the 17th-century Hôtel Salé, the Musée Picasso Paris houses over 5,000 works by Pablo Picasso, detailing the legendary Spanish artist's entire career alongside pieces from his personal art collection.</p><!--stss:footsteps--><p>RM explored the museum during his art trips across Europe, taking time to study Picasso's original sketches and paintings as part of his ongoing passion for art history.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tweetUrl": "",
-    "recreatedPhotos": [],
     "episodeLink": "",
-    "tipsList": [
-      {
-        "title": {
-          "en": "Visitor Tip"
-        },
-        "text": {
-          "en": "Explore the surrounding cobblestone streets of Le Marais for boutique shopping and art galleries after your museum visit."
-        }
-      }
-    ],
     "facebookUrls": [],
     "instagramUrl": "",
     "officialLink": "https://www.museepicassoparis.fr/",
+    "tweetUrls": [],
+    "ytId": "",
+    "imgCredit": "GFreihalter / CC BY-SA 4.0",
+    "fullDescription": {
+      "en": "<p>Located in the historic Marais district, the museum is housed within the Hôtel Salé, a magnificent 17th-century hôtel particulier (private mansion) widely considered one of the finest in Paris. It holds one of the world's most extensive public collections of Pablo Picasso's artworks, featuring thousands of paintings, sculptures, drawings, and personal archives. The grand baroque architecture, complete with an ornate central stone staircase and elegant courtyards, provides a striking, classical contrast to Picasso’s modernist and cubist masterpieces.</p><!--stss:footsteps--><p>A well-known art enthusiast, RM frequently spends his downtime during international travels visiting major museums—a practice affectionately dubbed \"Namjooning.\" During a summer trip to Paris, he spent time exploring the expansive galleries of the Hôtel Salé.<br><br>On June 25, 2022, RM shared a series of photos on his official Instagram account (@rkive) documenting his visit. His posts immortalized his walk through the mansion, capturing major pieces from the museum's permanent collection alongside intersecting works from the Calder-Picasso exhibition. By photographing both the avant-garde artworks (including Alexander Calder's delicate mobiles and Picasso's heavy, abstract forms) and the opulent Parisian architecture, RM offered fans a highly curated, aesthetic glimpse into his artistic inspirations.</p>"
+    },
     "practicalInfo": [
       {
         "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Take Metro Line 1 to Saint-Paul or Line 8 to Chemin Vert, followed by a 5-minute walk through the Marais district."
+          "en": "The museum is highly accessible via the Paris Métro. Take Line 1 to Saint-Paul, Line 8 to Saint-Sébastien - Froissart, or Line 8 to Chemin Vert. The museum is about a 5 to 10-minute walk from any of these stations."
         }
       },
       {
@@ -18778,7 +18947,7 @@ window.STATIC_LOCATIONS = [
           "en": "Operating Hours & Admission"
         },
         "text": {
-          "en": ""
+          "en": "The museum is generally open from Tuesday to Friday (10:30 AM to 6:00 PM), and weekends (9:30 AM to 6:00 PM). It is closed on Mondays. Adult admission is approximately €14. Advance online booking is highly recommended."
         }
       },
       {
@@ -18786,11 +18955,38 @@ window.STATIC_LOCATIONS = [
           "en": "Accessibility"
         },
         "text": {
-          "en": ""
+          "en": "Despite being a historic 17th-century mansion, the museum has been thoroughly renovated and is fully accessible to wheelchair users, featuring step-free entrances, elevators to all exhibition floors, and accessible facilities."
         }
       }
     ],
-    "tweetUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Embrace"
+        },
+        "text": {
+          "en": "Channel RM’s mindful approach to art viewing. Take your time to appreciate not just the world-famous paintings, but the sculptural works and the dialogue between the art and the 17th-century architecture housing it."
+        }
+      },
+      {
+        "title": {
+          "en": "Admire the Hôtel Salé"
+        },
+        "text": {
+          "en": "Don't miss the central grand staircase and the exterior courtyard. RM frequently incorporates the architectural environment into his museum photography, and the Hôtel Salé is a masterpiece in its own right."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Le Marais"
+        },
+        "text": {
+          "en": "After your museum visit, take a walk through the surrounding Marais neighborhood. Packed with independent art galleries, historic facades, and cafes, it is the perfect area for a relaxed, aesthetic afternoon walk."
+        }
+      }
+    ],
+    "pinterestUrl": "",
+    "recreatedPhotos": [],
     "recreatedPhoto": ""
   },
   {
@@ -20308,9 +20504,6 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [],
     "facebookUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Located in an opulent, historic 19th-century building originally designed by architect Émile Hergault near the Champs-Élysées, Beefbar Paris is an upscale, internationally renowned restaurant that redefines traditional meat houses with chic Art Deco interiors, high-end gastronomy, and a glamorous atmosphere.</p><p>This luxury dining destination became a hot topic for the fandom in July 2025, when V (Kim Taehyung) visited the restaurant during his high-profile trip to Paris for Celine fashion week events. Embracing a casual yet luxurious meal, Taehyung delighted fans by sharing personal photos on Instagram featuring the restaurant's signature high-end steak alongside a classic glass of Coca-Cola, instantly turning his meal into a viral moment and adding Beefbar to the ultimate BTS Paris itinerary.</p>"
-    },
     "tweetUrls": [],
     "pinterestUrl": "",
     "facebookUrl": "",
@@ -20375,9 +20568,30 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://beefbar.com/paris/",
     "img": "images/admin-upload-new-manual-1790155898908-hiinve-photo.jpg",
     "recreatedPhotos": [
-      "images/admin-upload-new-manual-1790155898908-hiinve-recreated-0.jpg",
-      "images/admin-upload-new-manual-1790155898908-hiinve-recreated-1.jpg"
-    ]
+      {
+        "url": "images/admin-upload-new-manual-1790155898908-hiinve-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5924,
+            "y": 0.6471,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1790155898908-hiinve-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.5247,
+            "y": 0.6912,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Located in an opulent, historic 19th-century building originally designed by architect Émile Hergault near the Champs-Élysées, Beefbar Paris is an upscale, internationally renowned restaurant that redefines traditional meat houses with chic Art Deco interiors, high-end gastronomy, and a glamorous atmosphere.</p><!--stss:footsteps--><p>This luxury dining destination became a hot topic for the fandom in July 2025, when V (Kim Taehyung) visited the restaurant during his high-profile trip to Paris for Celine fashion week events. Embracing a casual yet luxurious meal, Taehyung delighted fans by sharing personal photos on Instagram featuring the restaurant's signature high-end steak alongside a classic glass of Coca-Cola, instantly turning his meal into a viral moment and adding Beefbar to the ultimate BTS Paris itinerary.</p>"
+    }
   },
   {
     "id": "new-manual-1790156734226-wkupvy",
@@ -20459,12 +20673,21 @@ window.STATIC_LOCATIONS = [
     "instagramUrl": "",
     "tiktokUrl": "",
     "ytId": "",
-    "recreatedPhotos": [
-      "images/admin-upload-new-manual-1790156734226-wkupvy-recreated-0.jpg"
-    ],
     "fullDescription": {
       "en": "<p>Located at the heart of the 9th arrondissement in the trendy Nouvelle Athènes neighborhood, Place Saint-Georges is a picturesque circular square created in 1824. Famous for its central fountain and the statue of 19th-century caricaturist Paul Gavarni, the square is surrounded by grand neo-classical and neo-Renaissance townhouses (hôtels particuliers), including the historic Hôtel Guimard. Its charming cobblestones, elegant architecture, and classic Parisian street lamps make it one of the most romantic spots in the neighborhood.</p><!--stss:footsteps--><p>During his stay in Paris in 2019, Jimin spent time exploring the city's charming neighborhoods. He was filmed strolling through Place Saint-Georges, enjoying a walk around the circular square and its historic architecture, before filming a short birthday video message for Jungkook</p>"
-    }
+    },
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1790156734226-wkupvy-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3398,
+            "y": 0.8559,
+            "member": "Jimin"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "new-manual-1790167785996-vshzyf",
@@ -25393,6 +25616,380 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "ytId": "HAWYOuMGkK0",
     "officialLink": "https://actu.fr/ile-de-france/versailles_78646/lauthentique-rue-des-deux-portes_12475507.html"
+  },
+  {
+    "id": "new-manual-1793536650638-sp931h",
+    "name": "Kunstmuseum Basel",
+    "group": "BTS",
+    "member": "RM",
+    "year": "2022",
+    "address": "St. Alban-Graben 16, 4051 Basel, Switzerland.",
+    "lat": 47.5542,
+    "lng": 7.5942,
+    "country": "Switzerland",
+    "city": "Basel",
+    "category": "Museum",
+    "img": "images/admin-upload-new-manual-1793536650638-sp931h-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the heart of Basel, Switzerland, the Kunstmuseum Basel houses the largest and most significant public art collection in the country, with origins dating back to 1661. The museum is globally renowned for its extensive holdings spanning from the Renaissance to contemporary art. Between June 11 and September 25, 2022, the museum hosted the temporary exhibition \"Picasso - El Greco.\" This highly curated showcase drew fascinating visual parallels between the 16th-century master's elongated, dramatic compositions and Picasso's groundbreaking cubist works.</p><!--stss:footsteps--><p>In June 2022, RM traveled to Switzerland to attend the prestigious Art Basel contemporary art fair. Expanding his \"Namjooning\" itinerary across the city, he visited the Kunstmuseum Basel to explore the \"Picasso - El Greco\" exhibition.<br><br>Documenting his visit, RM shared a photograph taken from behind as he quietly observed the dialogue between the two masters. The image captures him standing squarely between El Greco’s towering masterpiece The Resurrection on his left and a striking cubist painting by Pablo Picasso on his right. This specific perspective highlights RM's deep appreciation for art history and his deliberate engagement with comparative curatorial spaces.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The museum is centrally located and easily accessible via Basel's public transit network. Take tram lines 1, 2, or 15 directly to the Kunstmuseum stop, which is situated right in front of the main building."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Generally open Tuesday to Sunday from 10:00 AM to 6:00 PM (extended until 8:00 PM on Wednesdays). Closed on Mondays. Adult admission is typically around 26 CHF. Advance online booking is recommended during peak tourist seasons."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The museum's main buildings are thoroughly modernized and fully accessible for wheelchair users, featuring step-free entrances, spacious elevators to all exhibition floors, and wide gallery corridors."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Explore the Permanent Collection"
+        },
+        "text": {
+          "en": "While the specific \"Picasso - El Greco\" exhibition has concluded, the Kunstmuseum maintains an exceptional permanent collection featuring numerous works by both artists that you can view year-round."
+        }
+      },
+      {
+        "title": {
+          "en": "Embrace"
+        },
+        "text": {
+          "en": "Take your time observing the distinct stylistic shifts between different art movements, mirroring RM's thoughtful, comparative approach to navigating museum galleries."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit During Art Basel"
+        },
+        "text": {
+          "en": "To experience the city with the same vibrant, international art energy that RM did, plan your trip for mid-June when the global Art Basel fair takes over the city and the surrounding institutions."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "pinterestUrl": "https://kr.pinterest.com/pin/855543260478419765/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793536650638-sp931h-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4909,
+            "y": 0.6735,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "imgCredit": "Gerd Eichmann / CC BY 4.0",
+    "officialLink": "https://www.kunstmuseumbasel.ch/"
+  },
+  {
+    "id": "new-manual-1793537291022-eew8bg",
+    "name": "Belvedere Museum (Upper Belvedere)",
+    "group": "BTS",
+    "member": "RM",
+    "year": "2019",
+    "address": "Prinz Eugen-Straße 27, 1030 Vienna, Austria (Upper Belvedere)",
+    "lat": 48.1915,
+    "lng": 16.3806,
+    "country": "Austria",
+    "city": "Vienna",
+    "category": "Museum",
+    "img": "images/admin-upload-new-manual-1793537291022-eew8bg-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Schiele Gallery"
+        },
+        "text": {
+          "en": "To recreate RM's photo, navigate to the early 20th-century Austrian art section in the Upper Belvedere to locate Egon Schiele's vibrant expressionist landscape, \"Four Trees.\""
+        }
+      },
+      {
+        "title": {
+          "en": "Appreciate the Architecture"
+        },
+        "text": {
+          "en": "Take a moment to admire the ornate white and gold paneling of the room RM was photographed in, which is a pristine example of the palace's preserved Baroque interior design."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Gardens"
+        },
+        "text": {
+          "en": "After viewing the interior galleries, take a walk through the expansive, symmetrical French-style gardens connecting the Upper and Lower Belvedere palaces."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>The Belvedere is a stunning historic building complex in Vienna consisting of two Baroque palaces. The Upper Belvedere, originally built in the early 18th century as a summer residence for Prince Eugene of Savoy, now serves as one of Austria's leading art museums. The palace’s interior is a masterpiece of classical Viennese architecture, featuring ornate white wood paneling and intricate gold moldings. Today, it houses an unparalleled collection of Austrian art dating from the Middle Ages to the present day, globally celebrated for its extensive permanent exhibitions of works by Gustav Klimt and Egon Schiele.</p><!--stss:footsteps--><p>In September 2019, BTS was granted their first official extended period of rest. Choosing to spend part of his vacation exploring Europe, RM continued his signature \"Namjooning\" by visiting several major cultural institutions across the Austrian capital.<br><br>He shared photos of his visit to the Upper Belvedere on the official BTS Twitter account. Among them, RM posed next to the famous 1917 expressionist landscape painting \"Four Trees\" (Vier Bäume) by Austrian artist Egon Schiele. The photo beautifully captures the intersection of world-class fine art and the grand, baroque architecture of the palace's exhibition galleries, perfectly encapsulating his deep appreciation for historical spaces and classical art.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The museum is easily accessible via Vienna's public transit. Take Tram D directly to the Schloss Belvedere stop, or take the U-Bahn (Line U1) to Südtiroler Platz-Hauptbahnhof and walk about 15 minutes."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Upper Belvedere is generally open daily from 9:00 AM to 6:00 PM. Adult tickets cost approximately €17.50, and booking a specific time slot online in advance is highly recommended to skip the entry queues."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Upper Belvedere is fully accessible for wheelchair users, featuring step-free entrances, spacious elevators to access the upper exhibition floors, and accessible restroom facilities."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1169172736637362176?s=20",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Martin Falbisoner / CC BY-SA 4.0",
+    "officialLink": "https://www.belvedere.at/en/visit",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793537291022-eew8bg-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.168,
+            "y": 0.6324,
+            "member": "RM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1793538388613-g75y3q",
+    "name": "Mariahilfer Straße",
+    "group": "BTS",
+    "member": "RM",
+    "category": "Museum",
+    "year": "2019",
+    "address": "Mariahilfer Str. 83, 1060, Vienna, Austria",
+    "lat": 48.1977501,
+    "lng": 16.3488337,
+    "country": "Austria",
+    "city": "Vienna",
+    "img": "images/admin-upload-new-manual-1793538388613-g75y3q-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Take a Seat"
+        },
+        "text": {
+          "en": "To recreate RM's relaxed photo, locate one of the large, combined concrete and wooden planter-benches situated in the middle of the pedestrian zone and have a friend photograph you from the sidewalk."
+        }
+      },
+      {
+        "title": {
+          "en": "Spot the Storefronts"
+        },
+        "text": {
+          "en": "Because the street is massive, use the background storefronts of major retailers like Deichmann and H&M as visual anchors to help you find the approximate block where RM rested."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk to the Museumsquartier"
+        },
+        "text": {
+          "en": "The eastern end of the street leads directly into the Museumsquartier, allowing you to easily combine a casual shopping stroll with visits to major art institutions like the Leopold Museum."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Connecting the historic city center with the Westbahnhof railway station, Mariahilfer Straße is Vienna's longest and most famous shopping street. Transformed into a highly pedestrian-friendly zone, the bustling avenue is lined with a massive mix of major international flagship stores, local boutiques, and cafes. To accommodate the heavy foot traffic and encourage public gathering, the street is specifically outfitted with distinct, large concrete and wood planter-benches, offering shoppers and tourists comfortable spaces to rest and socialize in the middle of the urban landscape.</p><!--stss:footsteps--><p>In September 2019, during BTS's first official extended vacation, RM traveled through Europe and spent time exploring Vienna. While his itinerary was heavily focused on fine art and historical institutions, he also took time to simply enjoy the city's everyday atmosphere.<br><br>Shared on the official BTS Twitter account, a photo captures RM taking a casual break on one of the characteristic planter-benches along Mariahilfer Straße. Wearing the exact same outfit—a plaid overshirt, grey t-shirt, and black cap—as his visit to the Upper Belvedere, the picture documents a relaxed moment of downtime during his day of \"Namjooning.\" With familiar international storefronts like H&amp;M and Deichmann visible in the background, the image highlights the grounded, accessible nature of his personal travels.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The street is incredibly easy to access via the Vienna U-Bahn. The U3 line runs directly beneath it, with the Neubaugasse and Zieglergasse stations exiting right into the main pedestrian shopping areas."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The street is a public thoroughfare open 24/7. Retail stores generally operate Monday to Friday from 9:30 AM to 7:00 PM, and Saturdays until 6:00 PM (note that almost all shops are closed on Sundays in Austria)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The pedestrian zones of Mariahilfer Straße are flat, paved, and completely free of car traffic, making them highly accessible, safe, and easy to navigate for wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1169172736637362176",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793538388613-g75y3q-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5143,
+            "y": 0.6147,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Leonhard Lenz / CC0",
+    "officialLink": "https://mariahilferstrasse.at/"
+  },
+  {
+    "id": "new-manual-1793545826689-2q0d26",
+    "name": "Freda-Meissner-Blau Promenade (Donaukanal)",
+    "group": "BTS",
+    "member": "RM",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "Freda-Meissner-Blau Promenade, Donaukanal, 1010 Vienna, Austria",
+    "lat": 48.2159,
+    "lng": 16.3732,
+    "country": "Austria",
+    "city": "Vienna",
+    "img": "images/admin-upload-new-manual-1793545826689-2q0d26-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "recreatedPhotos": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Rent a City Bike"
+        },
+        "text": {
+          "en": "To fully recreate RM's experience, rent a WienMobil bike (Vienna's public bike-sharing system) and cycle the flat, paved paths stretching along the canal."
+        }
+      },
+      {
+        "title": {
+          "en": "Look for the Railings"
+        },
+        "text": {
+          "en": "While riding, look up toward the street level to spot Otto Wagner's historic circular metal railings contrasting directly with the contemporary graffiti below."
+        }
+      },
+      {
+        "title": {
+          "en": "Expect New Art"
+        },
+        "text": {
+          "en": "Because the canal is a legal graffiti zone, the specific murals RM rode past have long been painted over. The landscape changes weekly, offering a unique visual experience every visit."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated directly along the banks of the Donaukanal (Danube Canal), the Freda-Meissner-Blau Promenade is a vibrant hub of Viennese youth culture and a true open-air urban art museum. The massive retaining walls lining the waterfront serve as a legal, free-expression zone for graffiti artists, creating a highly colorful, ever-evolving landscape. Creating a striking visual contrast just above these modern murals is a piece of essential Viennese history: the iconic circular-patterned metal railings designed by celebrated architect Otto Wagner in the late 19th century, originally installed to secure the city's early urban train lines.</p><!--stss:footsteps--><p>During BTS's very first official extended vacation in early September 2019, RM curated a personal European tour heavily dedicated to his signature \"Namjooning.\" Rather than retreating to an isolated luxury resort, he immersed himself in local culture.<br><br>Renting a public city bike, RM was photographed cycling along the Freda-Meissner-Blau Promenade. The image captures him riding anonymously past the sprawling graffiti walls, perfectly blending into the bohemian, underground atmosphere of the canal. This specific activity highlights his deliberate travel style, effortlessly combining active city exploration, modern street culture, and historic architecture in one incognito afternoon.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The canal is highly accessible from the historic center. Take the U-Bahn (Lines U2 or U4) to the Schottenring station, or Lines U1 or U4 to Schwedenplatz. Both stations offer direct staircases down to the waterfront promenade."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The waterfront promenade is a public pathway, open 24/7 and completely free to access."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The paths running immediately alongside the water are flat, paved, and fully accessible for wheelchair users. While many immediate access points from the bridges use stairs, accessible ramps are available at key junctions, including near the Schwedenplatz area."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1169172736637362176",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://cityabc.at/index.php/Freda-Meissner-Blau-Promenade",
+    "imgCredit": "Herzi Pinki / CC BY-SA 4.0"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
