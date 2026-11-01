@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-01T18:29:53.121Z.
+// Généré le 2026-11-01T22:58:55.140Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -25920,7 +25920,6 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-new-manual-1793545826689-2q0d26-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
-    "recreatedPhotos": [],
     "instagramUrls": [],
     "tipsList": [
       {
@@ -25980,7 +25979,6 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrls": [],
-    "recreatedPhoto": "",
     "pinterestUrl": "",
     "facebookUrl": "",
     "tweetUrl": "https://x.com/BTS_twt/status/1169172736637362176",
@@ -25989,7 +25987,211 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "ytId": "",
     "officialLink": "https://cityabc.at/index.php/Freda-Meissner-Blau-Promenade",
-    "imgCredit": "Herzi Pinki / CC BY-SA 4.0"
+    "imgCredit": "Herzi Pinki / CC BY-SA 4.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793545826689-2q0d26-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5117,
+            "y": 0.6059,
+            "member": "RM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1793566609187-eviayi",
+    "name": "Roman Forum",
+    "group": "BTS",
+    "member": "RM",
+    "category": "Landmark",
+    "year": "2017",
+    "address": "Via di San Pietro in Carcere, 00186 Rome RM, Italy (Viewpoint area)",
+    "lat": 41.8926972,
+    "lng": 12.484598,
+    "country": "Italy",
+    "city": "Rome",
+    "img": "images/admin-upload-new-manual-1793566609187-eviayi-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Viewpoint"
+        },
+        "text": {
+          "en": "To capture RM's exact plunging perspective without buying a ticket, head up to the Capitoline Hill (Campidoglio) just behind the Senatorial Palace, specifically looking out from the Via di San Pietro in Carcere or the Terrazza sul Foro."
+        }
+      },
+      {
+        "title": {
+          "en": "Spot the Landmarks"
+        },
+        "text": {
+          "en": "Use the background of RM's photo as a visual map. Locate the eight massive columns of the Temple of Saturn on the left, the Temple of Antoninus and Faustina in the center, and the Colosseum in the far distance."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit at Golden Hour"
+        },
+        "text": {
+          "en": "For the most dramatic photography of the ruins, visit this elevated viewpoint just before sunset when the ancient stone and marble are illuminated with warm, golden light."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The Capitoline Hill viewpoint is easily accessible by walking from Piazza Venezia. To enter the actual Forum valley below, take the Metro B line to the Colosseo station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Capitoline Hill terraces overlooking the Forum are public spaces, open 24/7 and completely free to access. Entering the archaeological site below requires a ticket (usually combined with the Colosseum and Palatine Hill, costing around €18) and operates daily from 9:00 AM to sunset."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Capitoline Hill viewpoint can be reached without navigating stairs via the sloped Via del Tempio di Giove. The archaeological site of the Roman Forum itself features uneven terrain and ancient cobblestones, though a designated accessible path with elevator access is available from the Palatine Hill."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/924539722462097409?s=20",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793566609187-eviayi-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.7305,
+            "y": 0.5088,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "officialLink": "https://colosseo.it/area/foro-romano/",
+    "imgCredit": "Wolfgang Moroder / CC BY-SA 3.0",
+    "fullDescription": {
+      "en": "<p>For centuries, the Roman Forum was the bustling epicenter of ancient Rome, housing the city's most vital government buildings, temples, and bustling markets. Today, the sprawling valley of ruins stands as one of the most significant archaeological sites in the world. When viewed from the elevated Capitoline Hill, the site offers a striking, layered panorama of classical history. Distinct landmarks are clearly visible from this plunging perspective, including the imposing eight remaining columns of the Temple of Saturn, the well-preserved colonnade of the Temple of Antoninus and Faustina, and the majestic silhouette of the Colosseum framing the distant horizon.</p><!--stss:footsteps--><p>In late October 2017, RM took a personal trip to Italy with his family, exploring culturally rich cities like Milan, Venice, and Rome. This trip served as an early, documented instance of his now-famous \"Namjooning\"—traveling with a deep focus on appreciating art, history, and classical architecture.<br><br>Sharing memories of the trip with fans, RM posted a photo of himself posing in front of the Roman Forum. Rather than standing down in the valley among the crowds, he found a privileged, elevated vantage point—likely from the terraces bordering the Capitoline Hill. This specific angle provided him with a spectacular, plunging view of the sprawling ruins, perfectly framing the ancient center of the Roman Empire behind him.</p>"
+    }
+  },
+  {
+    "id": "new-manual-1793568428053-skv6w5",
+    "name": "The Colosseum (Colosseo)",
+    "group": "BTS",
+    "member": "RM",
+    "category": "Museum",
+    "year": "2017",
+    "address": "Piazza del Colosseo, 1, 00184 Rome, Italy",
+    "lat": 41.8905603,
+    "lng": 12.49097,
+    "img": "images/admin-upload-new-manual-1793568428053-skv6w5-photo.jpg",
+    "country": "Italy",
+    "city": "Roma",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk the Perimeter"
+        },
+        "text": {
+          "en": "You do not need an admission ticket to recreate RM's exterior photos. Walk around the massive Piazza del Colosseo to find a clean angle with the structure's best-preserved outer walls framing your shot."
+        }
+      },
+      {
+        "title": {
+          "en": "Book in Advance"
+        },
+        "text": {
+          "en": "If you wish to go inside the amphitheater, you must purchase timed-entry tickets online weeks in advance, as same-day tickets are rarely available at the gate."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with the Forum"
+        },
+        "text": {
+          "en": "The Colosseum and the Roman Forum (where RM also took photos during this trip) are located right next to each other and are typically included in the same combined archaeological admission ticket."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Completed in 80 AD under the emperor Titus, the Colosseum is the largest ancient amphitheater ever built. Situated in the center of Rome just east of the Roman Forum, this monumental stone and concrete structure could hold an estimated 50,000 to 80,000 spectators. For centuries, it served as the empire's premier entertainment venue, hosting epic gladiatorial contests, animal hunts, public executions, and dramatic historical reenactments. Today, its instantly recognizable ruined facade stands as the ultimate symbol of Imperial Rome and remains one of the New Seven Wonders of the World.</p><!--stss:footsteps--><p>In late October 2017, RM traveled to Italy for a family vacation, embarking on a cultural tour that laid the groundwork for his now-famous \"Namjooning\" art and history trips. Continuing his exploration of Rome's ancient heart, he visited the Colosseum, sharing a photograph of himself standing outside the majestic arena on BTS's official Twitter account. The image serves as a perfect companion piece to his Roman Forum update from the same day, capturing his deep appreciation for monumental classical architecture and world history.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The monument is exceptionally easy to reach via public transit. Take the Rome Metro Line B directly to the Colosseo station; the main exits open right across the street from the amphitheater."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The exterior is visible 24/7. Interior access requires a timed-entry ticket (starting around €18) and is generally open daily from 8:30 AM until roughly an hour before sunset."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Colosseum is well-equipped for wheelchair users. The main entrances feature ramps, and a dedicated elevator provides access to the first level (middle tier) of the arena. Note that the surrounding piazza includes stretches of uneven, historical cobblestones."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Anil Öztas (anil-oeztas.de)",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://colosseo.it/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793568428053-skv6w5-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5534,
+            "y": 0.5971,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "tweetUrl": "https://x.com/BTS_twt/status/924539722462097409"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
@@ -26205,6 +26407,90 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "id": "new-nVdA8aB50A1gdwCz9SMU",
+    "name": "Galleria Borghese",
+    "group": "BTS",
+    "member": "RM",
+    "country": "Italy",
+    "city": "Rome",
+    "category": "Museum",
+    "year": "2019",
+    "address": "Piazzale Scipione Borghese 5, 00197 Roma RM, Italy",
+    "lat": 41.9142,
+    "lng": 12.4921,
+    "img": "",
+    "addedAt": 1793568413542,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Galleria Borghese is an esteemed art gallery housed in the former Villa Borghese Pinciana, a 17th-century palace built by Cardinal Scipione Borghese in Rome, Italy. Surrounded by the vast public Gardens of Villa Borghese, the museum displays a world-class collection of classical antiquities, Renaissance paintings, and Baroque sculptures. It is celebrated worldwide for housing Gian Lorenzo Bernini's breathtaking marble masterpieces, including 'Apollo and Daphne' and 'David', alongside paintings by Caravaggio and Raphael.</p><!--stss:footsteps--><p>RM visited Galleria Borghese during his vacation trip to Italy in 2019, fulfilling his goal to witness Bernini's legendary marble sculptures in person. He shared his awe and artistic reflection on social media, praising the incredible fluidity and emotional detail of Bernini's work. His visit inspired classical art lovers in the BTS fandom to explore Rome's museum treasures.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Strict advance booking"
+        },
+        "text": {
+          "en": "Tickets MUST be reserved weeks in advance online; walk-up tickets are almost never available due to strict hourly capacity limits."
+        }
+      },
+      {
+        "title": {
+          "en": "Timed entry window"
+        },
+        "text": {
+          "en": "Visitors are allotted strict 2-hour entry slots; arrive 30 minutes before your slot to clear security."
+        }
+      },
+      {
+        "title": {
+          "en": "Park walk"
+        },
+        "text": {
+          "en": "Allow extra time to enjoy a relaxing walk or bike rental in Villa Borghese gardens after your gallery session."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "https://galleriaborghese.beniculturali.it",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Metro Line A to Spagna or Flaminio station, then walk through Villa Borghese park to the gallery."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": ""
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": ""
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "year": "2020",
