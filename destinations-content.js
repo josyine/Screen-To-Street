@@ -167,6 +167,16 @@ window.computeCountryStats = function () {
 // villes (city-pill, tableau détaillé au clic sur le KPI) restent celles écrites à la
 // main dans COUNTRIES/le HTML, avec leurs noms déjà traduits — les régénérer depuis
 // STATIC_LOCATIONS n'aurait que des noms anglais, ce qui casserait cette traduction.
+// Alias connus pour un même pays écrit différemment selon la soumission d'origine (ex:
+// "USA" vs "United States") — UNIQUEMENT utilisé pour ne pas compter deux fois le même
+// pays dans le total "Countries" de la barre de stats ci-dessous ; ne touche jamais aux
+// lieux eux-mêmes (loc.country reste tel quel partout ailleurs sur le site).
+window.COUNTRY_NAME_ALIASES = { 'usa': 'united states', 'uk': 'united kingdom' };
+function canonicalCountryName(name) {
+    const key = (name || '').trim().toLowerCase();
+    return window.COUNTRY_NAME_ALIASES[key] || key;
+}
+
 window.correctDestinationNumbers = function (currentLang) {
     const stats = window.computeCountryStats();
     if (!Object.keys(stats).length) return; // locations-data.js pas encore chargé
@@ -194,12 +204,26 @@ window.correctDestinationNumbers = function (currentLang) {
         if (nums[2]) nums[2].textContent = s.groups.size;
     });
 
-    const totalLocs = Object.values(stats).reduce((sum, s) => sum + s.count, 0);
-    const allCities = new Set();
-    Object.values(stats).forEach(s => s.cities.forEach(c => allCities.add(c)));
+    // Totaux du bandeau du haut (Countries/Cities/Locations) — BUG corrigé (demande du
+    // 01/11/2026, "mets à jour ces pages avec le bon nombre de pays, le nombre de
+    // lieu") : jusqu'ici calculés uniquement à partir de `stats` (computeCountryStats),
+    // qui ne retient QUE les 9 pays ayant leur propre carte/COUNTRY_KEY_MAP — un pays
+    // tout juste ajouté au site (ex: l'Autriche) n'a pas encore sa propre carte détaillée
+    // ici, donc ses lieux disparaissaient purement et simplement de ces 3 totaux. Recalculés
+    // ici directement depuis TOUS les lieux publiés (STATIC_LOCATIONS), indépendamment de
+    // COUNTRY_KEY_MAP — et statNums[0] (Countries) n'était même jamais réécrit du tout,
+    // restant figé à sa valeur d'origine (9) pour toujours.
+    const allLocs = window.STATIC_LOCATIONS || [];
+    const allCountriesCanon = new Set();
+    const allCitiesTotal = new Set();
+    allLocs.forEach(loc => {
+        if (loc.country) allCountriesCanon.add(canonicalCountryName(loc.country));
+        if (loc.city) allCitiesTotal.add(loc.city);
+    });
     const statNums = document.querySelectorAll('.stats-bar .stat-num');
-    if (statNums[1]) statNums[1].textContent = allCities.size;
-    if (statNums[2]) statNums[2].textContent = totalLocs;
+    if (statNums[0]) statNums[0].textContent = allCountriesCanon.size;
+    if (statNums[1]) statNums[1].textContent = allCitiesTotal.size;
+    if (statNums[2]) statNums[2].textContent = allLocs.length;
 };
 
 // --- SURCHARGES ADMIN (photo/texte, demande du 13/09/2026) ---
@@ -217,15 +241,39 @@ window.setDestinationOverrideCacheEntry = function (key, fields) {
     if (!_destOverridesCache) _destOverridesCache = {};
     _destOverridesCache[key] = Object.assign({}, _destOverridesCache[key], fields);
 };
+// Icône copyright "C" sur une photo (demande du 01/11/2026, "comme pour le detail d'un
+// lieu") — même composant (bouton rond + popover texte) que .detail-hero-copyright-btn/
+// -popover (map.html/style.css, chargé par cette page), posé ici sur n'importe quel
+// conteneur position:relative (.row-photo ou .detail-hero). Masqué quand `credit` est
+// vide, comme son équivalent sur la fiche d'un lieu (renderLocationHeroBg, script.js).
+window.renderCopyrightIconHtml = function (credit, idSuffix) {
+    if (!credit) return '';
+    return `
+        <button type="button" id="copyright-btn-${idSuffix}" class="detail-hero-copyright-btn" aria-label="Photo credit" title="Photo credit" onclick="event.stopPropagation(); this.nextElementSibling.classList.toggle('hidden');">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M14.83 14.83a4 4 0 1 1 0-5.66"></path></svg>
+        </button>
+        <div id="copyright-popover-${idSuffix}" class="detail-hero-copyright-popover hidden">${credit}</div>
+    `;
+};
+
 window.applyDestinationOverrides = async function () {
     const overrides = await window.loadDestinationOverrides();
     document.querySelectorAll('.row[data-country]').forEach(row => {
         const ov = overrides[row.dataset.country];
-        if (!ov) return;
-        if (ov.photo) {
-            const photoEl = row.querySelector('.row-photo');
-            if (photoEl) photoEl.style.backgroundImage = `url('${ov.photo}')`;
+        const photoEl = row.querySelector('.row-photo');
+        // Icône/popover de crédit re-générée à chaque appel (changement de langue,
+        // sauvegarde depuis la modale admin) plutôt que mise à jour en place : la
+        // retirer d'abord évite d'en laisser une périmée quand le crédit vient d'être
+        // vidé depuis la modale.
+        if (photoEl) {
+            const oldBtn = photoEl.querySelector('.detail-hero-copyright-btn');
+            const oldPop = photoEl.querySelector('.detail-hero-copyright-popover');
+            if (oldBtn) oldBtn.remove();
+            if (oldPop) oldPop.remove();
+            if (ov && ov.credit) photoEl.insertAdjacentHTML('beforeend', window.renderCopyrightIconHtml(ov.credit, 'row-' + row.dataset.country));
         }
+        if (!ov) return;
+        if (ov.photo && photoEl) photoEl.style.backgroundImage = `url('${ov.photo}')`;
         if (ov.text) {
             const blurbEl = row.querySelector('.row-blurb');
             if (blurbEl) blurbEl.textContent = ov.text;
@@ -298,6 +346,7 @@ window.renderDestinationDetailHtml = function (key, currentLang, t, overrides) {
             <div class="detail-name">${c.name}</div>
             <div class="detail-sub">${c.locations} ${t.lLocs.toLowerCase()}</div>
           </div>
+          ${window.renderCopyrightIconHtml(ov.credit, 'detail-' + key)}
         </div>
         <div class="detail-body">
           <div class="kpi3">

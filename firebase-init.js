@@ -1216,7 +1216,7 @@ window.getDestinationOverrides = async function () {
         return {};
     }
 };
-window.adminSetDestinationOverride = async function (key, { photo, text } = {}) {
+window.adminSetDestinationOverride = async function (key, { photo, text, credit } = {}) {
     if (!key) return { success: false, code: 'missing-key' };
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
@@ -1224,6 +1224,10 @@ window.adminSetDestinationOverride = async function (key, { photo, text } = {}) 
         const fields = {};
         if (photo !== undefined) fields.photo = photo;
         if (text !== undefined) fields.text = text;
+        // Crédit photo (demande du 01/11/2026, "ajoute une case où on peut rédiger les
+        // crédits") — même champ/convention que loc.imgCredit (script.js), affiché via
+        // la même icône copyright que la fiche d'un lieu (voir renderDestinationDetailHtml).
+        if (credit !== undefined) fields.credit = credit;
         await setDoc(doc(db, 'destinationOverrides', key), fields, { merge: true });
         return { success: true };
     } catch (e) {
@@ -1242,7 +1246,7 @@ window.getArtistOverrides = async function () {
         return {};
     }
 };
-window.adminSetArtistOverride = async function (key, { photo, text } = {}) {
+window.adminSetArtistOverride = async function (key, { photo, text, credit } = {}) {
     if (!key) return { success: false, code: 'missing-key' };
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
@@ -1250,6 +1254,8 @@ window.adminSetArtistOverride = async function (key, { photo, text } = {}) {
         const fields = {};
         if (photo !== undefined) fields.photo = photo;
         if (text !== undefined) fields.text = text;
+        // Crédit photo — même principe que adminSetDestinationOverride ci-dessus.
+        if (credit !== undefined) fields.credit = credit;
         await setDoc(doc(db, 'artistOverrides', key), fields, { merge: true });
         return { success: true };
     } catch (e) {

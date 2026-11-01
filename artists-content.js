@@ -314,6 +314,22 @@ window.applyArtistSummaryOverride = async function () {
     }
 };
 
+// Icône copyright "C" sur la photo du hero (demande du 01/11/2026, "comme pour le detail
+// d'un lieu") — même composant (bouton rond + popover texte) que .detail-hero-copyright-
+// btn/-popover (map.html/style.css, chargé par cette page). Copie exacte de la fonction
+// jumelle dans destinations-content.js : les deux pages ne chargent jamais l'une l'autre,
+// donc rien de partageable à cet endroit sans un nouveau fichier commun pour une seule
+// petite fonction.
+window.renderCopyrightIconHtml = function (credit, idSuffix) {
+    if (!credit) return '';
+    return `
+        <button type="button" id="copyright-btn-${idSuffix}" class="detail-hero-copyright-btn" aria-label="Photo credit" title="Photo credit" onclick="event.stopPropagation(); this.nextElementSibling.classList.toggle('hidden');">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M14.83 14.83a4 4 0 1 1 0-5.66"></path></svg>
+        </button>
+        <div id="copyright-popover-${idSuffix}" class="detail-hero-copyright-popover hidden">${credit}</div>
+    `;
+};
+
 // --- RENDU DE LA FICHE DÉTAILLÉE ---
 // Construit le innerHTML de #detail-window pour un groupe donné. Appelée par
 // openDetail(key) sur artists.html ET map-artists.html — c'est la seule copie de cette
@@ -372,6 +388,7 @@ window.renderArtistDetailHtml = function (key, currentLang, t, overrides) {
           <div class="detail-close" onclick="closeDetail()">✕</div>
           <div class="detail-tag">${t.since} ${g.since}</div>
           <div class="detail-name">${g.name}</div>
+          ${window.renderCopyrightIconHtml(ov.credit, 'artist-detail-' + key)}
         </div>
         ${introText ? `<p class="detail-intro">${introText}</p>` : ''}
         <div class="detail-body">
