@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261071" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261072" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -271,6 +271,79 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .sacred-group-opt-rd { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #D9D4E2; margin-left: 6px; flex-shrink: 0; }
 .sacred-group-opt[aria-pressed="true"] .sacred-group-opt-rd { border: 6px solid #D42759; }
 
+/* ========== MEI'S PICTURES – RECHERCHE (demande du 01/11/2026, maquette jointe
+   mei_pictures_recherche_final.html) ==========
+   Tout ce bloc ne concerne QUE l'onglet "Mei's Pictures" — Community/Saved et le reste du
+   site restent inchangés. Classes nouvelles préfixées "mp-". Les règles .sacred-group-*
+   ci-dessus (feuille du bas d'origine) sont ici REDÉFINIES pour devenir un menu ancré sous
+   le bouton plutôt qu'une feuille fixée au bas de l'écran — la logique JS qui les pilote
+   (toggleSacredGroupSheet()/filterSacredByGroup()/renderSacredGroupFilterOptions(), voir
+   plus bas dans ce fichier) n'est pas réécrite, seule leur présentation change. */
+.mp-search-row { display: flex; align-items: center; gap: 6px; position: relative; max-width: 720px; margin: 0 auto 10px auto; }
+.mp-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.mp-sbox { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; border-radius: 999px; background: #fff; padding: 0 12px; box-shadow: 0 2px 10px rgba(74,45,138,.08); border: 1.5px solid transparent; }
+.mp-sbox svg { flex: 0 0 auto; color: #8A93A6; }
+.mp-sbox:focus-within { border-color: #E0156B; box-shadow: 0 0 0 4px rgba(224,21,107,.08); }
+.mp-sbox input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font-family: inherit; color: #1F2430; }
+.mp-sbox input::placeholder { color: #9A97A8; }
+/* Supprime la croix d'effacement NATIVE d'un <input type="search"> (Chrome/Safari) : notre
+   propre bouton .mp-clr ci-dessous la double sinon (deux croix visibles l'une à côté de
+   l'autre), en plus de ne pas être stylable/cohérent entre navigateurs. */
+.mp-sbox input[type="search"]::-webkit-search-cancel-button,
+.mp-sbox input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+/* input,textarea{font-size:16px!important} (style.css) couvre déjà "au moins 16px pour
+   éviter le zoom iOS" — aucune règle de taille de police à ajouter/forcer ici. */
+.mp-clr { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; color: #B5B1C2; padding: 2px; }
+.mp-clr.hidden { display: none; }
+.mp-clr svg { width: 16px; height: 16px; }
+/* Bouton de groupe EXISTANT (#sacred-group-filter-btn, classe .sacred-group-dd) : hauteur/
+   largeur adaptées pour s'aligner avec .mp-sbox, contour magenta 2px quand un groupe est
+   choisi — tout le reste (couleurs de groupe, logique de clic) est hérité tel quel. */
+.mp-search-row .sacred-group-dd { height: 44px; flex: 0 0 auto; border: 2px solid transparent; }
+.mp-search-row .sacred-group-dd.mp-active { border-color: #E0156B; }
+/* Menu déroulant (anciennement feuille du bas) : ancré sous le bouton, aligné à droite de
+   .mp-search-row (position:relative ci-dessus), comme demandé pour mobile ET ordinateur. */
+.sacred-group-dim { position: fixed; inset: 0; background: transparent; z-index: 1999; }
+.sacred-group-sheet { position: absolute; left: auto; right: 0; top: calc(100% + 8px); bottom: auto; width: 240px; max-width: calc(100vw - 20px); border-radius: 16px; padding: 6px; max-height: 360px; box-shadow: 0 14px 34px rgba(31,36,48,.22); }
+.sacred-group-sheet .sacred-group-grab, .sacred-group-sheet h4 { display: none; }
+.sacred-group-opt { padding: 10px 10px; border-bottom: none; border-radius: 10px; }
+.sacred-group-opt[aria-pressed="true"] { background: #FCE7F0; }
+.sacred-group-opt-av { width: 28px; height: 28px; font-size: 10px; }
+
+/* Ligne d'info "N pictures for "..." · GROUPE" + lien Clear (section 3 de la demande). */
+.mp-filter-info { display: flex; align-items: center; justify-content: space-between; gap: 10px; max-width: 900px; margin: 0 auto 10px auto; font-size: 12px; color: #5F6578; }
+.mp-filter-info.hidden { display: none; }
+.mp-filter-info b { color: #1F2430; }
+.mp-filter-info button { background: none; border: none; padding: 0; font-size: 12px; font-weight: 700; color: #E0156B; cursor: pointer; font-family: 'Poppins', sans-serif; }
+
+/* Grille/tuiles de CET onglet uniquement — activée par switchFeedTab() (plus bas) qui pose
+   .mp-grid-active sur #feed-grid seulement quand l'onglet "sacred" est actif ; la grille
+   partagée .feed-grid (Community/Saved) garde ses règles de base (3 colonnes, 900px)
+   inchangées, cette règle plus spécifique (#id.classe) les emporte seulement ici. */
+#feed-grid.mp-grid-active { grid-template-columns: repeat(3, 1fr); }
+.mp-tile { background: #ddd; }
+/* Annule le fondu au survol partagé (.feed-tile:hover{opacity:.85}, Community/Saved) pour
+   cet onglet seulement — la maquette ne prévoit qu'un zoom (desktop), pas de fondu combiné. */
+.mp-tile:hover { opacity: 1; }
+.mp-tile-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+.mp-tile-place { position: absolute; left: 6px; top: 6px; background: rgba(255,255,255,.92); color: #1F2430; font-size: 9.5px; font-weight: 600; border-radius: 999px; padding: 3px 9px; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; z-index: 2; }
+.mp-empty { padding: 50px 20px; text-align: center; color: #5F6578; font-size: 13px; }
+.mp-empty b { display: block; color: #1F2430; font-size: 15px; margin-bottom: 4px; }
+
+@media (min-width: 761px) {
+  #feed-grid.mp-grid-active { grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 1180px; }
+  .mp-tile { border-radius: 14px; }
+  .mp-tile:hover .mp-tile-img { transform: scale(1.04); }
+  .mp-search-row .sacred-group-dd, .mp-sbox { height: 48px; }
+}
+@media (min-width: 1101px) {
+  #feed-grid.mp-grid-active { grid-template-columns: repeat(5, 1fr); }
+}
+@media (max-width: 760px) {
+  .mp-search-row { max-width: none; margin: 0 10px 10px 10px; }
+  #feed-grid.mp-grid-active { gap: 3px; }
+}
+
 /* Post en grand (clic sur une tuile, demande du 10/09/2026 : réutiliser la même modale
    "publication" que profile.html — voir #loc-modal plus bas — plutôt que l'ancien
    #feed-post-overlay propre à cette page. SANS la mini-carte Leaflet ("supprime la map
@@ -419,8 +492,10 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
   .feed-tabs { max-width: none; width: calc(100% + 24px); margin: 0 -12px 12px -12px; }
 
   /* "Monte légèrement l'affichage de Mei's Pictures" (demande du 17/10/2026) : resserre
-     l'espace entre le filtre groupe et la grille elle-même. */
-  #sacred-group-filter-btn { margin: 0 auto 10px; }
+     l'espace entre le filtre groupe et la grille elle-même — géré depuis le 01/11/2026 par
+     .mp-search-row { margin: 0 10px 10px 10px } (bloc "MEI'S PICTURES – RECHERCHE" plus
+     haut dans ce <style>), le bouton n'étant plus un élément autonome mais un enfant flex
+     de cette rangée. */
 }
 </style>
 <script>
@@ -463,7 +538,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261071';
+        s.src = 'page-loader.js?v=20261072';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -583,26 +658,36 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         <input type="text" id="feed-search-input" class="feed-search-input" placeholder="Search a place, a group, a user...">
         <div id="feed-user-suggestions" class="feed-user-suggestions hidden"></div>
     </div>
-    <!-- Filtre groupe de l'onglet "Mei's Pictures" (demande du 16/10/2026 puis 23/10/2026,
-         "corrige le filtre de sélection de groupe pour appliquer le filtre de
-         mei_filtre_groupes_finale.html") — reprend la variante "Menu compact" de ce
-         mockup (la seule des 5 réellement retenue dans son board) : une pastille
-         compacte (point de couleur + nom du groupe choisi) qui ouvre une feuille en bas
-         d'écran listant chaque groupe (avatar/initiales, nom, nombre de photos, point de
-         sélection) — remplace l'ancien <select> natif. Masquée par défaut/sur les autres
-         onglets (voir switchFeedTab()), reconstruite avec les groupes RÉELLEMENT présents
-         dans cet onglet par renderSacredGroupFilterOptions() (plus bas), jamais la liste
-         fixe de tous les groupes du site. -->
-    <button type="button" id="sacred-group-filter-btn" class="sacred-group-dd hidden" onclick="window.toggleSacredGroupSheet()">
-        <i id="sacred-group-filter-dot"></i><span id="sacred-group-filter-label">All groups</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div id="sacred-group-dim" class="sacred-group-dim hidden" onclick="window.toggleSacredGroupSheet(false)"></div>
-    <div id="sacred-group-sheet" class="sacred-group-sheet hidden">
-        <div class="sacred-group-grab"></div>
-        <h4 id="i18n-choose-group">Choose a group</h4>
-        <div id="sacred-group-sheet-options"></div>
+    <!-- MEI'S PICTURES – RECHERCHE (demande du 01/11/2026, maquette jointe
+         mei_pictures_recherche_final.html) : barre de recherche + bouton de groupe sur la
+         même ligne, propre à cet onglet — masquée par défaut/sur les autres onglets, voir
+         switchFeedTab() plus bas. Le bouton de groupe (#sacred-group-filter-btn) est
+         l'élément EXISTANT (demande du 16/10/2026, mei_filtre_groupes_finale.html),
+         seulement déplacé ici et restylé — sa logique (toggleSacredGroupSheet()/
+         filterSacredByGroup()/renderSacredGroupFilterOptions() plus bas) n'est pas
+         réécrite, seule sa présentation passe de feuille du bas à menu ancré (CSS
+         uniquement, voir le bloc "MEI'S PICTURES – RECHERCHE" dans <style>). -->
+    <div class="mp-search-row hidden" id="mp-search-row">
+        <label class="mp-sbox" id="mp-sbox">
+            <span class="mp-sr-only" id="mp-search-label" data-i18n="mpSearchLabel">Search Mei's pictures</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+            <input type="search" id="mp-search-input" aria-labelledby="mp-search-label" enterkeyhint="search" autocomplete="off" data-i18n-placeholder="mpSearchPlaceholder" placeholder="Search a user, a group, a place…">
+            <button type="button" class="mp-clr hidden" id="mp-clear-btn" aria-label="Clear">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"></circle><path d="M8.5 8.5l7 7M15.5 8.5l-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+        </label>
+        <button type="button" id="sacred-group-filter-btn" class="sacred-group-dd hidden" onclick="window.toggleSacredGroupSheet()" aria-haspopup="listbox" aria-expanded="false">
+            <i id="sacred-group-filter-dot"></i><span id="sacred-group-filter-label">All groups</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="sacred-group-dim" class="sacred-group-dim hidden" onclick="window.toggleSacredGroupSheet(false)"></div>
+        <div id="sacred-group-sheet" class="sacred-group-sheet hidden" role="listbox">
+            <div class="sacred-group-grab"></div>
+            <h4 id="i18n-choose-group">Choose a group</h4>
+            <div id="sacred-group-sheet-options"></div>
+        </div>
     </div>
+    <div class="mp-filter-info hidden" id="mp-filter-info"></div>
     <div class="feed-loading" id="feed-loading">Loading…</div>
     <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
     <div class="feed-grid" id="feed-grid"></div>
@@ -661,9 +746,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261071"></script>
-<script src="locations-data.js?v=20261071"></script>
-<script src="script.js?v=20261071"></script>
+<script type="module" src="firebase-init.js?v=20261072"></script>
+<script src="locations-data.js?v=20261072"></script>
+<script src="script.js?v=20261072"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -783,14 +868,23 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         currentFeedTab = tab;
         document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
         document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred');
-        // Filtre groupe (demande du 16/10/2026) : visible uniquement sur "Mei's Pictures",
-        // même logique inversée que la recherche ci-dessus. renderSacredGroupFilterOptions()
-        // (appelée par renderSacredGrid() plus bas) le re-confirme une fois les options
-        // reconstruites, mais le bascule aussi immédiatement ici pour ne pas attendre la
-        // fin du fetch avant de (dé)masquer.
-        const groupFilterEl = document.getElementById('sacred-group-filter-btn');
-        if (groupFilterEl) groupFilterEl.classList.toggle('hidden', tab !== 'sacred');
+        // Ligne recherche + bouton de groupe de "Mei's Pictures" (demande du 01/11/2026) :
+        // visible uniquement sur cet onglet, même logique inversée que la recherche
+        // Community ci-dessus. renderSacredGroupFilterOptions() (appelée par
+        // renderSacredGrid() plus bas) re-confirme le bouton une fois les options
+        // reconstruites, mais on le bascule aussi immédiatement ici pour ne pas attendre la
+        // fin du fetch avant de (dé)masquer. #feed-grid.mp-grid-active (voir le bloc "MEI'S
+        // PICTURES – RECHERCHE" dans <style>) n'affecte que CETTE grille affichée sur cet
+        // onglet — Community/Saved gardent leurs propres colonnes/largeur inchangées.
+        const mpRowEl = document.getElementById('mp-search-row');
+        if (mpRowEl) mpRowEl.classList.toggle('hidden', tab !== 'sacred');
+        const mpGridEl = document.getElementById('feed-grid');
+        if (mpGridEl) mpGridEl.classList.toggle('mp-grid-active', tab === 'sacred');
         if (tab !== 'sacred') window.toggleSacredGroupSheet(false);
+        if (tab !== 'sacred') {
+            const infoEl = document.getElementById('mp-filter-info');
+            if (infoEl) infoEl.classList.add('hidden');
+        }
         if (tab === 'saved') {
             loadSavedFeed();
         } else if (tab === 'sacred') {
@@ -873,6 +967,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     // Groupe actuellement filtré (voir le <select id="sacred-group-filter"> plus bas) —
     // 'All' = aucun filtre, tous les lieux avec au moins une photo Mei.
     let sacredActiveGroup = 'All';
+    // Texte de recherche "Mei's Pictures" (demande du 01/11/2026, maquette jointe
+    // mei_pictures_recherche_final.html) — distinct de feed-search-input (Community,
+    // filterFeed()), cet onglet n'affiche pas des publications mais des lieux. Se combine
+    // avec sacredActiveGroup ci-dessus, voir renderSacredGridFromData() plus bas.
+    let sacredSearchQuery = '';
+    // Insensible aux accents/majuscules ("montmartre" = "Montmartre") — même principe que
+    // le norm() de la maquette fournie.
+    function normSearch(s) { return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
     // Première photo de loc.recreatedPhotos (tableau, format courant depuis le 18/09/2026),
     // ou repli sur l'ancien loc.recreatedPhoto (chaîne unique) pour les lieux jamais migrés.
     // recreatedPhotoUrl() (script.js) : une entrée peut être une simple chaîne ou, depuis le
@@ -1024,6 +1126,10 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         const labelEl = document.getElementById('sacred-group-filter-label');
         if (dotEl) dotEl.style.background = sacredActiveGroup === 'All' ? 'linear-gradient(135deg,#E0156B,#9B5CF6)' : groupColorFor(sacredActiveGroup);
         if (labelEl) labelEl.textContent = sacredActiveGroup === 'All' ? allLabel : sacredActiveGroup;
+        // Contour magenta 2px quand un groupe est choisi (demande du 01/11/2026, maquette
+        // jointe) — voir .mp-search-row .sacred-group-dd.mp-active dans le bloc "MEI'S
+        // PICTURES – RECHERCHE" du <style>.
+        btn.classList.toggle('mp-active', sacredActiveGroup !== 'All');
         const sheetTitleEl = document.getElementById('i18n-choose-group');
         if (sheetTitleEl) sheetTitleEl.textContent = currentLang === 'fr' ? 'Choisir un groupe' : 'Choose a group';
 
@@ -1048,18 +1154,89 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         const opening = show !== undefined ? show : sheet.classList.contains('hidden');
         sheet.classList.toggle('hidden', !opening);
         dim.classList.toggle('hidden', !opening);
+        // aria-expanded (demande du 01/11/2026, section accessibilité) — le bouton garde
+        // aria-haspopup="listbox" posé une fois pour toutes dans le HTML.
+        const btn = document.getElementById('sacred-group-filter-btn');
+        if (btn) btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        // BUG évité : sans déplacer le focus DANS le menu à l'ouverture, les flèches
+        // haut/bas (voir le keydown sur #sacred-group-sheet plus bas) ne servent à rien —
+        // le focus reste sur le bouton, hors de ce conteneur, et l'évènement clavier ne
+        // l'atteint donc jamais (il ne fait que remonter l'arbre DOM depuis l'élément
+        // focalisé). Focalise l'option actuellement choisie (ou la première) dès l'ouverture.
+        if (opening) {
+            requestAnimationFrame(() => {
+                const active = sheet.querySelector('.sacred-group-opt[aria-pressed="true"]') || sheet.querySelector('.sacred-group-opt');
+                if (active) active.focus();
+            });
+        } else if (btn) {
+            btn.focus();
+        }
     };
+    // Échap referme le menu de groupe (demande du 01/11/2026, section accessibilité) —
+    // n'agit que si le menu est réellement ouvert, pour ne jamais intercepter Échap
+    // ailleurs sur la page (ex: une autre modale déjà ouverte au-dessus).
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const sheet = document.getElementById('sacred-group-sheet');
+        if (sheet && !sheet.classList.contains('hidden')) window.toggleSacredGroupSheet(false);
+    });
+    // Flèches haut/bas pour naviguer entre les options du menu de groupe une fois ouvert
+    // (demande du 01/11/2026, section accessibilité) — Tab/Entrée fonctionnent déjà sans
+    // rien ajouter, ce sont de vrais <button>.
+    document.getElementById('sacred-group-sheet').addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        e.preventDefault();
+        const opts = Array.from(document.querySelectorAll('#sacred-group-sheet-options .sacred-group-opt'));
+        const i = opts.indexOf(document.activeElement);
+        const next = e.key === 'ArrowDown' ? Math.min(i + 1, opts.length - 1) : Math.max(i - 1, 0);
+        if (opts[next]) opts[next].focus();
+    });
 
     // Grille elle-même, séparée du fetch ci-dessus (demande du 16/10/2026) : reconstruite
     // SEULEMENT à partir de sacredLocs déjà en mémoire à chaque changement de filtre, sans
     // relire Firestore.
+    // Recherche (demande du 01/11/2026) : porte sur le nom du lieu, la ville, le groupe et
+    // le membre — PAS sur "l'utilisateur qui a posté", qui n'existe pas pour ces lieux
+    // (contenu officiel géré depuis l'admin, voir window.createPhotoGalleryField() dans
+    // script.js, pas des publications d'un compte comme dans Community). Se combine avec
+    // sacredActiveGroup : les deux filtres s'appliquent ensemble (ET), comme demandé.
+    function sacredSearchMatch(loc, words) {
+        if (!words.length) return true;
+        const hay = normSearch([loc.name, loc.city, loc.group, loc.member].filter(Boolean).join(' '));
+        return words.every(w => hay.includes(w));
+    }
     function renderSacredGridFromData() {
         const grid = document.getElementById('feed-grid');
         const emptyEl = document.getElementById('feed-empty');
-        const filtered = sacredActiveGroup === 'All' ? sacredLocs : sacredLocs.filter(l => l.group === sacredActiveGroup);
+        const infoEl = document.getElementById('mp-filter-info');
+        const words = normSearch(sacredSearchQuery.trim()).split(/\s+/).filter(Boolean);
+        const byGroup = sacredActiveGroup === 'All' ? sacredLocs : sacredLocs.filter(l => l.group === sacredActiveGroup);
+        const filtered = byGroup.filter(l => sacredSearchMatch(l, words));
+        const hasFilter = !!sacredSearchQuery.trim() || sacredActiveGroup !== 'All';
+
+        // Ligne "N pictures for "..." · GROUPE" + Clear (section 3 de la demande) —
+        // n'apparaît que si un filtre (recherche et/ou groupe) est actif.
+        if (hasFilter) {
+            const count = filtered.length;
+            const countLabel = count === 1 ? t('mpPictureSingular') : t('mpPictureMultiple');
+            const forQuery = sacredSearchQuery.trim() ? ' ' + t('mpForQuery').replace('{q}', escapeHtml(sacredSearchQuery.trim())) : '';
+            const groupPart = sacredActiveGroup !== 'All' ? ' · ' + escapeHtml(sacredActiveGroup) : '';
+            infoEl.innerHTML = `<span><b>${count}</b> ${escapeHtml(countLabel)}${forQuery}${groupPart}</span><button type="button" id="mp-clear-all-btn">${escapeHtml(t('mpClear'))}</button>`;
+            infoEl.classList.remove('hidden');
+            const clearAllBtn = document.getElementById('mp-clear-all-btn');
+            if (clearAllBtn) clearAllBtn.onclick = clearSacredFilters;
+        } else {
+            infoEl.classList.add('hidden');
+            infoEl.innerHTML = '';
+        }
+
         if (!filtered.length) {
             grid.innerHTML = '';
-            emptyEl.textContent = currentLang === 'fr' ? 'Aucune photo pour ce groupe.' : 'No photos for this group.';
+            if (hasFilter) {
+                emptyEl.innerHTML = `<b>${escapeHtml(t('mpEmptyTitle'))}</b>${escapeHtml(sacredActiveGroup !== 'All' ? t('mpEmptyDescGroup') : t('mpEmptyDesc'))}`;
+            } else {
+                emptyEl.textContent = currentLang === 'fr' ? 'Aucune photo pour ce groupe.' : 'No photos for this group.';
+            }
             emptyEl.classList.remove('hidden');
             return;
         }
@@ -1067,10 +1244,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         grid.innerHTML = '';
         filtered.forEach(loc => {
             const tile = document.createElement('div');
-            tile.className = 'feed-tile';
-            tile.style.backgroundImage = `url('${firstRecreatedPhoto(loc)}')`;
-            tile.title = loc.name || '';
-            tile.innerHTML = loc.group ? `<div class="feed-tile-official-badge">${escapeHtml(loc.group)}</div>` : '';
+            tile.className = 'feed-tile mp-tile';
+            // <img> réel plutôt qu'un background-image (demande du 01/11/2026, section
+            // performance/accessibilité) : nécessaire pour loading="lazy" et un vrai texte
+            // alternatif, qu'un style CSS ne peut porter ni l'un ni l'autre.
+            const altText = [loc.name, loc.group].filter(Boolean).join(' – ');
+            tile.innerHTML = `<img class="mp-tile-img" loading="lazy" alt="${escapeHtml(altText)}" src="${firstRecreatedPhoto(loc)}">`
+                + (loc.name ? `<span class="mp-tile-place">${escapeHtml(loc.name)}</span>` : '')
+                + (loc.group ? `<div class="feed-tile-official-badge">${escapeHtml(loc.group)}</div>` : '');
             tile.onclick = () => openSacredPlace(loc.id);
             grid.appendChild(tile);
         });
@@ -1080,6 +1261,47 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         renderSacredGroupFilterOptions();
         renderSacredGridFromData();
     };
+    // "Clear" (section 3 de la demande) — remet recherche ET groupe à zéro, comme dans la
+    // maquette fournie (data-clearall).
+    function clearSacredFilters() {
+        sacredSearchQuery = '';
+        sacredActiveGroup = 'All';
+        const input = document.getElementById('mp-search-input');
+        if (input) input.value = '';
+        const clearBtn = document.getElementById('mp-clear-btn');
+        if (clearBtn) clearBtn.classList.add('hidden');
+        renderSacredGroupFilterOptions();
+        renderSacredGridFromData();
+    }
+
+    // Recherche "Mei's Pictures" : filtre la grille ~150ms après la frappe (demande du
+    // 01/11/2026, section 3), même principe de debounce que userSuggestDebounce plus bas
+    // dans ce fichier (recherche Community). sacredLocs est déjà entièrement chargé en
+    // mémoire (voir renderSacredGrid() plus haut) — pas de nouvelle lecture Firestore ici,
+    // juste un nouveau rendu de la grille déjà en cache.
+    let sacredSearchDebounce = null;
+    const mpSearchInputEl = document.getElementById('mp-search-input');
+    const mpClearBtnEl = document.getElementById('mp-clear-btn');
+    if (mpSearchInputEl) {
+        mpSearchInputEl.addEventListener('input', (e) => {
+            const q = e.target.value;
+            if (mpClearBtnEl) mpClearBtnEl.classList.toggle('hidden', !q);
+            clearTimeout(sacredSearchDebounce);
+            sacredSearchDebounce = setTimeout(() => {
+                sacredSearchQuery = q;
+                renderSacredGridFromData();
+            }, 150);
+        });
+    }
+    if (mpClearBtnEl) {
+        mpClearBtnEl.addEventListener('click', () => {
+            if (mpSearchInputEl) { mpSearchInputEl.value = ''; mpSearchInputEl.focus(); }
+            mpClearBtnEl.classList.add('hidden');
+            clearTimeout(sacredSearchDebounce);
+            sacredSearchQuery = '';
+            renderSacredGridFromData();
+        });
+    }
 
     // Ouvre le même fil plein écran défilant que Community (demande du 23/10/2026, "qu'on
     // puisse swipe pour voir les suivantes, comme dans 'Community'") — remplace l'ancienne
