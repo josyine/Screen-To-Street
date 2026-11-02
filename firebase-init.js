@@ -21,7 +21,7 @@ import {
     EmailAuthProvider,
     updatePassword
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { initializeFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, limitToLast, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { initializeFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDoc, deleteField, increment, arrayUnion, arrayRemove, serverTimestamp, query, where, orderBy, limit, limitToLast, startAfter, documentId, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 // Notifications push (demande du 05/10/2026) — isSupported() exclut proprement les
 // navigateurs/contextes sans FCM (Safari iOS en PWA non installée, navigation privée...)
 // au lieu de laisser getMessaging() lever une exception plus bas.
@@ -1427,33 +1427,106 @@ window.updateMyProfilePhoto = async function (photoDataUrl) {
 // photos publiées par TOUS les comptes. Optimisé le 13/09/2026 (voir la grande note
 // au-dessus de setLocationReview()) : UNE SEULE requête sur l'index dénormalisé
 // feedPosts/, au lieu d'un getDoc() par compte du site.
+// AJOUT SITE (demande du 02/11/2026, "Community met plus de 5s à charger") : chaque photo
+// est encore stockée en base64 DANS le document feedPosts (~100-300 Ko chacune, voir les
+// notes plus haut dans ce fichier — les sortir vers Firebase Storage est un chantier séparé,
+// pas encore fait) — mais rien n'empêchait cette requête de télécharger TOUT le fil (chaque
+// photo jamais publiée sur le site) avant de pouvoir afficher la moindre tuile. `opts.
+// firstPageOnly` fait gagner le temps jusqu'au premier rendu : une PAGE de
+// FEED_PAGE_SIZE docs suffit à peindre la grille, le reste continue de se charger derrière
+// en tâche de fond (_continueLoadingFullFeed) et remplit `_globalPhotoFeedCache` au fur et
+// à mesure — `opts.onMore(photosDeCettePage, estTerminé)` laisse l'appelant ajouter les
+// tuiles au fur et à mesure plutôt que d'attendre la fin. Un appel SANS opts (tous les
+// appelants existants : map.html via script.js, Saved/recherche dans feed.html) garde le
+// comportement historique inchangé — il attend le fil COMPLET, en réutilisant le
+// chargement en tâche de fond déjà en cours s'il y en a un plutôt que de relancer une
+// deuxième requête complète en double.
+const FEED_PAGE_SIZE = 24;
 let _globalPhotoFeedCache = null;
 let _globalPhotoFeedCachePromise = null;
-window.fetchGlobalPhotoFeed = async function () {
+let _globalPhotoFeedFirstPagePromise = null;
+let _globalPhotoFeedBackgroundPromise = null;
+function _photoFromFeedPostDoc(d) {
+    const p = d.data();
+    if (!p.photo) return null;
+    return {
+        id: p.itemId,
+        uid: p.uid,
+        username: p.username || '',
+        locationId: p.locationId,
+        locationName: p.locationName || '',
+        photo: p.photo,
+        caption: p.caption || '',
+        date: p.date || null,
+        taggedFriends: Array.isArray(p.taggedFriends) ? p.taggedFriends : [],
+        updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0,
+        standalone: !!p.standalone,
+        likeCount: p.likeCount || 0
+    };
+}
+// Poursuit le chargement après la première page, `startAfter` le dernier document déjà lu —
+// jamais attendue par le premier appelant (firstPageOnly), seulement par un éventuel appel
+// SANS opts arrivant pendant qu'elle tourne encore (voir plus bas).
+async function _continueLoadingFullFeed(firstSnap, firstPagePhotos, onMore) {
+    if (_globalPhotoFeedBackgroundPromise) return _globalPhotoFeedBackgroundPromise;
+    _globalPhotoFeedBackgroundPromise = (async () => {
+        const all = firstPagePhotos.slice();
+        let lastDoc = firstSnap.docs[firstSnap.docs.length - 1];
+        let keepGoing = firstSnap.docs.length === FEED_PAGE_SIZE; // page incomplète = déjà tout lu
+        while (keepGoing && lastDoc) {
+            try {
+                const snap = await getDocs(query(collection(db, 'feedPosts'), orderBy('updatedAt', 'desc'), startAfter(lastDoc), limit(FEED_PAGE_SIZE)));
+                if (snap.empty) break;
+                const pagePhotos = [];
+                snap.forEach(d => { const photo = _photoFromFeedPostDoc(d); if (photo) pagePhotos.push(photo); });
+                all.push(...pagePhotos);
+                if (onMore) onMore(pagePhotos, false);
+                lastDoc = snap.docs[snap.docs.length - 1];
+                keepGoing = snap.docs.length === FEED_PAGE_SIZE;
+            } catch (e) {
+                console.warn('Chargement de la suite du fil (arrière-plan) échoué :', e);
+                break;
+            }
+        }
+        _globalPhotoFeedCache = all;
+        if (onMore) onMore([], true);
+    })();
+    try { await _globalPhotoFeedBackgroundPromise; } finally { _globalPhotoFeedBackgroundPromise = null; }
+}
+window.fetchGlobalPhotoFeed = async function (opts) {
     if (_globalPhotoFeedCache) return _globalPhotoFeedCache;
+    const firstPageOnly = !!(opts && opts.firstPageOnly);
+    const onMore = (opts && typeof opts.onMore === 'function') ? opts.onMore : null;
+
+    if (firstPageOnly) {
+        if (_globalPhotoFeedFirstPagePromise) return _globalPhotoFeedFirstPagePromise;
+        _globalPhotoFeedFirstPagePromise = (async () => {
+            try {
+                const firstSnap = await getDocs(query(collection(db, 'feedPosts'), orderBy('updatedAt', 'desc'), limit(FEED_PAGE_SIZE)));
+                const firstPage = [];
+                firstSnap.forEach(d => { const photo = _photoFromFeedPostDoc(d); if (photo) firstPage.push(photo); });
+                _continueLoadingFullFeed(firstSnap, firstPage, onMore); // jamais attendue ici, exprès
+                return firstPage;
+            } catch (e) {
+                console.warn('Chargement de la première page du fil échoué :', e);
+                return [];
+            } finally {
+                _globalPhotoFeedFirstPagePromise = null;
+            }
+        })();
+        return _globalPhotoFeedFirstPagePromise;
+    }
+
+    // Comportement historique (inchangé pour tout appelant sans opts) : attend le fil
+    // COMPLET — mais réutilise un chargement en tâche de fond déjà en cours s'il y en a
+    // un, au lieu de lancer une deuxième requête complète en double.
+    if (_globalPhotoFeedBackgroundPromise) { await _globalPhotoFeedBackgroundPromise; return _globalPhotoFeedCache || []; }
     if (_globalPhotoFeedCachePromise) return _globalPhotoFeedCachePromise;
     _globalPhotoFeedCachePromise = (async () => {
         try {
             const snap = await getDocs(query(collection(db, 'feedPosts'), orderBy('updatedAt', 'desc')));
             const photos = [];
-            snap.forEach(d => {
-                const p = d.data();
-                if (!p.photo) return;
-                photos.push({
-                    id: p.itemId,
-                    uid: p.uid,
-                    username: p.username || '',
-                    locationId: p.locationId,
-                    locationName: p.locationName || '',
-                    photo: p.photo,
-                    caption: p.caption || '',
-                    date: p.date || null,
-                    taggedFriends: Array.isArray(p.taggedFriends) ? p.taggedFriends : [],
-                    updatedAt: (p.updatedAt && p.updatedAt.seconds) || 0,
-                    standalone: !!p.standalone,
-                    likeCount: p.likeCount || 0
-                });
-            });
+            snap.forEach(d => { const photo = _photoFromFeedPostDoc(d); if (photo) photos.push(photo); });
             _globalPhotoFeedCache = photos;
             return photos;
         } catch (e) {
