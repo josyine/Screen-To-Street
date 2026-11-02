@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261073" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261074" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -538,7 +538,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261073';
+        s.src = 'page-loader.js?v=20261074';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -746,9 +746,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261073"></script>
-<script src="locations-data.js?v=20261073"></script>
-<script src="script.js?v=20261073"></script>
+<script type="module" src="firebase-init.js?v=20261074"></script>
+<script src="locations-data.js?v=20261074"></script>
+<script src="script.js?v=20261074"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -771,6 +771,45 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         ]);
     }
 
+    // AJOUT SITE (demande du 02/11/2026, "Community met plus de 5s à charger") : la
+    // création d'une tuile est sortie de renderFeedGrid() pour être réutilisable par
+    // appendFeedGridTiles() ci-dessous (chargement progressif) — comportement de la tuile
+    // elle-même inchangé.
+    const feedHeartSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>';
+    function buildFeedTile(p) {
+        const tile = document.createElement('div');
+        tile.className = 'feed-tile';
+        tile.style.backgroundImage = `url('${p.photo}')`;
+        tile.title = p.locationName || '';
+        tile.onclick = () => openFeedPost(feedPhotos.indexOf(p));
+        tile.innerHTML = `
+            <div class="feed-tile-avatar" style="background:${feedAvatarColor(p.username)};" title="${escapeHtml(p.username || '')}">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
+            <div class="feed-tile-likes" data-photo-key="${p.uid}_${p.id}">${feedHeartSvg}<span>${p.likeCount != null ? p.likeCount : '·'}</span></div>
+        `;
+        tile.querySelector('.feed-tile-avatar').onclick = (e) => {
+            e.stopPropagation();
+            if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username);
+        };
+        // Liker directement depuis la grille en cliquant le cœur (demande du 12/09/2026,
+        // jusqu'ici il fallait ouvrir la publication en entier) — stopPropagation pour ne
+        // pas aussi déclencher tile.onclick (qui ouvrirait la modale par-dessus). Même
+        // logique optimiste que #modal-post-like-btn dans script.js : le badge change
+        // immédiatement, togglePhotoLike() part en tâche de fond.
+        const likesBadge = tile.querySelector('.feed-tile-likes');
+        likesBadge.onclick = async (e) => {
+            e.stopPropagation();
+            const nowLiked = !likesBadge.classList.contains('liked');
+            likesBadge.classList.toggle('liked', nowLiked);
+            const countEl = likesBadge.querySelector('span');
+            const current = parseInt(countEl.textContent, 10) || 0;
+            countEl.textContent = Math.max(0, current + (nowLiked ? 1 : -1));
+            p.likeCount = Math.max(0, current + (nowLiked ? 1 : -1));
+            p.likedByMe = nowLiked;
+            if (typeof window.togglePhotoLike === 'function') await window.togglePhotoLike(p.uid + '_' + p.id, nowLiked);
+        };
+        return tile;
+    }
+
     // Affiche une liste de photos (le fil complet, ou un sous-ensemble filtré par
     // filterFeed() plus bas) — indexée sur feedPhotos (le fil complet) pour que
     // openFeedPost() retrouve toujours le bon like/uid même après un filtrage.
@@ -780,41 +819,20 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         grid.innerHTML = '';
         if (!photos.length) { emptyEl.textContent = emptyMessage || 'No results.'; emptyEl.classList.remove('hidden'); return; }
         emptyEl.classList.add('hidden');
-        const heartSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>';
-        photos.forEach(p => {
-            const tile = document.createElement('div');
-            tile.className = 'feed-tile';
-            tile.style.backgroundImage = `url('${p.photo}')`;
-            tile.title = p.locationName || '';
-            tile.onclick = () => openFeedPost(feedPhotos.indexOf(p));
-            tile.innerHTML = `
-                <div class="feed-tile-avatar" style="background:${feedAvatarColor(p.username)};" title="${escapeHtml(p.username || '')}">${escapeHtml((p.username || 'U').charAt(0).toUpperCase())}</div>
-                <div class="feed-tile-likes" data-photo-key="${p.uid}_${p.id}">${heartSvg}<span>${p.likeCount != null ? p.likeCount : '·'}</span></div>
-            `;
-            tile.querySelector('.feed-tile-avatar').onclick = (e) => {
-                e.stopPropagation();
-                if (p.username) window.location.href = 'profile.html?u=' + encodeURIComponent(p.username);
-            };
-            // Liker directement depuis la grille en cliquant le cœur (demande du 12/09/2026,
-            // jusqu'ici il fallait ouvrir la publication en entier) — stopPropagation pour ne
-            // pas aussi déclencher tile.onclick (qui ouvrirait la modale par-dessus). Même
-            // logique optimiste que #modal-post-like-btn dans script.js : le badge change
-            // immédiatement, togglePhotoLike() part en tâche de fond.
-            const likesBadge = tile.querySelector('.feed-tile-likes');
-            likesBadge.onclick = async (e) => {
-                e.stopPropagation();
-                const nowLiked = !likesBadge.classList.contains('liked');
-                likesBadge.classList.toggle('liked', nowLiked);
-                const countEl = likesBadge.querySelector('span');
-                const current = parseInt(countEl.textContent, 10) || 0;
-                countEl.textContent = Math.max(0, current + (nowLiked ? 1 : -1));
-                p.likeCount = Math.max(0, current + (nowLiked ? 1 : -1));
-                p.likedByMe = nowLiked;
-                if (typeof window.togglePhotoLike === 'function') await window.togglePhotoLike(p.uid + '_' + p.id, nowLiked);
-            };
-            grid.appendChild(tile);
-        });
+        photos.forEach(p => grid.appendChild(buildFeedTile(p)));
         loadFeedTileLikes(photos);
+    }
+
+    // AJOUT SITE (demande du 02/11/2026) : ajoute une nouvelle page de photos chargée en
+    // tâche de fond (voir fetchGlobalPhotoFeed({firstPageOnly,onMore}) dans
+    // firebase-init.js) SANS tout redessiner — évite un flash de la grille déjà visible à
+    // chaque page qui arrive.
+    function appendFeedGridTiles(morePhotos) {
+        if (!morePhotos.length) return;
+        const grid = document.getElementById('feed-grid');
+        document.getElementById('feed-empty').classList.add('hidden');
+        morePhotos.forEach(p => grid.appendChild(buildFeedTile(p)));
+        loadFeedTileLikes(morePhotos);
     }
 
     // Marque les tuiles déjà aimées par MOI (demande du 13/09/2026, optimisation perf) :
@@ -838,11 +856,26 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         });
     }
 
-    // Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client,
-    // le fil entier est déjà chargé en mémoire.
-    function filterFeed(text) {
+    // Recherche par lieu / groupe / pseudo (demande du 08/09/2026) : filtre côté client.
+    // AJOUT SITE (demande du 02/11/2026) : depuis le chargement progressif de loadFeed()
+    // ci-dessus, feedPhotos peut encore être en train de se compléter en tâche de fond au
+    // moment où la personne tape — une recherche doit porter sur le fil COMPLET, pas
+    // seulement sur les premières pages déjà affichées. fetchGlobalPhotoFeed() SANS
+    // firstPageOnly attend cette tâche de fond si elle est déjà en cours (voir
+    // firebase-init.js) plutôt que de la relancer en double — généralement déjà terminée
+    // ou presque à ce stade, donc sans latence perceptible dans le cas courant.
+    async function filterFeed(text) {
         const q = (text || '').toLowerCase().trim();
         if (!q) { renderFeedGrid(feedPhotos); return; }
+        if (typeof window.fetchGlobalPhotoFeed === 'function') {
+            try {
+                feedPhotos = await withTimeout(window.fetchGlobalPhotoFeed(), 15000);
+                feedPhotos.forEach(enrichFeedPhotoGroup);
+            } catch (e) { console.warn('Chargement du fil complet (recherche) échoué :', e); }
+        }
+        // La saisie a changé pendant l'attente ci-dessus : cette réponse est obsolète,
+        // laisse l'appel le plus récent (celui en cours) redessiner la grille.
+        if (document.getElementById('feed-search-input').value.toLowerCase().trim() !== q) return;
         renderFeedGrid(feedPhotos.filter(p =>
             (p.username || '').toLowerCase().includes(q) ||
             (p.locationName || '').toLowerCase().includes(q) ||
@@ -852,10 +885,14 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     document.getElementById('feed-search-input').addEventListener('input', (e) => filterFeed(e.target.value));
 
     // Onglets (demande du 13/09/2026, "Explore"/"Saved" ; renommé/étendu le 14/09/2026).
-    // "Saved" filtre feedPhotos (déjà chargé pour Community) sur les clés renvoyées par
-    // window.listMySavedPhotoKeys() — pas de second fetch réseau des publications
-    // elles-mêmes. "Sacred Places" (tous les lieux du site) est un contenu totalement
-    // différent (celebLocations, pas feedPhotos) — voir renderSacredGrid() plus bas.
+    // "Saved" filtre feedPhotos sur les clés renvoyées par window.listMySavedPhotoKeys() —
+    // pas de second fetch réseau DES PUBLICATIONS elles-mêmes : fetchGlobalPhotoFeed()
+    // (voir loadSavedFeed() plus bas) renvoie le cache déjà chargé pour Community une fois
+    // prêt, ou attend le même chargement en tâche de fond déjà en cours s'il ne l'est pas
+    // encore (voir le commentaire "chargement progressif" dans loadFeed()), jamais une
+    // deuxième requête Firestore en double. "Sacred Places" (tous les lieux du site) est un
+    // contenu totalement différent (celebLocations, pas feedPhotos) — voir
+    // renderSacredGrid() plus bas.
     let currentFeedTab = 'community';
     // Échec du chargement initial de "Community" (demande du 20/09/2026, "je veux pouvoir
     // voir les photos de Community... fait en sorte que ça fonctionne") — jusqu'ici, un
@@ -1398,7 +1435,16 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         if (typeof window.listMySavedPhotoKeys !== 'function') { renderFeedGrid([], 'No saved posts yet.'); return; }
         loadingEl.classList.remove('hidden');
         try {
-            const savedKeys = await withTimeout(window.listMySavedPhotoKeys(), 15000);
+            // AJOUT SITE (demande du 02/11/2026) : Saved filtre feedPhotos, qui peut encore
+            // être en train de se compléter en tâche de fond (voir loadFeed() plus haut) —
+            // sans ça, un post enregistré mais pas encore parmi les toutes premières pages
+            // chargées manquerait ici en silence. Même attente que filterFeed() ci-dessus.
+            const [savedKeys] = await Promise.all([
+                withTimeout(window.listMySavedPhotoKeys(), 15000),
+                typeof window.fetchGlobalPhotoFeed === 'function'
+                    ? withTimeout(window.fetchGlobalPhotoFeed(), 15000).then(full => { feedPhotos = full; feedPhotos.forEach(enrichFeedPhotoGroup); })
+                    : Promise.resolve()
+            ]);
             const savedSet = new Set(savedKeys);
             const savedPhotos = feedPhotos.filter(p => savedSet.has(p.uid + '_' + p.id));
             loadingEl.classList.add('hidden');
@@ -1457,6 +1503,16 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         if (suggestBox.innerHTML.trim()) suggestBox.classList.remove('hidden');
     });
 
+    // Groupe/artiste (pour la recherche plus bas) : pas renvoyé par fetchGlobalPhotoFeed
+    // (firebase-init.js, module Firebase pur, n'a pas accès à celebLocations, chargée par
+    // script.js) — enrichi ici plutôt, pour CHAQUE page (la première comme celles qui
+    // arrivent en tâche de fond, voir loadFeed() ci-dessous).
+    function enrichFeedPhotoGroup(p) {
+        if (typeof celebLocations === 'undefined') return;
+        const loc = celebLocations.find(l => l.id === p.locationId || l.id === Number(p.locationId));
+        p.group = loc ? loc.group : '';
+    }
+
     async function loadFeed() {
         const loadingEl = document.getElementById('feed-loading');
         const emptyEl = document.getElementById('feed-empty');
@@ -1469,16 +1525,27 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         emptyEl.classList.add('hidden');
         try {
             if (typeof window.fetchGlobalPhotoFeed !== 'function') throw new Error('fetchGlobalPhotoFeed unavailable');
-            feedPhotos = await withTimeout(window.fetchGlobalPhotoFeed(), 15000);
-            // Groupe/artiste (pour la recherche ci-dessus) : pas renvoyé par
-            // fetchGlobalPhotoFeed (firebase-init.js, module Firebase pur, n'a pas accès à
-            // celebLocations, chargée par script.js) — enrichi ici plutôt.
-            if (typeof celebLocations !== 'undefined') {
-                feedPhotos.forEach(p => {
-                    const loc = celebLocations.find(l => l.id === p.locationId || l.id === Number(p.locationId));
-                    p.group = loc ? loc.group : '';
-                });
-            }
+            // AJOUT SITE (demande du 02/11/2026, "Community met plus de 5s à charger") :
+            // n'attend plus le fil COMPLET avant le premier rendu — firstPageOnly affiche
+            // les ~FEED_PAGE_SIZE publications les plus récentes dès qu'elles arrivent, le
+            // reste continue de se charger en tâche de fond et s'ajoute à la grille déjà
+            // visible via appendFeedGridTiles() (voir onMore ci-dessous), sans tout
+            // redessiner. Recherche (filterFeed) et Saved (loadSavedFeed) ont, eux, besoin
+            // du fil complet : ils attendent explicitement sa fin (voir plus bas) plutôt
+            // que de se fier à ce qui est déjà chargé à l'instant où on les ouvre.
+            feedPhotos = await withTimeout(window.fetchGlobalPhotoFeed({
+                firstPageOnly: true,
+                onMore: (morePhotos, isDone) => {
+                    if (currentFeedTab !== 'community' || isDone) return;
+                    morePhotos.forEach(enrichFeedPhotoGroup);
+                    feedPhotos.push(...morePhotos);
+                    // Si une recherche est en cours, filterFeed() redessinera elle-même
+                    // une fois le fil complet prêt — pas la peine d'ajouter des tuiles
+                    // hors-recherche qui seraient aussitôt redessinées.
+                    if (!document.getElementById('feed-search-input').value.trim()) appendFeedGridTiles(morePhotos);
+                }
+            }), 15000);
+            feedPhotos.forEach(enrichFeedPhotoGroup);
             // Ne dessine la grille Community que si cet onglet est TOUJOURS actif (demande
             // du 14/09/2026, ajout de "sacred") : cette lecture Firestore est asynchrone et
             // peut résoudre après que la personne a déjà changé d'onglet (en particulier
