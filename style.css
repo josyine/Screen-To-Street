@@ -1245,6 +1245,15 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .qa-sheet-option:hover, .qa-sheet-option:active { background: #FCE7F0; }
 .qa-sheet-option-icon { width: 40px; height: 40px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #D42759; flex-shrink: 0; }
 .qa-sheet-cancel { display: block; width: 100%; text-align: center; margin-top: 8px; padding: 12px; border-radius: 14px; background: #f1f5f9; border: none; font-family: 'Poppins',sans-serif; font-size: 13.5px; font-weight: 700; color: #64748b; cursor: pointer; }
+/* COMMUNITY – COMING SOON (demande du 02/11/2026) : option "Add a photo" du menu "+" —
+   la SEULE des 3 options qui publie dans Community (voir le commentaire de window.
+   COMMUNITY_ENABLED en tête de script.js) — reste visible mais grisée tant que Community
+   n'est pas ouverte, plutôt que cachée ou bloquée après coup. Classe posée/retirée par
+   openQuickAddSheet() (script.js) à la création du menu. */
+.qa-sheet-option.cs-qa-disabled { cursor: default; color: #94a3b8; }
+.qa-sheet-option.cs-qa-disabled:hover, .qa-sheet-option.cs-qa-disabled:active { background: none; }
+.qa-sheet-option.cs-qa-disabled .qa-sheet-option-icon { background: #f1f5f9; color: #B4ADC2; }
+.cs-qa-soon-badge { margin-left: auto; font-size: 10px; font-weight: 800; letter-spacing: .3px; background: #FCE7F0; color: #E0156B; border-radius: 999px; padding: 3px 8px; flex-shrink: 0; }
 
 /* Fenêtre unique "Add a photo"/"Add a visited place"/"Add a review" (demande du
    15/10/2026, maquette jointe "ajout_contenu_final.html") — remplace les anciennes

@@ -1,4 +1,18 @@
 // ==========================================
+// INTERRUPTEUR "COMMUNITY" (demande du 02/11/2026, lot 1 du site : Community n'est pas
+// encore ouverte aux utilisateurs) — voir le bloc CSS "COMMUNITY – COMING SOON" et le
+// commentaire de loadFeed() dans feed.html pour le détail complet.
+// - false (valeur actuelle) : feed.html n'interroge JAMAIS Firestore pour les publications
+//   (zéro lecture, zéro donnée exposée) et affiche un écran "Coming soon" à la place ; dans
+//   le menu "+" (openQuickAddSheet() plus bas), l'option "Add a photo" (la SEULE des 3 qui
+//   publie dans Community — "Mark as visited" reste toujours privé, "Add a review" ne porte
+//   jamais de photo dans ce flux) reste visible mais grisée avec une étiquette "Coming
+//   soon", et un tap affiche juste un toast au lieu d'ouvrir le formulaire.
+// - true : repasse EXACTEMENT au comportement d'avant cet ajout, rien d'autre ne change.
+// POUR ROUVRIR LA PAGE : repasser cette seule ligne à true.
+window.COMMUNITY_ENABLED = false;
+
+// ==========================================
 // 0. CONFIGURATION DU FOND DE CARTE
 // ==========================================
 // Le style OSM Carto standard (tile.openstreetmap.org) affiche les noms de lieux
@@ -4132,13 +4146,19 @@ window.openQuickAddSheet = function () {
         overlay = document.createElement('div');
         overlay.id = 'qa-sheet-overlay';
         overlay.className = 'qa-sheet-overlay';
+        // AJOUT SITE (demande du 02/11/2026) : "Add a photo" est la SEULE des 3 options qui
+        // publie dans Community (voir window.COMMUNITY_ENABLED en tête de ce fichier) —
+        // grisée + étiquette "Coming soon" tant que c'est le cas, posé ici à la création du
+        // menu plutôt qu'à chaque ouverture (le flag ne change jamais en cours de session).
+        const photoDisabled = !window.COMMUNITY_ENABLED;
         overlay.innerHTML = `
             <div class="qa-sheet">
                 <div class="qa-sheet-handle"></div>
                 <div class="qa-sheet-title">${t('quickAddTitle')}</div>
-                <div class="qa-sheet-option" data-qa="photo">
+                <div class="qa-sheet-option${photoDisabled ? ' cs-qa-disabled' : ''}" data-qa="photo">
                     <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg></span>
                     <span>${t('quickAddPhoto')}</span>
+                    ${photoDisabled ? `<span class="cs-qa-soon-badge">${t('csComingSoonBadge')}</span>` : ''}
                 </div>
                 <!-- BUG corrigé (demande du 16/10/2026, "le bouton add a visited place ne
                      fonctionne pas, ça redirige vers rien") : data-qa valait "visited" ici,
@@ -4163,6 +4183,13 @@ window.openQuickAddSheet = function () {
         overlay.querySelectorAll('.qa-sheet-option').forEach(opt => {
             opt.addEventListener('click', () => {
                 const kind = opt.dataset.qa;
+                // AJOUT SITE (demande du 02/11/2026) : bloque la publication tant que
+                // Community n'est pas ouverte, sans fermer le menu "+" lui-même (les deux
+                // autres options restent utilisables normalement).
+                if (kind === 'photo' && !window.COMMUNITY_ENABLED) {
+                    if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('communityComingSoonToast'));
+                    return;
+                }
                 window.closeQuickAddSheet();
                 // Demande du 15/10/2026 (maquette jointe) : les 3 options ouvrent maintenant
                 // toutes la même fenêtre dédiée (recherche de lieu, date, groupes/amis tagués,
@@ -5453,6 +5480,7 @@ const translations = {
         tabExplore: "Explore", tabMyItinerary: "My Itinerary", yourRating: "Your rating", foodQualityRating: "Food quality", valueForMoneyRating: "Value for money", accessibilityRating: "Easy to access?", siteQualityRating: "Site quality", wishlistStat: "{pct}% of users added this place to their wishlist", friendsVisitedStat: "{count} friends have visited this place", friendsVisitedStatOne: "1 friend has visited this place", whenDidYouVisit: "When did you visit?", saveMemory: "Save memory", myVisitTab: "My Visit", tabReviews: "Reviews", tabInfo: "Info", tabStory: "Story", lGroup: "Group:", lMembers: "Members:", lCountry: "Country:", lCity: "City:", lDate: "Date:", lEpisode: "Episode:", lWatch: "Link:", lOfficialLink: "Source", lFollow: "Follow:", lWatchEpi: "On Screen", lPractical: "Practical information & access", lLearnMore: "Learn more", lAddress: "Address", lOpenMap: "Open in Google Maps", lStoryPlace: "The story of this place", lStoryBts: "Following in BTS's footsteps", lRecreatePhoto: "Mei's Pictures", officialPoseLabel: "Official recreation of the celebrity's pose", lTipsTitle: "THE \"SCREEN TO STREET\" TIPS", lHowToGetThere: "How to get there:", memoryNotesLabel: "Your notes (optional)", memoryNotesPlaceholder: "What do you remember about this place?", reviewsCountLabel: "{n} public reviews", reviewsWriteLabel: "Write your review", reviewsComposePlaceholder: "Share what you thought...", reviewsComposeMakePublic: "Make this public", reviewsComposePost: "Post review", memoryPhotoLabel: "Add a photo (optional)", memoryPhotoChoose: "Choose a photo", memoryPhotoRemove: "Remove", memoryMakePublic: "Make this review public (visible to other users)", reviewsLoading: "Loading reviews…", reviewsEmpty: "No public reviews yet for this place — be the first to share yours from the \"My Visit\" tab!", shareTripSub: "Plan it together", shareTripInvite: "Invite", shareTripHint: "Tap the icon next to a name to switch between edit and view-only access.",
         backToMap: "← Back to Map", moreDetails: "More details", openInMaps: "Open in Google Maps", detailsLabel: "Details", aboutPlaceLabel: "About this place",
         mpSearchLabel: "Search Mei's pictures", mpSearchPlaceholder: "Search a user, a group, a place…", mpClear: "Clear", mpPictureSingular: "picture", mpPictureMultiple: "pictures", mpForQuery: "for “{q}”", mpEmptyTitle: "No picture found", mpEmptyDesc: "Try another place, member or group.", mpEmptyDescGroup: "Try another place, member or group — or switch back to All groups.",
+        csComingSoonBadge: "Coming soon", csComingSoonTitle: "Fan photos are on their way", csComingSoonDesc: "Soon you'll share your own shots from the map and discover photos from fans around the world. We're putting the finishing touches on it.", csNotifyBtn: "Notify me", csNotifiedBtn: "You'll be notified", csNotifyConfirm: "We'll let you know as soon as Community opens.", csNotifySignInToast: "Sign in to get notified when Community opens.", communityComingSoonToast: "Community is coming soon",
         accTitle: "Your Account", accChangePhoto: "Change Profile Picture", accResetPhoto: "Reset profile picture", accNameLabel: "Username", accChangeUsernameHint: "Change username", accEmailLabel: "Email address", accBioLabel: "Bio", accBioPlaceholder: "Write a short bio...", accBioSaveBtn: "Save bio",
         accCountryLabel: "Country you're interested in", accCountryPlaceholder: "Select a country (optional)",
         accActivityTitle: "Your activity", accTrips: "Trips", accVisited: "Visited", accWishlist: "Wishlist", accPasses: "Passes & billing",
@@ -5522,6 +5550,7 @@ const translations = {
         tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", accessibilityRating: "Facilement accessible ?", siteQualityRating: "Qualité du lieu", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "{count} amis ont visité cet endroit", friendsVisitedStatOne: "1 ami a visité cet endroit", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Lien :", lOfficialLink: "Source", lFollow: "Suivre :", lWatchEpi: "À l'écran", lPractical: "Informations pratiques & accès", lLearnMore: "En savoir plus", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lRecreatePhoto: "Les photos de Mei", officialPoseLabel: "Reproduction officielle de la célébrité", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
         backToMap: "← Retour à la carte", moreDetails: "Plus de détails", openInMaps: "Ouvrir dans Google Maps", detailsLabel: "Détails", aboutPlaceLabel: "À propos de ce lieu",
         mpSearchLabel: "Rechercher dans les photos de Mei", mpSearchPlaceholder: "Rechercher un utilisateur, un groupe, un lieu…", mpClear: "Effacer", mpPictureSingular: "photo", mpPictureMultiple: "photos", mpForQuery: "pour « {q} »", mpEmptyTitle: "Aucune photo trouvée", mpEmptyDesc: "Essayez un autre lieu, membre ou groupe.", mpEmptyDescGroup: "Essayez un autre lieu, membre ou groupe — ou revenez à Tous les groupes.",
+        csComingSoonBadge: "Bientôt disponible", csComingSoonTitle: "Les photos de fans arrivent bientôt", csComingSoonDesc: "Bientôt, vous pourrez partager vos propres photos prises sur les lieux de la carte et découvrir celles des fans du monde entier. On met la dernière touche.", csNotifyBtn: "Me prévenir", csNotifiedBtn: "Vous serez prévenu·e", csNotifyConfirm: "On vous préviendra dès l'ouverture de Community.", csNotifySignInToast: "Connectez-vous pour être prévenu·e à l'ouverture de Community.", communityComingSoonToast: "Community arrive bientôt",
         accTitle: "Votre compte", accChangePhoto: "Changer la photo de profil", accResetPhoto: "Réinitialiser la photo de profil", accNameLabel: "Identifiant", accChangeUsernameHint: "Changer d'identifiant", accEmailLabel: "Adresse e-mail",
         accCountryLabel: "Pays qui vous intéresse", accCountryPlaceholder: "Choisir un pays (optionnel)",
         accActivityTitle: "Votre activité", accTrips: "Voyages", accVisited: "Visités", accWishlist: "Wishlist", accPasses: "Pass et facturation",

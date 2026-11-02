@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261077" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261078" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -497,6 +497,54 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
      haut dans ce <style>), le bouton n'étant plus un élément autonome mais un enfant flex
      de cette rangée. */
 }
+
+/* ========== COMMUNITY – COMING SOON (demande du 02/11/2026, maquette jointe
+   community_bientot_final.html, version "Aperçu flouté") ==========
+   Lot 1 du site : Community n'est pas encore ouverte aux utilisateurs. window.
+   COMMUNITY_ENABLED (script.js, commentaire bien visible en tête de fichier) est
+   l'interrupteur : à false, loadFeed() ne fait AUCUNE requête Firestore (voir son tout
+   premier if) et affiche ce bloc à la place de la grille de publications — à true, tout
+   revient exactement à l'ancien comportement (ce bloc ne s'affiche jamais, rien d'autre ne
+   change). Classes toutes préfixées "cs-" pour ne rien casser sur le reste du site.
+   #cs-coming-soon est un FRÈRE de #feed-grid (jamais un remplacement de son contenu) :
+   switchFeedTab() (plus bas dans le <script>) bascule juste lequel des deux est caché à
+   chaque changement d'onglet, sans toucher au code existant de Mei's Pictures/Saved. */
+.cs-coming-soon { position: relative; max-width: 900px; margin: 0 auto; min-height: 520px; }
+/* Grille de fond : VRAIES photos déjà sur le site (catalogue de lieux, miniatures WebP
+   ~200×200 générées depuis images/ — voir images/community-soon/), jamais une publication
+   d'utilisateur réelle. Purement décorative : aria-hidden + non cliquable
+   (pointer-events:none) + cachée des lecteurs d'écran par le role="status" du conteneur
+   parent, qui ne lit que la carte. */
+.cs-bg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; filter: blur(7px) saturate(.9); opacity: .75; pointer-events: none; }
+.cs-bg-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; display: block; background: #E3DAF5; }
+.cs-card { position: absolute; left: 24px; right: 24px; top: 120px; background: rgba(255,255,255,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 26px; padding: 24px 20px; text-align: center; box-shadow: 0 18px 40px rgba(74,45,138,.15); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.cs-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: #E0156B; background: #FCE7F0; border-radius: 999px; padding: 5px 12px; }
+.cs-pill-dot { width: 7px; height: 7px; border-radius: 50%; background: #E0156B; animation: csPulse 1.6s infinite; }
+@keyframes csPulse { 0% { box-shadow: 0 0 0 0 rgba(224,21,107,.44); } 100% { box-shadow: 0 0 0 8px rgba(224,21,107,0); } }
+@media (prefers-reduced-motion: reduce) { .cs-pill-dot { animation: none; } }
+.cs-card h2 { font-size: 20px; font-weight: 800; color: #1F2430; margin: 0; letter-spacing: -.3px; }
+.cs-card p { font-size: 13.5px; color: #5F6578; line-height: 1.55; margin: 0; }
+.cs-notify-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; min-height: 44px; padding: 0 22px; border-radius: 999px; background: linear-gradient(90deg,#D4006E,#E0156B); color: #fff; font-size: 14px; font-weight: 700; box-shadow: 0 8px 18px rgba(224,21,107,.25); border: none; cursor: pointer; font-family: 'Poppins', sans-serif; width: 100%; max-width: 320px; margin-top: 4px; }
+.cs-notify-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+/* Contraste suffisant sur le fond flouté de .glass (demande explicite, accessibilité) :
+   #0E8A55 sur fond blanc opaque (pas transparent) — même principe que .btn.on de la
+   maquette. */
+.cs-notify-btn[aria-pressed="true"] { background: #fff; color: #0E8A55; box-shadow: 0 0 0 1.5px #0E8A55 inset; }
+.cs-notify-confirm { font-size: 12px; color: #0E8A55; font-weight: 600; }
+@media (max-width: 760px) {
+  .cs-card { left: 24px; right: 24px; }
+}
+@media (min-width: 761px) {
+  .cs-bg-grid { grid-template-columns: repeat(5, 1fr); gap: 10px; max-width: 1180px; margin: 0 auto; }
+  .cs-bg-grid img { border-radius: 14px; }
+  /* 2 rangées × 5 colonnes = 10 tuiles visibles (demande explicite) — le reste de la
+     grille générée en HTML (jusqu'à 18-20, même liste que mobile) reste dans le DOM mais
+     masqué, plus simple que deux listes séparées. */
+  .cs-bg-grid img:nth-child(n+11) { display: none; }
+  .cs-card { left: 50%; right: auto; width: 460px; transform: translateX(-50%); top: 110px; padding: 30px 32px; }
+  .cs-card h2 { font-size: 24px; }
+  .cs-card p { font-size: 14.5px; }
+}
 </style>
 <script>
     if (!sessionStorage.getItem('bgSyncTime')) { sessionStorage.setItem('bgSyncTime', Date.now()); }
@@ -538,7 +586,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261077';
+        s.src = 'page-loader.js?v=20261078';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -691,6 +739,43 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     <div class="feed-loading" id="feed-loading">Loading…</div>
     <div class="feed-empty hidden" id="feed-empty">No public photos yet.</div>
     <div class="feed-grid" id="feed-grid"></div>
+    <!-- COMMUNITY – COMING SOON (demande du 02/11/2026) : voir window.COMMUNITY_ENABLED
+         (script.js) et le bloc CSS du même nom dans <style> plus haut. Frère de #feed-grid,
+         jamais un remplacement — switchFeedTab()/loadFeed() plus bas basculent lequel des
+         deux est caché. role="status" (pas juste un <div>) pour que les lecteurs d'écran
+         annoncent le contenu de la carte sans qu'on ait besoin d'un aria-label séparé —
+         la grille de fond, purement décorative, est exclue via aria-hidden sur elle-même. -->
+    <div class="cs-coming-soon hidden" id="cs-coming-soon" role="status">
+        <div class="cs-bg-grid" aria-hidden="true">
+            <img src="images/community-soon/admin-upload-5-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-26-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-57-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-103-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-160-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-197-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-207-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-223-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-0GBu2KZ95jpTtlexQAG1-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-2LGcTZJG0izlFK23EBq2-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-6mS4vSBlKjq38QXGPkex-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-cSGDmreP9vza05peFWkh-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-manual-1790001265057-lc06qt-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-manual-1790168859601-lx8rcz-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-manual-1791237155701-b29d0i-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-manual-1791838895946-rc54ck-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-manual-1792353388392-fymfvp-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-manual-1792698906366-cjc0rg-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-manual-1793480110251-lz11ry-photo.webp" alt="" loading="lazy">
+            <img src="images/community-soon/admin-upload-new-o1GR1Z5Cy8JFIumaFkBZ-photo.webp" alt="" loading="lazy">
+        </div>
+        <div class="cs-card">
+            <span class="cs-pill"><i class="cs-pill-dot"></i><span data-i18n="csComingSoonBadge">Coming soon</span></span>
+            <h2 data-i18n="csComingSoonTitle">Fan photos are on their way</h2>
+            <p data-i18n="csComingSoonDesc">Soon you'll share your own shots from the map and discover photos from fans around the world. We're putting the finishing touches on it.</p>
+            <button type="button" class="cs-notify-btn" id="cs-notify-btn" aria-pressed="false"></button>
+            <div class="cs-notify-confirm hidden" id="cs-notify-confirm" data-i18n="csNotifyConfirm">We'll let you know as soon as Community opens.</div>
+        </div>
+    </div>
 </div>
 
 <!-- Fil de publications plein écran, Community/Saved uniquement (demande du 17/10/2026)
@@ -746,9 +831,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261077"></script>
-<script src="locations-data.js?v=20261077"></script>
-<script src="script.js?v=20261077"></script>
+<script type="module" src="firebase-init.js?v=20261078"></script>
+<script src="locations-data.js?v=20261078"></script>
+<script src="script.js?v=20261078"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -904,7 +989,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     window.switchFeedTab = function (tab) {
         currentFeedTab = tab;
         document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-        document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred');
+        document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred' || (tab === 'community' && !window.COMMUNITY_ENABLED));
         // Ligne recherche + bouton de groupe de "Mei's Pictures" (demande du 01/11/2026) :
         // visible uniquement sur cet onglet, même logique inversée que la recherche
         // Community ci-dessus. renderSacredGroupFilterOptions() (appelée par
@@ -922,10 +1007,19 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
             const infoEl = document.getElementById('mp-filter-info');
             if (infoEl) infoEl.classList.add('hidden');
         }
+        // AJOUT SITE (demande du 02/11/2026, Community "Coming soon") : repart d'un état
+        // propre à CHAQUE changement d'onglet — #feed-grid redevient visible par défaut
+        // (masqué seulement par renderCommunityComingSoon() ci-dessous le temps d'afficher
+        // l'écran Coming soon), #cs-coming-soon repart caché. N'affecte ni Mei's
+        // Pictures/Saved (qui redessinent #feed-grid eux-mêmes juste après) ni leur contenu.
+        document.getElementById('feed-grid').classList.remove('hidden');
+        document.getElementById('cs-coming-soon').classList.add('hidden');
         if (tab === 'saved') {
             loadSavedFeed();
         } else if (tab === 'sacred') {
             renderSacredGrid();
+        } else if (!window.COMMUNITY_ENABLED) {
+            renderCommunityComingSoon();
         } else if (communityLoadFailed) {
             loadFeed();
         } else {
@@ -1513,7 +1607,74 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
         p.group = loc ? loc.group : '';
     }
 
+    // AJOUT SITE (demande du 02/11/2026) : affiche l'écran "Coming soon" sans jamais
+    // interroger Firestore — appelée depuis loadFeed() (tout premier if, avant toute
+    // requête) ET depuis switchFeedTab() (retour sur l'onglet Community). #feed-grid est un
+    // FRÈRE de #cs-coming-soon (jamais vidé/remplacé), donc rien ne change pour Mei's
+    // Pictures/Saved qui le redessinent eux-mêmes à chaque fois qu'ils deviennent actifs.
+    let communityComingSoonInited = false;
+    function renderCommunityComingSoon() {
+        document.getElementById('feed-loading').classList.add('hidden');
+        document.getElementById('feed-empty').classList.add('hidden');
+        document.getElementById('feed-grid').classList.add('hidden');
+        // BUG évité : "community" est déjà l'onglet actif par défaut dans le HTML, donc
+        // switchFeedTab('community') n'est JAMAIS appelé au tout premier chargement de la
+        // page (voir restoreFeedReturnState(), qui ne l'appelle QUE pour un AUTRE onglet
+        // sauvegardé) — la bascule de #feed-search-wrap posée dans switchFeedTab() ne
+        // suffit donc pas seule à couvrir ce cas, répétée ici pour que loadFeed() (appelée
+        // directement par le tout premier chargement) la cache aussi.
+        document.getElementById('feed-search-wrap').classList.add('hidden');
+        document.getElementById('cs-coming-soon').classList.remove('hidden');
+        if (!communityComingSoonInited) { communityComingSoonInited = true; initCommunityComingSoon(); }
+    }
+    const csBellSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>';
+    const csCheckSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>';
+    // "Notify me" (demande du 02/11/2026) : enregistre/annule users/{uid}.notifyCommunity
+    // (voir window.setCommunityNotifyPreference()/fetchCommunityNotifyPreference() dans
+    // firebase-init.js — aucune règle Firestore à changer, users/{uid} autorise déjà son
+    // propriétaire à écrire n'importe quel champ). Pas connecté → toast + renvoi vers la
+    // page d'accueil (index.html), seul point d'entrée de connexion commun à tout le site
+    // depuis cette page.
+    async function initCommunityComingSoon() {
+        const btn = document.getElementById('cs-notify-btn');
+        const confirmEl = document.getElementById('cs-notify-confirm');
+        let notified = false;
+        // window.loadUserCloudData() (firebase-init.js) renvoie déjà le document COMPLET du
+        // compte — pas la peine d'une lecture dédiée rien que pour ce champ.
+        if (window.firebaseCurrentUser && typeof window.loadUserCloudData === 'function') {
+            try { const data = await window.loadUserCloudData(); notified = !!(data && data.notifyCommunity); } catch (e) {}
+        }
+        const render = (on) => {
+            btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+            btn.innerHTML = on ? `${csCheckSvg}<span>${t('csNotifiedBtn')}</span>` : `${csBellSvg}<span>${t('csNotifyBtn')}</span>`;
+            confirmEl.classList.toggle('hidden', !on);
+        };
+        render(notified);
+        btn.addEventListener('click', async () => {
+            if (!window.firebaseCurrentUser) {
+                if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('csNotifySignInToast'));
+                setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+                return;
+            }
+            notified = !notified;
+            render(notified);
+            if (typeof window.setCommunityNotifyPreference === 'function') {
+                try { await window.setCommunityNotifyPreference(notified); } catch (e) { console.warn('Enregistrement de la préférence "Notify me" échoué :', e); }
+            }
+        });
+    }
+
     async function loadFeed() {
+        // AJOUT SITE (demande du 02/11/2026, lot 1 : Community pas encore ouverte aux
+        // utilisateurs) : tout en haut, AVANT la moindre requête Firestore — voir window.
+        // COMMUNITY_ENABLED dans script.js. Ne redessine rien si un autre onglet est devenu
+        // actif entre-temps (ex: appelée par le filet de sécurité "firebase-ready" ci-dessous
+        // alors que restoreFeedReturnState() a déjà basculé sur "saved"/"sacred") — ce cas
+        // est déjà géré par switchFeedTab() lui-même.
+        if (!window.COMMUNITY_ENABLED) {
+            if (currentFeedTab === 'community') renderCommunityComingSoon();
+            return;
+        }
         const loadingEl = document.getElementById('feed-loading');
         const emptyEl = document.getElementById('feed-empty');
         // Réinitialise l'état visuel à chaque appel, y compris un nouvel essai déclenché
