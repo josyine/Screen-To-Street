@@ -26,10 +26,6 @@ import { initializeFirestore, doc, getDoc, getDocs, collection, setDoc, deleteDo
 // navigateurs/contextes sans FCM (Safari iOS en PWA non installée, navigation privée...)
 // au lieu de laisser getMessaging() lever une exception plus bas.
 import { getMessaging, isSupported as isMessagingSupported, getToken, deleteToken } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-messaging.js";
-// AJOUT SITE (demande du 02/11/2026, "point 2" du plan perf — sortir les photos du compte
-// de Firestore) : Firebase Storage, jamais utilisé sur ce site jusqu'ici (voir
-// uploadPhotoToStorage() plus bas pour le détail de la migration).
-import { getStorage, ref as storageRef, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBa1e1JhWCxYI3fSWtVN6TsFiOnvxH7i5I",
@@ -88,61 +84,10 @@ const db = initializeFirestore(firebaseApp, {
     useFetchStreams: false
 });
 const googleProvider = new GoogleAuthProvider();
-const storage = getStorage(firebaseApp);
 
 window.firebaseAuth = auth;
 window.firebaseDb = db;
 window.firebaseCurrentUser = null;
-
-// ==========================================
-// PHOTOS DU COMPTE : FIREBASE STORAGE au lieu du base64 inline dans Firestore (demande du
-// 02/11/2026, "point 2" du plan de perf discuté pour Community — voir le gros commentaire
-// de stripDataUrlsDeep()/stripLargeInlineMedia() plus bas dans ce fichier, qui décrit le
-// problème que CE changement résout à la racine : ces photos (~100-300 Ko en base64
-// chacune, produites par fileToResizedDataUrl()/resizeTripCoverDataUrl() dans script.js,
-// inchangées) étaient stockées DIRECTEMENT dans les champs Firestore eux-mêmes — jamais
-// mises en cache HTTP par le navigateur, gonflant chaque document qui les contient
-// (feedPosts/publicProfiles/users), et seule cause des dépassements de la limite de 1 Mo/
-// document sur users/{uid} que stripLargeInlineMedia() ne faisait QUE contourner après coup.
-//
-// uploadPhotoToStorage(path, dataUrl) envoie l'image déjà redimensionnée/compressée côté
-// client (resize INCHANGÉ, seule la destination change) vers Storage à un chemin
-// déterministe, et renvoie une URL de téléchargement — cette URL est stockée dans EXACTEMENT
-// le même champ Firestore qui portait le base64 jusqu'ici (ex: toujours `photo`), donc
-// AUCUN code d'affichage (`<img src>`/`background-image:url()`, partout ailleurs sur le
-// site) n'a besoin de changer : une URL HTTPS fonctionne exactement comme fonctionnait une
-// URI data:, en mieux (cache navigateur, pas de gonflement du document Firestore).
-//
-// Repli volontaire en cas d'échec (Storage pas encore activé côté Console Firebase, règles
-// pas encore publiées, CORS...) : on NE BLOQUE JAMAIS la publication d'une photo pour cette
-// raison — on retombe sur l'ancien comportement (le base64 d'origine, inchangé) plutôt que
-// de faire échouer toute l'action. Le site continue donc de fonctionner même avant que la
-// configuration manuelle requise (voir le README de la PR) soit faite, simplement sans le
-// gain de perf tant que ce n'est pas fait.
-async function uploadPhotoToStorage(path, dataUrl) {
-    if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:')) return dataUrl;
-    try {
-        const ref = storageRef(storage, path);
-        await uploadString(ref, dataUrl, 'data_url');
-        return await getDownloadURL(ref);
-    } catch (e) {
-        console.warn('Envoi de la photo vers Storage échoué, conservée en base64 pour cette fois :', path, e);
-        return dataUrl;
-    }
-}
-window.uploadPhotoToStorage = uploadPhotoToStorage;
-// Nettoyage best-effort (jamais bloquant) quand une photo est supprimée/remplacée — une
-// erreur ici (objet déjà absent, règles pas encore publiées...) ne doit jamais empêcher la
-// suppression/le remplacement côté Firestore, qui est l'action que la personne a demandée.
-async function deletePhotoFromStorage(path) {
-    try { await deleteObject(storageRef(storage, path)); } catch (e) { /* silencieux, voir commentaire ci-dessus */ }
-}
-window.deletePhotoFromStorage = deletePhotoFromStorage;
-// Une URL Storage (https://...) n'a plus besoin d'être strippée par
-// stripDataUrlsDeep()/stripLargeInlineMedia() (elle ne commence pas par "data:") — cette
-// fonction reste donc utile uniquement pour les champs pas encore migrés par CETTE PR
-// (destinationOverrides/artistOverrides, voir plus bas) et pour tout repli silencieux
-// ci-dessus (Storage indisponible). Rien à changer dans stripDataUrlsDeep() elle-même.
 
 // Se connecter par pseudo (demande du 06/09/2026), en plus de l'e-mail — mêmes
 // formulaires de connexion que map.html (popup "gate") et legal.html, qui appellent tous
@@ -972,16 +917,6 @@ window.setLocationReview = async function (locationId, reviewData) {
     const user = auth.currentUser;
     if (!user) return { success: false, code: 'not-authenticated' };
     try {
-        // AJOUT SITE (demande du 02/11/2026) : upload UNE SEULE FOIS (chemin déterministe,
-        // un nouvel envoi écrase le précédent au lieu d'accumuler des objets orphelins à
-        // chaque modification de l'avis) — la même URL remplace ensuite le base64 dans les
-        // TROIS écritures ci-dessous (locationReviews/publicProfiles/feedPosts), qui
-        // portaient jusqu'ici chacune leur propre copie complète de la photo.
-        if (reviewData.photo && reviewData.photo.startsWith('data:')) {
-            reviewData = Object.assign({}, reviewData, {
-                photo: await uploadPhotoToStorage(`users/${user.uid}/reviews/${locationId}.jpg`, reviewData.photo)
-            });
-        }
         await setDoc(doc(db, 'locationReviews', String(locationId), 'items', user.uid), Object.assign({
             uid: user.uid,
             updatedAt: serverTimestamp()
@@ -1027,7 +962,6 @@ window.deleteLocationReview = async function (locationId) {
             reviews: { [String(locationId)]: deleteField() }
         }, { merge: true });
         await _deleteFeedPost(user.uid, String(locationId));
-        deletePhotoFromStorage(`users/${user.uid}/reviews/${locationId}.jpg`); // best-effort, voir plus haut
     } catch (e) {
         console.warn('Suppression de l\'avis échouée :', e);
     }
@@ -1214,9 +1148,6 @@ window.addProfilePhoto = async function ({ locationId, locationName, photo, date
     if (!user) return { success: false, code: 'not-authenticated' };
     try {
         const photoId = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-        // AJOUT SITE (demande du 02/11/2026) : voir le commentaire de uploadPhotoToStorage()
-        // plus haut — même URL ensuite réutilisée pour le miroir feedPosts plus bas.
-        photo = await uploadPhotoToStorage(`users/${user.uid}/photos/${photoId}.jpg`, photo);
         await setDoc(doc(db, 'publicProfiles', user.uid, 'photos', photoId), {
             locationId, locationName: locationName || null, photo,
             date: date || null, caption: (caption || '').slice(0, 280),
@@ -1266,10 +1197,6 @@ window.updateProfilePhoto = async function (photoId, { photo, caption }) {
     const user = auth.currentUser;
     if (!user || !photoId) return { success: false, code: 'not-authenticated' };
     try {
-        // AJOUT SITE (demande du 02/11/2026) : même chemin déterministe qu'addProfilePhoto()
-        // ci-dessus — un nouvel envoi écrase l'ancienne photo dans Storage au lieu d'en
-        // laisser une orpheline.
-        if (photo !== undefined) photo = await uploadPhotoToStorage(`users/${user.uid}/photos/${photoId}.jpg`, photo);
         const fields = { updatedAt: serverTimestamp() };
         if (photo !== undefined) fields.photo = photo;
         if (caption !== undefined) fields.caption = (caption || '').slice(0, 280);
@@ -1307,7 +1234,6 @@ window.deleteProfilePhoto = async function (photoId) {
             await setDoc(doc(db, 'publicProfiles', user.uid), { photos: { [photoId]: deleteField() } }, { merge: true });
         }
         await _deleteFeedPost(user.uid, photoId);
-        deletePhotoFromStorage(`users/${user.uid}/photos/${photoId}.jpg`); // best-effort, voir plus haut
         return { success: true };
     } catch (e) {
         console.warn('Suppression de la photo échouée :', e);
@@ -1336,7 +1262,6 @@ window.adminDeleteProfilePhoto = async function (ownerUid, photoId) {
         // La règle feedPosts autorise un admin à supprimer le document de n'importe qui
         // (pas seulement le sien) — voir firestore.rules.
         await _deleteFeedPost(ownerUid, photoId);
-        deletePhotoFromStorage(`users/${ownerUid}/photos/${photoId}.jpg`); // best-effort, voir plus haut
         return { success: true };
     } catch (e) {
         console.warn('Suppression admin de la photo échouée :', e);

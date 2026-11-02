@@ -4359,17 +4359,6 @@ function qaRender(overlay, keepFocus) {
 // communautaire, volontairement — voir buildRatingDeltas() plus haut, qui compterait
 // sinon une "note" de 0 étoile jamais vraiment donnée par la personne.
 async function qaSaveVisit({ locationId, date, rating, notes, photo, isPublic, groups, friends, tags }) {
-    // AJOUT SITE (demande du 02/11/2026) : voir le commentaire de uploadPhotoToStorage()
-    // dans firebase-init.js — visitedLocs[].visits[].photo est l'un des champs qui faisait
-    // dépasser la limite de 1 Mo/document sur users/{uid} (voir stripLargeInlineMedia()).
-    // Chemin déterministe par visite (un id généré une fois ici, jamais recalculé) : une
-    // modification ultérieure de CETTE visite (via setLocationReview plus bas, qui réutilise
-    // ce même `photo` déjà uploadé) n'uploade jamais deux fois la même image.
-    const user = window.firebaseCurrentUser;
-    if (photo && photo.startsWith('data:') && user && typeof window.uploadPhotoToStorage === 'function') {
-        const visitId = 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-        photo = await window.uploadPhotoToStorage(`users/${user.uid}/visits/${locationId}/${visitId}.jpg`, photo);
-    }
     let list = getVisitedLocs();
     let idx = list.findIndex(v => (typeof v === 'object' && v ? v.id : v) === locationId);
     if (idx === -1) { list.push({ id: locationId, visits: [] }); idx = list.length - 1; }
@@ -15885,25 +15874,7 @@ window.openChangeCoverModal = function() {
 window.applyChangeCover = function() {
     if (!currentTrip) return;
     if (coverModalActiveTab === 'upload' && coverModalPendingPhoto) {
-        // Aperçu/enregistrement immédiats avec le base64 local (pas d'attente réseau
-        // perceptible à la fermeture de la modale) — AJOUT SITE (demande du 02/11/2026) :
-        // l'envoi vers Firebase Storage se fait ensuite EN ARRIÈRE-PLAN ci-dessous, et
-        // remplace ce base64 par son URL une fois prêt (chemin déterministe par trip, un
-        // nouvel envoi écrase l'ancienne couverture) — même compromis "optimiste d'abord,
-        // léger ensuite" que togglePhotoLike() ailleurs sur le site.
         currentTrip.coverImage = coverModalPendingPhoto;
-        const uploadedTripId = currentTrip.id, uploadedPhoto = coverModalPendingPhoto;
-        const user = window.firebaseCurrentUser;
-        if (user && typeof window.uploadPhotoToStorage === 'function') {
-            window.uploadPhotoToStorage(`users/${user.uid}/trips/${uploadedTripId}/cover.jpg`, uploadedPhoto).then(url => {
-                // La personne a pu changer de voyage/reprendre une nouvelle couverture entre
-                // temps : ne remplace que si CE trip est toujours affiché avec CETTE photo.
-                if (currentTrip && currentTrip.id === uploadedTripId && currentTrip.coverImage === uploadedPhoto) {
-                    currentTrip.coverImage = url;
-                    if (typeof window.saveTrip === 'function') window.saveTrip();
-                }
-            });
-        }
     } else if (coverModalActiveTab === 'gradient') {
         currentTrip.coverImage = '';
         currentTrip.coverGradient = coverModalPendingGradientIdx;
