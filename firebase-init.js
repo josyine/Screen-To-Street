@@ -570,6 +570,18 @@ window.loadUserCloudData = async function () {
     }
 };
 
+// "Notify me" de l'écran "Coming soon" de Community (demande du 02/11/2026, voir window.
+// COMMUNITY_ENABLED en tête de script.js) : un simple booléen sur le document privé du
+// compte — réutilise syncUserData() ci-dessus (déjà résilient aux coupures réseau) plutôt
+// que d'écrire un second setDoc(). Pas de nouvelle règle Firestore : users/{uid} autorise
+// déjà son propriétaire à écrire n'importe quel champ (voir firestore.rules). Lecture :
+// pas de fonction dédiée, feed.html lit directement .notifyCommunity sur le résultat de
+// window.loadUserCloudData() ci-dessus (déjà le document complet, pas la peine d'un second
+// getDoc() rien que pour ce champ).
+window.setCommunityNotifyPreference = async function (enabled) {
+    return window.syncUserData({ notifyCommunity: !!enabled });
+};
+
 // Note communautaire (/5) d'un lieu : moyenne partagée entre TOUS les utilisateurs, pas
 // la moyenne des visites d'une seule personne. Stockée dans une collection PUBLIQUE
 // séparée des documents utilisateur privés (`users/{uid}`) : chaque document ne contient
