@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-02T08:02:17.268Z.
+// Généré le 2026-11-02T22:27:05.809Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -26192,6 +26192,294 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "tweetUrl": "https://x.com/BTS_twt/status/924539722462097409"
+  },
+  {
+    "id": "new-manual-1793617212235-4pik9t",
+    "name": "The Pantheon",
+    "group": "BTS",
+    "member": "RM",
+    "year": "2017",
+    "address": "Piazza della Rotonda, 00186 Rome, Italy",
+    "lat": 41.8991889,
+    "lng": 12.4769507,
+    "img": "images/admin-upload-new-manual-1793617212235-4pik9t-photo.jpg",
+    "country": "Italy",
+    "city": "Rome",
+    "category": "Landmark",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Admire the Pediment"
+        },
+        "text": {
+          "en": "Stand in the center of the Piazza della Rotonda and look up at the facade just as RM did to clearly view the ancient Latin dedication."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Early"
+        },
+        "text": {
+          "en": "The square is one of the most crowded areas in Rome. To capture a clean photo of the monument's exterior without heavy crowds or temporary event barriers blocking the view, arrive before 8:30 AM."
+        }
+      },
+      {
+        "title": {
+          "en": "Step Inside"
+        },
+        "text": {
+          "en": "While RM's photo highlights the exterior, entering the Pantheon to witness the monumental dome and the natural light pouring through the oculus is essential."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated in the lively Piazza della Rotonda, the Pantheon is one of the best-preserved monuments of ancient Rome. Originally commissioned by Marcus Agrippa and completely rebuilt by the emperor Hadrian around 126 AD, the former Roman temple is famous for its towering Corinthian granite columns and its massive, unreinforced concrete dome featuring a central oculus. The building's majestic pediment still proudly bears the original Latin inscription: \"M·AGRIPPA·L·F·COS·TERTIVM·FECIT\" (Marcus Agrippa, son of Lucius, made this building when consul for the third time). Today, it functions as a Catholic church and houses the tombs of several prominent historical figures, including the Renaissance painter Raphael.</p><!--stss:footsteps--><p>In the autumn of 2017, RM traveled to Italy for a family vacation, undertaking a deeply historical tour that would become a defining example of his \"Namjooning\" travel style.<br><br>While exploring Rome's historic center, he shared a photograph taken in the Piazza della Rotonda. In the image, RM is seen looking up and admiring the Pantheon's imposing facade, perfectly framing the massive Corinthian columns and the iconic Latin inscription. To the right of the frame, the base of the Renaissance-era Fontana del Pantheon (Pantheon fountain) is visible, surrounded by temporary barriers. The photograph captures a quiet moment of architectural appreciation amidst the lively, modern urban square.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The Pantheon is located in the pedestrianized historic center and is best reached on foot. The closest Metro station is Barberini (Line A), which is about a 15-minute walk away, though numerous bus routes stop near Largo di Torre Argentina, just a 5-minute walk south."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The exterior square is open 24/7. The interior is generally open daily from 9:00 AM to 7:00 PM. As of mid-2023, an entry ticket (€5) is required to access the inside of the monument."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The exterior piazza is paved with traditional Roman cobblestones (sampietrini). The interior of the Pantheon is completely flat and fully accessible for wheelchair users, with a wide, step-free entrance through the main bronze doors."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Neil / CC BY 2.0",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/924539722462097409",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793617212235-4pik9t-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3242,
+            "y": 0.5853,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "https://direzionemuseiroma.cultura.gov.it/pantheon/",
+    "tiktokUrl": "",
+    "ytId": ""
+  },
+  {
+    "id": "new-manual-1793655182950-95ki3h",
+    "name": "Tower Bridge",
+    "group": "BTS",
+    "member": "V",
+    "country": "UK",
+    "city": "London",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "Tower Bridge Rd, London SE1 2UP, United Kingdom",
+    "lat": 51.5061189,
+    "lng": -0.072941,
+    "img": "images/admin-upload-new-manual-1793655182950-95ki3h-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Shoot at Night"
+        },
+        "text": {
+          "en": "To perfectly recreate the atmosphere of Taehyung's post, you must visit after sunset when the bridge's floodlights are turned on."
+        }
+      },
+      {
+        "title": {
+          "en": "Find the Right Bank"
+        },
+        "text": {
+          "en": "The best unobstructed, pedestrian-friendly views for posing with the bridge in the background are located along the south bank of the Thames (The Queen's Walk), specifically near Potters Fields Park or London City Hall."
+        }
+      },
+      {
+        "title": {
+          "en": "Check the Lift Times"
+        },
+        "text": {
+          "en": "Before you go, check the official Tower Bridge website to see if the bascules are scheduled to open for a tall ship passing through, which adds a spectacular element to your visit."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Completed in 1894, Tower Bridge is a world-famous combined bascule and suspension bridge crossing the River Thames. With its monumental Victorian Gothic stone towers and striking blue suspension chains, it is arguably the most recognizable bridge in the United Kingdom (and is frequently, but incorrectly, referred to as London Bridge). The bridge functions as a vital traffic route and a pedestrian walkway, while the high-level glass-floor walkways serve as a ticketed museum. At night, the entire structure is dramatically illuminated, casting a golden reflection over the Thames.</p><!--stss:footsteps--><p>In October 2018, BTS traveled to London to perform two sold-out shows at the O2 Arena as part of their massive Love Yourself World Tour. Despite the intense touring schedule, the members took time to explore the historic city.<br><br>On October 12, Taehyung shared a series of personal photos on the official BTS Twitter account, including a striking nighttime shot of himself posing with the brightly illuminated Tower Bridge towering in the background. In his caption (\"London 2/4 👋ㅋㅋㅋ\"), Taehyung humorously pointed out that his late-night photo dump was accidentally overlapping with RM's simultaneous Twitter posts. The photograph captures a classic, relaxed tourist moment, utilizing one of London's most iconic monuments to document their monumental first European stadium and arena tour.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The bridge is highly accessible via the London Underground. Take the District or Circle lines to Tower Hill station for the north side, or the Jubilee or Northern lines to London Bridge station for the south side."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Walking across the bridge at street level is completely free and open 24/7. The interior Tower Bridge Exhibition (including the high-level walkways) requires a ticket (around £12) and is generally open daily from 9:30 AM to 6:00 PM."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The pedestrian sidewalks crossing the bridge at street level are flat, paved, and fully accessible. The riverside walkways on both the north and south banks feature accessible ramps, and the interior ticketed exhibition is equipped with elevators."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Colin / CC BY-SA 4.0",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1050738131727785986",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793655182950-95ki3h-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5247,
+            "y": 0.75,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://www.towerbridge.org.uk/"
+  },
+  {
+    "id": "new-manual-1793657224581-v9gy1y",
+    "name": "Regent Street",
+    "group": "BTS",
+    "member": "V",
+    "country": "UK",
+    "city": "London",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "102 Regent St., London W1B 5RT, United Kingdom",
+    "lat": 51.5103121,
+    "lng": -0.1381375,
+    "img": "images/admin-upload-new-manual-1793657224581-v9gy1y-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Exact Post"
+        },
+        "text": {
+          "en": "Navigate to the section of Regent Street right outside the Burberry flagship store. Look for the black directional signpost near the curb at 102 Regent Street to perfectly match Taehyung's posing spot."
+        }
+      },
+      {
+        "title": {
+          "en": "Shoot in the Evening"
+        },
+        "text": {
+          "en": "To recreate the exact moody, urban aesthetic of the \"London 4/4\" post, visit the street after dark when the shop windows and ornate streetlamps illuminate the sidewalks."
+        }
+      },
+      {
+        "title": {
+          "en": "Mind the Foot Traffic"
+        },
+        "text": {
+          "en": "Regent Street is incredibly busy. When setting up your shot against the signpost, be mindful of the heavy flow of local pedestrians and shoppers sharing the pavement."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the heart of London’s West End, Regent Street is one of the world's most famous shopping avenues. Named after the Prince Regent (later George IV) and designed by architect John Nash in the early 19th century, the street is renowned for its grand, sweeping, Grade II-listed curving facades. Connecting Oxford Circus to Piccadilly Circus, this bustling thoroughfare is lined with premium flagship stores, historic British brands, and seasonal light displays, making it a cornerstone of London's retail and urban culture.</p><!--stss:footsteps--><p>While in London for the Love Yourself World Tour in October 2018, Taehyung enjoyed some downtime exploring the city's famous central retail districts at night. On October 13, wrapping up a series of social media updates with the playful caption \"London 4/4 🤪,\" he shared a picture of himself casually leaning against a standard directional street signpost.<br><br>Located specifically near the massive Burberry flagship store (around 102 to 121 Regent Street), this otherwise ordinary piece of urban street furniture instantly transformed into a dedicated pilgrimage site for visiting ARMYs. The photograph captures a candid, relaxed moment of late-night tourism, allowing fans to physically recreate a specific memory from the group's milestone 2018 UK visit.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The location is highly accessible via the London Underground. Take the Bakerloo, Piccadilly, or Victoria lines to Piccadilly Circus station and walk north up Regent Street for about 5 minutes, or take the Central, Bakerloo, or Victoria lines to Oxford Circus and walk south."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The street and its sidewalks are public and open 24/7. Retail store hours vary, but most close between 8:00 PM and 9:00 PM."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The wide pedestrian pavements of Regent Street are flat, smoothly paved, and fully accessible for wheelchair users. Pedestrian crossings at major intersections feature dropped curbs and tactile paving."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793657224581-v9gy1y-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4935,
+            "y": 0.6618,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "imgCredit": "DiscoA340 / CC BY-SA 4.0",
+    "tweetUrl": "https://x.com/BTS_twt/status/1051216687675166720",
+    "officialLink": "https://www.regentstreetonline.com/"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
