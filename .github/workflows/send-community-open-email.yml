@@ -1,0 +1,51 @@
+name: Email — ouverture de Community
+
+# Fait tourner admin-scripts/send-community-open-email.js (demande du 03/11/2026, "active
+# les notifications email quand quelqu'un notify me") — envoie l'email "Community is
+# open!" à tous les comptes ayant activé "Notify me" sur l'écran "Coming soon" de
+# feed.html.
+#
+# UNIQUEMENT manuel (contrairement à send-tour-push.yml) : à lancer toi-même, une fois,
+# LE JOUR OÙ tu ouvres vraiment Community (repasse window.COMMUNITY_ENABLED à true dans
+# script.js d'abord) — jamais automatiquement, jamais avant. Le champ "confirm" ci-dessous
+# est un garde-fou contre un clic "Run workflow" accidentel : il faut taper EXACTEMENT
+# SEND pour que l'envoi ait lieu.
+#
+# Secrets requis : FIREBASE_SERVICE_ACCOUNT (même secret que ai-agent.yml/
+# send-tour-push.yml) + RESEND_API_KEY (ajouté le 03/11/2026). Optionnel :
+# RESEND_FROM_EMAIL, une fois un domaine vérifié dans Resend — voir la note en tête de
+# send-community-open-email.js.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Tape SEND (en majuscules) pour vraiment envoyer les emails'
+        required: true
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifie la confirmation
+        if: ${{ github.event.inputs.confirm != 'SEND' }}
+        run: |
+          echo "Confirmation manquante ou incorrecte (il fallait taper SEND) — annulé, aucun email envoyé."
+          exit 1
+
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+
+      - name: Installe les dépendances
+        working-directory: admin-scripts
+        run: npm install
+
+      - name: Envoie l'email d'ouverture de Community
+        working-directory: admin-scripts
+        run: node send-community-open-email.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}

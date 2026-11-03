@@ -280,3 +280,46 @@ etc.), never hardcode that key in a file you intend to commit. Put it in a local
 `process.env.YOUR_KEY_NAME` (add `require('dotenv').config()` at the top, or pass
 it via `GEMINI_API_KEY=... node your-script.js`) — the same way `serviceAccountKey.json`
 is kept out of git.
+
+## Community "Notify me" email (`send-community-open-email.js`)
+
+Added 03/11/2026 ("active les notifications email quand quelqu'un notify me"). Community
+is behind a "Coming soon" screen for lot 1 of the site (see `window.COMMUNITY_ENABLED` in
+`script.js`); anyone who taps "Notify me" there gets `users/{uid}.notifyCommunity = true`
+in Firestore (`window.setCommunityNotifyPreference()` in `firebase-init.js`). This script
+emails everyone who opted in, in one bilingual (EN/FR) message, once you actually open
+Community.
+
+- **Not automated.** Unlike `send-tour-push.js`, this does not run on a schedule — you run
+  it yourself, once, the day you flip `COMMUNITY_ENABLED` to `true`. Either locally
+  (`node send-community-open-email.js`) or via **Actions → "Email — ouverture de
+  Community" → Run workflow**, where you must type `SEND` in the confirmation field or
+  the run aborts — a safeguard against an accidental click sending it to everyone.
+- **Idempotent**: each account notified gets `users/{uid}.communityOpenEmailSent = true`,
+  so re-running the script (e.g. after new people opt in later) never double-emails anyone
+  already notified.
+- **Provider**: [Resend](https://resend.com) (free tier) — no backend here to send email
+  directly. Requires a `RESEND_API_KEY` repository secret.
+- **No custom domain yet** (confirmed 03/11/2026): without a verified sending domain in
+  Resend, the default sender (`onboarding@resend.dev`) can only deliver to the Resend
+  account's own email address, not to real subscribers. Once a domain is verified
+  (Resend dashboard → Domains → Add Domain, then its DNS records), add a
+  `RESEND_FROM_EMAIL` secret (e.g. `"Screen To Street <notifications@yourdomain.com>"`) —
+  the script picks it up automatically, no code change needed.
+- The email's "Open Community" link points at `https://josyine.github.io/Screen-To-Street`
+  (the site's current GitHub Pages URL, no purchased domain yet) — update `SITE_URL` near
+  the top of the script if that ever changes.
+
+### Setup
+
+```
+cd admin-scripts
+npm install
+node send-community-open-email.js
+```
+
+Needs the same `FIREBASE_SERVICE_ACCOUNT` as the other scripts (local
+`serviceAccountKey.json`, or that env var), plus `RESEND_API_KEY` (from the Resend
+dashboard → API Keys — never paste this key into a chat or commit it; add it as a
+repository secret under **Settings → Secrets and variables → Actions**, same place as
+`FIREBASE_SERVICE_ACCOUNT`).
