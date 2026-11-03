@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-02T22:27:05.809Z.
+// Généré le 2026-11-03T08:24:35.657Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -26480,6 +26480,102 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "DiscoA340 / CC BY-SA 4.0",
     "tweetUrl": "https://x.com/BTS_twt/status/1051216687675166720",
     "officialLink": "https://www.regentstreetonline.com/"
+  },
+  {
+    "id": "new-manual-1793658515425-ztiegr",
+    "name": "Place du Panthéon",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "Place du Panthéon, 75005 Paris, France (The Faculty of Law is at 12 Place du Panthéon)",
+    "lat": 48.8467,
+    "lng": 2.3454,
+    "img": "images/admin-upload-new-manual-1793658515425-ztiegr-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Face the Right Way"
+        },
+        "text": {
+          "en": "To capture the exact background of Taehyung's photo, you must stand in the square with your back turned to the Panthéon itself, facing the curved Faculty of Law building on the northern side of the plaza."
+        }
+      },
+      {
+        "title": {
+          "en": "Dress the Part"
+        },
+        "text": {
+          "en": "Channel Taehyung's iconic 2018 Paris look by incorporating a classic beret or newsboy cap and an oversized trench coat into your outfit for the photo."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Latin Quarter"
+        },
+        "text": {
+          "en": "The square sits in the heart of the student district. After taking your photo, walk down the hill to explore the nearby Luxembourg Gardens or browse the historic English-language bookstore, Shakespeare and Company."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated at the very top of the Montagne Sainte-Geneviève in the historic Latin Quarter, the Place du Panthéon is a sweeping, monumental square designed by architect Jacques-Germain Soufflot. While the towering Panthéon mausoleum is the square's centerpiece, the plaza is flanked by stunning, symmetrical neoclassical buildings. The northern building framing the square is the historic Faculté de Droit (Faculty of Law), which currently houses branches of the prestigious Paris 1 Panthéon-Sorbonne and Paris-Panthéon-Assas universities. With its curved facade and grand columns, it serves as a stunning architectural anchor for Parisian academic life.</p><!--stss:footsteps--><p>In October 2018, BTS arrived in Paris to perform their highly anticipated Love Yourself concerts at the Accor Arena. Taking advantage of his free time in the French capital, Taehyung explored the historic streets of the Left Bank.<br><br>On the official @BTS_twt account, he shared an iconic, moody photograph of himself standing in the Place du Panthéon. Interestingly, rather than posing with the famous Panthéon dome in the background, the camera was turned outward, perfectly framing the grand columns of the Faculté de Droit behind him. Often associated with his artistic \"Vante\" persona, this classic image captures a romanticized, autumnal Parisian aesthetic that fans heavily associate with Taehyung's personal style.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The square is located in the 5th arrondissement. Take the RER B train to the Luxembourg station, which is a short 5-minute walk away. Alternatively, take the Paris Métro Line 10 to Cardinal Lemoine or Maubert - Mutualité."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The Place du Panthéon is a public square open 24/7 and completely free to visit. The interior of the university building is reserved for students and faculty."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The plaza is expansive, flat, and paved with smooth stone, making it highly accessible and easy to navigate for wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Jason Riedy / CC BY 2.0",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793658515425-ztiegr-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5299,
+            "y": 0.6382,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://fr.wikipedia.org/wiki/Place_du_Panth%C3%A9on",
+    "tweetUrl": "https://x.com/BTS_twt/status/1054856085981384704?lang=fr"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
