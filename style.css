@@ -1111,6 +1111,11 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
        .mobile-bottom-nav/.mobile-map-search ci-dessus/plus bas, posé sur toggleMobileMenu().
        */
     .loc-visitors-chevron-tab.menu-open { display: none !important; }
+    /* Bascule "vue Admin / vue Utilisateur" (demande du 03/11/2026) : voir le commentaire
+       sur tab.className dans injectLocVisitorsChevron() (script.js) et le handler
+       'firebase-ready' qui retire cette classe pour un admin en vue Admin. !important pour
+       l'emporter sur .loc-visitors-chevron-tab { display:flex } juste au-dessus. */
+    .loc-visitors-chevron-tab.cs-user-hidden { display: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

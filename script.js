@@ -13,6 +13,41 @@
 window.COMMUNITY_ENABLED = false;
 
 // ==========================================
+// BASCULE "VUE ADMIN / VUE UTILISATEUR" (demande du 03/11/2026) — permet à un·e admin de
+// prévisualiser le site tel qu'une personne normale le voit (Community "Coming soon",
+// flèche "photos de visiteurs" de map.html masquée...) sans avoir à se déconnecter.
+// Préférence partagée entre toutes les pages via localStorage (même origine) — bouton
+// "Admin view"/"User view" à côté de "Unverified only" sur map.html, voir le handler
+// 'firebase-ready' plus bas pour où il est révélé/branché.
+// IMPORTANT : cette préférence N'A D'EFFET QUE combinée à un VRAI statut admin
+// (isCurrentUserAdmin(), déjà mis en cache par session) — un compte normal voit toujours la
+// vue Utilisateur, quelle que soit la valeur laissée dans ce localStorage (ex: par un admin
+// sur un appareil partagé). Ne touche PAS à window.__isAdminUser (posé plus bas, utilisé par
+// bien d'autres fonctionnalités admin déjà existantes comme le filtre "Verified only") : ce
+// drapeau garde son sens d'origine ("vrai compte admin"), window.isAdminViewActive()
+// ci-dessous est un concept SÉPARÉ, combiné, utilisé uniquement par les fonctionnalités que
+// cette demande vise explicitement.
+const ADMIN_VIEW_MODE_KEY = 'stsAdminViewMode';
+window.getAdminViewMode = function () {
+    try { return localStorage.getItem(ADMIN_VIEW_MODE_KEY) || 'admin'; } catch (e) { return 'admin'; }
+};
+window.setAdminViewMode = function (mode) {
+    try { localStorage.setItem(ADMIN_VIEW_MODE_KEY, mode === 'user' ? 'user' : 'admin'); } catch (e) {}
+};
+window.isAdminViewActive = async function () {
+    if (typeof window.isCurrentUserAdmin !== 'function') return false;
+    const isAdmin = await window.isCurrentUserAdmin();
+    return !!isAdmin && window.getAdminViewMode() === 'admin';
+};
+// Change la préférence puis recharge la page : le moyen le plus simple et le plus sûr de
+// refaire passer TOUTES les fonctionnalités concernées (sur la page courante) par leur
+// logique de révélation normale, plutôt que de retrouver et re-basculer chacune en direct.
+window.switchAdminViewMode = function (mode) {
+    window.setAdminViewMode(mode);
+    window.location.reload();
+};
+
+// ==========================================
 // 0. CONFIGURATION DU FOND DE CARTE
 // ==========================================
 // Le style OSM Carto standard (tile.openstreetmap.org) affiche les noms de lieux
@@ -3804,6 +3839,29 @@ window.addEventListener('firebase-ready', async (e) => {
         if (verifiedFilterBtn) verifiedFilterBtn.classList.remove('hidden');
         const unverifiedFilterBtn = document.getElementById('unverified-filter-btn');
         if (unverifiedFilterBtn) unverifiedFilterBtn.classList.remove('hidden');
+        // Bascule "vue Admin / vue Utilisateur" (demande du 03/11/2026) : la bascule
+        // elle-même reste révélée pour tout VRAI admin, MÊME en train de prévisualiser la
+        // vue Utilisateur (window.getAdminViewMode() === 'user') — sinon impossible de
+        // revenir en arrière une fois basculé. Seul ce qu'elle contrôle (le chevron
+        // "photos de visiteurs" ci-dessous, Community dans feed.html) dépend du mode actuel.
+        const adminViewToggle = document.getElementById('admin-view-toggle');
+        if (adminViewToggle) {
+            adminViewToggle.classList.remove('hidden');
+            const mode = window.getAdminViewMode();
+            const adminModeBtn = document.getElementById('admin-view-mode-admin-btn');
+            if (adminModeBtn) adminModeBtn.classList.toggle('active', mode === 'admin');
+            const userModeBtn = document.getElementById('admin-view-mode-user-btn');
+            if (userModeBtn) userModeBtn.classList.toggle('active', mode === 'user');
+        }
+        // Flèche "photos de visiteurs" (demande du 03/11/2026, "en vue user, masque le
+        // bouton flèche chevron... seuls les admins peuvent voir cette flèche") : masquée
+        // par défaut dès sa création (voir injectLocVisitorsChevron() plus bas,
+        // class="...cs-user-hidden" posée avant même que ce handler ne s'exécute) — révélée
+        // ici uniquement en vue Admin, jamais en vue Utilisateur ni pour un compte normal.
+        if (window.getAdminViewMode() === 'admin') {
+            const chevronTab = document.getElementById('loc-visitors-chevron-tab');
+            if (chevronTab) chevronTab.classList.remove('cs-user-hidden');
+        }
         // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) :
         // verifiedLocationIdsCache est désormais chargé plus haut, AVANT le "if (!user)
         // return" (demande du 04/10/2026, voir sa note) pour tout visiteur, pas seulement un
@@ -4140,17 +4198,19 @@ window.stNavigate = function (href) {
 // Sans backend dédié, les trois options renvoient vers map.html, qui ouvre l'explorateur
 // et invite à choisir un lieu — les flux d'ajout de photo/visite/avis existent déjà par
 // lieu (voir openMemoryEditor côté map.html).
-window.openQuickAddSheet = function () {
+window.openQuickAddSheet = async function () {
     let overlay = document.getElementById('qa-sheet-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'qa-sheet-overlay';
         overlay.className = 'qa-sheet-overlay';
-        // AJOUT SITE (demande du 02/11/2026) : "Add a photo" est la SEULE des 3 options qui
-        // publie dans Community (voir window.COMMUNITY_ENABLED en tête de ce fichier) —
-        // grisée + étiquette "Coming soon" tant que c'est le cas, posé ici à la création du
-        // menu plutôt qu'à chaque ouverture (le flag ne change jamais en cours de session).
-        const photoDisabled = !window.COMMUNITY_ENABLED;
+        // AJOUT SITE (demande du 02/11/2026, étendu le 03/11/2026 pour la vue Admin) :
+        // "Add a photo" est la SEULE des 3 options qui publie dans Community (voir window.
+        // COMMUNITY_ENABLED en tête de ce fichier) — grisée + étiquette "Coming soon" tant
+        // que ni le flag ni la vue Admin ne l'autorisent, posé ici à la création du menu
+        // plutôt qu'à chaque ouverture (ni l'un ni l'autre ne change en cours de session —
+        // changer de vue recharge la page, voir window.switchAdminViewMode()).
+        const photoDisabled = !window.COMMUNITY_ENABLED && !(await window.isAdminViewActive());
         overlay.innerHTML = `
             <div class="qa-sheet">
                 <div class="qa-sheet-handle"></div>
@@ -4183,10 +4243,13 @@ window.openQuickAddSheet = function () {
         overlay.querySelectorAll('.qa-sheet-option').forEach(opt => {
             opt.addEventListener('click', () => {
                 const kind = opt.dataset.qa;
-                // AJOUT SITE (demande du 02/11/2026) : bloque la publication tant que
-                // Community n'est pas ouverte, sans fermer le menu "+" lui-même (les deux
-                // autres options restent utilisables normalement).
-                if (kind === 'photo' && !window.COMMUNITY_ENABLED) {
+                // AJOUT SITE (demande du 02/11/2026, étendu le 03/11/2026) : bloque la
+                // publication tant que Community n'est pas ouverte (ni par le flag, ni par
+                // la vue Admin), sans fermer le menu "+" lui-même (les deux autres options
+                // restent utilisables normalement). Relit la classe posée plus haut
+                // (photoDisabled) plutôt que de re-vérifier les deux conditions ici — reste
+                // forcément cohérent avec l'affichage grisé/l'étiquette déjà montrés.
+                if (kind === 'photo' && opt.classList.contains('cs-qa-disabled')) {
                     if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('communityComingSoonToast'));
                     return;
                 }
@@ -8498,7 +8561,12 @@ function injectLocVisitorsChevron() {
     const tab = document.createElement('button');
     tab.type = 'button';
     tab.id = 'loc-visitors-chevron-tab';
-    tab.className = 'loc-visitors-chevron-tab';
+    // AJOUT SITE (demande du 03/11/2026, "seuls les admins peuvent voir cette flèche") :
+    // masqué par défaut (cs-user-hidden, voir style.css) — révélé seulement pour un admin
+    // en vue Admin, dans le handler 'firebase-ready' plus haut. Posé ICI (à la création,
+    // qui a lieu dès DOMContentLoaded, avant que le statut admin ne soit connu) pour ne
+    // jamais laisser la flèche visible ne serait-ce qu'un instant à une personne normale.
+    tab.className = 'loc-visitors-chevron-tab cs-user-hidden';
     tab.title = 'Visitor photos';
     tab.setAttribute('aria-label', 'Visitor photos for the selected location');
     tab.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
