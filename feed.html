@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261078" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261079" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -586,7 +586,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261078';
+        s.src = 'page-loader.js?v=20261079';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -831,9 +831,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261078"></script>
-<script src="locations-data.js?v=20261078"></script>
-<script src="script.js?v=20261078"></script>
+<script type="module" src="firebase-init.js?v=20261079"></script>
+<script src="locations-data.js?v=20261079"></script>
+<script src="script.js?v=20261079"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -986,10 +986,21 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     // tableau toujours vide, sans jamais retenter la lecture Firestore — aucun moyen de
     // récupérer sans recharger toute la page. Voir la branche "community" ci-dessous.
     let communityLoadFailed = false;
-    window.switchFeedTab = function (tab) {
+    // AJOUT SITE (demande du 03/11/2026, bascule "vue Admin/vue Utilisateur") : Community
+    // est désormais effectivement ouverte soit par le flag (window.COMMUNITY_ENABLED),
+    // soit pour un admin en vue Admin (window.isAdminViewActive(), script.js — combine un
+    // vrai statut admin ET la préférence de vue, jamais la préférence seule) — jamais pour
+    // une personne normale ni un admin qui prévisualise la vue Utilisateur.
+    async function isCommunityEffectivelyEnabled() {
+        if (window.COMMUNITY_ENABLED) return true;
+        return typeof window.isAdminViewActive === 'function' && await window.isAdminViewActive();
+    }
+    window.switchFeedTab = async function (tab) {
         currentFeedTab = tab;
         document.querySelectorAll('.feed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-        document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred' || (tab === 'community' && !window.COMMUNITY_ENABLED));
+        const communityActive = await isCommunityEffectivelyEnabled();
+        if (currentFeedTab !== tab) return; // l'onglet a changé pendant cette attente, laisse l'appel le plus récent décider
+        document.getElementById('feed-search-wrap').classList.toggle('hidden', tab === 'saved' || tab === 'sacred' || (tab === 'community' && !communityActive));
         // Ligne recherche + bouton de groupe de "Mei's Pictures" (demande du 01/11/2026) :
         // visible uniquement sur cet onglet, même logique inversée que la recherche
         // Community ci-dessus. renderSacredGroupFilterOptions() (appelée par
@@ -1018,7 +1029,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
             loadSavedFeed();
         } else if (tab === 'sacred') {
             renderSacredGrid();
-        } else if (!window.COMMUNITY_ENABLED) {
+        } else if (!communityActive) {
             renderCommunityComingSoon();
         } else if (communityLoadFailed) {
             loadFeed();
@@ -1666,12 +1677,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 
     async function loadFeed() {
         // AJOUT SITE (demande du 02/11/2026, lot 1 : Community pas encore ouverte aux
-        // utilisateurs) : tout en haut, AVANT la moindre requête Firestore — voir window.
-        // COMMUNITY_ENABLED dans script.js. Ne redessine rien si un autre onglet est devenu
-        // actif entre-temps (ex: appelée par le filet de sécurité "firebase-ready" ci-dessous
-        // alors que restoreFeedReturnState() a déjà basculé sur "saved"/"sacred") — ce cas
-        // est déjà géré par switchFeedTab() lui-même.
-        if (!window.COMMUNITY_ENABLED) {
+        // utilisateurs ; étendu le 03/11/2026 pour la vue Admin) : tout en haut, AVANT la
+        // moindre requête Firestore — voir isCommunityEffectivelyEnabled() plus haut. Ne
+        // redessine rien si un autre onglet est devenu actif entre-temps (ex: appelée par
+        // le filet de sécurité "firebase-ready" ci-dessous alors que restoreFeedReturnState()
+        // a déjà basculé sur "saved"/"sacred") — ce cas est déjà géré par switchFeedTab()
+        // lui-même.
+        if (!(await isCommunityEffectivelyEnabled())) {
             if (currentFeedTab === 'community') renderCommunityComingSoon();
             return;
         }
