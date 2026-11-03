@@ -13,20 +13,30 @@
 window.COMMUNITY_ENABLED = false;
 
 // ==========================================
-// BASCULE "VUE ADMIN / VUE UTILISATEUR" (demande du 03/11/2026) — permet à un·e admin de
-// prévisualiser le site tel qu'une personne normale le voit (Community "Coming soon",
-// flèche "photos de visiteurs" de map.html masquée...) sans avoir à se déconnecter.
-// Préférence partagée entre toutes les pages via localStorage (même origine) — bouton
-// "Admin view"/"User view" à côté de "Unverified only" sur map.html, voir le handler
-// 'firebase-ready' plus bas pour où il est révélé/branché.
+// BASCULE "VUE ADMIN / VUE UTILISATEUR" (demande du 03/11/2026, étendue le même jour :
+// "en user view, enlever tout ce qui apparait en mode admin (bouton admin, boutons
+// verified et unverified, symbole vérifiés sur les lieux vérifiés, etc.)... le but est que
+// je puisse visualiser ce que voit un non admin") — permet à un·e admin de prévisualiser
+// le site tel qu'une personne normale le voit (Community "Coming soon", flèche "photos de
+// visiteurs" de map.html, raccourci "Admin" du header, pastilles Verified/Unverified,
+// pastille "lieu vérifié", KPI vérifié, boutons d'édition... tous masqués) sans avoir à se
+// déconnecter. Préférence partagée entre toutes les pages via localStorage (même origine)
+// — bouton "Admin view"/"User view" à côté de "Unverified only" sur map.html, voir le
+// handler 'firebase-ready' plus bas pour où il est révélé/branché.
 // IMPORTANT : cette préférence N'A D'EFFET QUE combinée à un VRAI statut admin
 // (isCurrentUserAdmin(), déjà mis en cache par session) — un compte normal voit toujours la
 // vue Utilisateur, quelle que soit la valeur laissée dans ce localStorage (ex: par un admin
-// sur un appareil partagé). Ne touche PAS à window.__isAdminUser (posé plus bas, utilisé par
-// bien d'autres fonctionnalités admin déjà existantes comme le filtre "Verified only") : ce
-// drapeau garde son sens d'origine ("vrai compte admin"), window.isAdminViewActive()
-// ci-dessous est un concept SÉPARÉ, combiné, utilisé uniquement par les fonctionnalités que
-// cette demande vise explicitement.
+// sur un appareil partagé).
+// window.__isAdminUser (posé plus bas, utilisé par toutes les fonctionnalités admin
+// listées ci-dessus) reflète désormais la vue EFFECTIVE (vrai admin ET vue Admin), pas
+// seulement le vrai statut du compte — c'est ce qui permet à tout ce qui en dépend déjà
+// ailleurs dans ce fichier (pastille "vérifié", filtre Verified/Unverified, etc.) de
+// basculer automatiquement sans dupliquer la logique à chaque endroit. La SEULE exception
+// volontaire est la bascule elle-même (le bouton "Admin view"/"User view"), qui doit
+// rester visible même en vue Utilisateur pour pouvoir revenir en arrière — sinon un admin
+// s'enfermerait hors de sa propre vue Admin. window.isAdminViewActive() ci-dessous reste un
+// second moyen de lire ce même état de façon asynchrone, AVANT que le handler
+// 'firebase-ready' n'ait tourné (utilisé par feed.html, chargé indépendamment de map.html).
 const ADMIN_VIEW_MODE_KEY = 'stsAdminViewMode';
 window.getAdminViewMode = function () {
     try { return localStorage.getItem(ADMIN_VIEW_MODE_KEY) || 'admin'; } catch (e) { return 'admin'; }
@@ -3818,32 +3828,45 @@ window.addEventListener('firebase-ready', async (e) => {
     }
     const adminShortcutBtn = document.getElementById('admin-shortcut-btn');
     if (typeof window.isCurrentUserAdmin === 'function' && await window.isCurrentUserAdmin()) {
-        if (adminShortcutBtn) adminShortcutBtn.classList.remove('hidden');
+        // Bascule "vue Admin / vue Utilisateur" (demande du 03/11/2026, étendue le
+        // 03/11/2026 : "en user view, enlever tout ce qui apparait en mode admin... le but
+        // est que je puisse visualiser ce que voit un non admin") : en vue Utilisateur,
+        // window.__isAdminUser lui-même passe à false — PAS seulement le chevron/Community
+        // comme au premier jet — pour que TOUT ce qui dépend déjà de ce drapeau ailleurs
+        // dans le fichier (pastille "vérifié" sur les lieux, filtre Verified/Unverified,
+        // KPI vérifié, voir renderLocations() plus bas) redevienne automatiquement celui
+        // d'un visiteur normal, sans dupliquer la logique à chaque endroit. Un vrai admin
+        // retrouve toujours son statut réel dès qu'il repasse en vue Admin (un reload a
+        // lieu à chaque bascule, voir window.switchAdminViewMode() en tête de fichier).
+        const effectiveAdminMode = window.getAdminViewMode() === 'admin';
         // Mémorisé une fois ici (pas re-vérifié à chaque ouverture de fiche lieu, ce qui
         // ferait clignoter l'icône crayon) — voir openDetailsPanel() et
         // openLocationEditModal() plus bas, qui s'appuient dessus.
-        window.__isAdminUser = true;
+        window.__isAdminUser = effectiveAdminMode;
+        // "Bouton admin" du header, demande du 03/11/2026 : raccourci vers admin.html,
+        // n'a aucune raison d'être visible tant qu'on prévisualise la vue Utilisateur.
+        if (adminShortcutBtn) adminShortcutBtn.classList.toggle('hidden', !effectiveAdminMode);
         const adminEditBtn = document.getElementById('details-admin-edit-btn');
-        if (adminEditBtn) adminEditBtn.classList.remove('hidden');
+        if (adminEditBtn) adminEditBtn.classList.toggle('hidden', !effectiveAdminMode);
         // Édition directe du titre, tout en haut de la fiche (demande du 21/09/2026,
         // "je veux pouvoir modifier directement via le titre tout en haut") — distinct
         // du champ Title du modal crayon ci-dessus, voir wireInlineTitleEdit() plus bas.
         const titleEditBtn = document.getElementById('details-title-edit-btn');
-        if (titleEditBtn) titleEditBtn.classList.remove('hidden');
+        if (titleEditBtn) titleEditBtn.classList.toggle('hidden', !effectiveAdminMode);
         // KPI "verified" + pastilles de filtre "Verified only"/"Unverified only" (demande
         // du 15/09/2026, étendu le 21/09/2026) : comme la pastille de vérification
-        // ci-dessous, réservés aux admins — jamais visibles d'un visiteur normal.
+        // ci-dessous, réservés aux admins — jamais visibles d'un visiteur normal, ni d'un
+        // admin prévisualisant la vue Utilisateur (demande du 03/11/2026).
         const adminVerifiedKpi = document.getElementById('admin-verified-kpi-pill');
-        if (adminVerifiedKpi) adminVerifiedKpi.classList.remove('hidden');
+        if (adminVerifiedKpi) adminVerifiedKpi.classList.toggle('hidden', !effectiveAdminMode);
         const verifiedFilterBtn = document.getElementById('verified-filter-btn');
-        if (verifiedFilterBtn) verifiedFilterBtn.classList.remove('hidden');
+        if (verifiedFilterBtn) verifiedFilterBtn.classList.toggle('hidden', !effectiveAdminMode);
         const unverifiedFilterBtn = document.getElementById('unverified-filter-btn');
-        if (unverifiedFilterBtn) unverifiedFilterBtn.classList.remove('hidden');
-        // Bascule "vue Admin / vue Utilisateur" (demande du 03/11/2026) : la bascule
-        // elle-même reste révélée pour tout VRAI admin, MÊME en train de prévisualiser la
-        // vue Utilisateur (window.getAdminViewMode() === 'user') — sinon impossible de
-        // revenir en arrière une fois basculé. Seul ce qu'elle contrôle (le chevron
-        // "photos de visiteurs" ci-dessous, Community dans feed.html) dépend du mode actuel.
+        if (unverifiedFilterBtn) unverifiedFilterBtn.classList.toggle('hidden', !effectiveAdminMode);
+        // La bascule elle-même reste révélée pour tout VRAI admin, MÊME en train de
+        // prévisualiser la vue Utilisateur — sinon impossible de revenir en arrière une
+        // fois basculé (seul élément "admin" volontairement épargné par effectiveAdminMode
+        // ci-dessus, pour ne jamais s'auto-enfermer hors de la vue Admin).
         const adminViewToggle = document.getElementById('admin-view-toggle');
         if (adminViewToggle) {
             adminViewToggle.classList.remove('hidden');
@@ -3858,18 +3881,18 @@ window.addEventListener('firebase-ready', async (e) => {
         // par défaut dès sa création (voir injectLocVisitorsChevron() plus bas,
         // class="...cs-user-hidden" posée avant même que ce handler ne s'exécute) — révélée
         // ici uniquement en vue Admin, jamais en vue Utilisateur ni pour un compte normal.
-        if (window.getAdminViewMode() === 'admin') {
+        if (effectiveAdminMode) {
             const chevronTab = document.getElementById('loc-visitors-chevron-tab');
             if (chevronTab) chevronTab.classList.remove('cs-user-hidden');
         }
         // Pastille "lieu vérifié" dans le menu de gauche (demande du 13/09/2026) :
         // verifiedLocationIdsCache est désormais chargé plus haut, AVANT le "if (!user)
         // return" (demande du 04/10/2026, voir sa note) pour tout visiteur, pas seulement un
-        // admin — ne reste donc plus qu'à redessiner ICI pour restaurer la vue complète
-        // (tous les lieux, pas seulement les vérifiés) maintenant que window.__isAdminUser
-        // vient de passer à true : le re-rendu déclenché par le chargement plus haut a pu
-        // avoir lieu AVANT que ce drapeau ne soit posé (ordre des blocs dans ce handler), et
-        // aurait donc filtré à tort la vue d'un admin comme celle d'un visiteur normal.
+        // admin — ne reste donc plus qu'à redessiner ICI pour refléter la valeur à jour de
+        // window.__isAdminUser (ci-dessus) : le re-rendu déclenché par le chargement plus
+        // haut a pu avoir lieu AVANT que ce drapeau ne soit posé (ordre des blocs dans ce
+        // handler), et aurait donc filtré à tort la vue d'un admin comme celle d'un
+        // visiteur normal (ou l'inverse, en vue Utilisateur).
         if (document.getElementById('map') && typeof renderLocations === 'function') {
             renderLocations(true);
         }
