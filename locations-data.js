@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-04T07:53:20.794Z.
+// Généré le 2026-11-04T20:31:10.031Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -26768,6 +26768,102 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "https://kr.pinterest.com/pin/642114859385853270/",
     "imgCredit": "Screentostreet",
     "episodeLink": "https://altselection.ouest-france.fr/rm-partage-ses-photos-a-paris/"
+  },
+  {
+    "id": "new-manual-1793823574050-1qwfgh",
+    "name": "Place Georges-Pompidou (Centre Pompidou)",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Museum",
+    "year": "2019",
+    "address": "Place Georges-Pompidou, 75004 Paris, France",
+    "lat": 48.8609,
+    "lng": 2.3517,
+    "img": "images/admin-upload-new-manual-1793823574050-1qwfgh-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Stand on the Slope"
+        },
+        "text": {
+          "en": "To recreate RM's photo, position yourself on the sloping pedestrian plaza (Place Georges-Pompidou) looking directly at the main facade of the museum, ensuring the exterior tubular escalators are visible in the background."
+        }
+      },
+      {
+        "title": {
+          "en": "Ride to the Top"
+        },
+        "text": {
+          "en": "While RM's photo was taken outside, the best way to experience the building is to ride the exterior glass escalators to the top floor for an unobstructed, panoramic view of the Parisian skyline."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Modern Art"
+        },
+        "text": {
+          "en": "Continue the \"Namjooning\" experience by buying a ticket to the permanent collection inside, which features masterworks by Kandinsky, Duchamp, and Mondrian."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the heart of Paris, the Centre Pompidou is a groundbreaking architectural marvel and the home of Europe's largest museum for modern and contemporary art. Designed in the 1970s by architects Renzo Piano and Richard Rogers, the building is famous for its radical \"inside-out\" design, exposing its structural, mechanical, and colorful pipe systems on the exterior. The large, gently sloping cobblestone square in front of the museum—Place Georges-Pompidou—was specifically designed as an open urban space, drawing daily crowds of pedestrians, street performers, and art lovers.</p><!--stss:footsteps--><p>In early June 2019, BTS was in Paris gearing up for their massive, historic stadium concerts at the Stade de France. Taking a moment to indulge in his signature \"Namjooning,\" RM spent time exploring the city's modern art scene.<br><br>On June 6, RM shared a series of photos on the official @BTS_twt account with the short, affectionate caption \"안뇽 파리\" (\"Hello/Bye Paris\"). Among the pictures was a shot of him standing on the Place Georges-Pompidou, with the museum's iconic exterior escalators and industrial pipes towering behind him. Highlighting his influence in the global art sphere, the official Centre Pompidou Twitter account quickly reacted, quote-tweeting his post to welcome him to the museum.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The plaza is extremely well-connected. Take the Paris Métro Line 11 to the Rambuteau station, or use the massive Châtelet–Les Halles transit hub (Lines 1, 4, 7, 11, 14, and RER A, B, D) which is just a 5-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor plaza is a public square open 24/7. The museum itself is generally open from 11:00 AM to 9:00 PM and is closed on Tuesdays. Museum admission is approximately €15."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Place Georges-Pompidou features a gentle slope paved with large cobblestones, which can be slightly uneven. The museum interior is fully accessible for wheelchair users, with dedicated elevators and ramps bypassing the exterior escalators."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1136744528524795904",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793823574050-1qwfgh-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5052,
+            "y": 0.6471,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "https://fr.wikipedia.org/wiki/Place_Georges-Pompidou",
+    "tiktokUrl": "",
+    "ytId": ""
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
