@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-03T20:15:19.230Z.
+// Généré le 2026-11-04T20:31:10.031Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -26576,6 +26576,294 @@ window.STATIC_LOCATIONS = [
     "ytId": "",
     "officialLink": "https://fr.wikipedia.org/wiki/Place_du_Panth%C3%A9on",
     "tweetUrl": "https://x.com/BTS_twt/status/1054856085981384704?lang=fr"
+  },
+  {
+    "id": "new-manual-1793738413109-to18m2",
+    "name": "Louvre Rivoli",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Museum",
+    "year": "2022",
+    "address": "Rue de Rivoli (Exterior Louvre Arcades), 75001 Paris, France",
+    "lat": 48.861,
+    "lng": 2.3402,
+    "img": "images/admin-upload-new-manual-1793738413109-to18m2-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "https://www.louvre.fr/",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "Rutger van der Maar / CC BY 2.0",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793738413109-to18m2-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6328,
+            "y": 0.7088,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "pinterestUrl": "https://kr.pinterest.com/pin/849139704755395779/",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk the Arcades"
+        },
+        "text": {
+          "en": "To recreate RM's photo, you don't need to enter the museum. Simply walk along the northern exterior of the Louvre on Rue de Rivoli, staying beneath the covered stone archways."
+        }
+      },
+      {
+        "title": {
+          "en": "Observe the Light"
+        },
+        "text": {
+          "en": "The arches create beautiful, repeating geometric shadows on the pavement during sunny days, which makes for fantastic, moody street photography."
+        }
+      },
+      {
+        "title": {
+          "en": "Combine with a Museum Trip"
+        },
+        "text": {
+          "en": "Since this spot is literally wrapped around the museum's exterior wing, it is the perfect place to take a quick breather and grab a coffee after a long day of viewing art inside the Louvre."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Rue de Rivoli is one of the most famous commercial and historic streets in Paris, stretching over three kilometers through the heart of the city. The section running directly alongside the northern wing of the Musée du Louvre is particularly iconic, characterized by its elegant, unending covered arcades. Originally constructed under Napoleon Bonaparte to house luxury boutiques and shield pedestrians from the weather, these grand neoclassical arcades remain a bustling thoroughfare today. They serve as a magnificent architectural border, perfectly separating the modern city traffic from the historic royal palace.</p><!--stss:footsteps--><p>During his extensive European \"Namjooning\" tour in the summer of 2022, RM didn't just spend all his time inside museum galleries; he also made sure to soak in the everyday urban atmosphere of the French capital.<br><br>Shared on his personal Instagram account (@rkive), one of the photos from his trip captures him walking along the Rue de Rivoli, directly next to the Louvre. Rather than posing in front of the famous glass pyramid like a standard tourist, RM was photographed enjoying a casual, incognito stroll under the grand covered arcades near the Louvre-Rivoli area. The image highlights his grounded approach to travel, seamlessly blending his deep appreciation for grand Parisian architecture with a relaxed walk through the bustling city streets.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The location is highly accessible via the Paris Métro. Take Line 1 directly to the Louvre-Rivoli station, which exits onto Rue de Rivoli right across from the Louvre's eastern arcades."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The street and the covered pedestrian arcades are public thoroughfares, open 24/7 and completely free to access."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The wide pedestrian sidewalks beneath the arcades on Rue de Rivoli are flat, smoothly paved, and fully accessible for wheelchair users, providing an easy, weather-protected route along the museum's exterior."
+        }
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1793745028024-nv1vir",
+    "name": "Rue Molière",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2022",
+    "address": "5 Rue Molière, 75001 Paris, France",
+    "lat": 48.8644,
+    "lng": 2.335,
+    "img": "images/admin-upload-new-manual-1793745028024-nv1vir-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Exact Spot"
+        },
+        "text": {
+          "en": "To recreate RM's casual walking photo, navigate specifically to 5 Rue Molière. Walk down the narrow pavement to capture the same perspective of the curving street and classic stone buildings in the background."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Palais-Royal"
+        },
+        "text": {
+          "en": "Once you finish taking your photos, walk just one block south to enter the stunning Domaine National du Palais-Royal. Its quiet gardens and tree-lined promenades are perfect for a continuing a peaceful \"Namjooning\" stroll."
+        }
+      },
+      {
+        "title": {
+          "en": "Watch the Traffic"
+        },
+        "text": {
+          "en": "Because this is a traditional narrow Parisian street, the sidewalks are quite thin. Be mindful of local pedestrians and the occasional passing car when stepping back to frame your shot."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Tucked away in the prestigious 1st arrondissement, Rue Molière is a quiet, narrow Parisian street that perfectly encapsulates the charm of the historic city center. Named after the legendary French playwright, the street runs near the Palais-Royal and Avenue de l'Opéra. Lined with classic Haussmannian and pre-Haussmannian stone facades, boutique hotels, and local eateries, it offers a peaceful, authentic residential atmosphere just steps away from some of the most heavily trafficked tourist landmarks in the world.</p><!--stss:footsteps--><p>During his extensive European trip in June 2022, RM balanced his time between visiting massive cultural institutions and simply wandering the city's historic neighborhoods.<br><br>Documenting his daily \"Namjooning\" adventures for fans, RM shared a photograph of himself casually strolling down Rue Molière, near building number 5. Rather than posing in front of a grand monument, he was captured mid-stride on the narrow sidewalk, blending seamlessly into the everyday Parisian landscape. The image highlights his deliberate travel style—stepping away from the crowded main avenues to appreciate the quiet, raw architecture and grounded, authentic moments of city life.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The street is easily accessible via the Paris Métro. Take Line 7 or Line 14 to the Pyramides station, which is only a 2-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a public thoroughfare, the street is open 24/7 and completely free to access."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The street is flat and paved, but it features very narrow sidewalks typical of historic Paris. Wheelchair users may need to navigate tight spaces and standard curbs when crossing intersections."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793745028024-nv1vir-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4766,
+            "y": 0.5353,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "instagramUrl": "",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "pinterestUrl": "https://kr.pinterest.com/pin/642114859385853270/",
+    "imgCredit": "Screentostreet",
+    "episodeLink": "https://altselection.ouest-france.fr/rm-partage-ses-photos-a-paris/"
+  },
+  {
+    "id": "new-manual-1793823574050-1qwfgh",
+    "name": "Place Georges-Pompidou (Centre Pompidou)",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Museum",
+    "year": "2019",
+    "address": "Place Georges-Pompidou, 75004 Paris, France",
+    "lat": 48.8609,
+    "lng": 2.3517,
+    "img": "images/admin-upload-new-manual-1793823574050-1qwfgh-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Stand on the Slope"
+        },
+        "text": {
+          "en": "To recreate RM's photo, position yourself on the sloping pedestrian plaza (Place Georges-Pompidou) looking directly at the main facade of the museum, ensuring the exterior tubular escalators are visible in the background."
+        }
+      },
+      {
+        "title": {
+          "en": "Ride to the Top"
+        },
+        "text": {
+          "en": "While RM's photo was taken outside, the best way to experience the building is to ride the exterior glass escalators to the top floor for an unobstructed, panoramic view of the Parisian skyline."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Modern Art"
+        },
+        "text": {
+          "en": "Continue the \"Namjooning\" experience by buying a ticket to the permanent collection inside, which features masterworks by Kandinsky, Duchamp, and Mondrian."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the heart of Paris, the Centre Pompidou is a groundbreaking architectural marvel and the home of Europe's largest museum for modern and contemporary art. Designed in the 1970s by architects Renzo Piano and Richard Rogers, the building is famous for its radical \"inside-out\" design, exposing its structural, mechanical, and colorful pipe systems on the exterior. The large, gently sloping cobblestone square in front of the museum—Place Georges-Pompidou—was specifically designed as an open urban space, drawing daily crowds of pedestrians, street performers, and art lovers.</p><!--stss:footsteps--><p>In early June 2019, BTS was in Paris gearing up for their massive, historic stadium concerts at the Stade de France. Taking a moment to indulge in his signature \"Namjooning,\" RM spent time exploring the city's modern art scene.<br><br>On June 6, RM shared a series of photos on the official @BTS_twt account with the short, affectionate caption \"안뇽 파리\" (\"Hello/Bye Paris\"). Among the pictures was a shot of him standing on the Place Georges-Pompidou, with the museum's iconic exterior escalators and industrial pipes towering behind him. Highlighting his influence in the global art sphere, the official Centre Pompidou Twitter account quickly reacted, quote-tweeting his post to welcome him to the museum.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The plaza is extremely well-connected. Take the Paris Métro Line 11 to the Rambuteau station, or use the massive Châtelet–Les Halles transit hub (Lines 1, 4, 7, 11, 14, and RER A, B, D) which is just a 5-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The outdoor plaza is a public square open 24/7. The museum itself is generally open from 11:00 AM to 9:00 PM and is closed on Tuesdays. Museum admission is approximately €15."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Place Georges-Pompidou features a gentle slope paved with large cobblestones, which can be slightly uneven. The museum interior is fully accessible for wheelchair users, with dedicated elevators and ramps bypassing the exterior escalators."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1136744528524795904",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793823574050-1qwfgh-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5052,
+            "y": 0.6471,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "https://fr.wikipedia.org/wiki/Place_Georges-Pompidou",
+    "tiktokUrl": "",
+    "ytId": ""
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
