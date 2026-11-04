@@ -391,8 +391,16 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
    simple point blanc (10px), un fin liseré sombre translucide (box-shadow en anneau plutôt
    qu'un outline dur) pour rester visible sur une photo claire, et une ombre douce pour le
    détacher légèrement de la photo. */
-.recreate-member-marker { position: absolute; transform: translate(-50%, -50%); background: #fff; border: none; border-radius: 50%; width: 10px; height: 10px; cursor: pointer; padding: 0; z-index: 2; box-shadow: 0 0 0 1px rgba(20,16,30,.15), 0 1px 4px rgba(0,0,0,.35); }
-.recreate-member-marker:hover { transform: translate(-50%, -50%) scale(1.4); }
+/* Zone de clic agrandie (demande du 04/11/2026, "sur mobile, on n'arrive pas à cliquer
+   dessus") sans toucher au point blanc lui-même, délibérément rapetissé à 10px le
+   15/10/2026 pour l'esthétique : le bouton réel fait 28px (zone tactile correcte, un doigt
+   rate rarement un point de 10px tout seul), mais seul le ::before visible au centre
+   reprend l'apparence d'origine (10px, même liseré/ombre) — invisible à l'œil, la photo en
+   dessous (cursor:zoom-in, voir initPhotoLightbox() dans script.js) ne reçoit plus le tap
+   que si on vise vraiment à côté. */
+.recreate-member-marker { position: absolute; transform: translate(-50%, -50%); background: none; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; padding: 0; z-index: 2; display: flex; align-items: center; justify-content: center; }
+.recreate-member-marker::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(20,16,30,.15), 0 1px 4px rgba(0,0,0,.35); transition: transform .15s; }
+.recreate-member-marker:hover::before { transform: scale(1.4); }
 .recreate-member-popover { position: absolute; transform: translate(-50%, calc(-100% - 14px)); max-width: 160px; width: max-content; background: rgba(20,16,30,.92); backdrop-filter: blur(6px); color: #fff; font-size: 11.5px; font-weight: 600; line-height: 1.4; padding: 6px 10px; border-radius: 8px; z-index: 3; white-space: nowrap; pointer-events: none; }
 .recreate-member-popover.hidden { display: none; }
 /* !important nécessaire ici : la règle utilitaire globale ".hidden { display: none

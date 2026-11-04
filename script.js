@@ -3817,17 +3817,28 @@ window.addEventListener('firebase-ready', async (e) => {
     // (demande du 13/09/2026) au profit du bouton colore dans #profile-menu.
     // Icône "Feed" (demande du 10/09/2026, "ajoute un icone de redirection vers la page
     // Feed sur ordinateur" — jusqu'ici, feed.html n'était atteignable que via la nav du
-    // bas mobile, aucun lien desktop n'existait). Même bouton que message-icon-btn
-    // (masqué par défaut, affiché une fois connecté).
+    // bas mobile, aucun lien desktop n'existait).
     const feedIconBtn = document.getElementById('feed-icon-btn');
     if (feedIconBtn) feedIconBtn.classList.remove('hidden');
+    // Calculé une seule fois ici, réutilisé par l'icône "Message" juste en dessous ET par
+    // le bloc admin plus bas (évite un second appel isCurrentUserAdmin()).
+    const isRealAdmin = typeof window.isCurrentUserAdmin === 'function' && await window.isCurrentUserAdmin();
+    const effectiveAdminMode = isRealAdmin && window.getAdminViewMode() === 'admin';
+    // Icône "Message" (demande du 04/11/2026, "en user view, masque le bouton message...
+    // il faut que ce soit seulement disponible en vue Admin pour le moment") : la
+    // messagerie n'est pas encore ouverte au public (même principe que Community, lot 1) —
+    // visible UNIQUEMENT pour un admin actuellement en vue Admin, jamais pour un visiteur
+    // normal ni un admin prévisualisant la vue Utilisateur. Avant cette demande, visible
+    // pour n'importe quel compte connecté — à repasser à "if (user)" simple le jour où la
+    // messagerie ouvre vraiment (voir COMMUNITY_ENABLED en tête de fichier pour le même
+    // genre de bascule).
     const messageIconBtn = document.getElementById('message-icon-btn');
     if (messageIconBtn) {
-        messageIconBtn.classList.remove('hidden');
-        if (typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
+        messageIconBtn.classList.toggle('hidden', !effectiveAdminMode);
+        if (effectiveAdminMode && typeof window.refreshFriendNotifications === 'function') window.refreshFriendNotifications();
     }
     const adminShortcutBtn = document.getElementById('admin-shortcut-btn');
-    if (typeof window.isCurrentUserAdmin === 'function' && await window.isCurrentUserAdmin()) {
+    if (isRealAdmin) {
         // Bascule "vue Admin / vue Utilisateur" (demande du 03/11/2026, étendue le
         // 03/11/2026 : "en user view, enlever tout ce qui apparait en mode admin... le but
         // est que je puisse visualiser ce que voit un non admin") : en vue Utilisateur,
@@ -3838,7 +3849,7 @@ window.addEventListener('firebase-ready', async (e) => {
         // d'un visiteur normal, sans dupliquer la logique à chaque endroit. Un vrai admin
         // retrouve toujours son statut réel dès qu'il repasse en vue Admin (un reload a
         // lieu à chaque bascule, voir window.switchAdminViewMode() en tête de fichier).
-        const effectiveAdminMode = window.getAdminViewMode() === 'admin';
+        // effectiveAdminMode déjà calculé plus haut (réutilisé pour l'icône "Message").
         // Mémorisé une fois ici (pas re-vérifié à chaque ouverture de fiche lieu, ce qui
         // ferait clignoter l'icône crayon) — voir openDetailsPanel() et
         // openLocationEditModal() plus bas, qui s'appuient dessus.
