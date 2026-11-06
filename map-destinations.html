@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261081" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261082" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none; cursor:pointer;}
@@ -172,6 +172,12 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 .detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg,rgba(20,16,30,.1) 30%,rgba(20,16,30,.8)); }
 .detail-close { position: absolute; top: 16px; right: 18px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; z-index: 2; transition: 0.2s; }
 .detail-close:hover { background: rgba(255,255,255,.5); }
+/* Crayon d'édition de la fenêtre détail (demande du 06/11/2026) — même style que
+   .detail-close juste à côté (cercle translucide), posé à sa gauche. Voir
+   renderDestinationDetailHtml() (destinations-content.js, isAdmin) pour quand il est
+   rendu, et window.enterDestinationDetailEditMode() plus bas dans ce fichier. */
+.detail-edit-pencil { position: absolute; top: 16px; right: 58px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; color: #fff; border: none; cursor: pointer; z-index: 2; transition: 0.2s; }
+.detail-edit-pencil:hover { background: rgba(255,255,255,.5); }
 .detail-hero-bottom { position: absolute; bottom: 20px; left: 28px; right: 28px; z-index: 1; }
 .detail-name { font-size: 26px; font-weight: 700; color: #fff; }
 .detail-sub { font-size: 12px; color: #e6dff2; margin-top: 4px; }
@@ -289,7 +295,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261081';
+        s.src = 'page-loader.js?v=20261082';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -637,8 +643,22 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 <div class="dest-edit-overlay hidden" id="dest-edit-overlay" onclick="if(event.target===this) closeDestinationEditModal()">
   <div class="dest-edit-card">
     <div class="dest-edit-title">Edit destination</div>
-    <label class="dest-edit-label">Photo URL</label>
-    <input type="text" class="dest-edit-input" id="dest-edit-photo" placeholder="https://...">
+    <!-- Upload + recadrage (demande du 06/11/2026, "fais en sorte que je puisse upload une
+         photo... et que je puisse la rogner") : remplace l'ancien champ "Photo URL" texte
+         brut — même pattern que le champ "Header photo" du modal crayon d'un lieu
+         (wireLocationEditPhotoInputOnce(), script.js), reroutant vers les mêmes
+         fileToResizedDataUrl()/window.openImageCropModal() déjà partagés. L'URL reste un
+         repli possible (collée directement), voir wireDestinationEditPhotoInputOnce() plus
+         bas dans ce fichier. -->
+    <label class="dest-edit-label">Header photo</label>
+    <div id="dest-edit-photo-preview" style="margin-bottom:8px; border-radius:10px; overflow:hidden; display:none;"><img style="display:block; width:100%; max-height:160px; object-fit:cover;"></div>
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <button type="button" id="dest-edit-photo-upload-btn" style="background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">Upload from device</button>
+        <input type="file" id="dest-edit-photo-file-input" accept="image/*,.heic,.heif" class="hidden">
+        <span id="dest-edit-photo-name" style="font-size:10.5px; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+    </div>
+    <input type="url" class="dest-edit-input" id="dest-edit-photo" placeholder="Or paste a photo URL">
+    <div id="dest-edit-photo-error" class="hidden" style="font-size:10.5px; color:#D42759; margin:4px 0 0;"></div>
     <label class="dest-edit-label">Text</label>
     <textarea class="dest-edit-textarea" id="dest-edit-text" placeholder="Short description shown on the card..."></textarea>
     <!-- Crédit photo (demande du 01/11/2026, "ajoute une case où on peut rédiger les
@@ -681,20 +701,20 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      pour recalculer en vrai le nombre de lieux/villes/groupes par pays ci-dessous (voir
      correctDestinationNumbers() plus bas) au lieu des chiffres figés à la création de
      cette page. -->
-<script src="locations-data.js?v=20261081"></script>
+<script src="locations-data.js?v=20261082"></script>
 <!-- Firebase (demande du 13/09/2026, "je veux pouvoir modifier les pages Explore
      Destinations ... depuis le mode admin") : cette page était jusqu'ici 100% statique,
      sans aucun accès à Firestore ni à isCurrentUserAdmin() — nécessaire pour savoir qui a
      le droit de voir les crayons d'édition. Chargé via le même événement "firebase-ready"
      que le reste du site (voir onAuthStateChanged tout en bas de firebase-init.js) pour
      connaître l'état de connexion. -->
-<script type="module" src="firebase-init.js?v=20261081"></script>
+<script type="module" src="firebase-init.js?v=20261082"></script>
 <!-- Contenu partagé "Explore Destinations" (demande du 12/09/2026, "le contenu de
      map-destinations.html et destinations.html doit être le même") : COUNTRIES,
      COUNTRY_DETAILS et le rendu de la fiche détaillée viennent maintenant tous les deux
      de destinations-content.js, chargé à l'identique par destinations.html — voir ce
      fichier pour la donnée et la logique partagées. -->
-<script src="destinations-content.js?v=20261081"></script>
+<script src="destinations-content.js?v=20261082"></script>
 <!-- script.js (demande du 15/10/2026, "il faut que le header soit exactement le même que
      dans la page 'message', avec le logo, icone message, engrenage") : cette page était
      jusqu'ici délibérément chargée SANS script.js (voir le commentaire retiré ci-dessus,
@@ -705,8 +725,8 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
      prudent partout ailleurs sur ce site (chaque accès DOM y est gardé par un
      getElementById() nul-safe), donc ce chargement supplémentaire ne devrait rien casser
      de propre à cette page — vérifié sans erreur console à l'ajout. -->
-<script src="countries.js?v=20261081"></script>
-<script src="script.js?v=20261081"></script>
+<script src="countries.js?v=20261082"></script>
+<script src="script.js?v=20261082"></script>
 <script>
     function toggleMenu(menuId, evt) {
         document.querySelectorAll('.dropdown-menu').forEach(m => { if(m.id !== menuId) m.classList.add('hidden'); });
@@ -821,12 +841,15 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     // récursion infinie ("Maximum call stack size exceeded") dès le premier appel. Retiré :
     // les 4 appels plus bas (applyDestinationOverrides()) résolvent maintenant directement
     // vers la vraie fonction de destinations-content.js, sans wrapper intermédiaire.
-    // Crayons d'édition, admin uniquement — voir isCurrentUserAdmin() dans
-    // firebase-init.js. Ajoutés dynamiquement plutôt qu'en dur dans les 9 cartes, une
-    // seule fois (re-vérifie s'ils existent déjà pour ne pas les dupliquer si rappelée).
+    // Crayons d'édition, admin uniquement — voir window.isAdminViewActive() (script.js,
+    // ajouté le 03/11/2026 — bascule "vue Admin/vue Utilisateur") plutôt que l'ancien
+    // isCurrentUserAdmin() seul (corrigé le 06/11/2026 pour rester cohérent avec le reste
+    // du site : un admin prévisualisant la vue Utilisateur ne doit plus voir ce crayon non
+    // plus). Ajoutés dynamiquement plutôt qu'en dur dans les 9 cartes, une seule fois
+    // (re-vérifie s'ils existent déjà pour ne pas les dupliquer si rappelée).
     async function wireDestinationEditPencils() {
-        if (!window.isCurrentUserAdmin) return;
-        const isAdmin = await window.isCurrentUserAdmin();
+        if (!window.isAdminViewActive) return;
+        const isAdmin = await window.isAdminViewActive();
         if (!isAdmin) return;
         document.querySelectorAll('.row[data-country]').forEach(row => {
             const photoEl = row.querySelector('.row-photo');
@@ -842,8 +865,13 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         });
     }
     let _destEditKey = null;
+    // Photo tout juste importée+recadrée (dataURL), ou null si l'URL collée doit être
+    // utilisée à la place — même pattern pending/touched que locationEditPendingImg
+    // (script.js), voir wireDestinationEditPhotoInputOnce() plus bas.
+    let _destEditPendingPhoto = null;
     async function openDestinationEditModal(key) {
         _destEditKey = key;
+        _destEditPendingPhoto = null;
         const row = document.querySelector(`.row[data-country="${key}"]`);
         const overrides = await window.loadDestinationOverrides();
         const ov = overrides[key] || {};
@@ -852,15 +880,67 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
         document.getElementById('dest-edit-photo').value = currentPhoto;
         document.getElementById('dest-edit-text').value = currentText;
         document.getElementById('dest-edit-credit').value = ov.credit || '';
+        document.getElementById('dest-edit-photo-name').textContent = '';
+        document.getElementById('dest-edit-photo-error').classList.add('hidden');
+        updateDestEditPhotoPreview(currentPhoto);
+        wireDestinationEditPhotoInputOnce();
         document.getElementById('dest-edit-overlay').classList.remove('hidden');
+    }
+    function updateDestEditPhotoPreview(src) {
+        const preview = document.getElementById('dest-edit-photo-preview');
+        if (src) { preview.style.display = 'block'; preview.querySelector('img').src = src; }
+        else { preview.style.display = 'none'; preview.querySelector('img').src = ''; }
+    }
+    // Upload + recadrage (demande du 06/11/2026) : réutilise fileToResizedDataUrl()/
+    // window.openImageCropModal() (script.js, déjà partagés par le modal crayon d'un lieu —
+    // voir wireLocationEditPhotoInputOnce() pour le même pattern exact). Écouteurs posés une
+    // seule fois (dataset.wired), le modal étant réutilisé d'un pays à l'autre.
+    function wireDestinationEditPhotoInputOnce() {
+        const btn = document.getElementById('dest-edit-photo-upload-btn');
+        const input = document.getElementById('dest-edit-photo-file-input');
+        const urlInput = document.getElementById('dest-edit-photo');
+        const errorEl = document.getElementById('dest-edit-photo-error');
+        if (!btn || !input || input.dataset.wired) return;
+        input.dataset.wired = '1';
+        btn.addEventListener('click', () => input.click());
+        input.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            errorEl.classList.add('hidden');
+            btn.disabled = true;
+            try {
+                const resized = await fileToResizedDataUrl(file, 1200);
+                window.openImageCropModal(resized, (cropped) => {
+                    if (cropped === null) return; // recadrage annulé — ne touche à rien
+                    _destEditPendingPhoto = cropped;
+                    urlInput.value = '';
+                    updateDestEditPhotoPreview(cropped);
+                    document.getElementById('dest-edit-photo-name').textContent = file.name;
+                });
+            } catch (err) {
+                console.warn('Import de la photo échoué :', err);
+                errorEl.textContent = (typeof isHeicFile === 'function' && isHeicFile(file))
+                    ? "Couldn't convert this HEIC photo. Try exporting it as JPEG first, or paste a Photo URL instead."
+                    : "Couldn't read this photo. Try a different file, or paste a Photo URL instead.";
+                errorEl.classList.remove('hidden');
+            }
+            btn.disabled = false;
+        });
+        urlInput.addEventListener('input', () => {
+            _destEditPendingPhoto = null; // l'URL collée gagne sur tout import précédent
+            const val = urlInput.value.trim();
+            document.getElementById('dest-edit-photo-name').textContent = '';
+            updateDestEditPhotoPreview(val || null);
+        });
     }
     function closeDestinationEditModal() {
         document.getElementById('dest-edit-overlay').classList.add('hidden');
         _destEditKey = null;
+        _destEditPendingPhoto = null;
     }
     async function saveDestinationEdit() {
         if (!_destEditKey) return;
-        const photo = document.getElementById('dest-edit-photo').value.trim();
+        const photo = _destEditPendingPhoto || document.getElementById('dest-edit-photo').value.trim();
         const text = document.getElementById('dest-edit-text').value.trim();
         const credit = document.getElementById('dest-edit-credit').value.trim();
         const btn = document.getElementById('dest-edit-save-btn');
@@ -893,11 +973,190 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
       lastOpenedCountry = key;
       window.resetDestinationKpiState();
       const overrides = (await window.loadDestinationOverrides())[key] || {};
-      document.getElementById('detail-window').innerHTML = renderDestinationDetailHtml(key, currentLang, t, overrides);
+      // isAdmin (demande du 06/11/2026) : seul map-destinations.html passe ce 5e
+      // paramètre — voir la note sur editPencilHtml dans renderDestinationDetailHtml()
+      // (destinations-content.js). window.isAdminViewActive() peut ne pas encore exister
+      // tout en haut du chargement de la page (avant script.js) : repli sur false, le
+      // crayon apparaîtra dès le prochain appel (ex: après le 'firebase-ready' ci-dessous).
+      const isAdmin = typeof window.isAdminViewActive === 'function' && await window.isAdminViewActive();
+      document.getElementById('detail-window').innerHTML = renderDestinationDetailHtml(key, currentLang, t, overrides, isAdmin);
       document.getElementById('overlay').classList.add('open');
     }
 
     function toggleKpi(type) { toggleKpiShared(type, currentLang, lastOpenedCountry); }
+
+    // ==========================================
+    // ÉDITION IN PLACE DE LA FENÊTRE DÉTAIL (demande du 06/11/2026, "ajoute également dans
+    // la fenêtre qui pop up un bouton crayon qui permet de modifier la page (texte, photo,
+    // titre, etc.)... je veux pouvoir modifier directement depuis la fenêtre, n'ouvre pas
+    // une nouvelle fenêtre")
+    // ==========================================
+    // Bascule le contenu de #detail-window (déjà ouvert via openDetail) entre affichage
+    // (renderDestinationDetailHtml, destinations-content.js) et un formulaire d'édition —
+    // PAS une modale empilée par-dessus comme dest-edit-overlay plus haut (celle-ci reste
+    // réservée au crayon de la LISTE, demande du 13/09/2026, non touchée ici) : même
+    // fenêtre, mêmes bords, toujours #overlay ouvert pendant toute l'édition.
+    // Distinct du champ "text" (dest-edit-text/ov.text, demande du 13/09/2026) : CE
+    // formulaire-ci édite les sections narratives longues affichées dans la fenêtre détail
+    // (ov.sections), jamais le court texte de la carte de la liste — les deux champs
+    // Firestore restent indépendants (voir adminSetDestinationOverride()).
+    let _destDetailEditPendingPhoto = null; // dataURL tout juste importée+recadrée, ou null si l'URL collée doit être utilisée
+    window.enterDestinationDetailEditMode = async function (key) {
+        const overrides = (await window.loadDestinationOverrides())[key] || {};
+        _destDetailEditPendingPhoto = null;
+        document.getElementById('detail-window').innerHTML = renderDestinationDetailEditFormHtml(key, overrides);
+        populateDestinationDetailEditForm(key, overrides);
+        wireDestinationDetailEditPhotoInput();
+    };
+    function cancelDestinationDetailEdit(key) {
+        // Pas de sauvegarde : ré-ouvrir normalement ré-affiche la version publiée
+        // actuelle, abandonnant tout ce qui a été tapé dans le formulaire.
+        _destDetailEditPendingPhoto = null;
+        openDetail(key);
+    }
+    function renderDestinationDetailEditFormHtml(key, ov) {
+        const c = (window.COUNTRIES[currentLang] || window.COUNTRIES.en)[key];
+        const d = window.COUNTRY_DETAILS[key];
+        const sections = (Array.isArray(ov.sections) && ov.sections.length) ? ov.sections : d.sections;
+        const fieldStyle = "width:100%; border:1.5px solid #e2e8f0; border-radius:10px; padding:9px 12px; font-size:12.5px; font-family:'Poppins',sans-serif; margin-bottom:8px; box-sizing:border-box;";
+        const labelStyle = "font-size:11px; font-weight:700; color:#64748b; display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:.4px;";
+        // Valeurs posées APRÈS coup par populateDestinationDetailEditForm() (.value = ...),
+        // jamais interpolées ici — évite tout souci d'échappement d'apostrophe/guillemet
+        // dans un titre ou un texte de section (même principe que ensureLocationEditModal(),
+        // script.js, qui ne pose lui non plus aucune valeur dans son propre template).
+        const sectionsHtml = sections.map((sec, i) => `
+            <div style="border:1.5px solid #e2e8f0; border-radius:12px; padding:12px; margin-bottom:10px;">
+                <label style="${labelStyle}">Section ${i + 1} — heading</label>
+                <input type="text" class="dest-detail-edit-section-heading" data-idx="${i}" style="${fieldStyle}">
+                <label style="${labelStyle}">Section ${i + 1} — text</label>
+                <textarea class="dest-detail-edit-section-text" data-idx="${i}" rows="4" style="${fieldStyle} resize:vertical;"></textarea>
+            </div>
+        `).join('');
+        return `
+            <div style="padding:24px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                    <div style="font-size:16px; font-weight:800; color:#212832;">Edit — ${window.escapeHtml(c.name)}</div>
+                    <button type="button" title="Close without saving" onclick="cancelDestinationDetailEdit('${key}')" style="width:30px; height:30px; border-radius:50%; border:none; background:#f1f5f9; color:#64748b; cursor:pointer; font-size:16px; line-height:1; flex-shrink:0;">&times;</button>
+                </div>
+                <div style="font-size:11px; color:#94a3b8; margin-bottom:16px;">Admin only — changes are published immediately and visible to everyone, right here in this window.</div>
+
+                <label style="${labelStyle}">Title</label>
+                <input type="text" id="dest-detail-edit-title" style="${fieldStyle}">
+
+                <label style="${labelStyle}">Header photo</label>
+                <div id="dest-detail-edit-photo-preview" style="margin-bottom:8px; border-radius:10px; overflow:hidden; display:none;"><img style="display:block; width:100%; max-height:160px; object-fit:cover;"></div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <button type="button" id="dest-detail-edit-photo-upload-btn" style="background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">Upload from device</button>
+                    <input type="file" id="dest-detail-edit-photo-file-input" accept="image/*,.heic,.heif" class="hidden">
+                    <span id="dest-detail-edit-photo-name" style="font-size:10.5px; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+                </div>
+                <input type="url" id="dest-detail-edit-photo-url" style="${fieldStyle}" placeholder="Or paste a photo URL">
+                <div id="dest-detail-edit-photo-error" class="hidden" style="font-size:10.5px; color:#D42759; margin:-4px 0 8px;"></div>
+
+                <label style="${labelStyle}">Photo credit (optional)</label>
+                <input type="text" id="dest-detail-edit-credit" style="${fieldStyle}" placeholder="e.g. Photo: @username, or © Official press kit">
+
+                <div style="font-size:11px; font-weight:800; color:#212832; text-transform:uppercase; letter-spacing:.4px; margin:18px 0 8px;">Narrative sections</div>
+                ${sectionsHtml}
+
+                <div style="display:flex; gap:10px; margin-top:16px;">
+                    <button type="button" onclick="cancelDestinationDetailEdit('${key}')" style="flex:1; border:none; border-radius:100px; padding:11px 16px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; background:#f1f5f9; color:#64748b;">Cancel</button>
+                    <button type="button" id="dest-detail-edit-save-btn" onclick="saveDestinationDetailEdit('${key}')" style="flex:1; border:none; border-radius:100px; padding:11px 16px; font-size:13px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; background:linear-gradient(120deg,#D42759 0%,#A93FD1 100%); color:#fff;">Save</button>
+                </div>
+            </div>
+        `;
+    }
+    function populateDestinationDetailEditForm(key, ov) {
+        const c = (window.COUNTRIES[currentLang] || window.COUNTRIES.en)[key];
+        const d = window.COUNTRY_DETAILS[key];
+        const sections = (Array.isArray(ov.sections) && ov.sections.length) ? ov.sections : d.sections;
+        const photo = ov.photo || c.photo;
+        document.getElementById('dest-detail-edit-title').value = ov.title || c.name;
+        document.getElementById('dest-detail-edit-credit').value = ov.credit || '';
+        // Une URL distante va dans le champ URL ; une dataURL déjà recadrée (import
+        // précédent) n'a rien à faire dans un champ "Or paste a photo URL" — seule la
+        // vignette de prévisualisation la représente alors, comme sur le modal crayon
+        // d'un lieu (script.js, updateLocationEditPhotoPreview()).
+        document.getElementById('dest-detail-edit-photo-url').value = (photo && photo.indexOf('data:') === 0) ? '' : (photo || '');
+        updateDestDetailEditPhotoPreview(photo);
+        sections.forEach((sec, i) => {
+            const headingEl = document.querySelector(`.dest-detail-edit-section-heading[data-idx="${i}"]`);
+            const textEl = document.querySelector(`.dest-detail-edit-section-text[data-idx="${i}"]`);
+            if (headingEl) headingEl.value = sec[0] || '';
+            if (textEl) textEl.value = sec[1] || '';
+        });
+    }
+    function updateDestDetailEditPhotoPreview(src) {
+        const preview = document.getElementById('dest-detail-edit-photo-preview');
+        if (!preview) return;
+        if (src) { preview.style.display = 'block'; preview.querySelector('img').src = src; }
+        else { preview.style.display = 'none'; preview.querySelector('img').src = ''; }
+    }
+    // Même pattern exact que wireDestinationEditPhotoInputOnce() plus haut (modal crayon de
+    // la liste) — pas de dataset.wired ici : ce formulaire est entièrement reconstruit
+    // (innerHTML) à chaque entrée en mode édition, donc ses écouteurs n'ont jamais le temps
+    // de s'accumuler d'un appel à l'autre.
+    function wireDestinationDetailEditPhotoInput() {
+        const btn = document.getElementById('dest-detail-edit-photo-upload-btn');
+        const input = document.getElementById('dest-detail-edit-photo-file-input');
+        const urlInput = document.getElementById('dest-detail-edit-photo-url');
+        const errorEl = document.getElementById('dest-detail-edit-photo-error');
+        if (!btn || !input) return;
+        btn.addEventListener('click', () => input.click());
+        input.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            errorEl.classList.add('hidden');
+            btn.disabled = true;
+            try {
+                const resized = await fileToResizedDataUrl(file, 1200);
+                window.openImageCropModal(resized, (cropped) => {
+                    if (cropped === null) return;
+                    _destDetailEditPendingPhoto = cropped;
+                    urlInput.value = '';
+                    updateDestDetailEditPhotoPreview(cropped);
+                    document.getElementById('dest-detail-edit-photo-name').textContent = file.name;
+                });
+            } catch (err) {
+                console.warn('Import de la photo échoué :', err);
+                errorEl.textContent = (typeof isHeicFile === 'function' && isHeicFile(file))
+                    ? "Couldn't convert this HEIC photo. Try exporting it as JPEG first, or paste a Photo URL instead."
+                    : "Couldn't read this photo. Try a different file, or paste a Photo URL instead.";
+                errorEl.classList.remove('hidden');
+            }
+            btn.disabled = false;
+        });
+        urlInput.addEventListener('input', () => {
+            _destDetailEditPendingPhoto = null;
+            const val = urlInput.value.trim();
+            document.getElementById('dest-detail-edit-photo-name').textContent = '';
+            updateDestDetailEditPhotoPreview(val || null);
+        });
+    }
+    async function saveDestinationDetailEdit(key) {
+        const title = document.getElementById('dest-detail-edit-title').value.trim();
+        const photo = _destDetailEditPendingPhoto || document.getElementById('dest-detail-edit-photo-url').value.trim();
+        const credit = document.getElementById('dest-detail-edit-credit').value.trim();
+        const sections = Array.from(document.querySelectorAll('.dest-detail-edit-section-heading')).map((headingEl) => {
+            const i = headingEl.dataset.idx;
+            const textEl = document.querySelector(`.dest-detail-edit-section-text[data-idx="${i}"]`);
+            return [headingEl.value.trim(), textEl ? textEl.value.trim() : ''];
+        });
+        const btn = document.getElementById('dest-detail-edit-save-btn');
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+        // Volontairement SANS "text" ici (voir la note en tête de cette section) : ce champ
+        // reste celui de dest-edit-overlay (crayon de la liste) — l'omettre du tout (plutôt
+        // que de le passer vide) préserve sa valeur existante, { merge: true } côté
+        // Firestore ne touchant que les clés effectivement fournies.
+        const res = await window.adminSetDestinationOverride(key, { title, photo, credit, sections });
+        btn.disabled = false;
+        btn.textContent = 'Save';
+        if (!res || !res.success) { alert('Save failed — please try again.'); return; }
+        window.setDestinationOverrideCacheEntry(key, { title, photo, credit, sections });
+        _destDetailEditPendingPhoto = null;
+        openDetail(key); // ré-affiche la fenêtre, toujours ouverte, avec les données fraîches
+    }
 
     function closeDetail() { document.getElementById('overlay').classList.remove('open'); lastOpenedCountry = null; window.resetDestinationKpiState(); }
 

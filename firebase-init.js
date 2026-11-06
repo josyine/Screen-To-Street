@@ -1300,7 +1300,7 @@ window.getDestinationOverrides = async function () {
         return {};
     }
 };
-window.adminSetDestinationOverride = async function (key, { photo, text, credit } = {}) {
+window.adminSetDestinationOverride = async function (key, { photo, text, credit, title, sections } = {}) {
     if (!key) return { success: false, code: 'missing-key' };
     const isAdmin = await window.isCurrentUserAdmin();
     if (!isAdmin) return { success: false, code: 'not-admin' };
@@ -1312,6 +1312,16 @@ window.adminSetDestinationOverride = async function (key, { photo, text, credit 
         // crédits") — même champ/convention que loc.imgCredit (script.js), affiché via
         // la même icône copyright que la fiche d'un lieu (voir renderDestinationDetailHtml).
         if (credit !== undefined) fields.credit = credit;
+        // title/sections (demande du 06/11/2026, "ajoute un bouton crayon [dans la fenêtre
+        // 'Explore X'] qui permet de modifier la page (texte, photo, titre, etc.)") :
+        // title remplace COUNTRIES[lang][key].name (identique dans les deux langues —
+        // pas de version bilingue séparée, comme le reste de cette collection) ; sections
+        // remplace ENTIÈREMENT COUNTRY_DETAILS[key].sections (tableau de [heading, text])
+        // quand non vide — voir renderDestinationDetailHtml() dans destinations-content.js.
+        // Pas de nouvelle règle Firestore nécessaire : destinationOverrides/{key} n'a aucune
+        // liste blanche de champs côté firestore.rules (seul le statut admin est vérifié).
+        if (title !== undefined) fields.title = title;
+        if (sections !== undefined) fields.sections = sections;
         await setDoc(doc(db, 'destinationOverrides', key), fields, { merge: true });
         return { success: true };
     } catch (e) {
