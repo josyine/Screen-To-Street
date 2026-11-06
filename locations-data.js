@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-04T20:31:10.031Z.
+// Généré le 2026-11-06T08:22:43.126Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -26864,6 +26864,374 @@ window.STATIC_LOCATIONS = [
     "officialLink": "https://fr.wikipedia.org/wiki/Place_Georges-Pompidou",
     "tiktokUrl": "",
     "ytId": ""
+  },
+  {
+    "id": "new-manual-1793824807477-d01r46",
+    "name": "Seoul Forest: Dedicated Bench 10",
+    "group": "BTS",
+    "member": "Jin",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273 Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54487,
+    "lng": 127.03795,
+    "img": "images/admin-upload-new-manual-1793824807477-d01r46-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by passionate ARMYs to celebrate BTS's eldest member, Jin (Kim Seokjin), Bench 10 is located near the lake boardwalk and picnic table area in the western section of the park. Decorated with commemorative plaques showcasing heartfelt lyrics and loving tributes, this bench reflects Jin’s warm humor, comforting presence, and deep love for his fans.</p><!--stss:footsteps--><p>Stopping at Jin’s first dedicated bench along the lake bridge route offers a cozy, restful spot nestled among mature trees. Located right near the picnic tables where park visitors often pause to relax, it captures Jin’s welcoming energy and love for cheerful, peaceful moments outdoors. Sitting here allows fans to rest, enjoy the ambient sounds of nature, and reflect on Jin’s inspiring journey and solo music.</p>"
+    },
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing Plaque Messages"
+        },
+        "text": {
+          "en": "Take a close-up photo of the commemorative plaque on Bench 10 to highlight the special lyrics and birthday wishes dedicated to Jin."
+        }
+      },
+      {
+        "title": {
+          "en": "Framing the Picnic Setting"
+        },
+        "text": {
+          "en": "Position your camera to capture the bench alongside the wooden picnic tables and surrounding greenery for a warm, lifestyle-inspired photo."
+        }
+      },
+      {
+        "title": {
+          "en": "Jin's Vocal Playlist"
+        },
+        "text": {
+          "en": "Listen to Jin’s solo tracks like \"The Astronaut\", \"Epiphany\", or \"Moon\" to accompany your peaceful break at this charming spot."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "officialLink": "https://parks.seoul.go.kr/index.do",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 10 near the lake picnic area is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, or take Line 2 to Ttukseom Station via Exit 8. Walk westward from the entrance toward the lake boardwalk area, where Bench 10 is positioned right next to the picnic tables along the wooden trail."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Smooth, paved, and flat wooden boardwalk pathways lead directly to this bench section, ensuring that Bench 10 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1793824807477-d01r46-recreated-0.jpg"
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "storyImage": "images/admin-upload-new-manual-1793824807477-d01r46-story.jpg"
+  },
+  {
+    "id": "new-manual-1793824903279-faogiy",
+    "name": "Centre Pompidou (Rooftop Terrace)",
+    "group": "BTS",
+    "member": "RM",
+    "country": "France",
+    "city": "Paris",
+    "category": "Museum",
+    "year": "2019",
+    "address": "Place Georges-Pompidou, 75004 Paris, France (Level 6 Terrace)",
+    "lat": 48.8606,
+    "lng": 2.3522,
+    "img": "images/admin-upload-new-manual-1793824903279-faogiy-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Current Closure"
+        },
+        "text": {
+          "en": "The Centre Pompidou is currently undergoing a massive, multi-year renovation and is completely closed to the public until 2030. You cannot currently access the Level 6 terrace to recreate this exact photo."
+        }
+      },
+      {
+        "title": {
+          "en": "View from the Plaza"
+        },
+        "text": {
+          "en": "While the rooftop is inaccessible, you can still visit the Place Georges-Pompidou at street level to view the museum's iconic exterior architecture and recreate RM's other photos from this trip."
+        }
+      },
+      {
+        "title": {
+          "en": "Alternative Views"
+        },
+        "text": {
+          "en": "To capture a similarly sweeping, elevated view of the Parisian skyline and the Eiffel Tower while the Pompidou is closed, consider visiting the free rooftop terrace of the Galeries Lafayette Haussmann or the ticketed Montparnasse Tower observation deck."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>While the Centre Pompidou is world-renowned for its vast collection of modern and contemporary art, the building itself functions as an incredible observation deck. Because central Paris has strict building height limits, the museum's upper levels rise above the traditional Haussmannian zinc rooftops. The Level 6 outdoor viewing terraces offer one of the most stunning, unobstructed panoramas in the city, providing a sweeping, elevated perspective of major monuments like the Eiffel Tower, Notre-Dame, and the Sacré-Cœur basilica.</p><!--stss:footsteps--><p>During BTS's June 2019 visit to Paris for their historic Love Yourself: Speak Yourself concerts at the Stade de France, RM spent time exploring the Centre Pompidou. Alongside his photos taken on the plaza below, he shared a picture from the museum's upper terrace on the @BTS_twt account, captioned \"안뇽 파리…\" (\"Hello/Bye Paris…\").<br><br>The photograph captures RM from behind, standing thoughtfully on the terrace as he looks out over the sprawling Parisian skyline, with the silhouette of the Eiffel Tower clearly visible in the distance. The image perfectly encapsulates his \"Namjooning\" philosophy—finding moments of quiet, expansive reflection and artistic appreciation amidst a heavily scheduled, high-energy global stadium tour.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Paris Métro Line 11 to the Rambuteau station, or use the Châtelet–Les Halles hub (Lines 1, 4, 7, 11, 14, and RER A, B, D), which is a 5-minute walk away."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The museum and its terraces are completely closed for a major renovation project, with reopening scheduled for 2030."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Prior to the closure, the rooftop terraces were completely flat and fully accessible for wheelchair users via dedicated interior elevators."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1136744528524795904",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793824903279-faogiy-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.7969,
+            "y": 0.6382,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "JeremyJeanguenin / CC BY-SA 4.0",
+    "officialLink": "https://www.centrepompidou.fr/fr/"
+  },
+  {
+    "id": "new-manual-1793825510128-wjb8d0",
+    "name": "Seoul Forest: Dedicated Bench 11",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2018",
+    "address": "273, Ttukseom-ro, Seongdong-gu, Seoul",
+    "lat": 37.54485,
+    "lng": 127.03781,
+    "img": "images/admin-upload-new-manual-1793825510128-wjb8d0-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "imgCredit": "Screentostreet",
+    "recreatedPhotos": [
+      "images/admin-upload-new-manual-1793825510128-wjb8d0-recreated-0.jpg"
+    ],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Capturing Plaque Details"
+        },
+        "text": {
+          "en": "Take a detailed close-up shot of the engraved plaque on Bench 11 to highlight the unique lyric and special dedication dedicated to Jungkook."
+        }
+      },
+      {
+        "title": {
+          "en": "Framing the Side-by-Side Benches"
+        },
+        "text": {
+          "en": "Position your camera to capture both Bench 11 (JK) and Bench 10 (Jin) together against the scenic background of the western forest loop."
+        }
+      },
+      {
+        "title": {
+          "en": "Jungkook's Acoustic Playlist"
+        },
+        "text": {
+          "en": "Listen to tracks like \"Begin\", \"Euphoria (Acoustic Version)\", or \"My You\" to match the calm and cozy mood of this woodland spot."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Seoul Forest holds a special place in the hearts of BTS fans, serving as a peaceful green sanctuary where members often spend quiet moments surrounded by nature. Dedicated by ARMYs to celebrate BTS's youngest member, Jeon Jungkook, Bench 11 is situated in the western section of the park, positioned directly to the left of Bench 10 (Jin) near the lake boardwalk area. Decorated with commemorative plaques featuring touching lyrics and loving tributes, this bench celebrates Jungkook’s creative spirit, artistic growth, and sincere affection for his fans.</p><!--stss:footsteps--><p>Stopping at Jungkook’s third dedicated bench along the lake boardwalk route offers a cozy and quiet spot to enjoy the surrounding trees. Situated right next to Jin’s bench (Bench 10), it forms a comfortable dual-bench resting area popular among fans exploring the western loop of the park. Sitting here allows visitors to relax in the shade, listen to the gentle breeze, and enjoy a quiet pause inspired by Jungkook’s musical journey.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Reaching Bench 11 near the lake boardwalk area is very convenient via public transit. You can take the Suin-Bundang Line to Seoul Forest Station and leave through Exit 3, or take Line 2 to Ttukseom Station via Exit 8. Walk westward from the entrance toward the lake boardwalk area, where Bench 11 is positioned right next to Bench 10 along the wooden path."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The main outdoor park grounds and all bench areas remain open twenty-four hours a day throughout the entire year, and admission is completely free for all visitors. While the outdoor paths and benches are accessible at any time, nearby indoor facilities like the eco-parks and plant conservatories operate between 10:00 AM and 5:00 PM and are closed on Mondays."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Seoul Forest is designed to be fully accessible for all visitors. Smooth, paved, and flat wooden boardwalk pathways lead directly to this bench section, ensuring that Bench 11 is easily reachable by wheelchairs and strollers. Accessible restrooms are available near the main entrance plaza, and free wheelchair rentals can be requested at the main visitor center upon presenting a valid ID."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "officialLink": "https://parks.seoul.go.kr/index.do",
+    "tiktokUrl": "",
+    "storyImage": "images/admin-upload-new-manual-1793825510128-wjb8d0-story.jpg",
+    "ytId": ""
+  },
+  {
+    "id": "new-manual-1793829323098-4le3xn",
+    "name": "Jeongdong-Simgok Badabuchae-gil",
+    "group": "BTS",
+    "member": "RM",
+    "country": "South Korea",
+    "city": "Gangneung",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "114-3 Simgok-ri, Gangdong-myeon, Gangneung-si, Gangwon-do, South Korea (Simgok Ticket Booth) / 50-10 Jeongdongjin-ri (Jeongdong Ticket Booth)",
+    "lat": 37.6834,
+    "lng": 129.0392,
+    "img": "images/admin-upload-new-manual-1793829323098-4le3xn-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Embrace the Winter Sea"
+        },
+        "text": {
+          "en": "To recreate the exact atmosphere and lighting of RM's photos, brave the colder months. The winter sea is famously clear and beautiful in Gangneung, but be sure to dress warmly, as the coastal winds are piercing."
+        }
+      },
+      {
+        "title": {
+          "en": "Lean on the Railings"
+        },
+        "text": {
+          "en": "RM's photo is easy to recreate anywhere along the path. Lean against the metal safety barriers and use the sprawling ocean and steep rock faces as your dramatic background."
+        }
+      },
+      {
+        "title": {
+          "en": "Check the Weather First"
+        },
+        "text": {
+          "en": "Because the trail sits directly over the crashing waves, it is immediately closed by local authorities during typhoons, heavy rain, or high swell warnings. Always check the local forecast before making the trip."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Tracing the edge of the East Sea in Gangneung, the Jeongdong-Simgok Badabuchae-gil is a stunning 2.86-kilometer coastal trail. The name \"Badabuchae\" translates to \"sea fan,\" a nod to the local geological formations that resemble a traditional fan opening toward the ocean. For decades, this rugged stretch of coastline was a strictly guarded military patrol route, completely closed off to civilians. It was eventually opened to the public, allowing visitors to walk across raised metal and wooden boardwalks that hug the dramatic cliff faces, offering unparalleled views of rare marine terraces designated as a South Korean natural monument.</p><!--stss:footsteps--><p>A lover of nature and quiet reflection, RM traveled to the Gangwon-do coast during the winter of 2019. On January 31, he shared a series of four photos on the official @BTS_twt account with the simple caption \"겨울 바다 풍경 #RM\" (Winter sea landscape).<br><br>Among the images, RM is seen casually leaning against the sturdy metal railings of the Badabuchae-gil boardwalk. With the jagged, rocky cliffs and the deep blue expanse of the East Sea stretching out behind him, the photo captures the serene, slightly moody atmosphere of the Korean coast in the colder months. It serves as a perfect example of his \"Namjooning\" lifestyle—finding peace and inspiration through long, scenic walks in monumental natural settings.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the KTX high-speed train from Seoul directly to Jeongdongjin Station. From there, you can take a local bus (like the 109) or a very quick, inexpensive taxi ride to the Jeongdong Ticket Booth located near the famous Sun Cruise Resort."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Generally open from 9:00 AM to 5:30 PM in the summer (April–October) and 9:00 AM to 4:30 PM in the winter (November–March). Adult admission is 3,000 KRW."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The 2.8-kilometer trail is built entirely along jagged cliffs and involves crossing metal grated walkways and climbing numerous steep staircases. It is not accessible for wheelchair users or strollers."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1090828599844732928",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1793829323098-4le3xn-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3438,
+            "y": 0.5941,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=112542"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
