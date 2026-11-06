@@ -324,26 +324,47 @@ window.toggleKpiShared = function (type, currentLang, key) {
 // openDetail(key) sur destinations.html ET map-destinations.html.
 // `t` : dictionnaire de traduction de la page appelante (t_dest[currentLang]).
 // `overrides` : { photo, text } venant de loadDestinationOverrides()[key], ou {}.
-window.renderDestinationDetailHtml = function (key, currentLang, t, overrides) {
+window.renderDestinationDetailHtml = function (key, currentLang, t, overrides, isAdmin) {
     const c = (window.COUNTRIES[currentLang] || window.COUNTRIES.en)[key];
     const d = window.COUNTRY_DETAILS[key];
     const ov = overrides || {};
     const heroPhoto = ov.photo || c.photo;
+    // title/sections (demande du 06/11/2026) : remplacent respectivement c.name et
+    // d.sections quand définis — voir adminSetDestinationOverride() dans firebase-init.js
+    // pour le détail du champ. Ni l'un ni l'autre n'est bilingue séparément (même
+    // comportement que le reste de cette collection : un seul texte, quelle que soit
+    // currentLang), affichés tels quels dans les deux langues.
+    const displayName = ov.title || c.name;
+    const sections = (Array.isArray(ov.sections) && ov.sections.length) ? ov.sections : d.sections;
 
     const cityRows = c.cities.map(([name, n]) => `<div class="city-row"><span>${name}</span><span>${n} ${n > 1 ? (currentLang === 'fr' ? 'lieux' : 'locations') : (currentLang === 'fr' ? 'lieu' : 'location')}</span></div>`).join('');
 
-    const sectionsHtml = d.sections.map(([heading, text]) => `
+    const sectionsHtml = sections.map(([heading, text]) => `
         <div class="blog-heading">${heading}</div>
         <p class="para">${text}</p>
         <hr class="section-sep">
     `).join('');
 
+    // Crayon d'édition (demande du 06/11/2026, "ajoute également dans la fenêtre qui pop
+    // up un bouton crayon... je veux pouvoir modifier directement depuis la fenêtre") :
+    // réservé à map-destinations.html, qui seul passe isAdmin=true (voir openDetail() et
+    // window.enterDestinationDetailEditMode() dans ce fichier) — destinations.html (la
+    // page publique jumelle, voir l'en-tête de ce fichier) n'appelle jamais ce rendu avec
+    // isAdmin, donc ce bouton n'y apparaît jamais ; appelle une fonction optionnelle
+    // (typeof check) pour ne jamais lever d'erreur si jamais ce cas se produisait quand
+    // même. Basculement en édition IN PLACE dans #detail-window, jamais une fenêtre à part.
+    const editPencilHtml = isAdmin ? `
+          <button type="button" class="detail-edit-pencil" title="Edit this page (admin)" onclick="event.stopPropagation(); if (typeof window.enterDestinationDetailEditMode === 'function') window.enterDestinationDetailEditMode('${key}');">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
+          </button>` : '';
+
     return `
         <div class="detail-hero" style="background-image:url('${heroPhoto}');">
           <div class="detail-hero-overlay"></div>
+          ${editPencilHtml}
           <div class="detail-close" onclick="closeDetail()">✕</div>
           <div class="detail-hero-bottom">
-            <div class="detail-name">${c.name}</div>
+            <div class="detail-name">${displayName}</div>
             <div class="detail-sub">${c.locations} ${t.lLocs.toLowerCase()}</div>
           </div>
           ${window.renderCopyrightIconHtml(ov.credit, 'detail-' + key)}
