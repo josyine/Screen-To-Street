@@ -338,13 +338,16 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .recreate-photo-gallery .recreate-photo-item { position: relative; flex: 0 0 92%; width: 92%; scroll-snap-align: center; }
 .recreate-photo-gallery.single .recreate-photo-item { flex: 0 0 100%; width: 100%; }
 /* BUG corrigé (demande du 10/10/2026, "fais en sorte que les Mei's Pictures fassent
-   toutes la même taille d'affichage") : "max-height" seul (sans "height") ne contraint
-   que le PLAFOND — en dessous de 340px, chaque photo gardait sa hauteur naturelle à
-   largeur égale, donc une photo portrait/carrée s'affichait plus haute qu'une photo
-   large, malgré le même object-fit:cover. "height" fixe force la même boîte pour
+   toutes la même taille d'affichage") : une hauteur fixe forçait la même boîte pour
    toutes les photos, quel que soit leur format d'origine — object-fit:cover les recadre
-   pour la remplir sans jamais les déformer. */
-.recreate-photo-gallery .recreate-photo-item img { display: block; width: 100%; height: 340px; object-fit: cover; border-radius: 14px; cursor: zoom-in; }
+   pour la remplir sans jamais les déformer. Format changé le 08/11/2026 ("modifie le
+   format de Mei's picture pour que ce ne soit pas carré mais dans le même format que les
+   posts Instagram") : aspect-ratio (4:5, le format portrait standard d'un post Instagram
+   aujourd'hui) remplace la hauteur fixe de 340px — garde le même principe "même boîte
+   pour toutes les photos" (la largeur l'est déjà, 92%/100% du conteneur), juste avec ce
+   ratio plutôt qu'une hauteur arbitraire en pixels, donc responsive à toutes les tailles
+   d'écran au lieu d'une valeur figée. */
+.recreate-photo-gallery .recreate-photo-item img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; cursor: zoom-in; }
 
 /* Visionneuse plein écran "Mei's Pictures" (demande du 09/10/2026, "je veux que ça ouvre
    la photo et que je puisse zoomer dessus... floute l'arrière-plan... clique hors de la

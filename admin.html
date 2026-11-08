@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261082" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261083" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -261,7 +261,7 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261082';
+        s.src = 'page-loader.js?v=20261083';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -500,13 +500,13 @@ h1{font-size:22px;color:#212832;margin-bottom:6px;}
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261082"></script>
-<script src="countries.js?v=20261082"></script>
-<script src="locations-data.js?v=20261082"></script>
+<script type="module" src="firebase-init.js?v=20261083"></script>
+<script src="countries.js?v=20261083"></script>
+<script src="locations-data.js?v=20261083"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js. -->
-<script src="artists-content.js?v=20261082"></script>
-<script src="script.js?v=20261082"></script>
+<script src="artists-content.js?v=20261083"></script>
+<script src="script.js?v=20261083"></script>
 <script>
     function escapeHtml(s) {
         const d = document.createElement('div');
@@ -1040,7 +1040,23 @@ recomposée, sans texte ni légende.`;
         fields.forEach(f => { sets[f] = new Set(); });
         const source = allSiteLocationsCache || (typeof celebLocations !== 'undefined' ? celebLocations : []);
         source.forEach(loc => {
-            fields.forEach(f => { if (loc[f]) sets[f].add(String(loc[f])); });
+            fields.forEach(f => {
+                if (!loc[f]) return;
+                let v = String(loc[f]);
+                // Catégorie au pluriel (demande du 08/11/2026, "enlève 'Landmarks' pour ne
+                // garder que 'Landmark'... de même pour Museums, garde Museum") : quelques
+                // lieux (surtout des corrections/ajouts manuels passés par Firestore —
+                // newLocations/locationSkeletonOverrides — jamais encore repassés par
+                // admin-scripts/fix-category-names.js) portent toujours la version au
+                // pluriel. CATEGORY_SINGULARIZE (déjà défini plus haut dans script.js, même
+                // table que ce script) la ramène au singulier ICI, dans la liste de choix,
+                // sans toucher aux lieux existants eux-mêmes — un lieu déjà étiqueté au
+                // pluriel garde sa valeur actuelle telle quelle (voir metaFieldSelectHtml()
+                // juste en dessous, qui réinjecte toujours la valeur courante même absente
+                // de cette liste) ; seul un NOUVEAU choix ne peut plus retomber dessus.
+                if (f === 'category' && typeof CATEGORY_SINGULARIZE !== 'undefined' && CATEGORY_SINGULARIZE[v]) v = CATEGORY_SINGULARIZE[v];
+                sets[f].add(v);
+            });
         });
         const result = {};
         fields.forEach(f => { result[f] = Array.from(sets[f]).sort((a, b) => a.localeCompare(b)); });
