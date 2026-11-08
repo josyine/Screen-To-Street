@@ -3291,72 +3291,26 @@ const ShareStory = (() => {
         download(f);
         return false;
     }
-    // Partage direct vers la Story Instagram (demande du 12-15/10/2026, "il faut que ça
-    // redirige directement dans Instagram Story" — pas seulement via le partage natif +
-    // choisir "Story" dans le menu d'Instagram, qui fonctionnait déjà mais en 2 étapes) —
-    // AJOUT SITE. Une 1ère tentative (sans INSTAGRAM_FB_APP_ID) avait été retirée : Instagram
-    // refuse ce schéma d'URL sans app Meta Developer réellement enregistrée ("votre
-    // application n'est actuellement pas compatible avec Instagram Stories"). Une app a
-    // depuis été créée côté Meta Developer (produit "Sharing to Stories") spécifiquement pour
-    // ce site, voir INSTAGRAM_FB_APP_ID ci-dessous.
-    // IMPORTANT — limite du mode développement Meta : tant que cette app n'est pas passée en
-    // revue par Meta (App Review), ce raccourci direct ne fonctionne QUE pour les comptes
-    // Instagram ajoutés comme testeurs/admins dans son tableau de bord Meta Developer — pour
-    // tout autre visiteur, Instagram affichera la même erreur qu'avant. Repli automatique
-    // dans ce cas (voir plus bas, détecté via l'évènement "blur" : si Instagram ne s'ouvre
-    // pas dans les ~1,6s, on bascule sur shareOrDownload()).
-    // iOS Safari seulement — c'est la seule plateforme où une PAGE WEB (ce site n'est pas une
-    // app native) peut écrire sur le presse-papier système ET où Instagram accepte de le
-    // relire ainsi ; sur Android, ce partage n'existe QUE via l'intent natif ADD_TO_STORY
-    // d'une app, inatteignable depuis le web, d'où aucune tentative ici (repli direct).
-    const INSTAGRAM_FB_APP_ID = '28825847960432281';
-    function isIOS() { return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+    // Partage direct vers la Story Instagram — DÉSACTIVÉ (demande du 09/11/2026, "ça
+    // redirige bien en story Instagram mais le post est vide" confirmé sur un vrai iPhone :
+    // la fenêtre système "Instagram souhaite coller depuis Safari" apparaît bien et a été
+    // autorisée, mais le canvas de la Story reste noir). Preuve définitive que ce raccourci
+    // ne peut pas marcher depuis un site web, pas juste un bug de timing : Instagram LIT
+    // bien le presse-papier général (d'où cette fenêtre), mais son composeur de Story ne
+    // regarde que des clés RÉSERVÉES du presse-papier système (ex:
+    // com.instagram.sharedSticker.backgroundImage, documentées uniquement pour de vraies
+    // apps avec le SDK officiel "Sharing to Stories") — l'API Clipboard standard d'un
+    // navigateur ne permet d'écrire QUE des types MIME génériques (image/png...), jamais ces
+    // clés-là. Le presse-papier général contient donc bien une image, mais jamais celle
+    // qu'Instagram cherche précisément pour une Story — repli permanent et volontaire sur le
+    // partage natif classique ci-dessous (shareOrDownload()), DÉJÀ confirmé fonctionner en
+    // 2 étapes (choisir Instagram dans le menu de partage, puis "Story" depuis Instagram
+    // lui-même — son vrai composeur, qui lui sait lire ses propres clés). Fonction
+    // conservée (plutôt que supprimée) pour une éventuelle vraie app native plus tard (voir
+    // ios-app/README.md) : CE contexte-là aurait accès aux clés réservées, contrairement à
+    // ce site web.
     async function tryInstagramStoryShare(file) {
-        if (!isIOS() || !navigator.clipboard || !navigator.clipboard.write || typeof ClipboardItem === 'undefined') return false;
-        try {
-            await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
-        } catch (e) { return false; }
-        // Filet de sécurité (demande du 09/11/2026, "ça redirige bien en story Instagram
-        // mais le post est vide, il n'y a pas la photo") : ce raccourci reste un bricolage
-        // jamais documenté officiellement par Meta pour un simple site web — le SDK natif
-        // "Sharing to Stories" (réservé aux vraies apps avec Info.plist) utilise des clés de
-        // presse-papier système réservées (ex: com.instagram.sharedSticker.backgroundImage)
-        // qu'une page web ne peut PAS poser via l'API Clipboard standard du navigateur
-        // (seuls des types MIME génériques comme image/png sont permis ici) — Instagram peut
-        // donc s'ouvrir sans jamais retrouver l'image, aucun moyen pour cette page de le
-        // détecter après coup (impossible de voir ce qui se passe une fois l'app en arrière-
-        // plan). Deux filets, non garantis faute de pouvoir tester sur un vrai iPhone depuis
-        // cet environnement : un court délai avant la bascule, qui laisse le temps au
-        // presse-papier système de propager l'écriture avant qu'Instagram ne tente de la
-        // lire ; et ce toast, affiché ICI juste avant la bascule d'app (seul moment où il a
-        // une chance réelle d'être vu), qui indique le geste de secours si l'image
-        // n'apparaît pas.
-        toast(currentLang === 'fr' ? "Si la photo n'apparaît pas, appuie sur l'icône presse-papier/Coller dans Instagram" : "If the photo doesn't appear, tap the clipboard/Paste icon in Instagram");
-        await new Promise(r => setTimeout(r, 400));
-        // BUG corrigé (demande du 16/10/2026, "ça ne renvoie pas directement dans la story
-        // Instagram, et l'image ne s'affiche pas, c'est tout gris") : "blur" (utilisé
-        // jusqu'ici pour détecter qu'Instagram s'est bien ouvert) se déclenche aussi pour la
-        // boîte de dialogue native iOS "Autoriser le collage ?" déclenchée par
-        // navigator.clipboard.write() juste au-dessus — un FAUX positif qui faisait croire
-        // qu'Instagram s'était ouvert (finish(true), aucun repli déclenché) alors que la
-        // personne restait en fait coincée sur cette boîte de dialogue/un écran gris, sans
-        // qu'aucun repli (partage natif classique) ne prenne jamais le relais. document.
-        // hidden/"visibilitychange" est un signal plus fiable : il ne passe à true que
-        // lorsque l'onglet est RÉELLEMENT mis en arrière-plan (vraie bascule d'app), pas
-        // pour une simple boîte de dialogue au-dessus de la page.
-        return new Promise(resolve => {
-            let done = false;
-            const finish = (opened) => {
-                if (done) return; done = true;
-                document.removeEventListener('visibilitychange', onVisible);
-                clearTimeout(timer);
-                resolve(opened);
-            };
-            const onVisible = () => { if (document.hidden) finish(true); };
-            document.addEventListener('visibilitychange', onVisible);
-            const timer = setTimeout(() => finish(false), 1600);
-            window.location.href = `instagram-stories://share?source_application=${encodeURIComponent(INSTAGRAM_FB_APP_ID)}`;
-        });
+        return false;
     }
     // Partage réel à un ami du site (AJOUT SITE) — réutilise myFriendsList/
     // shareLocationWithFriend() (voir le bouton "Partager" historique de la fiche lieu).
@@ -3404,10 +3358,10 @@ const ShareStory = (() => {
         api.onShare && api.onShare({ format: NAMES()[tpl], action: a, type: D.type });
         let f; try { f = await prewarm(tpl); } catch (e) { return toast(currentLang === 'fr' ? "Impossible de créer l'image" : 'Could not create the image'); }
         if (a === 'story') {
-            if (await tryInstagramStoryShare(f)) return;
-            // Repli (Android, desktop, iOS sans Instagram installé, ou app Meta pas encore
-            // passée en revue pour ce compte) : partage natif classique, où Instagram reste
-            // choisissable manuellement (puis "Story" dans son propre menu).
+            if (await tryInstagramStoryShare(f)) return; // toujours false désormais, voir sa déclaration
+            // Partage natif classique — Instagram reste choisissable manuellement dans le
+            // menu de partage, puis "Story" depuis Instagram lui-même (seul chemin confirmé
+            // fiable, voir tryInstagramStoryShare() plus haut).
             const shared = await shareOrDownload(f, { title: D.title, text: D.url });
             if (!shared) toast(currentLang === 'fr' ? 'Image enregistrée — ouvre Instagram › Story pour la publier' : 'Image saved — open Instagram › Story to post it');
             return;
