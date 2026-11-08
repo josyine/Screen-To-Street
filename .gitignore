@@ -1,0 +1,11 @@
+# App Store packaging (Capacitor) — see ios-app/README.md
+node_modules/
+# www/ is a generated copy of the public site (ios-app/sync-web.js) — never edit it by
+# hand, never commit it: it's rebuilt from the real source files on every `npm run ios:sync`.
+www/
+
+# Common macOS/Xcode noise, in case the ios/ project (generated on your Mac, not here) is
+# ever committed from a machine that doesn't already ignore these itself.
+.DS_Store
+*.xcuserstate
+xcuserdata/

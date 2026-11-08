@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+        <string>Screen To Street</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<!-- Ajouts du 09/11/2026 ("fais App Store iOS") — voir ios-app/README.md.
+	     LSApplicationQueriesSchemes : nécessaire pour instagram-stories:// (déjà utilisé par
+	     le site, voir tryInstagramStoryShare() dans script.js) — sans cette déclaration, une
+	     app native ne peut pas vérifier/ouvrir un schéma d'URL tiers comme celui-ci. -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>instagram-stories</string>
+		<string>instagram</string>
+	</array>
+	<!-- Descriptions d'usage obligatoires pour la pellicule/l'appareil photo (le site propose
+	     l'upload de photo à plusieurs endroits — admin, Mei's Pictures, avis, couverture de
+	     voyage — et "Enregistrer dans les Photos" côté partage, voir shareOrDownload() dans
+	     script.js) : SANS ces clés, iOS fait planter l'app dès la première tentative d'accès,
+	     plutôt que d'afficher la demande d'autorisation classique. -->
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo to add it to a location, a review, or your trip.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose a photo from your library to add it to a location, a review, or your trip.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save a photo to your library when you tap "Save" or "Add to Photos".</string>
+</dict>
+</plist>

@@ -1,0 +1,12 @@
+{
+  "appId": "com.screentostreet.app",
+  "appName": "Screen To Street",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "iosScheme": "https"
+  },
+  "ios": {
+    "contentInset": "automatic"
+  }
+}
