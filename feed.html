@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261084" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261085" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -326,7 +326,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
    cet onglet seulement — la maquette ne prévoit qu'un zoom (desktop), pas de fondu combiné. */
 .mp-tile:hover { opacity: 1; }
 .mp-tile-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
-.mp-tile-place { position: absolute; left: 6px; top: 6px; background: rgba(255,255,255,.92); color: #1F2430; font-size: 9.5px; font-weight: 600; border-radius: 999px; padding: 3px 9px; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; z-index: 2; }
 .mp-empty { padding: 50px 20px; text-align: center; color: #5F6578; font-size: 13px; }
 .mp-empty b { display: block; color: #1F2430; font-size: 15px; margin-bottom: 4px; }
 
@@ -586,7 +585,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261084';
+        s.src = 'page-loader.js?v=20261085';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -831,9 +830,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261084"></script>
-<script src="locations-data.js?v=20261084"></script>
-<script src="script.js?v=20261084"></script>
+<script type="module" src="firebase-init.js?v=20261085"></script>
+<script src="locations-data.js?v=20261085"></script>
+<script src="script.js?v=20261085"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
@@ -1390,9 +1389,13 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
             // <img> réel plutôt qu'un background-image (demande du 01/11/2026, section
             // performance/accessibilité) : nécessaire pour loading="lazy" et un vrai texte
             // alternatif, qu'un style CSS ne peut porter ni l'un ni l'autre.
+            // Pastille blanche du nom du lieu retirée (demande du 08/11/2026, "supprime le
+            // nom du lieu en blanc, ne garde que le nom du groupe") — ne garde que le badge
+            // de groupe (feed-tile-official-badge, ex: "BTS") en bas à gauche de la vignette.
+            // alt reste descriptif (loc.name + loc.group) même si le nom du lieu n'est plus
+            // affiché visuellement, pour l'accessibilité.
             const altText = [loc.name, loc.group].filter(Boolean).join(' – ');
             tile.innerHTML = `<img class="mp-tile-img" loading="lazy" alt="${escapeHtml(altText)}" src="${firstRecreatedPhoto(loc)}">`
-                + (loc.name ? `<span class="mp-tile-place">${escapeHtml(loc.name)}</span>` : '')
                 + (loc.group ? `<div class="feed-tile-official-badge">${escapeHtml(loc.group)}</div>` : '');
             tile.onclick = () => openSacredPlace(loc.id);
             grid.appendChild(tile);
