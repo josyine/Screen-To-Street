@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#F5F3FC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="welcome-style.css?v=20261086" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="welcome-style.css?v=20261087" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* Remove global underline to not affect the navbar */
   a { text-decoration: none !important; transition: 0.2s;}
@@ -220,7 +220,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261086';
+        s.src = 'page-loader.js?v=20261087';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -316,7 +316,7 @@
         <p class="sec-body" data-i18n="aboutBody1">Screen To Street is an independent guide created to help fans find, in the real world, the places visited, photographed, or filmed by their favorite artists: show sets, restaurants, museums, concert halls, or music video locations.</p>
         <p class="sec-body" data-i18n="aboutBody2">The site lists public places and information already shared publicly (broadcasts, social networks, press), organized in the form of interactive maps by artist, category, and city, with an itinerary generator to prepare a trip following the footsteps of your favorite group.</p>
         <p class="sec-body" data-i18n="aboutBody3"><b>Screen To Street is an independent project and is not affiliated, associated, or endorsed by any agency, record label, artist, or right holder mentioned on the site.</b> All artist names, group names, and trademarks mentioned remain the property of their respective owners.</p>
-        <div class="note" data-i18n="aboutContact">Contact: contact@screentostreet.com</div>
+        <div class="note" data-i18n="aboutContact">Contact: screentostreet.contact@gmail.com</div>
     </div>
 
     <!-- ================= TERMS OF USE ================= -->
@@ -369,7 +369,7 @@
         <p class="sec-body" data-i18n="privacyRetentionBody">Your data is kept for the time necessary for the above purposes. It is never sold to third parties; it may be shared with our technical and payment providers, strictly within the limits of their assignments.</p>
 
         <div class="sub-h" data-i18n="privacyRightsTitle">Your Rights</div>
-        <p class="sec-body" data-i18n="privacyRightsBody">You have the right to access, rectify, delete, limit, oppose, and port your data, as well as the right to withdraw your consent at any time. You can exercise these rights at contact@screentostreet.com, or lodge a complaint with the CNIL (cnil.fr/fr/plaintes).</p>
+        <p class="sec-body" data-i18n="privacyRightsBody">You have the right to access, rectify, delete, limit, oppose, and port your data, as well as the right to withdraw your consent at any time. You can exercise these rights at screentostreet.contact@gmail.com, or lodge a complaint with the CNIL (cnil.fr/fr/plaintes).</p>
 
         <div class="sub-h" data-i18n="privacyMinorsTitle">Minors</div>
         <p class="sec-body" data-i18n="privacyMinorsBody">The Site does not knowingly collect data concerning minors under 15 years of age without the consent of their parents or legal guardians.</p>
@@ -389,7 +389,7 @@
         <p class="sec-body" data-i18n="mentionsPublisherBody">
             Name / Company name: <span class="placeholder">[to be completed]</span><br>
             Address: <span class="placeholder">[to be completed]</span><br>
-            Contact: contact@screentostreet.com<br>
+            Contact: screentostreet.contact@gmail.com<br>
             Director of publication: <span class="placeholder">[to be completed]</span>
         </p>
 
@@ -465,7 +465,7 @@
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261086"></script>
+<script type="module" src="firebase-init.js?v=20261087"></script>
 <script>
     let currentLang = localStorage.getItem('lang') || 'en';
 
@@ -480,7 +480,7 @@
             aboutBody1: "Screen To Street is an independent guide created to help fans find, in the real world, the places visited, photographed, or filmed by their favorite artists: show sets, restaurants, museums, concert halls, or music video locations.",
             aboutBody2: "The site lists public places and information already shared publicly (broadcasts, social networks, press), organized in the form of interactive maps by artist, category, and city, with an itinerary generator to prepare a trip following the footsteps of your favorite group.",
             aboutBody3: "<b>Screen To Street is an independent project and is not affiliated, associated, or endorsed by any agency, record label, artist, or right holder mentioned on the site.</b> All artist names, group names, and trademarks mentioned remain the property of their respective owners.",
-            aboutContact: "Contact: contact@screentostreet.com",
+            aboutContact: "Contact: screentostreet.contact@gmail.com",
 
             touTitle: "Terms of Use (TOU)",
             touArt1Title: "Article 1 — Preamble",
@@ -509,7 +509,7 @@
             privacyRetentionTitle: "Retention and Recipients",
             privacyRetentionBody: "Your data is kept for the time necessary for the above purposes. It is never sold to third parties; it may be shared with our technical and payment providers, strictly within the limits of their assignments.",
             privacyRightsTitle: "Your Rights",
-            privacyRightsBody: "You have the right to access, rectify, delete, limit, oppose, and port your data, as well as the right to withdraw your consent at any time. You can exercise these rights at contact@screentostreet.com, or lodge a complaint with the CNIL (cnil.fr/fr/plaintes).",
+            privacyRightsBody: "You have the right to access, rectify, delete, limit, oppose, and port your data, as well as the right to withdraw your consent at any time. You can exercise these rights at screentostreet.contact@gmail.com, or lodge a complaint with the CNIL (cnil.fr/fr/plaintes).",
             privacyMinorsTitle: "Minors",
             privacyMinorsBody: "The Site does not knowingly collect data concerning minors under 15 years of age without the consent of their parents or legal guardians.",
             privacyCookiesTitle: "Cookies",
@@ -517,7 +517,7 @@
 
             mentionsTitle: "Legal Notice",
             mentionsPublisherTitle: "Site Publisher",
-            mentionsPublisherBody: "Name / Company name: <span class=\"placeholder\">[to be completed]</span><br>Address: <span class=\"placeholder\">[to be completed]</span><br>Contact: contact@screentostreet.com<br>Director of publication: <span class=\"placeholder\">[to be completed]</span>",
+            mentionsPublisherBody: "Name / Company name: <span class=\"placeholder\">[to be completed]</span><br>Address: <span class=\"placeholder\">[to be completed]</span><br>Contact: screentostreet.contact@gmail.com<br>Director of publication: <span class=\"placeholder\">[to be completed]</span>",
             mentionsHostTitle: "Hosting Provider",
             mentionsHostBody: "Company name: <span class=\"placeholder\">[to be completed]</span><br>Address: <span class=\"placeholder\">[to be completed]</span>",
             mentionsIPTitle: "Intellectual Property",
@@ -544,7 +544,7 @@
             aboutBody1: "Screen To Street est un guide indépendant créé pour aider les fans à retrouver, dans le monde réel, les lieux visités, photographiés ou filmés par leurs artistes préférés : décors d'émissions, restaurants, musées, salles de concert ou lieux de tournage de clips.",
             aboutBody2: "Le site répertorie des lieux publics et des informations déjà partagées publiquement (émissions, réseaux sociaux, presse), organisés sous forme de cartes interactives par artiste, catégorie et ville, avec un générateur d'itinéraire pour préparer un voyage sur les traces de votre groupe préféré.",
             aboutBody3: "<b>Screen To Street est un projet indépendant et n'est affilié, associé ni approuvé par aucune agence, maison de disques, artiste ou ayant droit mentionné sur le site.</b> Tous les noms d'artistes, de groupes et les marques mentionnés restent la propriété de leurs détenteurs respectifs.",
-            aboutContact: "Contact : contact@screentostreet.com",
+            aboutContact: "Contact : screentostreet.contact@gmail.com",
 
             touTitle: "Conditions Générales d'Utilisation (CGU)",
             touArt1Title: "Article 1 — Préambule",
@@ -573,7 +573,7 @@
             privacyRetentionTitle: "Durée de conservation et destinataires",
             privacyRetentionBody: "Vos données sont conservées le temps nécessaire aux finalités ci-dessus. Elles ne sont jamais vendues à des tiers ; elles peuvent être partagées avec nos prestataires techniques et de paiement, strictement dans la limite de leurs missions.",
             privacyRightsTitle: "Vos droits",
-            privacyRightsBody: "Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données, ainsi que du droit de retirer votre consentement à tout moment. Vous pouvez exercer ces droits à contact@screentostreet.com, ou introduire une réclamation auprès de la CNIL (cnil.fr/fr/plaintes).",
+            privacyRightsBody: "Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données, ainsi que du droit de retirer votre consentement à tout moment. Vous pouvez exercer ces droits à screentostreet.contact@gmail.com, ou introduire une réclamation auprès de la CNIL (cnil.fr/fr/plaintes).",
             privacyMinorsTitle: "Mineurs",
             privacyMinorsBody: "Le Site ne collecte pas sciemment de données concernant des mineurs de moins de 15 ans sans le consentement de leurs parents ou représentants légaux.",
             privacyCookiesTitle: "Cookies",
@@ -581,7 +581,7 @@
 
             mentionsTitle: "Mentions légales",
             mentionsPublisherTitle: "Éditeur du site",
-            mentionsPublisherBody: "Nom / Raison sociale : <span class=\"placeholder\">[à compléter]</span><br>Adresse : <span class=\"placeholder\">[à compléter]</span><br>Contact : contact@screentostreet.com<br>Directeur de la publication : <span class=\"placeholder\">[à compléter]</span>",
+            mentionsPublisherBody: "Nom / Raison sociale : <span class=\"placeholder\">[à compléter]</span><br>Adresse : <span class=\"placeholder\">[à compléter]</span><br>Contact : screentostreet.contact@gmail.com<br>Directeur de la publication : <span class=\"placeholder\">[à compléter]</span>",
             mentionsHostTitle: "Hébergeur",
             mentionsHostBody: "Raison sociale : <span class=\"placeholder\">[à compléter]</span><br>Adresse : <span class=\"placeholder\">[à compléter]</span>",
             mentionsIPTitle: "Propriété intellectuelle",
