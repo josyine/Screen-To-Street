@@ -3316,6 +3316,23 @@ const ShareStory = (() => {
         try {
             await navigator.clipboard.write([new ClipboardItem({ [file.type]: file })]);
         } catch (e) { return false; }
+        // Filet de sécurité (demande du 09/11/2026, "ça redirige bien en story Instagram
+        // mais le post est vide, il n'y a pas la photo") : ce raccourci reste un bricolage
+        // jamais documenté officiellement par Meta pour un simple site web — le SDK natif
+        // "Sharing to Stories" (réservé aux vraies apps avec Info.plist) utilise des clés de
+        // presse-papier système réservées (ex: com.instagram.sharedSticker.backgroundImage)
+        // qu'une page web ne peut PAS poser via l'API Clipboard standard du navigateur
+        // (seuls des types MIME génériques comme image/png sont permis ici) — Instagram peut
+        // donc s'ouvrir sans jamais retrouver l'image, aucun moyen pour cette page de le
+        // détecter après coup (impossible de voir ce qui se passe une fois l'app en arrière-
+        // plan). Deux filets, non garantis faute de pouvoir tester sur un vrai iPhone depuis
+        // cet environnement : un court délai avant la bascule, qui laisse le temps au
+        // presse-papier système de propager l'écriture avant qu'Instagram ne tente de la
+        // lire ; et ce toast, affiché ICI juste avant la bascule d'app (seul moment où il a
+        // une chance réelle d'être vu), qui indique le geste de secours si l'image
+        // n'apparaît pas.
+        toast(currentLang === 'fr' ? "Si la photo n'apparaît pas, appuie sur l'icône presse-papier/Coller dans Instagram" : "If the photo doesn't appear, tap the clipboard/Paste icon in Instagram");
+        await new Promise(r => setTimeout(r, 400));
         // BUG corrigé (demande du 16/10/2026, "ça ne renvoie pas directement dans la story
         // Instagram, et l'image ne s'affiche pas, c'est tout gris") : "blur" (utilisé
         // jusqu'ici pour détecter qu'Instagram s'est bien ouvert) se déclenche aussi pour la
