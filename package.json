@@ -1,0 +1,20 @@
+{
+  "name": "screen-to-street-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Capacitor wrapper for Screen To Street's existing static web app — packages it for the Apple App Store (and Google Play, if ever needed). The web app itself is unchanged; this only adds a native iOS shell around it. See ios-app/README.md for the full setup story.",
+  "scripts": {
+    "ios:sync-web": "node ios-app/sync-web.js",
+    "ios:sync": "npm run ios:sync-web && npx cap sync ios",
+    "ios:open": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.0.1",
+    "@capacitor/ios": "^7.0.1",
+    "@capacitor/share": "^7.0.1",
+    "@capacitor/push-notifications": "^7.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.1"
+  }
+}
