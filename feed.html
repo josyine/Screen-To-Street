@@ -58,7 +58,7 @@
 <meta name="theme-color" content="#E7E9EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20261085" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261086" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -105,7 +105,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 .notif-badge { position: absolute; top: -3px; right: -3px; background: #D42759; color: #fff; font-size: 9.5px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 100px; display: flex; align-items: center; justify-content: center; padding: 0 3px; border: 2px solid #fff; }
 
 .feed-page { position: relative; z-index: 2000; width: 100%; min-height: 100vh; padding: 120px 24px 100px 24px; }
-.feed-title { font-size: 18px; font-weight: 800; color: #212832; max-width: 900px; margin: 0 auto 16px auto; }
 
 /* Onglets Explore/Saved (demande du 13/09/2026) — même idée que .profile-tabs de
    profile.html (soulignement rose au survol/actif), reprise ici localement puisque
@@ -447,11 +446,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
      dans style.css) — même oubli corrigé ici, avec un peu de marge en plus. */
   .feed-page { padding: 54px 12px calc(130px + env(safe-area-inset-bottom,0px)) 12px; }
   .feed-grid { gap: 2px; }
-  /* Titre "Explore" retiré sur mobile (demande du 12/09/2026, "supprime le titre Explore
-     pour gagner de la place") — l'onglet "Explore" juste en dessous (.feed-tabs) indique
-     déjà où on se trouve, pas besoin d'un second titre identique au-dessus. Uniquement
-     mobile : desktop garde ce titre. */
-  .feed-title { display: none; }
   /* Barre de recherche déplacée AU-DESSUS des onglets, alignée à gauche (demande du
      12/09/2026) : .feed-page passe en flex-column sur mobile seulement, juste pour que
      order:-1 puisse faire remonter .feed-search-wrap avant .feed-tabs dans l'affichage
@@ -585,7 +579,7 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261085';
+        s.src = 'page-loader.js?v=20261086';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -678,8 +672,6 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
 </div>
 
 <div class="feed-page">
-    <div class="feed-title">Feed</div>
-
     <!-- Onglets (demande du 13/09/2026, "Explore"/"Saved" ; renommé et étendu le
          14/09/2026, "renomme Explore par Communauté... et un nouvel onglet Lieux Cultes") :
          - "community" (ex-"explore") : le fil de publications des visiteurs.
@@ -830,9 +822,9 @@ body{background:#E7E9EC;padding:0; min-height:100vh; height:auto; display:block;
     </div>
 </div>
 
-<script type="module" src="firebase-init.js?v=20261085"></script>
-<script src="locations-data.js?v=20261085"></script>
-<script src="script.js?v=20261085"></script>
+<script type="module" src="firebase-init.js?v=20261086"></script>
+<script src="locations-data.js?v=20261086"></script>
+<script src="script.js?v=20261086"></script>
 <script>
     const feedAvatarPalette = ['#D42759', '#8B5CF6', '#F06090', '#10b981', '#3b82f6', '#f59e0b'];
     function feedAvatarColor(username) {
