@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-08T07:49:00.317Z.
+// Généré le 2026-11-08T18:26:50.323Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -27232,6 +27232,210 @@ window.STATIC_LOCATIONS = [
     "tiktokUrl": "",
     "ytId": "",
     "officialLink": "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=112542"
+  },
+  {
+    "id": "new-manual-1794155107785-w3tk04",
+    "name": "Basilica of the Sagrada Família",
+    "member": "All",
+    "country": "Spain",
+    "category": "Landmark",
+    "year": "2023",
+    "address": "C/ de Mallorca, 401, 08013 Barcelona, Spain",
+    "lat": 41.4043,
+    "lng": 2.1749,
+    "img": "images/admin-upload-new-manual-1794155107785-w3tk04-photo.jpg",
+    "city": "Barcelona",
+    "group": "BTS",
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Mind the Dress Code"
+        },
+        "text": {
+          "en": "Because it is an actively functioning Catholic basilica, security enforces a strict dress code. Shoulders must be covered, and shorts or skirts must reach at least mid-thigh. You will be turned away at the gates if your outfit does not comply, even with a valid ticket."
+        }
+      },
+      {
+        "title": {
+          "en": "Chase the Light"
+        },
+        "text": {
+          "en": "The interior is deliberately designed to act as a massive kaleidoscope. Visit in the morning to see cool blues and greens pouring through the eastern Nativity side, or arrive in the mid-to-late afternoon to catch fiery reds and oranges illuminating the western Passion side."
+        }
+      },
+      {
+        "title": {
+          "en": "Assess the Towers Carefully"
+        },
+        "text": {
+          "en": "While adding a tower visit to your ticket offers unique views of the city and construction, be aware that you must descend via very narrow, steep, and winding spiral staircases without handrails. Skip the towers if you experience claustrophobia or have knee issues."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>The Basilica of the Sagrada Família is an undisputed masterpiece of global architecture and the magnum opus of Catalan architect Antoni Gaudí. Under construction since 1882, this monumental Roman Catholic minor basilica is famous for its unprecedented blend of Gothic and curvilinear Art Nouveau forms. Its soaring towers, intricate facades depicting biblical histories, and a breathtaking interior designed to mimic a towering forest canopy of colorful stained glass make it one of the most visited and visually striking monuments in Europe.</p><!--stss:footsteps--><p>In March 2023, RM embarked on an expansive, culturally driven family vacation across Spain, traveling through Madrid, Bilbao, and Barcelona with his parents and younger sister. This trip was a prime example of his \"Namjooning\" lifestyle, focusing heavily on art and history, including visits to major institutions like the Prado Museum.<br><br>On March 6, he shared a collection of personal photos on his Instagram account with the simple, affectionate caption \"familia.\" Among the memories shared were glimpses of his time at the Sagrada Família. Deeply passionate about art and design, RM was reportedly incredibly impressed by Gaudí's visionary architecture. Sharing these rare, intimate moments of a family holiday allowed fans to see the global superstar enjoying a grounded, classic tourist experience with his loved ones.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The basilica is incredibly easy to reach via the Barcelona Metro. Take Line 2 (Purple) or Line 5 (Blue) directly to the Sagrada Família station. The escalators exit right across the street from the monument's soaring facades."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Operating hours vary by season but generally run from 9:00 AM to 6:00 PM in the winter and up to 8:00 PM in the summer. General admission tickets start at approximately €26."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main floor of the basilica and the ground-level museum are fully accessible for wheelchair users, featuring smooth paving and ramps. However, the towers are strictly inaccessible to visitors with reduced mobility due to the narrow, winding spiral staircases required to exit them."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "Yeagov / CC BY-SA 4.0",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "https://sagradafamilia.org/home",
+    "pinterestUrls": [
+      "https://kr.pinterest.com/pin/713539134732160605/"
+    ],
+    "pinterestUrl": "https://kr.pinterest.com/pin/628674429255322770/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794155107785-w3tk04-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4557,
+            "y": 0.6618,
+            "member": "RM"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1794155107785-w3tk04-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.5156,
+            "y": 0.5882,
+            "member": "RM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1794158097409-onhq4p",
+    "name": "Galleria Vittorio Emanuele II",
+    "group": "BTS",
+    "member": "RM",
+    "country": "Italy",
+    "year": "2025",
+    "address": "Piazza del Duomo, 20123 Milano MI, Italy",
+    "lat": 45.4655,
+    "lng": 9.19,
+    "img": "images/admin-upload-new-manual-1794158097409-onhq4p-photo.jpg",
+    "city": "Milan",
+    "category": "Landmark",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Spin on the Bull"
+        },
+        "text": {
+          "en": "For good luck, locate the mosaic of a dancing bull (the coat of arms of Turin) on the floor directly under the central dome. Local tradition dictates that you must place your right heel on the bull's testicles and spin around three times."
+        }
+      },
+      {
+        "title": {
+          "en": "Beat the Crowds"
+        },
+        "text": {
+          "en": "The Galleria is one of the most heavily trafficked tourist sites in Italy. If you want to take a clean photograph under the glass arches without a massive sea of people in the background, you must arrive at dawn (before 7:30 AM)."
+        }
+      },
+      {
+        "title": {
+          "en": "Look Up"
+        },
+        "text": {
+          "en": "It is easy to be distracted by the luxury storefronts, but the true art is above you. Make sure to examine the four mosaic lunettes located just under the central glass dome, which beautifully depict allegories of four continents (Europe, America, Africa, and Asia)."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Often referred to as il salotto di Milano (Milan's drawing room), the Galleria Vittorio Emanuele II is Italy's oldest active shopping arcade and a major landmark of Milan. Designed in 1861 by architect Giuseppe Mengoni and built between 1865 and 1877, this spectacular four-story double arcade connects two of the city's most famous landmarks: the Duomo and the Teatro alla Scala. The structure is celebrated for its breathtaking iron-and-glass vaulted roofs, a massive central octagonal dome, and intricate mosaic floors. Today, it houses historic cafes and flagship boutiques for some of the world's most prestigious luxury fashion houses.</p><!--stss:footsteps--><p>In late September 2025, RM traveled to Italy for Milan Fashion Week, attending the Bottega Veneta Spring/Summer 2026 collection show on September 27. Blending his official fashion industry duties with his signature \"Namjooning\" exploration, he took time to wander through Milan's historic city center over the weekend.<br><br>He documented his visit on his personal Instagram account (@rkive), sharing a photo of himself standing inside the grand Galleria Vittorio Emanuele II. Striking a contrast between high-fashion streetwear and classical 19th-century Italian architecture, RM was photographed wearing an oversized burgundy and green striped rugby polo by designer Martine Rose. The image captures the effortless way he merges his global fashion presence with his deep appreciation for monumental urban spaces.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The Galleria is exceptionally easy to reach. Take the Milan Metro Line 1 (Red) or Line 3 (Yellow) directly to the Duomo station. The main monumental archway entrance is located on the Piazza del Duomo, immediately to your left when facing the cathedral."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The arcade itself is a public covered street, open 24/7 and completely free to walk through. Individual boutique and restaurant operating hours vary, though retail shops typically open from 10:00 AM to 7:30 PM."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The Galleria's intricate mosaic floors are completely flat and smooth. With step-free access from both the Piazza del Duomo and Piazza della Scala entrances, the entire arcade is highly accessible for wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794158097409-onhq4p-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4922,
+            "y": 0.5853,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "C messier / CC BY-SA 4.0",
+    "officialLink": "https://www.yesmilano.it/esplora/luoghi/galleria-vittorio-emanuele-ii",
+    "pinterestUrl": "https://kr.pinterest.com/pin/1090504497284264465/"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
