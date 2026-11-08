@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-08T18:26:50.323Z.
+// Généré le 2026-11-08T23:02:26.785Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -16336,8 +16336,8 @@ window.STATIC_LOCATIONS = [
     "category": "Hotel",
     "year": "2026",
     "address": "112 Rue du Faubourg Saint-Honoré, 75008 Paris, France",
-    "lat": 48.8718,
-    "lng": 2.3142,
+    "lat": 48.8716768,
+    "lng": 2.3148154,
     "img": "images/admin-upload-new-0oN3K5qtqaLdvkoaEWER-photo.jpg",
     "addedAt": 1789916911522,
     "pinterestUrls": [],
@@ -16407,15 +16407,12 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
-    "recreatedPhotos": [
-      {
-        "url": "images/admin-upload-new-0oN3K5qtqaLdvkoaEWER-recreated-0.jpg",
-        "official": true
-      }
-    ],
     "fullDescription": {
       "en": "<p>Hotel Le Bristol Paris is an iconic, ultra-luxury palace hotel located on the prestigious Rue du Faubourg Saint-Honoré in the city's 8th arrondissement. First opened in 1925 during the Roaring Twenties, this historic estate is globally renowned for its flawless classic French elegance, its three-star Michelin gastronomy, and its exquisite, incredibly rare private courtyard garden. For nearly a century, Le Bristol has served as a heavily guarded, favorite sanctuary for international royalty, global icons, and world-class artists seeking absolute discretion and Parisian perfection.</p><!--stss:footsteps--><p>V's love affair with Paris and its romantic, vintage aesthetics is deeply tied to his well-documented love for the film Midnight in Paris. Back in 2019, Taehyung famously spent his free time in the city embarking on a dedicated pilgrimage, visiting and photographing various filming locations from the movie. His stay at Hotel Le Bristol during the Parisian leg of the 2026 Arirang tour was the ultimate continuation of this cinematic journey—the hotel famously served as the on-screen residence for the movie's main characters! While the tour itself brought intense energy, massive crowds, and spectacular stadium performances, Le Bristol provided the perfect contrasting sanctuary. Stepping away from the roar of the concerts, V was able to recharge by immersing himself directly into his favorite fictional universe, surrounded by the hotel's timeless, 1920s elegance.</p>"
-    }
+    },
+    "recreatedPhotos": [
+      "images/admin-upload-new-0oN3K5qtqaLdvkoaEWER-recreated-0.jpg"
+    ]
   },
   {
     "id": "new-0xNmn1cTlhh8zdRTkbj8",
@@ -27436,6 +27433,101 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "C messier / CC BY-SA 4.0",
     "officialLink": "https://www.yesmilano.it/esplora/luoghi/galleria-vittorio-emanuele-ii",
     "pinterestUrl": "https://kr.pinterest.com/pin/1090504497284264465/"
+  },
+  {
+    "id": "new-manual-1794161561767-fw54mg",
+    "name": "Rue du Faubourg Saint-Honoré",
+    "group": "BTS",
+    "member": "V",
+    "country": "France",
+    "city": "Paris",
+    "year": "2026",
+    "address": "118-126 Rue du Faubourg Saint-Honoré, 75008 Paris, France",
+    "lat": 48.8717924,
+    "lng": 2.314099,
+    "img": "images/admin-upload-new-manual-1794161561767-fw54mg-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Find the Auction House"
+        },
+        "text": {
+          "en": "To recreate Taehyung's exact walking path, navigate to the Sotheby's Paris gallery at 118-126 Rue du Faubourg Saint-Honoré. The recognizable storefront and signage make for a perfect, elegant background."
+        }
+      },
+      {
+        "title": {
+          "en": "View the Art for Free"
+        },
+        "text": {
+          "en": "While Sotheby's is an auction house for billionaires and serious collectors, their pre-auction gallery exhibitions are actually completely free and open to the general public. Step inside to view world-class paintings and jewelry before they are sold into private collections."
+        }
+      },
+      {
+        "title": {
+          "en": "Walk to the Champs-Élysées"
+        },
+        "text": {
+          "en": "The street runs parallel to the Champs-Élysées. After taking your photo, you can easily cut south down Avenue Franklin Delano Roosevelt to connect your \"Vante\" tour to Paris's most famous grand avenue."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Running through the heart of the prestigious 8th arrondissement, the Rue du Faubourg Saint-Honoré is globally recognized as one of the most luxurious fashion and art streets in the world. Practically synonymous with Parisian elegance, the narrow thoroughfare is home to the Élysée Palace (the official residence of the French President), numerous global embassies, and the historic flagship boutiques of major haute couture houses. The buildings at numbers 118-126 house the Paris headquarters of Sotheby's, the legendary international auction house specializing in fine art, jewelry, and luxury goods, making this specific stretch a major hub for the international art market.</p><!--stss:footsteps--><p>Taehyung has developed a deep, well-documented connection with Paris, frequently visiting the city for high-profile fashion weeks and his ambassador work with luxury brands like Celine. While navigating the city's opulent landscape, he was photographed taking a casual stroll down the Rue du Faubourg Saint-Honoré.<br><br>In the photograph, Taehyung is seen walking along the refined Parisian sidewalk, with the elegant, distinctive signage of Sotheby's Paris clearly visible on the left. The image perfectly encapsulates his chic, sophisticated \"Vante\" persona—effortlessly blending his love for high fashion, classical art, and European cityscapes into one casual, paparazzi-style street moment.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The street is easily accessible via the Paris Métro. Take Line 9 to the Saint-Philippe du Roule station or Line 13 to Miromesnil. Both stations are just a short 3 to 5-minute walk from the Sotheby's entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The street and sidewalks are public and open 24/7. Sotheby's public viewing galleries are generally open Monday through Friday from 10:00 AM to 6:00 PM, and occasionally on weekends during major auction events."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The sidewalks along the Rue du Faubourg Saint-Honoré are flat and paved, though they can be quite narrow and crowded during peak shopping hours. The Sotheby's galleries are accessible to wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "David Monniaux / CC BY-SA 3.0",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794161561767-fw54mg-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.8411,
+            "y": 0.6324,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "pinterestUrl": "https://es.pinterest.com/pin/taehyung-insta-update-22726--591519732352684931/",
+    "officialLink": "https://fr.wikipedia.org/wiki/Rue_Saint-Honor%C3%A9"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
