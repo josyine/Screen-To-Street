@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-09T08:32:04.997Z.
+// Généré le 2026-11-09T23:06:49.298Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -27528,6 +27528,218 @@ window.STATIC_LOCATIONS = [
     ],
     "pinterestUrl": "https://es.pinterest.com/pin/taehyung-insta-update-22726--591519732352684931/",
     "officialLink": "https://fr.wikipedia.org/wiki/Rue_Saint-Honor%C3%A9"
+  },
+  {
+    "id": "new-manual-1794259675894-3vevip",
+    "name": "Shangri-La Paris (Terrace)",
+    "group": "BTS",
+    "member": "J-Hope, V, Jungkook",
+    "country": "France",
+    "city": "Paris",
+    "category": "Hotel",
+    "year": "2026",
+    "address": "10 Avenue d'Iéna, 75116 Paris, France",
+    "lat": 48.8637004,
+    "lng": 2.2934235,
+    "img": "images/admin-upload-new-manual-1794259675894-3vevip-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book the Right Room"
+        },
+        "text": {
+          "en": "To experience this exact view, you cannot simply walk onto the roof. You must specifically book a \"Terrace Eiffel View Room\" or one of the hotel's signature suites."
+        }
+      },
+      {
+        "title": {
+          "en": "Plan for Bastille Day"
+        },
+        "text": {
+          "en": "If you want to recreate this exact memory complete with the July 14th fireworks, you must book your suite up to a year in advance, as Paris's luxury hotels sell out their Eiffel-view rooms for this specific night incredibly fast."
+        }
+      },
+      {
+        "title": {
+          "en": "The Accessible Alternative"
+        },
+        "text": {
+          "en": "If an overnight stay isn't in your budget, you can still experience the grandeur of Prince Roland Bonaparte's former palace by booking a table at the hotel's lounges (like Le Bar Botaniste) or dining at their Michelin-starred restaurant, Shang Palace."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the elegant 16th arrondissement, the Shangri-La Paris is not just a luxury hotel; it is a registered historical monument. Originally built in 1896 as the private mansion of Prince Roland Bonaparte (the grandnephew of Napoleon Bonaparte), the building was meticulously restored and elevated to elite \"Palace\" status. Perched on Chaillot Hill just across the Seine from the Eiffel Tower, the hotel boasts what is widely considered the most spectacular, unobstructed, and intimate view of the Iron Lady in all of Paris, particularly from its private rooftop terraces and signature suites.</p><!--stss:footsteps--><p>In July 2026, BTS took over the French capital as part of their monumental BTS WORLD TOUR 'ARIRANG'. Amidst the intense schedule of rehearsals and stadium shows, the members took a well-deserved evening off to celebrate the French National Day (Bastille Day) on July 14.<br><br>Documenting their Parisian downtime, J-Hope shared a memorable photo on his official Instagram featuring himself and Taehyung (V) relaxing on one of the Shangri-La's exclusive terraces. The image captures the two members enjoying the warm summer night, perfectly framed by the glowing Eiffel Tower and the spectacular July 14th fireworks exploding in the background. The post offers fans a glimpse into the luxurious, private celebrations the members enjoy while touring the globe.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The hotel is extremely accessible via the Paris Métro. Take Line 9 to the Iéna station; the exit is less than a 2-minute walk from the hotel's grand entrance."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The hotel operates 24/7 for guests. The private terraces are strictly reserved for those occupying the adjoining suites."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a modern, ultra-luxury Palace hotel, the historic building has been completely retrofitted to be fully accessible for wheelchair users, featuring spacious elevators, step-free access to dining areas, and specifically designed accessible suites."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "instagramUrl": "https://www.instagram.com/reel/DawEJm1MVro/?exln=MTUyMGNlbmdidGY5dg==",
+    "imgCredit": "Screentostreet",
+    "officialLink": "http://www.shangri-la.com/paris/",
+    "pinterestUrl": "https://es.pinterest.com/pin/897483032013827887/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794259675894-3vevip-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3763,
+            "y": 0.65,
+            "member": "V"
+          },
+          {
+            "member": "J-Hope",
+            "x": 0.6497,
+            "y": 0.6485
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1794259675894-3vevip-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.5247,
+            "y": 0.5794,
+            "member": "V"
+          },
+          {
+            "x": 0.8112,
+            "y": 0.5868,
+            "member": "J-Hope"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "new-manual-1794261021571-999hz2",
+    "name": "Bowling Front de Seine",
+    "group": "BTS",
+    "member": "RM, Jungkook",
+    "country": "France",
+    "city": "Paris",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "15 Rue Gaston de Caillavet, 75015 Paris, France",
+    "lat": 48.849161,
+    "lng": 2.284372,
+    "img": "images/admin-upload-new-manual-1794261021571-999hz2-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Play a Few Games"
+        },
+        "text": {
+          "en": "To properly recreate the visit, rent some shoes and book a lane. The alley operates late into the night (often until 2:00 AM or 4:00 AM), making it the perfect activity after a long day of sightseeing."
+        }
+      },
+      {
+        "title": {
+          "en": "Keep it Casual"
+        },
+        "text": {
+          "en": "Unlike some of the upscale venues in the 8th or 16th arrondissements, this alley is a very casual, local spot. Dress comfortably, just as the members did during their downtime (though the venue does require socks to rent shoes)."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Neighborhood"
+        },
+        "text": {
+          "en": "The Beaugrenelle district offers a great modern contrast to historic Paris. Before your game, take a walk across the nearby Pont de Grenelle to see the Parisian Statue of Liberty replica situated on the Île aux Cygnes."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "fullDescription": {
+      "en": "<p>Located in the Beaugrenelle district of the 15th arrondissement, just a stone's throw from the Seine, Bowling Front de Seine is a classic Parisian entertainment venue. Tucked away within a modern urban complex, it boasts a retro, laid-back atmosphere with its 20 traditional bowling lanes, arcade games, and billiard tables. Far from the luxury boutiques and grand monuments of the city center, it remains a beloved, unpretentious local spot for Parisians looking for a casual night out.</p><!--stss:footsteps--><p>During their massive BTS WORLD TOUR 'ARIRANG' in July 2026, the members took advantage of their downtime in the French capital to enjoy some much-needed relaxation. While Taehyung and J-Hope enjoyed the Bastille Day fireworks from a luxury hotel rooftop, RM and Jungkook opted for a more low-key, competitive evening out.<br><br>The duo was spotted enjoying a private bowling session at Bowling Front de Seine. Keeping their outing incredibly discreet and low-profile, they traded the massive stadium stages for a classic Parisian bowling alley. Amateur videos and fan sightings captured the two members fully immersed in the game, enjoying a relaxed, unguarded moment in a local neighborhood far removed from typical tourist traps.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The bowling alley is very easy to reach via public transit. Take the Paris Métro Line 10 to the Charles Michels station; from there, it is only a 5-minute walk toward the river."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The venue is open every day, generally from 11:00 AM (14:00 on Mondays) until 2:00 AM, with extended hours until 4:00 AM on Fridays and Saturdays. Prices range from roughly €3.80 to €10.10 per game depending on the time and day, plus €2.10 for shoe rental."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Located inside a modern commercial block, the facility offers elevator access from the street level, making the main alley and lanes easily accessible for wheelchair users."
+        }
+      }
+    ],
+    "ytId": "",
+    "officialLink": "https://xbowlingsympas.com/fr/bowling-paris-front-de-seine/",
+    "imgCredit": "Screentostreet",
+    "facebookUrl": "https://www.facebook.com/reel/2154752095070346",
+    "tiktokUrl": "https://www.tiktok.com/@taieb_gedeon/video/7663262750692379937",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794261021571-999hz2-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5534,
+            "y": 0.5676,
+            "member": "Jungkook"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
