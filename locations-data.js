@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-12T08:43:47.826Z.
+// Généré le 2026-11-12T21:00:51.373Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -27740,6 +27740,198 @@ window.STATIC_LOCATIONS = [
         ]
       }
     ]
+  },
+  {
+    "id": "new-manual-1794514824352-3epa35",
+    "name": "Misarang Bar",
+    "group": "BTS",
+    "member": "V",
+    "country": "South Korea",
+    "city": "Seoul",
+    "year": "2026",
+    "address": "45-8 Yongsan-dong 2-ga, Yongsan-gu, Seoul, South Korea (서울특별시 용산구 용산동2가 45-8).",
+    "lat": 37.5416,
+    "lng": 126.98751,
+    "category": "Restaurant",
+    "img": "images/admin-upload-new-manual-1794514824352-3epa35-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Embrace the HBC Vibe"
+        },
+        "text": {
+          "en": "Haebangchon is famous for its incredibly steep hills. Wear comfortable walking shoes, as navigating the neighborhood's charming but slanted alleys is a workout before you even reach the bar."
+        }
+      },
+      {
+        "title": {
+          "en": "Go at Night"
+        },
+        "text": {
+          "en": "To truly capture the moody, intimate atmosphere that Taehyung loves (and to see the neighborhood come alive), plan your visit for the late evening."
+        }
+      },
+      {
+        "title": {
+          "en": "Respect the Intimacy"
+        },
+        "text": {
+          "en": "Because venues in HBC tend to be smaller and highly intimate rather than large-scale commercial clubs, be mindful of local patrons and maintain the quiet, relaxed ambiance of the space when visiting or taking photos."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The neighborhood is accessible via the Seoul Subway. Take Line 6 to Noksapyeong Station (Exit 2). From there, you can either walk straight up the main HBC street (Sinheung-ro) or catch the local Yongsan 02 (용산02) green village bus to bypass the steepest hills."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a local nightlife venue, hours typically skew late, often opening in the early evening and running past midnight."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Like many historic establishments in the hilly Haebangchon district, access can be challenging for wheelchair users due to steep exterior inclines, very narrow sidewalks, and traditional building entrances that may lack modern accessible ramps."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "fullDescription": {
+      "en": "<p>Located in the trendy Haebangchon (HBC) neighborhood of the Yongsan district, Misarang Bar is tucked away in one of Seoul's most vibrant and artistic enclaves. Situated at the foothills of Namsan Mountain, HBC is famous for its steep, narrow alleys, bohemian atmosphere, and eclectic mix of hidden cafes and late-night spots. Misarang Bar perfectly matches the neighborhood's aesthetic, offering an intimate, moody, and atmospheric setting that draws patrons looking for a stylish evening away from the massive crowds of Hongdae or Gangnam.</p><!--stss:footsteps--><p>On November 12, 2026, Taehyung updated fans with a visit to this exact spot, specifically sharing the Naver Map location to document his outing. He has a well-known affinity for exploring Seoul's quieter, more artistic neighborhoods and heavily favors venues with a distinct, sophisticated ambiance—often involving low lighting, good music, and a relaxed environment. By sharing this visit, Taehyung instantly highlighted Misarang Bar as the perfect place to experience his signature \"Vante\" vibe in the heart of Yongsan, blending local Korean nightlife with his personal, refined aesthetic.</p>"
+    },
+    "officialLink": "https://www.instagram.com/misarangbar/?hl=fr",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794514824352-3epa35-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.8151,
+            "y": 0.5441,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/Dfo1lojkooI/?img_index=13"
+  },
+  {
+    "id": "new-manual-1794516025561-m6qtsx",
+    "name": "Wild Duck Canteen (와일드덕 칸틴)",
+    "group": "BTS",
+    "member": "V",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Restaurant",
+    "year": "2026",
+    "address": "44-8 Yongsan-dong 2-ga, Yongsan-gu, Seoul, South Korea (서울특별시 용산구 용산동2가 44-8).",
+    "lat": 37.54143,
+    "lng": 126.98702,
+    "img": "images/admin-upload-new-manual-1794516025561-m6qtsx-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take Seoul Subway Line 6 to Noksapyeong Station (Exit 2). Walk straight to the Sinheung-ro intersection, then either hike up the main street or take the Yongsan 02 (용산02) minibus up the hill."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As a neighborhood dining spot, hours often include a lunch service followed by a break, reopening for dinner until late evening (usually around 10:00 PM or 11:00 PM)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Haebangchon is notoriously difficult for wheelchair users to navigate due to severe inclines. The restaurant itself, situated in an older building, may have entry steps and narrow interiors typical of the HBC area."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "The"
+        },
+        "text": {
+          "en": "Recreate Taehyung's exact evening by making a full night of it. Start with dinner at Wild Tokukan Cantine, then walk just a few steps down the street to grab a drink at Misran Bar."
+        }
+      },
+      {
+        "title": {
+          "en": "Ride the Green Bus"
+        },
+        "text": {
+          "en": "To save your energy before dinner, avoid walking up the incredibly steep HBC hill from the subway station. Catch the small green Yongsan 02 village bus, which will drop you off much closer to the restaurant."
+        }
+      },
+      {
+        "title": {
+          "en": "Check the Waiting List"
+        },
+        "text": {
+          "en": "Small, trendy restaurants in Haebangchon often have limited seating and fill up quickly on weekends. Arrive right at opening time or be prepared to put your name on a digital waiting list at the door."
+        }
+      }
+    ],
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794516025561-m6qtsx-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6172,
+            "y": 0.5853,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/Dfo1lojkooI/?img_index=13",
+    "fullDescription": {
+      "en": "<p>Located in the heart of the trendy Haebangchon (HBC) neighborhood, Wild Duck Canteen is a highly popular European-style bistro and natural wine bar. Known for its rustic, vintage interior, warm wood furnishings, and laid-back ambiance, the canteen has become a staple for Seoul's creative crowd. The menu focuses on elevated, European-inspired sharing plates that pair perfectly with their extensive and carefully curated selection of natural wines, making it a perfect spot for an atmospheric evening dinner.</p><!--stss:footsteps--><p>On November 12, 2026, Taehyung shared this location via a Naver Map link on his social media, posting it alongside the nearby Misran Bar. The two venues are located practically next door to one another in the Yongsan district. Taehyung has a well-documented appreciation for good wine, vintage aesthetics, and intimate dining experiences. His visit to Wild Duck Canteen perfectly highlights his personal taste for cozy, low-lit environments where he can relax with friends, enjoy a quality meal, and soak in the bohemian vibe of the HBC neighborhood away from the glaring spotlight.</p>"
+    },
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.instagram.com/wildduck_canteen/"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
