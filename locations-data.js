@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-12T21:00:51.373Z.
+// Généré le 2026-11-13T08:36:53.789Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -4282,65 +4282,98 @@ window.STATIC_LOCATIONS = [
   },
   {
     "id": 71,
-    "name": "CJ ENM Center (M Countdown)",
+    "name": "Isaac Toast (Yangjae Station Branch)",
     "group": "BTS",
-    "member": "All",
+    "member": "V",
     "country": "South Korea",
     "city": "Seoul",
-    "category": "Concert",
-    "year": "2013",
-    "ytId": "ssnsKGHT7sE",
-    "episodeLink": "https://www.youtube.com/watch?v=ssnsKGHT7sE",
-    "address": "66 Sangamsan-ro, Mapo-gu",
-    "lat": 37.58,
-    "lng": 126.8875,
-    "img": "https://upload.wikimedia.org/wikipedia/commons/e/e6/CJ_E%26M_Center.jpg",
+    "category": "Restaurant",
+    "year": "2026",
+    "ytId": "",
+    "episodeLink": "",
+    "address": "7 Nambusunhwan-ro 361-gil, Gangnam-gu, Seoul, South Korea (서울특별시 강남구 남부순환로361길 7)",
+    "lat": 37.48559,
+    "lng": 127.03724,
+    "img": "images/admin-upload-71-photo.jpg",
     "fullDescription": {
-      "en": "<p>On June 13, 2013, BTS stepped onto the M Countdown stage inside this very building to perform \"No More Dream\" for their first-ever live television broadcast. This date is officially celebrated as their debut anniversary.</p><p>While you can't easily enter the filming studios, walking into the main lobby of the CJ ENM Center allows you to trace the exact steps the nervous rookies took on their way to their very first dressing room.</p>",
-      "fr": "<p>Le 13 juin 2013, BTS est monté sur la scène de M Countdown à l'intérieur de ce bâtiment pour interpréter « No More Dream » lors de sa toute première diffusion télévisée en direct — une date désormais célébrée comme l'anniversaire officiel de leurs débuts.</p><p>Si les studios de tournage restent inaccessibles, entrer dans le hall principal du CJ ENM Center permet aux fans de suivre exactement le trajet des jeunes rookies nerveux vers leur toute première loge.</p>"
+      "fr": "<p>Le 13 juin 2013, BTS est monté sur la scène de M Countdown à l'intérieur de ce bâtiment pour interpréter « No More Dream » lors de sa toute première diffusion télévisée en direct — une date désormais célébrée comme l'anniversaire officiel de leurs débuts.</p><p>Si les studios de tournage restent inaccessibles, entrer dans le hall principal du CJ ENM Center permet aux fans de suivre exactement le trajet des jeunes rookies nerveux vers leur toute première loge.</p>",
+      "en": "<p>Isaac Toast is a beloved, iconic South Korean fast-casual franchise with hundreds of locations across the country. Famous for its sweet and savory grilled sandwiches made with a signature secret sauce, shredded cabbage, and freshly toasted buttery bread, it is a definitive staple of modern Korean street food. It serves as a daily go-to spot for locals seeking a quick, comforting, and affordable meal on the go.</p><!--stss:footsteps--><p>Although Taehyung officially completed his mandatory military service in June 2025, South Korean law requires discharged soldiers to participate in periodic reservist training. In November 2026, while fulfilling his first official reservist duties, he shared a heartwarming update on Weverse.<br>Dressed back in his military uniform, Taehyung was photographed enjoying a quick bite at the Yangjae Station branch of Isaac Toast. Continuing to show his deep care for his fans, he captioned the photos with a cozy message: \"날이 차다. 따시게 입자 우리\" (\"It's cold. Let's dress warmly\"). The post provided ARMYs with a grounded, highly relatable glimpse into his post-discharge life, turning a standard local sandwich shop into a memorable milestone of his return to civilian routines.</p>"
     },
     "tipsList": [
       {
         "title": {
-          "en": "The First Floor Cafe"
+          "en": "Order the Classics"
         },
         "text": {
-          "en": "Grab a coffee in the lobby cafe where artists and staff frequently mingle before Thursday broadcasts."
+          "en": "To fully experience this Korean staple, order one of the franchise favorites like the \"Bacon Best\" or \"Ham Special.\" They are cooked fresh on the griddle and are best enjoyed immediately while hot."
         }
       },
       {
         "title": {
-          "en": "Explore DMC"
+          "en": "Take His Advice"
         },
         "text": {
-          "en": "Digital Media City is the hub of Korean broadcasting; it's a great area to see modern Seoul architecture."
+          "en": "If you are recreating this visit during the colder months, take Taehyung’s Weverse caption to heart. Seoul winters are notoriously freezing, so bundle up with a heavy coat before grabbing your toast."
+        }
+      },
+      {
+        "title": {
+          "en": "Plan for Takeout"
+        },
+        "text": {
+          "en": "While some Isaac Toast locations have small seating areas, they are primarily designed for quick turnover and takeout. It is the perfect, budget-friendly stop to fuel up before exploring the surrounding Gangnam district."
         }
       }
     ],
     "practicalInfo": [
       {
         "title": {
-          "en": "Venue Info"
-        },
-        "text": {
-          "en": "The headquarters of Mnet and the filming location of M Countdown."
-        }
-      },
-      {
-        "title": {
-          "en": "Access"
-        },
-        "text": {
-          "en": "The first-floor lobby is open to the public, but studio access requires a broadcasting ticket."
-        }
-      },
-      {
-        "title": {
           "en": "How to get there"
         },
         "text": {
-          "en": "Digital Media City Station (Line 6, AREX, Gyeongui-Jungang), exit 9."
+          "en": "The shop is highly accessible via the Seoul Subway. Take Line 3 or the Shinbundang Line directly to Yangjae Station. Leave via Exit 3 or 4, and the restaurant is just a quick 2-minute walk down the adjacent side street."
         }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Fast-casual franchises like this typically open early for the breakfast rush (around 8:00 AM) and close around 8:00 PM. The sandwiches are very affordable, generally ranging from 3,000 to 5,000 KRW."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The storefront is located at street level on a paved road. However, because it is a compact, fast-paced local shop, the interior floor space is tight, which may make navigating with a wheelchair slightly challenging during peak meal hours."
+        }
+      }
+    ],
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "pinterestUrl": "",
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "https://x.com/eh_1230eh/status/2120896813373018167?a=ib1LUZ0KxXiLGKoRckE&s=46",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "Screentostreet",
+    "officialLink": "https://www.isaac-toast.co.kr/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-71-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5907,
+            "y": 0.55,
+            "member": "V"
+          }
+        ]
       }
     ]
   },
