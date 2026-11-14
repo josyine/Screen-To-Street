@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-14T07:54:50.326Z.
+// Généré le 2026-11-14T18:48:51.936Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -25847,8 +25847,8 @@ window.STATIC_LOCATIONS = [
     "category": "Museum",
     "year": "2019",
     "address": "Mariahilfer Str. 83, 1060, Vienna, Austria",
-    "lat": 48.1977501,
-    "lng": 16.3488337,
+    "lat": 48.2001639,
+    "lng": 16.3553455,
     "country": "Austria",
     "city": "Vienna",
     "img": "images/admin-upload-new-manual-1793538388613-g75y3q-photo.jpg",
