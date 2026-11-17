@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-17T09:38:27.579Z.
+// Généré le 2026-11-17T21:52:36.835Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -27965,6 +27965,102 @@ window.STATIC_LOCATIONS = [
     },
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.instagram.com/wildduck_canteen/"
+  },
+  {
+    "id": "new-manual-1794949459144-d08229",
+    "name": "Palácio Tangará",
+    "group": "BTS",
+    "member": "V",
+    "country": "Brazil",
+    "city": "São Paulo",
+    "category": "Hotel",
+    "year": "2026",
+    "address": "R. Dep. Laércio Corte, 1501 - Panamby, São Paulo - SP, 05928-028, Brazil",
+    "lat": -23.6320636,
+    "lng": -46.7226179,
+    "img": "images/admin-upload-new-manual-1794949459144-d08229-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Request the Park View"
+        },
+        "text": {
+          "en": "To recreate Taehyung's exact balcony perspective, you must specifically book a \"Park View\" room or suite. The hotel's standard rooms look out toward the courtyard or city streets rather than the dense tropical canopy."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Greenery"
+        },
+        "text": {
+          "en": "You do not need to be a hotel guest to enjoy the background of his photo. Burle Marx Park is a public space designed by the famous Brazilian landscape architect Roberto Burle Marx, featuring walking trails through the exact Atlantic Forest greenery seen in the post."
+        }
+      },
+      {
+        "title": {
+          "en": "The Accessible Alternative"
+        },
+        "text": {
+          "en": "If an overnight stay at an Oetker Collection hotel isn't in the budget, you can still experience the grandeur of the property by booking a reservation for afternoon tea or dining at the Michelin-starred Tangará Jean-Georges restaurant on the ground floor."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Operated by the prestigious Oetker Collection, Palácio Tangará is an architectural masterpiece functioning as an exclusive urban retreat. Uniquely nestled within the lush, tropical greenery of Burle Marx Park, the property offers a striking contrast to the sprawling concrete landscape of South America's largest city. With its European-inspired neoclassical design surrounded by native Atlantic Forest vegetation, the hotel provides unparalleled privacy and tranquility, making it the premier choice for visiting global dignitaries and international superstars.</p><!--stss:footsteps--><p>In November 2026, BTS traveled to Brazil for the São Paulo leg of their highly anticipated global schedules. During their stay, the group was accommodated at Palácio Tangará, taking advantage of the hotel's high security and secluded natural setting.<br><br>V (Kim Taehyung) shared a quiet, personal moment from the trip, posting a photograph taken from one of the hotel's elegant wrought-iron balconies. The image captures him looking directly out over the dense, vibrant canopy of Burle Marx Park. Much like his luxurious downtime at the Shangri-La in Paris, this post gave fans a glimpse into the serene, private spaces the members retreat to between massive, high-energy stadium appearances.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The hotel is located in an upscale residential district south of the city center. Because public transit is limited in this specific neighborhood, the safest and most efficient way to reach the property is via a rideshare service (like Uber) or a registered taxi from central São Paulo."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The hotel operates 24/7 for registered guests. The adjacent Burle Marx Park is free to enter and is generally open daily from 7:00 AM to 7:00 PM."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "As a modern, elite 5-star property, the hotel is fully accessible for wheelchair users, featuring spacious elevators, ramped entryways, and dedicated accessible rooms."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1794949459144-d08229-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.6576,
+            "y": 0.6588,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "instagramUrl": "https://www.instagram.com/p/Dfo1lojkooI/?img_index=19",
+    "tiktokUrl": "",
+    "ytId": "",
+    "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://www.oetkerhotels.com/pt/hotels/palacio-tangara/?utm_source=google&utm_medium=organic&utm_campaign=google_local_palacio_tangara"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
