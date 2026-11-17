@@ -187,6 +187,14 @@
             }
             drawEnds();
             if (!pts.length) pts = [[from.lat, from.lon], [to.lat, to.lon]];
+            // BUG corrigé (demande du 17/11/2026, "que ça zoom sur ma position et passe en
+            // point de vue guidage, comme sur Google Map") : pendant le guidage (watchId !=
+            // null), la vue reste celle, centrée/zoomée sur la position en direct, posée par
+            // startGuide()/watchPosition ci-dessous — ne JAMAIS la recadrer ici sur
+            // l'itinéraire entier comme avant le guidage, sinon chaque redraw (changement
+            // d'étape, resize du panneau au démarrage) annulait aussitôt ce zoom "point de
+            // vue guidage" en rezoomant arrière pour montrer tout le trajet.
+            if (watchId != null) return;
             fit(L.latLngBounds(pts));
         }
 
@@ -361,6 +369,12 @@
             guideStartDist = me ? L.latLng([me.lat, me.lon]).distanceTo([to.lat, to.lon]) : null;
             showGuideBanner();
             sheet.classList.add("compact");
+            // AJOUT (demande du 17/11/2026, "que ça zoom sur ma position et passe en point de
+            // vue guidage, comme sur Google Map") : zoom immédiat sur la position actuelle dès
+            // le clic sur "Démarrer", sans attendre la 1ère mise à jour GPS de watchPosition
+            // ci-dessous (qui peut prendre une seconde ou deux et donnait l'impression que rien
+            // ne se passait à l'instant du clic).
+            if (me) imap.setView([me.lat, me.lon], 18, { animate: true });
             if (me) { if (mode === "walk") updateGuideForWalk([me.lat, me.lon]); else updateGuideForTransit([me.lat, me.lon]); }
             watchId = navigator.geolocation.watchPosition(p => {
                 const pos = [p.coords.latitude, p.coords.longitude];
@@ -377,9 +391,13 @@
             // que le guidage vient de démarrer.
             if (!root.classList.contains("quick")) toast("C'est parti ! Suis le tracé violet");
             // Le changement de hauteur de .sts-it-top (bannière affichée, .sts-row/.sts-seg
-            // masqués) et de .sts-sheet (passage en "compact") déplace le cadrage carte —
-            // même délai que le toggle manuel existant (data-act="toggle" ci-dessous).
-            setTimeout(draw, 320);
+            // masqués) et de .sts-sheet (passage en "compact") peut décaler Leaflet — même
+            // délai que le toggle manuel existant (data-act="toggle" ci-dessous). Seulement
+            // invalidateSize() désormais (pas draw()) : draw() ne recadre plus sur
+            // l'itinéraire entier pendant le guidage (voir son propre commentaire), donc plus
+            // besoin de le rappeler ici juste pour ça, et l'appeler quand même redessinerait
+            // les mêmes tracés pour rien.
+            setTimeout(() => imap.invalidateSize(), 320);
         }
         function stopGuide() {
             if (watchId != null) { navigator.geolocation.clearWatch(watchId); watchId = null; }
