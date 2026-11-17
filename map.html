@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261089" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261090" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -674,6 +674,16 @@
      direction dans un bloc dégradé (au lieu d'un rond discret), distance en plus gros, et
      une barre de progression du trajet en plus de l'instruction — voir guideStartDist dans
      itinerary.js pour le calcul du pourcentage. */
+  /* BUG corrigé (demande du 17/11/2026, "il ne faut pas afficher la partie supérieure [...]
+     il faut garder que le guidage de l'encadré noir") : le commentaire ci-dessus décrit
+     cette règle depuis le 08/10/2026, mais elle n'avait en réalité jamais été écrite —
+     .sts-row/.sts-seg (champs départ/arrivée + sélecteur à pied/transports) restaient donc
+     affichés pendant tout le guidage classique (hors mode "quick", déjà masqué par
+     ailleurs ligne 667), au lieu de ne montrer que la pastille noire comme prévu. Fond
+     transparent comme en mode "quick" pour que la pastille flotte directement sur la carte
+     une fois les champs masqués. */
+  .sts-it-top.guiding{background:transparent;box-shadow:none}
+  .sts-it-top.guiding .sts-row,.sts-it-top.guiding .sts-seg{display:none}
   .sts-guide-banner{display:flex;flex-direction:column;gap:10px;background:var(--sts-ink);border-radius:20px;padding:14px 16px;color:#fff}
   .sts-guide-banner.hidden{display:none}
   .sts-guide-row{display:flex;align-items:center;gap:14px}
@@ -938,7 +948,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261089';
+        s.src = 'page-loader.js?v=20261090';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -2270,27 +2280,27 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261089"></script>
-<script type="module" src="firebase-init.js?v=20261089"></script>
-<script src="locations-data.js?v=20261089"></script>
+<script src="countries.js?v=20261090"></script>
+<script type="module" src="firebase-init.js?v=20261090"></script>
+<script src="locations-data.js?v=20261090"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261089"></script>
+<script src="artists-content.js?v=20261090"></script>
 <!-- Contours de pays pour la teinte "Show visited" sur la mini-carte de visited.html
      (window.VISITED_WORLD_MAP/visitedWorldMapProject() dans script.js) — gardé ici
      uniquement parce que script.js référence encore ces fonctions ; la carte Leaflet de
      CETTE page n'utilise plus ce fichier pour son propre overlay de pays visités, voir
      country-borders.js ci-dessous (demande du 17/10/2026, "frontières correctes"). -->
-<script src="visited-map-data.js?v=20261089"></script>
+<script src="visited-map-data.js?v=20261090"></script>
 <!-- Vraies frontières de pays (Natural Earth, lat/lng Leaflet) pour l'overlay "Show
      visited" de CETTE carte — remplace l'approximation SVG ci-dessus pour ce usage
      (demande du 17/10/2026). Doit précéder script.js. -->
-<script src="country-borders.js?v=20261089"></script>
-<script src="script.js?v=20261089"></script>
+<script src="country-borders.js?v=20261090"></script>
+<script src="script.js?v=20261090"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261089"></script>
-<script src="map-tour.js?v=20261089"></script>
+<script src="itinerary.js?v=20261090"></script>
+<script src="map-tour.js?v=20261090"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
