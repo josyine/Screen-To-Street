@@ -59,7 +59,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="style.css?v=20261090" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261091" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
 a{text-decoration:none;}
@@ -281,7 +281,7 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261090';
+        s.src = 'page-loader.js?v=20261091';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -479,10 +479,10 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script type="module" src="firebase-init.js?v=20261090"></script>
-<script src="locations-data.js?v=20261090"></script>
-<script src="visited-map-data.js?v=20261090"></script>
-<script src="script.js?v=20261090"></script>
+<script type="module" src="firebase-init.js?v=20261091"></script>
+<script src="locations-data.js?v=20261091"></script>
+<script src="visited-map-data.js?v=20261091"></script>
+<script src="script.js?v=20261091"></script>
 <script>
     // La fenêtre "Unlock Passes" est entièrement gérée par script.js (openCartModal /
     // updateCartPrice / soumission de #cart-form), pour être identique à map.html.
@@ -544,11 +544,16 @@ h1.pg-title { font-size: 28px; font-weight: 700; color: #D42759; text-align: cen
     // maquette) — table des pays effectivement présents dans locations-data.js (voir
     // COUNTRY_CONTINENT dans script.js, même liste) ; un pays absent retombe sur ses 2
     // premières lettres, jamais bloquant.
+    // BUG corrigé (demande du 17/11/2026) : Argentine/Autriche/Italie/Mexique/Suisse
+    // manquaient ici aussi — sans entrée, le repli ci-dessous (2 premières lettres du nom)
+    // donnait "AU" pour l'Autriche, IDENTIQUE au vrai code de l'Australie juste au-dessus
+    // (même pastille pour les deux pays dans "Par pays").
     const VST_COUNTRY_CODE = {
-        'Australia': 'AU', 'New Zealand': 'NZ', 'Brazil': 'BR', 'Chile': 'CL', 'Canada': 'CA',
-        'USA': 'US', 'United States': 'US', 'Finland': 'FI', 'France': 'FR', 'Germany': 'DE',
-        'Hungary': 'HU', 'Malta': 'MT', 'Netherlands': 'NL', 'Norway': 'NO', 'Portugal': 'PT',
-        'Spain': 'ES', 'Sweden': 'SE', 'UK': 'UK', 'Hong Kong': 'HK', 'Indonesia': 'ID',
+        'Argentina': 'AR', 'Australia': 'AU', 'Austria': 'AT', 'New Zealand': 'NZ', 'Brazil': 'BR',
+        'Chile': 'CL', 'Canada': 'CA', 'USA': 'US', 'United States': 'US', 'Finland': 'FI',
+        'France': 'FR', 'Germany': 'DE', 'Hungary': 'HU', 'Italy': 'IT', 'Malta': 'MT',
+        'Mexico': 'MX', 'Netherlands': 'NL', 'Norway': 'NO', 'Portugal': 'PT', 'Spain': 'ES',
+        'Sweden': 'SE', 'Switzerland': 'CH', 'UK': 'UK', 'Hong Kong': 'HK', 'Indonesia': 'ID',
         'Japan': 'JP', 'Macau': 'MO', 'Philippines': 'PH', 'Saudi Arabia': 'SA', 'Singapore': 'SG',
         'South Korea': 'KR', 'Taiwan': 'TW', 'Thailand': 'TH', 'United Arab Emirates': 'AE'
     };
