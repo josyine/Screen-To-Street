@@ -5305,11 +5305,11 @@ const groupColors = { "BTS": "#8b5cf6", "Blackpink": "#ec4899", "Twice": "#f43f5
 // que dupliquée dans chaque page qui en a besoin (profile.html, visited.html).
 const COUNTRY_CONTINENT = {
     'Australia': 'Oceania', 'New Zealand': 'Oceania',
-    'Brazil': 'South America', 'Chile': 'South America',
-    'Canada': 'North America', 'USA': 'North America', 'United States': 'North America',
-    'Finland': 'Europe', 'France': 'Europe', 'Germany': 'Europe', 'Hungary': 'Europe',
-    'Malta': 'Europe', 'Netherlands': 'Europe', 'Norway': 'Europe', 'Portugal': 'Europe',
-    'Spain': 'Europe', 'Sweden': 'Europe', 'UK': 'Europe',
+    'Argentina': 'South America', 'Brazil': 'South America', 'Chile': 'South America',
+    'Canada': 'North America', 'Mexico': 'North America', 'USA': 'North America', 'United States': 'North America',
+    'Austria': 'Europe', 'Finland': 'Europe', 'France': 'Europe', 'Germany': 'Europe', 'Hungary': 'Europe',
+    'Italy': 'Europe', 'Malta': 'Europe', 'Netherlands': 'Europe', 'Norway': 'Europe', 'Portugal': 'Europe',
+    'Spain': 'Europe', 'Sweden': 'Europe', 'Switzerland': 'Europe', 'UK': 'Europe',
     'Hong Kong': 'Asia', 'Indonesia': 'Asia', 'Japan': 'Asia', 'Macau': 'Asia',
     'Philippines': 'Asia', 'Saudi Arabia': 'Asia', 'Singapore': 'Asia', 'South Korea': 'Asia',
     'Taiwan': 'Asia', 'Thailand': 'Asia', 'United Arab Emirates': 'Asia'
@@ -5322,12 +5322,21 @@ const COUNTRY_CONTINENT = {
 // pour être représentés distinctement sur une carte du monde compacte) — absence volontaire
 // plutôt qu'un oubli ; ces pays restent comptés normalement partout ailleurs (listes "Par
 // pays", pastilles pays/continents), seule la teinte sur LA CARTE elle-même leur manque.
+// BUG corrigé (demande du 17/11/2026, "j'ai visité l'Autriche [...] mais ça ne colorie pas
+// le pays") : Argentine/Autriche/Italie/Mexique/Suisse (ajoutées à locations-data.js après
+// cette table) en manquaient alors que leur contour EXISTE bien dans visited-map-data.js
+// (vérifié : "032"/"040"/"380"/"484"/"756" sont bien présents) — vstWorldMapSvg() dans
+// visited.html ne pouvait donc jamais les faire correspondre à une clé de m.paths, et ces
+// pays restaient toujours gris même une fois visités. Toute visite d'un lieu d'un pays
+// listé ici colorie donc désormais automatiquement ce pays, sans action manuelle — il
+// suffira d'ajouter la ligne correspondante ici pour tout futur nouveau pays.
 const COUNTRY_ISO_NUMERIC = {
-    'Australia': '036', 'Brazil': '076', 'Canada': '124', 'Chile': '152', 'Finland': '246',
-    'France': '250', 'Germany': '276', 'Hungary': '348', 'Indonesia': '360', 'Japan': '392',
-    'Netherlands': '528', 'New Zealand': '554', 'Norway': '578', 'Philippines': '608',
-    'Portugal': '620', 'Saudi Arabia': '682', 'South Korea': '410', 'Spain': '724',
-    'Sweden': '752', 'Taiwan': '158', 'Thailand': '764', 'UK': '826', 'USA': '840',
+    'Argentina': '032', 'Australia': '036', 'Austria': '040', 'Brazil': '076', 'Canada': '124',
+    'Chile': '152', 'Finland': '246', 'France': '250', 'Germany': '276', 'Hungary': '348',
+    'Indonesia': '360', 'Italy': '380', 'Japan': '392', 'Mexico': '484', 'Netherlands': '528',
+    'New Zealand': '554', 'Norway': '578', 'Philippines': '608', 'Portugal': '620',
+    'Saudi Arabia': '682', 'South Korea': '410', 'Spain': '724', 'Sweden': '752',
+    'Switzerland': '756', 'Taiwan': '158', 'Thailand': '764', 'UK': '826', 'USA': '840',
     'United Arab Emirates': '784', 'United States': '840'
 };
 // Projection lat/lon -> pixel de visited-map-data.js (voir ce fichier pour comment ces
@@ -11229,6 +11238,13 @@ window.openDetailsPanel = function(id, fromList) {
     // ("retour à la carte"). On retient ici la position de scroll du panneau actif AVANT
     // qu'openDetailsPanel ne le masque, pour que closeDetailsPanel() puisse la restaurer.
     window.__detailsOpenedFromList = !!fromList;
+    // AJOUT SITE (demande du 17/11/2026, "n'affiche 'back to list' que lorsqu'on clique sur
+    // un lieu depuis la liste des lieux du menu") : ce lien était toujours affiché, même
+    // pour un lieu ouvert depuis un marqueur de la carte (où "retour à la liste" n'a pas de
+    // sens, vu qu'on n'en venait pas) — masqué ici via le même flag fromList que celui qui
+    // pilote déjà le comportement de closeDetailsPanel() ci-dessous.
+    const backLink = document.querySelector('.detail-back-link');
+    if (backLink) backLink.classList.toggle('hidden', !fromList);
     if (fromList) {
         const activeListPanel = document.querySelector('.sidebar-main-panel.active');
         window.__detailsListScrollState = activeListPanel ? { id: activeListPanel.id, scrollTop: activeListPanel.scrollTop } : null;
