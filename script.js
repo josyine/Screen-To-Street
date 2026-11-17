@@ -4981,8 +4981,29 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleMobileMenu = function() {
         const sidebar = document.getElementById('app-sidebar');
         if (sidebar) {
+            const opening = !sidebar.classList.contains('open');
             sidebar.classList.toggle('open');
             if (!sidebar.classList.contains('open')) sidebar.classList.remove('expanded');
+            // BUG corrigé (demande du 17/11/2026, "quand je clique sur un lieu, puis sur la
+            // croix [= ce même bouton hamburger, affiché en croix pendant que la fiche est
+            // ouverte, voir .is-open/setMobileChromeHidden() plus haut], puis sur le bouton
+            // du menu, ça ouvre le dernier lieu ouvert et non le menu") : ce bouton ne
+            // faisait que montrer/cacher le conteneur #app-sidebar (classe "open"), sans
+            // jamais toucher à CE QUI s'affiche dedans — #sidebar-details restait donc
+            // "display:flex" (posé par openDetailsPanel(), jamais remis par ce bouton, seul
+            // closeDetailsPanel() le faisait) : rouvrir la sidebar réaffichait donc la fiche
+            // du dernier lieu consulté au lieu du menu. Le bouton hamburger doit TOUJOURS
+            // ouvrir le menu, jamais une fiche lieu — basculé explicitement vers
+            // #sidebar-main à chaque ouverture, sans effet si le menu y était déjà.
+            if (opening) {
+                const dDetails = document.getElementById('sidebar-details');
+                if (dDetails) { dDetails.classList.add('hidden'); dDetails.style.display = 'none'; }
+                const dMain = document.getElementById('sidebar-main');
+                if (dMain) dMain.style.display = 'flex';
+                const topTabs = document.querySelector('.sidebar-top-tabs');
+                if (topTabs) topTabs.style.display = 'flex';
+                window.__openDetailsLocId = null;
+            }
             setMobileChromeHidden(sidebar.classList.contains('open'));
         }
     };
