@@ -11407,8 +11407,15 @@ window.openDetailsPanel = function(id, fromList) {
     // pour un lieu ouvert depuis un marqueur de la carte (où "retour à la liste" n'a pas de
     // sens, vu qu'on n'en venait pas) — masqué ici via le même flag fromList que celui qui
     // pilote déjà le comportement de closeDetailsPanel() ci-dessous.
+    // BUG corrigé (demande du 19/11/2026, "version ordinateur il ne faut pas supprimer le
+    // bouton Back to list, c'était que version mobile") : ce masquage ne devait concerner
+    // QUE le mobile dès le départ — la classe partagée .hidden (display:none à toute
+    // largeur) cachait le lien partout, y compris sur ordinateur. Classe dédiée
+    // .detail-back-hide-mobile, qui ne masque qu'en dessous de 760px (voir sa règle dans
+    // style.css) — sur ordinateur, le lien reste donc TOUJOURS visible, quel que soit
+    // fromList, exactement comme avant le 17/11/2026 sur cette largeur d'écran.
     const backLink = document.querySelector('.detail-back-link');
-    if (backLink) backLink.classList.toggle('hidden', !fromList);
+    if (backLink) backLink.classList.toggle('detail-back-hide-mobile', !fromList);
     if (fromList) {
         const activeListPanel = document.querySelector('.sidebar-main-panel.active');
         window.__detailsListScrollState = activeListPanel ? { id: activeListPanel.id, scrollTop: activeListPanel.scrollTop } : null;
