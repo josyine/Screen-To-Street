@@ -75,7 +75,7 @@
      isolé plus tard dans la même visite soit à nouveau rattrapé une fois. Même correctif
      posé sur le <link> équivalent (style.css/welcome-style.css) de toutes les autres
      pages du site. -->
-<link rel="stylesheet" href="style.css?v=20261094" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
+<link rel="stylesheet" href="style.css?v=20261095" onload="try{sessionStorage.removeItem('cssReloadAttempted');}catch(e){}" onerror="try{if(!sessionStorage.getItem('cssReloadAttempted')){sessionStorage.setItem('cssReloadAttempted','1');location.reload();}}catch(e){}">
 <style>
   /* ==========================================
      STYLES DES MODALES ET TIROIRS DE LA CARTE
@@ -962,7 +962,7 @@
     if (isFirstLoad) {
         document.getElementById('stsl').classList.remove('hidden');
         var s = document.createElement('script');
-        s.src = 'page-loader.js?v=20261094';
+        s.src = 'page-loader.js?v=20261095';
         document.currentScript.insertAdjacentElement('afterend', s);
     } else {
         var simple = document.getElementById('pageLoaderSimple');
@@ -1498,6 +1498,19 @@
                         <a class="gmaps-btn" id="details-map-link" href="#" target="_blank">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
                             <span data-i18n="lOpenMap">Open in Google Maps</span>
+                        </a>
+                        <!-- "Open in Naver" (demande du 19/11/2026, "à côté du bouton Open in Google
+                             Maps un bouton Open in Naver") — même bouton jumeau (.gmaps-btn) que
+                             "Learn more" juste en dessous, masqué tant que loc.naverLink n'est pas
+                             renseigné (voir renderLocationMetaFields()/ensureLocationEditModal()
+                             dans script.js, et admin.html pour la file de soumissions/"Existing
+                             locations"). Jamais généré automatiquement depuis lat/lng, contrairement
+                             à Google Maps ci-dessus : pas d'équivalent fiable d'URL "lat,lng" Naver
+                             sans clé API — un lien fourni à la main (ou trouvé par l'agent IA) reste
+                             le seul moyen correct d'ouvrir CE lieu précis sur Naver. -->
+                        <a class="gmaps-btn hidden" id="details-naver-link" href="#" target="_blank" rel="noopener noreferrer">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2E3644" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span data-i18n="lOpenNaver">Open in Naver</span>
                         </a>
                         <!-- "Learn more about this place" (demande du 13/09/2026 : "je veux que tu
                              mettes le lien sous forme de bouton à droite de Open in Google Maps") —
@@ -2294,27 +2307,27 @@
      create the image" — un seul CDN sans repli, aucune nouvelle tentative possible en cas
      d'échec) : chargé à la demande par loadHtmlToImageOnce() dans script.js, avec repli sur
      un second CDN. -->
-<script src="countries.js?v=20261094"></script>
-<script type="module" src="firebase-init.js?v=20261094"></script>
-<script src="locations-data.js?v=20261094"></script>
+<script src="countries.js?v=20261095"></script>
+<script type="module" src="firebase-init.js?v=20261095"></script>
+<script src="locations-data.js?v=20261095"></script>
 <!-- window.GROUPS (demande du 15/10/2026, "Member(s)" doit lister les membres du groupe
      choisi, pas toujours BTS) : utilisé par memberOptionsForGroup() dans script.js, pour
      le modal crayon d'édition de lieu (openLocationEditModal). -->
-<script src="artists-content.js?v=20261094"></script>
+<script src="artists-content.js?v=20261095"></script>
 <!-- Contours de pays pour la teinte "Show visited" sur la mini-carte de visited.html
      (window.VISITED_WORLD_MAP/visitedWorldMapProject() dans script.js) — gardé ici
      uniquement parce que script.js référence encore ces fonctions ; la carte Leaflet de
      CETTE page n'utilise plus ce fichier pour son propre overlay de pays visités, voir
      country-borders.js ci-dessous (demande du 17/10/2026, "frontières correctes"). -->
-<script src="visited-map-data.js?v=20261094"></script>
+<script src="visited-map-data.js?v=20261095"></script>
 <!-- Vraies frontières de pays (Natural Earth, lat/lng Leaflet) pour l'overlay "Show
      visited" de CETTE carte — remplace l'approximation SVG ci-dessus pour ce usage
      (demande du 17/10/2026). Doit précéder script.js. -->
-<script src="country-borders.js?v=20261094"></script>
-<script src="script.js?v=20261094"></script>
+<script src="country-borders.js?v=20261095"></script>
+<script src="script.js?v=20261095"></script>
 <script src="tour-mode.js"></script>
-<script src="itinerary.js?v=20261094"></script>
-<script src="map-tour.js?v=20261094"></script>
+<script src="itinerary.js?v=20261095"></script>
+<script src="map-tour.js?v=20261095"></script>
 <script>
     // ==========================================
     // VÉRIFICATION D'ACCÈS À LA CARTE
