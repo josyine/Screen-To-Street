@@ -3771,6 +3771,16 @@ window.addEventListener('firebase-ready', async (e) => {
                     if (typeof renderLocations === 'function') renderLocations(true);
                 } catch (err) { /* tant pis, le filtre "vérifié uniquement" reste inactif */ }
             })(),
+            // Rattrapage badges -> visitedLocs (demande du 19/11/2026, voir le commentaire de
+            // reconcileVisitedLocsFromBadges() plus bas) : scopé à #visit-container comme les
+            // autres lectures ci-dessus (même raison perf) — une fois rattrapé ici, l'écriture
+            // dans visitedLocs (localStorage + Firestore) profite ensuite à toutes les pages
+            // qui le lisent (profile.html, map.html...), sans qu'elles aient besoin de répéter
+            // ce même rattrapage chacune de leur côté.
+            (async () => {
+                if (!document.getElementById('visit-container') || typeof reconcileVisitedLocsFromBadges !== 'function') return;
+                try { await reconcileVisitedLocsFromBadges(); } catch (err) { /* tant pis, rattrapé à une prochaine session */ }
+            })(),
         ]);
         // hydrateGroupVariantLocations() (voir plus bas dans ce fichier) : un nouveau
         // variant de groupe a pu arriver via fetchNewLocations() ci-dessus, ou le lieu de
@@ -14066,6 +14076,38 @@ function markLocationVisitedFromBadge(loc) {
     if (window.__openDetailsLocId === loc.id && typeof window.openDetailsPanel === 'function') {
         window.openDetailsPanel(loc.id);
     }
+}
+
+// AJOUT SITE (demande du 19/11/2026, "le coloriage de l'Autriche est toujours gris... je
+// n'ai pas de lieu visité de l'Autriche, juste des badges gagnés... prends en compte les
+// badges d'un pays dans le coloriage") : markLocationVisitedFromBadge() ci-dessus ne
+// synchronise un badge vers visitedLocs QUE pour un déblocage FUTUR (demande du
+// 26/10/2026, voir son propre commentaire) — un badge débloqué AVANT ce lien n'a jamais
+// été rattrapé, laissant un écart permanent entre les badges réellement possédés
+// (profile.badges, Firestore) et visitedLocs (localStorage + users/{uid}), que
+// visited.html (carte du monde "pays visités", voir vstWorldMapSvg()) comme profile.html
+// lisent exclusivement — d'où un pays avec un badge mais resté gris sur la carte. Rattrape
+// ici, une fois par session, chaque badge déjà débloqué mais absent de visitedLocs — une
+// seule écriture/sync groupée pour tous les badges manquants à la fois (plutôt que
+// d'appeler markLocationVisitedFromBadge() en boucle, qui écrirait et resynchroniserait
+// séparément pour chacun) : même résultat final, un seul aller-retour Firestore.
+async function reconcileVisitedLocsFromBadges() {
+    const user = window.firebaseCurrentUser;
+    if (!user || typeof window.fetchPublicProfile !== 'function') return;
+    let badgeIds;
+    try {
+        const profile = await window.fetchPublicProfile(user.uid);
+        badgeIds = Object.keys(profile.badges || {});
+    } catch (e) { return; }
+    if (!badgeIds.length) return;
+    const list = getVisitedLocs();
+    const visitedIds = new Set(list.map(v => (v && typeof v === 'object' ? v.id : v)));
+    const missing = badgeIds.filter(id => !visitedIds.has(id));
+    if (!missing.length) return;
+    missing.forEach(id => list.push({ id, visits: [] }));
+    localStorage.setItem('visitedLocs', JSON.stringify(list));
+    syncVisited(list);
+    if (typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
 }
 
 async function unlockBadgeForLocation(loc) {
