@@ -232,6 +232,65 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
 .detail-hero-copyright-btn:hover { background: rgba(20,16,30,.6); }
 .detail-hero-copyright-popover { position: absolute; bottom: 50px; right: 18px; max-width: 240px; background: rgba(20,16,30,.9); backdrop-filter: blur(6px); color: #fff; font-size: 11.5px; line-height: 1.5; padding: 10px 12px; border-radius: 10px; z-index: 3; }
 
+/* ==========================================================================
+   TIROIR "LIEU" MOBILE (demande du 19/11/2026, "View" depuis la bulle d'un marqueur) — voir
+   place-sheet.js, qui réutilise tel quel le rendu existant de la fiche lieu ci-dessus
+   (#sidebar-details, rempli par openDetailsPanel() dans script.js) : il le DÉPLACE dans
+   #place-sheet (voir map.html) plutôt que de le dupliquer. Classes préfixées .place-sheet +
+   règles cumulées sous @media (max-width:768px) : les deux ensemble garantissent qu'aucun
+   changement JS seul ne peut faire apparaître ce tiroir sur ordinateur, où "View" garde son
+   comportement actuel (ouvre #sidebar-details dans #app-sidebar comme avant cet ajout).
+   ========================================================================== */
+@media (max-width: 768px) {
+  .place-sheet-veil { position: fixed; inset: 0; z-index: 8999; background: #000; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .place-sheet-veil.on { opacity: .35; pointer-events: auto; }
+  /* Toujours pleine hauteur d'écran (dvh, avec repli vh pour les navigateurs qui ne le
+     connaissent pas) : translateY(0/50%/100%) la positionne ensuite (sa PROPRE hauteur,
+     donc 50%/100% de 100dvh valent exactement 50dvh/100dvh — pas de calcul séparé à
+     maintenir en phase avec la hauteur réelle). */
+  .place-sheet { position: fixed; left: 0; right: 0; top: 0; height: 100vh; height: 100dvh; z-index: 9000; background: #fff; display: flex; flex-direction: column; overflow: hidden; transform: translateY(100%); transition: transform .3s cubic-bezier(.2,.8,.3,1); padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+  /* Posée par place-sheet.js pendant un glissement actif (doigt still down) : le panneau
+     doit suivre le doigt 1:1, sans la transition ci-dessus qui créerait un décalage visible
+     entre la position réelle du doigt et celle, animée donc en retard, du panneau. */
+  .place-sheet.ps-dragging { transition: none; }
+  .place-sheet.ps-closed { transform: translateY(100%); pointer-events: none; }
+  .place-sheet.ps-half { transform: translateY(50%); border-radius: 24px 24px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,.18); }
+  .place-sheet.ps-full { transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .place-sheet { transition: none; } }
+
+  .place-sheet-handle { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 42px; height: 5px; border-radius: 5px; background: rgba(255,255,255,.75); z-index: 3; display: none; touch-action: none; cursor: grab; }
+  .place-sheet.ps-half .place-sheet-handle { display: block; }
+
+  /* Remplace visuellement .detail-back-link (masqué ci-dessous, voir pourquoi) sur la photo
+     en plein écran du tiroir — affiché/masqué par place-sheet.js selon l'état (uniquement en
+     "full"), jamais par CSS seul. */
+  .place-sheet-backmap-btn { position: absolute; top: 16px; left: 18px; z-index: 2; color: #fff; background: rgba(20,16,30,.4); backdrop-filter: blur(6px); padding: 7px 14px; border-radius: 100px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; }
+
+  /* .detail-back-link reste CELUI de la fiche normale (jamais dupliqué, voir plus haut) —
+     mais "← Back to list" n'a pas de sens dans ce tiroir (on n'y arrive jamais depuis la
+     liste) : masqué dans les DEUX états, .place-sheet-backmap-btn ci-dessus le remplace
+     visuellement au même endroit, seulement en "full" (demande explicite : "le bouton Back
+     to list... devient Back to map"). */
+  .place-sheet .detail-back-link { display: none; }
+
+  /* État "half" (demande explicite, section 3) : photo réduite à ~190px (coins assortis au
+     tiroir), icônes crayon/© masquées, contenu FIGÉ (ne défile pas, simplement coupé par le
+     bas de l'écran) — touch-action:none sur #sidebar-details lui-même : en half, c'est tout
+     le panneau qui doit pouvoir être glissé (voir place-sheet.js), jamais son scroll interne
+     (désactivé ici de toute façon). */
+  .place-sheet.ps-half #sidebar-details { overflow: hidden; touch-action: none; }
+  .place-sheet.ps-half .detail-hero { height: 190px; border-radius: 24px 24px 0 0; }
+  .place-sheet.ps-half #details-admin-edit-btn,
+  .place-sheet.ps-half #detail-hero-copyright-btn { display: none; }
+
+  /* État "full" (demande explicite, section 4) : page lieu actuelle à l'identique — photo à
+     sa hauteur normale (220px, règle .detail-hero de base ci-dessus, non surchargée ici),
+     contenu réellement scrollable. overscroll-behavior:contain (demande explicite, section
+     6) : empêche un glissement arrivé en haut/bas de CE scroll de "déborder" sur la carte
+     en dessous. */
+  .place-sheet.ps-full #sidebar-details { overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+}
+
 .check-row { display: flex; gap: 16px; padding: 14px 22px; border-bottom: 1px solid #EFECF6; flex-wrap: wrap; background: #fff; }
 .check-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; }
 .check-item input { width: 16px; height: 16px; accent-color: var(--primary-magenta); cursor: pointer; }
