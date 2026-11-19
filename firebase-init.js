@@ -1902,7 +1902,7 @@ window.approveLocationSubmission = async function (submission) {
         const isGroupVariant = !!submission.referenceLocId;
         const contentFields = isGroupVariant
             ? ['fullDescription', 'episodeLink', 'recreatedPhoto', 'recreatedPhotos']
-            : ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'pinterestUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'pinterestUrls', 'youtubeUrls'];
+            : ['fullDescription', 'practicalInfo', 'tipsList', 'tip', 'directions', 'videoEmbeds', 'ytId', 'episodeLink', 'officialLink', 'naverLink', 'imgCredit', 'recreatedPhoto', 'recreatedPhotos', 'tweetUrl', 'instagramUrl', 'facebookUrl', 'tiktokUrl', 'pinterestUrl', 'tweetUrls', 'instagramUrls', 'facebookUrls', 'tiktokUrls', 'pinterestUrls', 'youtubeUrls'];
         const contentDoc = {};
         contentFields.forEach(f => { if (submission[f] !== undefined) contentDoc[f] = submission[f]; });
         await setDoc(doc(db, 'locationContent', targetId), resolveDeleteMarkers(stripUndefinedDeep(contentDoc)), { merge: true });
