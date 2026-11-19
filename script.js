@@ -13,6 +13,27 @@
 window.COMMUNITY_ENABLED = false;
 
 // ==========================================
+// INTERRUPTEUR "ADD CONTENT" (demande du 19/11/2026, maquette "ajout_contenu_wip_final.
+// html") — même principe que COMMUNITY_ENABLED juste au-dessus, posé au même endroit comme
+// demandé. Couvre les DEUX chemins qui mènent aux formulaires d'ajout de contenu :
+// - le menu "+" (voir window.openQuickAddSheet() plus bas) : ses 3 options (Add a photo/
+//   Add a visited place/Add a review) restent VISIBLES mais grisées, avec un bandeau
+//   "Coming soon" — aucune des 3 n'ouvre plus window.openQuickAddFormSheet(), donc aucune
+//   écriture Firestore/Storage par ce chemin.
+// - la case "I visited this place" de chaque fiche lieu (#details-visited, voir son
+//   onchange plus bas) : reste visible, cochée pour un lieu déjà visité (lecture seule, ne
+//   cache jamais l'historique existant), mais un changement d'état est annulé avant toute
+//   écriture et avant d'ouvrir window.openMemoryEditor() — même message "Coming soon" que
+//   le menu "+".
+// Le code de ces deux flux (formulaires, qaSaveVisit/qaSubmit, openMemoryEditor...) n'est
+// PAS supprimé, seulement rendu inatteignable tant que ce flag est à false.
+// - false (valeur actuelle) : comportement ci-dessus.
+// - true : repasse EXACTEMENT au comportement d'avant cet ajout (menu "+" et case à cocher
+//   pleinement fonctionnels, comme le 18/11/2026), rien d'autre ne change.
+// POUR ROUVRIR CES FONCTIONS : repasser cette seule ligne à true.
+window.ADD_CONTENT_ENABLED = false;
+
+// ==========================================
 // BASCULE "VUE ADMIN / VUE UTILISATEUR" (demande du 03/11/2026, étendue le même jour :
 // "en user view, enlever tout ce qui apparait en mode admin (bouton admin, boutons
 // verified et unverified, symbole vérifiés sur les lieux vérifiés, etc.)... le but est que
@@ -4234,75 +4255,155 @@ window.stNavigate = function (href) {
 // et invite à choisir un lieu — les flux d'ajout de photo/visite/avis existent déjà par
 // lieu (voir openMemoryEditor côté map.html).
 window.openQuickAddSheet = async function () {
+    // AJOUT SITE (demande du 19/11/2026, "le focus revient sur le bouton + à la fermeture")
+    // : l'élément qui avait le focus juste avant cet appel est forcément le déclencheur (un
+    // tap/clic vient toujours de lui donner le focus en premier) — repris tel quel par
+    // closeQuickAddSheet() plus bas, sans avoir à faire remonter une référence depuis chaque
+    // bouton "+" du site (mobile ET desktop, voir injectMobileBottomNav()/profile.html).
+    window.__qaSheetTrigger = document.activeElement;
     let overlay = document.getElementById('qa-sheet-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'qa-sheet-overlay';
         overlay.className = 'qa-sheet-overlay';
-        // AJOUT SITE (demande du 02/11/2026, étendu le 03/11/2026 pour la vue Admin) :
-        // "Add a photo" est la SEULE des 3 options qui publie dans Community (voir window.
-        // COMMUNITY_ENABLED en tête de ce fichier) — grisée + étiquette "Coming soon" tant
-        // que ni le flag ni la vue Admin ne l'autorisent, posé ici à la création du menu
-        // plutôt qu'à chaque ouverture (ni l'un ni l'autre ne change en cours de session —
-        // changer de vue recharge la page, voir window.switchAdminViewMode()).
-        const photoDisabled = !window.COMMUNITY_ENABLED && !(await window.isAdminViewActive());
-        overlay.innerHTML = `
-            <div class="qa-sheet">
-                <div class="qa-sheet-handle"></div>
-                <div class="qa-sheet-title">${t('quickAddTitle')}</div>
-                <div class="qa-sheet-option${photoDisabled ? ' cs-qa-disabled' : ''}" data-qa="photo">
-                    <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg></span>
-                    <span>${t('quickAddPhoto')}</span>
-                    ${photoDisabled ? `<span class="cs-qa-soon-badge">${t('csComingSoonBadge')}</span>` : ''}
+
+        if (!window.ADD_CONTENT_ENABLED) {
+            // ======================================================================
+            // ADD SHEET – WORK IN PROGRESS (demande du 19/11/2026, maquette validée
+            // ajout_contenu_wip_final.html, version "Bandeau en haut") — les 3 options
+            // restent visibles (mêmes icônes/libellés que le menu normal ci-dessous) mais
+            // grisées : aucune n'ouvre plus openQuickAddFormSheet() tant que
+            // window.ADD_CONTENT_ENABLED (tout en haut de ce fichier) reste à false. Classes
+            // préfixées "aw-" (Add sheet Work in progress), toutes nouvelles — seules
+            // .qa-sheet/.qa-sheet-overlay/.qa-sheet-handle/.qa-sheet-title/.qa-sheet-cancel
+            // sont réutilisées telles quelles (déjà partagées avec le menu normal, pour
+            // l'animation/l'habillage général). Voir le bloc CSS "ADD SHEET – WORK IN
+            // PROGRESS" dans style.css.
+            // ======================================================================
+            overlay.innerHTML = `
+                <div class="qa-sheet aw-wip" role="dialog" aria-modal="true" aria-labelledby="qa-sheet-title" tabindex="-1">
+                    <div class="qa-sheet-handle"></div>
+                    <div class="qa-sheet-title" id="qa-sheet-title">${t('quickAddTitle')}</div>
+                    <div class="aw-banner">
+                        <span class="aw-banner-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"></path></svg></span>
+                        <div><b>${t('awBannerTitle')}</b><p>${t('awBannerDesc')}</p></div>
+                    </div>
+                    <div class="aw-rows">
+                        <button type="button" class="aw-row" aria-disabled="true" data-aw="photo">
+                            <span class="aw-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg></span>
+                            <span class="aw-row-tx">${t('quickAddPhoto')}</span>
+                            <span class="aw-soon">${t('awSoonBadge')}</span>
+                        </button>
+                        <button type="button" class="aw-row" aria-disabled="true" data-aw="place">
+                            <span class="aw-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><path d="m9 11 2 2 4-4"></path></svg></span>
+                            <span class="aw-row-tx">${t('quickAddVisited')}</span>
+                            <span class="aw-soon">${t('awSoonBadge')}</span>
+                        </button>
+                        <button type="button" class="aw-row" aria-disabled="true" data-aw="review">
+                            <span class="aw-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"></polygon></svg></span>
+                            <span class="aw-row-tx">${t('quickAddReview')}</span>
+                            <span class="aw-soon">${t('awSoonBadge')}</span>
+                        </button>
+                    </div>
+                    <div class="aw-live" role="status" aria-live="polite"></div>
+                    <button type="button" class="qa-sheet-cancel">${t('quickAddCancel')}</button>
                 </div>
-                <!-- BUG corrigé (demande du 16/10/2026, "le bouton add a visited place ne
-                     fonctionne pas, ça redirige vers rien") : data-qa valait "visited" ici,
-                     mais QA_FORMS/qaReady()/qaBody()/qaSubmit() (plus bas) attendent tous la
-                     clé "place" — window.openQuickAddFormSheet('visited') ne correspondait à
-                     aucune entrée de QA_FORMS et ressortait aussitôt (if (!QA_FORMS[kind])
-                     return;), sans la moindre erreur visible. -->
-                <div class="qa-sheet-option" data-qa="place">
-                    <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><path d="m9 11 2 2 4-4"></path></svg></span>
-                    <span>${t('quickAddVisited')}</span>
+            `;
+        } else {
+            // AJOUT SITE (demande du 02/11/2026, étendu le 03/11/2026 pour la vue Admin) :
+            // "Add a photo" est la SEULE des 3 options qui publie dans Community (voir window.
+            // COMMUNITY_ENABLED en tête de ce fichier) — grisée + étiquette "Coming soon" tant
+            // que ni le flag ni la vue Admin ne l'autorisent, posé ici à la création du menu
+            // plutôt qu'à chaque ouverture (ni l'un ni l'autre ne change en cours de session —
+            // changer de vue recharge la page, voir window.switchAdminViewMode()).
+            const photoDisabled = !window.COMMUNITY_ENABLED && !(await window.isAdminViewActive());
+            overlay.innerHTML = `
+                <div class="qa-sheet" role="dialog" aria-modal="true" aria-labelledby="qa-sheet-title" tabindex="-1">
+                    <div class="qa-sheet-handle"></div>
+                    <div class="qa-sheet-title" id="qa-sheet-title">${t('quickAddTitle')}</div>
+                    <div class="qa-sheet-option${photoDisabled ? ' cs-qa-disabled' : ''}" data-qa="photo">
+                        <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10.5" r="1.5"></circle><path d="m21 15-5-5L5 19"></path></svg></span>
+                        <span>${t('quickAddPhoto')}</span>
+                        ${photoDisabled ? `<span class="cs-qa-soon-badge">${t('csComingSoonBadge')}</span>` : ''}
+                    </div>
+                    <!-- BUG corrigé (demande du 16/10/2026, "le bouton add a visited place ne
+                         fonctionne pas, ça redirige vers rien") : data-qa valait "visited" ici,
+                         mais QA_FORMS/qaReady()/qaBody()/qaSubmit() (plus bas) attendent tous la
+                         clé "place" — window.openQuickAddFormSheet('visited') ne correspondait à
+                         aucune entrée de QA_FORMS et ressortait aussitôt (if (!QA_FORMS[kind])
+                         return;), sans la moindre erreur visible. -->
+                    <div class="qa-sheet-option" data-qa="place">
+                        <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><path d="m9 11 2 2 4-4"></path></svg></span>
+                        <span>${t('quickAddVisited')}</span>
+                    </div>
+                    <div class="qa-sheet-option" data-qa="review">
+                        <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"></polygon></svg></span>
+                        <span>${t('quickAddReview')}</span>
+                    </div>
+                    <button type="button" class="qa-sheet-cancel">${t('quickAddCancel')}</button>
                 </div>
-                <div class="qa-sheet-option" data-qa="review">
-                    <span class="qa-sheet-option-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"></polygon></svg></span>
-                    <span>${t('quickAddReview')}</span>
-                </div>
-                <button type="button" class="qa-sheet-cancel">${t('quickAddCancel')}</button>
-            </div>
-        `;
+            `;
+        }
         document.body.appendChild(overlay);
+
+        // --- comportements communs aux deux contenus (menu normal ET "Coming soon") :
+        // clic à côté, touche Échap, bouton Cancel (demande du 19/11/2026, section
+        // Accessibilité) — jamais dupliqués dans les deux branches ci-dessus. ---
         overlay.addEventListener('click', (e) => { if (e.target === overlay) window.closeQuickAddSheet(); });
-        overlay.querySelector('.qa-sheet-cancel').addEventListener('click', window.closeQuickAddSheet);
-        overlay.querySelectorAll('.qa-sheet-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                const kind = opt.dataset.qa;
-                // AJOUT SITE (demande du 02/11/2026, étendu le 03/11/2026) : bloque la
-                // publication tant que Community n'est pas ouverte (ni par le flag, ni par
-                // la vue Admin), sans fermer le menu "+" lui-même (les deux autres options
-                // restent utilisables normalement). Relit la classe posée plus haut
-                // (photoDisabled) plutôt que de re-vérifier les deux conditions ici — reste
-                // forcément cohérent avec l'affichage grisé/l'étiquette déjà montrés.
-                if (kind === 'photo' && opt.classList.contains('cs-qa-disabled')) {
-                    if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('communityComingSoonToast'));
-                    return;
-                }
-                window.closeQuickAddSheet();
-                // Demande du 15/10/2026 (maquette jointe) : les 3 options ouvrent maintenant
-                // toutes la même fenêtre dédiée (recherche de lieu, date, groupes/amis tagués,
-                // photo, étoiles, tags...) — voir window.openQuickAddFormSheet() plus bas, qui
-                // remplace l'ancien window.openAddPhotoModal() (photo) et la redirection vers
-                // map.html?quickadd=... (visited/review, qui n'avaient pas de volet dédié).
-                if (typeof window.openQuickAddFormSheet === 'function') window.openQuickAddFormSheet(kind);
+        overlay.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) window.closeQuickAddSheet(); });
+        const cancelBtn = overlay.querySelector('.qa-sheet-cancel');
+        if (cancelBtn) cancelBtn.addEventListener('click', window.closeQuickAddSheet);
+
+        if (!window.ADD_CONTENT_ENABLED) {
+            const liveEl = overlay.querySelector('.aw-live');
+            overlay.querySelectorAll('.aw-row').forEach(row => {
+                row.addEventListener('click', () => {
+                    // aria-disabled (jamais disabled) exprès, demande explicite du
+                    // 19/11/2026 : un <button disabled> n'aurait déclenché ni ce clic, ni le
+                    // tremblement/message ci-dessous.
+                    row.classList.remove('aw-shake'); void row.offsetWidth; row.classList.add('aw-shake');
+                    if (liveEl) liveEl.textContent = t('awRowTapMsg');
+                });
             });
-        });
+        } else {
+            overlay.querySelectorAll('.qa-sheet-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const kind = opt.dataset.qa;
+                    // AJOUT SITE (demande du 02/11/2026, étendu le 03/11/2026) : bloque la
+                    // publication tant que Community n'est pas ouverte (ni par le flag, ni par
+                    // la vue Admin), sans fermer le menu "+" lui-même (les deux autres options
+                    // restent utilisables normalement). Relit la classe posée plus haut
+                    // (photoDisabled) plutôt que de re-vérifier les deux conditions ici — reste
+                    // forcément cohérent avec l'affichage grisé/l'étiquette déjà montrés.
+                    if (kind === 'photo' && opt.classList.contains('cs-qa-disabled')) {
+                        if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('communityComingSoonToast'));
+                        return;
+                    }
+                    window.closeQuickAddSheet();
+                    // Demande du 15/10/2026 (maquette jointe) : les 3 options ouvrent maintenant
+                    // toutes la même fenêtre dédiée (recherche de lieu, date, groupes/amis tagués,
+                    // photo, étoiles, tags...) — voir window.openQuickAddFormSheet() plus bas, qui
+                    // remplace l'ancien window.openAddPhotoModal() (photo) et la redirection vers
+                    // map.html?quickadd=... (visited/review, qui n'avaient pas de volet dédié).
+                    if (typeof window.openQuickAddFormSheet === 'function') window.openQuickAddFormSheet(kind);
+                });
+            });
+        }
     }
     overlay.classList.add('open');
+    // AJOUT SITE (demande du 19/11/2026, "le focus va dans la fenêtre à l'ouverture") :
+    // .qa-sheet porte tabindex="-1" dans les deux branches ci-dessus spécifiquement pour
+    // pouvoir recevoir le focus par programme ici (jamais par tabulation, il resterait
+    // sinon hors du flux naturel).
+    const sheetEl = overlay.querySelector('.qa-sheet');
+    if (sheetEl && typeof sheetEl.focus === 'function') sheetEl.focus();
 };
 window.closeQuickAddSheet = function () {
     const overlay = document.getElementById('qa-sheet-overlay');
     if (overlay) overlay.classList.remove('open');
+    // AJOUT SITE (demande du 19/11/2026) : voir window.__qaSheetTrigger posé par
+    // openQuickAddSheet() ci-dessus.
+    if (window.__qaSheetTrigger && typeof window.__qaSheetTrigger.focus === 'function') window.__qaSheetTrigger.focus();
 };
 
 // ==========================================
@@ -5641,7 +5742,7 @@ const translations = {
         gateResetSent: "Password reset email sent — check your inbox.", gateEnterEmailFirst: "Please enter your email address first.",
         tourModeLiveIn: "Live now — BTS is live in {city}", tourModeSchedule: "Tour Schedule", tourModeLive: "Live", tourModeDone: "Done", tourModeUpcoming: "Upcoming", tourModePrev: "Previous", tourModeNext: "Next",
         tourModeFooterNote: "Dates as announced by the tour — always double-check official ticketing sites before booking travel.",
-        liveBadgeLabel: "Agenda", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveViewList: "List", liveViewCalendar: "Calendar", liveViewMap: "Map", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", tripLeaveTitle: "Leave this shared trip?", tripLeaveDesc: "Are you sure you want to leave this trip? You'll need a new invite to rejoin.", tripLeaveCancel: "Cancel", tripLeaveConfirm: "Leave", tripLeaveBtn: "Leave trip", locationSharesLabel: "Shared with you", locationShareFrom: "{username} shared {location} with you", tabTourMode: "Tour", profileTabPhotos: "Photos", profileTabVisited: "Visited", profileTabReviews: "Reviews", profileTabMap: "Map", profileTabBadges: "Badges", profileBadgesTitle: "My Badges", badgeUnlockKicker: "New badge unlocked!", badgeUnlockViewBtn: "View my collection", badgeUnlockRank: "You're fan #{rank} to check in here", profileMapHeading: "Here's where I've been", profileStatVisited: "visited", profileStatPhotos: "photos", profileStatReviews: "reviews", profileStatFollowers: "followers", followersModalTitle: "Followers", quickAddTitle: "Add to Screen To Street", quickAddPhoto: "Add a photo", quickAddVisited: "Add a visited place", quickAddReview: "Add a review", quickAddCancel: "Cancel", profileFollowBtn: "Follow", profileFollowingBtn: "Following", profileBioSaved: "Bio saved.", profileEditBtn: "Edit profile", addPhotoTitle: "Add a photo", addPhotoLocationLabel: "Location", addPhotoLocationPlaceholder: "Search a location...", addPhotoDateLabel: "Visit date", addPhotoPhotoLabel: "Photo", addPhotoChooseBtn: "Choose a photo", addPhotoChangeBtn: "Change photo", addPhotoCaptionLabel: "Caption (optional)", addPhotoCaptionPlaceholder: "Say something about this photo...", addPhotoSubmitBtn: "Publish", addPhotoErrorLocation: "Please pick a location.", addPhotoErrorPhoto: "Please choose a photo.", addPhotoErrorGeneric: "Couldn't publish this photo. Please try again.", addPhotoSuccess: "Photo published.", quickAddPickLocation: "Search for a place below to continue.", quickAddPickLocationPhoto: "Pick a place below to add a photo.", quickAddPickLocationVisited: "Pick a place below to mark it as visited.", quickAddPickLocationReview: "Pick a place below to write a review.", profileAddFriendBtn: "Request to follow", profileFriendsLabel: "Following", profileRequestSentLabel: "Requested", profileAcceptRequestBtn: "Accept request", profileEmptyPhotos: "No public photos yet.", profileEmptyVisited: "No visited places yet.", profileEmptyReviews: "No public reviews yet.", profileNotFound: "This user could not be found.", profileLoading: "Loading profile…", backToFriends: "← Back to Friends", profileMenuOption: "Your Profile", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
+        liveBadgeLabel: "Agenda", liveTimelineEmpty: "Nothing scheduled right now — check back soon.", liveTimelineFooterNote: "Only official, publicly announced activities — dates as announced, always double-check official sources before booking travel.", liveViewList: "List", liveViewCalendar: "Calendar", liveViewMap: "Map", liveFilterAll: "All", liveTodayLive: "Today · Live", liveKindGroup: "Group", liveKindSolo: "Solo", newBadgeLabel: "New", usernameCooldownNote: "You can only change this once every 7 days.", usernameConfirmTitle: "Change your username?", usernameConfirmCancel: "Cancel", usernameConfirmOk: "Yes, change it", subtitle: "Following the footsteps of your favorite artists", backToList: "← Back to list", chooserTourOption: "Tour route", chooserLiveOption: "All live activity", tripShareThis: "+ Share this trip", tripChangeCoverBtn: "Change cover", tripDepartureLabel: "Departure", tripReturnLabel: "Return", tripApplyDatesBtn: "Apply", tripLeaveTitle: "Leave this shared trip?", tripLeaveDesc: "Are you sure you want to leave this trip? You'll need a new invite to rejoin.", tripLeaveCancel: "Cancel", tripLeaveConfirm: "Leave", tripLeaveBtn: "Leave trip", locationSharesLabel: "Shared with you", locationShareFrom: "{username} shared {location} with you", tabTourMode: "Tour", profileTabPhotos: "Photos", profileTabVisited: "Visited", profileTabReviews: "Reviews", profileTabMap: "Map", profileTabBadges: "Badges", profileBadgesTitle: "My Badges", badgeUnlockKicker: "New badge unlocked!", badgeUnlockViewBtn: "View my collection", badgeUnlockRank: "You're fan #{rank} to check in here", profileMapHeading: "Here's where I've been", profileStatVisited: "visited", profileStatPhotos: "photos", profileStatReviews: "reviews", profileStatFollowers: "followers", followersModalTitle: "Followers", quickAddTitle: "Add to Screen To Street", quickAddPhoto: "Add a photo", quickAddVisited: "Add a visited place", quickAddReview: "Add a review", quickAddCancel: "Cancel", awBannerTitle: "Coming soon", awBannerDesc: "We're still building these features. You'll be able to add photos, visited places and reviews very soon!", awSoonBadge: "Soon", awRowTapMsg: "Coming soon — work in progress", profileFollowBtn: "Follow", profileFollowingBtn: "Following", profileBioSaved: "Bio saved.", profileEditBtn: "Edit profile", addPhotoTitle: "Add a photo", addPhotoLocationLabel: "Location", addPhotoLocationPlaceholder: "Search a location...", addPhotoDateLabel: "Visit date", addPhotoPhotoLabel: "Photo", addPhotoChooseBtn: "Choose a photo", addPhotoChangeBtn: "Change photo", addPhotoCaptionLabel: "Caption (optional)", addPhotoCaptionPlaceholder: "Say something about this photo...", addPhotoSubmitBtn: "Publish", addPhotoErrorLocation: "Please pick a location.", addPhotoErrorPhoto: "Please choose a photo.", addPhotoErrorGeneric: "Couldn't publish this photo. Please try again.", addPhotoSuccess: "Photo published.", quickAddPickLocation: "Search for a place below to continue.", quickAddPickLocationPhoto: "Pick a place below to add a photo.", quickAddPickLocationVisited: "Pick a place below to mark it as visited.", quickAddPickLocationReview: "Pick a place below to write a review.", profileAddFriendBtn: "Request to follow", profileFriendsLabel: "Following", profileRequestSentLabel: "Requested", profileAcceptRequestBtn: "Accept request", profileEmptyPhotos: "No public photos yet.", profileEmptyVisited: "No visited places yet.", profileEmptyReviews: "No public reviews yet.", profileNotFound: "This user could not be found.", profileLoading: "Loading profile…", backToFriends: "← Back to Friends", profileMenuOption: "Your Profile", switchArtistLabel: "Switch artist", groupNoDataYet: "No tour or live data available yet for {group} — check back soon.", tripInviteLabel: "Invite people (optional)", shareTripUsernamePlaceholder: "Their username",
         tourModeGenericLabel: "Tour", tourModeMemberLiveIn: "{member} is live now — {event} in {city}", tourModeLiveNowOne: "Live now", tourModeLiveNowCount: "{n} live now", tourModeMoreCount: "+{n} more",
         tourModeEyebrow: "Tour Mode", tourModeChooseTour: "Choose a tour", tourModeStep: "Step {n} of {total}",
         tourModeHighlights: "Highlights", tourModeSurpriseSong: "Surprise song:", tourModeNoHighlightsYet: "No highlights added yet for this show.", tourModeNoSurpriseSongYet: "Not announced yet.",
@@ -5678,7 +5779,7 @@ const translations = {
         tabExplore: "Explorer", tabMyItinerary: "Mon Itinéraire", yourRating: "Votre note", foodQualityRating: "Qualité de la nourriture", valueForMoneyRating: "Rapport qualité/prix", accessibilityRating: "Facilement accessible ?", siteQualityRating: "Qualité du lieu", wishlistStat: "{pct}% des utilisateurs ont ajouté ce lieu à leur wishlist", friendsVisitedStat: "{count} amis ont visité cet endroit", friendsVisitedStatOne: "1 ami a visité cet endroit", whenDidYouVisit: "Quand avez-vous visité ce lieu ?", saveMemory: "Enregistrer le souvenir", myVisitTab: "Ma Visite", tabReviews: "Avis", tabInfo: "Infos", tabStory: "Histoire", lGroup: "Groupe :", lMembers: "Membres :", lCountry: "Pays :", lCity: "Ville :", lDate: "Date :", lEpisode: "Épisode :", lWatch: "Lien :", lOfficialLink: "Source", lFollow: "Suivre :", lWatchEpi: "À l'écran", lPractical: "Informations pratiques & accès", lLearnMore: "En savoir plus", lAddress: "Adresse", lOpenMap: "Ouvrir dans Google Maps", lStoryPlace: "L'histoire de ce lieu", lStoryBts: "Sur les traces de BTS", lRecreatePhoto: "Les photos de Mei", officialPoseLabel: "Reproduction officielle de la célébrité", lTipsTitle: "LES CONSEILS « SCREEN TO STREET »", lHowToGetThere: "Comment s'y rendre :", memoryNotesLabel: "Vos notes (facultatif)", memoryNotesPlaceholder: "Que retenez-vous de ce lieu ?", reviewsCountLabel: "{n} avis publics", reviewsWriteLabel: "Écrivez votre avis", reviewsComposePlaceholder: "Partagez votre avis...", reviewsComposeMakePublic: "Rendre cet avis public", reviewsComposePost: "Publier l'avis", memoryPhotoLabel: "Ajouter une photo (facultatif)", memoryPhotoChoose: "Choisir une photo", memoryPhotoRemove: "Retirer", memoryMakePublic: "Rendre cet avis public (visible par les autres utilisateurs)", reviewsLoading: "Chargement des avis…", reviewsEmpty: "Aucun avis public pour ce lieu pour l'instant — soyez le premier à partager le vôtre depuis l'onglet « Ma Visite » !", shareTripSub: "Organisez-le ensemble", shareTripInvite: "Inviter", shareTripHint: "Touchez l'icône à côté d'un nom pour basculer entre modification et lecture seule.",
         backToMap: "← Retour à la carte", moreDetails: "Plus de détails", openInMaps: "Ouvrir dans Google Maps", detailsLabel: "Détails", aboutPlaceLabel: "À propos de ce lieu",
         mpSearchLabel: "Rechercher dans les photos de Mei", mpSearchPlaceholder: "Rechercher un utilisateur, un groupe, un lieu…", mpClear: "Effacer", mpPictureSingular: "photo", mpPictureMultiple: "photos", mpForQuery: "pour « {q} »", mpEmptyTitle: "Aucune photo trouvée", mpEmptyDesc: "Essayez un autre lieu, membre ou groupe.", mpEmptyDescGroup: "Essayez un autre lieu, membre ou groupe — ou revenez à Tous les groupes.",
-        csComingSoonBadge: "Bientôt disponible", csComingSoonTitle: "Les photos de fans arrivent bientôt", csComingSoonDesc: "Bientôt, vous pourrez partager vos propres photos prises sur les lieux de la carte et découvrir celles des fans du monde entier. On met la dernière touche.", csNotifyBtn: "Me prévenir", csNotifiedBtn: "Vous serez prévenu·e", csNotifyConfirm: "On vous préviendra dès l'ouverture de Community.", csNotifySignInToast: "Connectez-vous pour être prévenu·e à l'ouverture de Community.", communityComingSoonToast: "Community arrive bientôt",
+        csComingSoonBadge: "Bientôt disponible", csComingSoonTitle: "Les photos de fans arrivent bientôt", csComingSoonDesc: "Bientôt, vous pourrez partager vos propres photos prises sur les lieux de la carte et découvrir celles des fans du monde entier. On met la dernière touche.", csNotifyBtn: "Me prévenir", csNotifiedBtn: "Vous serez prévenu·e", csNotifyConfirm: "On vous préviendra dès l'ouverture de Community.", csNotifySignInToast: "Connectez-vous pour être prévenu·e à l'ouverture de Community.", communityComingSoonToast: "Community arrive bientôt", awBannerTitle: "Bientôt disponible", awBannerDesc: "On prépare encore ces fonctionnalités. Tu pourras bientôt ajouter des photos, des lieux visités et des avis !", awSoonBadge: "Bientôt", awRowTapMsg: "Bientôt disponible — en cours de préparation",
         accTitle: "Votre compte", accChangePhoto: "Changer la photo de profil", accResetPhoto: "Réinitialiser la photo de profil", accNameLabel: "Identifiant", accChangeUsernameHint: "Changer d'identifiant", accEmailLabel: "Adresse e-mail",
         accCountryLabel: "Pays qui vous intéresse", accCountryPlaceholder: "Choisir un pays (optionnel)",
         accActivityTitle: "Votre activité", accTrips: "Voyages", accVisited: "Visités", accWishlist: "Wishlist", accPasses: "Pass et facturation",
@@ -11430,9 +11531,20 @@ window.openDetailsPanel = function(id, fromList) {
         let vList = getVisitedLocs();
         let rawEntry = vList.find(v => v.id === loc.id || v === loc.id);
         let memoryData = rawEntry ? normalizeVisitEntry(rawEntry) : null;
-        
+
         vCheck.checked = !!memoryData;
-        
+        // AJOUT SITE (demande du 19/11/2026, "bloque aussi les autres chemins qui mènent à
+        // ces formulaires... par exemple Mark as visited ailleurs") : cette case est l'autre
+        // chemin trouvé vers openMemoryEditor()/une écriture Firestore, hors du menu "+" —
+        // voir window.ADD_CONTENT_ENABLED en tête de ce fichier. Reste cochée normalement
+        // pour un lieu déjà visité (son historique existant n'est jamais caché, lecture
+        // seule), seul un CHANGEMENT d'état est bloqué (voir onchange plus bas). aria-disabled
+        // (jamais disabled) : un <input disabled> ne déclenche aucun évènement, empêchant le
+        // message "Coming soon" de s'afficher au clic — même choix que les lignes du menu "+".
+        vCheck.setAttribute('aria-disabled', String(!window.ADD_CONTENT_ENABLED));
+        const vCheckLabel = vCheck.closest('.check-item');
+        if (vCheckLabel) vCheckLabel.classList.toggle('aw-check-disabled', !window.ADD_CONTENT_ENABLED);
+
         if(vCheck.checked && memoryData && memoryData.visits.length > 0) {
             tabBtnVisit.classList.remove('hidden');
             memoryDropdown.classList.remove('open');
@@ -11445,6 +11557,15 @@ window.openDetailsPanel = function(id, fromList) {
         window.refreshLocationRating(loc.id);
 
         vCheck.onchange = function() {
+            // AJOUT SITE (demande du 19/11/2026) : voir le commentaire sur aria-disabled
+            // juste au-dessus — annule le changement AVANT toute écriture/ouverture de
+            // openMemoryEditor(), le navigateur a déjà basculé this.checked au moment où
+            // "change" se déclenche, d'où le retour à l'état inverse plutôt qu'à "false".
+            if (!window.ADD_CONTENT_ENABLED) {
+                this.checked = !this.checked;
+                if (typeof window.showSimpleToast === 'function') window.showSimpleToast(t('awRowTapMsg'));
+                return;
+            }
             let list = getVisitedLocs();
             if(this.checked) {
                 let idx = list.findIndex(v => (v.id === loc.id || v === loc.id));

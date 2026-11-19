@@ -1271,6 +1271,58 @@ body:not(.trip-not-owner) .non-owner-only { display: none !important; }
 .qa-sheet-option.cs-qa-disabled .qa-sheet-option-icon { background: #f1f5f9; color: #B4ADC2; }
 .cs-qa-soon-badge { margin-left: auto; font-size: 10px; font-weight: 800; letter-spacing: .3px; background: #FCE7F0; color: #E0156B; border-radius: 999px; padding: 3px 8px; flex-shrink: 0; }
 
+/* ==========================================================================
+   ADD SHEET – WORK IN PROGRESS (demande du 19/11/2026, maquette validée
+   ajout_contenu_wip_final.html) — contenu affiché à la place des 3 options normales du
+   menu "+" tant que window.ADD_CONTENT_ENABLED (tout en haut de script.js) reste à false,
+   voir window.openQuickAddSheet(). Classes préfixées "aw-" (Add sheet Work in progress),
+   toutes nouvelles — seules .qa-sheet/.qa-sheet-overlay/.qa-sheet-handle/.qa-sheet-title/
+   .qa-sheet-cancel ci-dessus sont réutilisées telles quelles (habillage général du volet,
+   déjà partagé avec le menu normal) : .qa-sheet reste donc TOUJOURS en bas d'écran sur
+   mobile comme sur ordinateur par défaut (comportement normal inchangé) — seule la variante
+   ".aw-wip" ci-dessous, posée UNIQUEMENT sur ce contenu "Coming soon", bascule en fenêtre
+   centrée sur ordinateur (voir la media query en bas de ce bloc).
+   ========================================================================== */
+.aw-banner { display: flex; gap: 12px; align-items: flex-start; background: linear-gradient(120deg, #FCE7F0, #EFE7FC); border-radius: 18px; padding: 12px 14px; margin: 12px 0 4px; }
+.aw-banner-icon { width: 36px; height: 36px; border-radius: 12px; background: #fff; display: flex; align-items: center; justify-content: center; color: #E0156B; flex-shrink: 0; }
+.aw-banner b { display: block; font-size: 14px; }
+.aw-banner p { font-size: 12.5px; color: #5F6578; line-height: 1.45; margin-top: 2px; }
+.aw-rows { margin-top: 10px; }
+/* Zones de 44px mini (demande explicite, section "Mobile") : min-height plutôt qu'une
+   hauteur fixe, pour que le texte sur 2 lignes (traduction plus longue, zoom texte du
+   visiteur...) ne soit jamais rogné. */
+.aw-row { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 44px; padding: 12px 6px; border-radius: 16px; position: relative; background: none; border: 0; cursor: default; font-family: 'Poppins', sans-serif; text-align: left; }
+.aw-row-icon { width: 44px; height: 44px; border-radius: 50%; background: #F6F4F9; display: flex; align-items: center; justify-content: center; color: #C7A3B6; flex-shrink: 0; }
+.aw-row-icon svg { width: 20px; height: 20px; }
+.aw-row-tx { flex: 1; min-width: 0; font-size: 15.5px; font-weight: 700; color: #9A97A6; }
+.aw-soon { font-size: 10px; font-weight: 800; letter-spacing: .3px; border-radius: 999px; padding: 3px 9px; background: #F1EEF6; color: #5F6578; white-space: nowrap; flex-shrink: 0; }
+/* Tremblement au tap (0,4s, demande explicite) — coupé sous prefers-reduced-motion juste en
+   dessous, voir window.openQuickAddSheet() pour où cette classe est posée/retirée. */
+.aw-shake { animation: aw-sh .4s; }
+@keyframes aw-sh { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+@media (prefers-reduced-motion: reduce) { .aw-shake { animation: none; } }
+/* Message "Coming soon — work in progress" (demande explicite, section Accessibilité) :
+   role="status"/aria-live="polite" posés directement dans le HTML (script.js) — ce bloc
+   reste normalement VIDE et invisible (hauteur 0, aucun texte), le navigateur/lecteur
+   d'écran n'a besoin que du changement de contenu texte pour l'annoncer, jamais d'une vraie
+   mise en page ici. */
+.aw-live { font-size: 12px; color: #5F6578; text-align: center; min-height: 0; }
+/* Case "I visited this place" désactivée (demande explicite, "bloque aussi les autres
+   chemins... Mark as visited ailleurs") — voir #details-visited dans map.html/son onchange
+   dans script.js. Même teinte de gris que .aw-row-tx ci-dessus, pour rester cohérent. */
+.check-item.aw-check-disabled { color: #9A97A6; cursor: default; }
+.check-item.aw-check-disabled input { accent-color: #C7A3B6; cursor: default; }
+/* Ordinateur (> 760px, demande explicite, section "Ordinateur") : fenêtre centrée au lieu du
+   bas d'écran, SEULEMENT pour ce contenu "Coming soon" (.aw-wip) — le menu normal (sans
+   cette classe) garde son comportement habituel de volet bas d'écran partout, y compris sur
+   ordinateur, exactement comme avant cet ajout. */
+@media (min-width: 761px) {
+    .qa-sheet-overlay:has(.aw-wip) { align-items: center; }
+    .qa-sheet.aw-wip { width: 440px; max-width: calc(100vw - 32px); border-radius: 26px; padding: 24px 24px 22px; box-shadow: 0 18px 40px rgba(31, 36, 48, .18); }
+    .qa-sheet.aw-wip .qa-sheet-handle { display: none; }
+    .aw-row:hover { background: #FAF8FC; }
+}
+
 /* Fenêtre unique "Add a photo"/"Add a visited place"/"Add a review" (demande du
    15/10/2026, maquette jointe "ajout_contenu_final.html") — remplace les anciennes
    règles .add-photo-* (formulaire simple "Ajouter une photo", seule option qui avait un
