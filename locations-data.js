@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-19T09:16:01.225Z.
+// Généré le 2026-11-19T21:44:48.912Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -28061,6 +28061,113 @@ window.STATIC_LOCATIONS = [
     "ytId": "",
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.oetkerhotels.com/pt/hotels/palacio-tangara/?utm_source=google&utm_medium=organic&utm_campaign=google_local_palacio_tangara"
+  },
+  {
+    "id": "new-manual-1795083217798-5kqobn",
+    "name": "Chungmu Art Center Bus Stop (ID: 02-177)",
+    "group": "BTS",
+    "member": "V",
+    "country": "South Korea",
+    "city": "Seoul",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "387 Toegye-ro, Jung-gu, Seoul, South Korea (서울특별시 중구 퇴계로 387, Bus Stop 02-177).",
+    "lat": 37.56508,
+    "lng": 127.0134,
+    "img": "images/admin-upload-new-manual-1795083217798-5kqobn-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Verify the Stop ID"
+        },
+        "text": {
+          "en": "Bus stops in Seoul have unique five-digit codes to distinguish travel directions. Make sure you are standing at stop 02-177 (on the Chungmu Art Center side of the street) to match Taehyung's exact waiting spot and board Bus 202 heading toward central Seoul."
+        }
+      },
+      {
+        "title": {
+          "en": "Tap Your Transit Card"
+        },
+        "text": {
+          "en": "Most Seoul city buses are completely cashless. Make sure you have a loaded T-money card, WOWPASS, or Climate Card ready before stepping onto Bus 202, and remember to tap off when exiting."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Sindang-dong Tteokbokki Town"
+        },
+        "text": {
+          "en": "To recreate the culinary half of Taehyung's outing, walk just a few minutes from the bus stop into the nearby Sindang-dong Tteokbokki Town—a famous alleyway packed with historic stalls serving the exact street food the group enjoyed."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Situated along Toegye-ro in the Jung-gu district, this bus stop sits directly outside the Chungmu Art Center, a major cultural complex and theater known for hosting popular musicals and performances. The stop (officially designated as ID 02-177) is a standard, everyday transit hub served by Seoul’s iconic blue trunk buses—including Route 202—which connect the eastern neighborhoods to the historic heart of the city. Located just steps away from the bustling Sindang-dong neighborhood, it is a quintessential slice of daily commuter life in Seoul.</p><!--stss:footsteps--><p>On November 12, 2026, Taehyung gave fans a candid look into a relaxed, incognito day out in Seoul via his Instagram account. Accompanied by close members of his personal staff—affectionately known as \"Team V,\" including his photographer and makeup artist—he traded private vehicles for public transit.<br><br>The group was photographed checking the bus route at the Chungmu Art Center stop before boarding the blue 202 bus. Keeping a low profile with masks and discreet framing, they enjoyed a classic local hangout, rounding out their transit adventure with Korean street food staples like tteokbokki (spicy rice cakes) and fish cakes (eomuk), followed by a group session at a local photo booth.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Seoul Subway Line 2 or Line 6 to Sindang Station. Leave via Exit 9 and walk straight for about 3 minutes toward the Chungmu Art Center to reach the bus shelter."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The street-side bus stop is accessible 24/7. Blue Bus 202 generally operates daily from roughly 4:30 AM to 11:00 PM, with a standard adult fare of 1,500 KRW (via transit card)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The bus stop is located on a wide, flat, paved sidewalk that is fully accessible for wheelchair users. Seoul's blue trunk lines, including Route 202, regularly operate low-floor buses equipped with boarding ramps and designated wheelchair spaces."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "instagramUrl": "https://www.instagram.com/p/Dfo1lojkooI/?img_index=10",
+    "officialLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1795083217798-5kqobn-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3607,
+            "y": 0.3544,
+            "member": "V"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1795083217798-5kqobn-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.5924,
+            "y": 0.3691,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "naverLink": "https://naver.me/Fx2HfrgN"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
