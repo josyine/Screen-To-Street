@@ -155,7 +155,14 @@
             createOSMTileLayer(imap).addTo(imap); // mêmes tuiles que le reste du site (script.js), sans clé API
             layer = L.layerGroup().addTo(imap);
         }
-        const meIcon = () => L.divIcon({ className: "", html: '<div class="sts-me-marker"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
+        // withHeading (demande du 19/11/2026, "le sens de direction apparaisse, comme sur
+        // Google Map... modifie juste le point de mon emplacement") : seule la pastille de
+        // GUIDAGE EN DIRECT (startGuide() plus bas) a besoin du cône de direction — celle,
+        // statique, de drawEnds() (aperçu avant de démarrer) n'a jamais de cap GPS à montrer,
+        // donc reste inchangée (meIcon() sans argument, comme avant).
+        const meIcon = (withHeading) => withHeading
+            ? L.divIcon({ className: "", html: '<div class="sts-me-wrap"><div class="sts-me-heading"></div><div class="sts-me-marker"></div></div>', iconSize: [18, 18], iconAnchor: [9, 9] })
+            : L.divIcon({ className: "", html: '<div class="sts-me-marker"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
         const toIcon = () => L.divIcon({ className: "", html: `<div class="sts-to-marker">${ICON_STORE.replace('width="18" height="18"', 'width="14" height="14"')}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
         const stopIcon = () => L.divIcon({ className: "", html: '<div class="sts-stop-marker"></div>', iconSize: [14, 14], iconAnchor: [7, 7] });
         function fit(bounds) {
@@ -362,6 +369,25 @@
         }
         function showGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.remove("hidden"); const top = $("stsItTop"); if (top) top.classList.add("guiding"); }
         function hideGuideBanner() { const b = $("stsGuideBanner"); if (b) b.classList.add("hidden"); const top = $("stsItTop"); if (top) top.classList.remove("guiding"); }
+        // AJOUT (demande du 19/11/2026, "que le sens de direction apparaisse, comme sur
+        // Google Map, afin de savoir notre orientation") : coords.heading de l'API
+        // Geolocation (degrés depuis le nord, SENS HORAIRE — exactement la convention de
+        // rotate() en CSS, aucune conversion nécessaire) n'est renseigné QUE quand l'appareil
+        // est réellement en train de se déplacer et que le GPS peut en déduire un cap — null
+        // à l'arrêt, ou si l'appareil/le navigateur ne le fournit jamais. Le cône reste alors
+        // simplement masqué plutôt que de montrer une direction au hasard. Pas de boussole/
+        // magnétomètre (DeviceOrientationEvent) ici : ça demanderait une 2de autorisation
+        // séparée (obligatoire sur iOS 13+, un prompt de plus) pour un simple ajout visuel —
+        // ce repli GPS reste déjà fiable dès qu'on marche, qui est le seul moment où ce
+        // panneau de guidage à pied est de toute façon affiché.
+        function updateHeadingCone(heading) {
+            const m = startGuide.m; if (!m || typeof m.getElement !== "function") return;
+            const el = m.getElement(); if (!el) return;
+            const cone = el.querySelector(".sts-me-heading"); if (!cone) return;
+            if (heading == null || isNaN(heading)) { cone.classList.remove("on"); return; }
+            cone.style.transform = `translate(-50%,-100%) rotate(${heading}deg)`;
+            cone.classList.add("on");
+        }
         function startGuide() {
             if (!navigator.geolocation || CFG.demo) { toast(CFG.demo ? "Guidage simulé (mode démo)" : "Localisation indisponible"); return; }
             guideIdx = 0; guideLegIdx = 0;
@@ -378,7 +404,8 @@
             if (me) { if (mode === "walk") updateGuideForWalk([me.lat, me.lon]); else updateGuideForTransit([me.lat, me.lon]); }
             watchId = navigator.geolocation.watchPosition(p => {
                 const pos = [p.coords.latitude, p.coords.longitude];
-                if (!startGuide.m) { startGuide.m = L.marker(pos, { icon: meIcon(), interactive: false, zIndexOffset: 1000 }).addTo(imap); } else startGuide.m.setLatLng(pos);
+                if (!startGuide.m) { startGuide.m = L.marker(pos, { icon: meIcon(true), interactive: false, zIndexOffset: 1000 }).addTo(imap); } else startGuide.m.setLatLng(pos);
+                updateHeadingCone(p.coords.heading);
                 imap.setView(pos, Math.max(imap.getZoom(), 18), { animate: true });
                 if (mode === "walk") updateGuideForWalk(pos); else updateGuideForTransit(pos);
                 const left = L.latLng(pos).distanceTo([to.lat, to.lon]);
