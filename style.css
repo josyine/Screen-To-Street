@@ -261,16 +261,11 @@ body { background: #E7E9EC; color: var(--text-main); height: 100vh; width: 100vw
   .place-sheet-handle { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 42px; height: 5px; border-radius: 5px; background: rgba(255,255,255,.75); z-index: 3; display: none; touch-action: none; cursor: grab; }
   .place-sheet.ps-half .place-sheet-handle { display: block; }
 
-  /* Remplace visuellement .detail-back-link (masqué ci-dessous, voir pourquoi) sur la photo
-     en plein écran du tiroir — affiché/masqué par place-sheet.js selon l'état (uniquement en
-     "full"), jamais par CSS seul. */
-  .place-sheet-backmap-btn { position: absolute; top: 16px; left: 18px; z-index: 2; color: #fff; background: rgba(20,16,30,.4); backdrop-filter: blur(6px); padding: 7px 14px; border-radius: 100px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; }
-
   /* .detail-back-link reste CELUI de la fiche normale (jamais dupliqué, voir plus haut) —
      mais "← Back to list" n'a pas de sens dans ce tiroir (on n'y arrive jamais depuis la
-     liste) : masqué dans les DEUX états, .place-sheet-backmap-btn ci-dessus le remplace
-     visuellement au même endroit, seulement en "full" (demande explicite : "le bouton Back
-     to list... devient Back to map"). */
+     liste) : masqué dans les DEUX états (demande du 21/11/2026 : plus de bouton de
+     remplacement — retour en "half" uniquement par geste, touche Échap ou bouton retour
+     du téléphone, voir place-sheet.js). */
   .place-sheet .detail-back-link { display: none; }
 
   /* État "half" (demande explicite, section 3) : photo réduite à ~190px (coins assortis au
