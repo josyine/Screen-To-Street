@@ -1044,7 +1044,13 @@ const INSTAGRAM_EMBED_MAX_WIDTH_PX = 400;
 // plus court que prévu, seule une marge plus généreuse protège contre le chevauchement.
 // Beaucoup plus large cette fois (120px) — un peu d'espace vide sous un post déjà haut reste
 // largement préférable à un 5e signalement du même chevauchement.
-const INSTAGRAM_EMBED_FOOTER_BUFFER_PX = 120;
+// BUG corrigé (demande du 21/11/2026, "la marge blanche des sections d'un post Instagram
+// embeded est trop grande en bas") : à l'inverse des 4 signalements précédents, 120px
+// laissait maintenant un bandeau vide nettement visible sous le bandeau "Voir plus sur
+// Instagram" lui-même (haut d'environ 50-55px) pour la plupart des posts. Ramené à 68px —
+// toujours au-dessus des 60px déjà signalés insuffisants une fois (30/10/2026), mais sans la
+// marge de sécurité disproportionnée de 120px.
+const INSTAGRAM_EMBED_FOOTER_BUFFER_PX = 68;
 if (!window.__igEmbedResizeWired) {
     window.__igEmbedResizeWired = true;
     window.addEventListener('message', (e) => {

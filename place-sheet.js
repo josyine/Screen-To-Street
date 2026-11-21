@@ -23,7 +23,6 @@
     const sheet = document.getElementById('place-sheet');
     const veil = document.getElementById('place-sheet-veil');
     const handle = document.getElementById('place-sheet-handle');
-    const backMapBtn = document.getElementById('place-sheet-backmap-btn');
     const detailsEl = document.getElementById('sidebar-details');
 
     // Page sans ce tiroir (ex: script partagé chargé ailleurs par erreur) — repli silencieux
@@ -62,7 +61,6 @@
         sheet.classList.add('ps-' + next);
         sheet.style.transform = ''; // laisse la classe + la transition CSS reprendre la main (plus de suivi au doigt)
         sheet.setAttribute('aria-hidden', next === 'closed' ? 'true' : 'false');
-        if (backMapBtn) backMapBtn.classList.toggle('hidden', next !== 'full');
         setBottomNavHidden(next === 'full');
         veil.classList.toggle('on', next === 'full');
         veil.style.opacity = '';
@@ -96,7 +94,7 @@
     // niveaux, donc 2 pressions du bouton retour du téléphone pour revenir où on en était
     // avant le tout premier tap sur "View". inPopstateSync distingue un popstate RÉEL (tap de
     // la personne sur le bouton retour) de celui, synthétique, que history.back() ci-dessous
-    // déclenche lui-même quand ON ferme/recule par geste ou bouton "Back to map".
+    // déclenche lui-même quand ON ferme/recule par geste.
     const ORDER = { closed: 0, half: 1, full: 2 };
     function goTo(next) {
         if (next === state) return;
@@ -125,7 +123,6 @@
         if ((e.key === 'Enter' || e.key === ' ') && state === 'half') { e.preventDefault(); goTo('full'); }
     });
     handle.addEventListener('click', () => { if (state === 'half') goTo('full'); });
-    if (backMapBtn) backMapBtn.addEventListener('click', (e) => { e.preventDefault(); if (state === 'full') goTo('half'); });
 
     // ---------- ouverture ----------
     function reparentIntoSheet() {
