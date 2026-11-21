@@ -7721,7 +7721,13 @@ function showMapHoverTip(loc, marker) {
         detailBtn.onclick = (e) => {
             e.stopPropagation();
             hideMapHoverTip();
-            openLocationOrPickGroup(loc);
+            // AJOUT SITE (demande du 19/11/2026, "sur mobile uniquement, un clic sur View
+            // n'ouvre plus la page directement... tiroir glissant") : window.
+            // __openLocationMobileAware (place-sheet.js) décide seul, selon la largeur
+            // d'écran au moment du clic, d'ouvrir ce tiroir (mobile) ou la fiche classique
+            // (ordinateur, identique à avant) — voir sa propre définition pour le détail.
+            // Repli sur openLocationOrPickGroup() si ce fichier n'est pas chargé.
+            (window.__openLocationMobileAware || openLocationOrPickGroup)(loc);
         };
     }
     // Bouton "Itinéraire" (demande du 05/10/2026) : ouvre le panneau d'itinéraire à pied/
@@ -7824,7 +7830,11 @@ function addSingleLocationMarker(loc) {
         if (isMobileMapViewport()) {
             if (mobileTapArmedLocId === loc.id) {
                 hideMapHoverTip();
-                openLocationOrPickGroup(loc);
+                // AJOUT SITE (demande du 19/11/2026) : même raccourci que le bouton "Voir"
+                // ci-dessus (voir son propre commentaire, et window.__openLocationMobileAware
+                // dans place-sheet.js) — un double-tap direct sur le marqueur doit ouvrir le
+                // même tiroir que "Voir", pas la fiche en plein écran directement.
+                (window.__openLocationMobileAware || openLocationOrPickGroup)(loc);
             } else {
                 mobileTapArmedLocId = loc.id;
                 showMapHoverTip(loc, marker);
