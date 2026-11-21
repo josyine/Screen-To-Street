@@ -3799,13 +3799,19 @@ window.addEventListener('firebase-ready', async (e) => {
                 } catch (err) { /* tant pis, le filtre "vérifié uniquement" reste inactif */ }
             })(),
             // Rattrapage badges -> visitedLocs (demande du 19/11/2026, voir le commentaire de
-            // reconcileVisitedLocsFromBadges() plus bas) : scopé à #visit-container comme les
-            // autres lectures ci-dessus (même raison perf) — une fois rattrapé ici, l'écriture
-            // dans visitedLocs (localStorage + Firestore) profite ensuite à toutes les pages
-            // qui le lisent (profile.html, map.html...), sans qu'elles aient besoin de répéter
-            // ce même rattrapage chacune de leur côté.
+            // reconcileVisitedLocsFromBadges() plus bas).
+            // BUG corrigé (demande du 21/11/2026, "l'Autriche n'est toujours pas coloriée alors
+            // que j'ai plusieurs badges provenants d'Autriche") : ce rattrapage n'était scopé
+            // qu'à #visit-container (visited.html) — en pratique, quelqu'un qui n'utilise que
+            // la carte principale (map.html, où ce coloriage de pays "Show visited" s'affiche
+            // aussi, voir renderVisitedCountryOverlays() plus bas) pouvait ne JAMAIS ouvrir
+            // visited.html, donc ce rattrapage ne tournait alors jamais pour ce compte — le
+            // commentaire d'origine supposait à tort que ça finirait toujours par arriver.
+            // Étendu à #map en plus de #visit-container : même écriture (localStorage +
+            // Firestore), donc aucun risque de double-écriture si les deux pages l'exécutaient
+            // un jour la même session.
             (async () => {
-                if (!document.getElementById('visit-container') || typeof reconcileVisitedLocsFromBadges !== 'function') return;
+                if (!(document.getElementById('visit-container') || document.getElementById('map')) || typeof reconcileVisitedLocsFromBadges !== 'function') return;
                 try { await reconcileVisitedLocsFromBadges(); } catch (err) { /* tant pis, rattrapé à une prochaine session */ }
             })(),
         ]);
@@ -14284,6 +14290,16 @@ async function reconcileVisitedLocsFromBadges() {
     localStorage.setItem('visitedLocs', JSON.stringify(list));
     syncVisited(list);
     if (typeof window.refreshVisitedFromCloud === 'function') window.refreshVisitedFromCloud();
+    // map.html (demande du 21/11/2026, voir le commentaire sur le garde #map ajouté à
+    // l'appel de cette fonction) : contrairement à visited.html, cette page n'expose pas
+    // window.refreshVisitedFromCloud — sans ce bloc, le rattrapage ci-dessus écrirait bien
+    // visitedLocs, mais l'onglet "Visited"/coloriage de pays déjà affiché à l'écran (ouvert
+    // AVANT que ce rattrapage asynchrone ne se termine) resterait figé sur son rendu
+    // précédent jusqu'au prochain re-rendu manuel (changer d'onglet puis revenir).
+    if (typeof visitedOnlyMapMode !== 'undefined' && visitedOnlyMapMode && typeof renderVisitedTabList === 'function') {
+        renderVisitedTabList({ worldView: visitedWorldViewMode });
+        renderVisitedCountryOverlays();
+    }
 }
 
 async function unlockBadgeForLocation(loc) {
