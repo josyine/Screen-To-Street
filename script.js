@@ -10609,7 +10609,14 @@ function wireLocationEditPhotoInputOnce(modal) {
         errorEl.classList.add('hidden');
         btn.disabled = true;
         try {
-            const resized = await fileToResizedDataUrl(file, 1200);
+            // BUG corrigé (demande du 22/11/2026, "la qualité des images... très
+            // pixellisé") : qualité JPEG jamais relevée ici contrairement à Mei's Pictures/
+            // Community (voir resizeTripCoverDataUrl() plus bas, correctif du 24/10/2026) —
+            // sans quality explicite, ce champ retombait sur le 0.7 par défaut pensé pour la
+            // couverture de voyage (gros document partagé users/{uid}), alors que cette photo
+            // d'en-tête vit comme elles dans un document PAR LIEU (locationContent), bien plus
+            // petit : même marge de sécurité, même qualité relevée à 0.8.
+            const resized = await fileToResizedDataUrl(file, 1200, 0.8);
             window.openImageCropModal(resized, (cropped) => {
                 if (cropped === null) return; // cropping cancelled — leave any previous photo untouched
                 locationEditPendingImg = cropped;
@@ -10678,7 +10685,10 @@ function wireLocationEditStoryImageInputOnce(modal) {
         errorEl.classList.add('hidden');
         addBtn.disabled = true;
         try {
-            const resized = await fileToResizedDataUrl(file, 1200);
+            // Même correctif de qualité que le champ "Header photo" juste au-dessus
+            // (demande du 22/11/2026) — cette image "Story" vit elle aussi dans
+            // locationContent, par lieu.
+            const resized = await fileToResizedDataUrl(file, 1200, 0.8);
             window.openImageCropModal(resized, (cropped) => {
                 if (cropped === null) return; // cropping cancelled — nothing added
                 locationEditPendingStoryImage = cropped;
@@ -11868,7 +11878,11 @@ if (memoryPhotoInput) {
         // 08/09/2026, compte "josyine") : le document dépassait la limite de 1 Mo de
         // Firestore au moment d'écrire l'avis public dans locationReviews.
         try {
-            pendingMemoryPhoto = await fileToResizedDataUrl(file, 700);
+            // Qualité relevée à 0.8 (demande du 22/11/2026, "la qualité des images...
+            // très pixellisé") — locationReviews est elle aussi un document PAR AVIS,
+            // même marge de sécurité que Mei's Pictures/Community (correctif du
+            // 24/10/2026) et la photo d'en-tête d'un lieu (correctif juste au-dessus).
+            pendingMemoryPhoto = await fileToResizedDataUrl(file, 700, 0.8);
             const preview = document.getElementById('memory-photo-preview');
             const previewImg = document.getElementById('memory-photo-preview-img');
             const removeBtn = document.getElementById('memory-photo-remove');
