@@ -331,8 +331,8 @@ window.createPhotoGalleryField = function (container, opts) {
     let photos = (Array.isArray(opts.values) ? opts.values : [])
         .filter(Boolean)
         .map(entry => typeof entry === 'string'
-            ? { url: entry, markers: [] }
-            : { url: entry.url || '', markers: Array.isArray(entry.markers) ? entry.markers.filter(m => m && typeof m.x === 'number' && typeof m.y === 'number') : [] })
+            ? { url: entry, markers: [], format: 'portrait' }
+            : { url: entry.url || '', markers: Array.isArray(entry.markers) ? entry.markers.filter(m => m && typeof m.x === 'number' && typeof m.y === 'number') : [], format: recreatedPhotoFormat(entry) })
         .filter(p => p.url);
     // groupName (demande du 15/10/2026) : le réalisateur du marqueur a besoin de savoir quel
     // groupe proposer dans le <select> "qui est-ce ?" (memberOptionsForGroup()) — lu via un
@@ -388,11 +388,17 @@ window.createPhotoGalleryField = function (container, opts) {
             img.addEventListener('click', () => {
                 if (typeof window.openImageCropModal !== 'function') return;
                 const idx = Number(img.dataset.index);
-                window.openImageCropModal(photos[idx].url, (cropped) => {
+                // showFormatPicker/initialFormat (demande du 22/11/2026, "3 formats de posts :
+                // portrait, carré, paysage") : rouvrir cette photo propose les 3 formats
+                // Instagram, présélectionné sur son format ACTUEL — permet de changer de format
+                // sans forcément recadrer (bouton "Skip cropping" conserve alors l'image telle
+                // quelle, juste avec le nouveau format choisi pour l'affichage public).
+                window.openImageCropModal(photos[idx].url, (cropped, format) => {
                     if (cropped === null) return; // Cancel — ne touche pas à la photo existante
                     photos[idx].url = cropped;
+                    photos[idx].format = format || photos[idx].format || 'portrait';
                     render();
-                });
+                }, { showFormatPicker: true, initialFormat: photos[idx].format });
             });
         });
 
@@ -405,7 +411,7 @@ window.createPhotoGalleryField = function (container, opts) {
         container.querySelector('.pg-url-confirm-btn').addEventListener('click', () => {
             const val = urlInput.value.trim();
             if (!val) return;
-            photos.push({ url: val, markers: [] });
+            photos.push({ url: val, markers: [], format: 'portrait' });
             render();
         });
 
@@ -434,15 +440,20 @@ window.createPhotoGalleryField = function (container, opts) {
                         reader.readAsDataURL(file);
                     });
                 // Recadrage après upload (demande du 23/09/2026) — voir
-                // window.openImageCropModal() plus bas dans ce fichier.
+                // window.openImageCropModal() plus bas dans ce fichier. showFormatPicker
+                // (demande du 22/11/2026, "3 formats de posts : portrait, carré, paysage... je
+                // veux pouvoir upload une image dans l'un de ces 3 formats") : seule CETTE
+                // galerie propose le choix de format — les autres champs photo du site (header
+                // photo, photo de référence Mei...) partagent le même modal mais gardent leur
+                // recadrage libre inchangé, cette option n'étant jamais passée pour eux.
                 if (typeof window.openImageCropModal === 'function') {
-                    window.openImageCropModal(resized, (cropped) => {
+                    window.openImageCropModal(resized, (cropped, format) => {
                         if (cropped === null) return; // cropping cancelled — don't add this photo
-                        photos.push({ url: cropped, markers: [] });
+                        photos.push({ url: cropped, markers: [], format: format || 'portrait' });
                         render();
-                    });
+                    }, { showFormatPicker: true });
                 } else {
-                    photos.push({ url: resized, markers: [] });
+                    photos.push({ url: resized, markers: [], format: 'portrait' });
                     render();
                 }
             } catch (err) {
@@ -455,14 +466,23 @@ window.createPhotoGalleryField = function (container, opts) {
     render();
 
     return {
-        // Format allégé (demande du 03/10/2026, conservé pour les marqueurs) : une photo
-        // sans aucun membre tagué reste une simple chaîne, comme avant ce changement (aucune
-        // migration nécessaire pour les lieux existants) — seules les photos avec au moins
-        // un marqueur deviennent un objet {url, markers}.
-        collect: () => photos.map(p => p.markers.length ? { url: p.url, markers: p.markers } : p.url),
+        // Format allégé (demande du 03/10/2026, conservé pour les marqueurs ; étendu au
+        // format Instagram le 22/11/2026) : une photo sans aucun membre tagué ET au format
+        // "portrait" par défaut reste une simple chaîne, comme avant ces deux changements
+        // (aucune migration nécessaire pour les lieux existants) — seule une photo avec au
+        // moins un marqueur et/ou un format non-défaut devient un objet {url, markers?, format?}.
+        collect: () => photos.map(p => {
+            const hasMarkers = p.markers.length > 0;
+            const hasFormat = p.format && p.format !== 'portrait';
+            if (!hasMarkers && !hasFormat) return p.url;
+            const out = { url: p.url };
+            if (hasMarkers) out.markers = p.markers;
+            if (hasFormat) out.format = p.format;
+            return out;
+        }),
         // Utilisé par le bouton "Generate with Mei" (admin.html) pour ajouter directement
         // une image générée, sans passer par le champ URL/upload manuel ci-dessus.
-        addPhoto: (url) => { photos.push({ url, markers: [] }); render(); }
+        addPhoto: (url) => { photos.push({ url, markers: [], format: 'portrait' }); render(); }
     };
 };
 
@@ -476,16 +496,21 @@ window.createPhotoGalleryField = function (container, opts) {
 // window.openImageCropModal() plus bas dans ce fichier (overlay plein écran, carte blanche
 // centrée) pour rester cohérent.
 // IMPORTANT pour la précision du placement : la photo est affichée ici exactement comme
-// sur la fiche lieu publique (width:100%; height:340px; object-fit:cover — voir
-// .recreate-photo-gallery .recreate-photo-item img dans style.css) afin que la position
-// cliquée ici (en % de CETTE boîte) tombe exactement au même endroit une fois publiée, et
-// pas décalée par un recadrage object-fit différent entre les deux vues.
-// `photo` est l'objet {url, markers} lui-même (pas une copie) : les mutations ci-dessous
-// modifient donc directement l'entrée de window.createPhotoGalleryField(), onClose()
-// (appelé seulement à la fermeture) ne sert qu'à rafraîchir la vignette/le badge compteur.
+// sur la fiche lieu publique (width:100%; aspect-ratio selon le FORMAT de cette photo,
+// object-fit:cover — voir .recreate-photo-gallery .recreate-photo-item img dans style.css
+// et RECREATE_PHOTO_ASPECT_RATIO plus haut dans ce fichier) afin que la position cliquée ici
+// (en % de CETTE boîte) tombe exactement au même endroit une fois publiée, quel que soit le
+// format (portrait/carré/paysage, demande du 22/11/2026) — un ratio FIXE ici (340px de haut,
+// pensé seulement pour l'ancien format portrait unique) décalerait les marqueurs d'une photo
+// carrée ou paysage par rapport à son rendu public réel.
+// `photo` est l'objet {url, markers, format} lui-même (pas une copie) : les mutations
+// ci-dessous modifient donc directement l'entrée de window.createPhotoGalleryField(),
+// onClose() (appelé seulement à la fermeture) ne sert qu'à rafraîchir la vignette/le badge
+// compteur.
 function openPhotoMemberMarkersModal(photo, groupName, onClose) {
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed; inset:0; z-index:11100; background:rgba(20,16,30,0.55); display:flex; align-items:center; justify-content:center; padding:20px;';
+    const photoRatio = RECREATE_PHOTO_ASPECT_RATIO[recreatedPhotoFormat(photo)];
     overlay.innerHTML = `
         <div style="background:#fff; border-radius:16px; padding:18px; max-width:420px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,.3);">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
@@ -493,7 +518,7 @@ function openPhotoMemberMarkersModal(photo, groupName, onClose) {
                 <button type="button" class="pmm-close" style="background:none; border:none; font-size:20px; line-height:1; color:#94a3b8; cursor:pointer;">&times;</button>
             </div>
             <div class="pmm-hint" style="font-size:11px; color:#94a3b8; margin-bottom:10px; font-family:'Poppins',sans-serif;">Click "Add a member" below, then click the exact spot on the photo. Drag a marker to move it.</div>
-            <div class="pmm-photo-wrap" style="position:relative; width:100%; height:340px; border-radius:12px; overflow:hidden; background:#111;">
+            <div class="pmm-photo-wrap" style="position:relative; width:100%; aspect-ratio:${photoRatio}; border-radius:12px; overflow:hidden; background:#111;">
                 <img class="pmm-photo-img" src="${escapeHtml(photo.url)}" alt="" style="width:100%; height:100%; object-fit:cover; display:block; -webkit-user-select:none; user-select:none; pointer-events:none;">
             </div>
             <button type="button" class="pmm-add-btn" style="margin-top:12px; background:#faf9fc; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; font-size:11.5px; font-weight:700; color:#64748b; cursor:pointer; font-family:'Poppins',sans-serif;">+ Add a member</button>
@@ -629,6 +654,16 @@ function recreatedPhotoMarkers(entry) {
         ? entry.markers.filter(m => m && typeof m.x === 'number' && typeof m.y === 'number' && m.member)
         : [];
 }
+// Format Instagram de la photo (demande du 22/11/2026, "il y a 3 formats de posts :
+// portrait, carré, paysage... je veux pouvoir upload une image dans l'un de ces 3
+// formats") — "portrait" (4:5, le comportement d'ORIGINE, seul format possible jusqu'ici)
+// reste la valeur par défaut pour toute photo jamais retouchée depuis (simple chaîne, ou
+// objet sans champ format). Mêmes 3 ratios que les vrais formats de post Instagram.
+function recreatedPhotoFormat(entry) {
+    const f = (entry && typeof entry === 'object') ? entry.format : null;
+    return (f === 'square' || f === 'landscape') ? f : 'portrait';
+}
+const RECREATE_PHOTO_ASPECT_RATIO = { portrait: '4 / 5', square: '1 / 1', landscape: '1.91 / 1' };
 // Marqueur positionné en % de la boîte de la photo (comme la photo elle-même en
 // object-fit:cover, une position relative reste juste quelle que soit la taille
 // d'affichage réelle) — un simple bouton blanc (demande du 15/10/2026, remplace l'icône
@@ -9181,8 +9216,13 @@ function renderLocationRichContent(loc) {
             recreateGallery.innerHTML = recreatePhotos.map((entry, i) => {
                 const url = recreatedPhotoUrl(entry);
                 const markers = recreatedPhotoMarkers(entry);
+                // Format Instagram de CETTE photo (demande du 22/11/2026) — l'aspect-ratio
+                // inline l'emporte sur la règle CSS .recreate-photo-item img (4/5, conservée
+                // comme repli pour un affichage qui n'y passerait jamais, ex: ancien code mis en
+                // cache) : chaque photo garde son propre format, pas un seul pour toute la galerie.
+                const ratio = RECREATE_PHOTO_ASPECT_RATIO[recreatedPhotoFormat(entry)];
                 return `<div class="recreate-photo-item">
-                    <img src="${escapeHtml(url)}" alt="">
+                    <img src="${escapeHtml(url)}" alt="" style="aspect-ratio:${ratio};">
                     ${markers.map((mk, mi) => memberMarkerButtonHtml(mk, 'detail-' + i + '-' + mi)).join('')}
                 </div>`;
             }).join('');
@@ -10390,18 +10430,41 @@ function loadCropperScriptOnce() {
 // dataUrl : la photo tout juste importée (déjà redimensionnée/compressée, voir
 // fileToResizedDataUrl/resizeTripCoverDataUrl ci-dessus — le recadrage travaille dessus,
 // pas besoin d'un second passage de compression après coup, getCroppedCanvas() suffit).
-// onDone(resultDataUrl) : appelé avec la photo recadrée (bouton "Apply crop"), la photo
-// D'ORIGINE inchangée (bouton "Skip cropping" — le recadrage reste optionnel), ou `null`
-// (bouton "Cancel" — l'appelant doit alors ne RIEN changer à son état précédent, mais est
-// bien rappelé pour pouvoir terminer proprement son propre flux, ex: réactiver un bouton
-// "Uploading…" resté désactivé).
-window.openImageCropModal = async function (dataUrl, onDone) {
+// onDone(resultDataUrl, format) : appelé avec la photo recadrée (bouton "Apply crop"), la
+// photo D'ORIGINE inchangée (bouton "Skip cropping" — le recadrage reste optionnel), ou
+// `null` (bouton "Cancel" — l'appelant doit alors ne RIEN changer à son état précédent, mais
+// est bien rappelé pour pouvoir terminer proprement son propre flux, ex: réactiver un bouton
+// "Uploading…" resté désactivé). `format` ('portrait'/'square'/'landscape') n'est présent que
+// si opts.showFormatPicker était posé — les appelants qui ignorent ce 2e argument (header
+// photo, photo de référence Mei...) ne sont pas affectés.
+//
+// opts.showFormatPicker (demande du 22/11/2026, "il y a 3 formats de posts sur Instagram :
+// portrait, carré et paysage... je veux pouvoir upload une image dans l'un de ces 3
+// formats") : SEULE la galerie "Mei's Pictures" (window.createPhotoGalleryField()) passe
+// cette option — les autres champs photo du site partagent ce même modal mais gardent leur
+// recadrage libre inchangé (pas de bandeau de formats, pas d'aspectRatio forcé sur le
+// cropper), cette option n'étant jamais posée pour eux. opts.initialFormat présélectionne le
+// bouton correspondant (ex: on rouvre une photo déjà au format "landscape").
+window.openImageCropModal = async function (dataUrl, onDone, opts) {
+    opts = opts || {};
+    const showFormatPicker = !!opts.showFormatPicker;
+    let selectedFormat = (opts.initialFormat === 'square' || opts.initialFormat === 'landscape') ? opts.initialFormat : 'portrait';
     let cropper = null;
     const overlay = document.createElement('div');
     overlay.style.cssText = 'position:fixed; inset:0; z-index:11000; background:rgba(20,16,30,0.55); display:flex; align-items:center; justify-content:center; padding:20px;';
+    // Mêmes 3 ratios que recreatedPhotoFormat()/RECREATE_PHOTO_ASPECT_RATIO plus haut dans ce
+    // fichier (les vrais formats de post Instagram) — un seul bandeau de 3 boutons, masqué
+    // entièrement si showFormatPicker est faux (voir ci-dessus).
+    const formatPickerHtml = !showFormatPicker ? '' : `
+        <div class="crop-format-row" style="display:flex; gap:6px; margin-bottom:12px;">
+            <button type="button" class="crop-format-btn" data-format="portrait" style="flex:1; border-radius:8px; padding:7px 6px; font-size:11.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Portrait 4:5</button>
+            <button type="button" class="crop-format-btn" data-format="square" style="flex:1; border-radius:8px; padding:7px 6px; font-size:11.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Square 1:1</button>
+            <button type="button" class="crop-format-btn" data-format="landscape" style="flex:1; border-radius:8px; padding:7px 6px; font-size:11.5px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer;">Landscape</button>
+        </div>`;
     overlay.innerHTML = `
         <div style="background:#fff; border-radius:16px; padding:18px; max-width:520px; width:100%; box-shadow:0 20px 50px rgba(0,0,0,.3);">
             <div style="font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; margin-bottom:12px; color:#1e293b;">Crop photo</div>
+            ${formatPickerHtml}
             <div style="max-height:60vh; overflow:hidden; background:#111; border-radius:10px;">
                 <img id="crop-modal-img" src="${dataUrl}" style="display:block; max-width:100%;">
             </div>
@@ -10414,14 +10477,37 @@ window.openImageCropModal = async function (dataUrl, onDone) {
     `;
     document.body.appendChild(overlay);
 
+    // Ratio Cropper.js (largeur/hauteur, un nombre) — RECREATE_PHOTO_ASPECT_RATIO stocke des
+    // chaînes CSS ("4 / 5") pour la propriété aspect-ratio, converties ici en nombre.
+    const CROP_FORMAT_RATIO = { portrait: 4 / 5, square: 1, landscape: 1.91 };
+    function paintFormatButtons() {
+        if (!showFormatPicker) return;
+        overlay.querySelectorAll('.crop-format-btn').forEach((btn) => {
+            const active = btn.dataset.format === selectedFormat;
+            btn.style.border = active ? '1.5px solid #D42759' : '1.5px solid #e2e8f0';
+            btn.style.background = active ? '#FCE7F0' : '#fff';
+            btn.style.color = active ? '#D42759' : '#64748b';
+        });
+    }
+    if (showFormatPicker) {
+        paintFormatButtons();
+        overlay.querySelectorAll('.crop-format-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                selectedFormat = btn.dataset.format;
+                paintFormatButtons();
+                if (cropper) cropper.setAspectRatio(CROP_FORMAT_RATIO[selectedFormat]);
+            });
+        });
+    }
+
     const cleanup = () => {
         if (cropper) { cropper.destroy(); cropper = null; }
         overlay.remove();
     };
     overlay.querySelector('#crop-modal-cancel').addEventListener('click', () => { cleanup(); onDone(null); });
-    overlay.querySelector('#crop-modal-skip').addEventListener('click', () => { cleanup(); onDone(dataUrl); });
+    overlay.querySelector('#crop-modal-skip').addEventListener('click', () => { cleanup(); onDone(dataUrl, selectedFormat); });
     overlay.querySelector('#crop-modal-apply').addEventListener('click', () => {
-        if (!cropper) { cleanup(); onDone(dataUrl); return; }
+        if (!cropper) { cleanup(); onDone(dataUrl, selectedFormat); return; }
         // Recadrer une photo DÉJÀ publiée (demande du 03/10/2026) — contrairement à l'import,
         // qui ne travaille toujours que sur une dataURL fraîchement lue en local, cliquer une
         // vignette existante (voir window.createPhotoGalleryField()) peut pointer vers une URL
@@ -10461,13 +10547,18 @@ window.openImageCropModal = async function (dataUrl, onDone) {
             window.alert("This photo couldn't be cropped (the source doesn't allow it) — it was left unchanged.");
         }
         cleanup();
-        onDone(result);
+        onDone(result, selectedFormat);
     });
 
     try {
         await loadCropperScriptOnce();
         const imgEl = overlay.querySelector('#crop-modal-img');
-        cropper = new window.Cropper(imgEl, { viewMode: 1, autoCropArea: 1, background: false, responsive: true });
+        // aspectRatio seulement si showFormatPicker (demande du 22/11/2026) : les autres
+        // champs photo du site gardent leur recadrage entièrement libre, inchangé.
+        cropper = new window.Cropper(imgEl, Object.assign(
+            { viewMode: 1, autoCropArea: 1, background: false, responsive: true },
+            showFormatPicker ? { aspectRatio: CROP_FORMAT_RATIO[selectedFormat] } : {}
+        ));
     } catch (err) {
         // Cropper.js indisponible (CDN bloqué...) : on ne bloque jamais l'upload pour
         // autant, les boutons Skip/Apply(=Skip ici, faute de cropper) restent utilisables.
