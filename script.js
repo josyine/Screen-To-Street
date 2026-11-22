@@ -9272,16 +9272,28 @@ function renderLocationRichContent(loc) {
     // "Open in Naver" (demande du 19/11/2026, "pour tous les lieux... à côté du bouton Open
     // in Google Maps un bouton Open in Naver... lors de la création d'un lieu, ou de la
     // modification") — même traitement que "Learn more" juste au-dessus : bouton jumeau de
-    // #details-map-link (.gmaps-btn), masqué tant que loc.naverLink n'est pas renseigné
-    // (admin.html/ensureLocationEditModal ci-dessous) — jamais généré automatiquement ici à
-    // partir des coordonnées, contrairement à Google Maps : Naver n'a pas d'équivalent
-    // fiable d'URL de recherche "lat,lng" universel sans clé API, donc un lien direct fourni
-    // par l'admin (ou trouvé par l'agent IA pour les nouvelles soumissions) reste le seul
-    // moyen correct d'ouvrir CE lieu précis sur Naver.
+    // #details-map-link (.gmaps-btn), loc.naverLink (admin.html/ensureLocationEditModal
+    // ci-dessous) reste PRIORITAIRE quand l'admin en a saisi un à la main (fiche Naver
+    // précise d'un commerce, avec avis/photos).
+    // BUG corrigé (demande du 22/11/2026, "ajoute les liens Naver pour tous les lieux en
+    // Corée du Sud" — 145 lieux sans naverLink) : contrairement à ce qu'affirmait ce
+    // commentaire jusqu'ici, Naver n'a PAS BESOIN d'un lien direct fourni à la main pour
+    // CHAQUE lieu — vérifié (guide.ncloud-docs.com/docs/en/maps-url-scheme) que le SEUL
+    // format officiel par coordonnées lat/lng (nmap://place?lat=...&lng=...) est un lien
+    // d'app MOBILE uniquement (ne fait rien sur ordinateur ou sans l'app Naver Map
+    // installée) — mais map.naver.com/p/search/{texte} est un vrai moteur de recherche WEB,
+    // utilisable par n'importe quel visiteur comme le lien Google Maps. loc.address (une
+    // vraie adresse coréenne déjà vérifiée, affichée telle quelle dans "Address" sur cette
+    // même fiche) y est bien plus fiable qu'un nom de lieu potentiellement traduit/anglicisé
+    // — repli automatique UNIQUEMENT pour les lieux en Corée du Sud (un lien Naver n'a pas
+    // de sens ailleurs, ce service n'indexant pas vraiment le reste du monde).
     const naverBtn = document.getElementById('details-naver-link');
     if (naverBtn) {
         if (loc.naverLink) {
             naverBtn.href = loc.naverLink;
+            naverBtn.classList.remove('hidden');
+        } else if (loc.country === 'South Korea' && loc.address) {
+            naverBtn.href = `https://map.naver.com/p/search/${encodeURIComponent(loc.address)}`;
             naverBtn.classList.remove('hidden');
         } else {
             naverBtn.classList.add('hidden');
