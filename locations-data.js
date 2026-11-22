@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-21T20:12:42.596Z.
+// Généré le 2026-11-22T08:37:56.902Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -28170,6 +28170,212 @@ window.STATIC_LOCATIONS = [
     "naverLink": "https://naver.me/Fx2HfrgN"
   },
   {
+    "id": "new-manual-1795300637924-9xgx9g",
+    "name": "Wanrong Nainaijia (碗容奶奶家高雄店)",
+    "group": "BTS",
+    "member": "J-Hope, Jimin, Jungkook",
+    "country": "Taiwan",
+    "category": "Landmark",
+    "year": "2026",
+    "address": "No. 1, Lane 69, Gushan 2nd Rd, Gushan District, Kaohsiung City, 804, Taiwan (高雄市鼓山區鼓山二路69巷1號).",
+    "lat": 22.6338954,
+    "lng": 120.2827091,
+    "img": "images/admin-upload-new-manual-1795300637924-9xgx9g-photo.jpg",
+    "city": "Kaohsiung",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Bring Cash Only"
+        },
+        "text": {
+          "en": "The shop strictly accepts cash (New Taiwan Dollars / TWD). Credit cards and mobile payments are not accepted, so make sure to visit an ATM before heading over."
+        }
+      },
+      {
+        "title": {
+          "en": "Hunt for the Cat Motifs"
+        },
+        "text": {
+          "en": "To pick up the same style of souvenirs as the members, scan the shelves for their cat-patterned plates, spoons, and drinking glasses."
+        }
+      },
+      {
+        "title": {
+          "en": "Pack for Fragile Goods"
+        },
+        "text": {
+          "en": "Prices here are exceptionally low—for reference, two plates and two spoons cost around 190 TWD (roughly €5.50 / 920 JPY). Because it is easy to get carried away buying ceramics at these prices, bring a sturdy tote bag and ask for extra newspaper wrapping if you plan to pack them in your suitcase."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Tucked away in a quiet, nostalgic alleyway of Kaohsiung's Gushan District, 碗容奶奶家高雄店 (Wanrong Nainaijia) is a charming independent shop specializing in Japanese-style ceramics, vintage tableware, and everyday kitchenware. Housed in a renovated older building with retro wooden display cases, the neighborhood store is beloved for its warm, unpretentious atmosphere and remarkably affordable prices. Its shelves are packed with practical and whimsical bowls, plates, glasses, and utensils, making it a hidden gem for locals and travelers looking for authentic, budget-friendly souvenirs.</p><!--stss:footsteps--><p>During BTS's stay in Kaohsiung in November 2026, J-Hope, Jimin, and Jungkook took a break from their schedules to explore the local neighborhoods and shop for tableware. J-Hope documented the outing on his official Instagram account, sharing photos from inside the retro shop.<br><br>According to accounts of their visit, the members were drawn to the store's playful, cat-themed ceramics, purchasing an assortment of spoons, plates, and glasses featuring cat motifs. The casual shopping trip highlights the members' grounded, everyday side—trading luxury boutiques for a traditional local store and finding joy in simple, charming household items.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Kaohsiung Light Rail (LRT) directly to Gushan District Office Station (鼓山區公所站), which is only a 3-minute walk (about 210 meters) from the shop. Note that there is no parking inside the narrow alley, so drivers should park along Gushan 2nd Road and walk in."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from 10:30 AM to 6:00 PM. Free to enter and browse. (Check their official Instagram @grandmas_house_kaohsiung for occasional unscheduled closures)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Located inside a narrow residential alleyway in a renovated older building, the shop features tight aisles lined with fragile ceramic displays, which can make maneuvering difficult for wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "episodeLink": "",
+    "naverLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "instagramUrls": [
+      "https://www.instagram.com/reel/Df-LJ0Khy5d/?dmpr=dDhlcmd2dzVodTdw"
+    ],
+    "instagramUrl": "https://www.instagram.com/p/Df9uZmGGlJ7/?img_index=15&hvrq=MWR3amFrcTNpcGcwNA%3D%3D",
+    "imgCredit": "AI-generated illustrative image",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1795300637924-9xgx9g-recreated-0.jpg",
+        "markers": [
+          {
+            "y": 0.6221,
+            "member": "J-Hope",
+            "x": 0.3177
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1795300637924-9xgx9g-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.2109,
+            "y": 0.675,
+            "member": "Jungkook"
+          }
+        ]
+      }
+    ],
+    "officialLink": "https://www.instagram.com/grandmas_house_kaohsiung/"
+  },
+  {
+    "id": "new-manual-1795302341113-effp5p",
+    "name": "Hsin Yi Golf Club (信誼高爾夫球場)",
+    "group": "BTS",
+    "member": "V",
+    "country": "Taiwan",
+    "year": "2026",
+    "address": "No. 1, Sinyi Rd., Dashu District, Kaohsiung City, 840, Taiwan (高雄市大樹區信誼路1號).",
+    "lat": 22.7656564,
+    "lng": 120.4191172,
+    "city": "Kaohsiung",
+    "category": "Landmark",
+    "img": "images/admin-upload-new-manual-1795302341113-effp5p-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "tweetUrl": "https://x.com/Steffy_luWw/status/2123824391859658803",
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Book and Dress Properly"
+        },
+        "text": {
+          "en": "This is an active, full-scale golf club rather than a casual public park. If you plan to play, you must reserve a tee time in advance and adhere to standard golf club dress codes (collared shirts, tailored shorts or trousers, and proper golf shoes)."
+        }
+      },
+      {
+        "title": {
+          "en": "Aim for Early Morning"
+        },
+        "text": {
+          "en": "Taking a page from Taehyung's schedule, booking an early morning slot is the smartest move in Kaohsiung. It helps you avoid the intense southern Taiwanese midday heat and high humidity.Taking a page from Taehyung's schedule, booking an early morning slot is the smartest move in Kaohsiung. It helps you avoid the intense southern Taiwanese midday heat and high humidity."
+        }
+      },
+      {
+        "title": {
+          "en": "Pair with Nearby Landmarks"
+        },
+        "text": {
+          "en": "Because the club sits out in the suburban Dashu District, it is best combined with a trip to major nearby attractions like the Fo Guang Shan Buddha Museum or E-DA World, both located just a short drive away."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the lush, rolling hills of Kaohsiung's Dashu District, Hsin Yi Golf Club is one of southern Taiwan's premier 18-hole championship golf courses. Known for its wide fairways, scenic water hazards, and meticulously maintained greens framed by tropical foliage, the club is a staple of Taiwan's golfing community. Beyond hosting regional tournaments and attracting recreational players, its practice facilities are frequently used as a training ground for young, aspiring Taiwanese professional golfers.</p><!--stss:footsteps--><p>During BTS's November 2026 stop in Kaohsiung, Taehyung took an early morning break from his busy schedule to play a round of golf with his mother and father—an outing he later recounted during a Weverse Live, alongside fan videos showing him practicing his swing with his dad before a family dinner.<br><br>While on the course, Taehyung noticed a group of young aspiring pro golfers practicing since early morning under their mother's supervision. The children, who were also BTS fans (\"Baby ARMY\"), were watching him from a distance, too polite to approach him to ask for an autograph on a golf ball. Touched by their restraint and manners, Taehyung asked his translator to call them over so he could chat with them. During their brief, memorable exchange, the kids excitedly told him that they would be attending his concert the very next day.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "The club is located in a suburban area not directly connected to the Kaohsiung MRT. The most practical way to get there is by taxi, Uber, or rental car—roughly a 30 to 40-minute drive from central Kaohsiung or the Zuoying High-Speed Rail (HSR) station."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily from early morning (around 5:30 AM – 6:00 AM) until 6:00 PM. Visitor green fees vary depending on weekdays versus weekends and generally include mandatory caddy and golf cart fees."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main clubhouse, lobby, and dining facilities are accessible, though navigating the sprawling, hilly 18-hole course itself requires golf carts and standard on-course mobility."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1795302341113-effp5p-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3151,
+            "y": 0.3985,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "episodeLink": "",
+    "naverLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "officialLink": "http://hsinyigolf.com.tw/"
+  },
+  {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
     "name": "Kualoa Ranch",
     "group": "BTS",
@@ -28646,6 +28852,90 @@ window.STATIC_LOCATIONS = [
         }
       }
     ]
+  },
+  {
+    "id": "new-onBPx3jEbHfFFt9n8CLQ",
+    "name": "麺尊 RAGE (Azabudai Hills branch)",
+    "group": "BTS",
+    "member": "Jungkook",
+    "country": "Japan",
+    "city": "Tokyo (Toranomon)",
+    "category": "Restaurant",
+    "year": "2026",
+    "address": "Azabudai Hills Garden Plaza D B1F, 5-10-7 Toranomon, Minato City, Tokyo 105-0001, Japan",
+    "lat": 35.66155,
+    "lng": 139.74349,
+    "img": "",
+    "addedAt": 1795307981247,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Men-son RAGE is a well-regarded Tokyo noodle restaurant known for its creative, chef-driven take on ramen and soba, in particular its rich broths built around jidori (game fowl) chicken. Its Azabudai Hills branch, tucked into the basement of Garden Plaza D within Tokyo's striking modern Azabudai Hills complex, serves a location-exclusive menu alongside the chain's signature dishes.</p><!--stss:footsteps--><p>During his November 2026 personal trip to Tokyo, Jungkook stopped at this Azabudai Hills branch and ordered the \"Neo\" specialty jidori chicken soba made only at this location. Fans who recognized the bowl from his photo were able to trace it to a one-of-a-kind dish the restaurant keeps just a single copy of, and to the exact back-left corner table facing the entrance where he sat — details the shop has since confirmed to visitors asking to recreate the moment.</p>"
+    },
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "recreatedPhotos": [],
+    "episodeLink": "https://bts613-bighit.com/jung-kook-in-tokyo-nov-2026/",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Ask for Jungkook's Seat"
+        },
+        "text": {
+          "en": "Jungkook sat at the back-left corner table facing the entrance. The shop has confirmed that if you request this seat in advance, they can seat you there if it's available when you arrive."
+        }
+      },
+      {
+        "title": {
+          "en": "Order the Neo Jidori Soba"
+        },
+        "text": {
+          "en": "The noodle dish Jungkook was seen eating is the \"Neo\" specialty jidori (game fowl) chicken soba, a version exclusive to this Azabudai Hills location and not served at the chain's other branches."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore Azabudai Hills"
+        },
+        "text": {
+          "en": "The restaurant sits in the basement of Garden Plaza D, part of the sprawling Azabudai Hills complex — leave time to also explore its towers, shops and observation deck."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "officialLink": "",
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Azabudai Hills is a short walk from Kamiyacho or Toranomon Hills stations on the Tokyo Metro Hibiya Line, or from Roppongi-itchome Station on the Namboku Line."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "As with most ramen/soba counters in Japan, hours and any queueing system can change — check the restaurant's current hours before visiting."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "Located on basement level 1 (B1F) of Garden Plaza D, reached via the building's elevators as part of the modern, accessible Azabudai Hills complex."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "recreatedPhoto": ""
   },
   {
     "member": "J-Hope",
