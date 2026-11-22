@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-22T08:37:56.902Z.
+// Généré le 2026-11-22T20:27:55.689Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -639,7 +639,7 @@ window.STATIC_LOCATIONS = [
     "img": "images/admin-upload-8-photo.jpg",
     "fullDescription": {
       "fr": "<p>L'escalier abrupt et emblématique de la rue Foyatier grimpe la butte Montmartre en direction de la basilique du Sacré-Cœur, sa voie centrale de funiculaire encadrée par près de 300 marches qui ont figuré dans d'innombrables films et photographies.</p><p>Jimin y a été photographié lors d'une promenade tranquille dans le quartier, ajoutant une couche supplémentaire au statut déjà légendaire de cet escalier auprès des visiteurs en quête du panorama parisien parfait.</p>",
-      "en": "<p>Tucked right beside the magnificent Sacré-Cœur basilica, Rue Saint-Éleuthère is a quintessential Montmartre street. Lined with classic Parisian lampposts, historic facades, and steep cobblestone steps, it offers a beautifully atmospheric perspective of the famous artists' neighborhood. Because it sits at the very top of the Montmartre hill, the street captures the romantic, bohemian spirit of the 18th arrondissement perfectly, serving as a picturesque pathway that has inspired generations of painters and photographers.</p><p>During his extended vacation in the fall of 2019, Jimin fully embraced the timeless charm of Montmartre. Wandering away from the most crowded tourist viewpoints, he took the time to explore the winding alleys and steep inclines of the neighborhood. As seen in the file EGhFVnYXkAA1bOk.jpg, he was photographed on the steps of 5 Rue Saint-Éleuthère. Dressed casually in a long-sleeved white top with black text, black pants, black shoes, and a black shoulder bag, Jimin is captured walking up the stone stairs. He looks back over his shoulder with a bright smile, reaching his hand out toward the camera, perfectly capturing the joyful, carefree magic of an autumn afternoon in Paris.</p>"
+      "en": "<p>Tucked right beside the magnificent Sacré-Cœur basilica, Rue Saint-Éleuthère is a quintessential Montmartre street. Lined with classic Parisian lampposts, historic facades, and steep cobblestone steps, it offers a beautifully atmospheric perspective of the famous artists' neighborhood. Because it sits at the very top of the Montmartre hill, the street captures the romantic, bohemian spirit of the 18th arrondissement perfectly, serving as a picturesque pathway that has inspired generations of painters and photographers.</p><!--stss:footsteps--><p>During his extended vacation in the fall of 2019, Jimin fully embraced the timeless charm of Montmartre. Wandering away from the most crowded tourist viewpoints, he took the time to explore the winding alleys and steep inclines of the neighborhood. As seen in the file EGhFVnYXkAA1bOk.jpg, he was photographed on the steps of 5 Rue Saint-Éleuthère. Dressed casually in a long-sleeved white top with black text, black pants, black shoes, and a black shoulder bag, Jimin is captured walking up the stone stairs. He looks back over his shoulder with a bright smile, reaching his hand out toward the camera, perfectly capturing the joyful, carefree magic of an autumn afternoon in Paris.</p>"
     },
     "tipsList": [
       {
@@ -714,10 +714,20 @@ window.STATIC_LOCATIONS = [
     ],
     "tweetUrl": "https://x.com/graphicfighter/status/1182271146399555585?s=46",
     "imgCredit": "AI-generated illustrative image",
+    "officialLink": "https://fr.wikipedia.org/wiki/Montmartre",
     "recreatedPhotos": [
-      "images/admin-upload-8-recreated-0.jpg"
+      {
+        "url": "images/admin-upload-8-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.5625,
+            "y": 0.5868,
+            "member": "Jimin"
+          }
+        ]
+      }
     ],
-    "officialLink": "https://fr.wikipedia.org/wiki/Montmartre"
+    "naverLink": ""
   },
   {
     "id": 10,
@@ -29410,9 +29420,6 @@ window.STATIC_LOCATIONS = [
     "pinterestUrl": "",
     "instagramUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>The Hanil Cement Quarry in Danyang is a massive, active industrial limestone mine carved directly into the rugged mountain terrain of North Chungcheong Province. With its dramatic, sheer rock cliffs, terraced white gravel slopes, and vast, dusty expanses, it provides a stark, apocalyptic, and highly cinematic backdrop that stands out as one of the most striking locations in Korean music video history.</p><p>This imposing site served as the primary outdoor filming location for the explosive music video \"Not Today\" in early 2017. BTS performed their high-intensity, large-scale choreography alongside dozens of black-clad backup dancers across the open, dusty plains, completely dwarfed by the towering quarry walls. The raw, aggressive energy of the industrial landscape perfectly matched the song's fierce underdog anthem, resulting in one of the most powerful and visually spectacular cinematic pieces in their entire videography.</p>"
-    },
     "tiktokUrl": "",
     "facebookUrl": "",
     "tipsList": [
@@ -29447,9 +29454,6 @@ window.STATIC_LOCATIONS = [
     "imgCredit": "AI-generated illustrative image",
     "officialLink": "https://www.gem.wiki/Hanil_Cement_Danyang_Cement_Plant",
     "episodeLink": "https://www.google.com/search?q=danyang+hanil+cement+quarry+bts+not+today&tbnid=n5oVBg-V085XxM&tbnh=0&tbnw=0&rlz=1C5CHFA_enFR884FR884&sca_esv=3c5bece75fa21f2c&cs=0&biw=930&bih=680&sxsrf=APpeQns-G0JMBdvbRxQJrPM4srek-sc0zQ%3A1789507751182&ei=p7ipaoLVCqmgkdUP7o-akAw&udm=imgs&oq=Danyang+Hanil+Cement+Quarry+B&gs_lp=Egxnd3Mtd2l6LXNlcnAiHURhbnlhbmcgSGFuaWwgQ2VtZW50IFF1YXJyeSBCKgoIABjJAhjwBRgnMgoQIxjJAhjwBRgnMgoQIxjwBRjJAhgnSKARUNkBWOkJcAF4AJABAJgBpAKgAdgGqgEFMC4yLjK4AQHIAQD4AQGYAgWgAu8GwgINECMY8AUYyQIYsAMYJ8ICDRAjGMkCGPAFGLADGCeYAwCIBgGQBgKSBwUxLjIuMqAHkxGyBwUwLjIuMrgH7AbCBwUwLjIuM8gHEIAIAQ&sclient=gws-wiz-serp#sv=CAMSURoyKhBlLTlmb3JRSGV0ZDlfZnlNMg45Zm9yUUhldGQ5X2Z5TToOYTFyVW56eGhseGdWdk0gBCoXCgFzEhBlLTlmb3JRSGV0ZDlfZnlNGAEwARgHILqliocLSggQARgBIAEoAQ",
-    "recreatedPhotos": [
-      "images/admin-upload-new-WJ655ZFtqzPwrwKx5VE8-recreated-0.jpg"
-    ],
     "practicalInfo": [
       {
         "title": {
@@ -29475,7 +29479,33 @@ window.STATIC_LOCATIONS = [
           "en": "Not applicable, as tourist entry is strictly prohibited."
         }
       }
-    ]
+    ],
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-WJ655ZFtqzPwrwKx5VE8-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.1146,
+            "y": 0.5515,
+            "member": "J-Hope"
+          },
+          {
+            "x": 0.4271,
+            "y": 0.5441,
+            "member": "Jungkook"
+          },
+          {
+            "x": 0.7917,
+            "y": 0.5309,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "naverLink": "",
+    "fullDescription": {
+      "en": "<p>The Hanil Cement Quarry in Danyang is a massive, active industrial limestone mine carved directly into the rugged mountain terrain of North Chungcheong Province. With its dramatic, sheer rock cliffs, terraced white gravel slopes, and vast, dusty expanses, it provides a stark, apocalyptic, and highly cinematic backdrop that stands out as one of the most striking locations in Korean music video history.</p><!--stss:footsteps--><p>This imposing site served as the primary outdoor filming location for the explosive music video \"Not Today\" in early 2017. BTS performed their high-intensity, large-scale choreography alongside dozens of black-clad backup dancers across the open, dusty plains, completely dwarfed by the towering quarry walls. The raw, aggressive energy of the industrial landscape perfectly matched the song's fierce underdog anthem, resulting in one of the most powerful and visually spectacular cinematic pieces in their entire videography.</p>"
+    }
   },
   {
     "group": "BTS",
