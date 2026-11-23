@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-22T20:27:55.689Z.
+// Généré le 2026-11-23T09:35:14.747Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -23552,7 +23552,7 @@ window.STATIC_LOCATIONS = [
     "year": "2018",
     "address": "Brooklyn Bridge, New York, NY, USA",
     "lat": 40.7061,
-    "lng": 73.9969,
+    "lng": -73.9969,
     "img": "images/admin-upload-new-manual-1792355591426-7td1k5-photo.jpg",
     "pinterestUrls": [],
     "tiktokUrls": [],
@@ -23585,9 +23585,6 @@ window.STATIC_LOCATIONS = [
     ],
     "facebookUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Completed in 1883, the Brooklyn Bridge is one of the oldest and most recognizable suspension bridges in the United States. Connecting the boroughs of Manhattan and Brooklyn over the East River, it is famous for its massive neo-Gothic stone arches and intricate web of steel suspension cables. A defining feature of the bridge is its elevated wooden pedestrian promenade, which sits safely above the vehicle traffic and offers sweeping, unobstructed views of the Manhattan skyline, making it a favorite destination for both locals and tourists.</p><!--stss:footsteps--><p>During the North American leg of the Love Yourself world tour in October 2018—the same weekend the group performed their historic, sold-out stadium show at Citi Field—Taehyung took some downtime to explore New York City. On October 6, 2018, he shared a series of photos on the group's official Twitter account with the simple caption \"NY\".\nThe photos document his walk across the Brooklyn Bridge's elevated pedestrian walkway. Dressed for the crisp autumn weather, Taehyung was photographed standing on the wooden planks of the promenade, framed by the bridge's suspension cables and the towering stone arches in the background. Instead of a heavily stylized shoot, the images provided a casual, grounded perspective of his afternoon walking high above the East River.</p>"
-    },
     "tweetUrls": [],
     "pinterestUrl": "",
     "facebookUrl": "",
@@ -23655,7 +23652,11 @@ window.STATIC_LOCATIONS = [
           }
         ]
       }
-    ]
+    ],
+    "naverLink": "",
+    "fullDescription": {
+      "en": "<p>Completed in 1883, the Brooklyn Bridge is one of the oldest and most recognizable suspension bridges in the United States. Connecting the boroughs of Manhattan and Brooklyn over the East River, it is famous for its massive neo-Gothic stone arches and intricate web of steel suspension cables. A defining feature of the bridge is its elevated wooden pedestrian promenade, which sits safely above the vehicle traffic and offers sweeping, unobstructed views of the Manhattan skyline, making it a favorite destination for both locals and tourists.</p><!--stss:footsteps--><p>During the North American leg of the Love Yourself world tour in October 2018—the same weekend the group performed their historic, sold-out stadium show at Citi Field—Taehyung took some downtime to explore New York City. On October 6, 2018, he shared a series of photos on the group's official Twitter account with the simple caption \"NY\".<br>The photos document his walk across the Brooklyn Bridge's elevated pedestrian walkway. Dressed for the crisp autumn weather, Taehyung was photographed standing on the wooden planks of the promenade, framed by the bridge's suspension cables and the towering stone arches in the background. Instead of a heavily stylized shoot, the images provided a casual, grounded perspective of his afternoon walking high above the East River.</p>"
+    }
   },
   {
     "id": "new-manual-1792403051595-tmv37f",
@@ -23900,8 +23901,8 @@ window.STATIC_LOCATIONS = [
     "category": "Landmark",
     "year": "2026",
     "address": "Av. Consistorial 5090, Peñalolén, Región Metropolitana, Chile",
-    "lat": 33.4856,
-    "lng": 70.5446,
+    "lat": -33.4856,
+    "lng": -70.5446,
     "img": "images/admin-upload-new-manual-1792522535892-i1je7i-photo.jpg",
     "city": "Santiago",
     "pinterestUrls": [],
@@ -23997,7 +23998,8 @@ window.STATIC_LOCATIONS = [
     "instagramUrls": [
       "https://www.instagram.com/p/Det7oS5lTlB/?psln=ZjhqcXBuaWpnYXZ2"
     ],
-    "instagramUrl": "https://www.instagram.com/p/DerxqVeGfGS/?xtok=bmh6bXl1aWlwcDg2"
+    "instagramUrl": "https://www.instagram.com/p/DerxqVeGfGS/?xtok=bmh6bXl1aWlwcDg2",
+    "naverLink": ""
   },
   {
     "id": "new-manual-1792612660406-kbu2ij",
@@ -28386,6 +28388,104 @@ window.STATIC_LOCATIONS = [
     "officialLink": "http://hsinyigolf.com.tw/"
   },
   {
+    "id": "new-manual-1795380705203-np95wl",
+    "name": "National Gallery Singapore",
+    "group": "BTS",
+    "member": "Jin",
+    "country": "Singapore",
+    "city": "Singapore",
+    "category": "MV Location",
+    "year": "2026",
+    "address": "1 St Andrew's Road, Singapore 178957.",
+    "lat": 1.2903,
+    "lng": 103.8515,
+    "img": "images/admin-upload-new-manual-1795380705203-np95wl-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "tipsList": [
+      {
+        "title": {
+          "en": "Follow the Official MV Trail"
+        },
+        "text": {
+          "en": "Following the video's release, the museum launched an official, self-guided \"Don't Say You Love Me\" Trail. Set aside roughly 40 minutes to follow the route and locate the exact filming setups without getting lost in the massive complex."
+        }
+      },
+      {
+        "title": {
+          "en": "Check Off the Key Filming Spots"
+        },
+        "text": {
+          "en": "Make sure your route hits the six main locations featured in the video : Raden Saleh's Boschbrand (Forest Fire) (Level 3, UOB Southeast Asia Gallery 2) ; UOB Southeast Asia Gallery 1 (Level 3) ; Lower Link Bridge ; City Hall Courtyard ; Supreme Court Foyer (Level 1) ; Coleman Street Entrance"
+        }
+      },
+      {
+        "title": {
+          "en": "Take the Air-Conditioned Shortcut"
+        },
+        "text": {
+          "en": "Singapore's heat and sudden tropical downpours can be intense. When arriving by MRT at City Hall Station, follow the signs for the Art Connector—an underground, air-conditioned walkway that leads directly to the museum's Coleman Street entrance."
+        }
+      }
+    ],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Located in the heart of Singapore's Civic District, the National Gallery Singapore is a striking architectural fusion of heritage and modernity. The museum occupies two meticulously restored national monuments—the former City Hall and the former Supreme Court—which are seamlessly linked together by a dramatic, sweeping canopy of glass and steel. Inside, it houses the world's largest public collection of modern and contemporary Southeast Asian art, showcasing over 8,000 artworks from the 19th century to the present day.</p><!--stss:footsteps--><p>Released on May 16, 2025, and directed by Yongseok Choi (LUMPENS), the music video for Jin's solo track \"Don't Say You Love Me\" marked his first foray into dramatic acting alongside acclaimed South Korean actress Shin Se-kyung. Produced by BIGHIT MUSIC in collaboration with the Singapore Tourism Board - and supported by an interactive promotional campaign - the melancholic short film explores breakup and heartbreak. The narrative opens with Shin Se-kyung driving away, leaving Jin haunted by memories and visions of her across Singapore before he chases after her car in the finale.<br><br>Jin candidly shared that he initially felt nervous and a bit awkward stepping into such an unfamiliar dramatic role, crediting Shin Se-kyung's professionalism for helping him immerse himself in the character. The National Gallery Singapore served as one of the primary backdrops for these poignant scenes, utilizing its grand colonial architecture and quiet, contemplative art galleries to heighten the video's emotional weight.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the MRT (East-West or North-South Line) to City Hall Station (EW13 / NS25). Take Exit B and walk approximately 7 minutes via the Art Connector directly to the gallery."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from 10:00 AM to 7:00 PM. General Admission for international visitors is S$20 (free for Singapore Citizens and Permanent Residents), which grants access to the permanent galleries including the UOB Southeast Asia Galleries."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The entire complex is fully wheelchair accessible, featuring step-free entrances, spacious elevators connecting all levels and both wings, accessible restrooms, and complimentary wheelchairs available for loan at the Visitor Services counters."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "tweetUrl": "",
+    "naverLink": "",
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "ytId": "o7BcyAd6rqg",
+    "episodeLink": "https://www.nationalgallery.sg/sg/en/visit/tours/self-guided-tours/dont-say-you-love-me-trail.html",
+    "imgCredit": "Basile Morin / CC BY-SA 4.0",
+    "officialLink": "https://www.nationalgallery.sg/",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1795380705203-np95wl-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.513,
+            "member": "Jin",
+            "y": 0.5426
+          }
+        ],
+        "format": "landscape"
+      }
+    ]
+  },
+  {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
     "name": "Kualoa Ranch",
     "group": "BTS",
@@ -29480,32 +29580,43 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
+    "naverLink": "",
+    "fullDescription": {
+      "en": "<p>The Hanil Cement Quarry in Danyang is a massive, active industrial limestone mine carved directly into the rugged mountain terrain of North Chungcheong Province. With its dramatic, sheer rock cliffs, terraced white gravel slopes, and vast, dusty expanses, it provides a stark, apocalyptic, and highly cinematic backdrop that stands out as one of the most striking locations in Korean music video history.</p><!--stss:footsteps--><p>This imposing site served as the primary outdoor filming location for the explosive music video \"Not Today\" in early 2017. BTS performed their high-intensity, large-scale choreography alongside dozens of black-clad backup dancers across the open, dusty plains, completely dwarfed by the towering quarry walls. The raw, aggressive energy of the industrial landscape perfectly matched the song's fierce underdog anthem, resulting in one of the most powerful and visually spectacular cinematic pieces in their entire videography.</p>"
+    },
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-new-WJ655ZFtqzPwrwKx5VE8-recreated-0.jpg",
         "markers": [
           {
-            "x": 0.1146,
-            "y": 0.5515,
-            "member": "J-Hope"
+            "member": "J-Hope",
+            "y": 0.4872,
+            "x": 0.2619
           },
           {
-            "x": 0.4271,
-            "y": 0.5441,
+            "x": 0.4671,
+            "y": 0.4964,
             "member": "Jungkook"
           },
           {
-            "x": 0.7917,
-            "y": 0.5309,
-            "member": "V"
+            "member": "V",
+            "y": 0.5267,
+            "x": 0.6793
+          },
+          {
+            "x": 0.0964,
+            "y": 0.51,
+            "member": "RM"
+          },
+          {
+            "x": 0.8958,
+            "y": 0.5473,
+            "member": "Jimin"
           }
-        ]
+        ],
+        "format": "landscape"
       }
-    ],
-    "naverLink": "",
-    "fullDescription": {
-      "en": "<p>The Hanil Cement Quarry in Danyang is a massive, active industrial limestone mine carved directly into the rugged mountain terrain of North Chungcheong Province. With its dramatic, sheer rock cliffs, terraced white gravel slopes, and vast, dusty expanses, it provides a stark, apocalyptic, and highly cinematic backdrop that stands out as one of the most striking locations in Korean music video history.</p><!--stss:footsteps--><p>This imposing site served as the primary outdoor filming location for the explosive music video \"Not Today\" in early 2017. BTS performed their high-intensity, large-scale choreography alongside dozens of black-clad backup dancers across the open, dusty plains, completely dwarfed by the towering quarry walls. The raw, aggressive energy of the industrial landscape perfectly matched the song's fierce underdog anthem, resulting in one of the most powerful and visually spectacular cinematic pieces in their entire videography.</p>"
-    }
+    ]
   },
   {
     "group": "BTS",
@@ -29679,19 +29790,16 @@ window.STATIC_LOCATIONS = [
         }
       }
     ],
+    "fullDescription": {
+      "en": "<p>Spanning over 225 square kilometers of pristine, rolling dunes, the Dubai Desert Conservation Reserve is a breathtaking protected national park that showcases the majestic natural beauty of the Arabian Peninsula. Away from the glittering skyscrapers of the city, this vast expanse offers a serene, cinematic landscape of golden sands and native wildlife.</p><!--stss:footsteps--><p>In early 2016, BTS traded the bustling city life for the breathtaking heat of the Emirates to film their very first overseas desert adventure: the BTS Summer Package 2016 in Dubai. The members embraced the desert lifestyle completely. Clad in memorable, vibrant outfits that popped beautifully against the golden sand, they drove dune buggies, tried sandboarding (with varying degrees of success!), and rode camels. They transformed this seemingly barren landscape into the ultimate summer playground, creating hilarious and unforgettable memories for ARMYs.</p>"
+    },
+    "naverLink": "",
     "recreatedPhotos": [
       {
         "url": "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-0.jpg",
-        "official": true
-      },
-      {
-        "url": "images/admin-upload-new-z9IuVzHcfW1cYdbAwbCs-recreated-1.jpg",
-        "official": true
+        "format": "square"
       }
-    ],
-    "fullDescription": {
-      "en": "<p>Spanning over 225 square kilometers of pristine, rolling dunes, the Dubai Desert Conservation Reserve is a breathtaking protected national park that showcases the majestic natural beauty of the Arabian Peninsula. Away from the glittering skyscrapers of the city, this vast expanse offers a serene, cinematic landscape of golden sands and native wildlife.</p><!--stss:footsteps--><p>In early 2016, BTS traded the bustling city life for the breathtaking heat of the Emirates to film their very first overseas desert adventure: the BTS Summer Package 2016 in Dubai. The members embraced the desert lifestyle completely. Clad in memorable, vibrant outfits that popped beautifully against the golden sand, they drove dune buggies, tried sandboarding (with varying degrees of success!), and rode camels. They transformed this seemingly barren landscape into the ultimate summer playground, creating hilarious and unforgettable memories for ARMYs.</p>"
-    }
+    ]
   },
   {
     "address": "203 Gamnae 2-ro, Saha-gu, Busan, South Korea",
