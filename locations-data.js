@@ -8,7 +8,7 @@
 // Toute modification manuelle de ce fichier serait silencieusement écrasée au
 // prochain export — passez par l'icône crayon sur la carte (admin) ou l'agent IA
 // (locationSubmissions) pour changer un lieu, jamais ici directement.
-// Généré le 2026-11-23T09:35:14.747Z.
+// Généré le 2026-11-24T01:09:12.245Z.
 window.STATIC_LOCATIONS = [
   {
     "id": 1,
@@ -16957,6 +16957,104 @@ window.STATIC_LOCATIONS = [
     ]
   },
   {
+    "id": "new-1hN6VejDv9Vc65hqH45y",
+    "name": "Woljeonggyo Bridge (월정교)",
+    "group": "BTS",
+    "member": "RM",
+    "country": "South Korea",
+    "city": "Gyeongju",
+    "category": "Landmark",
+    "year": "2019",
+    "address": "274 Gyo-dong, Gyeongju-si, Gyeongsangbuk-do, South Korea (경상북도 경주시 교동 274).",
+    "lat": 35.8294,
+    "lng": 129.2181,
+    "img": "images/admin-upload-new-1hN6VejDv9Vc65hqH45y-photo.jpg",
+    "addedAt": 1795462599246,
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "youtubeUrls": [],
+    "tiktokUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "facebookUrls": [],
+    "instagramUrl": "",
+    "tweetUrls": [],
+    "imgCredit": "Basile Morin / CC BY-SA 4.0",
+    "pinterestUrl": "",
+    "naverLink": "",
+    "ytId": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Walk the Stepping Stones"
+        },
+        "text": {
+          "en": "For the most iconic exterior view of the bridge, head down to the riverbank just west of the structure and cross the traditional stone stepping stones (jinggeomdari). It is the best vantage point to photograph the entire bridge reflecting off the Namcheon Stream."
+        }
+      },
+      {
+        "title": {
+          "en": "Visit Twice—Afternoon and Dusk"
+        },
+        "text": {
+          "en": "To match RM's exact lighting, walk through the covered gallery in the late afternoon when the low sun casts long shadows through the pillars. Stick around until after sunset, when the bridge is dramatically illuminated in golden light against the dark water."
+        }
+      },
+      {
+        "title": {
+          "en": "Explore the Second-Floor Exhibition"
+        },
+        "text": {
+          "en": "Before leaving, take the stairs inside the gatehouse at either end of the bridge up to the second floor. There is a free mini-museum displaying artifacts excavated from the original Silla-era bridge site and a video detailing the reconstruction process."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Spanning the Namcheon Stream right beside the historic Gyochon Traditional Village, Woljeonggyo Bridge is one of Gyeongju's most breathtaking architectural landmarks. Originally built in the 8th century during the Unified Silla period to connect the royal palace to the southern foothills, the bridge was eventually lost to history. Following a massive, decade-long restoration project completed in 2018, it now stands as the largest reconstructed wooden bridge in South Korea. Its grand covered gallery is adorned with intricate dancheong—traditional Korean polychrome paintwork in vibrant blues, greens, and reds—supported by imposing vermilion pillars.</p><!--stss:footsteps--><p>In January 2019, RM rang in the new year with a quiet winter getaway to Gyeongju, the ancient capital of the Silla Kingdom. Sharing a series of personal photos on BTS's official social media with the simple caption \"Hi 2019,\" he offered fans a quintessential look at \"Namjooning\"—slowing down to appreciate art, heritage, and tranquil cultural strolls.<br><br>In one of the standout shots from the trip, RM is pictured standing inside the long, covered wooden corridor of Woljeonggyo Bridge. Framed by the symmetrical crimson columns and the ornate overhead rafters, he is bathed in the low, crisp winter sunlight streaming across the bridge, capturing a serene moment of reflection amidst centuries of Korean history.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "From Gyeongju Station (KTX), take Bus 700 or 50 toward the city center/Hwangnidan-gil, or take a 20-minute taxi directly to Gyochon Village. If you are already exploring downtown Gyeongju or Hwangnidan-gil, the bridge is an easy, scenic 15-minute walk south through the historic parklands."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "The bridge walkway is open daily from 9:00 AM to 10:00 PM (with night illuminations running until 10:00 PM). Admission is completely free."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The main covered wooden walkway of the bridge is wide, flat, and accessible for wheelchair users via gentle ramps at the entrances. However, the second-floor gatehouse exhibition halls are only accessible by stairs."
+        }
+      }
+    ],
+    "officialLink": "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=57372",
+    "tweetUrl": "https://x.com/BTS_twt/status/1081135041009209344",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-1hN6VejDv9Vc65hqH45y-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.2956,
+            "y": 0.6931,
+            "member": "RM"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "new-1u0UUNL2BCscYEhr07gw",
     "name": "Oryukdo Skywalk",
     "group": "BTS",
@@ -24011,7 +24109,7 @@ window.STATIC_LOCATIONS = [
     "year": "2020",
     "address": "15758 Burbank Blvd, Encino, CA 91436, USA (General Sepulveda Basin Recreation Area)",
     "lat": 34.1672705,
-    "lng": 118.4729704,
+    "lng": -118.4729704,
     "img": "images/admin-upload-new-manual-1792612660406-kbu2ij-photo.jpg",
     "city": "Los Angeles",
     "pinterestUrls": [],
@@ -24045,9 +24143,6 @@ window.STATIC_LOCATIONS = [
     ],
     "facebookUrls": [],
     "youtubeUrls": [],
-    "fullDescription": {
-      "en": "<p>Built by the U.S. Army Corps of Engineers, the Sepulveda Dam was necessitated by devastating regional flooding in 1938 that resulted in 144 fatalities. Construction of the massive concrete dam was completed in 1941. While its primary function remains active flood risk management for the Los Angeles River, the surrounding basin is also authorized for public use. Today, the area is managed by the Los Angeles Department of Recreation and Parks, housing the vast Sepulveda Basin Recreation Center, which includes several public parks, sports facilities, and a dedicated wildlife reserve. With its brutalist, industrial architecture, the dam stands as a silent, imposing reminder of the power required to control natural chaos.</p><!--stss:footsteps--><p>In February 2020, BTS utilized the stark, geometric spillway of the Sepulveda Dam to film the official \"ON\" Kinetic Manifesto Film : Come Prima.\nThe location was carefully chosen to reflect the track's intense energy and themes. Featuring a heavy, percussive sound mimicking a marching band, the song likens the members to fighters and toys with imagery related to Jungian archetypes. Accompanied by the Blue Devils Drum and Bugle Corps and the dance crew The Lab, BTS delivered a fiercely synchronized, stadium-level performance on the dam's vast concrete floor. The military and industrial aesthetic of the facility provided the perfect, unembellished backdrop for the video, emphasizing the raw physical exertion of the choreography and the song's central message of facing internal shadows and pushing through pain.</p>"
-    },
     "practicalInfo": [
       {
         "title": {
@@ -24165,7 +24260,11 @@ window.STATIC_LOCATIONS = [
       }
     ],
     "episodeLink": "https://larepublica.pe/cultura-asiatica/2020/02/24/bts-escenario-mv-on-usado-por-americas-next-top-model-y-american-horror-story-hollywood-map-of-the-soul7",
-    "officialLink": "https://www.spl.usace.army.mil/Missions/Asset-Management/Sepulveda-Dam/"
+    "officialLink": "https://www.spl.usace.army.mil/Missions/Asset-Management/Sepulveda-Dam/",
+    "naverLink": "",
+    "fullDescription": {
+      "en": "<p>Built by the U.S. Army Corps of Engineers, the Sepulveda Dam was necessitated by devastating regional flooding in 1938 that resulted in 144 fatalities. Construction of the massive concrete dam was completed in 1941. While its primary function remains active flood risk management for the Los Angeles River, the surrounding basin is also authorized for public use. Today, the area is managed by the Los Angeles Department of Recreation and Parks, housing the vast Sepulveda Basin Recreation Center, which includes several public parks, sports facilities, and a dedicated wildlife reserve. With its brutalist, industrial architecture, the dam stands as a silent, imposing reminder of the power required to control natural chaos.</p><!--stss:footsteps--><p>In February 2020, BTS utilized the stark, geometric spillway of the Sepulveda Dam to film the official \"ON\" Kinetic Manifesto Film : Come Prima.<br>The location was carefully chosen to reflect the track's intense energy and themes. Featuring a heavy, percussive sound mimicking a marching band, the song likens the members to fighters and toys with imagery related to Jungian archetypes. Accompanied by the Blue Devils Drum and Bugle Corps and the dance crew The Lab, BTS delivered a fiercely synchronized, stadium-level performance on the dam's vast concrete floor. The military and industrial aesthetic of the facility provided the perfect, unembellished backdrop for the video, emphasizing the raw physical exertion of the choreography and the song's central message of facing internal shadows and pushing through pain.</p>"
+    }
   },
   {
     "id": "new-manual-1792613843775-27ctxw",
@@ -28484,6 +28583,210 @@ window.STATIC_LOCATIONS = [
         "format": "landscape"
       }
     ]
+  },
+  {
+    "id": "new-manual-1795463315032-hxjrwa",
+    "name": "[CLOSED] Cafe Sabaha (카페 사바하)",
+    "group": "BTS",
+    "member": "RM",
+    "country": "South Korea",
+    "category": "Cafe",
+    "year": "2019",
+    "address": "21 Gyochonan-gil, Gyeongju-si, Gyeongsangbuk-do, South Korea (경상북도 경주시 교촌안길 21).",
+    "lat": 35.82998,
+    "lng": 129.21677,
+    "img": "images/admin-upload-new-manual-1795463315032-hxjrwa-photo.jpg",
+    "city": "Gyeongju",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "From Gyeongju Station (KTX), take Bus 700 or 50 toward the city center, or take a 20-minute taxi directly to Gyochon Traditional Village. If you are already exploring downtown Gyeongju or Hwangnidan-gil, it is an easy 15-minute walk south through the historic parklands."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Typically open daily from 10:00 AM to 9:00 PM (hours may vary slightly in winter). No admission fee; standard cafe beverage prices apply (approx. 5,000–7,000 KRW per drink)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The outdoor courtyard garden is relatively flat and paved with stepping stones and gravel, making parts of the exterior manageable with assistance. However, as an authentic historic hanok, the raised wooden maru and interior doorways feature high thresholds and steps that are not accessible for wheelchair users."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "naverLink": "",
+    "tiktokUrl": "",
+    "ytId": "",
+    "tweetUrl": "https://x.com/BTS_twt/status/1081135041009209344",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1795463315032-hxjrwa-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.3659,
+            "y": 0.6558,
+            "member": "RM"
+          }
+        ]
+      },
+      {
+        "url": "images/admin-upload-new-manual-1795463315032-hxjrwa-recreated-1.jpg",
+        "markers": [
+          {
+            "x": 0.5013,
+            "y": 0.5954,
+            "member": "RM"
+          }
+        ]
+      }
+    ],
+    "instagramUrl": "https://www.instagram.com/p/Df9uZmGGlJ7/?img_index=15&hvrq=MWR3amFrcTNpcGcwNA%3D%3D",
+    "officialLink": "https://m.blog.naver.com/yjoo_0116/221158194782",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Current Closure"
+        },
+        "text": {
+          "en": "Cafe Sabaha has been permanently closed since 2025. You can no longer order drinks inside or access the private maru and courtyard garden to recreate RM's exact seated photos."
+        }
+      },
+      {
+        "title": {
+          "en": "Admire the Exterior & Village"
+        },
+        "text": {
+          "en": "Even though the cafe itself is closed, Gyochon Traditional Village remains open and free to explore. You can still walk past the former storefront along Gyochonan-gil to see the traditional stone walls, tiled roofs, and neighborhood atmosphere featured in RM's background."
+        }
+      },
+      {
+        "title": {
+          "en": "Pair It with Woljeonggyo Bridge"
+        },
+        "text": {
+          "en": "Because the former cafe is located just a 3-to-5-minute walk from Woljeonggyo Bridge, you can still make this a quick stop during your walk through Gyochon Village to complete the \"Hi 2019\" Gyeongju route, then grab a traditional tea at one of the other active hanok cafes nearby."
+        }
+      }
+    ],
+    "fullDescription": {
+      "en": "<p>Tucked away in the heart of Gyochon Traditional Village (Gyeongju Gyochon Maeul), just a few minutes' walk from Woljeonggyo Bridge, Cafe Sabaha was housed in an authentic, beautifully preserved hanok (traditional Korean house). True to the tranquil spirit of Gyeongju, the cafe blended classical wooden architecture—complete with tiled roofs, hanji paper lattice doors, and a raised wooden veranda (maru)—with a spacious, manicured garden. Framed by traditional low stone walls and mature Korean pine trees, it offered a peaceful retreat where visitors could pause for coffee or traditional tea surrounded by centuries-old village scenery.</p><!--stss:footsteps--><p>In January 2019, RM shared a personal photo set on BTS's official social media captioned \"Hi 2019,\" documenting a quiet winter \"Namjooning\" getaway to the ancient Silla capital of Gyeongju. Alongside his well-known shot inside the nearby Woljeonggyo Bridge, two of the standout photos from this series were taken right here at Cafe Sabaha.<br><br>In the first photo, RM is seen seated casually on the elevated wooden maru along the cafe's main facade, leaning back against the traditional wooden lattice sliding doors. In the third photo, he takes a quiet break in the courtyard garden, sitting on a wrought-iron chair beneath the shade of a tall Korean pine tree, with the village's signature stone walls and traditional wooden gate in the background.</p>"
+    }
+  },
+  {
+    "id": "new-manual-1795467156142-u6fxs4",
+    "name": "Master Fang Bakery",
+    "group": "BTS",
+    "member": "V",
+    "country": "Taiwan",
+    "city": "Kaohsiung",
+    "category": "Cafe",
+    "year": "2026",
+    "address": "No. 33, Wufu 2nd Rd, Haoran Village, Sinsing District, Kaohsiung City, 800, Taiwan (高雄市新興區五福二路33號).",
+    "lat": 22.6253108,
+    "lng": 120.3080992,
+    "img": "images/admin-upload-new-manual-1795467156142-u6fxs4-photo.jpg",
+    "pinterestUrls": [],
+    "tiktokUrls": [],
+    "tweetUrl": "https://x.com/taesatzsthv/status/2124539861688557622",
+    "instagramUrls": [],
+    "facebookUrls": [],
+    "youtubeUrls": [],
+    "fullDescription": {
+      "en": "<p>Operating for over three decades, 方師傅點心坊 （高雄五福店） (Master Fang Bakery) is a beloved Kaohsiung institution and one of southern Taiwan's most recognizable local bakery chains. Known for baking from a central kitchen and delivering fresh batches daily across its city branches, the shop is famous among locals for its rich, buttery Luo Song (Russian bread), handmade cookies, and nostalgic Taiwanese-style buns. Walking inside feels like stepping into a classic neighborhood bakery—warm, unpretentious, and filled with the comforting aroma of butter and freshly baked sweet dough.</p><!--stss:footsteps--><p>On the night of November 21, 2026, following the second evening of BTS's concert in Kaohsiung, V (Taehyung) joined Jin, J-Hope, Jimin, and Jungkook for a relaxed late-night snack (yeshik) during a hotel Weverse Live. Alongside local sushi, Taehyung pulled out two classic Taiwanese pastries from Master Fang Bakery: a crispy pineapple bun (boluo mianbao) and a milk butter bun (naisu mianbao), pairing them with a carton of Taiwanese Ruisui fresh milk.<br><br>Playfully riffing on the Mandarin pronunciation of naisu (奶酥), Taehyung affectionately nicknamed the milk butter bun \"NICE Bread,\" instantly turning a humble everyday local snack into a viral sensation. Master Fang Bakery quickly embraced the moment, spotlighting both pastries as \"ARMY Must-Try\" picks and sending fans lining up outside the Wufu branch to taste the exact same breads.</p>"
+    },
+    "practicalInfo": [
+      {
+        "title": {
+          "en": "How to get there"
+        },
+        "text": {
+          "en": "Take the Kaohsiung MRT Red Line to Central Park Station (中央公園站), then walk east along Wufu 2nd Road for approximately 11 minutes. You can also take a quick 3-to-5-minute taxi or Uber from Central Park or Formosa Boulevard stations."
+        }
+      },
+      {
+        "title": {
+          "en": "Operating Hours & Admission"
+        },
+        "text": {
+          "en": "Open daily from 10:00 AM to 10:00 PM. Free to enter; individual pastries are very affordable (typically around 35–60 TWD each)."
+        }
+      },
+      {
+        "title": {
+          "en": "Accessibility"
+        },
+        "text": {
+          "en": "The bakery sits at street level for quick takeout, though there is no dedicated wheelchair-accessible parking lot, no indoor seating area, and no public restroom on site."
+        }
+      }
+    ],
+    "tweetUrls": [],
+    "imgCredit": "AI-generated illustrative image",
+    "pinterestUrl": "",
+    "facebookUrl": "",
+    "episodeLink": "",
+    "naverLink": "",
+    "tipsList": [
+      {
+        "title": {
+          "en": "Arrive Right at Opening (10:00 AM)"
+        },
+        "text": {
+          "en": "Because of the massive surge in fan visits, the signature buns go fast. Early visitors have noted that only around 10 pineapple buns and 10 milk butter buns may be stocked on the display trays right when the doors open, so arriving at 10:00 AM gives you the best shot at securing one of each before they sell out or before you have to wait for the next restock."
+        }
+      },
+      {
+        "title": {
+          "en": "Order the"
+        },
+        "text": {
+          "en": "Ask for the crispy pineapple bun (Xiangsu Boluo / 香酥菠蘿) and the milk butter bun (Naisu Mianbao / 奶酥麵包)—the exact \"NICE Bread\" from his livestream. For the full Weverse Live experience, grab a carton of Ruisui Fresh Milk (瑞穗鮮乳) at any nearby 7-Eleven or FamilyMart. If you have room in your bag, also pick up the bakery's famous Luo Song butter bread."
+        }
+      },
+      {
+        "title": {
+          "en": "Plan for Takeout Only"
+        },
+        "text": {
+          "en": "This branch operates strictly as a quick-stop takeout bakery with no dine-in seating or customer restrooms. Unlike some traditional cash-only shops in Kaohsiung, Master Fang accepts both credit and debit cards in addition to cash."
+        }
+      }
+    ],
+    "instagramUrl": "",
+    "tiktokUrl": "",
+    "recreatedPhotos": [
+      {
+        "url": "images/admin-upload-new-manual-1795467156142-u6fxs4-recreated-0.jpg",
+        "markers": [
+          {
+            "x": 0.4049,
+            "y": 0.7017,
+            "member": "V"
+          }
+        ]
+      }
+    ],
+    "officialLink": "https://www.masterfang.com.tw/?srsltid=AYCX9vKBQmdjwo4EZc3Hm8OdLxlHF-UREVrY--oJiBHFc3oBkpBPrfk7",
+    "ytId": "3B10GwvJxOU"
   },
   {
     "id": "new-Mkhd3jsXQAZKaynitOOB",
